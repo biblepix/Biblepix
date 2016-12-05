@@ -7,7 +7,7 @@
 # 	      www.biblepix.vollmar.ch                       #
 # Version: 2.3                                           #
 # Systems: Linux, Windows                                #
-# Updated: November 16                                   #
+# Updated: December 16                                   #
 ##########################################################
 
 ####################
@@ -20,8 +20,7 @@
 B I B E L P I X   P R O G R A M M B E S C H R E I B U N G
 
 BibelPix ist ein Tcl-Programm, das für das Projekt "Bibel2.0" geschrieben wurde. 
-Bibel2.0 setzt sich zum Ziel, "Das Wort" - 2 ausgewählte Bibelsprüche für jeden Tag des Jahres - 
-in einer wachsenden Anzahl von Sprachen zu verbreiten.
+Bibel2.0 setzt sich zum Ziel, "Das Wort" - 2 ausgewählte Bibelsprüche für jeden Tag des Jahres - in einer wachsenden Anzahl von Sprachen zu verbreiten.
 
 BibelPix zeigt "Das Wort"
 
@@ -50,7 +49,7 @@ Tcl/Tk ist eine System-übergreifende Plattform für viele Betriebssysteme.
 
 Die Git-Installationsmethode ist systemunabhängig und funktioniert auf allen
 Plattformen, die eine Version des Programms 'git' installiert haben.
-Das Kommando sollte in einem Unterordner des Heimordners gestartet werden,
+Das Kommando sollte in einem Unterordner des Heimordners installiert werden,
 damit Schreibrechte garantiert sind. Empfohlener Standard für Linux/Unix ist 
 	
 	/home/USERNAME/
@@ -62,7 +61,7 @@ und für Windows
 In einer Konsole folgende Kommandos eingeben:
 	
 	cd [HEIMORDNER]
-	git clone github.net/Biblepix
+	git clone https://github.com/biblepix/Biblepix.git
 
 Das Prozedere kann auch ohne Konsole, aus einem graphischen Git-Programm
 ausgeführt werden.
@@ -290,7 +289,7 @@ and for Windows
 In a terminal, enter the commands:
 	
 	cd [HOME DIRECTORY]
-	git clone github.net/Biblepix
+	git clone https://github.com/biblepix/Biblepix.git
 
 Instead of the terminal, a graphical Git programm can also be used. 
 
