@@ -1,7 +1,12 @@
+# ~/Biblepix/prog/src/gui/setupEmail.tcl
+# Sourced by setupGUI
+# Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
+# Updated 15dec16
+
 #Statusbar
 frame .n.f1.f0 -padx $px
 pack .n.f1.f0 -side bottom -fill x
-label .n.f1.status -textvar status -font $f1 -height 1 -bg $bg -relief sunken
+label .n.f1.status -textvar status -font bpfont1 -height 1 -bg $bg -relief sunken
 pack .n.f1.status -in .n.f1.f0 -fill x
 
 #Refresh button
@@ -9,15 +14,15 @@ button .n.f1.refbtn -textvariable refresh -bg lightblue -command {set status [ge
 pack .n.f1.refbtn -side bottom -fill x -padx $px
 
 #Title
-label .n.f1.titel -textvar f1.tit -font $f3
-message .n.f1.txt -textvar f1.txt -width $tw -font $f1 -padx $px -pady $py
+label .n.f1.titel -textvar f1.tit -font bpfont3
+message .n.f1.txt -textvar f1.txt -width $tw -font bpfont1 -padx $px -pady $py
 pack .n.f1.titel .n.f1.txt -anchor w
 
 #Locallist
 frame .n.f1.f1 -padx $px
 pack .n.f1.f1 -anchor w -fill x
 
-label .n.f1.f1.twdlocaltit -textvar f1.twdlocaltit -bg $bg -font $f2
+label .n.f1.f1.twdlocaltit -textvar f1.twdlocaltit -bg $bg -font bpfont2
 pack .n.f1.f1.twdlocaltit -anchor w -fill x
 #set listbox
 listbox .n.f1.f1.twdlocal -bg lightgreen -width $tw -height 0 -selectmode single -activestyle none
@@ -32,7 +37,7 @@ pack .n.f1.f1.twdlocal -anchor w
 frame .n.f1.f2 -padx $px
 pack .n.f1.f2 -anchor w -fill x
 
-label .n.f1.f2.twdremotetit -textvar f1.twdremotetit -bg $bg -justify left -font $f2 -padx $px
+label .n.f1.f2.twdremotetit -textvar f1.twdremotetit -bg $bg -justify left -font bpfont2 -padx $px
 pack .n.f1.f2.twdremotetit -fill x
 
 pack [frame .n.f1.f3] -anchor w -fill x
@@ -48,4 +53,3 @@ pack .n.f1.twdremoteframe -anchor w
 pack .n.f1.twdremoteframe.sb -side right -fill y
 pack .n.f1.twdremoteframe.lb -side left -fill x
 
-# ??? source $Http

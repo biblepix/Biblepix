@@ -1,20 +1,18 @@
-# ~/Biblepix/prog/tcl/uninstall.tcl
+# ~/Biblepix/prog/src/main/uninstall.tcl
 # sourced by biblepix-setup.tcl
-# Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 1jul16
-
-global tcl_platform lang piddir
+# Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
+# Updated: 23dec16
 
 set msg1 "Do you really want to remove BiblePix from your computer?"
 set msg1DE "Wollen Sie wirklich BiblePix von Ihrem Computer entfernen?"
 if {$lang=="de"} {set msg1 $msg1DE}
-set antwort [tk_messageBox -type yesno -message $msg1]
+set antwort [tk_messageBox -icon warning -type yesno -message $msg1]
 
 if {$antwort=="yes"} {
 	               		
 		#Stop any running biblepix.tcl
 		foreach pid [glob -nocomplain -tails -directory $piddir *] {
-			if {$tcl_platform(platform)=="windows"} {
+			if {$platform=="windows"} {
 				exec cmd.exe /c taskkill /pid $pid
 			} else {
 				exec kill $pid
@@ -23,9 +21,10 @@ if {$antwort=="yes"} {
 
 		.news conf -bg red
 		set news "Removing BiblePix from your computer..."
-		after 5000
+		after 5000 {}
 		
-		if {$tcl_platform(os)=="Linux"} {
+		# L I N U X
+		if {$os=="Linux"} {
                 
 			#remove Desktop files
 			file delete -force ~/.local/share/applications/Biblepix
@@ -59,7 +58,7 @@ if {$antwort=="yes"} {
                         }
                         
 			
-		} elseif {$tcl_platform(platform)=="windows"} {
+		} elseif {$platform=="windows"} {
 			
 			set msg1 "BiblePix will now be uninstalled. To clear system settings made, 
 you must confirm any upcoming dialogue boxes with \"Yes\"."
@@ -82,10 +81,10 @@ set msg1DE "BiblePix wird nun deinstalliert. Zum Löschen der Systemeinstellungen
 				registry delete $regpath_fallback_img Wallpaper
 			}
 			
-                        #3. restore Custom.theme
+			#3. restore Custom.theme
 			catch {exec cmd /c [file join $windir Custom.theme]}
 			
-                        #4. unregister root-DesktopBackground
+			#4. unregister root-DesktopBackground
 			set unregpath "[file nativename $windir]\\uninstall.reg"
 			regsub -all {\\} $unregpath {\\\\} unregpath
 			set unregtext {Windows Registry Editor Version 5.00
@@ -102,7 +101,7 @@ set msg1DE "BiblePix wird nun deinstalliert. Zum Löschen der Systemeinstellungen
 		} ;#end if windows
 		           
 		#Remove Biblepix directory on all platforms (some problems on Win)
-		catch {file delete -force $HD}
+		catch {file delete -force $rootdir}
                 
                 #Final message
                 set msg "BiblePix has been removed safely from your system. To reinstall, visit our website, www.bible2.net, and download the BiblePix Setup program."

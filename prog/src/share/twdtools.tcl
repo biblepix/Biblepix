@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/tcl/share/twdtools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16nov16
+# Updated 23dec16
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if {[catch {package require tdom}]} {
@@ -253,3 +253,55 @@ proc formatTermText {twdFile} {
 
 	return $dwterm
 }
+
+proc setTWDWelcome {dwWidget} {
+global srcdir platform lang enableintro Twdtools Bidi noTWDFilesFound
+	
+	# get TWD
+	set twdfile [getRandomTWDFile]
+
+	# check TWD
+	if {$twdfile==""} {
+		$dwWidget conf -fg black -bg red -activeforeground black -activebackground orange
+		set dw $noTWDFilesFound
+	
+	} else {		
+	# get TWD
+		source $Twdtools
+		set dw [formatImgText $twdfile]
+		$dwWidget conf -justify left
+
+		#Check for Hebrew text 
+		if { [regexp {[\u05d0-\u05ea]} $dw] } {
+			set justify right
+			source $Bidi
+			#Unix
+			if {$platform=="unix"} {
+				set dw [fixHebUnix $dw]
+			
+			#Win
+			} elseif {$platform=="windows"} {
+				set ind ""
+				set dw [fixHebWin $dw]
+			}
+			$dwWidget conf -justify right
+ 		
+		 		
+ 		#Check for Arabic text
+		} elseif { [regexp {[\u0600-\u076c]} $dw] } {
+			set justify right
+			source $Bidi
+			#Unix
+			if {$platform=="unix"} {
+				set dw [fixArabUnix $dw]
+			} elseif {$platform=="windows"} {
+			#Win
+				set ind ""
+				set dw [fixArabWin $dw]
+			}
+			$dwWidget conf -justify right
+		}
+	}
+	return $dw
+        
+} ;#end setTWD

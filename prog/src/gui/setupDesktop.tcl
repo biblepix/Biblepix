@@ -1,124 +1,161 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
-# Sourced by setupGUI
+# Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 19nov16
+# Updated 7jan17
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
 
+#Create left & right main frames
+pack [frame .n.f2.fleft] -expand 0 -fill y -side left
+pack [frame .n.f2.fright] -expand 0 -fill y -side right -pady 5 -padx 5
+
+#Create left & right subframes
+#pack [frame .n.f2.fleft.f1] [frame .n.f2.fleft.f2] -fill none -expand 0 -fill x -side left
+pack [frame .n.f2.fright.ftop -relief ridge -borderwidth 3] -fill x -expand 0 -pady 2
+pack [frame .n.f2.fright.fbot] -pady $py -padx $px -fill x -expand 0
+pack [frame .n.f2.fright.fbot1] -pady $py -fill x 
+pack [frame .n.f2.fright.fbot2] -fill x
+
+#F I L L   L E F T 
+
 #Create title
-label .n.f2.baslik -textvar f2.tit -font $f3
-pack .n.f2.baslik -anchor w
+label .n.f2.fleft.baslik -textvar f2.tit -font bpfont3
 
-#Create main frames -untereinander
-pack [frame .n.f2.topframe1] -fill x
-pack [frame .n.f2.topframe2] -fill x
-pack [frame .n.f2.mainframe] -fill x
-
-#Create topframe1.subframes -nebeneinander
-pack [frame .n.f2.topframe1.sol -pady $py] -side left -anchor n -fill x 
-pack [frame .n.f2.topframe1.orta] -expand true -side left -fill x
-pack [frame .n.f2.topframe1.sagh -pady $py] -side left -anchor n -fill x
- 
- #checkbox frames R - untereinander
-pack [frame .n.f2.topframe1.sagh.f1] -anchor n -fill x
-pack [frame .n.f2.topframe1.sagh.f5 -pady 30] -fill x
- 
-#Create topframe2.subframes -nebeneinander
-pack [frame .n.f2.topframe2.links -padx $px -pady $py] -side left -fill x -expand true
-pack [frame .n.f2.topframe2.rechts -pady $py] -side right -fill x 
- #spinbox frames - untereinander
-pack [frame .n.f2.topframe2.rechts.f2] -anchor w
-pack [frame .n.f2.topframe2.rechts.f3] -anchor w
-pack [frame .n.f2.topframe2.rechts.f4] -anchor w
-
-
-#FILL TOPFRAME1
-
- #1. ImageYesno checkbutton 
-checkbutton .n.f2.topframe1.sol.imgyes -textvar f2.box -variable imgyesState -width 20 -justify left
+#1. ImageYesno checkbutton 
+checkbutton .n.f2.fleft.imgyes -textvar f2.box -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
 if {$enablepic} {set imgyesState 1} else {set imgyesState 0}
-pack .n.f2.topframe1.sol.imgyes -side top -anchor w
+set imgyesnoBtn .n.f2.fleft.imgyes
 
- #2. TextPos Canvas
-set textPosFactor 10
-canvas .n.f2.topframe1.orta.textposcanv -bg darkgray -borderwidth 5 -width [expr $screenx/$textPosFactor] -height [expr $screeny/$textPosFactor]
-label .n.f2.topframe1.orta.textpostxt -textvar textpos
-pack .n.f2.topframe1.orta.textposcanv .n.f2.topframe1.orta.textpostxt
-#create moving item
-set textPosSubwinX [expr $screenx/20]
-set textPosSubwinY [expr $screeny/30]
+#2. Main text
+message .n.f2.fleft.intro -textvar f2.txt -font bpfont1 -width 500 -padx $px -pady $py -justify left
 
-.n.f2.topframe1.orta.textposcanv create rectangle [expr $marginleft/$textPosFactor] [expr $margintop/$textPosFactor] [expr ($marginleft/$textPosFactor)+$textPosSubwinX] [expr ($margintop/$textPosFactor)+$textPosSubwinY] -tags mv -fill lightblue -outline lightblue -activeoutline red
-.n.f2.topframe1.orta.textposcanv bind mv <1> {movestart %W %x %y}
-.n.f2.topframe1.orta.textposcanv bind mv <B1-Motion> {move %W %x %y}
+#P A C K   L E F T 
+pack .n.f2.fleft.baslik -anchor w
+pack $imgyesnoBtn -side top -anchor w
+pack .n.f2.fleft.intro -anchor nw
 
+
+# F I L L   R I G H T
 
 #3. ShowDate checkbutton
-checkbutton .n.f2.topframe1.sagh.f1.introline -textvar f2.introline -variable introlineState
-if {$enableintro} {set introlineState 1} else {set introlineState 0}
+checkbutton .n.f2.fright.ftop.introBtn -textvar f2.introline -variable enableintro
+#if {$enableintro} {set introlineState 1} else {set introlineState 0}
+set showdateBtn .n.f2.fright.ftop.introBtn
+$showdateBtn configure -command {
+ #       set enableintro $introlineState
+        $textposCanv itemconfigure mv -text [formatImgText [getRandomTWDFile]]
+}
 
-#4. Slideshow checkbutton
-message .n.f2.topframe1.sagh.f5.txt -textvar f2.int -width 200
-spinbox .n.f2.topframe1.sagh.f5.spin -from 10 -to 600 -increment 10 -width 3 
-.n.f2.topframe1.sagh.f5.spin set $slideshow
-message .n.f2.topframe1.sagh.f5.sec -text sec -width 100
+#4. SlideshowYesNo checkbutton
+checkbutton .n.f2.fright.ftop.slideBtn -textvar f2.slideshow -variable slideshowState -command {setSlideSpin $slideshowState}
+set slideBtn .n.f2.fright.ftop.slideBtn
 
-pack .n.f2.topframe1.sagh.f1.introline -anchor nw -side top
+#5. Slideshow spinbox
+message .n.f2.fright.ftop.slidetxt -textvar f2.int -width 200
+set slideTxt .n.f2.fright.ftop.slidetxt
+message .n.f2.fright.ftop.sectxt -text sec -width 100
+set slideSec .n.f2.fright.ftop.sectxt
+spinbox .n.f2.fright.ftop.slideSpin -from 10 -to 600 -increment 10 -width 3
+set slideSpin .n.f2.fright.ftop.slideSpin
+$slideSpin set $slideshow
 
-pack .n.f2.topframe1.sagh.f5.txt -side left -anchor sw
-pack .n.f2.topframe1.sagh.f5.spin -side left 
-pack .n.f2.topframe1.sagh.f5.sec -side left
 
+if {!$slideshow} {
+	$slideBtn deselect 
+	set slideshowState 0
+	$slideSpin configure -state disabled
+} else {
+	$slideBtn select
+	set slideshowState 1
+	$slideSpin configure -state normal
+}
 
-#FILL TOPFRAME2
- 
-#1. L: InternationalText Canvas
+#1. Create TextPos Canvas
+set textPosFactor 3
+image create photo origbild -file [getRandomJPG]
+image create photo canvasbild
+canvasbild copy origbild -subsample $textPosFactor -shrink
+
+canvas .n.f2.fright.fbot.textposcanv -bg lightgrey -borderwidth 1
+set textposCanv .n.f2.fright.fbot.textposcanv
+$textposCanv configure -width [image width canvasbild] -height [expr $screeny/$textPosFactor]
+$textposCanv create image 0 0 -image canvasbild -anchor nw
+
+label .n.f2.fright.fbot.textpostxt -textvar textpos
+set textposTxt .n.f2.fright.fbot.textpostxt
+
+createMovingBox $textposCanv
+$textposCanv bind mv <1> {movestart %W %x %y}
+$textposCanv bind mv <B1-Motion> {move %W %x %y}
+
+#2. Create InternationalText Canvas
 if {! [regexp displayfont [font names] ] } {
 	font create displayfont -family $fontfamily -size -$fontsize -weight bold
 }
-canvas .n.f2.topframe2.links.canv -width 650 -height 70 -background steelblue
-pack .n.f2.topframe2.links.canv -anchor n
-pack [label .n.f2.topframe2.links.txt -textvar f2.fontexpl] -anchor n
 
-#create international text
+canvas .n.f2.fright.fbot2.inttextcanv -width 650 -height 50 -background steelblue -borderwidth 2 -relief raised
+set inttextCanv .n.f2.fright.fbot2.inttextcanv
+
+label .n.f2.fright.fbot2.inttexttxt -textvar f2.fontexpl
+set inttextHeader .n.f2.fright.fbot2.inttexttxt
+
+
+# set international text
 if {$platform=="unix"} {
 	set ar_txt [string reverse $f2ar_txt]
 	set he_txt [string reverse $f2he_txt]
-	set internationaltext "$f2ltr_txt $ar_txt $he_txt"
+	set internationaltext "$f2ltr_txt $ar_txt $he_txt $f2thai_txt"
 } else {
-	set internationaltext "$f2ltr_txt $f2ar_txt $f2he_txt"
+	set internationaltext "$f2ltr_txt $f2ar_txt $f2he_txt $f2thai_txt"
 }
 
 #create shaded text, 1px versetzt
-.n.f2.topframe2.links.canv create text 9 19 -fill $shade -font displayfont -tags shadedtextitem
+$inttextCanv create text 9 19 -fill $shade -font displayfont -tags shadedtextitem
 #create main text
-.n.f2.topframe2.links.canv create text 10 20 -fill $fontcolor -font displayfont -tags textitem
+$inttextCanv create text 10 20 -fill $fontcolor -font displayfont -tags textitem
+$inttextCanv itemconfigure textitem -text $internationaltext -anchor w
+$inttextCanv itemconfigure shadedtextitem -text $internationaltext -anchor w
 
-.n.f2.topframe2.links.canv itemconfigure textitem -text $internationaltext -anchor w
-.n.f2.topframe2.links.canv itemconfigure shadedtextitem -text $internationaltext -anchor w
+#1. Fontcolour spinbox
+message .n.f2.fright.fbot1.fontcolorTxt -width 200 -textvar f2.farbe
+spinbox .n.f2.fright.fbot1.fontcolorSpin -width 7 -values {blue green gold silver} 
+set fontcolorTxt .n.f2.fright.fbot1.fontcolorTxt
+set fontcolorSpin .n.f2.fright.fbot1.fontcolorSpin
+$fontcolorSpin configure -command {
+	$inttextCanv itemconfigure textitem -fill %s
+        $textposCanv itemconfigure mv -fill %s
+        }
 
-#1. R: Fontcolour spinbox
-message .n.f2.topframe2.rechts.f2.txt -width 200 -textvar f2.farbe
-spinbox .n.f2.topframe2.rechts.f2.spin -width 7 -values {blue green gold silver} -command {.n.f2.topframe2.links.canv itemconfigure textitem -fill %s}
-pack .n.f2.topframe2.rechts.f2.txt .n.f2.topframe2.rechts.f2.spin -side left
-.n.f2.topframe2.rechts.f2.spin set $fontcolortext
+$fontcolorSpin set $fontcolortext
 
-#2.R: Fontsize spinbox
+#2. Fontsize spinbox
 if {!$fontsize} {
 	#set initial font size if no $config found
 	set screeny [winfo screenheight .]
 	set fontsize [ expr round($screeny/40) ] 
 }
 
-message .n.f2.topframe2.rechts.f3.txt -width 200 -textvar f2.fontsizetext
-spinbox .n.f2.topframe2.rechts.f3.spin -width 8 -from 20 -to 40 -command {font configure displayfont -size -%s}
-.n.f2.topframe2.rechts.f3.spin set $fontsize
-pack .n.f2.topframe2.rechts.f3.txt .n.f2.topframe2.rechts.f3.spin -side left
+message .n.f2.fright.fbot1.fontsizeTxt -width 200 -textvar f2.fontsizetext
+spinbox .n.f2.fright.fbot1.fontsizeSpin -width 2 -from 20 -to 40 -command {font configure displayfont -size -%s}
+set fontsizeTxt .n.f2.fright.fbot1.fontsizeTxt
+set fontsizeSpin .n.f2.fright.fbot1.fontsizeSpin
+$fontsizeSpin set $fontsize
 
-#3.R: Fontweight checkbutton
-checkbutton .n.f2.topframe2.rechts.f3.fontweightbtn -width 5 -variable fontweightState -textvar f2.fontweight -command { if {$fontweightState==1} {font configure displayfont -weight bold} {font configure displayfont -weight normal} }
-pack .n.f2.topframe2.rechts.f3.fontweightbtn -side right
+
+#3. Fontweight checkbutton
+checkbutton .n.f2.fright.fbot1.fontweightBtn -width 5 -variable fontweightState -textvar f2.fontweight 
+set fontweightBtn .n.f2.fright.fbot1.fontweightBtn
+$fontweightBtn configure -command { 
+	if {$fontweightState==1} {
+        	font configure displayfont -weight bold
+              #  $textposCanv itemconfigure mv -font "TkTextFont 7 bold"
+        } {
+        	font configure displayfont -weight normal
+              #  $textposCanv itemconfigure mv -font "TkTextFont 7 normal"
+                } 
+        }
+
 if {$fontweight=="bold"} {
 	set fontweightState 1
         font configure displayfont -weight bold
@@ -128,8 +165,8 @@ if {$fontweight=="bold"} {
 }
 
 
-#4.R: Fontfamily spinbox
-message .n.f2.topframe2.rechts.f4.txt -width 200 -textvar f2.fontfamilytext
+#4. Fontfamily spinbox
+message .n.f2.fright.fbot1.fontfamilyTxt -width 250 -textvar f2.fontfamilytext
 
 set Fontlist [font families]
 set MyFonts ""
@@ -145,13 +182,25 @@ foreach i $Fontlist {
 lappend MyFonts TkTextFont
 lsort $MyFonts
 
-spinbox .n.f2.topframe2.rechts.f4.spin -values $MyFonts -width 15 -command {font configure displayfont -family %s}
-pack .n.f2.topframe2.rechts.f4.txt .n.f2.topframe2.rechts.f4.spin -side left
-.n.f2.topframe2.rechts.f4.spin set $fontfamily
+spinbox .n.f2.fright.fbot1.fontfamilySpin -values $MyFonts -width 15 -command {font configure displayfont -family %s}
+set fontfamilyTxt .n.f2.fright.fbot1.fontfamilyTxt
+set fontfamilySpin .n.f2.fright.fbot1.fontfamilySpin
 
+$fontfamilySpin set $fontfamily
 
-# FILL MAIN FRAME
+#P A C K   R I G H T
 
-#Create text window in mainframe
-message .n.f2.mainframe.intro -textvar f2.txt -font $f1 -width $tw -padx $px -pady $py -justify left
-pack .n.f2.mainframe.intro -anchor w
+#pack [frame .n.f2.fright.f1]
+pack $showdateBtn -anchor w
+
+pack $slideBtn -anchor w -side left
+pack $slideSec $slideSpin $slideTxt -anchor nw -side right
+
+pack $textposTxt -pady 5
+pack $textposCanv -anchor n -fill none
+
+pack $fontcolorTxt $fontcolorSpin $fontfamilyTxt $fontfamilySpin -side left -fill x
+pack $fontweightBtn $fontsizeSpin $fontsizeTxt -side right -fill x
+
+pack $inttextCanv -fill x
+pack $inttextHeader -pady 7

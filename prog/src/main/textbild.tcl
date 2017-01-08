@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/main/textbild.tcl
 # Creates text picture, called by image.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19nov2016 
+# Updated: 26dec2016 
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
@@ -20,8 +20,6 @@ global fontsize fontfamily fontweight hghex fghex bmpdir screenx platform Twdtoo
 
     #Create & configure font
     catch {font create BiblepixFont -family $fontfamily}
-
-# B O L D ?
     font configure BiblepixFont -size -$fontsize -weight $fontweight
     .t configure -font BiblepixFont 
 
@@ -133,8 +131,10 @@ global fontsize fontfamily fontweight hghex fghex bmpdir screenx platform Twdtoo
            
 } ;#END text>bmp
 
-proc checkBMPs {} {
-global bmpdir heute platform
+proc createBMPs {} {
+#Creates today's missing BMPs / Executes text>bmp
+global bmpdir heute platform slideshow
+
 puts "Checking text pics..."
 	
 	#Delete old bmp's
@@ -150,8 +150,14 @@ puts "Checking text pics..."
 	}
 		
 	#renew lists
-	set bmplist [getBMPlist]
-	set twdlist [getTWDlist]
+        if {$slideshow} {
+		set bmplist [getBMPlist]
+		set twdlist [getTWDlist]
+        } else {
+        #pick 1 random pic+TWD for single pic mode
+               	set twdlist [getRandomTWDFile]
+                set bmplist [getRandomBMP]
+        }
 
 	#Create today's missing bmp's
 		foreach twdfile $twdlist {
@@ -173,4 +179,4 @@ puts "Checking text pics..."
 	} else {
 		wm iconify .
 	}
-} ;#end ckeckBMPs
+} ;#end createBMPs

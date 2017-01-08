@@ -1,10 +1,10 @@
 # ~/Biblepix/prog/src/gui/setupTerminal.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 15nov16
+# Updated 15dec16
 
-pack [label .n.f4.t1 -textvar f4.tit -font $f3] -anchor w
-message .n.f4.t2 -textvar f4.txt -font $f1 -width $tw -padx $px -pady $py
+pack [label .n.f4.t1 -textvar f4.tit -font bpfont3] -anchor w
+message .n.f4.t2 -textvar f4.txt -font bpfont1 -width $tw -padx $px -pady $py
 text .n.f4.t3 -height 1 -bg $bg
 
 #Kopiertext
@@ -12,7 +12,7 @@ text .n.f4.t3 -height 1 -bg $bg
 .n.f4.t3 configure -state disabled
 pack .n.f4.t2 -anchor w -fill none
 pack .n.f4.t3 -anchor w -fill x
-pack [label .n.f4.t4 -font $f2 -textvar expl -anchor w]
+pack [label .n.f4.t4 -font bpfont2 -textvar expl -anchor w]
 
 #Beispielframe
 pack [frame .n.f4.f1 -bg black]

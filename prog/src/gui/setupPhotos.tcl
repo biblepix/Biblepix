@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 12nov16
+# Updated 15dec16
 
 set fileJList ""
 source $JList
@@ -31,14 +31,14 @@ if {$platform == "unix"} {
 }
 
 #Create Titel
-label .n.f6.l1 -textvar f6.tit -font $f3 -justify left
+label .n.f6.l1 -textvar f6.tit -font bpfont3 -justify left
 pack .n.f6.l1 -anchor w
 
 #Content
 pack [frame .n.f6.content] -anchor w -fill both
 
 #Create Text
-message .n.f6.content.right -textvar f6.txt -font $f1 -width 250 -padx $px -pady $py
+message .n.f6.content.right -textvar f6.txt -font bpfont1 -width 250 -padx $px -pady $py
 pack .n.f6.content.right -anchor nw -side left -padx {10 40} -pady 40
 
 pack [frame .n.f6.content.left] -side left

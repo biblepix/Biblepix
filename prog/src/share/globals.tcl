@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 20nov2016
+# Updated: 3jan17
 
 set version "2.3"
 set twdurl "http://bible2.net/service/TheWord/twd11/current"
@@ -17,7 +17,7 @@ proc setRootDir {srcdir} {
 	return [pwd]
 }
 
-if {[info exists srcdir]} {
+if { [info exists srcdir] } {
 	#set
 	set rootdir "[setRootDir $srcdir]"
 
@@ -28,7 +28,9 @@ if {[info exists srcdir]} {
 	} else {
 		set rootdir "[file join $env(HOME) Biblepix]"
 	}
+	set srcdir [file join $rootdir prog src]
 }
+
 
 #Set dirnames
 set twddir [file join $rootdir Texts]
@@ -44,6 +46,8 @@ set unixdir [file join $progdir unix]
 set guidir [file join $srcdir gui]
 set maindir [file join $srcdir main]
 set sharedir [file join $srcdir share]
+
+#SET ARRAYS FOR DOWNLOAD
 
 #Set filepaths array
 array set filepaths "
@@ -62,21 +66,23 @@ SetupInternational [file join $guidir setupInternational.tcl]
 SetupPhotos [file join $guidir setupPhotos.tcl]
 SetupReadme [file join $guidir setupReadme.tcl]
 SetupSave [file join $guidir setupSave.tcl]
-SetupSaveLin [file join $guidir setupSaveLin.tcl]
-SetupSaveWin [file join $guidir setupSaveWin.tcl]
 SetupTerminal [file join $guidir setupTerminal.tcl]
-SetupTexts [file join $guidir setupTexts.tcl]
 SetupWelcome [file join $guidir setupWelcome.tcl]
 Bidi [file join $sharedir bidi.tcl]
 Flags [file join $sharedir flags.tcl]
 JList [file join $sharedir JList.tcl]
+Globals [file join $sharedir globals.tcl]
 Http [file join $sharedir http.tcl]
 Imgtools [file join $sharedir imgtools.tcl]
 Twdtools [file join $sharedir twdtools.tcl]
+Setuptools [file join $sharedir setupTools.tcl]
+SetupTexts [file join $sharedir setupTexts.tcl]
+SetupSaveLin [file join $sharedir setupSaveLin.tcl]
+SetupSaveLinHelpers [file join $sharedir setupSaveLinHelpers.tcl]
+SetupSaveWin [file join $sharedir setupSaveWin.tcl]
+SetupSaveWinHelpers [file join $sharedir setupSaveWinHelpers.tcl ]
 Config [file join $confdir biblepix.conf]
 Terminal [file join $unixdir term.sh]
-Globals [file join $sharedir globals.tcl]
-Icon [file join $windir biblepix.ico]
 "
 
 #Export single filepaths               
@@ -97,11 +103,13 @@ array set jpeglist "
 	nevada.jpg [file join $jpegdir nevada.jpg]
 "
 
-#Set Icons array
+#Set Icons array & export
 array set iconlist "
 	biblepix.svg [file join $unixdir biblepix.svg] 
 	biblepix.ico [file join $windir biblepix.ico]
 "
+set WinIcon [lindex [array get iconlist biblepix.ico] 1]
+set LinIcon [lindex [array get iconlist biblepix.svg] 1]
 
 #Set TWD picture paths
 set TwdBMP [file join $imgdir theword.bmp]

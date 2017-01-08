@@ -2,7 +2,7 @@
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 20nov2016
+# Updated: 22dec2016
 
 package require http
 
@@ -22,7 +22,7 @@ proc setProxy {} {
 
 
 proc testHttpCon {} {
-global bpxurl version
+	global bpxurl version
 	set testtoken [http::geturl $bpxurl/$version/http.tcl -validate 1]
 	set error 0
 	
@@ -40,41 +40,36 @@ global bpxurl version
 	return $error
 }
 
-proc runHTTP {args} {
+proc runHTTP args {
 #args can be "Initial" or empty
-global sharedir filepaths bpxurl version lang uptodateHttp noConnHttp
-
-     #Test connexion & start download
-	set error [catch testHttpCon]
+	global sharedir filepaths bpxurl version lang uptodateHttp noConnHttp
+	set Initial 0
+	set Error 0
+		
+		if {$args!=""} {
+			set Initial 1
+		}
+     
+	#Test connexion & start download
+	set Error [catch testHttpCon]
         
-	if { $error } {
+	if {$Error} {
 		catch {.news configure -bg red}
 		set ::ftpStatus $noConnHttp
 		set ::news $noConnHttp
-		set ::error 1 ;#for Setup
-		 
+				 
 	} else {
-		
-		set ::error 0
-	
-		if { [info exists args] } {
-			set initial 1
-		}
-
+				
 		foreach var [array names filepaths] {
 		
 			set filepath [lindex [array get filepaths $var] 1]
 			set filename [file tail $filepath]
-                        
-#puts "filename: [array get filepaths $var]"        
-#puts "filepath: $filepath"
-			
-			set token [http::geturl $bpxurl/$version/$filename]
+          	set token [http::geturl $bpxurl/$version/$filename]
 			set data [http::data $token]
 	
 			#a) overwrite file if "Initial" 
-			if {$args!=""} {
-				
+			if {$Initial} {
+
 				if { "[string index $data 0]" == "#"} {
 					set chan [open $filepath w]
 					fconfigure $chan -encoding utf-8
@@ -85,11 +80,15 @@ global sharedir filepaths bpxurl version lang uptodateHttp noConnHttp
 			#b) save file if size changed
 			} else {
 				
-				#make sure first string is # to distinguish from error messages
 				set newsize [http::size $token]
-				set oldsize [file size $filepath]
-#puts $oldsize
-#puts $newsize		
+								
+				if {[file exists $filepath]} {
+					set oldsize [file size $filepath]
+				} else {
+					set oldsize 0
+				}
+
+				#first string must be # to distinguish from error messages		
 				if { "[string index $data 0]" == "#" } {
 					if {$oldsize != $newsize } {
 						set chan [open $filepath w]
@@ -105,14 +104,14 @@ global sharedir filepaths bpxurl version lang uptodateHttp noConnHttp
 		} ;#end FOR loop
       
 	#Success message (source Texts again for Initial)
-	#source $filepaths(SetupTexts)
-	#setTexts $lang
 	catch {.if.initialMsg configure -bg green}
 	catch {.news configure -bg green}
 	catch {set ::ftpStatus $uptodateHttp}
 	catch {set ::news $uptodateHttp}
 	
 	} ;#end main condition
+
+	return $Error
 
 } ;#end runHTTP
 

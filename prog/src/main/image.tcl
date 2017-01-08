@@ -1,7 +1,7 @@
 # ~/Biblepix/progs/src/main/image.tcl
 # Initiates main image process, called by biblepix.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 2nov2016 
+# Updated 13dec2016 
 
 package require Tk
 
@@ -13,10 +13,25 @@ if { [catch {package require Img}] } {
 	exit
 }
 
-source $Textbild
-checkBMPs
+#Source procs only once, to be re-run multiple times
+if {[info procs createBMPs] == ""} {
+	source $Textbild
+}
+createBMPs
 
-source $Hgbild
+if {[info procs checkImgSize] == ""} {
+	source $Hgbild
+}
+
+#Select & create random background JPEG
+set hgfile [getRandomJPG]
+image create photo hgbild -file $hgfile
 checkImgSize
-fgbild>hgbild $bmpfile
+
+#Select & create random foreground BMP
+set bmpfile [file join $bmpdir [getRandomBMP]]
+image create photo fgbild -file $bmpfile
+
+#Put text on background pic
+fgbild>hgbild $hgfile $bmpfile
 

@@ -1,21 +1,28 @@
 # ~/Biblepix/progs/src/main/hgbild.tcl
 # Creates background picture, called by image.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 19nov2016
+# Updated 13dec2016
 
-#Select & create hgbild
-set hgfile [getRandomJPG]
-image create photo hgbild -file $hgfile
-#Select & create fgbild
-set bmpfile [file join $bmpdir [getRandomBMP]]
-image create photo fgbild -file $bmpfile
 
-proc fgbild>hgbild {bmpfile} {
-global platform TwdTIF TwdPNG TwdBMP 
-global screenx incrVar hgfile marginleft margintop fgrgb shade fontcolor
 
+
+proc fgbild>hgbild {hgfile bmpfile} {
+#Chooses a new background image and puts a new front text
+#on it at each run
+global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade
+	
+	#Source config to reset marginleft (rtl/ltr)
+	source $Config
 	puts "Copying text to background picture..."
 	
+	#Select & create hgbild
+	#set hgfile [getRandomJPG]
+	#image create photo hgbild -file $hgfile
+
+	#Select & create fgbild
+	#set bmpfile [file join $bmpdir [getRandomBMP]]
+	#image create photo fgbild -file $bmpfile	
+
 	fgbild blank
 	fgbild read $bmpfile
 	hgbild blank
@@ -25,12 +32,12 @@ global screenx incrVar hgfile marginleft margintop fgrgb shade fontcolor
 	set imgy [image height fgbild]
 	set bmpname [file tail $bmpfile]
 		
-	#Reset marginleft for Arabic&Hebrew
-	if {[string range $bmpname 0 1] == "he" ||
+	#Reset marginleft for Arabic & Hebrew
+	if {	[string range $bmpname 0 1] == "he" ||
 		[string range $bmpname 0 1] == "fa" ||
 		[string range $bmpname 0 1] == "ar" ||
-            [string range $bmpname 0 1] == "ur"
-		} {
+		[string range $bmpname 0 1] == "ur"
+	} {
 		set marginleft [expr $screenx-$imgx-$marginleft]
 	}
 
@@ -54,21 +61,23 @@ global screenx incrVar hgfile marginleft margintop fgrgb shade fontcolor
 		}
 	}
     
-      #Save hgbild as BMP + TIFF
-	hgbild write $TwdBMP -format bmp
-	hgbild write $TwdTIF -format tiff
+	#Save hgbild as BMP + TIFF
+	hgbild write $TwdBMP -format BMP
+	hgbild write $TwdTIF -format TIFF
 	
-	#KDE needs min. 1 PNG for slideshow, Gnome2 needs 1 PNG
+	#Save hagbild as PNG for KDE (needs min. 1 for slideshow) 
+	#& Gnome2 (needs 1 PNG)
 	if {$platform=="unix"} {
-        hgbild write $TwdPNG -format PNG
-      }
+		hgbild write $TwdPNG -format PNG
+	}
     	
 } ;#end fgbild>hgbild
 
 proc checkRebuildBMP {} {
-#recreate fgbild if end row #pixels are bg-colour
-#instead of fame colour (=unfinished pic)
+#Recreate fgbild if end of row pixels are bg-colour
+#instead of font colour (=unfinished pic)
 set imgy [image height fgbild]
+
 #get end row pixel
 set errrgb [fgbild get 0 [expr $imgy-1] ]
 lassign $errrgb r g b
@@ -88,7 +97,9 @@ set errhex [format #%02x%02x%02x $r $g $b]
 } ;#end checkRebuildBMP
 
 proc checkImgSize {} {
-	global hgfile screenx screeny tcldir jpegdir Imgtools
+#called by image.tcl
+#rezises background JPEGs
+	global hgfile screenx screeny jpegdir Imgtools
 	
 	set imgx [image width hgbild]
 	set imgy [image height hgbild]
@@ -191,7 +202,7 @@ proc checkImgSize {} {
 		
 	
 	#Save corrected image
-		hgbild write $hgfile -format jpeg
+		hgbild write $hgfile -format JPEG
 		puts "Saving resized image [image width hgbild]x[image height hgbild] to $jpegdir"
 		
 	} ;#end MAIN

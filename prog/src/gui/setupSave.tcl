@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 19nov16 
+# Updated : 6jan17 
 
 #Make sure either $twddir or SELECTED contain $jahr-TWD files,
 # else stop saving process & return to Setup!
@@ -39,8 +39,9 @@ if { $SELECTED_TWD_FILES != ""} {
 			fconfigure $chan -encoding utf-8
 			http::geturl $url -channel $chan
 			close $chan
-			after 1000
+			after 1000 {
 			.n.f1.f1.twdlocal insert end $filename
+			}
 		}
 
 	} ;#END TWD DOWNLOAD
@@ -62,16 +63,16 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	#Fetch status variables
 	set imgstatus [set imgyesState]
 	set sigstatus [set sigyesState]
-	set introlinestatus [set introlineState]
-	set fontcolourstatus [.n.f2.topframe2.rechts.f2.spin get]
-	set fontsizestatus [.n.f2.topframe2.rechts.f3.spin get]
+	set introlinestatus [set enableintro]
+	set fontcolourstatus [$fontcolorSpin get]
+	set fontsizestatus [$fontsizeSpin get]
 	set fontweightstatus [set fontweightState]
-	set fontfamilystatus [.n.f2.topframe2.rechts.f4.spin get]
-	set slidestatus [.n.f2.topframe1.sagh.f5.spin get]
+	set fontfamilystatus [$fontfamilySpin get]
+	set slidestatus [$slideSpin get]
 	#Fetch textpos coordinates
-	lassign [.n.f2.topframe1.orta.textposcanv coords mv] x y - -
-	set marginleftstatus [expr int($x*10)]
-	set margintopstatus [expr int($y*10)]
+	lassign [$textposCanv coords mv] x y - -
+	set marginleftstatus [expr int($x*$textPosFactor)]
+	set margintopstatus [expr int($y*$textPosFactor)]
 
 	#Write all settings to config
 	set chan [open $Config w]
@@ -117,7 +118,8 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	}
 
 
-	#Delete previous bmp's & start biblepix
+	#Delete old BMPs & start Biblepix
+
 	if {$enablepic} {
 		#create random BMP if $imgdir empty
 		if { [glob -nocomplain $imgdir/*.bmp] == "" } {
@@ -153,10 +155,10 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 
 	}
 
-	#Finish WERDEN DIESE BEFEHLE NOCH AUSGEFÜHRT???
-	.news configure -bg red
-	set news "Exiting Setup..."
-	after 3000 {exit}
+#Finish WERDEN DIESE BEFEHLE NOCH AUSGEFÜHRT???
+#	.news configure -bg red
+#	set news "Exiting Setup..."
+#	after 3000 {exit}
 	
 	#Withdraw Tk window
 	if {$platform=="unix"} {
@@ -165,5 +167,4 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 		wm iconify .
 	}
 } ;#END WRITE CONFIG
-
 

@@ -3,7 +3,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15nov16
+# Updated: 25dec16
 ######################################################################
 
 #Verify location & source Globals
@@ -24,62 +24,87 @@ if {[catch "set twdfile [getRandomTWDFile]"] } {
 
 	#Always create term.sh for Unix terminal
 	if {$platform=="unix"} {
-		set dwterm [formatTermText $twdfile]
-		set f [open $Terminal w]
-		puts $f ". $confdir/term.conf"
-		puts $f $dwterm
-		close $f
-		file attributes $Terminal -permissions +x
+        	catch {set dwterm [formatTermText $twdfile] }
+		if {$dwterm != ""} {
+			set f [open $Terminal w]
+			puts $f ". $confdir/term.conf"
+			puts $f $dwterm
+			close $f
+			file attributes $Terminal -permissions +x
+		}
+	}
+        
+        #Prepare changing Win desktop
+	if {$platform=="windows"} {
+        	package require registry
+        	set regpath [join {HKEY_CURRENT_USER {Control Panel} Desktop} \\]
+        }
+        
+        proc setWinBG {} {
+        	global TwdTIF regpath platform
+                if {$platform=="windows"} { 
+                	registry set $regpath Wallpaper [file nativename $TwdTIF]
+                	exec rundll32.exe user32.dll,UpdatePerUserSystemParameters ,1 ,True
+		}
 	}
 
-	#Stop any running biblepix.tcl
-	foreach file [glob -nocomplain -directory $piddir *] {
-		file delete -force $file
-	}
-	set pidfile [open $piddir/[pid] w]
-	close $pidfile
+}
 
-	#Update signatures
-	if {$enablesig} {
-		source $Signature
-	}
+#Stop any running biblepix.tcl
+foreach file [glob -nocomplain -directory $piddir *] {
+	file delete -force $file
+}
+set pidfile [open $piddir/[pid] w]
+close $pidfile
 
-	#Create image & start slideshow
-	if {$enablepic} {
-		#run once
-		source $Image
+#Update signatures
+if {$enablesig} {
+	source $Signature
+}
 
-		#if Slideshow not 0
-		if {$slideshow} {
+#Create image & start slideshow
+if {$enablepic} {
+	#run once
+	source $Image
+
+	#if Slideshow == 1
+	if {$slideshow} {
 			#rerun until pidfile renamed by new instance
 			set pidfile $piddir/[pid]
 			set pidfiledatum [clock format [file mtime $pidfile] -format %d]
 			after [expr $slideshow*1000]
-		
+
 				while {[file exists $pidfile]} {
 					if {$pidfiledatum==$heute} {
-						source $Image
-						after [expr $slideshow*1000]
-					} else {
-	#Calling myself !!!!!!!!!!!!!!!!!!!!!!!!!
+                                        	#run once again (zur Sicherheit?)
+						#source $Image
+                                                setWinBG
+                                               					
+                                                after [expr $slideshow*1000]
+					
+                                        } else {
+						#Calling new instance of myself
 						source $Biblepix
 					}
 				}
-		#if Slideshow == 0		
-		} else {
-			 		
-			#run BiblePix every minute up to 5x so Windows has time to grab the new pic
+		
+        #if Slideshow == 0		
+	} else {
+        	
+        #        source $Image
+			
+                if {$platform=="windows"} {
+                        #run every minute up to 5x so Windows has time to update
 			set limit 0
-				while {$limit<4} {
-					source $Image
-					incr limit
-					after 60000
-				}
-		
-		exit
-		
+                        #source $Image
+                        
+			while {$limit<4} {
+			#	source $Image
+        			setWinBG
+				incr limit
+				after 60000
+			}
 		}
-	#puts "We seeem to be stale. Exiting."
-	
-	} ;#END if enablepic
-} ;#END MAIN
+        } ;#END if slideshow
+        
+} ;#END if enablepic
