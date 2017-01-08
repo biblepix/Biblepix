@@ -75,6 +75,7 @@ if {!$slideshow} {
 set textPosFactor 3
 image create photo origbild -file [getRandomJPG]
 image create photo canvasbild
+#TODO: fit image into frame ! - das ist ungenau
 canvasbild copy origbild -subsample $textPosFactor -shrink
 
 canvas .n.f2.fright.fbot.textposcanv -bg lightgrey -borderwidth 1
@@ -85,7 +86,7 @@ $textposCanv create image 0 0 -image canvasbild -anchor nw
 label .n.f2.fright.fbot.textpostxt -textvar textpos
 set textposTxt .n.f2.fright.fbot.textpostxt
 
-createMovingBox $textposCanv
+createMovingTextBox $textposCanv
 $textposCanv bind mv <1> {movestart %W %x %y}
 $textposCanv bind mv <B1-Motion> {move %W %x %y}
 
