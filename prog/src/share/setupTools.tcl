@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8jan17
+# Updated: 21jan17
 
 ###### Procs for SetupGUI + SetupDesktop ######################
 
@@ -75,9 +75,9 @@ global Flags
 
 # C A N V A S   M O V E   P R O C S
 
-proc createMovingTextBox {textposCanv } {
+proc createMovingTextBox {textposCanv} {
 global screenx screeny marginleft margintop textPosFactor fontsize fontfamily
-global fontcolortext gold green blue silver  
+global fontcolortext gold green blue silver noTWDFilesFound
 
 	set textPosSubwinX [expr $screenx/20]
 	set textPosSubwinY [expr $screeny/30]
@@ -86,8 +86,8 @@ global fontcolortext gold green blue silver
 	set x2 [expr ($marginleft/$textPosFactor)+$textPosSubwinX]
 	set y2 [expr ($margintop/$textPosFactor)+$textPosSubwinY]
 
-	if {[catch {set bibeltext [formatImgText [getRandomTWDFile]]} {
-        	set bibeltext $noTWDFilesFound
+	if { [catch "set bibeltext [formatImgText [getRandomTWDFile]]" ]	} {
+		set bibeltext $noTWDFilesFound
         }
 	$textposCanv create text [expr $marginleft/$textPosFactor] [expr $margintop/$textPosFactor] -anchor nw -justify left -tags mv 
 	$textposCanv itemconfigure mv -text $bibeltext
