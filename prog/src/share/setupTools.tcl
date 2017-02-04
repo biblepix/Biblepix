@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21jan17
+# Updated: 4feb17
 
 ###### Procs for SetupGUI + SetupDesktop ######################
 
@@ -85,10 +85,14 @@ global fontcolortext gold green blue silver noTWDFilesFound
 	set y1 [expr $margintop/$textPosFactor]
 	set x2 [expr ($marginleft/$textPosFactor)+$textPosSubwinX]
 	set y2 [expr ($margintop/$textPosFactor)+$textPosSubwinY]
-
-	if { [catch "set bibeltext [formatImgText [getRandomTWDFile]]" ]	} {
+	
+	set twdfile [getRandomTWDFile]
+	if {$twdfile == ""} {
 		set bibeltext $noTWDFilesFound
-        }
+	} else {
+		set bibeltext [formatImgText $twdfile]
+	}
+	
 	$textposCanv create text [expr $marginleft/$textPosFactor] [expr $margintop/$textPosFactor] -anchor nw -justify left -tags mv 
 	$textposCanv itemconfigure mv -text $bibeltext
 	$textposCanv itemconfigure mv -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill [set $fontcolortext]

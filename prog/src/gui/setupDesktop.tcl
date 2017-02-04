@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 7jan17
+# Updated 4feb17
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
@@ -43,8 +43,10 @@ checkbutton .n.f2.fright.ftop.introBtn -textvar f2.introline -variable enableint
 #if {$enableintro} {set introlineState 1} else {set introlineState 0}
 set showdateBtn .n.f2.fright.ftop.introBtn
 $showdateBtn configure -command {
- #       set enableintro $introlineState
-        $textposCanv itemconfigure mv -text [formatImgText [getRandomTWDFile]]
+	set textfile [getRandomTWDFile]
+        if {$textfile != ""} {
+        	$textposCanv itemconfigure mv -text [formatImgText [getRandomTWDFile] ]
+        }
 }
 
 #4. SlideshowYesNo checkbutton
