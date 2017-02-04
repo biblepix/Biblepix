@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2feb17
+# Updated: 4feb17
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -28,7 +28,7 @@ proc findSetupIcon {lang} {
 
 proc setTexts {lang} {
 #exports text variables for current language
-global jahr TwdTIF TwdBMP TwdPNG imgdir sigdir unixdir windir
+global jahr TwdTIF TwdBMP TwdPNG imgdir sigdir unixdir windir bpxurl
 
 #### G E N E R A L ###############################
 set DW(de) {'Das Wort'}
