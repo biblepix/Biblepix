@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7jan17
+# Updated: 2feb17
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -68,8 +68,8 @@ set uptodateHTTP(en) "Your program files are up-to-date."
 set uptodateHTTP(de) "Ihre Programmdateien sind auf dem neusten Stand."
 set ::uptodateHttp $uptodateHTTP($lang)
 
-set noConnHTTP(en) "No Internet connection for program update, please try later."
-set noConnHTTP(de) "Keine Internetverbindung für Programmaktualisierung, bitte versuchen Sie es später."
+set noConnHTTP(en) "No connection to $bpxurl for program update, please try later."
+set noConnHTTP(de) "Keine Verbindung zu $bpxurl für Programmaktualisierung, bitte versuchen Sie es später."
 set ::noConnHttp $noConnHTTP($lang)
 
 set gettingTwd(en) "Fetching current list of Bible text files from bible2.net..."
