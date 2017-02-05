@@ -56,7 +56,7 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	set news $noTWDFilesFound
 
 #return to PHOTOS section if $picsdir empty
-} elseif {	[catch {glob $picsdir/*}] } {
+} elseif {	[catch {glob $jpegdir/*}] } {
  
 	.n select .n.f6
 	.news configure -bg red
