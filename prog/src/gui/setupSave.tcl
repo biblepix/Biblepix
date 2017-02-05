@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 6jan17 
+# Updated : 5feb17 
 
 #Make sure either $twddir or SELECTED contain $jahr-TWD files,
 # else stop saving process & return to Setup!
@@ -48,12 +48,19 @@ if { $SELECTED_TWD_FILES != ""} {
 
 }
 
-# return to International section if LOCAL empty
+# return to INTERNATIONAL section if $twddir empty
 if { [catch {glob $twddir/*$jahr.twd}] } {
 		
-		.n select .n.f1
-		.news configure -bg red
-		set news $noTWDFilesFound
+	.n select .n.f1
+	.news configure -bg red
+	set news $noTWDFilesFound
+
+#return to PHOTOS section if $picsdir empty
+} elseif {	[catch {glob $picsdir/*}] } {
+ 
+	.n select .n.f6
+	.news configure -bg red
+	set news $noPhotosFound
 
 # else continue with writing Config
 } else {
