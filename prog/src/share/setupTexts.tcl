@@ -80,9 +80,9 @@ set noTwdFilesFound(en) "Auf Ihrem PC sind noch keine Bibeltextdateien installie
 set noTwdFilesFound(de) "No Bible text files have been installed yet on your PC.\nPlease choose at least one language text file\nfrom the 'International' section of the Setup program."
 set ::noTWDFilesFound $noTwdFilesFound($lang)
 
-set noPhotosFound(en) "Ihr Fotoordner ist leer! Bitte kopieren Sie ein paar geeignete Bilder hierher."
-set noPhotosFound(de) "Your Photos directory is empty! Please copy some suitable pictures here."
-set ::noPhotosFound(en) $noPhotosFound($lang)
+set noPhotosFound(en) "Your Photos directory is empty! Please copy some suitable pictures here."
+set noPhotosFound(de) "Ihr Fotoordner ist leer! Bitte kopieren Sie ein paar geeignete Bilder hierher." 
+set ::noPhotosFound $noPhotosFound($lang)
 
 set connTwd(en) "Connection to bible2.net established."
 set connTwd(de) "Verbindung zu bible2.net hergestellt."
