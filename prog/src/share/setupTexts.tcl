@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4feb17
+# Updated: 5feb17
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -79,6 +79,10 @@ set ::gettingTwd $gettingTwd($lang)
 set noTwdFilesFound(en) "Auf Ihrem PC sind noch keine Bibeltextdateien installiert.\nBitte wählen Sie im Register 'International' des Setup-Programms\nmindestens 1 Sprachdatei aus."
 set noTwdFilesFound(de) "No Bible text files have been installed yet on your PC.\nPlease choose at least one language text file\nfrom the 'International' section of the Setup program."
 set ::noTWDFilesFound $noTwdFilesFound($lang)
+
+set noPhotosFound(en) "Ihr Fotoordner ist leer! Bitte kopieren Sie ein paar geeignete Bilder hierher."
+set noPhotosFound(de) "Your Photos directory is empty! Please copy some suitable pictures here."
+set ::noPhotosFound(en) $noPhotosFound($lang)
 
 set connTwd(en) "Connection to bible2.net established."
 set connTwd(de) "Verbindung zu bible2.net hergestellt."
@@ -331,5 +335,7 @@ set ::winRegisterProb $winRegisterProb($lang)
 set KDErestart(en) "Any changes to the KDE desktop will take effect after restart. Shall we restart KDE now?"
 set KDErestart(de) "Änderungen am KDE-Desktop treten erst nach Neustart in Kraft. Möchten Sie jetzt KDE neustarten?"
 set ::KDErestart $KDErestart($lang)
+
+
 
 } ;#END setTexts
