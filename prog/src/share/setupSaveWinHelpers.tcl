@@ -16,8 +16,7 @@ proc setWinContextMenu {} {
 #ADMIN RIGHTS REQUIRED
 #adds context menu & icon
 #removes any "Policies\System Wallpaper" key (blocks user intervention)
-global WinIcon wishpath Setup srcpath winpath winRegister 
-global regpath_desktop regpathStandardKeyValue iconKeyValue posKeyValue commandPath commandPathStandardKeyValue
+global wishpath Setup srcpath winpath winRegister windir
 
 	#amend paths for .reg file (double \\ needed)
 	regsub -all {\\} $wishpath {\\\\} wishpath
@@ -42,7 +41,7 @@ global regpath_desktop regpathStandardKeyValue iconKeyValue posKeyValue commandP
 	regsub -all {[\{\}]} $regtext {} regtext
 
 	#Write regtext to install.reg, overwriting any old files
-	set chan [open $windir/$regfile w]
+	set chan [open $windir/install.reg w]
 	puts $chan $regtext
 	close $chan
 

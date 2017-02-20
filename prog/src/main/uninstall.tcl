@@ -62,7 +62,7 @@ if {$antwort=="yes"} {
 			
 			set msg1 "BiblePix will now be uninstalled. To clear system settings made, 
 you must confirm any upcoming dialogue boxes with \"Yes\"."
-set msg1DE "BiblePix wird nun deinstalliert. Zum Löschen der Systemeinstellungen müssen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\" beantworten!"
+set msg1DE "BiblePix wird nun deinstalliert. Zum LÃ¶schen der Systemeinstellungen mÃ¼ssen Sie allfÃ¤llige Benachrichtigungsfenster unbedingt mit \"Ja\" beantworten!"
 			if {$lang=="de"} {set meser $msg1DE} {set meser $msg1}
 			
 			tk_messageBox -type ok -message $meser

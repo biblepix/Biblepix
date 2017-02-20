@@ -41,14 +41,14 @@ proc testHttpCon {} {
 }
 
 proc runHTTP args {
-#args can be "Initial" or empty
-	global sharedir filepaths bpxurl version lang uptodateHttp noConnHttp
+	#args can be "Initial" or empty
+	global filepaths bpxurl version lang uptodateHttp noConnHttp
 	set Initial 0
 	set Error 0
 		
-		if {$args!=""} {
-			set Initial 1
-		}
+	if {$args!=""} {
+		set Initial 1
+	}
      
 	#Test connexion & start download
 	set Error [catch testHttpCon]

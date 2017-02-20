@@ -2,32 +2,22 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15dec16
+# Updated: 20feb17
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
+
 source $Setuptools
 setFlags
-source $Twdtools
 
-#wogehörtdashin?
-.b4 config -command {source $SetupSave}
+source $Twdtools
 
 #Create title logo with icon
 catch {
-package require Img
-image create photo Logo -file $WinIcon -format ICO
-.ftop.titelmitlogo configure -compound left -image Logo
+	package require Img
+	image create photo Logo -file $WinIcon -format ICO
+	.ftop.titelmitlogo configure -compound left -image Logo
 }
-
-#Set general X vars (some already present from Setup)
-#set wWidth 1000
-#set wHeight 550
-set tw [expr $wWidth - 50] ;#text width
-set px 10
-set py 10
-set bg LightGrey
-set fg blue
 
 #Configure Fonts                     ??? -PIXELS ???
 font create bpfont1 -family TkTextFont
@@ -45,38 +35,61 @@ font create bpfont3 -family TkCaptionFont -size 18
 #created in Setup
 catch {font create bpfont4 -family TkCaptionFont -size 30 -weight bold}
 
-
-
 # B U I L D   M A I N   T A G S
 
 # 1. Welcome
-catch {source -encoding utf-8 $SetupWelcome}
-# source $SetupWelcome
+if { [info exists Debug] && $Debug } {
+	source $SetupWelcome
+} else {
+	catch {source $SetupWelcome}
+}
  
 # 2. International
-catch {source -encoding utf-8 $SetupInternational}
+if { [info exists Debug] && $Debug } {
+	source $SetupInternational
+} else {
+	catch {source $SetupInternational}
+}
 set status [getRemoteTWDFileList]
 
 # 3. Desktop
-catch {source -encoding utf-8 $SetupDesktop}
-# source $guidir/Desktop.tcl
+if { [info exists Debug] && $Debug } {
+	source $SetupDesktop
+} else {
+	catch {source $SetupDesktop}
+}
  
 #4. E-Mail
-catch {source -encoding utf-8 $SetupEmail}
+if { [info exists Debug] && $Debug } {
+	source $SetupEmail
+} else {
+	catch {source $SetupEmail}
+}
 
 #5. Photos
-if { [catch {source -encoding utf-8 $SetupPhotos} ] } {
-	if { [catch {package require Img} ] } {
-	#put warning in Photos tag window
-	message .n.f6.warning -pady 50 -justify center -background red -foreground yellow -text $packageRequireImg
+if { [info exists Debug] && $Debug } {
+	source $SetupPhotos
+} else {
+	if { [catch {source $SetupPhotos} ] } {
+		if { [catch {package require Img} ] } {
+			#put warning in Photos tag window
+			message .n.f6.warning -pady 50 -justify center -background red -foreground yellow -text $packageRequireImg
+		}
 	}
 }
 
 #6. Terminal
 if {$platform=="unix"} {
-	catch {source -encoding utf-8 $SetupTerminal}
+	if { [info exists Debug] && $Debug } {
+		source $SetupTerminal
+	} else {
+		catch {source $SetupTerminal}
+	}
 }
 
 #7. Readme
-catch {source -encoding utf-8 $SetupReadme}
-
+if { [info exists Debug] && $Debug } {
+	source $SetupReadme
+} else {
+	catch {source $SetupReadme}
+}

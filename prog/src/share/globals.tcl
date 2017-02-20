@@ -2,7 +2,9 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 3jan17
+# Updated: 20Feb17
+
+set Debug 0
 
 set version "2.3"
 set twdurl "http://bible2.net/service/TheWord/twd11/current"
@@ -59,6 +61,7 @@ Hgbild [file join $maindir hgbild.tcl]
 Textbild [file join $maindir textbild.tcl]
 Signature [file join $maindir signature.tcl]
 Uninstall [file join $maindir uninstall.tcl]
+SetupMainFrame [file join $guidir setupMainFrame.tcl]
 SetupBuild [file join $guidir setupBuildGUI.tcl]
 SetupDesktop [file join $guidir setupDesktop.tcl]
 SetupEmail [file join $guidir setupEmail.tcl]
@@ -140,9 +143,24 @@ set heute [clock format [clock seconds] -format %d]
 set tab "                              "
 set ind "     "
 
-#Source Config & add defaults to Config if missing
-set Config $filepaths(Config)
+#Global functions
+proc uniqkey { } {
+    set key   [ expr { pow(2,31) + [ clock clicks ] } ]
+    set key   [ string range $key end-8 end-3 ]
+    set key   [ clock seconds ]$key
+    return $key
+}
 
+proc sleep { ms } {
+    set uniq [ uniqkey ]
+    set ::__sleep__tmp__$uniq 0
+    after $ms set ::__sleep__tmp__$uniq 1
+    vwait ::__sleep__tmp__$uniq
+    unset ::__sleep__tmp__$uniq
+}
+
+# TODO extract to an other file
+#Source Config & add defaults to Config if missing
 if { [catch {source $Config}] } {
 	file mkdir $confdir
 }
@@ -151,17 +169,17 @@ if { ![info exists lang] } {
 	set lang en
 
    	if {$platform=="windows"} {
-        	package require registry
-        	if { ! [catch "set userlang [registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\] InstallLanguage]" ] } {
-           		#code 4stellig, alle Deutsch enden mit 07
-           		if {  [string range $userlang 2 3] == 07 } {
-             			set lang de
-                        }
-           	}
+		package require registry
+		if { ! [catch "set userlang [registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\] InstallLanguage]" ] } {
+			#code 4stellig, alle Deutsch enden mit 07
+			if {  [string range $userlang 2 3] == 07 } {
+				set lang de
+			}
+		}
    	} elseif {$platform=="unix"} {
-           	if {[info exists env(LANG)] && [string range $env(LANG) 0 1] == "de"} {
-                	 set lang de
-           	}
+		if {[info exists env(LANG)] && [string range $env(LANG) 0 1] == "de"} {
+				 set lang de
+		}
    	}
 	set chan [open $Config a]
 	puts $chan "set lang $lang"

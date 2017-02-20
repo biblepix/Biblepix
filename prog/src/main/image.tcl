@@ -19,6 +19,11 @@ if {[info procs createBMPs] == ""} {
 }
 createBMPs
 
+## TODO Rheienfolge ändern ?
+#Select & create random background JPEG
+#set hgfile [getRandomJPG]
+#image create photo hgbild -file $hgfile
+
 if {[info procs checkImgSize] == ""} {
 	source $Hgbild
 }
