@@ -1,18 +1,26 @@
 # ~/Biblepix/prog/src/share/setupSaveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21dec2016
+# Updated: 6apr17
 
-proc setWinAutorun {} {
+proc setWinAutorun args {
+#sets/unsets BiblePix Autorun
 #no admin rights required
-        global wishpath srcpath
+       global wishpath srcpath
+
         set regpath_autorun [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Run} \\]
         set regtext "$wishpath [file nativename [file join $srcpath biblepix.tcl]]"
         regsub -all {[\{\}]} $regtext {} regtext
-        registry set $regpath_autorun Biblepix $regtext
+
+	if {[info exists args]} {
+		registry delete $regpath_autorun Biblepix
+	} else {
+		registry set $regpath_autorun Biblepix $regtext
+	}
 }
 
-proc setWinContextMenu {} {
+proc setWinContextMenu args {
+#sets/unsets BiblePix Context Menu
 #ADMIN RIGHTS REQUIRED
 #adds context menu & icon
 #removes any "Policies\System Wallpaper" key (blocks user intervention)
@@ -24,6 +32,15 @@ global wishpath Setup srcpath winpath winRegister windir
 	regsub -all {\\} $winpath {\\\\} winpath
 
 	set setuppath "$wishpath $srcpath\\\\biblepix-setup.tcl"
+	#detect if "unset"
+	if {[info exists args]} {
+	set regtext "Windows Registry Editor Version 5.00
+
+\-\[HKEY_CLASSES_ROOT\\DesktopBackground\\Shell\\Biblepix\]
+"
+
+	} else {
+
 	set regtext "Windows Registry Editor Version 5.00
 
 \[HKEY_CLASSES_ROOT\\DesktopBackground\\Shell\\Biblepix\]
@@ -37,6 +54,7 @@ global wishpath Setup srcpath winpath winRegister windir
 \[HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\]
 \"Wallpaper\"=-
 "
+	}
 	#remove any {} from paths
 	regsub -all {[\{\}]} $regtext {} regtext
 
@@ -53,8 +71,8 @@ global wishpath Setup srcpath winpath winRegister windir
 }  ;#END setWinContextMenu
 
 
-proc setWinTheme {} {
-#Runs 'single pic' theme if running slideshow detected
+proc setWinTheme args {
+#Runs /Deletes 'single pic' theme if running slideshow detected
 global env enablepic slideshow TwdTIF
 
 	#Detect running slideshow (entry reset by Windows when user sets bg)
