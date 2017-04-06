@@ -46,8 +46,9 @@ set piddir [file join $progdir pid]
 set windir [file join $progdir win]
 set unixdir [file join $progdir unix]
 set guidir [file join $srcdir gui]
-set maindir [file join $srcdir main]
+set maindir [file join $srcdir image]
 set sharedir [file join $srcdir share]
+set savedir [file join $srcdir save]
 
 #SET ARRAYS FOR DOWNLOAD
 
@@ -59,8 +60,8 @@ Setup [file join $srcdir biblepix-setup.tcl]
 Image [file join $maindir image.tcl]
 Hgbild [file join $maindir hgbild.tcl]
 Textbild [file join $maindir textbild.tcl]
-Signature [file join $maindir signature.tcl]
-Uninstall [file join $maindir uninstall.tcl]
+Signature [file join $sharedir signature.tcl]
+Uninstall [file join $sharedir uninstall.tcl]
 SetupMainFrame [file join $guidir setupMainFrame.tcl]
 SetupBuild [file join $guidir setupBuildGUI.tcl]
 SetupDesktop [file join $guidir setupDesktop.tcl]
@@ -78,12 +79,12 @@ Globals [file join $sharedir globals.tcl]
 Http [file join $sharedir http.tcl]
 Imgtools [file join $sharedir imgtools.tcl]
 Twdtools [file join $sharedir twdtools.tcl]
-Setuptools [file join $sharedir setupTools.tcl]
-SetupTexts [file join $sharedir setupTexts.tcl]
-SetupSaveLin [file join $sharedir setupSaveLin.tcl]
-SetupSaveLinHelpers [file join $sharedir setupSaveLinHelpers.tcl]
-SetupSaveWin [file join $sharedir setupSaveWin.tcl]
-SetupSaveWinHelpers [file join $sharedir setupSaveWinHelpers.tcl ]
+Setuptools [file join $guidir setupTools.tcl]
+SetupTexts [file join $guidir setupTexts.tcl]
+SetupSaveLin [file join $savedir setupSaveLin.tcl]
+SetupSaveLinHelpers [file join $savedir setupSaveLinHelpers.tcl]
+SetupSaveWin [file join $savedir setupSaveWin.tcl]
+SetupSaveWinHelpers [file join $savedir setupSaveWinHelpers.tcl ]
 Config [file join $confdir biblepix.conf]
 Terminal [file join $unixdir term.sh]
 "
@@ -266,7 +267,10 @@ set blue {#483d8b}
 set gold {#daa520}
 set green {#005000}
 set silver {#707585}
-set shade {#f5deb3}
+
+#set shade {#f5deb3}
+set shade {#000000}
+set sun {#FFFFFF}
 
 #Set current font colour
 if {$fontcolortext == "blue"} {
