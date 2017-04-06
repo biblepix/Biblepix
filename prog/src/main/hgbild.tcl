@@ -1,10 +1,7 @@
 # ~/Biblepix/progs/src/main/hgbild.tcl
 # Creates background picture, called by image.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 13dec2016
-
-
-
+# Updated 4apr17
 
 proc fgbild>hgbild {hgfile bmpfile} {
 #Chooses a new background image and puts a new front text
