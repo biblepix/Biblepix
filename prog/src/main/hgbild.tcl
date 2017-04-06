@@ -41,17 +41,19 @@ global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade
 		set marginleft [expr $screenx-$imgx-$marginleft]
 	}
 
-	#1. Copy shade pixels to hgbild
-	for {set x 0; set zx $marginleft} {$x<$imgx} {incr x; incr zx} {
-		for {set y 0; set zy $margintop} {$y<$imgy} {incr y; incr zy} {
+	
+    
+	#1. Copy sun pixels
+	for {set x 0; set zx [expr $marginleft - 1]} {$x<$imgx} {incr x; incr zx} {
+		for {set y 0; set zy [expr $margintop - 1]} {$y<$imgy} {incr y; incr zy} {
 			set colour [fgbild get $x $y]
 			if {$colour==$fgrgb} {
-				hgbild put $shade -to $zx $zy
+				hgbild put $sun -to $zx $zy
 			}
 		}
 	}
-    
-	#2. Copy fontcolour pixels to hgbild
+
+	#3. Copy shade pixels
 	for {set x 0; set zx [expr $marginleft + 1]} {$x<$imgx} {incr x; incr zx} {
 		for {set y 0; set zy [expr $margintop + 1]} {$y<$imgy} {incr y; incr zy} {
 			set colour [fgbild get $x $y]
@@ -61,6 +63,16 @@ global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade
 		}
 	}
     
+	#2. Copy fontcolour pixels
+	for {set x 0; set zx $marginleft} {$x<$imgx} {incr x; incr zx} {
+		for {set y 0; set zy $margintop} {$y<$imgy} {incr y; incr zy} {
+			set colour [fgbild get $x $y]
+			if {$colour==$fgrgb} {
+				hgbild put $shade -to $zx $zy
+			}
+		}
+	}
+	
 	#Save hgbild as BMP + TIFF
 	hgbild write $TwdBMP -format BMP
 	hgbild write $TwdTIF -format TIFF
