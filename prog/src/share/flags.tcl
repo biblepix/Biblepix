@@ -1,6 +1,13 @@
-#flag::show canvas args    ;# for example
+# ~/Biblepix/prog/src/share/flags.tcl
+# Sourced by Setup
+# Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
+# Updated: 6apr2017
+
+#Thanks to Richard Suchenwirth, wiki.tcl.tk
+#Usage: flag::show canvas args    
+# for example:
 # flag::show .gb -flag {hori blue; x white red; cross white red}
-package require Tk
+
  namespace eval flag {
     proc show {c args} {
         array set opt [concat {-x 0 -y 0 -w 0 -h 0 -flag {}} $args]
@@ -175,8 +182,4 @@ package require Tk
     }
  }
 
-#Versuch für Canvas:
-#bind .c.en <ButtonPress-1> { onClick }
-#proc onClick {} {
-#.en invoke
-#}
+
