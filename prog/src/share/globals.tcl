@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 20Feb17
+# Updated: 7apr17
 
 set Debug 0
 
@@ -49,6 +49,7 @@ set guidir [file join $srcdir gui]
 set maindir [file join $srcdir image]
 set sharedir [file join $srcdir share]
 set savedir [file join $srcdir save]
+set maildir [file join $srcdir sig]
 
 #SET ARRAYS FOR DOWNLOAD
 
@@ -60,8 +61,6 @@ Setup [file join $srcdir biblepix-setup.tcl]
 Image [file join $maindir image.tcl]
 Hgbild [file join $maindir hgbild.tcl]
 Textbild [file join $maindir textbild.tcl]
-Signature [file join $sharedir signature.tcl]
-Uninstall [file join $sharedir uninstall.tcl]
 SetupMainFrame [file join $guidir setupMainFrame.tcl]
 SetupBuild [file join $guidir setupBuildGUI.tcl]
 SetupDesktop [file join $guidir setupDesktop.tcl]
@@ -69,9 +68,10 @@ SetupEmail [file join $guidir setupEmail.tcl]
 SetupInternational [file join $guidir setupInternational.tcl]
 SetupPhotos [file join $guidir setupPhotos.tcl]
 SetupReadme [file join $guidir setupReadme.tcl]
-SetupSave [file join $guidir setupSave.tcl]
 SetupTerminal [file join $guidir setupTerminal.tcl]
 SetupWelcome [file join $guidir setupWelcome.tcl]
+Setuptools [file join $guidir setupTools.tcl]
+SetupTexts [file join $guidir setupTexts.tcl]
 Bidi [file join $sharedir bidi.tcl]
 Flags [file join $sharedir flags.tcl]
 JList [file join $sharedir JList.tcl]
@@ -79,8 +79,9 @@ Globals [file join $sharedir globals.tcl]
 Http [file join $sharedir http.tcl]
 Imgtools [file join $sharedir imgtools.tcl]
 Twdtools [file join $sharedir twdtools.tcl]
-Setuptools [file join $guidir setupTools.tcl]
-SetupTexts [file join $guidir setupTexts.tcl]
+Uninstall [file join $sharedir uninstall.tcl]
+Signature [file join $maildir signature.tcl]
+SetupSave [file join $savedir setupSave.tcl]
 SetupSaveLin [file join $savedir setupSaveLin.tcl]
 SetupSaveLinHelpers [file join $savedir setupSaveLinHelpers.tcl]
 SetupSaveWin [file join $savedir setupSaveWin.tcl]
@@ -268,9 +269,10 @@ set gold {#daa520}
 set green {#005000}
 set silver {#707585}
 
-#set shade {#f5deb3}
-set shade {#000000}
-set sun {#FFFFFF}
+#TODO: TESTING! - works for green and blue
+set sun {#f5deb3}
+set shade {#606060}
+#set shade {#505050}
 
 #Set current font colour
 if {$fontcolortext == "blue"} {
