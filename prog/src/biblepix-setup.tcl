@@ -22,7 +22,7 @@ ttk::progressbar .updateFrame.progbar -mode indeterminate -length 200
 
 pack .updateFrame.pbTitle .updateFrame.progbar
 
-if {[catch {source -encoding utf-8 $Globals}]} {
+if {[catch {source $Globals}]} {
 	set pbTitle "Update not possible.\nYou must download and rerun the BiblePix Installer from bible2.net."
 	after 7000 {exit}
 } else {

@@ -64,7 +64,7 @@ proc runHTTP args {
 		
 			set filepath [lindex [array get filepaths $var] 1]
 			set filename [file tail $filepath]
-          	set token [http::geturl $bpxurl/$version/$filename]
+			set token [http::geturl $bpxurl/$version/$filename]
 			set data [http::data $token]
 	
 			#a) overwrite file if "Initial" 
