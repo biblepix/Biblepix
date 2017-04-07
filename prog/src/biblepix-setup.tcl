@@ -5,7 +5,7 @@
 ################################################################################
 # Version: 2.3
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 20feb17
+# Updated: 7apr17
 
 package require Tk
 
@@ -28,7 +28,7 @@ if {[catch {source -encoding utf-8 $Globals}]} {
 } else {
 
 	#Make empty dirs in case of GIT download
-	file mkdir $sigdir $imgdir $twddir $bmpdir $piddir $confdir 
+	file mkdir $sigdir $imgdir $twddir $bmpdir $piddir $confdir $savedir $maildir 
 
 	#Set initial texts if missing
 	if {[catch {source -encoding utf-8 $SetupTexts ; setTexts $lang}]} {
