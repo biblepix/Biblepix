@@ -2,14 +2,14 @@
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22dec2016
+# Updated: 8apr17
 
 package require http
 
 ########### PROCS FOR SETUP UPDATE #################
 
 proc setProxy {} {
-	if { ![catch package require autoproxy] } {
+	if { [catch {package require autoproxy} ] } {
 		set host localhost
 		set port 80
 	} else {
@@ -20,17 +20,17 @@ proc setProxy {} {
 	http::config -proxyhost $host -proxyport $port		
 }
 
-
 proc testHttpCon {} {
 	global bpxurl version
-	set testtoken [http::geturl $bpxurl/$version/http.tcl -validate 1]
+	set testfile "$bpxurl/$version/README"
+	set testtoken [http::geturl $testfile -validate 1]
 	set error 0
 	
 	if { [http::error $testtoken] != "" || [http::ncode $testtoken] != 200} {       
 		#try proxy
 		setProxy
 		#test connexion again
-		set testtoken [http::geturl $bpxurl/$version/http.tcl -validate 1]
+		set testtoken [http::geturl $testfile -validate 1]
 		
 		if { [http::error $testtoken] != "" || [http::ncode $testtoken] != 200} {        
 			
@@ -38,6 +38,15 @@ proc testHttpCon {} {
 		}
 	}
 	return $error
+}
+
+proc getLastModified {token} {
+#returns mtime of remote file in seconds	- WIRD NICHT MEHR GEBRAUCHT!
+	array set meta [http::meta $token]
+	array get meta Last-Modified
+	set timestring [array get meta Last-Modified]
+	set mtime [clock scan [string index $timestring 1]]
+	return $mtime
 }
 
 proc runHTTP args {
@@ -64,39 +73,42 @@ proc runHTTP args {
 		
 			set filepath [lindex [array get filepaths $var] 1]
 			set filename [file tail $filepath]
-			set token [http::geturl $bpxurl/$version/$filename]
-			set data [http::data $token]
-	
-			#a) overwrite file if "Initial" 
+
+			#get remote 'meta' info (-validate 1)			
+			set token [http::geturl $bpxurl/$version/$filename -validate 1]
+			array set meta [http::meta $token]
+			
+			#a) Overwrite file if "Initial" 
 			if {$Initial} {
 
-				if { "[string index $data 0]" == "#"} {
+				#avoid error coded messages
+				if { "[http::ncode $token]"==200} {
+
+					#download into channel
 					set chan [open $filepath w]
 					fconfigure $chan -encoding utf-8
 					http::geturl $bpxurl/$version/$filename -channel $chan
 					close $chan                                
 				}
 			
-			#b) save file if size changed
+			#b) Overwrite file if remote is newer
 			} else {
 				
-				set newsize [http::size $token]
-								
-				if {[file exists $filepath]} {
-					set oldsize [file size $filepath]
-				} else {
-					set oldsize 0
-				}
+            				set newtime [lindex [array get meta Last-Modified] 1]
+				set newsecs [clock scan $newtime]
 
-				#first string must be # to distinguish from error messages		
-				if { "[string index $data 0]" == "#" } {
-					if {$oldsize != $newsize } {
-						set chan [open $filepath w]
-						fconfigure $chan -encoding utf-8
-						http::geturl $bpxurl/$version/$filename -channel $chan
-						close $chan
-					}
+				#check local file exists & is older
+				catch {file mtime $filepath} oldsecs
 
+puts "New Time:$newsecs\nOld Time: $oldsecs\n"
+	
+			if {[string is digit $oldsecs] && $oldsecs<$newsecs} {
+
+					#download into channel
+					set chan [open $filepath w]
+					fconfigure $chan -encoding utf-8
+					http::geturl $bpxurl/$version/$filename -channel $chan
+					close $chan
 				}
 								
 			}
