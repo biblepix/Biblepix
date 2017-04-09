@@ -2,7 +2,7 @@
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8apr17
+# Updated: 9apr17
 
 package require http
 
@@ -40,13 +40,16 @@ proc testHttpCon {} {
 	return $error
 }
 
-proc getLastModified {token} {
-#returns mtime of remote file in seconds	- WIRD NICHT MEHR GEBRAUCHT!
-	array set meta [http::meta $token]
-	array get meta Last-Modified
-	set timestring [array get meta Last-Modified]
-	set mtime [clock scan [string index $timestring 1]]
-	return $mtime
+proc downloadFile {filepath filename token} {
+global bpxurl version
+#download file into channel unless error message
+	if { "[http::ncode $token]"==200} {
+		set chan [open $filepath w]
+		fconfigure $chan -encoding utf-8
+		http::geturl $bpxurl/$version/$filename -channel $chan
+		close $chan
+		http::cleanup $token
+	}
 }
 
 proc runHTTP args {
@@ -71,7 +74,8 @@ proc runHTTP args {
 				
 		foreach var [array names filepaths] {
 		
-			set filepath [lindex [array get filepaths $var] 1]
+#			set filepath [lindex [array get filepaths $var] 1]
+			set filepath $filepaths($var)
 			set filename [file tail $filepath]
 
 			#get remote 'meta' info (-validate 1)			
@@ -81,38 +85,25 @@ proc runHTTP args {
 			#a) Overwrite file if "Initial" 
 			if {$Initial} {
 
-				#avoid error coded messages
-				if { "[http::ncode $token]"==200} {
-
-					#download into channel
-					set chan [open $filepath w]
-					fconfigure $chan -encoding utf-8
-					http::geturl $bpxurl/$version/$filename -channel $chan
-					close $chan                                
-				}
+				downloadFile $filepath $filename $token
 			
 			#b) Overwrite file if remote is newer
 			} else {
 				
-            				set newtime [lindex [array get meta Last-Modified] 1]
-				set newsecs [clock scan $newtime]
-
-				#check local file exists & is older
+				set newtime $meta(Last-Modified)
+				#catch times in var
+				catch {clock scan $newtime} newsecs
 				catch {file mtime $filepath} oldsecs
 
-puts "New Time:$newsecs\nOld Time: $oldsecs\n"
-	
-			if {[string is digit $oldsecs] && $oldsecs<$newsecs} {
-
-					#download into channel
-					set chan [open $filepath w]
-					fconfigure $chan -encoding utf-8
-					http::geturl $bpxurl/$version/$filename -channel $chan
-					close $chan
+puts "New Time: $newsecs\nOld Time: $oldsecs\n"
+				#download if times incorrect OR if oldfile is older/non-existent
+				if {	! [string is digit $newsecs] || 
+					! [string is digit $oldsecs] ||
+					$oldsecs<$newsecs 
+				} {
+					downloadFile $filepath $filename $token
 				}
-								
 			}
-		
 		} ;#end FOR loop
       
 	#Success message (source Texts again for Initial)
