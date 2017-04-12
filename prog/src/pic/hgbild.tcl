@@ -1,25 +1,18 @@
 # ~/Biblepix/progs/src/main/hgbild.tcl
 # Creates background picture, called by image.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 4apr17
+# Updated 12apr2017
+
+source $Imgtools  
 
 proc fgbild>hgbild {hgfile bmpfile} {
-#Chooses a new background image and puts a new front text
-#on it at each run
-global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade
+#Puts text picture on background image, adding Sun & Shade pixels
+global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade sun
 	
 	#Source config to reset marginleft (rtl/ltr)
 	source $Config
 	puts "Copying text to background picture..."
-	
-	#Select & create hgbild
-	#set hgfile [getRandomJPG]
-	#image create photo hgbild -file $hgfile
-
-	#Select & create fgbild
-	#set bmpfile [file join $bmpdir [getRandomBMP]]
-	#image create photo fgbild -file $bmpfile	
-
+		
 	fgbild blank
 	fgbild read $bmpfile
 	hgbild blank
@@ -38,34 +31,41 @@ global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade
 		set marginleft [expr $screenx-$imgx-$marginleft]
 	}
 
-	
-    
-	#1. Copy sun pixels
+	#Set fontcolor to $r $g $b
+	set rgb [hex2rgb $fontcolor]
+	foreach i [split $rgb] {lappend cl $i}
+	set r [lindex $cl 0]
+	set g [lindex $cl 1]
+	set b [lindex $cl 2]
+
+	# 1.Copy sun pixels -1
+	set sunhex [setSun $r $g $b] 
 	for {set x 0; set zx [expr $marginleft - 1]} {$x<$imgx} {incr x; incr zx} {
 		for {set y 0; set zy [expr $margintop - 1]} {$y<$imgy} {incr y; incr zy} {
 			set colour [fgbild get $x $y]
 			if {$colour==$fgrgb} {
-				hgbild put $sun -to $zx $zy
+				hgbild put $sunhex -to $zx $zy
 			}
 		}
 	}
 
-	#3. Copy shade pixels
+	# 2. Copy shade pixels +1
+	set shadehex [setShade $r $g $b]
 	for {set x 0; set zx [expr $marginleft + 1]} {$x<$imgx} {incr x; incr zx} {
 		for {set y 0; set zy [expr $margintop + 1]} {$y<$imgy} {incr y; incr zy} {
 			set colour [fgbild get $x $y]
 			if {$colour==$fgrgb} {
-				hgbild put $fontcolor -to $zx $zy
+				hgbild put $shadehex -to $zx $zy
 			}
 		}
 	}
     
-	#2. Copy fontcolour pixels
+	# 3. Copy fontcolour pixels 0
 	for {set x 0; set zx $marginleft} {$x<$imgx} {incr x; incr zx} {
 		for {set y 0; set zy $margintop} {$y<$imgy} {incr y; incr zy} {
 			set colour [fgbild get $x $y]
 			if {$colour==$fgrgb} {
-				hgbild put $shade -to $zx $zy
+				hgbild put $fontcolor -to $zx $zy
 			}
 		}
 	}
@@ -74,8 +74,7 @@ global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade
 	hgbild write $TwdBMP -format BMP
 	hgbild write $TwdTIF -format TIFF
 	
-	#Save hagbild as PNG for KDE (needs min. 1 for slideshow) 
-	#& Gnome2 (needs 1 PNG)
+	#Save hagbild as PNG (KDE+GNOME2 need min. 1 for slideshow) 
 	if {$platform=="unix"} {
 		hgbild write $TwdPNG -format PNG
 	}
