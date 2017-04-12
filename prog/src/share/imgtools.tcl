@@ -2,10 +2,56 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3jan17
+# Updated: 12apr17
 
-####### Procs for $Hgbild ####################################################
+####### Procs for $Hgbild #####################
 
+proc rgb2hex {r g b} {
+#called by setShade + setSun
+	set hex [format "#%02x%02x%02x" $r $g $b]
+	return $hex
+}
+
+proc hex2rgb {hex} {
+#called by Hgbild 
+#A: calculate into 3-fold string
+	set rgb [scan $hex "#%2x%2x%2x"]
+
+#B: calculate into 3 separate strings (0x=hex for expr)
+	set rx "0x[string range $hex 1 2]"
+	set gx "0x[string range $hex 3 4]"
+	set bx "0x[string range $hex 5 6]"
+	set ::r [expr $rx]
+	set ::g [expr $gx]
+	set ::b [expr $bx]
+	return $rgb
+	#return "$::r $::g $::b"
+}
+
+proc setShade {r g b} {
+#called by Hgbild
+global shadefactor
+	#darkness values under 0 don't matter 
+	set rsh [expr {int($r*$shadefactor)}]
+	set gsh [expr {int($g*$shadefactor)}]
+	set bsh [expr {int($b*$shadefactor)}]
+	set shade [rgb2hex $rsh $gsh $bsh]
+	return $shade
+}
+
+proc setSun {r g b} {
+#called by Hgbild
+global sunfactor
+	set rsun [expr {int($r * $sunfactor)}]
+	set gsun [expr {int($g * $sunfactor)}]
+	set bsun [expr {int($b * $sunfactor)}]
+	#avoid brightness values over 255
+	if {$rsun>255} {set rsun 255}
+	if {$gsun>255} {set gsun 255}
+	if {$bsun>255} {set bsun 255}
+	set sun [rgb2hex $rsun $gsun $bsun]
+	return $sun
+}
 proc cutx {src diff} {
 	puts "Cutting X $diff ..."
 	#regsub {\-} $diff {} diff

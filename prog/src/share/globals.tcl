@@ -2,10 +2,8 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 7apr17
+# Updated: 12apr17
 
-
-# This variable enables the debuging mode in the hole application if set to 1.
 set Debug 0
 
 set version "2.3"
@@ -48,18 +46,10 @@ set piddir [file join $progdir pid]
 set windir [file join $progdir win]
 set unixdir [file join $progdir unix]
 set guidir [file join $srcdir gui]
-set maindir [file join $srcdir pic]
+set maindir [file join $srcdir main]
 set sharedir [file join $srcdir share]
-set savedir [file join $srcdir save]
-set maildir [file join $srcdir sig]
 
 #SET ARRAYS FOR DOWNLOAD
-if { $Debug } {
-	set Http [file join $sharedir httpMock.tcl]
-} else {
-	set Http [file join $sharedir http.tcl]
-}
-
 
 #Set filepaths array
 array set filepaths "
@@ -69,6 +59,8 @@ Setup [file join $srcdir biblepix-setup.tcl]
 Image [file join $maindir image.tcl]
 Hgbild [file join $maindir hgbild.tcl]
 Textbild [file join $maindir textbild.tcl]
+Signature [file join $maindir signature.tcl]
+Uninstall [file join $maindir uninstall.tcl]
 SetupMainFrame [file join $guidir setupMainFrame.tcl]
 SetupBuild [file join $guidir setupBuildGUI.tcl]
 SetupDesktop [file join $guidir setupDesktop.tcl]
@@ -76,23 +68,22 @@ SetupEmail [file join $guidir setupEmail.tcl]
 SetupInternational [file join $guidir setupInternational.tcl]
 SetupPhotos [file join $guidir setupPhotos.tcl]
 SetupReadme [file join $guidir setupReadme.tcl]
+SetupSave [file join $guidir setupSave.tcl]
 SetupTerminal [file join $guidir setupTerminal.tcl]
 SetupWelcome [file join $guidir setupWelcome.tcl]
-Setuptools [file join $guidir setupTools.tcl]
-SetupTexts [file join $guidir setupTexts.tcl]
 Bidi [file join $sharedir bidi.tcl]
 Flags [file join $sharedir flags.tcl]
 JList [file join $sharedir JList.tcl]
 Globals [file join $sharedir globals.tcl]
+Http [file join $sharedir http.tcl]
 Imgtools [file join $sharedir imgtools.tcl]
 Twdtools [file join $sharedir twdtools.tcl]
-Uninstall [file join $sharedir uninstall.tcl]
-Signature [file join $maildir signature.tcl]
-SetupSave [file join $savedir setupSave.tcl]
-SetupSaveLin [file join $savedir setupSaveLin.tcl]
-SetupSaveLinHelpers [file join $savedir setupSaveLinHelpers.tcl]
-SetupSaveWin [file join $savedir setupSaveWin.tcl]
-SetupSaveWinHelpers [file join $savedir setupSaveWinHelpers.tcl ]
+Setuptools [file join $sharedir setupTools.tcl]
+SetupTexts [file join $sharedir setupTexts.tcl]
+SetupSaveLin [file join $sharedir setupSaveLin.tcl]
+SetupSaveLinHelpers [file join $sharedir setupSaveLinHelpers.tcl]
+SetupSaveWin [file join $sharedir setupSaveWin.tcl]
+SetupSaveWinHelpers [file join $sharedir setupSaveWinHelpers.tcl ]
 Config [file join $confdir biblepix.conf]
 Terminal [file join $unixdir term.sh]
 "
@@ -270,16 +261,15 @@ if {![info exists margintop]} {
 	close $chan
 }
 
-#Define font colours
+#Define font colours + shade factors
 set blue {#483d8b}
 set gold {#daa520}
-set green {#005000}
+#set green {#005000}
+#green changed to green-blue because of bad contrast to most backgrounds
+set green {#008d78}
 set silver {#707585}
-
-#TODO: TESTING! - works for green and blue
-set sun {#f5deb3}
-set shade {#606060}
-#set shade {#505050}
+set sunfactor 2.0
+set shadefactor 0.6
 
 #Set current font colour
 if {$fontcolortext == "blue"} {
@@ -294,13 +284,10 @@ if {$fontcolortext == "blue"} {
 	set fontcolor $blue
 }
 
-#Set colours for image calculation
+#Set colours for text image calculation
 ##background black
 set hghex "#000000"
 set hgrgb "0 0 0"
 ##foreground almost black
 set fghex "#000001"
 set fgrgb "0 0 1"
-##shade white
-set shhex "#000002"
-set shrgb "0 0 2"
