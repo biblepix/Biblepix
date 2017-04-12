@@ -31,15 +31,14 @@ global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade sun
 		set marginleft [expr $screenx-$imgx-$marginleft]
 	}
 
-	#Set fontcolor to $r $g $b
-	set rgb [hex2rgb $fontcolor]
-	foreach i [split $rgb] {lappend cl $i}
-	set r [lindex $cl 0]
-	set g [lindex $cl 1]
-	set b [lindex $cl 2]
+	#Set fontcolor to $r $g $b - run only once
+	if {![info exists ::rgb]} {
+puts running!
+		hex2rgb $fontcolor
+	}
 
 	# 1.Copy sun pixels -1
-	set sunhex [setSun $r $g $b] 
+	set sunhex [setSun $::r $::g $::b] 
 	for {set x 0; set zx [expr $marginleft - 1]} {$x<$imgx} {incr x; incr zx} {
 		for {set y 0; set zy [expr $margintop - 1]} {$y<$imgy} {incr y; incr zy} {
 			set colour [fgbild get $x $y]
@@ -50,7 +49,7 @@ global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade sun
 	}
 
 	# 2. Copy shade pixels +1
-	set shadehex [setShade $r $g $b]
+	set shadehex [setShade $::r $::g $::b]
 	for {set x 0; set zx [expr $marginleft + 1]} {$x<$imgx} {incr x; incr zx} {
 		for {set y 0; set zy [expr $margintop + 1]} {$y<$imgy} {incr y; incr zy} {
 			set colour [fgbild get $x $y]
