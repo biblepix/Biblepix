@@ -21,10 +21,11 @@ proc hex2rgb {hex} {
 	set rx "0x[string range $hex 1 2]"
 	set gx "0x[string range $hex 3 4]"
 	set bx "0x[string range $hex 5 6]"
+	#export vars
 	set ::r [expr $rx]
 	set ::g [expr $gx]
 	set ::b [expr $bx]
-	return $rgb
+	set ::rgb $rgb
 	#return "$::r $::g $::b"
 }
 
