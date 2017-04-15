@@ -33,7 +33,6 @@ global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade sun
 
 	#Set fontcolor to $r $g $b - run only once
 	if {![info exists ::rgb]} {
-puts running!
 		hex2rgb $fontcolor
 	}
 
