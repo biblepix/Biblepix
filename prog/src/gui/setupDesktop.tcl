@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 4feb17
+# Updated 15apr17
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
@@ -92,13 +92,18 @@ createMovingTextBox $textposCanv
 $textposCanv bind mv <1> {movestart %W %x %y}
 $textposCanv bind mv <B1-Motion> {move %W %x %y}
 
+
 #2. Create InternationalText Canvas
 if {! [regexp displayfont [font names] ] } {
 	font create displayfont -family $fontfamily -size -$fontsize -weight bold
 }
 
-canvas .n.f2.fright.fbot2.inttextcanv -width 650 -height 50 -background steelblue -borderwidth 2 -relief raised
+canvas .n.f2.fright.fbot2.inttextcanv -width 700 -height 300 -borderwidth 2 -relief raised
 set inttextCanv .n.f2.fright.fbot2.inttextcanv
+
+#create background image - TESTING!
+image create photo intTextBG -file $guidir/test.tif
+$inttextCanv create image 0 0 -image intTextBG -anchor nw 
 
 label .n.f2.fright.fbot2.inttexttxt -textvar f2.fontexpl
 set inttextHeader .n.f2.fright.fbot2.inttexttxt
@@ -112,21 +117,24 @@ if {$platform=="unix"} {
 } else {
 	set internationaltext "$f2ltr_txt $f2ar_txt $f2he_txt $f2thai_txt"
 }
+#create sun / shade /main text
+source $Imgtools
+set rgblist [hex2rgb $fontcolor]
+set shade [setShade $rgblist]
+set sun [setSun $rgblist]
 
-#create shaded text, 1px versetzt
-$inttextCanv create text 9 19 -fill $shade -font displayfont -tags shadedtextitem
-#create main text
-$inttextCanv create text 10 20 -fill $fontcolor -font displayfont -tags textitem
-$inttextCanv itemconfigure textitem -text $internationaltext -anchor w
-$inttextCanv itemconfigure shadedtextitem -text $internationaltext -anchor w
+$inttextCanv create text 09 19 -fill $sun -tags {textitem sun}
+$inttextCanv create text 11 21 -fill $shade -tags {textitem shade}
+$inttextCanv create text 10 20 -fill $fontcolor -tags {textitem main}
+$inttextCanv itemconfigure textitem -text $internationaltext -anchor nw -width 680 -font displayfont
 
 #1. Fontcolour spinbox
 message .n.f2.fright.fbot1.fontcolorTxt -width 200 -textvar f2.farbe
-spinbox .n.f2.fright.fbot1.fontcolorSpin -width 7 -values {blue green gold silver} 
+spinbox .n.f2.fright.fbot1.fontcolorSpin -width 10 -values {steelblue seagreen turquoise gold silver} 
 set fontcolorTxt .n.f2.fright.fbot1.fontcolorTxt
 set fontcolorSpin .n.f2.fright.fbot1.fontcolorSpin
 $fontcolorSpin configure -command {
-	$inttextCanv itemconfigure textitem -fill %s
+	setCanvasText [set %s]
         $textposCanv itemconfigure mv -fill %s
         }
 
