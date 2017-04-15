@@ -2,11 +2,11 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 12apr17
+# Updated: 15apr17
 
 set Debug 0
 
-set version "2.3"
+set version "2.4"
 set twdurl "http://bible2.net/service/TheWord/twd11/current"
 set bpxurl "http://vollmar.ch/bibelpix"
 set platform $tcl_platform(platform)
@@ -46,8 +46,9 @@ set piddir [file join $progdir pid]
 set windir [file join $progdir win]
 set unixdir [file join $progdir unix]
 set guidir [file join $srcdir gui]
-set maindir [file join $srcdir main]
+set maindir [file join $srcdir pic]
 set sharedir [file join $srcdir share]
+set savedir [file join $srcdir save]
 
 #SET ARRAYS FOR DOWNLOAD
 
@@ -59,8 +60,6 @@ Setup [file join $srcdir biblepix-setup.tcl]
 Image [file join $maindir image.tcl]
 Hgbild [file join $maindir hgbild.tcl]
 Textbild [file join $maindir textbild.tcl]
-Signature [file join $maindir signature.tcl]
-Uninstall [file join $maindir uninstall.tcl]
 SetupMainFrame [file join $guidir setupMainFrame.tcl]
 SetupBuild [file join $guidir setupBuildGUI.tcl]
 SetupDesktop [file join $guidir setupDesktop.tcl]
@@ -68,9 +67,15 @@ SetupEmail [file join $guidir setupEmail.tcl]
 SetupInternational [file join $guidir setupInternational.tcl]
 SetupPhotos [file join $guidir setupPhotos.tcl]
 SetupReadme [file join $guidir setupReadme.tcl]
-SetupSave [file join $guidir setupSave.tcl]
 SetupTerminal [file join $guidir setupTerminal.tcl]
 SetupWelcome [file join $guidir setupWelcome.tcl]
+Setuptools [file join $guidir setupTools.tcl]
+SetupTexts [file join $guidir setupTexts.tcl]
+SetupSave [file join $savedir setupSave.tcl]
+SetupSaveLin [file join $savedir setupSaveLin.tcl]
+SetupSaveLinHelpers [file join $savedir setupSaveLinHelpers.tcl]
+SetupSaveWin [file join $savedir setupSaveWin.tcl]
+SetupSaveWinHelpers [file join $savedir setupSaveWinHelpers.tcl ]
 Bidi [file join $sharedir bidi.tcl]
 Flags [file join $sharedir flags.tcl]
 JList [file join $sharedir JList.tcl]
@@ -78,12 +83,8 @@ Globals [file join $sharedir globals.tcl]
 Http [file join $sharedir http.tcl]
 Imgtools [file join $sharedir imgtools.tcl]
 Twdtools [file join $sharedir twdtools.tcl]
-Setuptools [file join $sharedir setupTools.tcl]
-SetupTexts [file join $sharedir setupTexts.tcl]
-SetupSaveLin [file join $sharedir setupSaveLin.tcl]
-SetupSaveLinHelpers [file join $sharedir setupSaveLinHelpers.tcl]
-SetupSaveWin [file join $sharedir setupSaveWin.tcl]
-SetupSaveWinHelpers [file join $sharedir setupSaveWinHelpers.tcl ]
+Uninstall [file join $sharedir uninstall.tcl]
+Signature [file join $maildir signature.tcl]
 Config [file join $confdir biblepix.conf]
 Terminal [file join $unixdir term.sh]
 "
@@ -261,13 +262,19 @@ if {![info exists margintop]} {
 	close $chan
 }
 
-#Define font colours + shade factors
-set blue {#483d8b}
+#Define font colours + shade factors - TESTING!!!
 set gold {#daa520}
-#set green {#005000}
-#green changed to green-blue because of bad contrast to most backgrounds
-set green {#008d78}
 set silver {#707585}
+
+#set blue {#483d8b}
+set steelblue {#4682b4}
+set steelblue3 {#5096c8}
+set blue $steelblue
+
+set seagreen {#2e8b57}
+set turquoise {#008d78}
+set green $turquoise
+
 set sunfactor 2.0
 set shadefactor 0.6
 

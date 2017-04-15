@@ -2,57 +2,66 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12apr17
+# Updated: 15apr17
 
 ####### Procs for $Hgbild #####################
+# $rgb must be proper list!
 
-proc rgb2hex {r g b} {
+proc rgb2hex {rgb} {
 #called by setShade + setSun
-	set hex [format "#%02x%02x%02x" $r $g $b]
+	set rgblist [split $rgb]
+	set hex [format "#%02x%02x%02x" [lindex $rgblist 0] [lindex $rgblist 1] [lindex $rgblist 2] ]
 	return $hex
 }
 
 proc hex2rgb {hex} {
 #called by Hgbild 
-#A: calculate into 3-fold string
-	set rgb [scan $hex "#%2x%2x%2x"]
 
-#B: calculate into 3 separate strings (0x=hex for expr)
-	set rx "0x[string range $hex 1 2]"
-	set gx "0x[string range $hex 3 4]"
-	set bx "0x[string range $hex 5 6]"
-	#export vars
-	set ::r [expr $rx]
-	set ::g [expr $gx]
-	set ::b [expr $bx]
-	set ::rgb $rgb
-	#return "$::r $::g $::b"
+#A: calculate into 3-part string
+	set rgb [scan $hex "#%2x %2x %2x"]
+	foreach i [split $rgb] {
+		lappend rgblist $i
+	}
+	return $rgb
 }
 
-proc setShade {r g b} {
+proc setShade {rgb} {
 #called by Hgbild
 global shadefactor
-	#darkness values under 0 don't matter 
-	set rsh [expr {int($r*$shadefactor)}]
-	set gsh [expr {int($g*$shadefactor)}]
-	set bsh [expr {int($b*$shadefactor)}]
-	set shade [rgb2hex $rsh $gsh $bsh]
+	foreach c [split $rgb] {
+		lappend shadergb [expr {int($shadefactor*$c)}]
+	}
+	#darkness values under 0 don't matter 	
+	set shade [rgb2hex $shadergb]
 	return $shade
 }
 
-proc setSun {r g b} {
+proc setSun {rgb} {
 #called by Hgbild
 global sunfactor
-	set rsun [expr {int($r * $sunfactor)}]
-	set gsun [expr {int($g * $sunfactor)}]
-	set bsun [expr {int($b * $sunfactor)}]
+	foreach c [split $rgb] {
+		lappend sunrgbList [expr {int($sunfactor*$c)}]
+	} 
+
 	#avoid brightness values over 255
-	if {$rsun>255} {set rsun 255}
-	if {$gsun>255} {set gsun 255}
-	if {$bsun>255} {set bsun 255}
-	set sun [rgb2hex $rsun $gsun $bsun]
+	foreach i $sunrgbList {
+		if {$i>255} {set i 255}
+		lappend sunrgb $i
+	}
+	set sun [rgb2hex $sunrgb]
 	return $sun
 }
+
+proc setCanvasText {fontcolor} {
+global inttextCanv internationaltext
+	set rgb [hex2rgb $fontcolor]
+	set shade [setShade $rgb]
+	set sun [setSun $rgb]
+	$inttextCanv itemconfigure main -fill $fontcolor
+	$inttextCanv itemconfigure sun -fill $sun
+	$inttextCanv itemconfigure shade -fill $shade
+}
+
 proc cutx {src diff} {
 	puts "Cutting X $diff ..."
 	#regsub {\-} $diff {} diff
