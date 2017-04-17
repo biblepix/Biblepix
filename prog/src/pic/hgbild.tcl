@@ -1,13 +1,13 @@
 # ~/Biblepix/progs/src/main/hgbild.tcl
 # Creates background picture, called by image.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 12apr2017
+# Updated 17apr2017
 
 source $Imgtools  
 
 proc fgbild>hgbild {hgfile bmpfile} {
 #Puts text picture on background image, adding Sun & Shade pixels
-global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade sun
+global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb
 	
 	#Source config to reset marginleft (rtl/ltr)
 	source $Config
@@ -31,13 +31,18 @@ global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade sun
 		set marginleft [expr $screenx-$imgx-$marginleft]
 	}
 
-	#Set fontcolor to $r $g $b - run only once
-	if {![info exists ::rgb]} {
-		hex2rgb $fontcolor
-	}
+	#Set fontcolor $rgb & sun/shade only once - CAN'T BECAUSE THESE ARE FLEETING VARS!
+	#if {![info exists rgb]} {
+		set rgb [hex2rgb $fontcolor]
+	#}
+	#if {![info exists sunhex]} {
+		set sunhex [setSun $rgb] 
+	#}
+	#if {![info exists shadehex]} {
+		set shadehex [setShade $rgb]
+	#}
 
 	# 1.Copy sun pixels -1
-	set sunhex [setSun $::r $::g $::b] 
 	for {set x 0; set zx [expr $marginleft - 1]} {$x<$imgx} {incr x; incr zx} {
 		for {set y 0; set zy [expr $margintop - 1]} {$y<$imgy} {incr y; incr zy} {
 			set colour [fgbild get $x $y]
@@ -48,7 +53,6 @@ global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb shade sun
 	}
 
 	# 2. Copy shade pixels +1
-	set shadehex [setShade $::r $::g $::b]
 	for {set x 0; set zx [expr $marginleft + 1]} {$x<$imgx} {incr x; incr zx} {
 		for {set y 0; set zy [expr $margintop + 1]} {$y<$imgy} {incr y; incr zy} {
 			set colour [fgbild get $x $y]
