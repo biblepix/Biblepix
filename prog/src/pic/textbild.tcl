@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/main/textbild.tcl
 # Creates text picture, called by image.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26dec2016 
+# Updated: 18apr2017 
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
@@ -9,6 +9,8 @@ set screeny [winfo screenheight .]
 #Set window bottom-left, no frame
 wm overrideredirect . 1
 wm geometry . +0-30
+#Create font only once
+catch {font create BiblepixFont -family $fontfamily}
 
 proc text>bmp {bmpfile twdfile} {
 global fontsize fontfamily fontweight hghex fghex bmpdir screenx platform Twdtools Bidi os
@@ -18,10 +20,13 @@ global fontsize fontfamily fontweight hghex fghex bmpdir screenx platform Twdtoo
     .t configure -background $hghex -foreground $fghex -height 1 -relief flat -borderwidth 0 -pady 0
     pack .t   
 
-    #Create & configure font
-    catch {font create BiblepixFont -family $fontfamily}
-    font configure BiblepixFont -size -$fontsize -weight $fontweight
-    .t configure -font BiblepixFont 
+	#Configure font
+	font configure BiblepixFont -size -$fontsize -weight $fontweight
+	#force non-bold for Chinese
+	if  {[string range $twdfile 0 1] == "zh"} {
+		font configure BiblepixFont -weight normal
+	}
+	.t configure -font BiblepixFont 
 
     #Get $dw
     source $Twdtools
@@ -32,6 +37,8 @@ global fontsize fontfamily fontweight hghex fghex bmpdir screenx platform Twdtoo
     #Fix Hebrew
     if { [regexp {[\u05d0-\u05ea]} $dw] } {
         puts "Computing Hebrew text..."
+	#force non-bold
+	font configure BiblepixFont -weight normal
         set RTL 1
         source $Bidi
 		
@@ -45,7 +52,9 @@ global fontsize fontfamily fontweight hghex fghex bmpdir screenx platform Twdtoo
     #Fix Arabic
     if { [regexp {[\u0600-\u076c]} $dw] } {
         puts "Computing Arabic text..."
-        set RTL 1
+	#force non-bold
+	font configure BiblepixFont -weight normal       
+ 	set RTL 1
         source $Bidi
 		
 		if {$os == "Windows NT"} {
