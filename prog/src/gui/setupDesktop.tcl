@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 15apr17
+# Updated 18apr17
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
@@ -130,7 +130,7 @@ $inttextCanv itemconfigure textitem -text $internationaltext -anchor nw -width 6
 
 #1. Fontcolour spinbox
 message .n.f2.fright.fbot1.fontcolorTxt -width 200 -textvar f2.farbe
-spinbox .n.f2.fright.fbot1.fontcolorSpin -width 10 -values {steelblue seagreen turquoise gold silver} 
+spinbox .n.f2.fright.fbot1.fontcolorSpin -width 10 -values {blue green gold silver} 
 set fontcolorTxt .n.f2.fright.fbot1.fontcolorTxt
 set fontcolorSpin .n.f2.fright.fbot1.fontcolorSpin
 $fontcolorSpin configure -command {
@@ -157,15 +157,13 @@ $fontsizeSpin set $fontsize
 #3. Fontweight checkbutton
 checkbutton .n.f2.fright.fbot1.fontweightBtn -width 5 -variable fontweightState -textvar f2.fontweight 
 set fontweightBtn .n.f2.fright.fbot1.fontweightBtn
-$fontweightBtn configure -command { 
+$fontweightBtn configure -command {
 	if {$fontweightState==1} {
-        	font configure displayfont -weight bold
-              #  $textposCanv itemconfigure mv -font "TkTextFont 7 bold"
-        } {
-        	font configure displayfont -weight normal
-              #  $textposCanv itemconfigure mv -font "TkTextFont 7 normal"
-                } 
-        }
+		font configure displayfont -weight bold
+	} else {
+		font configure displayfont -weight normal
+   	}
+}
 
 if {$fontweight=="bold"} {
 	set fontweightState 1
