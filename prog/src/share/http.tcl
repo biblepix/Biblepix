@@ -2,7 +2,7 @@
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9apr17
+# Updated: 19apr17
 
 package require http
 
@@ -37,6 +37,8 @@ proc testHttpCon {} {
 			set error 1
 		}
 	}
+#TESTING!!!
+#set error1
 	return $error
 }
 
@@ -74,12 +76,15 @@ proc runHTTP args {
 				
 		foreach var [array names filepaths] {
 		
-#			set filepath [lindex [array get filepaths $var] 1]
 			set filepath $filepaths($var)
 			set filename [file tail $filepath]
 
 			#get remote 'meta' info (-validate 1)			
 			set token [http::geturl $bpxurl/$version/$filename -validate 1]
+			
+		#skip if non-existent
+		if {[http::ncode $token]==200} {
+
 			array set meta [http::meta $token]
 			
 			#a) Overwrite file if "Initial" 
@@ -104,6 +109,7 @@ puts "New Time: $newsecs\nOld Time: $oldsecs\n"
 					downloadFile $filepath $filename $token
 				}
 			}
+		} ;#end skip
 		} ;#end FOR loop
       
 	#Success message (source Texts again for Initial)

@@ -2,11 +2,11 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 18apr17
+# Updated: 19apr17
 
-set Debug 0
+set Debug 1
 
-set version "2.3"
+set version "2.4"
 set twdurl "http://bible2.net/service/TheWord/twd11/current"
 set bpxurl "http://vollmar.ch/bibelpix"
 set platform $tcl_platform(platform)
@@ -266,15 +266,13 @@ if {![info exists margintop]} {
 #Define font colours + shade factors - TESTING!!!
 set gold {#daa520}
 set silver {#707585}
-
 #set blue {#483d8b}
 set steelblue {#4682b4}
 set steelblue3 {#5096c8}
 set blue $steelblue
-
 set seagreen {#2e8b57}
 set turquoise {#008d78}
-set green $turquoise
+set green $seagreen
 
 set sunfactor 2.0
 set shadefactor 0.6
