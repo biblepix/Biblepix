@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18apr17
+# Updated: 19apr17
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -64,8 +64,8 @@ set gettingTwd(en) "Fetching current list of Bible text files from bible2.net...
 set gettingTwd(de) "Hole aktuelle Bibeltext-Liste von bible2.net..."
 set ::gettingTwd $gettingTwd($lang)
 
-set noTwdFilesFound(en) "Auf Ihrem PC sind noch keine Bibeltextdateien installiert.\nBitte wählen Sie im Register 'International' des Setup-Programms\nmindestens 1 Sprachdatei aus."
-set noTwdFilesFound(de) "No Bible text files have been installed yet on your PC.\nPlease choose at least one language text file\nfrom the 'International' section of the Setup program."
+set noTwdFilesFound(en) "Auf Ihrem PC sind noch keine Bibeltextdateien installiert.\nBitte wählen Sie mindestens 1 Sprachdatei aus."
+set noTwdFilesFound(de) "No Bible text files have been installed yet on your PC.\nPlease choose at least one language text file."
 set ::noTWDFilesFound $noTwdFilesFound($lang)
 
 set connTwd(en) "Connection to bible2.net established."
