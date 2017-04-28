@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19apr17
+# Updated: 21apr17
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -64,8 +64,8 @@ set gettingTwd(en) "Fetching current list of Bible text files from bible2.net...
 set gettingTwd(de) "Hole aktuelle Bibeltext-Liste von bible2.net..."
 set ::gettingTwd $gettingTwd($lang)
 
-set noTwdFilesFound(en) "Auf Ihrem PC sind noch keine Bibeltextdateien installiert.\nBitte wählen Sie mindestens 1 Sprachdatei aus."
-set noTwdFilesFound(de) "No Bible text files have been installed yet on your PC.\nPlease choose at least one language text file."
+set noTwdFilesFound(en) "Auf Ihrem PC sind noch keine Bibeltextdateien installiert.\nBitte wählen Sie im Register 'International' des Setup-Programms\nmindestens 1 Sprachdatei aus."
+set noTwdFilesFound(de) "No Bible text files have been installed yet on your PC.\nPlease choose at least one language text file\nfrom the 'International' section of the Setup program."
 set ::noTWDFilesFound $noTwdFilesFound($lang)
 
 set connTwd(en) "Connection to bible2.net established."
@@ -94,7 +94,7 @@ if {[catch "glob $twddir/he_*"]} {
 	if {$platform=="unix"} {
 		set rtl [string reverse $rtl]
 	}
-	lappend rtltext $rtl \n
+	append rtltext \n $rtl 
 }
 if {[catch "glob $twddir/ar_*"]} {
 	set rtl "" } else {
@@ -102,7 +102,7 @@ if {[catch "glob $twddir/ar_*"]} {
 	if {$platform=="unix"} {
 		set rtl [string reverse $rtl]
 	}
-	lappend rtltext $rtl \n
+	append rtltext \n $rtl 
 }
 
 set textpos(en) "Text position $rtltext"
@@ -117,8 +117,8 @@ set welcSubtit1(en) "What is $bp?"
 set welcSubtit1(de) "Was ist $bp?"
 set ::welc.subtit1 $welcSubtit1($lang)
 
-set welcTxt1(en) "$bp is a Tcl program developed for the 'Bible 2.0' project which aims to publish $dw\nin a growing number of languages.\n$dw consists of two selected Bible verses for each day of the year.\n$bp can display $dw in various ways on your computer."
-set welcTxt1(de) "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' geschrieben wurde.\n'Bibel 2.0' setzt sich zum Ziel, $dw \u2014 2 ausgewählte Bibelsprüche für jeden Tag des Jahres \u2014 \nin einer wachsenden Anzahl von Sprachen zu verbreiten.\n$bp kann $dw in vielfältiger Weise auf Ihrem PC anzeigen."
+set welcTxt1(en) "$bp is a Tcl program developed for the 'Bible 2.0' project which aims to publish $dw\nin a growing number of languages.\n$dw consists of two selected Bible verses for each day of the year.\n\n$bp can display $dw in various ways on your computer."
+set welcTxt1(de) "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' geschrieben wurde.\n'Bibel 2.0' setzt sich zum Ziel, $dw \u2014 2 ausgewählte Bibelsprüche für jeden Tag des Jahres \u2014 in einer wachsenden Anzahl von Sprachen zu verbreiten.\n\n$bp kann $dw in vielfältiger Weise auf Ihrem PC anzeigen."
 set ::welc.txt1 $welcTxt1($lang)
 
 set welcSubtit2(en) "What are your options?"
@@ -219,8 +219,8 @@ if {$platform=="unix"} {
 	set unixPNG ""
 	set picN 2
 }
-set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and $picN identical new background images, '[file tail $TwdBMP]' / '[file tail $TwdTIF]' $unixPNG will be put in \n\n\t\t $imgdir \n\nfor the Desktop manager to display.\n\tIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\t$bp will set up a Slide Show with alternating pictures at a given interval. You can, however, unset this.\n\tThe font size is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters tend to contrast better in non-Latin scripts).\n\t$bp will try its best to automatically set the new background image via your system management. It this fails, just right-click on your Desktop and find the menu for 'Background' or 'Backdrop', pointing the program to the new background image as described above. Intelligent Desktop managers like Gnome detect image change automatically, so there is no need to set up a slide show via the Desktop manager.  For other Desktop managers like KDE and Windows, under 'Background' or 'Backdrop', find the menu for 'Slide Show' and indicate the above-mentioned directory as path to the new slides folder."
-set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild in $picN Formaten, '[file tail $TwdBMP]' / '[file tail $TwdTIF]' $unixPNG steht jeweils in \n\n\t\t $imgdir \n\nzur Anzeige für den Desktop-Manager bereit. \n\tSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\t$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Sie können das aber deaktivieren (s.o.).\n\tDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, die Buchstabengrösse und -Dicke anzupassen (grössere Buchstaben = besserer Kontrast bes. für nicht-lateinische Schriften).\n\t$bp versucht, das neue Hintergrundbild automatisch über Ihre Systemsteuerung einzurichten. Falls nach der Installation nichts geschieht, rechtsklicken Sie auf Ihrem Desktop und finden Sie das Menü 'Hintergrundbild'; dort geben Sie den oben beschriebenen Pfad zum neuen Bild an. Intelligente Desktop-Manager wie Gnome erkennen automatisch, wenn das Hintergrundbild ändert; somit muss keine Diaschau über den Desktop-Manager eingerichtet werden. Für andere Desktop-Verwaltungsprogramme wie KDE und Windows ist bei 'Hintergrundbild > Diaschau' unter Angabe des oben angegebenen Verzeichnisses eigens eine Diaschau einzurichten."
+set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and $picN identical new background images, '[file tail $TwdBMP]' / '[file tail $TwdTIF]' $unixPNG will be put in \n\n\t\t $imgdir \n\nfor the Desktop manager to display.\n\tIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\t$bp will set up a Slide Show with alternating pictures at a given interval. You can, however, unset this.\n\tThe font size is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters tend to contrast better in non-Latin scripts).\n\tIf the new background image fails to appear automatically, just right-click on your Desktop and find the menu for 'Background' or 'Backdrop', pointing the program to the new background image as described above. Intelligent Desktop managers like Gnome detect image change automatically, so there is no need to set up a slide show via the Desktop manager.  For other Desktop managers like KDE and Windows, under 'Background' or 'Backdrop', find the menu for 'Slide Show' and indicate the above-mentioned directory as path to the new slides folder."
+set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild in $picN Formaten, '[file tail $TwdBMP]' / '[file tail $TwdTIF]' $unixPNG steht jeweils in \n\n\t\t $imgdir \n\nzur Anzeige für den Desktop-Manager bereit. \n\tSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\t$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Sie können das aber deaktivieren (s.o.).\n\tDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, die Buchstabengrösse und -Dicke anzupassen (grössere Buchstaben = besserer Kontrast bes. für nicht-lateinische Schriften).\n\tFalls das neue Hintergrundbild nicht automatisch erscheint, rechtsklicken Sie auf Ihrem Desktop und finden Sie das Menü 'Hintergrundbild'; dort geben Sie den oben beschriebenen Pfad zum neuen Bild an. Intelligente Desktop-Manager wie Gnome erkennen automatisch, wenn das Hintergrundbild ändert; somit muss keine Diaschau über den Desktop-Manager eingerichtet werden. Für andere Desktop-Verwaltungsprogramme wie KDE und Windows ist bei 'Hintergrundbild > Diaschau' unter Angabe des oben angegebenen Verzeichnisses eigens eine Diaschau einzurichten."
 set ::f2.txt $f2Txt($lang)
 
 set f6Tit(en) "Manage your photos for $bp"
@@ -228,7 +228,7 @@ set f6Tit(de) "Fotos für $bp organisieren"
 set ::f6.tit $f6Tit($lang)
 
 set f6Txt(en) "Here you can add any suitable photos from your Pictures directory and put them into the $bp photo collection, or remove them from there. The photos should ideally be in landscape format and have a plain-colour surface (e.g. sky) in the top-left area. \n\nIf the size of a photo does not agree with the screen dimensions, $bp will fit it to size and save it to the $bp Photos directory."
-set f6Txt(de) "Im nebenstehenden Dialog können Sie beliebig viele Fotos aus Ihrem persönlichen Bildordner in die $bp-Fotosammlung ziehen. Die Fotos sollten im Querformat aufgenommen sein und eine möglichst ebenfarbige Fläche für den Text im oberen Drittel aufweisen (z.B. Himmel). \n\nFalls das Bildformat nicht mit der Bildschirmgrösse übereinstimmt, speichert $bp das Foto im passenden Format im $bp-Fotoordner ab."
+set f6Txt(de) "Hier können Sie beliebig viele Fotos aus Ihrem persönlichen Bildordner in die $bp-Fotosammlung ziehen. Die Fotos sollten im Querformat aufgenommen sein und eine möglichst ebenfarbige Fläche für den Text im oberen Drittel aufweisen (z.B. Himmel). \n\nFalls das Bildformat nicht mit der Bildschirmgrösse übereinstimmt, speichert $bp das Foto im passenden Format im $bp-Fotoordner ab."
 set ::f6.txt $f6Txt($lang)	
 
 set f6Add(en) "Add to $bp Photo Collection:"

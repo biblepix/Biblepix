@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 18apr17
+# Updated 23apr17
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
@@ -61,8 +61,6 @@ set slideSec .n.f2.fright.ftop.sectxt
 spinbox .n.f2.fright.ftop.slideSpin -from 10 -to 600 -increment 10 -width 3
 set slideSpin .n.f2.fright.ftop.slideSpin
 $slideSpin set $slideshow
-
-
 if {!$slideshow} {
 	$slideBtn deselect 
 	set slideshowState 0
@@ -77,17 +75,13 @@ if {!$slideshow} {
 set textPosFactor 3
 image create photo origbild -file [getRandomJPG]
 image create photo canvasbild
-#TODO: fit image into frame ! - das ist ungenau
 canvasbild copy origbild -subsample $textPosFactor -shrink
 
-canvas .n.f2.fright.fbot.textposcanv -bg lightgrey -borderwidth 1
-set textposCanv .n.f2.fright.fbot.textposcanv
+set textposCanv [canvas .n.f2.fright.fbot.textposcanv -bg lightgrey -borderwidth 1]
 $textposCanv configure -width [image width canvasbild] -height [expr $screeny/$textPosFactor]
 $textposCanv create image 0 0 -image canvasbild -anchor nw
 
-label .n.f2.fright.fbot.textpostxt -textvar textpos
-set textposTxt .n.f2.fright.fbot.textpostxt
-
+set textposTxt [label .n.f2.fright.fbot.textpostxt -textvar textpos]
 createMovingTextBox $textposCanv
 $textposCanv bind mv <1> {movestart %W %x %y}
 $textposCanv bind mv <B1-Motion> {move %W %x %y}
@@ -102,14 +96,11 @@ canvas .n.f2.fright.fbot2.inttextcanv -width 700 -height 300 -borderwidth 2 -rel
 set inttextCanv .n.f2.fright.fbot2.inttextcanv
 
 #create background image - TESTING!
-image create photo intTextBG -file $guidir/test.tif
+image create photo intTextBG -file $guidir/testbild.png -height 300 -width 700
 $inttextCanv create image 0 0 -image intTextBG -anchor nw 
 
-label .n.f2.fright.fbot2.inttexttxt -textvar f2.fontexpl
-set inttextHeader .n.f2.fright.fbot2.inttexttxt
-
-
 # set international text
+set inttextHeader [label .n.f2.fright.fbot2.inttexttxt -textvar f2.fontexpl]
 if {$platform=="unix"} {
 	set ar_txt [string reverse $f2ar_txt]
 	set he_txt [string reverse $f2he_txt]
@@ -135,7 +126,7 @@ set fontcolorTxt .n.f2.fright.fbot1.fontcolorTxt
 set fontcolorSpin .n.f2.fright.fbot1.fontcolorSpin
 $fontcolorSpin configure -command {
 	setCanvasText [set %s]
-        $textposCanv itemconfigure mv -fill %s
+     #   $textposCanv itemconfigure mv -fill %s
         }
 
 $fontcolorSpin set $fontcolortext
