@@ -2,7 +2,7 @@
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19apr17
+# Updated: 28apr17
 
 package require http
 
@@ -21,24 +21,30 @@ proc setProxy {} {
 }
 
 proc testHttpCon {} {
+#returns 0 or 1
 	global bpxurl version
-	set testfile "$bpxurl/$version/README"
-	set testtoken [http::geturl $testfile -validate 1]
-	set error 0
-	
-	if { [http::error $testtoken] != "" || [http::ncode $testtoken] != 200} {       
-		#try proxy
-		setProxy
-		#test connexion again
-		set testtoken [http::geturl $testfile -validate 1]
-		
-		if { [http::error $testtoken] != "" || [http::ncode $testtoken] != 200} {        
-			
-			set error 1
-		}
+	set testfile "$bpxurl/release/README"
+	catch {set testtoken [http::geturl $testfile -validate 1]}
+
+	proc getTesttoken {} {
+	global testtoken
+	if { 
+		! [info exists testtoken] || 
+		[http::error $testtoken] != "" || 
+		[http::ncode $testtoken] != 200
+		} {set error 1} else {set error 0}
 	}
-#TESTING!!!
-#set error1
+
+	set error [getTesttoken]
+	
+	#try proxy & retry connexion
+	if {$error} {
+		setProxy
+		set error [getTesttoken]
+	}	
+	
+	
+puts "error: $error"	
 	return $error
 }
 
@@ -65,9 +71,10 @@ proc runHTTP args {
 	}
      
 	#Test connexion & start download
-	set Error [catch testHttpCon]
-        
-	if {$Error} {
+	catch testHttpCon Error
+      puts "Error: $Error"
+ 
+	if {$Error != 0} {
 		catch {.news configure -bg red}
 		set ::ftpStatus $noConnHttp
 		set ::news $noConnHttp
@@ -80,11 +87,7 @@ proc runHTTP args {
 			set filename [file tail $filepath]
 
 			#get remote 'meta' info (-validate 1)			
-			set token [http::geturl $bpxurl/$version/$filename -validate 1]
-			
-		#skip if non-existent
-		if {[http::ncode $token]==200} {
-
+			set token [http::geturl $bpxurl/release/$filename -validate 1]
 			array set meta [http::meta $token]
 			
 			#a) Overwrite file if "Initial" 
@@ -96,7 +99,6 @@ proc runHTTP args {
 			} else {
 				
 				set newtime $meta(Last-Modified)
-				#catch times in var
 				catch {clock scan $newtime} newsecs
 				catch {file mtime $filepath} oldsecs
 
@@ -109,7 +111,7 @@ puts "New Time: $newsecs\nOld Time: $oldsecs\n"
 					downloadFile $filepath $filename $token
 				}
 			}
-		} ;#end skip
+
 		} ;#end FOR loop
       
 	#Success message (source Texts again for Initial)
