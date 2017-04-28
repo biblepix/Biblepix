@@ -2,10 +2,9 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15apr17
+# Updated: 25apr17
 
-####### Procs for $Hgbild #####################
-# $rgb must be proper list!
+######### Procs for Hgbild #######################
 
 proc rgb2hex {rgb} {
 #called by setShade + setSun
@@ -16,8 +15,6 @@ proc rgb2hex {rgb} {
 
 proc hex2rgb {hex} {
 #called by Hgbild 
-
-#A: calculate into 3-part string
 	set rgb [scan $hex "#%2x %2x %2x"]
 	foreach i [split $rgb] {
 		lappend rgblist $i
@@ -50,16 +47,6 @@ global sunfactor
 	}
 	set sun [rgb2hex $sunrgb]
 	return $sun
-}
-
-proc setCanvasText {fontcolor} {
-global inttextCanv internationaltext
-	set rgb [hex2rgb $fontcolor]
-	set shade [setShade $rgb]
-	set sun [setSun $rgb]
-	$inttextCanv itemconfigure main -fill $fontcolor
-	$inttextCanv itemconfigure sun -fill $sun
-	$inttextCanv itemconfigure shade -fill $shade
 }
 
 proc cutx {src diff} {
