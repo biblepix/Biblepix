@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 23apr17
+# Updated 28apr17
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
