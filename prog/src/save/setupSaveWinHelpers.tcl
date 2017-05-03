@@ -12,10 +12,10 @@ proc setWinAutorun args {
         set regtext "$wishpath [file nativename [file join $srcpath biblepix.tcl]]"
         regsub -all {[\{\}]} $regtext {} regtext
 
-	if {[info exists args]} {
-		registry delete $regpath_autorun Biblepix
-	} else {
+	if {$args == ""} {
 		registry set $regpath_autorun Biblepix $regtext
+	} else {
+		registry delete $regpath_autorun Biblepix
 	}
 }
 
