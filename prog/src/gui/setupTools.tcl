@@ -1,8 +1,8 @@
-# ~/Biblepix/prog/src/share/setupTools.tcl
+# ~/Biblepix/prog/src/gui/setupTools.tcl
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4feb17
+# Updated: 21apr17
 
 ###### Procs for SetupGUI + SetupDesktop ######################
 
@@ -153,7 +153,7 @@ global news fileJList jpegdir lang
         set msgDE "[file tail $imgName] aus [file nativename $jpegdir] gelöscht"
         if  {$lang=="de"} {set msg $msgDE}
         file delete $imgName
-	set fileJList [deleteImg $fileJList .n.f6.content.left.bild.c]
+	set fileJList [deleteImg $fileJList .n.f6.mainf.right.bild.c]
         .news conf -bg red
         set ::news $msg
         after 3000 {.news conf -bg grey}
@@ -166,10 +166,10 @@ proc doOpen {bildordner c} {
 	refreshImg $localJList $c
 	
 	if {$localJList != ""} {
-		pack .add -in .n.f6.content.left.unten -side left -fill x
+		pack .add -in .n.f6.mainf.right.unten -side left -fill x
 	}
-	pack .imgName -in .n.f6.content.left.unten -side left -fill x
-	pack .n.f6.content.left.bar.collect -side left
+	pack .imgName -in .n.f6.mainf.right.unten -side left -fill x
+	pack .n.f6.mainf.right.bar.collect -side left
 	pack forget .del
 	
 	return $localJList
@@ -181,8 +181,8 @@ proc doCollect {c} {
 	set localJList [refreshFileList]
 	refreshImg $localJList $c
 	
-	pack .del .imgName -in .n.f6.content.left.unten -side left -fill x
-	pack forget .add .n.f6.content.left.bar.collect
+	pack .del .imgName -in .n.f6.mainf.right.unten -side left -fill x
+	pack forget .add .n.f6.mainf.right.bar.collect
 
 	return $localJList
 }

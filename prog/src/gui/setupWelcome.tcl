@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupWelcome.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7jan17
+# Updated:21apr17
 
 #Pack flags defined elsewhere
 pack .en .de -in .ftop -side right
@@ -20,7 +20,7 @@ pack [frame .n.f0.fbot] -expand 0 -fill x
 #Set text1 left
 #pack [frame .n.f0.ftop.f1] -expand 1 -fill x
 label .n.f0.ftop.left.subtit1 -font bpfont2 -textvar welc.subtit1 -padx $px -pady $py
-message .n.f0.ftop.left.whatis -textvar welc.txt1 -font bpfont1 -width [expr $wWidth/3*2] -justify left -padx $px
+message .n.f0.ftop.left.whatis -textvar welc.txt1 -font bpfont1 -width [expr $wWidth/2] -justify left -padx $px
 pack .n.f0.ftop.left.subtit1 -anchor nw
 pack .n.f0.ftop.left.whatis  -anchor nw -side left
 
