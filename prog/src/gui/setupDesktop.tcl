@@ -96,6 +96,7 @@ canvas .n.f2.fright.fbot2.inttextcanv -width 700 -height 300 -borderwidth 2 -rel
 set inttextCanv .n.f2.fright.fbot2.inttextcanv
 
 #create background image - TESTING!
+#TODO: canvas bzw. Bild zu hoch - weiss nicht warum!
 image create photo intTextBG -file $guidir/testbild.png -height 300 -width 700
 $inttextCanv create image 0 0 -image intTextBG -anchor nw 
 
