@@ -1,7 +1,7 @@
-# ~/Biblepix/progs/src/main/hgbild.tcl
+# ~/Biblepix/progs/src/pic/hgbild.tcl
 # Creates background picture, called by image.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 17apr2017
+# Updated 7mai2017
 
 source $Imgtools  
 
@@ -72,12 +72,13 @@ global Config platform TwdTIF TwdPNG TwdBMP screenx fontcolor fgrgb
 		}
 	}
 	
-	#Save hgbild as BMP + TIFF
-	hgbild write $TwdBMP -format BMP
-	hgbild write $TwdTIF -format TIFF
+	#Save hgbild as TIFF for Win
+	if {$platform=="windows"} {	
+		hgbild write $TwdTIF -format TIFF
 	
-	#Save hagbild as PNG (KDE+GNOME2 need min. 1 for slideshow) 
-	if {$platform=="unix"} {
+	#Save hagbild as PNG & BMP for Unix (KDE/GNOME need 2 for slideshow) 
+	} elseif {$platform=="unix"} {
+		hgbild write $TwdBMP -format BMP
 		hgbild write $TwdPNG -format PNG
 	}
     	
