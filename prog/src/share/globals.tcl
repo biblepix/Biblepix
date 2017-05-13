@@ -4,6 +4,7 @@
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
 # Updated: 19apr17
 
+# This variable enables the debuging mode in the hole application if set to 1.
 set Debug 1
 
 set version "2.4"
@@ -53,6 +54,12 @@ set savedir [file join $srcdir save]
 
 #SET ARRAYS FOR DOWNLOAD
 
+if { $Debug } {
+	set Http [file join $sharedir httpMock.tcl]
+} else {
+	set Http [file join $sharedir http.tcl]
+}
+
 #Set filepaths array
 array set filepaths "
 Readme [file join $rootdir README]
@@ -81,7 +88,6 @@ Bidi [file join $sharedir bidi.tcl]
 Flags [file join $sharedir flags.tcl]
 JList [file join $sharedir JList.tcl]
 Globals [file join $sharedir globals.tcl]
-Http [file join $sharedir http.tcl]
 Imgtools [file join $sharedir imgtools.tcl]
 Twdtools [file join $sharedir twdtools.tcl]
 Uninstall [file join $sharedir uninstall.tcl]
