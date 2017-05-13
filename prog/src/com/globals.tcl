@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 19apr17
+# Updated: 7mai17
 
 # This variable enables the debuging mode in the hole application if set to 1.
 set Debug 1
@@ -49,7 +49,7 @@ set unixdir [file join $progdir unix]
 set guidir [file join $srcdir gui]
 set maildir [file join $srcdir sig]
 set maindir [file join $srcdir pic]
-set sharedir [file join $srcdir share]
+set sharedir [file join $srcdir com]
 set savedir [file join $srcdir save]
 
 #SET ARRAYS FOR DOWNLOAD

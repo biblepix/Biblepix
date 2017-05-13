@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 28apr17
+# Updated 9mai17
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
@@ -92,11 +92,11 @@ if {! [regexp displayfont [font names] ] } {
 	font create displayfont -family $fontfamily -size -$fontsize -weight bold
 }
 
-canvas .n.f2.fright.fbot2.inttextcanv -width 700 -height 300 -borderwidth 2 -relief raised
+canvas .n.f2.fright.fbot2.inttextcanv -width 700 -height 150 -borderwidth 2 -relief raised
 set inttextCanv .n.f2.fright.fbot2.inttextcanv
 
-#create background image - TESTING!
-image create photo intTextBG -file $guidir/testbild.png -height 300 -width 700
+#create background image
+image create photo intTextBG -file $guidir/testbild.png
 $inttextCanv create image 0 0 -image intTextBG -anchor nw 
 
 # set international text

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21dec2016
+# Updated: 9mai17
 
 source $SetupSaveLinHelpers
 
@@ -22,10 +22,10 @@ if {[regexp $string1 $readfile] || [regexp $string2 $readfile]} {
 	close $chan
 }
 
-#move any old jpegs to $picsdir
+#move any old jpegs to $imgdir
 set jpglist [glob -nocomplain -directory $rootdir *.jpg *.jpeg *.JPG *.JPEG] 
 foreach file $jpglist {
-	file copy -force $file $picsdir
+	file copy -force $file $imgdir
 	file delete $file
 }
 

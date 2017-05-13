@@ -3,15 +3,15 @@
 # Called by User via Windows/Unix Desktop entry
 # If called by BiblePix-Installer, this is the first file downloaded + executed
 ################################################################################
-# Version: 2.3
+# Version: 2.4
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10apr17
+# Updated: 7mai17
 
 package require Tk
 
 #Verify location & source vars
 set srcdir [file dirname [info script]]
-set Globals "[file join $srcdir share globals.tcl]"
+set Globals "[file join $srcdir com globals.tcl]"
 
 #Set initial FTP message & progress bar
 frame .updateFrame -padx 40 -pady 50 -borderwidth 20

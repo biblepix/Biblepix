@@ -2,13 +2,21 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21apr17
+# Updated: 25apr17
 
 ###### Procs for SetupGUI + SetupDesktop ######################
 
 # F L A G   P R O C S
-#M O V E   T O  setupTools
 
+proc setCanvasText {fontcolor} {
+global inttextCanv internationaltext
+	set rgb [hex2rgb $fontcolor]
+	set shade [setShade $rgb]
+	set sun [setSun $rgb]
+	$inttextCanv itemconfigure main -fill $fontcolor
+	$inttextCanv itemconfigure sun -fill $sun
+	$inttextCanv itemconfigure shade -fill $shade
+}
 #grey out all spinboxes if !$enablepic
 proc setSpinState {imgyesState} {
 global showdateBtn slideBtn slideSpin fontcolorSpin fontsizeSpin fontweightBtn fontfamilySpin
@@ -77,7 +85,7 @@ global Flags
 
 proc createMovingTextBox {textposCanv} {
 global screenx screeny marginleft margintop textPosFactor fontsize fontfamily
-global fontcolortext gold green blue silver noTWDFilesFound
+global fontcolortext gold green blue silver noTWDFilesFound dwtext
 
 	set textPosSubwinX [expr $screenx/20]
 	set textPosSubwinY [expr $screeny/30]
@@ -86,17 +94,18 @@ global fontcolortext gold green blue silver noTWDFilesFound
 	set x2 [expr ($marginleft/$textPosFactor)+$textPosSubwinX]
 	set y2 [expr ($margintop/$textPosFactor)+$textPosSubwinY]
 	
-	set twdfile [getRandomTWDFile]
-	if {$twdfile == ""} {
-		set bibeltext $noTWDFilesFound
-	} else {
-		set bibeltext [formatImgText $twdfile]
-	}
+#	set twdfile [getRandomTWDFile]
+#	if {$twdfile == ""} {
+#		set bibeltext $noTWDFilesFound
+#	} else {
+#		set bibeltext [formatImgText $twdfile]
+#	}
 	
 	$textposCanv create text [expr $marginleft/$textPosFactor] [expr $margintop/$textPosFactor] -anchor nw -justify left -tags mv 
-	$textposCanv itemconfigure mv -text $bibeltext
-	$textposCanv itemconfigure mv -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill [set $fontcolortext]
-	$textposCanv itemconfigure mv -activefill red
+	$textposCanv itemconfigure mv -text $dwtext
+#	$textposCanv itemconfigure mv -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill [set $fontcolortext]
+$textposCanv itemconfigure mv -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill steelblue	
+$textposCanv itemconfigure mv -activefill red
 }
 
 proc movestart {w x y} {
@@ -111,8 +120,8 @@ proc movestart {w x y} {
 }
 
 proc move {w x y} {
-proc + {a b} {expr {$a + $b}}
-proc - {a b} {expr {$a - $b}} 
+	proc + {a b} {expr {$a + $b}}
+	proc - {a b} {expr {$a - $b}} 
    
     set dx [- [$w canvasx $x] $::X]
     set dy [- [$w canvasx $y] $::Y]
