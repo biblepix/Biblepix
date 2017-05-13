@@ -125,22 +125,22 @@ set welcSubtit2(en) "What are your options?"
 set welcSubtit2(de) "Was sind Ihre Möglichkeiten?"
 set ::welc.subtit2 $welcSubtit2($lang)
 
-set welcTxt2(en) "\t* INTERNATIONAL: Choose one or several Bible text languages for $dw
-\t* DESKTOP: Get $dw on your personal background pictures, incl. slide show
-\t* PHOTOS: Organise your background pictures for $bp
-\t* E-MAIL: Get $dw added to your e-mail signatures each day"
-set welcTxt2(de) "\t* INTERNATIONAL: Wählen Sie eine oder mehrere Sprachen für den Bibeltext
-\t* DESKTOP: Betrachten Sie $dw auf Ihren persönlichen Hintergrundbildern
-\t* PHOTOS: Wählen Sie eigene Hintergrundbilder für $bp aus
-\t* E-MAIL: Fügen Sie $dw an Ihre E-Mails an"
+set welcTxt2(en) "* INTERNATIONAL:\tChoose one or several Bible text languages for $dw
+* DESKTOP:\tGet $dw on your personal background pictures, incl. slide show
+* PHOTOS:\tOrganise your background pictures for $bp
+* E-MAIL:\t\tGet $dw added to your e-mail signatures each day"
+set welcTxt2(de) "* INTERNATIONAL:\tWählen Sie eine oder mehrere Sprachen für den Bibeltext
+* DESKTOP:\tBetrachten Sie $dw auf Ihren persönlichen Hintergrundbildern
+* PHOTOS:\tWählen Sie eigene Hintergrundbilder für $bp aus
+* E-MAIL:\t\tFügen Sie $dw an Ihre E-Mails an"
 set ::welc.txt2 $welcTxt2($lang)
 
-set welcTxt3(en) "\t* TERMINAL: Show $dw in your Linux/Mac terminals"
-set welcTxt3(de) "\t* TERMINAL: Betrachten Sie $dw in Ihren Linux/Mac-Konsolen"
+set welcTxt3(en) "* TERMINAL:\tShow $dw in your Linux/Mac terminals"
+set welcTxt3(de) "* TERMINAL:\tBetrachten Sie $dw in Ihren Linux/Mac-Konsolen"
 set ::welc.txt3 $welcTxt3($lang)
 
-set welcTxt4(de) "\t* MANUAL: Studieren Sie das komplette Handbuch von $bp"
-set welcTxt4(en) "\t* MANUAL: Study the Complete Guide to the $bp program"
+set welcTxt4(de) "* MANUAL:\tStudieren Sie das komplette Handbuch von $bp"
+set welcTxt4(en) "* MANUAL:\tStudy the Complete Guide to the $bp program"
 set ::welc.txt4 $welcTxt4($lang)
 
 set uninst(en) "Uninstall $bp"
@@ -220,10 +220,10 @@ if {$platform=="unix"} {
 	set picNo $picN($lang)
 } else {
 #win has only TIF
-	set picN ": '[file tail $TwdTIF]'"
+	set picNo ": '[file tail $TwdTIF]'"
 }
-set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image $picNo will be put in \n\n\t\t [file normalize $imgdir] \n\nfor the Desktop manager to display.\n\tIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\t$bp will set up a Slide Show with alternating pictures at a given interval. You can, however, unset this.\n\tThe font size is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters tend to contrast better in non-Latin scripts).\n\tIf the new background image fails to appear automatically, please consult the Manual page for a solution."
-set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild $picNo steht jeweils in \n\n\t\t [file normalize $imgdir] \n\nzur Anzeige für den Desktop-Manager bereit. \n\tSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\t$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Sie können das aber deaktivieren (s.o.).\n\tDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, die Buchstabengrösse und -Dicke anzupassen (grössere Buchstaben = besserer Kontrast bes. für nicht-lateinische Schriften).\n\tFalls das neue Hintergrundbild nicht automatisch erscheint, studieren Sie das Manual für eine Lösung."
+set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image $picNo will be put in \n\n\t [file nativename $imgdir] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. You can, however, unset this.\n\nThe font size is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters tend to contrast better in non-Latin scripts).\n\nIf the new background image fails to appear automatically, please consult the Manual page for a solution."
+set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild $picNo steht jeweils in \n\n\t [file nativename $imgdir] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Sie können das aber deaktivieren (s.o.).\n\nDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, die Buchstabengrösse und -Dicke anzupassen (grössere Buchstaben = besserer Kontrast bes. für nicht-lateinische Schriften).\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, studieren Sie das Manual für eine Lösung."
 set ::f2.txt $f2Txt($lang)
 
 set f6Tit(en) "Manage your photos for $bp"
