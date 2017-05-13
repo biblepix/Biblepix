@@ -4,7 +4,6 @@
 # Updated 21apr17
 
 set fileJList ""
-source $JList
 set HOME "$env(HOME)"
 
 if {$platform == "unix"} {

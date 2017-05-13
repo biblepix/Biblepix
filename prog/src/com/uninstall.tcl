@@ -19,9 +19,7 @@ if {$antwort=="yes"} {
 			}
 		}
 
-		.news conf -bg red
-		set news "Removing BiblePix from your computer..."
-		after 5000 {}
+		NewsHandler::QueryNews "Removing BiblePix from your computer..." red
 		
 		# L I N U X
 		if {$os=="Linux"} {

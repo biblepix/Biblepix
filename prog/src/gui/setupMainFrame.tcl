@@ -6,11 +6,18 @@
 
 pack forget .updateFrame.pbTitle .updateFrame.progbar .updateFrame
 
+source -encoding utf-8 $SetupTexts
+setTexts $lang
+
+source $Setuptools
+
+source $Twdtools
+
 #Set general X vars
 set screenwidth [winfo screenwidth .]
 set screenheight [winfo screenheight .]
 set wWidth 1280
-set wHeight 880
+set wHeight 940
 
 if {$screenwidth < $wWidth} { set wWidth $screenwidth}
 if {$screenheight < $wHeight} { set wHeight $screenheight}
@@ -19,7 +26,7 @@ set wMy [expr ($screenheight - $wHeight) / 2]
 
 #set wWidth [expr $screenwidth - ($screenwidth/3)]
 #set wHeight [expr $screenheight - 400]
-set tw [expr $wWidth - 50] ;#text width
+set tw [expr $wWidth - 100] ;#text width
 set px 10
 set py 10
 set bg LightGrey
@@ -35,7 +42,7 @@ frame .ftop
 pack .ftop -fill x
 
 #Create notebook
-ttk::notebook .n -width $wWidth -height [expr $wHeight - 200]
+ttk::notebook .n -width [expr $wWidth - 50] -height [expr $wHeight - 200]
 pack .n -fill y -expand true -padx $px -pady $py
 
 #Create Title (LOGO to be created later)
@@ -70,23 +77,13 @@ label .label -text "BiblePix Version $version"
 pack .label -in .fbottom -side left
 
 # TODO colorieren
-message .news -textvariable news -width [expr $wWidth - 300]
+message .news -textvariable news -width [expr $wWidth - 350]
 if {![info exists error] || !$error} {
-	set news $uptodateHttp
+	NewsHandler::QueryNews "$uptodateHttp" green
 } else {
-	set news $noConnHttp
+	NewsHandler::QueryNews "$noConnHttp" red
 }
 pack .news -in .fbottom -fill x
 
 #Fill tabs
 source $SetupBuild
-
-#retry resetting geometry
-#wm geometry . +10+20
-
-		
-#Set news back to neutral
-after 7000 {
-	.news configure -bg grey
-	set ::news "biblepix.vollmar.ch"
-}

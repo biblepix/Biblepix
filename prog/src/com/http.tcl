@@ -75,9 +75,8 @@ proc runHTTP args {
       puts "Error: $Error"
  
 	if {$Error != 0} {
-		catch {.news configure -bg red}
 		set ::ftpStatus $noConnHttp
-		set ::news $noConnHttp
+		NewsHandler::QueryNews "$noConnHttp" red
 				 
 	} else {
 				
@@ -116,9 +115,8 @@ puts "New Time: $newsecs\nOld Time: $oldsecs\n"
       
 	#Success message (source Texts again for Initial)
 	catch {.if.initialMsg configure -bg green}
-	catch {.news configure -bg green}
+	catch {NewsHandler::QueryNews "$uptodateHttp" green}
 	catch {set ::ftpStatus $uptodateHttp}
-	catch {set ::news $uptodateHttp}
 	
 	} ;#end main condition
 
@@ -182,9 +180,7 @@ proc listAllRemoteTWDFiles {lBox} {
 }
 
 proc getRemoteTWDFileList {} {
-	global lang gettingTwd connTwd noConnTwd
-	.news conf -bg lightblue
-	set news $gettingTwd
+	global lang connTwd noConnTwd
 	
 	if {![catch {listAllRemoteTWDFiles .n.f1.twdremoteframe.lb}]} {
 		.n.f1.status conf -bg green

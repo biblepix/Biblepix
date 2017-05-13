@@ -4,13 +4,7 @@
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 20feb17
 
-source -encoding utf-8 $SetupTexts
-setTexts $lang
-
-source $Setuptools
 setFlags
-
-source $Twdtools
 
 #Create title logo with icon
 catch {

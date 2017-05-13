@@ -12,14 +12,10 @@ set SELECTED_TWD_FILES [.n.f1.twdremoteframe.lb curselection]
 if { $SELECTED_TWD_FILES != ""} {
 
 	if { [catch {set root [getRemoteRoot]}] } {
-		.news config -bg red
-		set news $noConnTwd
-	
-
+		NewsHandler::QueryNews "$noConnTwd" red
 	} else {
-
-		.news config -bg orange
-		set news $gettingTwd
+		NewsHandler::QueryNews "$gettingTwd" orange
+		
 		cd $twddir
 		#get hrefs alphabetically ordered
 		set urllist [$root selectNodes {//tr/td/a}]
@@ -33,8 +29,7 @@ if { $SELECTED_TWD_FILES != ""} {
 		foreach item $selectedindices {
 			set url [lindex $urllist $item]
 			set filename [file tail $url]
-			.news config -bg lightblue
-			set news "Downloading $filename...\n"
+			NewsHandler::QueryNews "Downloading $filename..." lightblue
 			set chan [open $filename w]
 			fconfigure $chan -encoding utf-8
 			http::geturl $url -channel $chan
@@ -52,15 +47,13 @@ if { $SELECTED_TWD_FILES != ""} {
 if { [catch {glob $twddir/*$jahr.twd}] } {
 		
 	.n select .n.f1
-	.news configure -bg red
-	set news $noTWDFilesFound
+	NewsHandler::QueryNews "$noTWDFilesFound" red
 
 #return to PHOTOS section if $picsdir empty
 } elseif {	[catch {glob $jpegdir/*}] } {
  
 	.n select .n.f6
-	.news configure -bg red
-	set news $noPhotosFound
+	NewsHandler::QueryNews "$noPhotosFound" red
 
 # else continue with writing Config
 } else {
@@ -101,15 +94,10 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	close $chan
 
 	#Finish
-	after 2000 {
-		.news config -bg green
-		set news "Changes recorded. Exiting..."
-	}
+	NewsHandler::QueryNews "Changes recorded. Exiting..." green
 
 	#leere das gesamte Fenster, weil es wiederverwendet wird.
-	after 2000 {	
-		pack forget .n .fbottom .ftop
-	}
+	pack forget .n .fbottom .ftop
 
 	#######  I N S T A L L   R O U T I N E S   WIN / LINUX / MAC
 
@@ -149,16 +137,13 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	set vorjahr [expr {$jahr - 1}]
 	set oldtwdlist [glob -nocomplain -directory $twddir *$vorjahr.twd]
 	if {[info exists oldtwdlist]} {
-		.news config -bg lightblue
-		set ::news "Deleting old language files..."
+		NewsHandler::QueryNews "Deleting old language files..." lightblue
 		
 		foreach file $oldtwdlist {
 			file delete $file
 		}
-		after 2000 {
-			.news config -bg green
-			set ::news "Old TWD files deleted."
-		}
+		
+		NewsHandler::QueryNews "Old TWD files deleted." green
 
 	}
 

@@ -4,6 +4,71 @@
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 25apr17
 
+source $JList
+
+###### Procs for News handling ######################
+
+namespace eval NewsHandler {
+	namespace export QueryNews
+	
+	variable queryTextJList ""
+	variable queryColorJList ""
+	variable counter 0
+	variable isShowing 0	
+	
+	proc QueryNews {text color} {
+		variable queryTextJList
+		variable queryColorJList
+		variable counter
+		
+		set queryTextJList [jappend $queryTextJList $text]
+		set queryColorJList [jappend $queryColorJList $color]
+		
+		incr counter
+		
+		ShowNews
+	}
+	
+	proc ShowNews {} {
+		variable queryTextJList
+		variable queryColorJList
+		variable counter
+		variable isShowing
+	
+		if {$counter > 0} {
+			if {!$isShowing} {
+				set isShowing 1
+				
+				set text [jlfirst $queryTextJList]
+				set queryTextJList [jlremovefirst $queryTextJList]
+				
+				set color [jlfirst $queryColorJList]
+				set queryColorJList [jlremovefirst $queryColorJList]
+				
+				incr counter -1
+				
+				.news configure -bg $color
+				set ::news $text
+				
+				after 5000 {
+					NewsHandler::FinishShowing
+				}
+			}
+		}
+	}
+	
+	proc FinishShowing {} {	
+		variable isShowing
+		
+		.news configure -bg grey
+		set ::news "biblepix.vollmar.ch"
+		set isShowing 0
+		
+		ShowNews
+	}
+}
+
+
 ###### Procs for SetupGUI + SetupDesktop ######################
 
 # F L A G   P R O C S
@@ -146,26 +211,23 @@ proc move {w x y} {
 ##### Procs for SetupPhotos ####################################################
 
 proc addPic {imgName} {
-global news jpegdir lang
+global jpegdir lang
 	set msg "Copied [file tail $imgName] to [file nativename $jpegdir]"
-        set msgDE "[file tail $imgName] nach [file nativename $jpegdir] kopiert"
-        if  {$lang=="de"} {set msg $msgDE}
-        file copy $imgName $jpegdir
-        .news conf -bg lightblue
-        set ::news $msg
-        after 3000 {.news conf -bg grey}
+	set msgDE "[file tail $imgName] nach [file nativename $jpegdir] kopiert"
+	if  {$lang=="de"} {set msg $msgDE}
+	file copy $imgName $jpegdir
+	NewsHandler::QueryNews "$msg" lightblue
 }
 
 proc delPic {imgName} {
-global news fileJList jpegdir lang
+global fileJList jpegdir lang
 	set msg "Deleted [file tail $imgName] from [file nativename $jpegdir]"
-        set msgDE "[file tail $imgName] aus [file nativename $jpegdir] gelöscht"
-        if  {$lang=="de"} {set msg $msgDE}
-        file delete $imgName
+	set msgDE "[file tail $imgName] aus [file nativename $jpegdir] gelöscht"
+	if  {$lang=="de"} {set msg $msgDE}
+	file delete $imgName
 	set fileJList [deleteImg $fileJList .n.f6.mainf.right.bild.c]
-        .news conf -bg red
-        set ::news $msg
-        after 3000 {.news conf -bg grey}
+    
+	NewsHandler::QueryNews "$msg" red
 }
 
 proc doOpen {bildordner c} {

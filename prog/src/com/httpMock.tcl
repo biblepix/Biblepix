@@ -73,9 +73,7 @@ proc listAllRemoteTWDFiles {lBox} {
 }
 
 proc getRemoteTWDFileList {} {
-	global lang gettingTwd connTwd noConnTwd
-	.news conf -bg lightblue
-	set news $gettingTwd
+	global lang connTwd noConnTwd
 	
 	if {![catch {listAllRemoteTWDFiles .n.f1.twdremoteframe.lb}]} {
 		.n.f1.status conf -bg green
