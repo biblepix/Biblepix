@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 5feb17 
+# Updated : 16mai17 
 
 #Make sure either $twddir or SELECTED contain $jahr-TWD files,
 # else stop saving process & return to Setup!
@@ -69,6 +69,7 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	set fontweightstatus [set fontweightState]
 	set fontfamilystatus [$fontfamilySpin get]
 	set slidestatus [$slideSpin get]
+
 	#Fetch textpos coordinates
 	lassign [$textposCanv coords mv] x y - -
 	set marginleftstatus [expr int($x*$textPosFactor)]
@@ -89,6 +90,12 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 		puts $chan "set fontweight normal"
 	}
 	puts $chan "set fontcolortext $fontcolourstatus"
+
+	##Compute sun & shade HEX - (procs in Imgtools!)
+	set fontcolor [set $fontcolourstatus]
+	set rgb [hex2rgb $fontcolor]
+	puts $chan "set sun [setSun $rgb]"
+	puts $chan "set shade [setShade $rgb]"
 	puts $chan "set marginleft $marginleftstatus"
 	puts $chan "set margintop $margintopstatus"
 	close $chan

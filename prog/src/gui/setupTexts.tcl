@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 13mai17
+# Updated: 16mai17
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -90,7 +90,7 @@ set ::delete $delete($lang)
 set rtltext ""
 if {[catch "glob $twddir/he_*"]} {
 	set rtl "" } else {
-	set rtl "טקסט בכתב עברי יכוון אוטומטית לצד הנגדי"
+	set rtl "טקסט בכתב עברי יכוון אוטומטית לצד הנגדי של המסך."
 	if {$platform=="unix"} {
 		set rtl [string reverse $rtl]
 	}
@@ -105,8 +105,8 @@ if {[catch "glob $twddir/ar_*"]} {
 	append rtltext \n $rtl 
 }
 
-set textpos(en) "Text position $rtltext"
-set textpos(de) "Textposition $rtltext"
+set textpos(en) "Text position"
+set textpos(de) "Textposition"
 set ::textpos $textpos($lang)
 
 set welcTit(en) "Welcome to the $bp setup program!"
@@ -222,8 +222,8 @@ if {$platform=="unix"} {
 #win has only TIF
 	set picNo ": '[file tail $TwdTIF]'"
 }
-set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image $picNo will be put in \n\n\t [file nativename $imgdir] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. You can, however, unset this.\n\nThe font size is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters tend to contrast better in non-Latin scripts).\n\nIf the new background image fails to appear automatically, please consult the Manual page for a solution."
-set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild $picNo steht jeweils in \n\n\t [file nativename $imgdir] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Sie können das aber deaktivieren (s.o.).\n\nDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, die Buchstabengrösse und -Dicke anzupassen (grössere Buchstaben = besserer Kontrast bes. für nicht-lateinische Schriften).\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, studieren Sie das Manual für eine Lösung."
+set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image $picNo will be put in \n\n\t [file nativename $imgdir] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. For only 1 picture per day, unset this feature (see above).\n\nThe Text Position window allows you to put $dw wherever you like on your screen. $rtltext\n\nThe font size is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters = better contrast).\n\nIf the new background image fails to appear automatically, please consult the Manual page for a solution."
+set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild $picNo steht jeweils in \n\n\t [file nativename $imgdir] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Soll nur 1 Bild pro Tag angezeigt werden, kann die Diaschau deaktiviert werden (s.o.).\n\nIm Fenster 'Textposition' können Sie $dw an die gewünschte Stelle auf dem Bildschirm verschieben. $rtltext\n\nDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, Grösse und Dicke anzupassen (grössere Buchstaben = besserer Kontrast).\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, finden Sie im Manual eine Lösung."
 set ::f2.txt $f2Txt($lang)
 
 set f6Tit(en) "Manage your photos for $bp"

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 9mai17
+# Updated 16mai17
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
@@ -13,8 +13,8 @@ pack [frame .n.f2.fright] -expand 0 -fill y -side right -pady 5 -padx 5
 #Create left & right subframes
 #pack [frame .n.f2.fleft.f1] [frame .n.f2.fleft.f2] -fill none -expand 0 -fill x -side left
 pack [frame .n.f2.fright.ftop -relief ridge -borderwidth 3] -fill x -expand 0 -pady 2
-pack [frame .n.f2.fright.fbot] -pady $py -padx $px -fill x -expand 0
-pack [frame .n.f2.fright.fbot1] -pady $py -fill x 
+pack [frame .n.f2.fright.fbot -relief ridge -borderwidth 3] -pady $py -padx $px -fill x -expand 0
+pack [frame .n.f2.fright.fbot1] -pady $py -fill x
 pack [frame .n.f2.fright.fbot2] -fill x
 
 #F I L L   L E F T 

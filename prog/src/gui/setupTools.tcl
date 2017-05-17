@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25apr17
+# Updated: 16mai17
 
 source $JList
 
@@ -70,8 +70,6 @@ namespace eval NewsHandler {
 
 
 ###### Procs for SetupGUI + SetupDesktop ######################
-
-# F L A G   P R O C S
 
 proc setCanvasText {fontcolor} {
 global inttextCanv internationaltext
@@ -159,18 +157,9 @@ global fontcolortext gold green blue silver noTWDFilesFound dwtext
 	set x2 [expr ($marginleft/$textPosFactor)+$textPosSubwinX]
 	set y2 [expr ($margintop/$textPosFactor)+$textPosSubwinY]
 	
-#	set twdfile [getRandomTWDFile]
-#	if {$twdfile == ""} {
-#		set bibeltext $noTWDFilesFound
-#	} else {
-#		set bibeltext [formatImgText $twdfile]
-#	}
-	
 	$textposCanv create text [expr $marginleft/$textPosFactor] [expr $margintop/$textPosFactor] -anchor nw -justify left -tags mv 
 	$textposCanv itemconfigure mv -text $dwtext
-#	$textposCanv itemconfigure mv -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill [set $fontcolortext]
-$textposCanv itemconfigure mv -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill steelblue	
-$textposCanv itemconfigure mv -activefill red
+	$textposCanv itemconfigure mv -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill orange	-activefill red
 }
 
 proc movestart {w x y} {
