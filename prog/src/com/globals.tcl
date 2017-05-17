@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 7mai17
+# Updated: 16mai17
 
 # This variable enables the debuging mode in the hole application if set to 1.
 set Debug 1
@@ -269,17 +269,11 @@ if {![info exists margintop]} {
 	close $chan
 }
 
-#Define font colours + shade factors - TESTING!!!
-set gold {#daa520}
-set silver {#707585}
-#set blue {#483d8b}
-set steelblue {#4682b4}
-set steelblue3 {#5096c8}
-set blue $steelblue
-set seagreen {#2e8b57}
-set turquoise {#008d78}
-set green $seagreen
-
+#Define font colours & sun/shade factors
+set gold #daa520
+set silver #707585
+set blue #4682b4
+set green #2e8b57
 set sunfactor 2.0
 set shadefactor 0.6
 

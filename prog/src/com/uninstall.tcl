@@ -1,10 +1,10 @@
 # ~/Biblepix/prog/src/share/uninstall.tcl
 # sourced by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6apr17
+# Updated: 13mai17
 
 set msg1 "Do you really want to remove BiblePix from your computer?"
-set msg1DE "Wollen Sie wirklich BiblePix von Ihrem Computer entfernen?"
+set msg1DE "Wollen Sie wirklich BibelPix von Ihrem Computer entfernen?"
 if {$lang=="de"} {set msg1 $msg1DE}
 set antwort [tk_messageBox -icon warning -type yesno -message $msg1]
 
