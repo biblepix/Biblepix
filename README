@@ -5,9 +5,9 @@
 #                                                        #
 # Authors: Peter Vollmar & Joel Hochreutener             #
 # 	      www.biblepix.vollmar.ch                       #
-# Version: 2.3                                           #
+# Version: 2.4                                           #
 # Systems: Linux, Windows                                #
-# Updated: December 16                                   #
+# Updated: May 17                                        #
 ##########################################################
 
 ####################
@@ -35,8 +35,8 @@ BibelPix zeigt "Das Wort"
 an. Sämtliche Funktionen können automatisiert werden.
 
 Funktionen:	eingehend beschrieben im Setup-Programm 
-Updates:	automatisch bei Ausführung des Setup-Programms
-Systeme: 	Linux, Windows
+Updates:		automatisch bei Ausführung des Setup-Programms
+Systeme: 		Linux, Windows
 Systemvoraussetzungen: Tcl/Tk-Bibliothek, Zusatzpakete tDom und tkimg (bzw. libtk-img)
 
 
@@ -48,8 +48,8 @@ Tcl/Tk ist eine System-übergreifende Plattform für viele Betriebssysteme.
 1.  G I T
 
 Die Git-Installationsmethode ist systemunabhängig und funktioniert auf allen
-Plattformen, die eine Version des Programms 'git' installiert haben.
-Das Kommando sollte in einem Unterordner des Heimordners installiert werden,
+Plattformen, die eine Version von Git installiert haben. Die Git-Installation
+sollte in einem Unterordner des Heimordners installiert werden,
 damit Schreibrechte garantiert sind. Empfohlener Standard für Linux/Unix ist 
 	
 	/home/USERNAME/
@@ -77,7 +77,7 @@ Das Setup kann auch aus einem Dateimanager mit Doppelklick ausgeführt werden.
 
 2.  L I N U X
 
-   1. Tk/Tcl, tDom, tkimg installieren
+1. Tk/Tcl, tDom, tkimg installieren
    
    Die meisten Linux-Distributionen enthalten Tcl/Tk bereits, ebenso die erwähnten Zusatzpakete. 
    Sollte etwas davon fehlen, können Sie es leicht nachinstallieren, bevor Sie BibelPix einrichten:
@@ -91,9 +91,9 @@ Das Setup kann auch aus einem Dateimanager mit Doppelklick ausgeführt werden.
 		* sudo yast -i tkimg tdom (OpenSuse)
 		* sudo urpmi tkimg tdom (Mandriva)
 
-   2. BibelPix installieren
+2. BibelPix installieren
    
-   Datei 'BiblePix-Installer.tcl' von bible2.net herunterladen und ausführen:
+Datei 'BiblePix-Installer.tcl' von bible2.net herunterladen und ausführen:
 	
 	A) in Konsole/Terminal folgende Kommandos eingeben:
 	
@@ -102,12 +102,12 @@ Das Setup kann auch aus einem Dateimanager mit Doppelklick ausgeführt werden.
   		
 	B) aus Dateimanager:
 	
-		Auf Datei rechtsklicken und unter 'Öffnen mit...' tclsh angeben.
+		Auf Datei rechtsklicken und unter 'Öffnen mit...' tclsh oder wish angeben.
    
    3. Automatischer Eintrag ins Programm-Menü und in den Autostart
    
-   Bei der Installation wird versucht, die Programme BibelPix und BibelPix-Setup mitsamt Programm-Icon 
-   ins Programm-Menü Ihres Desktops aufzunehmen (meist unter "Graphik", "Bildung" oder "Verschiedenes"). 
+	Bei der Installation wird versucht, die Programme BibelPix und BibelPix-Setup 
+mitsamt Programm-Icon ins Programm-Menü Ihres Desktops aufzunehmen (meist unter "Graphik", "Bildung" oder "Verschiedenes"). 
    KDE, Gnome und XFCE4 sollten die Einträge automatisch erkennen. 
    
    Ebenso wird BibelPix in die automatisch gestarteten Programme aufgenommen. 
@@ -128,24 +128,21 @@ Das Setup kann auch aus einem Dateimanager mit Doppelklick ausgeführt werden.
 
 		tclsh Biblepix/prog/src/biblepix.tcl
      
-   Sollte keine dieser Dateien existieren, werden sie womöglich von Ihrem System nicht berücksichtigt.
-   Sie können sie jedoch problemlos erstellen und ausprobieren. 
+   Sollte keine dieser Dateien existieren, werden sie womöglich von Ihrem System nicht berücksichtigt. Sie können sie jedoch problemlos erstellen und ausprobieren. 
      	ּ
      	 
    4. Automatische Desktop-Einrichtung
    
    Falls Sie im Setup-Dialog "Hintergrundbild erzeugen" aktiviert haben, versucht BibelPix,
-   die Desktop-Einstellungen Ihres Computers so zu ändern, dass künftig das Bild 
+   die Desktop-Einstellungen Ihres Computers so zu ändern, dass künftig eines von 
    
 		theword.bmp
+		theword.png
    
-   als Hintergrundbild genommen wird. 
-   Identische Bilder im Format TIF und PNG stehen ebenfalls zur Verfügung.
+   als Hintergrundbild genommen wird.
      
-   Falls Sie bei 'Wechselbild' das Intervall nicht auf 0 gesetzt haben, versucht BibelPix
-   ebenfalls, den Bildwechsel Ihres Desktops zu programmieren (das BibelPix-Bild kommt stets
-   in 3facher Ausführung, damit, falls das Intervall des Desktops nicht mit dem von 
-   BibelPix übereinstimmt, stets ein zweites Bild vorhanden ist).
+   Falls Sie die Funktion 'Diaschau' nicht ausgeschaltet haben, versucht BibelPix
+   ebenfalls, den Bildwechsel Ihres Desktops zu programmieren.
       
    Falls die Änderungen nicht automatisch erfolgen, können Sie bequem mittels Rechtsklick
    auf der Arbeitsfläche das Hintergrundbild bzw. die "Diaschau" einrichten, wobei folgende
@@ -162,8 +159,7 @@ Das Setup kann auch aus einem Dateimanager mit Doppelklick ausgeführt werden.
    5. Login Manager konfigurieren
    
    Wenn Sie sich mit Passwort anmelden, benutzen Sie wahrscheinlich einen der untenstehenden Login-Managers.
-   Sie können schon bei der Anmeldung das Bild mit dem Tageswort sehen. (Dieses Feature kann nich über das normale
-   Setup eingerichtet werden.) Da diese Einstellungen root-Rechte verlangen, müssen Sie sie als Systemverwalter oder sudo vornehmen.
+   Sie können schon bei der Anmeldung das Bild mit dem Tageswort sehen. Dieses Feature kann nur manuell und mit Root-Rechten eingerichtet werden (Systempasswort oder sudo).
    Kopieren Sie die Kommandos OHNE ZEILENUMBRÜCHE in Ihr Terminal.
    
    1. XDM (Linux Standard):
@@ -213,15 +209,15 @@ Das Setup kann auch aus einem Dateimanager mit Doppelklick ausgeführt werden.
    2. Das BibelPix-Installationsprogramm von www.bible2.net herunterladen und installieren.
    3. Einträge ins Programm-Menü und in den Auto-Start werden automatisch getätigt. 
       Sollte BibelPix nicht automatisch starten, fügen Sie es unter "Automatisch gestartete Programme" ein.
-   4. Wenn Sie im BibelPix-Setup die Option "Das Wort auf Hintergrundbild" gewählt haben,
+   4. Wenn Sie im BibelPix-Setup die Option "Hintergrundbild" gewählt haben,
       versucht Setup, die Bildschirm-Änderungen automatisch zu tätigen. 
       Falls das nicht klappt, haben Sie folgende Möglichkeiten, die Änderung manuell festzulegen:
 
-	A. Wechseln Sie zum Ordner Biblepix\Image in Ihrem Heimordner (genauen Pfad entnehmen Sie aus BiblePix-Setup, Rubrik Desktop) 
-	und markieren Sie 1 Bild (für Slideshow beide Bilder), dann rechtsklicken und Option "als Desktophintergrund festlegen" wählen.
-	B. Finden Sie in der Systemsteuerung den Dialog für Anpassungen/Darstellung > Desktophintergrund, dort geben Sie unter "Bildpfad" 
-        den oben beschriebenen Pfad an und markieren 1 oder 2 Bilder.
-   
+	Finden Sie in der Systemsteuerung den Dialog für Anpassungen/Darstellung > Desktophintergrund, dort geben Sie unter "Bildpfad" den oben beschriebenen Pfad an und markieren 
+
+		theword.tif
+
+So wird 'Das Wort' als Einzelbild angezeigt. Um ein Wechselbild zu erzwingen (Option Diaschau), müssen Sie ein zweites Bild in denselben Ordner kopieren.   
    
    
 4. M A C  O S
@@ -261,9 +257,9 @@ BiblePix displays "The Word"
  * in the terminal/console
  * randomly alternating pictures and languages
  
-All functions are duely described in the BiblePix Setup program.
- 
-Systems: Linux, Windows, MacOS
+Features:			duely described in the Setup programm 
+Updates:			automatic whenever Setup is run
+Systems: 			Linux, Windows 
 System requirements: Tcl/Tk library, additional packages tDom and tkimg (or libtk-img)
 
 
@@ -276,7 +272,7 @@ for many operating systems.
 1.  G I T
 
 The Git installation method is system independent and works on all
-platforms where a version of the 'Git' program is installed.
+platforms where a version Git is installed.
 The git command should be issued in a subfolder of the Home directory,
 so as to garantee write access. Recommended standard for Linux/Unix is 
 	
@@ -300,7 +296,7 @@ Then start the BiblePix Setup program, either in a terminal with the command:
 or in a file manager by changing to the '~/Biblepix/prog/src' directory and
 clicking on the file 'biblepix-setup.tcl'.
 
-(Note that the tilde (~) stands for the Home directory as described above.)
+Note that the tilde (~) stands for the Home directory as described above.
 
 
 2.  L I N U X
@@ -355,20 +351,15 @@ clicking on the file 'biblepix-setup.tcl'.
    4. Automatic adjustment of Desktop settings
    
    If you have activated "Create Desktop background image" in the Setup dialogue, 
-   BiblePix will try to change the Desktop settings of your computer so that
+   BiblePix will try to change the Desktop settings of your computer so that one of
    
 		theword.bmp
+		theword.png
    
    is henceforth set as the background picture. 
-   The picture comes also in the TIF and PNG formats. 
-     
-   If you haven't set the 'Slide show interval' to 0, BiblePix will also try to 
-   program a slide show for your Desktop (the BiblePix picture always comes in 
-   3 formats: PNG, TIF and BMP, to make sure that there is always a second picture 
-   available in the case the intervals of the Desktop and BiblePix don't agree).
-      
-   If the changes are not implemented automatically you can right-click your Desktop 
-   and find the dialogue for background image or Slide Show. 
+        
+   If the 'Slide show' feature is not deactivated, BiblePix will also try to 
+   program a slide show for your Desktop. If the changes are not implemented automatically you can right-click your Desktop and find the dialogue for background image or Slide Show. 
    Please use the following paths (instead of YOURNAME put your user name).
    
 		Path to image folder:	/home/YOURNAME/Biblepix/Image
@@ -378,9 +369,6 @@ clicking on the file 'biblepix-setup.tcl'.
    GNOME: Path to image, automatically detects image change
    XFCE4: Path to image, image change programmed by BibelPix
    
-   PS: If the TIF format doesn't work, try PNG or BMP - The Word comes in these
-   formats too.
-
    5. Login Managers
 
 	If you log in by password you are probably using one of the below Login Managers.
@@ -434,13 +422,16 @@ clicking on the file 'biblepix-setup.tcl'.
    4. If you have activated "The Word on a background picture" Setup will try to change screen settings automatically. 
       If this doesn't work you have the following possibilities to make changes manually:
 	
-     A. Change to the Biblepix\Image directory in your Home directory (exact path to be
-        found in BiblePix Setup, section Desktop) and mark 1 image (or 2 for Slideshow),
-        then richt-click and choose option "Set as Desktop background".
-	B. In the Control Panel find the dialogue for Customization > Display > Desktop background
-        and enter the above path as "image path", then mark 1 oder 2 pictures (2 for slideshow).
+     Change to the Biblepix\Image directory in your Home directory (exact path to be
+        found in BiblePix Setup, section Desktop) and mark 
 
+		theword.tif
 
+      as the desired picture. Then richt-click and choose option "Set as Desktop background". 
+	For a slideshow, you must put another picture in the same directory and select 
+	"Slide Show" instead of "single picture".
+
+	
    
 4. M A C  O S
  to follow soon :-)
@@ -449,9 +440,9 @@ clicking on the file 'biblepix-setup.tcl'.
 5. G E N E R A L  I N S T A L L A T I O N  T I P S:
 
 * The BiblePix Setup programm automatically downloads and installs any program updates.
+
 * If after an update you can't start the Setup, in your Explorer go to the location ~/Biblepix/prog/conf
-  and delete the file biblepix.conf. Then rerun the Setup. (The tilde ~  stands for the user's Home directory,
-  which on Unix will be /home/USERNAME, and on Windows C:\Users\USERNAME\AppData\Local).
+  and delete the file biblepix.conf. Then rerun the Setup. (The tilde ~ stands for the user's Home directory, see above).
 
 </en>
 -------------------------------------------------------------
