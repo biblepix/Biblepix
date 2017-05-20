@@ -224,13 +224,27 @@ So wird 'Das Wort' als Einzelbild angezeigt. Um ein Wechselbild zu erzwingen (Op
  to follow soon :-)
 
 
-4. A L L G E M E I N E  I N S T A L L A T I O N S H I L F E
+4. A L L G E M E I N E S  Z U M  P R O G R A M M
 
-* Das BibelPix-Setup lädt Programmupdates automatisch herunter und installiert sie.
-* Falls nach einem Update das Setup nicht mehr läuft, gehen Sie in Ihrem Dateimanager (Explorer) zum Ort ~/Biblepix/prog/conf 
-  und löschen Sie die Datei biblepix.conf. Dann wird alles neu installiert und das Setup kann wieder gestartet werden.
- (Die Tilde ~ steht hierbei für das Heimverzeichnis des Users, was bei Unix /home/USERNAME, und bei Windows 
- C:\Users\USERNAME\AppData\Local sein wird).
+
+* Installationsort (~): s.o. unter GIT
+
+* Programmupdates: automatisch bei jeder Ausführung des Setups
+
+* Die ausführenden Programme befinden sich im Verzeichnis ~/Biblepix/prog/src/ :
+	
+	° biblepix.tcl (Hauptprogramm)
+	° biblepix-setup.tcl (Einrichtungsprogramm)
+
+* Falls nach einem Update das Setup nicht mehr läuft, löschen Sie die Datei
+		~/Biblepix/prog/conf/biblepix.conf
+	Dann starten Sie das Setup erneut.
+
+* Debugmodus: um Programmfehler aufzuspüren, öffnen Sie die Datei
+		~/Biblepix/prog/src/com/globals.tcl
+	in einem Texteditor und setzen den Wert 'Debug' auf 1. 
+	Dann Setup neu starten. 
+	Fehlermeldungen bitte an: linux [at] vollmar.ch
  
 </de>
 
@@ -427,7 +441,7 @@ Note that the tilde (~) stands for the Home directory as described above.
 
 		theword.tif
 
-      as the desired picture. Then richt-click and choose option "Set as Desktop background". 
+      as the desired picture. Then right-click and choose option "Set as Desktop background". 
 	For a slideshow, you must put another picture in the same directory and select 
 	"Slide Show" instead of "single picture".
 
@@ -437,13 +451,26 @@ Note that the tilde (~) stands for the Home directory as described above.
  to follow soon :-)
 
 
-5. G E N E R A L  I N S T A L L A T I O N  T I P S:
+5. G E N E R A L  P R O G R A M  I N F O R M A T I O N
 
+* Place of installation (~): see above under GIT
+ 
 * The BiblePix Setup programm automatically downloads and installs any program updates.
 
-* If after an update you can't start the Setup, in your Explorer go to the location ~/Biblepix/prog/conf
-  and delete the file biblepix.conf. Then rerun the Setup. (The tilde ~ stands for the user's Home directory, see above).
+* The main executables are found in the directory ~/Biblepix/prog/src/ :
+	
+	° biblepix.tcl (main program)
+	° biblepix-setup.tcl (setup program)
 
+* If after an update the BiblePix Setup or the BiblePix program fails to run, 
+	delete the file ~/Biblepix/prog/conf/biblepix.conf
+	Then rerun Setup.
+
+* Debug mode: to help resolve any problems, edit the file
+			~/Biblepix/prog/src/com/globals.tcl
+	and set the value 'Debug' to 1. 
+	Then rerun Setup.
+	Send any error messages to linux [at] vollmar.ch
 </en>
 -------------------------------------------------------------
 
@@ -452,3 +479,4 @@ Peter Vollmar & Joel Hochreutener
 biblepix.vollmar.ch
 
 ------------------------------------------------------------
+
