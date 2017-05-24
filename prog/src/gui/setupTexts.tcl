@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16mai17
+# Updated: 24mai17
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -16,7 +16,7 @@ global readmetext
 
 proc setTexts {lang} {
 #exports text variables for current language
-global platform jahr TwdTIF TwdBMP TwdPNG imgdir sigdir unixdir windir twddir
+global Bidi platform jahr TwdTIF TwdBMP TwdPNG imgdir sigdir unixdir windir twddir
 
 #### G E N E R A L ###############################
 set DW(de) {'Das Wort'}
@@ -98,9 +98,10 @@ if {[catch "glob $twddir/he_*"]} {
 }
 if {[catch "glob $twddir/ar_*"]} {
 	set rtl "" } else {
-	set rtl  "ערבית..."
+	set rtl  "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
 	if {$platform=="unix"} {
-		set rtl [string reverse $rtl]
+		source $Bidi
+		set rtl [fixArabUnix $rtl]
 	}
 	append rtltext \n $rtl 
 }
@@ -215,7 +216,7 @@ set ::f2thai_txt "พระคำสำหรับวันศุกร์"
 if {$platform=="unix"} {
 #unix needs BMP+PNG
 	set formats "'[file tail $TwdBMP]' & '[file tail $TwdPNG]'"
-	set picN(de) "in 2 Formaten:  $formats"
+	set picN(de) "in 2 Formaten: $formats"
 	set picN(en) "in 2 formats: $formats"
 	set picNo $picN($lang)
 } else {
