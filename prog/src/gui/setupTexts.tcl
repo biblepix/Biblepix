@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24mai17
+# Updated: 25mai17
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -86,11 +86,11 @@ set delete(en) "Delete file"
 set delete(de) "Datei löschen"
 set ::delete $delete($lang)
 
-#Add Arabic & Hebrew explanation for text positioning
+#Arabic & Hebrew explanation for text positioning
 set rtltext ""
 if {[catch "glob $twddir/he_*"]} {
 	set rtl "" } else {
-	set rtl "טקסט בכתב עברי יכוון אוטומטית לצד הנגדי של המסך."
+	set rtl "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
 	if {$platform=="unix"} {
 		set rtl [string reverse $rtl]
 	}
