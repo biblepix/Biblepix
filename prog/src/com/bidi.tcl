@@ -72,6 +72,10 @@ proc fixHebUnix {dw} {
 	}
 	set dw $dwneu
 
+	#delete all Dagesh's because of wrong positioning
+	regsub -all {\u05BC} $dw {} dw
+#regsub -all {ּ} $dw {} dw 
+
 	#revert digits back
 	set zahlen [regexp -all -inline {[0-9]+} $dw]
 	foreach zahl $zahlen {
