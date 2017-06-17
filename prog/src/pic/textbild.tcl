@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/main/textbild.tcl
 # Creates text picture, called by image.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18apr2017 
+# Updated: 27may2017 
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
@@ -142,9 +142,10 @@ global fontsize fontfamily fontweight hghex fghex bmpdir screenx platform Twdtoo
 
 proc createBMPs {} {
 #Creates today's missing BMPs / Executes text>bmp
-global bmpdir heute platform slideshow
+global bmpdir platform slideshow
 
-puts "Checking text pics..."
+	set heute [clock format [clock seconds] -format %d]
+	puts "Checking text pics..."
 	
 	#Delete old bmp's
 	set bmplist [getBMPlist]
