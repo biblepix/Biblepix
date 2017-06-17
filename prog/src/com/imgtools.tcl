@@ -1,10 +1,13 @@
-# ~/Biblepix/prog/src/share/imgtools.tcl
+# ~/Biblepix/prog/src/com/imgtools.tcl
 # Image manipulating procs
-# Called by SetupGui
+# Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25apr17
+# Updated: 17jun17
 
-######### Procs for Hgbild #######################
+package require Img
+
+####### Procs for $Hgbild #####################
+
 
 proc rgb2hex {rgb} {
 #called by setShade + setSun
@@ -23,7 +26,7 @@ proc hex2rgb {hex} {
 }
 
 proc setShade {rgb} {
-#called by Hgbild
+#called by ??? - now in Setup, var saved to Config!!!
 global shadefactor
 	foreach c [split $rgb] {
 		lappend shadergb [expr {int($shadefactor*$c)}]
@@ -49,50 +52,120 @@ global sunfactor
 	return $sun
 }
 
-proc cutx {src diff} {
-	puts "Cutting X $diff ..."
-	#regsub {\-} $diff {} diff
-	#set diffhalb [expr $diffx/2]
+proc setCanvasText {fontcolor} {
+global inttextCanv internationaltext
+	set rgb [hex2rgb $fontcolor]
+	set shade [setShade $rgb]
+	set sun [setSun $rgb]
+	$inttextCanv itemconfigure main -fill $fontcolor
+	$inttextCanv itemconfigure sun -fill $sun
+	$inttextCanv itemconfigure shade -fill $shade
+}
+
+proc checkImgSize {hgfile} {
+#Checks and resizes badly fitting hgbild
+global screenx screeny
 	
-	set imgx [image width $src]
-	set imgy [image height $src]
+	#Compare img dimensions with screen dimensions
+	set imgx [image width hgbild]
+	set imgy [image height hgbild]
+
+	set reqRatio [expr $screenx./$screeny]
+	set imgRatio [expr $imgx./$imgy]
+
+puts "Real image height: $imgy"
+
+	#Bild zu hoch
+	if {$imgRatio<$reqRatio} {
+
+	set reqImgY  [expr round($imgx/$reqRatio)]
+	set diffY [expr round($imgy - $reqImgY)]
+
+puts "Difference: $diffY"
 	
+	#Bild zu breit
+	} else {
+
+	set reqImgX [expr round($imgy*$reqRatio)]
+	set diffX  [expr round($imgx - $reqImgX)]
+
+puts "ReqImgX $reqImgX"
+puts "Difference: $diffX"
+	}
+
+if { [info exists diffY] } {
+
+puts "Cuttyng Y..."
+	
+		cutY hgbild $imgx $imgy $diffY
+	
+	} elseif  { [info exists diffX] } {
+		
+		cutX hgbild $imgx $imgy $diffX
+}
+
+
+
+
+	#2. Resize evenly
+#	resize hgbild $screenx $screeny
+	
+#3. Overwrite corrected image - T O D O  - resized JPEGs tend to be worse quality !!!!!!!!!!!!!!!!!!!!!!!!	
+#	hgbild write $hgfile -format JPEG
+			
+} ;#end checkImageSize
+
+# Syntax: oberen Punkt einer Diagonale: x1+y1
+# mit unterem Punkt: x2+y2 verbinden
+#  0/0 ######
+#  #######
+#  ####### 7/3
+
+proc cutX {src imgx imgy diffX} {
+#TODO GEHT NICHT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#Cuts left+right edges by $diffX/2
+	puts "Cutting X $diffX"
+	set diffhalb [expr $diffX/2]
+puts $diffX
+puts $diffhalb
+	regsub {\-} $diffhalb {} diffhalb	
 	image create photo ausschnitt
-	ausschnitt blank
-	#rechts ausschneiden
-	ausschnitt copy $src -from 0 0 [expr $imgx-$diff] $imgy -shrink
+	
+	set x1 $diffhalb
+	set y1 0
+	set x2 [expr $imgx-$diffhalb]
+	set y2 $imgy
+	ausschnitt copy $src -from $x1 $y1 $x2 $y2 -shrink
 	
 	$src blank 
-	$src copy ausschnitt -shrink
-	
-	#$src conf -width 0 -height 0
+	$src copy ausschnitt 
+#	ausschnitt blank	
+	return $src
 }
 
-proc cuty {src diff} {	
-	puts "Cutting Y $diff ..."
-	regsub {\-} $diff {} diff
-	set diffhalb [expr $diff/2]
-	
-	set imgx [image width $src]
-	set imgy [image height $src]
-	
-	#oben+unten ausschneiden:
+proc cutY {src imgx imgy diffY} {	
+#Cuts top+bottom edges by $diffY/2
+	puts "Cutting Y $diffY"
+	set diffhalb [expr $diffY/2]
+	regsub {\-} $diffhalb {} diffhalb
 	image create photo ausschnitt
-	ausschnitt blank
-	ausschnitt copy $src -from 0 $diffhalb $imgx [expr $imgy - $diffhalb] -shrink
+		
+	set x1 0
+	set y1 $diffhalb
+	set x2 $imgx
+	set y2 [expr $imgy-$diffhalb]
+	ausschnitt copy $src -from $x1 $y1 $x2 $y2 -shrink
+
 	$src blank
 	$src copy ausschnitt -shrink
-	
-	#$src conf -width $screenx -height $screeny
-	#set imgy $screeny
+	ausschnitt blank
+	return $src
 }
 
-
-#Proc called 1x in Hgbild for even-sided resizing
-
 proc resize {src newx newy {dest ""} } { 
+#Proc called for even-sided resizing, after cutting
  #  Decsription:  Copies a source image to a destination
- #                image and resizes it using linear interpolation
+ #   image and resizes it using linear interpolation
  #
  #  Parameters:   newx   - Width of new image
  #                newy   - Height of new image
@@ -100,9 +173,9 @@ proc resize {src newx newy {dest ""} } {
  #                dest   - Destination image (optional)
  #
  #  Returns:      destination image
- #  Author: David Easton, wiki.tcl.tk, 2004
+ #  Author: David Easton, wiki.tcl.tk, 2004 - God bless you David, you have saved us a lot of trouble!
 
-#only works for even-sided zooming!
+ ######## IDEAL FOR EVEN SIDED ZOOMING ############# pv
 	
 	set mx [image width $src]
 	set my [image height $src]
