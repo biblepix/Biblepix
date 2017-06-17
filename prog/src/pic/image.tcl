@@ -1,7 +1,7 @@
 # ~/Biblepix/progs/src/pic/image.tcl
 # Initiates main image process, called by biblepix.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 5jun2017 
+# Updated 17jun2017 
 
 package require Tk
 
@@ -24,7 +24,7 @@ createBMPs
 #set hgfile [getRandomJPG]
 #image create photo hgbild -file $hgfile
 
-if {[info procs checkImgSize] == ""} {
+if {[info procs fgbild>hgbild] == ""} {
 	source $Hgbild
 }
 

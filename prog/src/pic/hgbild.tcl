@@ -73,32 +73,3 @@ global  fontcolor fgrgb sun shade
 	}
     	
 } ;#end fgbild>hgbild
-
-
-
-#TODO - move to ???? - NOT CALLED BY ANY PROG !!!!!!!!!!!!!!!!!!!!!!!!!!!
-proc checkRebuildBMP {} {
-#Recreate fgbild if end of row pixels are bg-colour
-#instead of font colour (=unfinished pic)
-set imgy [image height fgbild]
-
-#get end row pixel
-set errrgb [fgbild get 0 [expr $imgy-1] ]
-lassign $errrgb r g b
-set errhex [format #%02x%02x%02x $r $g $b]
-
-#Rebuild bmp file once if wrong colour
-	if {$errhex == $hghex} {
-            puts "Rebuilding bmp..."
-		regsub ".bmp" $bmpname ".twd" twdfile
-		source $Textbild
-		text>bmp $bmpfile $twdfile
-		fgbild blank
-		fgbild read $bmpfile
-		set imgx [image width fgbild]
-		set imgy [image height fgbild]
-        }
-} ;#end checkRebuildBMP
-
-
-
