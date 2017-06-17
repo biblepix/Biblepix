@@ -1,7 +1,10 @@
 # ~/Biblepix/prog/src/share/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21dec2016
+# Updated:15jun17
+
+#TODO: Autostart und Menu entries trennen (2 Procs!)
+#           Autostart: add if pidof crond....
 
 proc setLinAutostart {} {
 #Set Desktop menu entries for GNOME & KDE

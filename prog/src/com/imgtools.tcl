@@ -108,10 +108,10 @@ puts "Cuttyng Y..."
 
 
 	#2. Resize evenly
-#	resize hgbild $screenx $screeny
+	resize hgbild $screenx $screeny
 	
 #3. Overwrite corrected image - T O D O  - resized JPEGs tend to be worse quality !!!!!!!!!!!!!!!!!!!!!!!!	
-#	hgbild write $hgfile -format JPEG
+	hgbild write $hgfile -format JPEG
 			
 } ;#end checkImageSize
 

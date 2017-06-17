@@ -1,19 +1,21 @@
 # ~/Biblepix/prog/src/share/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9mai17
+# Updated: 25juni17
+
+#TODO: incorporate crond
 
 source $SetupSaveLinHelpers
 
 ## REMOVE ANY OLD BIBLEPIX INSTALLATIONS
 file delete -force ~/.biblepix
+
 #check .bashrc for old entry and remove
 set chan [open ~/.bashrc]
 set readfile [read $chan]
 close $chan
 set string1 {biblepix}
 set string2 {prog/bash}
-
 if {[regexp $string1 $readfile] || [regexp $string2 $readfile]} {
 	regsub -all -line "^$string1.*$" $readfile {} readfile
         regsub $string2 $readfile {prog/unix} readfile
