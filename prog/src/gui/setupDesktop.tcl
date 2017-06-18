@@ -102,8 +102,10 @@ $inttextCanv create image 0 0 -image intTextBG -anchor nw
 # set international text
 set inttextHeader [label .n.f2.fright.fbot2.inttexttxt -textvar f2.fontexpl]
 if {$platform=="unix"} {
-	set ar_txt [string reverse $f2ar_txt]
-	set he_txt [string reverse $f2he_txt]
+	#set ar_txt [string reverse $f2ar_txt]
+	#set he_txt [string reverse $f2he_txt]
+	set ar_txt [fixArabUnix $f2ar_txt]
+	set he_txt [fixHebUnix $f2he_txt]	
 	set internationaltext "$f2ltr_txt $ar_txt $he_txt $f2thai_txt"
 } else {
 	set internationaltext "$f2ltr_txt $f2ar_txt $f2he_txt $f2thai_txt"
@@ -168,24 +170,19 @@ if {$fontweight=="bold"} {
 #4. Fontfamily spinbox
 message .n.f2.fright.fbot1.fontfamilyTxt -width 250 -textvar f2.fontfamilytext
 
-set Fontlist [font families]
-set MyFonts ""
+#Get System font list + TkTextFont
+set Fontlist [lsort [font families]]
+lappend Fontlist TkTextFont
+#set MyFonts ""
 
-foreach i $Fontlist {
-	#compare exact name
-	set Fontname [array names BpFonts $i]
-	if { $Fontname != "" } {
-        	lappend MyFonts $Fontname
-	}	
-}
-#prevent empty list
-lappend MyFonts TkTextFont
-lsort $MyFonts
 
-spinbox .n.f2.fright.fbot1.fontfamilySpin -values $MyFonts -width 15 -command {font configure displayfont -family %s}
+#spinbox .n.f2.fright.fbot1.fontfamilySpin -values $MyFonts -width 15 -command {font configure displayfont -family %s}
+ttk::combobox .n.f2.fright.fbot1.fontfamilySpin -values $Fontlist -width 20 -height 30 \
+-validate focusin -validatecommand {font configure displayfont -family [$fontfamilySpin get];return 0}
+
 set fontfamilyTxt .n.f2.fright.fbot1.fontfamilyTxt
 set fontfamilySpin .n.f2.fright.fbot1.fontfamilySpin
-
+#bind $fontfamilySpin <<ComboboxSelected>>> [font configure displayfont -family %s]
 $fontfamilySpin set $fontfamily
 
 #P A C K   R I G H T
