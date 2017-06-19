@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16mai17
+# Updated 19jun17
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
@@ -167,22 +167,20 @@ if {$fontweight=="bold"} {
 }
 
 
-#4. Fontfamily spinbox
+#4. Fontfamily combobox
 message .n.f2.fright.fbot1.fontfamilyTxt -width 250 -textvar f2.fontfamilytext
+ttk::combobox .n.f2.fright.fbot1.fontfamilyDrop -width 20 -height 30
+set fontfamilyTxt .n.f2.fright.fbot1.fontfamilyTxt
+set fontfamilySpin .n.f2.fright.fbot1.fontfamilyDrop
 
-#Get System font list + TkTextFont
+##get System font list + add TkTextFont
 set Fontlist [lsort [font families]]
 lappend Fontlist TkTextFont
-#set MyFonts ""
-
-
-#spinbox .n.f2.fright.fbot1.fontfamilySpin -values $MyFonts -width 15 -command {font configure displayfont -family %s}
-ttk::combobox .n.f2.fright.fbot1.fontfamilySpin -values $Fontlist -width 20 -height 30 \
--validate focusin -validatecommand {font configure displayfont -family [$fontfamilySpin get];return 0}
-
-set fontfamilyTxt .n.f2.fright.fbot1.fontfamilyTxt
-set fontfamilySpin .n.f2.fright.fbot1.fontfamilySpin
-#bind $fontfamilySpin <<ComboboxSelected>>> [font configure displayfont -family %s]
+$fontfamilySpin configure -values $Fontlist -validate focusin -validatecommand {
+	font configure displayfont -family [$fontfamilySpin get]
+	return 0
+}
+##set current fontfamily
 $fontfamilySpin set $fontfamily
 
 #P A C K   R I G H T
