@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 16mai17
+# Updated: 23jun17
 
 # This variable enables the debuging mode in the hole application if set to 1.
 set Debug 1
@@ -12,6 +12,8 @@ set twdurl "http://bible2.net/service/TheWord/twd11/current"
 set bpxurl "http://vollmar.ch/bibelpix"
 set platform $tcl_platform(platform)
 set os $tcl_platform(os)
+set tclpath [auto_execok tclsh]
+set wishpath [auto_execok wish]
 
 #Set rootdir from $srcdir as provided by calling progs
 proc setRootDir {srcdir} {
@@ -127,23 +129,6 @@ set TwdBMP [file join $imgdir theword.bmp]
 set TwdTIF [file join $imgdir theword.tif]
 set TwdPNG [file join $imgdir theword.png]
 
-#Set permissible BpFonts LIN+WIN
-array set BpFonts {
-	{Arial Unicode MS} {}
-	{DejaVu Sans} {}
-	{New Century Schoolbook} {}
-	{Nimbus Mono L} {}
-	{Open Sans} {}
-	Impact {}
-	Lucida {}
-	{Liberation Mono} {}
-	{Microsoft Sans Serif} {}
-	{Lucida Sans Unicode} {}
-	Tahoma {}
-	Terminus {}
-	Verdana {}
-}
-
 #Set miscellaneous vars (sourced by various progs)
 set datum [clock format [clock seconds] -format %Y-%m-%d]
 set jahr [clock format [clock seconds] -format %Y]
@@ -158,7 +143,6 @@ proc uniqkey { } {
     set key   [ clock seconds ]$key
     return $key
 }
-
 proc sleep { ms } {
     set uniq [ uniqkey ]
     set ::__sleep__tmp__$uniq 0
