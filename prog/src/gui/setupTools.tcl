@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16mai17
+# Updated: 24jun17
 
 source $JList
 
@@ -101,6 +101,10 @@ global slideSpin slideTxt slideSec slideshow
 	
      if {$state==1} { 
      		$slideSpin configure -state normal
+		#set standard if changed from 0
+		if {$slideshow==0} {
+			set slideshow 300
+		}
 		$slideSpin set $slideshow
      		$slideTxt conf -fg black
 		$slideSec conf -fg black
