@@ -4,7 +4,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12jun17
+# Updated: 24jun17
 ######################################################################
 
 #Verify location & source Globals
@@ -63,10 +63,15 @@ if {$enablesig} {
 }
 
 #Create image & start slideshow
-if {$enablepic} {
+if {$enablepic } {
 	#run once
 	source $Image
 	setWinBG
+	
+	#exit if $crontab exists
+	if {$crontab} {
+		return
+	}
 
 	#if Slideshow == 1
 	if {$slideshow > 0} {
@@ -99,4 +104,8 @@ if {$enablepic} {
     } ;#END if slideshow
 } ;#END if enablepic
 
-exit
+
+
+
+
+
