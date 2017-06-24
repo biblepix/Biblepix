@@ -1,62 +1,153 @@
-# ~/Biblepix/prog/src/share/setupSaveLinHelpers.tcl
+#~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated:15jun17
+# Updated: 24jun17
 
-#TODO: Autostart und Menu entries trennen (2 Procs!)
-#           Autostart: add if pidof crond....
+proc setLinCrontab {} {
+#Detects running crond & installs new crontab
+#returns 0 or 1
+global Biblepix Setup slideshow tclpath unixdir
+	
+	#check if crond running
+	catch {exec pidof crond} cronpid
+		
+	if { [string is digit $cronpid] } {
+		
+		#Get any user's crontab entries
+		if { ! [catch {exec crontab -l} crontext] } {
 
-proc setLinAutostart {} {
-#Set Desktop menu entries for GNOME & KDE
-#no system detection needed
-global Biblepix Setup LinIcon 
+			#Check interpreter hashbang in $Biblepix
+			set chan [open $Biblepix r]
+			set hashbang [gets $chan]
+			close $chan
 
-	#Create .desktop file for KDE/Gnome Autostart & program menu
+			set tclpath_full "#!$tclpath"
+
+			if {$hashbang != $tclpath_full} {
+				set chan [open $Biblepix w]
+				#replace 1st line
+				regsub -line {.*} $text $tclpath_full text
+				puts $chan $text
+				close $chan 
+			}
+						
+			#set vars
+			set cronfileOrig $unixdir/crontab.ORIG			
+			set cronfileTmp /tmp/crontab.TMP
+			if {$slideshow>0} {			
+				set interval [expr $slideshow/60]
+				set BPcrontext "*/$interval * * * * export DISPLAY=:0.0 ; $Biblepix"
+			} else {
+				set BPcrontext "@daily export DISPLAY=:0.0 ; $Biblepix"
+			}	
+			
+			#A.check presence of saved crontab
+			if {[file exists $cronfileOrig]} {
+				set chan [open $cronfileOrig r]
+				set crontext [read $chan]
+				close $chan
+
+			#B.check presence of crontext & save 
+			} elseif { $crontext != ""} {
+				set chan [open $cronfileOrig w]
+				puts $chan $crontext
+				close $chan
+			}
+			
+			#create/append crontext
+			append crontext \n$BPcrontext
+ 	
+			#save crontab file & execute
+			set chan [open $cronfileTmp w]
+			puts $chan $crontext
+			close $chan
+			
+			exec crontab $cronfileTmp
+	#		file delete $cronfileTmp
+
+		}
+		#set ::crontab var & delete any Autostart entries
+		set ::crontab 1
+		setLinAutostart delete
+		return 0
+		
+	} else {
+
+		return 1
+	}
+} ;#end setLinCrontab
+
+proc setLinAutostart args {
+#Makes Autostart entries for GNOME&KDE
+#only executed if setLinCrontab fails
+#args can be "delete"
+global Biblepix Setup LinIcon tclpath
+	
+	#set paths
 	set KDEdir [glob -nocomplain ~/.kde*]
-	set desktoppath ~/.local/share/applications
 	set GNOMEautostartpath ~/.config/autostart
 	set KDEautostartpath $KDEdir/Autostart
-	set tclpath [exec which tclsh]
+	
+	#If args exists, delete any autostart files and exit
+	if  {$args=="delete"} {
+		file delete $GNOMEautostartpath/biblepix.desktop
+		file delete $KDEautostartpath/biblepix.desktop
+		return
+	}
 
-	#make sure common dirs exist
-	file mkdir $desktoppath $GNOMEautostartpath
-
+	#set Texts
 	set desktopText "\[Desktop Entry\]
-	Name=BiblePix Setup
+	Name=$bp Setup
 	Type=Application
 	Icon=$LinIcon
 	Path=$srcdir
 	Categories=Settings
 	Comment=Configures and runs BiblePix"
+	set execText "Exec=$tclpath $Biblepix"
 
 	#make .desktop file for KDE Autostart
 	if {[file exists $KDEdir]} {
-	    file mkdir $KDEautostartpath
-	    set desktopfile [open $KDEautostartpath/biblepix.desktop w]
-	    puts $desktopfile "$desktopText"
-	    puts $desktopfile "Exec=$tclpath $Biblepix"
-	    close $desktopfile
+		file mkdir $KDEautostartpath
+		set desktopfile [open $KDEautostartpath/biblepix.desktop w]
+		puts $desktopfile "$desktopText"
+		puts $desktopfile "$execText"
+		close $desktopfile
 	}
 
-	#make .desktop file for GNOME & KDE prog menu
-	file delete $desktoppath/biblepix.desktop ;#remove wrong old filename
-	set desktopfile [open $desktoppath/biblepixSetup.desktop w]
-	puts $desktopfile "$desktopText"
-	puts $desktopfile "Exec=$tclpath $Setup"
-	close $desktopfile
-	 
 	#make .desktop file for GNOME Autostart
-	set desktopfile [open $GNOMEautostartpath/biblepix.desktop w]
-	puts $desktopfile "$desktopText"
-	puts $desktopfile "Exec=$tclpath $Biblepix"
-	close $desktopfile
+	set chan [open $GNOMEautostartpath/biblepix.desktop w]
+	puts $chan "$desktopText"
+	puts $chan "$execText"
+	close $chan
+}
 
-} ;#END setLinAutostart
+proc setLinMenu {} {
+#Makes Menu entries for GNOME&KDE
+global LinIcon srcdir Setup wishpath
 
+	set tclpath [exec which tclsh]
+	set desktoppath ~/.local/share/applications
+	
+	#set Texts
+	set desktopText "\[Desktop Entry\]
+	Name=$bp Setup
+	Type=Application
+	Icon=$LinIcon
+	Path=$srcdir
+	Categories=Settings
+	Comment=Configures and runs BiblePix Setup"
+	set execText "Exec=$wishpath $Setup"
+
+	#make .desktop file for GNOME & KDE prog menu
+	set chan [open $desktoppath/biblepixSetup.desktop w]
+	puts $chan "$desktopText"
+	puts $chan "$execText"
+	close $chan
+
+}
 
 proc setLinBackground {} {
-#Set background picture/slideshow for KDE / GNOME / XFCE4
-#Detecting System
+#Sets background picture/slideshow for KDE / GNOME / XFCE4
 global env slideshow srcdir imgdir unixdir Config TwdPNG TwdBMP TwdTIF
 
 	#KDE3

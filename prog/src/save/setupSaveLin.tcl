@@ -1,9 +1,7 @@
-# ~/Biblepix/prog/src/share/setupSaveLin.tcl
+# ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25juni17
-
-#TODO: incorporate crond
+# Updated: 24jun17
 
 source $SetupSaveLinHelpers
 
@@ -31,7 +29,10 @@ foreach file $jpglist {
 	file delete $file
 }
 
-set Error [catch setLinAutostart]
+#Run Autostart if no running crond detected
+if {[setLinCrontab]} {
+	set Error [catch setLinAutostart]
+}
 
 ## SET BACKGROUND PICTURE/SLIDESHOW if $enablepic
 if {$enablepic} {

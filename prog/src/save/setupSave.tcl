@@ -1,8 +1,8 @@
-# ~/Biblepix/prog/src/share/setupSave.tcl
+# ~/Biblepix/prog/src/save/setupSave.tcl
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 16mai17 
+# Updated : 24jun17 
 
 #Make sure either $twddir or SELECTED contain $jahr-TWD files,
 # else stop saving process & return to Setup!
@@ -69,7 +69,7 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	set fontweightstatus [set fontweightState]
 	set fontfamilystatus [$fontfamilySpin get]
 	set slidestatus [$slideSpin get]
-
+	
 	#Fetch textpos coordinates
 	lassign [$textposCanv coords mv] x y - -
 	set marginleftstatus [expr int($x*$textPosFactor)]
@@ -84,6 +84,7 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	puts $chan "set slideshow $slidestatus"
 	puts $chan "set fontfamily \{$fontfamilystatus\}"
 	puts $chan "set fontsize $fontsizestatus"
+
 	if {$fontweightstatus==1} {
 		puts $chan "set fontweight bold"
 	} else {
@@ -98,6 +99,7 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	puts $chan "set shade [setShade $rgb]"
 	puts $chan "set marginleft $marginleftstatus"
 	puts $chan "set margintop $margintopstatus"
+	
 	close $chan
 
 	#Finish
@@ -112,11 +114,20 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	# 2. puts biblepix.tcl in Autostart
 	# 3. sets Desktop background image & slide show
 
-
 	if {$os == "Windows NT"} {
-		source -encoding utf-8 $SetupSaveWin
+		
+		source $Config
+		source $SetupSaveWin
+
 	} elseif {$os == "Linux"} {
-		source -encoding utf-8 $SetupSaveLin
+		
+		if {[info exists crontab]} {
+			set chan [open $Config a]			
+			puts $chan "set crontab 1"
+			close $chan
+		}
+		source $Config
+		source $SetupSaveLin 	
 	}
 
 
