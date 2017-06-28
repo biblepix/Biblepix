@@ -1,80 +1,122 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24jun17
+# Updated: 28jun17
 
-proc setLinCrontab {} {
+proc setLinCrontab args {
 #Detects running crond & installs new crontab
 #returns 0 or 1
-global Biblepix Setup slideshow tclpath unixdir
-	
-	#check if crond running
-	catch {exec pidof crond} cronpid
-		
-	if { [string is digit $cronpid] } {
-		
-		#Get any user's crontab entries
-		if { ! [catch {exec crontab -l} crontext] } {
+global Biblepix Setup slideshow tclpath unixdir env
 
-			#Check interpreter hashbang in $Biblepix
-			set chan [open $Biblepix r]
-			set hashbang [gets $chan]
-			close $chan
+	set cronfileOrig $unixdir/crontab.ORIG
 
-			set tclpath_full "#!$tclpath"
-
-			if {$hashbang != $tclpath_full} {
-				set chan [open $Biblepix w]
-				#replace 1st line
-				regsub -line {.*} $text $tclpath_full text
-				puts $chan $text
-				close $chan 
-			}
-						
-			#set vars
-			set cronfileOrig $unixdir/crontab.ORIG			
-			set cronfileTmp /tmp/crontab.TMP
-			if {$slideshow>0} {			
-				set interval [expr $slideshow/60]
-				set BPcrontext "*/$interval * * * * export DISPLAY=:0.0 ; $Biblepix"
-			} else {
-				set BPcrontext "@daily export DISPLAY=:0.0 ; $Biblepix"
-			}	
-			
-			#A.check presence of saved crontab
-			if {[file exists $cronfileOrig]} {
-				set chan [open $cronfileOrig r]
-				set crontext [read $chan]
-				close $chan
-
-			#B.check presence of crontext & save 
-			} elseif { $crontext != ""} {
-				set chan [open $cronfileOrig w]
-				puts $chan $crontext
-				close $chan
-			}
-			
-			#create/append crontext
-			append crontext \n$BPcrontext
- 	
-			#save crontab file & execute
-			set chan [open $cronfileTmp w]
-			puts $chan $crontext
-			close $chan
-			
-			exec crontab $cronfileTmp
-	#		file delete $cronfileTmp
-
+	#Delete any crontab entries if $args & exit
+	if {$args=="delete"}  {
+		if {[file exists $cronfileOrig]} {
+			exec crontab $cronfileOrig
+		} else {
+			exec crontab -r
 		}
-		#set ::crontab var & delete any Autostart entries
-		set ::crontab 1
-		setLinAutostart delete
-		return 0
-		
-	} else {
+		return
+	}
 
+	#Check if crond running, else exit 1
+	catch {exec pidof crond} cronpid
+	if { ! [string is digit $cronpid] } {
 		return 1
 	}
+	
+### 1. Prepare crontab text
+ 
+	#Check for user's crontab & save 1st time
+	
+	if { ! [catch {exec crontab -l} crontext] && ! [file exists $cronfileOrig] } { 
+		set chan [open $cronfileOrig w]
+		puts $chan $crontext
+		close $chan
+	}		
+
+	#Prepare new crontab entry
+	set cronScript $unixdir/cron.sh
+	set cronfileTmp /tmp/crontab.TMP
+
+	if {$slideshow>0} {			
+		set interval [expr $slideshow/60]
+		set BPcrontext "*/$interval * * * * $cronScript"	
+	} else {
+		set BPcrontext "@reboot $cronScript"
+	}	
+			
+	#Check presence of saved crontab
+	if {[file exists $cronfileOrig]} {
+		set chan [open $cronfileOrig r]
+		set crontext [read $chan]
+		close $chan
+	}
+
+	#Create/append new crontext, save&execute
+	append crontext \n$BPcrontext
+ 	set chan [open $cronfileTmp w]
+	puts $chan $crontext
+	close $chan
+
+	exec crontab $cronfileTmp
+	file delete $cronfileTmp
+	
+	
+### 2. Prepare cronscript text
+	
+	#Check for newest XAUTH file (likely the one in use!)
+	set ICEAuth $env(HOME)/.ICEAuthority
+	set Xauth $env(HOME)/.Xauthority
+	catch {file mtime $ICEAuth} ICETime
+	catch {file mtime $Xauth} XauthTime
+
+	if {[string is digit $ICETime] && [string is digit $XauthTime] } {
+		if { $ICETime > $XauthTime } {
+			set XAUTH $ICEAuth
+		} else {
+			set XAUTH $Xauth
+		}
+	} elseif { [string is digit $ICETime] } {
+		set XAUTH $ICEAuth
+	} else {
+		set XAUTH $Xauth
+	}
+	
+	#Check for Xlock file
+	if {[file exists /tmp/.X0-lock]} {
+		#Gentoo,Ubuntu,openSuse
+		set XLOCK /tmp/.X11-unix/X0
+	} else {
+		#Gentoo, ?Rest
+		set XLOCK /tmp/.X0-lock
+	}
+
+	#create cronScript text
+	set cronScriptText "
+	until \[ -S $XLOCK \] ; do
+		sleep 30
+	done
+	while \[ $XAUTH -ot $XLOCK \] ; do 
+		sleep 30
+	done
+	export DISPLAY=:0
+	$tclpath $Biblepix
+	"
+	#save cronscript & make executable
+	set chan [open $cronScript w]
+	puts $chan $cronScriptText
+	close $chan
+	file attributes $cronScript -permissions +x
+
+
+### 3. Set ::crontab global var & delete any previous Autostart entries
+	set ::crontab 1
+	setLinAutostart delete
+
+	return 0
+		
 } ;#end setLinCrontab
 
 proc setLinAutostart args {
@@ -119,6 +161,9 @@ global Biblepix Setup LinIcon tclpath
 	puts $chan "$desktopText"
 	puts $chan "$execText"
 	close $chan
+
+	#Delete any BP crontab entry
+	setLinCrontab delete
 }
 
 proc setLinMenu {} {
@@ -314,3 +359,22 @@ global env slideshow srcdir imgdir unixdir Config TwdPNG TwdBMP TwdTIF
 	}
 
 } ;#END setLinBackground
+
+#Reserve für crontab, not needed now
+proc hashtag {} {
+			#Check interpreter hashbang in $Biblepix
+			set chan [open $Biblepix r]
+			set hashbang [gets $chan]
+			close $chan
+
+			set tclpath_full "#!$tclpath"
+
+			if {$hashbang != $tclpath_full} {
+				set chan [open $Biblepix w]
+				#replace 1st line
+				regsub -line {.*} $text $tclpath_full text
+				puts $chan $text
+				close $chan 
+			}
+				
+}
