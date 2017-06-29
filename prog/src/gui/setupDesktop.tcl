@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 19jun17
+# Updated 29jun17
 
 set screenx [winfo screenwidth .]
 set screeny [winfo screenheight .]
@@ -102,8 +102,7 @@ $inttextCanv create image 0 0 -image intTextBG -anchor nw
 # set international text
 set inttextHeader [label .n.f2.fright.fbot2.inttexttxt -textvar f2.fontexpl]
 if {$platform=="unix"} {
-	#set ar_txt [string reverse $f2ar_txt]
-	#set he_txt [string reverse $f2he_txt]
+	source $Bidi
 	set ar_txt [fixArabUnix $f2ar_txt]
 	set he_txt [fixHebUnix $f2he_txt]	
 	set internationaltext "$f2ltr_txt $ar_txt $he_txt $f2thai_txt"
@@ -146,7 +145,6 @@ set fontsizeTxt .n.f2.fright.fbot1.fontsizeTxt
 set fontsizeSpin .n.f2.fright.fbot1.fontsizeSpin
 $fontsizeSpin set $fontsize
 
-
 #3. Fontweight checkbutton
 checkbutton .n.f2.fright.fbot1.fontweightBtn -width 5 -variable fontweightState -textvar f2.fontweight 
 set fontweightBtn .n.f2.fright.fbot1.fontweightBtn
@@ -166,8 +164,7 @@ if {$fontweight=="bold"} {
 	font configure displayfont -weight normal
 }
 
-
-#4. Fontfamily combobox
+#4. Fontfamily dropbox
 message .n.f2.fright.fbot1.fontfamilyTxt -width 250 -textvar f2.fontfamilytext
 ttk::combobox .n.f2.fright.fbot1.fontfamilyDrop -width 20 -height 30
 set fontfamilyTxt .n.f2.fright.fbot1.fontfamilyTxt

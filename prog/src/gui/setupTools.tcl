@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24jun17
+# Updated: 29jun17
 
 source $JList
 
@@ -50,7 +50,7 @@ namespace eval NewsHandler {
 				.news configure -bg $color
 				set ::news $text
 				
-				after 5000 {
+				after 7000 {
 					NewsHandler::FinishShowing
 				}
 			}

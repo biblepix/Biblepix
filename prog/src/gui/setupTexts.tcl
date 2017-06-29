@@ -346,4 +346,7 @@ set KDErestart(en) "Any changes to the KDE desktop will take effect after restar
 set KDErestart(de) "Änderungen am KDE-Desktop treten erst nach Neustart in Kraft. Möchten Sie jetzt KDE neustarten?"
 set ::KDErestart $KDErestart($lang)
 
+set noPhotosFound(de) "Es wurden im $bp-Fotoordner keine Fotos gefunden. Kopieren Sie bitte einige Bilder in den Ordner."
+set noPhotosFound(en) "No photos were found in the $bp Photos folder. Please copy some pictures into the folder."
+set ::noPhotosFound $noPhotosFound($lang)
 } ;#END setTexts
