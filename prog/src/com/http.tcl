@@ -76,7 +76,7 @@ proc runHTTP args {
  
 	if {$Error != 0} {
 		set ::ftpStatus $noConnHttp
-		NewsHandler::QueryNews "$noConnHttp" red
+		catch {NewsHandler::QueryNews "$noConnHttp" red}
 				 
 	} else {
 				
