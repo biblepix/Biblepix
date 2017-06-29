@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25mai17
+# Updated: 29jun17
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -64,8 +64,8 @@ set gettingTwd(en) "Fetching current list of Bible text files from bible2.net...
 set gettingTwd(de) "Hole aktuelle Bibeltext-Liste von bible2.net..."
 set ::gettingTwd $gettingTwd($lang)
 
-set noTwdFilesFound(en) "Auf Ihrem PC sind noch keine Bibeltextdateien installiert.\nBitte wählen Sie im Register 'International' des Setup-Programms\nmindestens 1 Sprachdatei aus."
-set noTwdFilesFound(de) "No Bible text files have been installed yet on your PC.\nPlease choose at least one language text file\nfrom the 'International' section of the Setup program."
+set noTwdFilesFound(en) "Auf Ihrem PC sind noch keine Bibeltextdateien installiert. Bitte wählen Sie mindestens 1 Sprachdatei aus."
+set noTwdFilesFound(de) "No Bible text files have been installed yet on your PC. Please choose at least one language text file."
 set ::noTWDFilesFound $noTwdFilesFound($lang)
 
 set connTwd(en) "Connection to bible2.net established."
@@ -346,7 +346,7 @@ set KDErestart(en) "Any changes to the KDE desktop will take effect after restar
 set KDErestart(de) "Änderungen am KDE-Desktop treten erst nach Neustart in Kraft. Möchten Sie jetzt KDE neustarten?"
 set ::KDErestart $KDErestart($lang)
 
-set noPhotosFound(de) "Es wurden im $bp-Fotoordner keine Fotos gefunden. Kopieren Sie bitte einige Bilder in den Ordner."
+set noPhotosFound(de) "Im $bp-Fotoordner wurden keine Fotos gefunden. Kopieren Sie bitte einige Bilder in den Ordner."
 set noPhotosFound(en) "No photos were found in the $bp Photos folder. Please copy some pictures into the folder."
 set ::noPhotosFound $noPhotosFound($lang)
 } ;#END setTexts
