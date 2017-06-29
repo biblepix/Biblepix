@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28jun17
+# Updated: 29jun17
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
@@ -9,9 +9,11 @@ proc setLinCrontab args {
 global Biblepix Setup slideshow tclpath unixdir env
 
 	set cronfileOrig $unixdir/crontab.ORIG
+	catch {exec pidof crond} cronpid
+	set crontab [auto_execok crontab]
 
 	#Delete any crontab entries if $args & exit
-	if {$args=="delete"}  {
+	if {$args != ""}  {
 		if {[file exists $cronfileOrig]} {
 			exec crontab $cronfileOrig
 		} else {
@@ -20,16 +22,14 @@ global Biblepix Setup slideshow tclpath unixdir env
 		return
 	}
 
-	#Check if crond running, else exit 1
-	catch {exec pidof crond} cronpid
-	if { ! [string is digit $cronpid] } {
+	#Exit if 'crond' not running or 'crontab' not found
+	if { ! [string is digit $cronpid] || $crontab=="" } {
 		return 1
 	}
 	
 ### 1. Prepare crontab text
  
 	#Check for user's crontab & save 1st time
-	
 	if { ! [catch {exec crontab -l} crontext] && ! [file exists $cronfileOrig] } { 
 		set chan [open $cronfileOrig w]
 		puts $chan $crontext
@@ -122,18 +122,16 @@ global Biblepix Setup slideshow tclpath unixdir env
 proc setLinAutostart args {
 #Makes Autostart entries for GNOME&KDE
 #only executed if setLinCrontab fails
-#args can be "delete"
-global Biblepix Setup LinIcon tclpath
+global Biblepix Setup LinIcon tclpath srcdir bp
 	
-	#set paths
 	set KDEdir [glob -nocomplain ~/.kde*]
-	set GNOMEautostartpath ~/.config/autostart
-	set KDEautostartpath $KDEdir/Autostart
+	set GNOMEautostartDir ~/.config/autostart
+	set KDEautostartDir $KDEdir/Autostart
 	
 	#If args exists, delete any autostart files and exit
-	if  {$args=="delete"} {
-		file delete $GNOMEautostartpath/biblepix.desktop
-		file delete $KDEautostartpath/biblepix.desktop
+	if  {$args != ""} {
+		file delete $GNOMEautostartDir/biblepix.desktop
+		file delete $KDEautostartDir/biblepix.desktop
 		return
 	}
 
@@ -149,21 +147,24 @@ global Biblepix Setup LinIcon tclpath
 
 	#make .desktop file for KDE Autostart
 	if {[file exists $KDEdir]} {
-		file mkdir $KDEautostartpath
-		set desktopfile [open $KDEautostartpath/biblepix.desktop w]
+		file mkdir $KDEautostartDir
+		set desktopfile [open $KDEautostartDir/biblepix.desktop w]
 		puts $desktopfile "$desktopText"
 		puts $desktopfile "$execText"
 		close $desktopfile
 	}
 
 	#make .desktop file for GNOME Autostart
-	set chan [open $GNOMEautostartpath/biblepix.desktop w]
+	file mkdir $GNOMEautostartDir
+	set chan [open $GNOMEautostartDir/biblepix.desktop w]
 	puts $chan "$desktopText"
 	puts $chan "$execText"
 	close $chan
 
 	#Delete any BP crontab entry
-	setLinCrontab delete
+	setLinCrontab del
+
+	return 0
 }
 
 proc setLinMenu {} {

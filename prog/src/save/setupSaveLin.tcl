@@ -5,7 +5,7 @@
 
 source $SetupSaveLinHelpers
 
-## REMOVE ANY OLD BIBLEPIX INSTALLATIONS
+## OLD STUFF - TO BE REMOVED SOON! ##################################
 file delete -force ~/.biblepix
 
 #check .bashrc for old entry and remove
@@ -28,25 +28,25 @@ foreach file $jpglist {
 	file copy -force $file $imgdir
 	file delete $file
 }
+############################################################
 
-#Run Autostart if no running crond detected
-if {[setLinCrontab]} {
-	set Error [catch setLinAutostart]
+
+#Run setLinCrontab OR setLinAutostart - progs return 1 or 0
+if {
+	[setLinCrontab]
+	} {
+	catch setLinAutostart Error
 }
 
 ## SET BACKGROUND PICTURE/SLIDESHOW if $enablepic
 if {$enablepic} {
-
-	tk_messageBox -type ok -title "BiblePix Installation" -message $linChangeDesktop
+	tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangeDesktop
 	set Error [catch setLinBackground]
-
 }
 
-if {$Error} {
+if {$Error!=0} {
 	tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
-
 } else {
 	tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $changeDesktopOk
-#	exit
 }
 
