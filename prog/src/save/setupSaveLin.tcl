@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24jun17
+# Updated: 30jun17
 
 source $SetupSaveLinHelpers
 
@@ -37,6 +37,8 @@ if {
 	} {
 	catch setLinAutostart Error
 }
+#Run setLinMenu
+catch setLinMenu Error
 
 ## SET BACKGROUND PICTURE/SLIDESHOW if $enablepic
 if {$enablepic} {
