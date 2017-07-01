@@ -63,8 +63,7 @@ global twddir
 
 proc formatImgText {twdFile} {
 ##Returns $dw for Img & Textfenster
-global screenx tab datum ind enableintro
- #       source $Globals
+global tab datum ind enableintro
 
 	set root [getTWDFileRoot $twdFile]
 	

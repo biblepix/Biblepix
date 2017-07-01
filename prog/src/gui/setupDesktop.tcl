@@ -3,9 +3,6 @@
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated 29jun17
 
-set screenx [winfo screenwidth .]
-set screeny [winfo screenheight .]
-
 #Create left & right main frames
 pack [frame .n.f2.fleft] -expand 0 -fill y -side left
 pack [frame .n.f2.fright] -expand 0 -fill y -side right -pady 5 -padx 5
@@ -76,6 +73,8 @@ set textPosFactor 3
 image create photo origbild -file [getRandomJPG]
 image create photo canvasbild
 canvasbild copy origbild -subsample $textPosFactor -shrink
+
+set screeny [winfo screenheight .]
 
 set textposCanv [canvas .n.f2.fright.fbot.textposcanv -bg lightgrey -borderwidth 1]
 $textposCanv configure -width [image width canvasbild] -height [expr $screeny/$textPosFactor]
@@ -164,7 +163,7 @@ if {$fontweight=="bold"} {
 	font configure displayfont -weight normal
 }
 
-#4. Fontfamily dropbox
+#4. Fontfamily dropdown Menu
 message .n.f2.fright.fbot1.fontfamilyTxt -width 250 -textvar f2.fontfamilytext
 ttk::combobox .n.f2.fright.fbot1.fontfamilyDrop -width 20 -height 30
 set fontfamilyTxt .n.f2.fright.fbot1.fontfamilyTxt

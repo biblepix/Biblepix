@@ -31,24 +31,40 @@ foreach file $jpglist {
 ############################################################
 
 
+set hasError 0
+
 #Run setLinCrontab OR setLinAutostart - progs return 1 or 0
 if {
 	[setLinCrontab]
 	} {
 	catch setLinAutostart Error
+	
+	if {$Error!=0} {
+		tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
+		set hasError 1
+	} 
 }
+
 #Run setLinMenu
 catch setLinMenu Error
+
+if {!$hasError && $Error!=0} {
+	tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
+	set hasError 1
+}
 
 ## SET BACKGROUND PICTURE/SLIDESHOW if $enablepic
 if {$enablepic} {
 	tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangeDesktop
-	set Error [catch setLinBackground]
+	
+	catch setLinBackground Error
+
+	if {!$hasError && $Error!=0} {
+		tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
+		set hasError 1
+	}
 }
 
-if {$Error!=0} {
-	tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
-} else {
+if {!$hasError} {
 	tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $changeDesktopOk
 }
-

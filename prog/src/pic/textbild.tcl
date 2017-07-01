@@ -1,10 +1,7 @@
-# ~/Biblepix/prog/src/main/textbild.tcl
+# ~/Biblepix/prog/src/pic/textbild.tcl
 # Creates text picture, called by image.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27may2017 
-
-set screenx [winfo screenwidth .]
-set screeny [winfo screenheight .]
+# Updated: 1Jul2017 
 
 #Set window bottom-left, no frame
 wm overrideredirect . 1
@@ -13,7 +10,9 @@ wm geometry . +0-30
 catch {font create BiblepixFont -family $fontfamily}
 
 proc text>bmp {bmpfile twdfile} {
-global fontsize fontfamily fontweight hghex fghex bmpdir screenx platform Twdtools Bidi os
+global fontsize fontfamily fontweight hghex fghex bmpdir platform Twdtools Bidi os
+
+	set screenX [winfo screenwidth .]
 
     #Create & preconfigure empty one-line text widget
     catch {text .t }
@@ -67,7 +66,7 @@ global fontsize fontfamily fontweight hghex fghex bmpdir screenx platform Twdtoo
     #Create textbild with 0 width, define width for RTL
     image create photo textbild 
     if {$RTL} {
-        textbild configure -width $screenx
+        textbild configure -width $screenX
     }
     
     #Split $dw into lines
@@ -98,7 +97,7 @@ global fontsize fontfamily fontweight hghex fghex bmpdir screenx platform Twdtoo
     }
         
     if {$RTL} {
-       set Leftmargin [expr $screenx - $Lwidth]
+       set Leftmargin [expr $screenX - $Lwidth]
        if {$Leftmargin<0} {
           set Leftmargin 0
         }
@@ -129,7 +128,7 @@ global fontsize fontfamily fontweight hghex fghex bmpdir screenx platform Twdtoo
     if {$RTL} {
         set longestline [lindex [lsort -integer $Linelength] end]
         image create photo cutleft
-        cutleft copy textbild -from [expr $screenx - $longestline] 0 -shrink
+        cutleft copy textbild -from [expr $screenX - $longestline] 0 -shrink
         textbild blank
         textbild configure -width [image width cutleft]
         textbild copy cutleft

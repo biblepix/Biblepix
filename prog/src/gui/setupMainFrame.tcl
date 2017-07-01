@@ -14,18 +14,16 @@ source $Setuptools
 source $Twdtools
 
 #Set general X vars
-set screenwidth [winfo screenwidth .]
-set screenheight [winfo screenheight .]
+set screenX [winfo screenwidth .]
+set screenY [winfo screenheight .]
 set wWidth 1280
 set wHeight 940
 
-if {$screenwidth < $wWidth} { set wWidth $screenwidth}
-if {$screenheight < $wHeight} { set wHeight $screenheight}
-set wMx [expr ($screenwidth - $wWidth) / 2]
-set wMy [expr ($screenheight - $wHeight) / 2]
+if {$screenX < $wWidth} { set wWidth $screenX}
+if {$screenY < $wHeight} { set wHeight $screenY}
+set wMx [expr ($screenX - $wWidth) / 2]
+set wMy [expr ($screenY - $wHeight) / 2]
 
-#set wWidth [expr $screenwidth - ($screenwidth/3)]
-#set wHeight [expr $screenheight - 400]
 set tw [expr $wWidth - 100] ;#text width
 set px 10
 set py 10

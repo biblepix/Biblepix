@@ -16,9 +16,9 @@ catch {
 #Configure Fonts                     ??? -PIXELS ???
 font create bpfont1 -family TkTextFont
 
-if {$screenheight < 800} {
+if {$wHeight < 700} {
 	font configure bpfont1 -size 10
-} elseif {$screenheight < 1000} {
+} elseif {$wHeight < 900} {
 	font configure bpfont1 -size 11
 } else {
 	font configure bpfont1 -size 12

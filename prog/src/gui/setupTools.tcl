@@ -151,8 +151,11 @@ global Flags
 # C A N V A S   M O V E   P R O C S
 
 proc createMovingTextBox {textposCanv} {
-global screenx screeny marginleft margintop textPosFactor fontsize fontfamily
+global marginleft margintop textPosFactor fontsize fontfamily
 global fontcolortext gold green blue silver noTWDFilesFound dwtext
+
+	set screenx [winfo screenwidth .]
+	set screeny [winfo screenheight .]
 
 	set textPosSubwinX [expr $screenx/20]
 	set textPosSubwinY [expr $screeny/30]
@@ -208,7 +211,7 @@ global jpegdir lang
 	set msg "Copied [file tail $imgName] to [file nativename $jpegdir]"
 	set msgDE "[file tail $imgName] nach [file nativename $jpegdir] kopiert"
 	if  {$lang=="de"} {set msg $msgDE}
-	file copy $imgName $jpegdir
+	checkImgSizeAndSave $imgName
 	NewsHandler::QueryNews "$msg" lightblue
 }
 

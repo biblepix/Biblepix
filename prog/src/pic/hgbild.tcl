@@ -7,7 +7,7 @@ source $Imgtools
 
 proc fgbild>hgbild {hgfile bmpfile} {
 #Puts text picture on background image, adding Sun & Shade pixels
-global Config platform TwdTIF TwdPNG TwdBMP screenx
+global Config platform TwdTIF TwdPNG TwdBMP
 global  fontcolor fgrgb sun shade
 
 	#Source config to reset marginleft (rtl/ltr)
@@ -19,6 +19,8 @@ global  fontcolor fgrgb sun shade
 	hgbild blank
 	hgbild read $hgfile	
 	
+	
+	set screenx [winfo screenwidth .]
 	set imgx [image width fgbild]
 	set imgy [image height fgbild]
 	set bmpname [file tail $bmpfile]
