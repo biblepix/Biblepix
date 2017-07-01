@@ -349,3 +349,40 @@ proc resize {src newx newy {dest ""} } {
 	return $dest
 }
 
+proc resizeImg {px} {
+#increases/reduces image by $px in width & height
+global screenX screenY
+
+set imgX [image width bild]
+set diff [expr $imgX-screenX]
+
+#Calculate pix positions
+set pos1 [expr $imgX./$diff]
+if {[string length $pos1] <1} {
+	set pos1	[expr round($pos1)]
+	set rest1 [expr $imgX -$imgX/$pos1]
+	set rest2 [expr $rest1-$screenX]
+	set pos2 [expr $imgX/$rest2.]
+	set pos2 [expr round($pos2)
+
+image create photo neubild
+
+#A. image too wide
+set factor $pos1
+
+for {set x 0} {$x<$imgx} {incr x} {
+	for {set y 0} {$y<$imgy} {incr y} {
+#set hex [format ... [bild get $x $y] ]
+#neubild put $hex -to $x $y
+
+		while {$x<$factor} {
+			neubild copy bild -from $x $y $x $y -to $x $y $x $y
+			incr $factor 1
+		}
+	
+		#skip by 1, incr factor by $factor
+		incr x 1
+		incr factor $factor
+		}
+	}
+}
