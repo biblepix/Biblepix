@@ -62,13 +62,18 @@ global inttextCanv internationaltext
 	$inttextCanv itemconfigure shade -fill $shade
 }
 
-proc checkImgSize {hgfile} {
-#Checks and resizes badly fitting hgbild
-global screenx screeny
+proc checkImgSizeAndSave {hgfile} {
+#Checks and resizes badly fitting tempBild
+global jpegdir
+	
+	set screenx [winfo screenwidth .]
+	set screeny [winfo screenheight .]
+	
+	image create photo tempBild -file $hgfile
 	
 	#Compare img dimensions with screen dimensions
-	set imgx [image width hgbild]
-	set imgy [image height hgbild]
+	set imgx [image width tempBild]
+	set imgy [image height tempBild]
 
 	set reqRatio [expr $screenx./$screeny]
 	set imgRatio [expr $imgx./$imgy]
@@ -78,40 +83,38 @@ puts "Real image height: $imgy"
 	#Bild zu hoch
 	if {$imgRatio<$reqRatio} {
 
-	set reqImgY  [expr round($imgx/$reqRatio)]
-	set diffY [expr round($imgy - $reqImgY)]
+		set reqImgY  [expr round($imgx/$reqRatio)]
+		set diffY [expr round($imgy - $reqImgY)]
 
 puts "Difference: $diffY"
 	
 	#Bild zu breit
 	} else {
 
-	set reqImgX [expr round($imgy*$reqRatio)]
-	set diffX  [expr round($imgx - $reqImgX)]
+		set reqImgX [expr round($imgy*$reqRatio)]
+		set diffX  [expr round($imgx - $reqImgX)]
 
 puts "ReqImgX $reqImgX"
 puts "Difference: $diffX"
 	}
 
-if { [info exists diffY] } {
+	if { [info exists diffY] } {
 
 puts "Cuttyng Y..."
-	
-		cutY hgbild $imgx $imgy $diffY
+
+		cutY tempBild $imgx $imgy $diffY
 	
 	} elseif  { [info exists diffX] } {
 		
-		cutX hgbild $imgx $imgy $diffX
-}
-
-
-
+		cutX tempBild $imgx $imgy $diffX
+	}
 
 	#2. Resize evenly
-	resize hgbild $screenx $screeny
+	resize tempBild $screenx $screeny
 	
-#3. Overwrite corrected image - T O D O  - resized JPEGs tend to be worse quality !!!!!!!!!!!!!!!!!!!!!!!!	
-	hgbild write $hgfile -format JPEG
+	#3. Overwrite corrected image - T O D O  - resized JPEGs tend to be worse quality !!!!!!!!!!!!!!!!!!!!!!!!	
+	#tempBild write $hgfile -format JPEG
+	tempBild write [file join $jpegdir [file tail $hgfile]] -format JPEG
 			
 } ;#end checkImageSize
 
@@ -138,8 +141,7 @@ puts $diffhalb
 	ausschnitt copy $src -from $x1 $y1 $x2 $y2 -shrink
 	
 	$src blank 
-	$src copy ausschnitt 
-#	ausschnitt blank	
+	$src copy ausschnitt -shrink
 	return $src
 }
 
@@ -158,7 +160,6 @@ proc cutY {src imgx imgy diffY} {
 
 	$src blank
 	$src copy ausschnitt -shrink
-	ausschnitt blank
 	return $src
 }
 

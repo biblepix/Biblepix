@@ -33,7 +33,7 @@ global wishpath Setup srcpath winpath winRegister windir
 
 	set setuppath "$wishpath $srcpath\\\\biblepix-setup.tcl"
 	#detect if "unset"
-	if {[info exists args]} {
+	if {$args != ""} {
 	set regtext "Windows Registry Editor Version 5.00
 
 \-\[HKEY_CLASSES_ROOT\\DesktopBackground\\Shell\\Biblepix\]
@@ -73,15 +73,16 @@ global wishpath Setup srcpath winpath winRegister windir
 
 proc setWinTheme args {
 #Runs /Deletes 'single pic' theme if running slideshow detected
-global env enablepic slideshow TwdTIF
+global env enablepic slideshow TwdTIF winChangeDesktop
 
 	#Detect running slideshow (entry reset by Windows when user sets bg)
 	set regpathExplorer [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
-	set BackgroundType [registry get $regpathExplorer BackgroundType]
-        
-        if {$BackgroundType != 0} {
-        
-	        set themepath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Biblepix.theme]
+
+	# Fallback behavior if BackgroundType is missing or wrong.
+	if {[catch {set BackgroundType [registry get $regpathExplorer BackgroundType]}] || $BackgroundType != 0} {	
+		tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangeDesktop
+
+	    set themepath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Biblepix.theme]
 		set themetext "\[Theme\]
 DisplayName=BiblePix
 

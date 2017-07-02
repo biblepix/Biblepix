@@ -32,9 +32,6 @@ if {[info procs fgbild>hgbild] == ""} {
 set hgfile [getRandomJPG]
 image create photo hgbild -file $hgfile
 
-#Correct size if necessary
-checkImgSize $hgfile
-
 #Select & create random foreground BMP
 set bmpfile [file join $bmpdir [getRandomBMP]]
 image create photo fgbild -file $bmpfile
