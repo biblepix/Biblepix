@@ -1,8 +1,8 @@
-# ~/Biblepix/prog/src/share/globals.tcl
+# ~/Biblepix/prog/src/com/globals.tcl
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 23jun17
+# Updated: 2jul17
 
 # This variable enables the debuging mode in the hole application if set to 1.
 set Debug 1
@@ -90,6 +90,7 @@ Flags [file join $sharedir flags.tcl]
 JList [file join $sharedir JList.tcl]
 Globals [file join $sharedir globals.tcl]
 Imgtools [file join $sharedir imgtools.tcl]
+LoadConfig [file join $sharedir LoadConfig.tcl]
 Twdtools [file join $sharedir twdtools.tcl]
 Uninstall [file join $sharedir uninstall.tcl]
 Signature [file join $maildir signature.tcl]
@@ -150,108 +151,6 @@ proc sleep { ms } {
     unset ::__sleep__tmp__$uniq
 }
 
-# TODO extract to an other file
-#Source Config & add defaults to Config if missing
-if { [catch {source $Config}] } {
-	file mkdir $confdir
-}
-
-if { ![info exists lang] } {
-	set lang en
-
-   	if {$platform=="windows"} {
-		package require registry
-		if { ! [catch "set userlang [registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\] InstallLanguage]" ] } {
-			#code 4stellig, alle Deutsch enden mit 07
-			if {  [string range $userlang 2 3] == 07 } {
-				set lang de
-			}
-		}
-   	} elseif {$platform=="unix"} {
-		if {[info exists env(LANG)] && [string range $env(LANG) 0 1] == "de"} {
-				 set lang de
-		}
-   	}
-	set chan [open $Config a]
-	puts $chan "set lang $lang"
-	close $chan
-}
-
-if {![info exists enableintro]} {
-	set enableintro 1
-	set chan [open $Config a]
-	puts $chan "set enableintro $enableintro"
-	close $chan
-}
-if {![info exists enablepic]} {
-	set enablepic 1
-	set chan [open $Config a]
-	puts $chan "set enablepic $enablepic"
-	close $chan
-}
-if {![info exists enablesig]} {
-	set enablesig 0
-	set chan [open $Config a]
-	puts $chan "set enablesig $enablesig"
-	close $chan
-}
-if {![info exists slideshow]} {
-	set slideshow 300
-	set chan [open $Config a]
-	puts $chan "set slideshow $slideshow"
-	close $chan
-}
-#Set fontfamily
-if {![info exists fontfamily]} {
-	if {$platform=="unix"} {
-		set fontfamily {TkTextFont}
-	} else {
-		set fontfamily {Arial Unicode MS}
-	}
-	set chan [open $Config a]
-	puts $chan "set fontfamily \{$fontfamily\}"
-	close $chan
-}		 
-#Set fontsize (must exist and be digits)
-if {![info exists fontsize] || ![regexp {[[:digit:]]} $fontsize] } {
-	set fontsize 25
-	set chan [open $Config a]
-	puts $chan "set fontsize $fontsize"
-	close $chan
-}
-#Set fontweight
-if {![info exists fontweight]} {
-	if {$platform=="unix"} {
- 		set fontweight normal
-        } else {
-	        set fontweight bold
-        }
-    set chan [open $Config a]
-    puts $chan "set fontweight $fontweight"
-    close $chan
-}
-#Set fontcolortext
-if {![info exists fontcolortext]} {
-	set fontcolortext blue
-	set chan [open $Config a]
-	puts $chan "set fontcolortext $fontcolortext"
-	close $chan
-}
-#Set marginleft
-if {![info exists marginleft]} {
-	set marginleft 30
-	set chan [open $Config a]
-	puts $chan "set marginleft $marginleft"
-	close $chan
-}
-#Set margintop
-if {![info exists margintop]} {
-	set margintop 30
-	set chan [open $Config a]
-	puts $chan "set margintop $margintop"
-	close $chan
-}
-
 #Define font colours & sun/shade factors
 set gold #daa520
 set silver #707585
@@ -260,19 +159,6 @@ set green #2e8b57
 set sunfactor 2.0
 set shadefactor 0.6
 
-#Set current font colour
-if {$fontcolortext == "blue"} {
-	set fontcolor $blue
-} elseif {$fontcolortext == "gold"} {
-	set fontcolor $gold
-} elseif {$fontcolortext == "green"} {
-	set fontcolor $green
-} elseif {$fontcolortext == "silver"} {
-	set fontcolor $silver
-} else {
-	set fontcolor $blue
-}
-
 #Set colours for text image calculation
 ##background black
 set hghex "#000000"
@@ -280,3 +166,10 @@ set hgrgb "0 0 0"
 ##foreground almost black
 set fghex "#000001"
 set fgrgb "0 0 1"
+
+#Source Config or LoadConfig for defaults
+if { [catch {source $Config}] } {
+	file mkdir $confdir
+}
+
+source $LoadConfig
