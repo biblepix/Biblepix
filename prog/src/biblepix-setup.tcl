@@ -37,7 +37,7 @@ if {[catch {source $Globals}]} {
 		set updatingHttp "Updating BiblePix program files..."
 		set noConnHttp "No connection for BiblePix update. Try later."
 	}
-
+	
 	# 1.  D O   H T T P  U P D A T E   (if not initial)
 
 	.updateFrame.progbar start
@@ -45,7 +45,7 @@ if {[catch {source $Globals}]} {
 	if { [info exists InitialJustDone] } {
 		set pbTitle $uptodateHttp
 	} else {	
-		set pbTitle $updatingHttp
+		set pbTitle $updatingHttp		
 		source $Http
 			
 		# a) Do Update if $config exists

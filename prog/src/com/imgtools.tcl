@@ -69,11 +69,11 @@ global jpegdir
 	set screenx [winfo screenwidth .]
 	set screeny [winfo screenheight .]
 	
-	image create photo tempBild -file $hgfile
+	set tempBild [image create photo -file $hgfile]
 	
 	#Compare img dimensions with screen dimensions
-	set imgx [image width tempBild]
-	set imgy [image height tempBild]
+	set imgx [image width $tempBild]
+	set imgy [image height $tempBild]
 
 	set reqRatio [expr $screenx./$screeny]
 	set imgRatio [expr $imgx./$imgy]
@@ -87,7 +87,9 @@ puts "Real image height: $imgy"
 		set diffY [expr round($imgy - $reqImgY)]
 
 puts "Difference: $diffY"
-	
+
+		cutY $tempBild $imgx $imgy $diffY
+		
 	#Bild zu breit
 	} else {
 
@@ -96,26 +98,19 @@ puts "Difference: $diffY"
 
 puts "ReqImgX $reqImgX"
 puts "Difference: $diffX"
+
+		cutX $tempBild $imgx $imgy $diffX
 	}
-
-	if { [info exists diffY] } {
-
-puts "Cuttyng Y..."
-
-		cutY tempBild $imgx $imgy $diffY
 	
-	} elseif  { [info exists diffX] } {
-		
-		cutX tempBild $imgx $imgy $diffX
-	}
-
 	#2. Resize evenly
-	resize tempBild $screenx $screeny
+	set finalBild [resize $tempBild $screenx $screeny]
 	
 	#3. Overwrite corrected image - T O D O  - resized JPEGs tend to be worse quality !!!!!!!!!!!!!!!!!!!!!!!!	
-	#tempBild write $hgfile -format JPEG
-	tempBild write [file join $jpegdir [file tail $hgfile]] -format JPEG
-			
+	$finalBild write [file join $jpegdir [file tail $hgfile]] -format JPEG
+	
+	$tempBild blank
+	$finalBild blank
+	
 } ;#end checkImageSize
 
 # Syntax: oberen Punkt einer Diagonale: x1+y1
@@ -131,17 +126,18 @@ proc cutX {src imgx imgy diffX} {
 	set diffhalb [expr $diffX/2]
 puts $diffX
 puts $diffhalb
-	regsub {\-} $diffhalb {} diffhalb	
-	image create photo ausschnitt
+	regsub {\-} $diffhalb {} diffhalb
+	set ausschnitt [image create photo]
 	
 	set x1 $diffhalb
 	set y1 0
 	set x2 [expr $imgx-$diffhalb]
 	set y2 $imgy
-	ausschnitt copy $src -from $x1 $y1 $x2 $y2 -shrink
+	$ausschnitt copy $src -from $x1 $y1 $x2 $y2 -shrink
 	
 	$src blank 
-	$src copy ausschnitt -shrink
+	$src copy $ausschnitt -shrink
+	$ausschnitt blank
 	return $src
 }
 
@@ -150,16 +146,17 @@ proc cutY {src imgx imgy diffY} {
 	puts "Cutting Y $diffY"
 	set diffhalb [expr $diffY/2]
 	regsub {\-} $diffhalb {} diffhalb
-	image create photo ausschnitt
+	set ausschnitt [image create photo]
 		
 	set x1 0
 	set y1 $diffhalb
 	set x2 $imgx
 	set y2 [expr $imgy-$diffhalb]
-	ausschnitt copy $src -from $x1 $y1 $x2 $y2 -shrink
+	$ausschnitt copy $src -from $x1 $y1 $x2 $y2 -shrink
 
 	$src blank
-	$src copy ausschnitt -shrink
+	$src copy $ausschnitt -shrink
+	$ausschnitt blank
 	return $src
 }
 
@@ -347,42 +344,4 @@ proc resize {src newx newy {dest ""} } {
 	update idletasks
 	
 	return $dest
-}
-
-proc resizeImg {px} {
-#increases/reduces image by $px in width & height
-global screenX screenY
-
-set imgX [image width bild]
-set diff [expr $imgX-screenX]
-
-#Calculate pix positions
-set pos1 [expr $imgX./$diff]
-if {[string length $pos1] <1} {
-	set pos1	[expr round($pos1)]
-	set rest1 [expr $imgX -$imgX/$pos1]
-	set rest2 [expr $rest1-$screenX]
-	set pos2 [expr $imgX/$rest2.]
-	set pos2 [expr round($pos2)
-
-image create photo neubild
-
-#A. image too wide
-set factor $pos1
-
-for {set x 0} {$x<$imgx} {incr x} {
-	for {set y 0} {$y<$imgy} {incr y} {
-#set hex [format ... [bild get $x $y] ]
-#neubild put $hex -to $x $y
-
-		while {$x<$factor} {
-			neubild copy bild -from $x $y $x $y -to $x $y $x $y
-			incr $factor 1
-		}
-	
-		#skip by 1, incr factor by $factor
-		incr x 1
-		incr factor $factor
-		}
-	}
 }

@@ -24,8 +24,8 @@ proc setRootDir {srcdir} {
 
 if { [info exists srcdir] } {
 	#set
-	set rootdir "[setRootDir $srcdir]"
-
+	set rootdir "[setRootDir $srcdir]"	
+	set srcdir [file join $rootdir prog src]
 } else {
 	#reset
 	if { [info exists env(LOCALAPPDATA)] } {
@@ -35,7 +35,6 @@ if { [info exists srcdir] } {
 	}
 	set srcdir [file join $rootdir prog src]
 }
-
 
 #Set dirnames
 set twddir [file join $rootdir Texts]
