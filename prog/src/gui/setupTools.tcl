@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29jun17
+# Updated: 3jul17
 
 source $JList
 
@@ -212,6 +212,7 @@ global jpegdir lang
 	set msgDE "[file tail $imgName] nach [file nativename $jpegdir] kopiert"
 	if  {$lang=="de"} {set msg $msgDE}
 	checkImgSizeAndSave $imgName
+
 	NewsHandler::QueryNews "$msg" lightblue
 }
 
@@ -276,9 +277,9 @@ proc getFileList {bildordner} {
 		set folder [string range $selectedFile 0 [expr $pos - 1]]
 		
 		if {$tcl_platform(os) == "Linux"} {
-			set fileNames [glob -nocomplain -directory $folder *.jpg *.jpeg *.JPG *.JPEG]
+			set fileNames [glob -nocomplain -directory $folder *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
 		} elseif {$tcl_platform(platform) == "windows"} {
-			set fileNames [glob -nocomplain -directory $folder *.jpg *.jpeg]
+			set fileNames [glob -nocomplain -directory $folder *.jpg *.jpeg *.png]
 		}
 		
 		foreach fileName $fileNames {
@@ -317,9 +318,9 @@ proc refreshFileList {} {
 	set localJList ""
 	
 	if {$tcl_platform(os) == "Linux"} {
-		set fileNames [glob -nocomplain -directory $jpegdir *.jpg *.jpeg *.JPG *.JPEG]
+		set fileNames [glob -nocomplain -directory $jpegdir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
 	} elseif {$tcl_platform(platform) == "windows"} {
-		set fileNames [glob -nocomplain -directory $jpegdir *.jpg *.jpeg]
+		set fileNames [glob -nocomplain -directory $jpegdir *.jpg *.jpeg *.png]
 	}
 	
 	foreach fileName $fileNames {

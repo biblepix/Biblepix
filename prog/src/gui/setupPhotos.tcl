@@ -1,31 +1,31 @@
 # ~/Biblepix/prog/src/gui/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 21apr17
+# Updated 3jul17
 
 set fileJList ""
-set HOME "$env(HOME)"
 
 if {$platform == "unix"} {
 	#Bildordner names change with language!
-	set bildordner $HOME
+	set HOME $env(HOME)
         
         if { [file exists $HOME/Pictures] } {
 		set bildordner $HOME/Pictures
         } elseif { [file exists $HOME/Bilder] } {
-        	set bildordner $HOME/Bilder
-        }
-# TODO: ADD MORE LANGUAGES !!!!!!!!!!!!!!!!!!!!!!!!!!!
+		set bildordner $HOME/Bilder
+        } else {	
+		set bildordner $HOME
+	}
         
         set types {
-		{ {Image Files} {.jpg .jpeg .JPG .JPEG} }
+		{ {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
 	}
         
 } elseif {$platform == "windows"} {
 	#Bildordner is always "Pictures"
 	set bildordner $env(USERPROFILE)/Pictures
 	set types {
-		{ {Image Files} {.jpg .jpeg} }
+		{ {Image Files} {.jpg .jpeg .png} }
 	}
 }
 

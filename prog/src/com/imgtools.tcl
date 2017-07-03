@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2Jul17
+# Updated: 3Jul17
 
 package require Img
 
@@ -105,8 +105,12 @@ puts "Difference: $diffX"
 	#2. Resize evenly
 	set finalBild [resize $tempBild $screenx $screeny]
 	
-	#3. Overwrite corrected image - T O D O  - resized JPEGs tend to be worse quality !!!!!!!!!!!!!!!!!!!!!!!!	
-	$finalBild write [file join $jpegdir [file tail $hgfile]] -format JPEG
+	#3. Overwrite corrected image & save as PNG	
+	set filename [file tail $hgfile]	
+	if {![regexp png|PNG $filename] } {
+		set filename "[string trim $filename .jpg|.JPG|.jpeg|.JPEG].png"
+	}
+	$finalBild write [file join $jpegdir $filename] -format PNG
 	
 	$tempBild blank
 	$finalBild blank
@@ -174,6 +178,9 @@ proc resize {src newx newy {dest ""} } {
  #  Author: David Easton, wiki.tcl.tk, 2004 - God bless you David, you have saved us a lot of trouble!
 
  ######## IDEAL FOR EVEN SIDED ZOOMING ############# pv
+
+	global resizing
+	NewsHandler::QueryNews "$resizing" orange
 	
 	set mx [image width $src]
 	set my [image height $src]
