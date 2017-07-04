@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3jul17
+# Updated: 4jul17
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -334,12 +334,12 @@ set winChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung des Deskt
 set winChangeDesktopProb(en) "We are having a problem changing your Desktop background.\nPlease right-click on your Desktop and select \"Customize\".\nFind the BiblePix theme, click on it and then close the window."
 set ::winChangeDesktopProb $winChangeDesktopProb($lang)
 
-set linChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung der Desktopeinstellungen.\nBitte rechtsklicken Sie auf Ihrem Desktop und finden Sie den Dialog für 'Hintergrundbild'. Dort geben Sie $imgdir als Bildpfad an."
+set linChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung der Desktopeinstellungen.\nBitte rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog für 'Hintergrundbild'. Dort geben Sie $imgdir als Bildpfad an."
 set linChangeDesktopProb(en) "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgdir as new image path."
 set ::linChangeDesktopProb $linChangeDesktopProb($lang)
 
 set changeDesktopOk(en) "$bp has been configured successfully and will start shortly.\nYou can run BiblePix Setup anytime by right-clicking on your Desktop (or in your Computer's Start Menu) and selecting the \"BiblePix Setup\" icon."
-set changeDesktopOk(de) "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\nDas BibelPix-Setup können Sie jederzeit starten, indem Sie auf Ihrem Desktop recktsklicken (oder im Startmenü Ihres PCs) und das Symbol \"BiblePix Setup\" wählen."
+set changeDesktopOk(de) "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\nDas BibelPix-Setup können Sie jederzeit starten, indem Sie durch Recktsklick auf Ihrer Arbeitsfläche oder im Startmenü das Symbol \"BiblePix Setup\" wählen."
 set ::changeDesktopOk $changeDesktopOk($lang)
 
 set winRegister(en) "BiblePix will no try to register with your system.\nYou must confirm any dialogue boxes with \"Yes\"."

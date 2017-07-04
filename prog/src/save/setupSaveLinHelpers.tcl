@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1jul17
+# Updated: 4jul17
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
@@ -13,12 +13,15 @@ global Biblepix Setup slideshow tclpath unixdir env
 	#check for running cron/crond & existing crontab
 	catch {exec pidof crond} crondpid
 	catch {exec pidof cron} cronpid
-	set crontab [auto_execok crontab]
 
-	#Exit if 'cron'/'crond' not running or 'crontab' not found
-	if { 	! [string is digit $cronpid] || 
-		! [string is digit $crondpid] ||
-		$crontab=="" 
+	#Exit if crontab not found
+	if { [auto_execok crontab] ==""} {
+		return 1
+	}
+
+	#Exit if cron OR crond not running
+	if { 	! [string is digit $cronpid] && 
+		! [string is digit $crondpid]
 		} {
 		return 1
 	}	
@@ -176,7 +179,7 @@ global Biblepix Setup LinIcon tclpath srcdir bp
 
 proc setLinMenu {} {
 #Makes Menu entries for GNOME&KDE
-global LinIcon srcdir Setup wishpath
+global LinIcon srcdir Setup wishpath bp
 
 	set tclpath [exec which tclsh]
 	set desktoppath ~/.local/share/applications

@@ -48,7 +48,7 @@ if {
 #Run setLinMenu
 catch setLinMenu Error
 
-if {!$hasError && $Error!=0} {
+if {!$hasError && $Error!=""} {
 	tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
 	set hasError 1
 }
@@ -59,7 +59,7 @@ if {$enablepic} {
 	
 	catch setLinBackground Error
 
-	if {!$hasError && $Error!=0} {
+	if {!$hasError && $Error!=""} {
 		tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
 		set hasError 1
 	}
