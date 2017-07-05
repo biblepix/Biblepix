@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4jul17
+# Updated: 5jul17
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
@@ -10,7 +10,7 @@ global Biblepix Setup slideshow tclpath unixdir env
 
 	set cronfileOrig $unixdir/crontab.ORIG
 	
-	#check for running cron/crond & existing crontab
+	#check for running cron/crond
 	catch {exec pidof crond} crondpid
 	catch {exec pidof cron} cronpid
 
@@ -40,7 +40,8 @@ global Biblepix Setup slideshow tclpath unixdir env
 ### 1. Prepare crontab text
  
 	#Check for user's crontab & save 1st time
-	if { ! [catch {exec crontab -l} crontext] && ! [file exists $cronfileOrig] } { 
+	if { 	! [catch {exec crontab -l}] && 
+        	! [file exists $cronfileOrig] } { 
 		set chan [open $cronfileOrig w]
 		puts $chan $crontext
 		close $chan
@@ -65,7 +66,11 @@ global Biblepix Setup slideshow tclpath unixdir env
 	}
 
 	#Create/append new crontext, save&execute
-	append crontext \n$BPcrontext
+	if {[info exists crontext]} {
+        	append crontext \n$BPcrontext
+        } else {
+        	set crontext $BPcrontext
+        }
  	set chan [open $cronfileTmp w]
 	puts $chan $crontext
 	close $chan
