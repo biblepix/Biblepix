@@ -41,12 +41,13 @@ global Biblepix Setup slideshow tclpath unixdir env
  
 	#Check for user's crontab & save 1st time
 	if { 	! [catch {exec crontab -l}] && 
-        		! [file exists $cronfileOrig] } { 
-		set crontext [exec crontab -l]
+        		! [file exists $cronfileOrig] 
+		} { 
+		set runningCrontext [exec crontab -l]
 		#save only if not B|biblepix
-		if {![regexp iblepix $crontext]} {
+		if {![regexp iblepix $runningCrontext]} {
 			set chan [open $cronfileOrig w]
-			puts $chan $crontext
+			puts $chan $runningCrontext
 			close $chan
 		}
 	}		
