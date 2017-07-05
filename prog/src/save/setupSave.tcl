@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 24jun17 
+# Updated : 5jul17 
 
 #Make sure either $twddir or SELECTED contain $jahr-TWD files,
 # else stop saving process & return to Setup!
@@ -20,8 +20,7 @@ if { $SELECTED_TWD_FILES != ""} {
 		#get hrefs alphabetically ordered
 		set urllist [$root selectNodes {//tr/td/a}]
     
-	    #??? warum nötig, siehe Bedingung oben!
-		set hrefs ""
+	    	set hrefs ""
 		foreach url $urllist {lappend hrefs [$url @href]}
 		set urllist [lsort $hrefs]
 		set selectedindices [.n.f1.twdremoteframe.lb curselection] 
@@ -121,13 +120,13 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 
 	} elseif {$os == "Linux"} {
 		
+		source $Config
+		source $SetupSaveLin
 		if {[info exists crontab]} {
 			set chan [open $Config a]			
 			puts $chan "set crontab 1"
 			close $chan
-		}
-		source $Config
-		source $SetupSaveLin 	
+		} 	
 	}
 
 
