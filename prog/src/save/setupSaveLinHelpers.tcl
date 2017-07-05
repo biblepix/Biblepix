@@ -26,7 +26,7 @@ global Biblepix Setup slideshow tclpath unixdir env
 		return 1
 	}	
 	
-	#Delete any crontab entries if $args & exit
+	#if ARGS: Delete any crontab entries & exit
 	if {$args != ""}  {
 		if {[file exists $cronfileOrig]} {
 			exec crontab $cronfileOrig
@@ -41,7 +41,8 @@ global Biblepix Setup slideshow tclpath unixdir env
  
 	#Check for user's crontab & save 1st time
 	if { 	! [catch {exec crontab -l}] && 
-        	! [file exists $cronfileOrig] } { 
+        		! [file exists $cronfileOrig] } { 
+		set crontext [exec crontab -l]
 		set chan [open $cronfileOrig w]
 		puts $chan $crontext
 		close $chan
@@ -67,10 +68,10 @@ global Biblepix Setup slideshow tclpath unixdir env
 
 	#Create/append new crontext, save&execute
 	if {[info exists crontext]} {
-        	append crontext \n$BPcrontext
-        } else {
-        	set crontext $BPcrontext
-        }
+		append crontext \n$BPcrontext
+	} else {
+		set crontext $BPcrontext
+	}
  	set chan [open $cronfileTmp w]
 	puts $chan $crontext
 	close $chan
