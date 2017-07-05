@@ -43,9 +43,12 @@ global Biblepix Setup slideshow tclpath unixdir env
 	if { 	! [catch {exec crontab -l}] && 
         		! [file exists $cronfileOrig] } { 
 		set crontext [exec crontab -l]
-		set chan [open $cronfileOrig w]
-		puts $chan $crontext
-		close $chan
+		#save only if not B|biblepix
+		if {![regexp iblepix $crontext]} {
+			set chan [open $cronfileOrig w]
+			puts $chan $crontext
+			close $chan
+		}
 	}		
 
 	#Prepare new crontab entry
