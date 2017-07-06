@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5jul17
+# Updated: 6jul17
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
@@ -87,22 +87,14 @@ global Biblepix Setup slideshow tclpath unixdir env
 ### 2. Prepare cronscript text
 	
 	#Check for newest XAUTH file (likely the one in use!)
-	set ICEAuth $env(HOME)/.ICEAuthority
-	set Xauth $env(HOME)/.Xauthority
-	catch {file mtime $ICEAuth} ICETime
-	catch {file mtime $Xauth} XauthTime
+	set authfiles [glob $env(HOME)/.*thority]
 
-	if {[string is digit $ICETime] && [string is digit $XauthTime] } {
-		if { $ICETime > $XauthTime } {
-			set XAUTH $ICEAuth
-		} else {
-			set XAUTH $Xauth
-		}
-	} elseif { [string is digit $ICETime] } {
-		set XAUTH $ICEAuth
-	} else {
-		set XAUTH $Xauth
+	foreach file $authfiles {
+		lappend authfileTimeList [file mtime $file]$file
 	}
+	#biggest=newest is last
+	set sorted [lsort $authfileTimeList]
+	regsub -all {[[:digit:]]} [lindex $sorted end] {} XAUTH 
 	
 	#Check for Xlock file
 	if {[file exists /tmp/.X0-lock]} {
