@@ -22,10 +22,10 @@ if {[regexp $string1 $readfile] || [regexp $string2 $readfile]} {
 	close $chan
 }
 
-#move any old jpegs to $imgdir
+#move any old jpegs to $imgDir
 set jpglist [glob -nocomplain -directory $rootdir *.jpg *.jpeg *.JPG *.JPEG] 
 foreach file $jpglist {
-	file copy -force $file $imgdir
+	file copy -force $file $imgDir
 	file delete $file
 }
 ############################################################

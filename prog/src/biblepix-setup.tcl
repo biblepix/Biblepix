@@ -5,7 +5,7 @@
 ################################################################################
 # Version: 2.4
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7mai17
+# Updated: 7jul17
 
 package require Tk
 
@@ -27,10 +27,11 @@ if {[catch {source $Globals}]} {
 	after 7000 {exit}
 } else {
 
-	#Make empty dirs in case of GIT download
-	file mkdir $sigdir $imgdir $twddir $bmpdir $piddir $confdir
 	#Rename $maindir from 2.3
 	catch {file rename $srcdir/main $srcdir/pic}
+	
+	#Make empty dirs in case of GIT download
+	makeDirs	
 
 	#Set initial texts if missing
 	if {[catch {source -encoding utf-8 $SetupTexts ; setTexts $lang}]} {
@@ -41,12 +42,13 @@ if {[catch {source $Globals}]} {
 	# 1.  D O   H T T P  U P D A T E   (if not initial)
 
 	.updateFrame.progbar start
+	
+	source $Http
 
 	if { [info exists InitialJustDone] } {
 		set pbTitle $uptodateHttp
 	} else {	
-		set pbTitle $updatingHttp		
-		source $Http
+		set pbTitle $updatingHttp
 			
 		# a) Do Update if $config exists
 		if { [file exists $Config] } {
@@ -54,6 +56,12 @@ if {[catch {source $Globals}]} {
 		# b) Do Reinstall
 			} else {
 			set error [runHTTP Initial]
+			
+			downloadFileArray exaJpgArray bpxJpegUrl
+			downloadFileArray iconArray bpxIconUrl
+
+			source $Imgtools
+			loadExamplePhotos
 		}
 	}
 

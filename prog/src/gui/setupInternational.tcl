@@ -29,7 +29,7 @@ listbox .n.f1.f1.twdlocal -bg lightgreen -width $tw -height 0 -selectmode single
 set twdlist [getTWDlist]
 foreach i [lsort $twdlist] { .n.f1.f1.twdlocal insert end $i }
 #set deletebutton
-button .n.f1.f1.delbtn -bg $bg -textvar delete -command {file delete $twddir/[.n.f1.f1.twdlocal get active] ; .n.f1.f1.twdlocal delete [.n.f1.f1.twdlocal curselection]}
+button .n.f1.f1.delbtn -bg $bg -textvar delete -command {file delete $twdDir/[.n.f1.f1.twdlocal get active] ; .n.f1.f1.twdlocal delete [.n.f1.f1.twdlocal curselection]}
 pack .n.f1.f1.delbtn -side right -fill none
 pack .n.f1.f1.twdlocal -anchor w
 

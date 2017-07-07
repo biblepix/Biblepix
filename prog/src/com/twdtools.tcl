@@ -12,8 +12,8 @@ if {[catch {package require tdom}]} {
 
 #Listen ohne Pfad
 proc getTWDlist {} {
-	global twddir jahr
-	set twdlist [glob -nocomplain -tails -directory $twddir *_$jahr.twd]
+	global twdDir jahr
+	set twdlist [glob -nocomplain -tails -directory $twdDir *_$jahr.twd]
 	return $twdlist
 }
 proc getBMPlist {} {
@@ -37,20 +37,20 @@ proc getRandomBMP {} {
 }
 proc getRandomJPG {} {
 	#Ausgabe mit Pfad
-	global platform jpegdir
+	global platform jpegDir
 	
 	if {$platform=="unix"} {
-		set imglist [glob -nocomplain -directory $jpegdir *.jpg *.jpeg *.JPG *.JPEG]
+		set imglist [glob -nocomplain -directory $jpegDir *.jpg *.jpeg *.JPG *.JPEG]
 	} elseif {$platform=="windows"} {
-		set imglist [glob -nocomplain -directory $jpegdir *.jpg *.jpeg]
+		set imglist [glob -nocomplain -directory $jpegDir *.jpg *.jpeg]
 	}
 	
 	return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ] 
 }
 
 proc getTWDFileRoot {twdFile} {
-global twddir
-	set path [file join $twddir $twdFile]
+global twdDir
+	set path [file join $twdDir $twdFile]
 	set file [open $path]
 	chan configure $file -encoding utf-8
 	set TWD [read $file]

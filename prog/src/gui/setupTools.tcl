@@ -207,19 +207,20 @@ proc move {w x y} {
 ##### Procs for SetupPhotos ####################################################
 
 proc addPic {imgName} {
-global jpegdir lang
-	set msg "Copied [file tail $imgName] to [file nativename $jpegdir]"
-	set msgDE "[file tail $imgName] nach [file nativename $jpegdir] kopiert"
+global jpegDir lang
+	set msg "Copied [file tail $imgName] to [file nativename $jpegDir]"
+	set msgDE "[file tail $imgName] nach [file nativename $jpegDir] kopiert"
 	if  {$lang=="de"} {set msg $msgDE}
+	
 	checkImgSizeAndSave $imgName
 
 	NewsHandler::QueryNews "$msg" lightblue
 }
 
 proc delPic {imgName} {
-global fileJList jpegdir lang
-	set msg "Deleted [file tail $imgName] from [file nativename $jpegdir]"
-	set msgDE "[file tail $imgName] aus [file nativename $jpegdir] gelöscht"
+global fileJList jpegDir lang
+	set msg "Deleted [file tail $imgName] from [file nativename $jpegDir]"
+	set msgDE "[file tail $imgName] aus [file nativename $jpegDir] gelöscht"
 	if  {$lang=="de"} {set msg $msgDE}
 	file delete $imgName
 	set fileJList [deleteImg $fileJList .n.f6.mainf.right.bild.c]
@@ -312,15 +313,15 @@ proc getFileList {bildordner} {
 }
 
 proc refreshFileList {} {
-	global tcl_platform jpegdir
+	global tcl_platform jpegDir
 	set storage ""
 	set parted 0
 	set localJList ""
 	
 	if {$tcl_platform(os) == "Linux"} {
-		set fileNames [glob -nocomplain -directory $jpegdir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
+		set fileNames [glob -nocomplain -directory $jpegDir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
 	} elseif {$tcl_platform(platform) == "windows"} {
-		set fileNames [glob -nocomplain -directory $jpegdir *.jpg *.jpeg *.png]
+		set fileNames [glob -nocomplain -directory $jpegDir *.jpg *.jpeg *.png]
 	}
 	
 	foreach fileName $fileNames {

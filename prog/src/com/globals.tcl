@@ -2,14 +2,15 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 2jul17
+# Updated: 7jul17
 
 # This variable enables the debuging mode in the hole application if set to 1.
 set Debug 1
 
 set version "2.4"
-set twdurl "http://bible2.net/service/TheWord/twd11/current"
-set bpxurl "http://vollmar.ch/bibelpix"
+set twdUrl "http://bible2.net/service/TheWord/twd11/current"
+set bpxReleaseUrl "http://vollmar.ch/bibelpix/release"
+
 set platform $tcl_platform(platform)
 set os $tcl_platform(os)
 set tclpath [auto_execok tclsh]
@@ -25,7 +26,6 @@ proc setRootDir {srcdir} {
 if { [info exists srcdir] } {
 	#set
 	set rootdir "[setRootDir $srcdir]"	
-	set srcdir [file join $rootdir prog src]
 } else {
 	#reset
 	if { [info exists env(LOCALAPPDATA)] } {
@@ -33,25 +33,36 @@ if { [info exists srcdir] } {
 	} else {
 		set rootdir "[file join $env(HOME) Biblepix]"
 	}
-	set srcdir [file join $rootdir prog src]
 }
 
 #Set dirnames
-set twddir [file join $rootdir Texts]
-set sigdir [file join $rootdir Email]
-set jpegdir [file join $rootdir Photos]
-set imgdir [file join $rootdir Image]
-set progdir [file join $rootdir prog]
-set confdir [file join $progdir conf]
-set bmpdir [file join $progdir bmp]
-set piddir [file join $progdir pid]
-set windir [file join $progdir win]
-set unixdir [file join $progdir unix]
+set sigDir [file join $rootdir Email]
+set exaJpgDir [file join $rootdir ExamplePhotos]
+set imgDir [file join $rootdir Image]
+set jpegDir [file join $rootdir Photos]
+set progDir [file join $rootdir prog]
+set twdDir [file join $rootdir Texts]
+
+set bmpdir [file join $progDir bmp]
+set confdir [file join $progDir conf]
+set piddir [file join $progDir pid]
+set srcdir [file join $progDir src]
+set unixdir [file join $progDir unix]
+set windir [file join $progDir win]
+
+set sharedir [file join $srcdir com]
 set guidir [file join $srcdir gui]
 set maildir [file join $srcdir sig]
 set maindir [file join $srcdir pic]
-set sharedir [file join $srcdir com]
 set savedir [file join $srcdir save]
+
+proc makeDirs {} {
+	global sigDir exaJpgDir imgDir jpegDir progDir twdDir bmpdir confdir piddir srcdir unixdir windir sharedir guidir maildir maindir savedir
+
+	file mkdir $sigDir $exaJpgDir $imgDir $jpegDir $progDir $twdDir
+	file mkdir $bmpdir $confdir $piddir $srcdir $unixdir $windir
+	file mkdir $sharedir $guidir $maildir $maindir $savedir
+}
 
 #SET ARRAYS FOR DOWNLOAD
 
@@ -107,27 +118,30 @@ foreach i [array names filepaths] {
 }
 
 #Set JPEGs array
-array set jpeglist "
-	utah.jpg [file join $jpegdir utah.jpg]
-	eire.jpg [file join $jpegdir eire.jpg]
-	lake.jpg [file join $jpegdir lake.jpg]
-	palms.jpg [file join $jpegdir palms.jpg]
-	mountain.jpg [file join $jpegdir mountain.jpg]
-	nevada.jpg [file join $jpegdir nevada.jpg]
+set bpxJpegUrl "http://vollmar.ch/bibelpix/jpeg"
+array set exaJpgArray "
+	utah.jpg [file join $exaJpgDir utah.jpg]
+	eire.jpg [file join $exaJpgDir eire.jpg]
+	lake.jpg [file join $exaJpgDir lake.jpg]
+	palms.jpg [file join $exaJpgDir palms.jpg]
+	mountain.jpg [file join $exaJpgDir mountain.jpg]
+	nevada.jpg [file join $exaJpgDir nevada.jpg]
 "
 
 #Set Icons array & export
-array set iconlist "
+set bpxIconUrl "http://vollmar.ch/bibelpix"
+array set iconArray "
 	biblepix.svg [file join $unixdir biblepix.svg] 
 	biblepix.ico [file join $windir biblepix.ico]
 "
-set WinIcon [lindex [array get iconlist biblepix.ico] 1]
-set LinIcon [lindex [array get iconlist biblepix.svg] 1]
+
+set WinIcon [lindex [array get iconArray biblepix.ico] 1]
+set LinIcon [lindex [array get iconArray biblepix.svg] 1]
 
 #Set TWD picture paths
-set TwdBMP [file join $imgdir theword.bmp]
-set TwdTIF [file join $imgdir theword.tif]
-set TwdPNG [file join $imgdir theword.png]
+set TwdBMP [file join $imgDir theword.bmp]
+set TwdTIF [file join $imgDir theword.tif]
+set TwdPNG [file join $imgDir theword.png]
 
 #Set miscellaneous vars (sourced by various progs)
 set datum [clock format [clock seconds] -format %Y-%m-%d]
@@ -143,6 +157,7 @@ proc uniqkey { } {
     set key   [ clock seconds ]$key
     return $key
 }
+
 proc sleep { ms } {
     set uniq [ uniqkey ]
     set ::__sleep__tmp__$uniq 0
@@ -166,10 +181,5 @@ set hgrgb "0 0 0"
 ##foreground almost black
 set fghex "#000001"
 set fgrgb "0 0 1"
-
-#Source Config or LoadConfig for defaults
-if { [catch {source $Config}] } {
-	file mkdir $confdir
-}
 
 source $LoadConfig

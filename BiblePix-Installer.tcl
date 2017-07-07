@@ -4,11 +4,10 @@
 # Overwrites any old program version
 # Version: 2.3
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7jan17
+# Updated: 7jul17
 
 set version 2.3
-set bpxurl http://vollmar.ch/bibelpix
-set jpegurl http://vollmar.ch/bibelpix/jpeg
+set bpxReleaseUrl "http://vollmar.ch/bibelpix/release"
 
 package require http
 
@@ -43,16 +42,16 @@ if { [info exists env(LOCALAPPDATA)] } {
 }
 
 proc testHttpCon {} {
-global bpxurl version noConHttp
+global bpxReleaseUrl noConHttp
 
-	set testtoken [http::geturl $bpxurl/$version/http.tcl -validate 1]
+	set testtoken [http::geturl $bpxReleaseUrl/http.tcl -validate 1]
 	set error 0
 	
 	if { [http::error $testtoken] != "" || [http::ncode $testtoken] != 200} {       
 		
 		#try proxy & test again
 		http::config -proxyhost localhost -proxyport 80
-		set testtoken [http::geturl $bpxurl/$version/http.tcl -validate 1]
+		set testtoken [http::geturl $bpxReleaseUrl/http.tcl -validate 1]
 		
 		if { [http::error $testtoken] != "" || [http::ncode $testtoken] != 200} {        
 			set ::httpStatus $noConHttp
@@ -75,8 +74,7 @@ pack .if.initialL .if.initialMsg .if.pb
 set httpStatus $downloadingHttp
 
 set error [testHttpCon]
-        
-# 3. FETCH Globals, Http, Setup
+
 if { $error } {
 	#exit if error
 	set httpStatus $noConHttp
@@ -84,14 +82,16 @@ if { $error } {
         exit
         }
 }
+    
+# 3. FETCH Globals, Http
 
+#fetches Globals, Http
 proc fetchInitialFiles {} {
-#fetches Globals, Http, Setup
-global bpxurl version
-lappend filelist globals.tcl http.tcl biblepix-setup.tcl
+	global bpxReleaseUrl
+	lappend filelist globals.tcl http.tcl
 	
 	foreach filename $filelist {
-		set token [http::geturl $bpxurl/$version/$filename]
+		set token [http::geturl $bpxReleaseUrl/$filename]
 		set data [http::data $token]
 		if { "[string index $data 0]" == "#"} {
 			set chan [open $filename w]
@@ -106,31 +106,19 @@ lappend filelist globals.tcl http.tcl biblepix-setup.tcl
 file mkdir $srcdir
 cd $srcdir
 fetchInitialFiles
+
 source $srcdir/globals.tcl
-file mkdir $sharedir $guidir $maindir
-file mkdir $twddir $sigdir $jpegdir $imgdir $confdir $piddir $windir $unixdir $bmpdir
+makeDirs
 
-## fetch jpegs from base
-foreach jpegname [array names jpeglist] {
-	set jpegpath [lindex [array get jpeglist $jpegname] 1]
-	set chan [open $jpegpath w]
-	fconfigure $chan -encoding binary -translation binary
-	http::geturl $jpegurl/$jpegname -channel $chan
-	close $chan
-}
-
-## fetch icons ICO & SVG from base
-foreach iconname [array names iconlist] {
-	set iconpath [lindex [array get iconlist $iconname] 1]
-	set chan [open $iconpath w]
-	fconfigure $chan -encoding binary -translation binary
-	http::geturl $bpxurl/$iconname -channel $chan
-	close $chan
-}
-
-# 5. FETCH ALL prog files (securely, re-fetching above 3!)
+# 5. FETCH ALL prog files (securely, re-fetching above 2!)
 source $srcdir/http.tcl
 runHTTP Initial
+
+downloadFileArray exaJpgArray bpxJpegUrl
+downloadFileArray iconArray bpxIconUrl
+
+source $Imgtools
+loadExamplePhotos
 
 #delete extra files (refetched!)
 file delete $srcdir/globals.tcl $srcdir/http.tcl

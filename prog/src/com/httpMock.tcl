@@ -21,7 +21,7 @@ proc runHTTP args {
 ########## PROCS FOR TWD LIST ####################
 
 proc getRemoteRoot {} {
-global twdurl
+global twdUrl
 
 	#tDom is standard in ActiveTcl, Linux distros vary
 	if {[catch {package require tdom}]} {
@@ -31,14 +31,14 @@ global twdurl
 	}
 
 	#get twd list
-	if {[catch "http::geturl $twdurl"]} {
+	if {[catch "http::geturl $twdUrl"]} {
 		setProxy
 	}
-	set con [http::geturl $twdurl]
+	set con [http::geturl $twdUrl]
 	set data [http::data $con]
 		if {$data==""} {
 			setProxy
-			set con [http::geturl $twdurl]
+			set con [http::geturl $twdUrl]
 			set data [http::data $con]
 		}
 	return [dom parse -html $data]

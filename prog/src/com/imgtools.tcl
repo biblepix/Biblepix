@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3Jul17
+# Updated: 7Jul17
 
 package require Img
 
@@ -48,6 +48,7 @@ global sunfactor
 		if {$i>255} {set i 255}
 		lappend sunrgb $i
 	}
+	
 	set sun [rgb2hex $sunrgb]
 	return $sun
 }
@@ -62,14 +63,24 @@ global inttextCanv internationaltext
 	$inttextCanv itemconfigure shade -fill $shade
 }
 
-proc checkImgSizeAndSave {hgfile} {
+proc loadExamplePhotos {} {
+	global exaJpgArray
+	
+	foreach fileName [array names exaJpgArray] {
+		set filePath [lindex [array get exaJpgArray $fileName] 1]
+		
+		checkImgSizeAndSave filePath
+	}
+}
+
+proc checkImgSizeAndSave {imagePath} {
 #Checks and resizes badly fitting tempBild
-global jpegdir
+global jpegDir
 	
 	set screenx [winfo screenwidth .]
 	set screeny [winfo screenheight .]
 	
-	set tempBild [image create photo -file $hgfile]
+	set tempBild [image create photo -file $imagePath]
 	
 	#Compare img dimensions with screen dimensions
 	set imgx [image width $tempBild]
@@ -106,11 +117,11 @@ puts "Difference: $diffX"
 	set finalBild [resize $tempBild $screenx $screeny]
 	
 	#3. Overwrite corrected image & save as PNG	
-	set filename [file tail $hgfile]	
+	set filename [file tail $imagePath]	
 	if {![regexp png|PNG $filename] } {
 		set filename "[string trim $filename .jpg|.JPG|.jpeg|.JPEG].png"
 	}
-	$finalBild write [file join $jpegdir $filename] -format PNG
+	$finalBild write [file join $jpegDir $filename] -format PNG
 	
 	$tempBild blank
 	$finalBild blank

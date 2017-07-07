@@ -11,7 +11,7 @@ source $SetupSaveWinHelpers
 set regfile install.reg
 set wishpath [file nativename [auto_execok wish]]
 set srcpath [file nativename $srcdir]
-set imgpath [file nativename $imgdir]
+set imgpath [file nativename $imgDir]
 set winpath [file nativename $windir]
 
 

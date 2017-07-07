@@ -206,7 +206,7 @@ global LinIcon srcdir Setup wishpath bp
 
 proc setLinBackground {} {
 #Sets background picture/slideshow for KDE / GNOME / XFCE4
-global env slideshow srcdir imgdir unixdir Config TwdPNG TwdBMP TwdTIF
+global env slideshow srcdir imgDir unixdir Config TwdPNG TwdBMP TwdTIF
 
 	#KDE3
 	if {[auto_execok dcop] != ""} {
@@ -256,9 +256,9 @@ global env slideshow srcdir imgdir unixdir Config TwdPNG TwdBMP TwdTIF
 					exec kwriteconfig --file $rcfile --group Containments --group $g --key wallpaperplugin $oks
 					##2.[Containments][$g][Wallpaper][General] >Image+SlidePaths
 					exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group General --key Image file://$TwdPNG
-					exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $imgdir 
+					exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $imgDir 
 					##3.[Containments][7][Wallpaper][org.kde.slideshow][General] >SlideInterval+SlidePaths+height+width
-					exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlidePaths $imgdir
+					exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlidePaths $imgDir
 					exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlideInterval $slideshow
 					exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key height [winfo screenheight .]
 					exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key width [winfo screenwidth .]
@@ -272,7 +272,7 @@ global env slideshow srcdir imgdir unixdir Config TwdPNG TwdBMP TwdTIF
                     
 			#KDE4
 			if {$slideshow} {
-				set slidepaths $imgdir
+				set slidepaths $imgDir
 				set mode Slideshow
 			} else {
 				set slidepaths ""

@@ -2,7 +2,7 @@
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28apr17
+# Updated: 7jul17
 
 package require http
 
@@ -17,22 +17,26 @@ proc setProxy {} {
 		set host [autoproxy::cget -host]
 		set port [autoproxy::cget -port]
 	}
+	
 	http::config -proxyhost $host -proxyport $port		
 }
 
-proc testHttpCon {} {
 #returns 0 or 1
-	global bpxurl version
-	set testfile "$bpxurl/release/README"
+proc testHttpCon {} {
+	global bpxReleaseUrl version
+	
+	set testfile "$bpxReleaseUrl/README"
 	catch {set testtoken [http::geturl $testfile -validate 1]}
 
 	proc getTesttoken {} {
-	global testtoken
-	if { 
-		! [info exists testtoken] || 
-		[http::error $testtoken] != "" || 
-		[http::ncode $testtoken] != 200
-		} {set error 1} else {set error 0}
+		global testtoken
+		if {! [info exists testtoken] || 
+			[http::error $testtoken] != "" || 
+			[http::ncode $testtoken] != 200} {
+			set error 1
+		} else {
+			set error 0
+		}
 	}
 
 	set error [getTesttoken]
@@ -43,26 +47,42 @@ proc testHttpCon {} {
 		set error [getTesttoken]
 	}	
 	
-	
 puts "error: $error"	
+
 	return $error
 }
 
-proc downloadFile {filepath filename token} {
-global bpxurl version
-#download file into channel unless error message
+proc downloadFileArray {fileArray url} {
+	foreach fileName [array names fileArray] {
+		set filePath [lindex [array get fileArray $fileName] 1]
+		set chan [open $filePath w]
+		
+		fconfigure $chan -encoding binary -translation binary
+		http::geturl $url/$fileName -channel $chan
+		
+		close $chan
+	}
+}
+
+proc downloadFile {filePath fileName token} {
+	global bpxReleaseUrl
+
+	#download file into channel unless error message
 	if { "[http::ncode $token]"==200} {
-		set chan [open $filepath w]
+		set chan [open $filePath w]
+		
 		fconfigure $chan -encoding utf-8
-		http::geturl $bpxurl/$version/$filename -channel $chan
+		http::geturl $bpxReleaseUrl/$fileName -channel $chan
+		
 		close $chan
 		http::cleanup $token
 	}
 }
 
+#args can be "Initial" or empty
 proc runHTTP args {
-	#args can be "Initial" or empty
-	global filepaths bpxurl version lang uptodateHttp noConnHttp
+	global filepaths bpxReleaseUrl uptodateHttp noConnHttp
+	
 	set Initial 0
 	set Error 0
 		
@@ -72,21 +92,19 @@ proc runHTTP args {
      
 	#Test connexion & start download
 	catch testHttpCon Error
-      puts "Error: $Error"
+	
+puts "Error: $Error"
  
 	if {$Error != 0} {
 		set ::ftpStatus $noConnHttp
-		catch {NewsHandler::QueryNews "$noConnHttp" red}
-				 
-	} else {
-				
-		foreach var [array names filepaths] {
-		
+		catch {NewsHandler::QueryNews "$noConnHttp" red}				 
+	} else {				
+		foreach var [array names filepaths] {		
 			set filepath $filepaths($var)
 			set filename [file tail $filepath]
 
 			#get remote 'meta' info (-validate 1)			
-			set token [http::geturl $bpxurl/release/$filename -validate 1]
+			set token [http::geturl $bpxReleaseUrl/$filename -validate 1]
 			array set meta [http::meta $token]
 			
 			#a) Overwrite file if "Initial" 
@@ -128,7 +146,7 @@ puts "New Time: $newsecs\nOld Time: $oldsecs\n"
 ########## PROCS FOR TWD LIST ####################
 
 proc getRemoteRoot {} {
-global twdurl
+global twdUrl
 
 	#tDom is standard in ActiveTcl, Linux distros vary
 	if {[catch {package require tdom}]} {
@@ -138,14 +156,14 @@ global twdurl
 	}
 
 	#get twd list
-	if {[catch "http::geturl $twdurl"]} {
+	if {[catch "http::geturl $twdUrl"]} {
 		setProxy
 	}
-	set con [http::geturl $twdurl]
+	set con [http::geturl $twdUrl]
 	set data [http::data $con]
 		if {$data==""} {
 			setProxy
-			set con [http::geturl $twdurl]
+			set con [http::geturl $twdUrl]
 			set data [http::data $con]
 		}
 	return [dom parse -html $data]

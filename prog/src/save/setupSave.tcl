@@ -4,7 +4,7 @@
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated : 5jul17 
 
-#Make sure either $twddir or SELECTED contain $jahr-TWD files,
+#Make sure either $twdDir or SELECTED contain $jahr-TWD files,
 # else stop saving process & return to Setup!
 set SELECTED_TWD_FILES [.n.f1.twdremoteframe.lb curselection]
 
@@ -16,7 +16,7 @@ if { $SELECTED_TWD_FILES != ""} {
 	} else {
 		NewsHandler::QueryNews "$gettingTwd" orange
 		
-		cd $twddir
+		cd $twdDir
 		#get hrefs alphabetically ordered
 		set urllist [$root selectNodes {//tr/td/a}]
     
@@ -42,14 +42,14 @@ if { $SELECTED_TWD_FILES != ""} {
 
 }
 
-# return to INTERNATIONAL section if $twddir empty
-if { [catch {glob $twddir/*$jahr.twd}] } {
+# return to INTERNATIONAL section if $twdDir empty
+if { [catch {glob $twdDir/*$jahr.twd}] } {
 		
 	.n select .n.f1
 	NewsHandler::QueryNews "$noTWDFilesFound" red
 
 #return to PHOTOS section if $picsdir empty
-} elseif {	[catch {glob $jpegdir/*}] } {
+} elseif {	[catch {glob $jpegDir/*}] } {
  
 	.n select .n.f6
 	NewsHandler::QueryNews "$noPhotosFound" red
@@ -133,8 +133,8 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	#Delete old BMPs & start Biblepix
 
 	if {$enablepic} {
-		#create random BMP if $imgdir empty
-		if { [glob -nocomplain $imgdir/*.bmp] == "" } {
+		#create random BMP if $imgDir empty
+		if { [glob -nocomplain $imgDir/*.bmp] == "" } {
 			package require Img
 			set jpegpath [getRandomJPG]
 			set quickimg [image create photo -file $jpegpath]
@@ -147,12 +147,12 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 		source $Biblepix
 	}
 
-	#Delete any old JPGs from $imgdir (pre 2.2)
-	file delete [glob -nocomplain $imgdir/*.jpg]
+	#Delete any old JPGs from $imgDir (pre 2.2)
+	file delete [glob -nocomplain $imgDir/*.jpg]
 
 	#Delete any old TWD files
 	set vorjahr [expr {$jahr - 1}]
-	set oldtwdlist [glob -nocomplain -directory $twddir *$vorjahr.twd]
+	set oldtwdlist [glob -nocomplain -directory $twdDir *$vorjahr.twd]
 	if {[info exists oldtwdlist]} {
 		NewsHandler::QueryNews "Deleting old language files..." lightblue
 		

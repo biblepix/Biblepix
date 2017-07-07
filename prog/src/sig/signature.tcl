@@ -17,7 +17,7 @@ foreach twdfile $twdlist {
 	set dwsig [formatSigText $twdfile]
 	#set endung mit 4 Extrabuchstaben nach Sprache_
 	set endung [string range $twdfile 0 5] 
-	set sigfile [file join $sigdir signature-$endung]
+	set sigfile [file join $sigDir signature-$endung]
 
 	#create new sigfile if inexistent
 	if {![file exists $sigfile]} {
