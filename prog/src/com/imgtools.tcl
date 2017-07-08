@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3Jul17
+# Updated: 8Jul17
 
 package require Img
 
@@ -108,7 +108,7 @@ puts "Difference: $diffX"
 	#3. Overwrite corrected image & save as PNG	
 	set filename [file tail $hgfile]	
 	if {![regexp png|PNG $filename] } {
-		set filename "[string trim $filename .jpg|.JPG|.jpeg|.JPEG].png"
+		set filename "[file rootname].png"
 	}
 	$finalBild write [file join $jpegdir $filename] -format PNG
 	
@@ -124,7 +124,6 @@ puts "Difference: $diffX"
 #  ####### 7/3
 
 proc cutX {src imgx imgy diffX} {
-#TODO GEHT NICHT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #Cuts left+right edges by $diffX/2
 	puts "Cutting X $diffX"
 	set diffhalb [expr $diffX/2]

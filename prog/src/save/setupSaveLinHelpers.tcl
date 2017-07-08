@@ -86,7 +86,7 @@ global Biblepix Setup slideshow tclpath unixdir env
 	
 ### 2. Prepare cronscript text
 	
-	#Check for newest XAUTH file (likely the one in use!)
+	#A.Check for newest XAUTH file (likely the one in use!)
 	set authfiles [glob $env(HOME)/.*thority]
 
 	foreach file $authfiles {
@@ -96,24 +96,14 @@ global Biblepix Setup slideshow tclpath unixdir env
 	set sorted [lsort $authfileTimeList]
 	regsub -all {[[:digit:]]} [lindex $sorted end] {} XAUTH 
 	
-	#Check for Xlock dir/file
-	if {
-		#Gentoo,Ubuntu,openSuse	
-		[file exists /tmp/.X11-unix]
-		} {
-		set XLOCK /tmp/.X11-unix
-		} elseif {
-		#Gentoo,Ubuntu,openSuse
-		[file exists /tmp/.ICE-unix]
-		} {
-		set XLOCK /tmp/.ICE-unix
-		} elseif {
-		#Gentoo
-		[file exists 	/tmp/.X0-lock]
-		} { 
-		set XLOCK /tmp/.X0-lock
+	#B.Check for Xlock dir/file & exit if not found
+	set locklist [glob -nocomplain -directory /tmp .ICE* .X11* .X0*]
+	if { [catch {lindex $locklist}] } {
+		return 1
 	}
-
+ 	#take first in lockfile list
+	set XLOCK [lindex $locklist 0]
+	
 	#create cronScript text
 	set cronScriptText "
 	until \[ -e $XLOCK \] ; do

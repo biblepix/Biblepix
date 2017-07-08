@@ -131,7 +131,6 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 
 
 	#Delete old BMPs & start Biblepix
-
 	if {$enablepic} {
 		#create random BMP if $imgdir empty
 		if { [glob -nocomplain $imgdir/*.bmp] == "" } {
@@ -165,10 +164,6 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	}
 
 #Finish WERDEN DIESE BEFEHLE NOCH AUSGEFÜHRT???
-#	.news configure -bg red
-#	set news "Exiting Setup..."
-#	after 3000 {exit}
-	
 	#Withdraw Tk window
 	if {$platform=="unix"} {
 		wm withdraw .
@@ -177,3 +172,5 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	}
 } ;#END WRITE CONFIG
 
+#for now: can't exit because of running biblepix.tcl
+#after 7000 {exit}
