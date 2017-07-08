@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6jul17
+# Updated: 8jul17
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
@@ -96,18 +96,27 @@ global Biblepix Setup slideshow tclpath unixdir env
 	set sorted [lsort $authfileTimeList]
 	regsub -all {[[:digit:]]} [lindex $sorted end] {} XAUTH 
 	
-	#Check for Xlock file
-	if {[file exists /tmp/.X0-lock]} {
+	#Check for Xlock dir/file
+	if {
+		#Gentoo,Ubuntu,openSuse	
+		[file exists /tmp/.X11-unix]
+		} {
+		set XLOCK /tmp/.X11-unix
+		} elseif {
 		#Gentoo,Ubuntu,openSuse
-		set XLOCK /tmp/.X11-unix/X0
-	} else {
-		#Gentoo, ?Rest
+		[file exists /tmp/.ICE-unix]
+		} {
+		set XLOCK /tmp/.ICE-unix
+		} elseif {
+		#Gentoo
+		[file exists 	/tmp/.X0-lock]
+		} { 
 		set XLOCK /tmp/.X0-lock
 	}
 
 	#create cronScript text
 	set cronScriptText "
-	until \[ -S $XLOCK \] ; do
+	until \[ -e $XLOCK \] ; do
 		sleep 30
 	done
 	while \[ $XAUTH -ot $XLOCK \] ; do 
