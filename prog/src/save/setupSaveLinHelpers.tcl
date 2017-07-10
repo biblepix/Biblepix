@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8jul17
+# Updated: 10jul17
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
@@ -109,8 +109,11 @@ global Biblepix Setup slideshow tclpath unixdir env
 	until \[ -e $XLOCK \] ; do
 		sleep 30
 	done
-	while \[ $XAUTH -ot $XLOCK \] ; do 
+	count=0
+	limit=5
+	while \[ $XAUTH -ot $XLOCK \] && [ "$count" -lt "$limit" ] ; do 
 		sleep 30
+		let "count += 1"
 	done
 	export DISPLAY=:0
 	$tclpath $Biblepix
