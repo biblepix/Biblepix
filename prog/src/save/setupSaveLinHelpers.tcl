@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10jul17
+# Updated: 12jul17
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
@@ -58,9 +58,12 @@ global Biblepix Setup slideshow tclpath unixdir env
 
 	if {$slideshow>0} {			
 		set interval [expr $slideshow/60]
-		set BPcrontext "*/$interval * * * * $cronScript"	
+		set BPcrontext "
+*/$interval * * * * $cronScript"	
 	} else {
-		set BPcrontext "@reboot $cronScript"
+		set BPcrontext "
+@daily $cronScript
+@reboot $cronScript"
 	}	
 			
 	#Check presence of saved crontab
@@ -72,7 +75,7 @@ global Biblepix Setup slideshow tclpath unixdir env
 
 	#Create/append new crontext, save&execute
 	if {[info exists crontext]} {
-		append crontext \n$BPcrontext
+		append crontext $BPcrontext
 	} else {
 		set crontext $BPcrontext
 	}
@@ -111,9 +114,9 @@ global Biblepix Setup slideshow tclpath unixdir env
 	done
 	count=0
 	limit=5
-	while \[ $XAUTH -ot $XLOCK \] && [ "$count" -lt "$limit" ] ; do 
+	while \[ $XAUTH -ot $XLOCK \] \&\& \[ \"\$count\" -lt \"\$limit\" \] ; do 
 		sleep 30
-		let "count += 1"
+		((count++))
 	done
 	export DISPLAY=:0
 	$tclpath $Biblepix
