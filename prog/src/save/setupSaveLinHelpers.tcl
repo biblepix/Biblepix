@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12jul17
+# Updated: 13jul17
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
@@ -211,7 +211,7 @@ global LinIcon srcdir Setup wishpath bp
 
 proc setLinBackground {} {
 #Sets background picture/slideshow for KDE / GNOME / XFCE4
-global env slideshow srcdir imgdir unixdir Config TwdPNG TwdBMP TwdTIF
+global env slideshow srcdir imgdir unixdir Config TwdPNG TwdBMP TwdTIF KDErestart
 
 	#KDE3
 	if {[auto_execok dcop] != ""} {
