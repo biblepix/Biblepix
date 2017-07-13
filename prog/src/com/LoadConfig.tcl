@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/LoadConfig.tcl
-# sourced by $Globals if $Config missing
+# Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 2jul17
+# Updated: 13jul17
 
 #Set language
 if { ![info exists lang] } {
