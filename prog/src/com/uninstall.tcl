@@ -28,7 +28,7 @@ if {$antwort=="yes"} {
 			set KDEdir [glob -nocomplain ~/.kde*]
 			file delete -force ~/.local/share/applications/biblepixSetup.desktop
 			file delete -force ~/.config/autostart/biblepix.desktop
-			file delete -force ~/$kdedir/Autostart/biblepix.desktop
+			file delete -force ~/$KDEdir/Autostart/biblepix.desktop
                     
 			#restore KDE5 settings
 			set KDErestore "$unixdir/KDErestore.sh"
