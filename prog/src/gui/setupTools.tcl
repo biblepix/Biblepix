@@ -360,10 +360,9 @@ proc openImg {fn imgCanvas} {
     catch {image delete $im1}
     image create photo im1 -file $fn
 
-	#scale im1 to im2 -TODO: SET imgX/imgY to 1/3 of screen - like 
+	#scale im1 to im2
 	set imgx [image width im1]
 	set imgy [image height im1]
-
 	set factor [expr round(($imgx/650)+0.999999)]
 	
 	if {[expr $imgy / $factor] > 400} {

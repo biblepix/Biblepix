@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 4jul17
+# Updated 3jul17
 
 set fileJList ""
 
@@ -39,7 +39,7 @@ pack [frame .n.f6.mainf.left] -side left -expand false -anchor nw
 pack [frame .n.f6.mainf.right] -side right -expand true
 pack [frame .n.f6.mainf.right.bar] -anchor w
 pack [frame .n.f6.mainf.right.unten -pady 7]  -side bottom -anchor nw -fill both
-pack [frame .n.f6.mainf.right.bild -relief sunken -bd 3] -anchor w -pady 3
+pack [frame .n.f6.mainf.right.bild -relief sunken -bd 3] -anchor w -pady 5
 
 #Create Text left
 message .n.f6.mainf.left.t1 -textvar f6.txt -font bpfont1 -padx $px -pady $py
@@ -57,15 +57,10 @@ foreach button [winfo children .n.f6.mainf.right.bar] {
 }
 
 #Create canvas right
-#set imgCanvas [canvas .n.f6.mainf.right.bild.c -width 650 -height 400]
-set screenX [winfo screenwidth .]
-set screenY [winfo screenheight .]
-set imgCanvas [canvas .n.f6.mainf.right.bild.c -width [expr $screenX/3] -height [expr $screenY/3]]
+set imgCanvas [canvas .n.f6.mainf.right.bild.c -width 650 -height 400]
 pack $imgCanvas -in .n.f6.mainf.right.bild -side left
-
 image create photo imgPhoto
-
-$imgCanvas create image 1 1 -image imgPhoto
+$imgCanvas create image 10 10 -image imgPhoto
 button .add
 button .del
 .add conf -textvar f6.add -bg green -command {addPic $imgName}
