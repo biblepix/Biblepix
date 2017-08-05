@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 13jul17
+# Updated: 5aug17
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
@@ -89,33 +89,12 @@ global Biblepix Setup slideshow tclpath unixdir env
 	
 ### 2. Prepare cronscript text
 	
-	#A.Check for newest XAUTH file (likely the one in use!)
-	set authfiles [glob $env(HOME)/.*thority]
-
-	foreach file $authfiles {
-		lappend authfileTimeList [file mtime $file]$file
-	}
-	#biggest=newest is last
-	set sorted [lsort $authfileTimeList]
-	regsub -all {[[:digit:]]} [lindex $sorted end] {} XAUTH 
-	
-	#B.Check for Xlock dir/file & exit if not found
-	set locklist [glob -nocomplain -directory /tmp .ICE* .X11* .X0*]
-	if { [catch {lindex $locklist}] } {
-		return 1
-	}
- 	#take first in lockfile list
-	set XLOCK [lindex $locklist 0]
-	
-	#create cronScript text
 	set cronScriptText "
-	until \[ -e $XLOCK \] ; do
-		sleep 30
-	done
 	count=0
 	limit=5
-	while \[ $XAUTH -ot $XLOCK \] \&\& \[ \"\$count\" -lt \"\$limit\" \] ; do 
-		sleep 30
+	#wait max. 5 min. for X
+	while \[ ! xhost \] \&\& \[ \"\$count\" -lt \"\$limit\" \] ; do 
+		sleep 60
 		((count++))
 	done
 	export DISPLAY=:0
