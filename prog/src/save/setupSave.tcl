@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 5jul17 
+# Updated : 6aug17 
 
 #Make sure either $twddir or SELECTED contain $jahr-TWD files,
 # else stop saving process & return to Setup!
@@ -146,10 +146,12 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 		source $Biblepix
 	}
 
-	#Delete any old JPGs from $imgdir (pre 2.2)
-	file delete [glob -nocomplain $imgdir/*.jpg]
+#TODO: IF BIBLEPIX.TCL exits the following commands are ignored
 
-	#Delete any old TWD files
+	#Delete any old JPGs from $imgdir (pre 2.2) - not needed now!
+#	file delete [glob -nocomplain $imgdir/*.jpg]
+
+	#Delete any old TWD files - TODO : isn't there a better place for this?
 	set vorjahr [expr {$jahr - 1}]
 	set oldtwdlist [glob -nocomplain -directory $twddir *$vorjahr.twd]
 	if {[info exists oldtwdlist]} {
