@@ -1,8 +1,8 @@
-# ~/Biblepix/prog/src/share/http.tcl
+# ~/Biblepix/prog/src/com/http.tcl
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28apr17
+# Updated: 7aug17
 
 package require http
 
@@ -192,3 +192,37 @@ proc getRemoteTWDFileList {} {
 	return $status
 }
 
+proc downloadTWDFiles {} {
+	global twddir noConnTwd gettingTwd
+
+	if { [catch {set root [getRemoteRoot]}] } {
+		NewsHandler::QueryNews "$noConnTwd" red
+		return 1
+	}
+
+#	NewsHandler::QueryNews "$gettingTwd" orange - falsche Message!
+		
+	cd $twddir
+	#get hrefs alphabetically ordered
+	set urllist [$root selectNodes {//tr/td/a}]
+	set hrefs ""
+
+	foreach url $urllist {lappend hrefs [$url @href]}
+	set urllist [lsort $hrefs]
+	set selectedindices [.n.f1.twdremoteframe.lb curselection] 
+		  
+	foreach item $selectedindices {
+		set url [lindex $urllist $item]
+		set filename [file tail $url]
+		NewsHandler::QueryNews "Downloading $filename..." lightblue
+		set chan [open $filename w]
+		fconfigure $chan -encoding utf-8
+		http::geturl $url -channel $chan
+		close $chan
+		after 5000 .n.f1.f1.twdlocal insert end $filename
+		
+	}
+    #deselect all downloaded files
+    .n.f1.twdremoteframe.lb selection clear 0 end
+
+}

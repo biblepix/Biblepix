@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 15dec16
+# Updated 7aug17
 
 #Statusbar
 frame .n.f1.f0 -padx $px
@@ -29,7 +29,11 @@ listbox .n.f1.f1.twdlocal -bg lightgreen -width $tw -height 0 -selectmode single
 set twdlist [getTWDlist]
 foreach i [lsort $twdlist] { .n.f1.f1.twdlocal insert end $i }
 #set deletebutton
-button .n.f1.f1.delbtn -bg $bg -textvar delete -command {file delete $twddir/[.n.f1.f1.twdlocal get active] ; .n.f1.f1.twdlocal delete [.n.f1.f1.twdlocal curselection]}
+button .n.f1.f1.delbtn -bg $bg -textvar delete -command {
+    file delete $twddir/[.n.f1.f1.twdlocal get active]
+    .n.f1.f1.twdlocal delete [.n.f1.f1.twdlocal curselection]
+    }
+
 pack .n.f1.f1.delbtn -side right -fill none
 pack .n.f1.f1.twdlocal -anchor w
 
@@ -44,12 +48,16 @@ pack [frame .n.f1.f3] -anchor w -fill x
 label .n.f1.f3.twdremotetit2 -textvar f1.twdremotetit2 -width 0 -padx 20
 pack .n.f1.f3.twdremotetit2 -side left
 
-#remotelist inserted later by http.tcl
+#set remotelist ( inserted later by http.tcl)
 frame .n.f1.twdremoteframe -width $wWidth -padx $px
 listbox .n.f1.twdremoteframe.lb -yscrollcommand {.n.f1.twdremoteframe.sb set} -selectmode multiple -activestyle none -font TkFixedFont -width [expr $wWidth - 50] -height [expr $wHeight - 300] -bg lightblue
 scrollbar .n.f1.twdremoteframe.sb -command {.n.f1.twdremoteframe.lb yview}
 
+#set Download button
+button .n.f1.twdremoteframe.downloadBtn -text Download -command downloadTWDFiles
+
 pack .n.f1.twdremoteframe -anchor w
+
+pack .n.f1.twdremoteframe.downloadBtn -side right -fill x
 pack .n.f1.twdremoteframe.sb -side right -fill y
 pack .n.f1.twdremoteframe.lb -side left -fill x
-

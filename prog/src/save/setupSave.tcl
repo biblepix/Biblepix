@@ -10,36 +10,7 @@ set SELECTED_TWD_FILES [.n.f1.twdremoteframe.lb curselection]
 
 # A: If SELECTED NOT EMPTY: Start TWD download
 if { $SELECTED_TWD_FILES != ""} {
-
-	if { [catch {set root [getRemoteRoot]}] } {
-		NewsHandler::QueryNews "$noConnTwd" red
-	} else {
-		NewsHandler::QueryNews "$gettingTwd" orange
-		
-		cd $twddir
-		#get hrefs alphabetically ordered
-		set urllist [$root selectNodes {//tr/td/a}]
-    
-	    	set hrefs ""
-		foreach url $urllist {lappend hrefs [$url @href]}
-		set urllist [lsort $hrefs]
-		set selectedindices [.n.f1.twdremoteframe.lb curselection] 
-		  
-		foreach item $selectedindices {
-			set url [lindex $urllist $item]
-			set filename [file tail $url]
-			NewsHandler::QueryNews "Downloading $filename..." lightblue
-			set chan [open $filename w]
-			fconfigure $chan -encoding utf-8
-			http::geturl $url -channel $chan
-			close $chan
-			after 1000 {
-			.n.f1.f1.twdlocal insert end $filename
-			}
-		}
-
-	} ;#END TWD DOWNLOAD
-
+	downloadTWDFiles
 }
 
 # return to INTERNATIONAL section if $twddir empty
