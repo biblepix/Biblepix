@@ -3,7 +3,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5aug17
+# Updated: 9aug17
 ######################################################################
 
 #Verify location & source Globals
@@ -22,9 +22,9 @@ if {[catch "set twdfile [getRandomTWDFile]"] } {
 
 } else {
 
-	#Always create term.sh for Unix terminal
-	if {$platform=="unix"} {
-        	catch {set dwterm [formatTermText $twdfile] }
+	#Create term.sh for Unix terminal if $enableterm
+	if {[info exists enableterm]} {
+        catch {set dwterm [formatTermText $twdfile] }
 		if {$dwterm != ""} {
 			set f [open $Terminal w]
 			puts $f ". $confdir/term.conf"

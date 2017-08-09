@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 6aug17 
+# Updated : 9aug17 
 
 #Make sure either $twddir or SELECTED contain $jahr-TWD files,
 # else stop saving process & return to Setup!
@@ -34,6 +34,7 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	set imgstatus [set imgyesState]
 	set sigstatus [set sigyesState]
 	set introlinestatus [set enableintro]
+    catch {set termstatus [set termyesnoState]}
 	set fontcolourstatus [$fontcolorSpin get]
 	set fontsizestatus [$fontsizeSpin get]
 	set fontweightstatus [set fontweightState]
@@ -51,6 +52,9 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	puts $chan "set enableintro $introlinestatus"
 	puts $chan "set enablepic $imgstatus"
 	puts $chan "set enablesig $sigstatus"
+    if {[info exists termstatus]} {
+        puts $chan "set enableterm $termstatus"
+    }
 	puts $chan "set slideshow $slidestatus"
 	puts $chan "set fontfamily \{$fontfamilystatus\}"
 	puts $chan "set fontsize $fontsizestatus"

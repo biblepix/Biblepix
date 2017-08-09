@@ -1,16 +1,16 @@
 # ~/Biblepix/prog/src/gui/setupTerminal.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 8aug17
+# Updated 9aug17
 
 #Create label & checkbutton
 label .n.f4.t1 -textvar f4.tit -font bpfont3
 checkbutton .n.f4.termyesno -textvar f4Btn -variable termyesnoState
 pack .n.f4.t1 .n.f4.termyesno -anchor w
-if {$enableterm==1} {
-	set termyesnoState 1
-} else {
-	set termyesnoState 0  
+if {[info exists enableterm]} {
+    if {$enableterm==1} {
+        set termyesnoState 1
+    }  
 }
 
 #Create frames left & right
@@ -19,7 +19,7 @@ pack [frame .n.f4.mainf.left] -side left -expand false
 pack [frame .n.f4.mainf.right] -side right -expand true -fill both
 
 #Fill left frame
-message .n.f4.mainf.left.t2 -textvar f4.txt -font bpfont1 -width 300 -padx $px -pady $py
+message .n.f4.mainf.left.t2 -textvar f4.txt -font bpfont1 -width 500 -padx $px -pady $py
 text .n.f4.mainf.left.t3 -height 1 -bg $bg
 #bash entry
 .n.f4.mainf.left.t3 insert end "echo \"sh $unixdir\/term.sh\" \>\> \~\/\.bashrc"

@@ -314,8 +314,8 @@ set f4Btn(en) "Create $dw for display in terminal"
 set f4Btn(de) "$dw zur Anzeige im Terminal erzeugen"
 set ::f4Btn $f4Btn($lang)
 
-set f4Txt(en) "If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nFor $dw to be displayed automatically in your terminals, the following entry in ~/.bashrc is required (paste and copy into a shell):"
-set f4Txt(de) "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDamit $dw automatisch im Terminal angezeigt wird, ist ein Eintrag in ~/.bashrc nötig. Geben Sie dazu den folgenden Befehl in einem Terminal ein:"
+set f4Txt(en) "If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nColours for display etc. may be changed in \n\n\t $unixdir/term.conf \n\nFor $dw to be displayed automatically in your terminals, the following entry in ~/.bashrc is required (paste and copy into a shell):"
+set f4Txt(de) "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDarstellung und Farben können in \n\n\t $unixdir/term.conf \n\ngeändert werden. \n\nDamit $dw automatisch im Terminal angezeigt wird, ist ein Eintrag in ~/.bashrc nötig. Geben Sie dazu den folgenden Befehl in einem Terminal ein:"
 set ::f4.txt $f4Txt($lang)
 
 set ::f4.ex  "
