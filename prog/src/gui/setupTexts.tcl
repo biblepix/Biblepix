@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15jul17
+# Updated: 9aug17
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -310,8 +310,12 @@ set f4Tit(en)  "Display $dw in your Linux/Mac terminals"
 set f4Tit(de)  "$dw in Ihren Linux/Mac -Terminals"
 set ::f4.tit $f4Tit($lang)
 
-set f4Txt(en) "$bp automtically creates $dw for your Unix consoles. The pertaining shell script is updated on a regular basis and can be found in \n\n\t$unixdir/term.sh \n\nIf more than one language file are present, Bible text will alternate randomly whenever a shell is opened. \n\nFor $dw to be displayed automatically in your terminals, the following entry in ~/.bashrc is required (paste and copy into a shell):"
-set f4Txt(de) "$bp stellt $dw automatisch für die Unix-Konsole zur Verfügung. Das zuständige Shell-Skript wird laufend aktualisiert und befindet sich in \n\n\t$unixdir/term.sh \n\nWenn mehrere Bibeltextdateien vorhanden sind, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDamit $dw automatisch in Ihren Konsolen angezeigt wird, ist ein Eintrag in ~/.bashrc nötig. Geben Sie dazu den folgenden Befehl in einem Terminal ein:"
+set f4Btn(en) "Create $dw for display in terminal"
+set f4Btn(de) "$dw zur Anzeige im Terminal erzeugen"
+set ::f4Btn $f4Btn($lang)
+
+set f4Txt(en) "If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nFor $dw to be displayed automatically in your terminals, the following entry in ~/.bashrc is required (paste and copy into a shell):"
+set f4Txt(de) "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDamit $dw automatisch im Terminal angezeigt wird, ist ein Eintrag in ~/.bashrc nötig. Geben Sie dazu den folgenden Befehl in einem Terminal ein:"
 set ::f4.txt $f4Txt($lang)
 
 set ::f4.ex  "

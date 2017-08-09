@@ -1,35 +1,46 @@
 # ~/Biblepix/prog/src/gui/setupTerminal.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 15dec16
+# Updated 8aug17
 
-pack [label .n.f4.t1 -textvar f4.tit -font bpfont3] -anchor w
-message .n.f4.t2 -textvar f4.txt -font bpfont1 -width $tw -padx $px -pady $py
-text .n.f4.t3 -height 1 -bg $bg
+#Create label & checkbutton
+label .n.f4.t1 -textvar f4.tit -font bpfont3
+checkbutton .n.f4.termyesno -textvar f4Btn -variable termyesnoState
+pack .n.f4.t1 .n.f4.termyesno -anchor w
+if {$enableterm==1} {
+	set termyesnoState 1
+} else {
+	set termyesnoState 0  
+}
 
-#Kopiertext
-.n.f4.t3 insert end "echo \"sh $unixdir\/term.sh\" \>\> \~\/\.bashrc"
-.n.f4.t3 configure -state disabled
-pack .n.f4.t2 -anchor w -fill none
-pack .n.f4.t3 -anchor w -fill x
-pack [label .n.f4.t4 -font bpfont2 -textvar expl -anchor w]
+#Create frames left & right
+pack [frame .n.f4.mainf] -expand false -fill x
+pack [frame .n.f4.mainf.left] -side left -expand false 
+pack [frame .n.f4.mainf.right] -side right -expand true -fill both
 
-#Beispielframe
-pack [frame .n.f4.f1 -bg black]
-pack [label .n.f4.f1.lb -width [expr $tw - 100] -bg black]
+#Fill left frame
+message .n.f4.mainf.left.t2 -textvar f4.txt -font bpfont1 -width 300 -padx $px -pady $py
+text .n.f4.mainf.left.t3 -height 1 -bg $bg
+#bash entry
+.n.f4.mainf.left.t3 insert end "echo \"sh $unixdir\/term.sh\" \>\> \~\/\.bashrc"
+.n.f4.mainf.left.t3 configure -state disabled
+pack .n.f4.mainf.left.t2 -anchor nw -fill none
+pack .n.f4.mainf.left.t3 -anchor sw -fill x
+pack [label .n.f4.mainf.left.t4 -font bpfont2 -textvar expl -anchor w]
+
+#Fill right frame
+pack [label .n.f4.mainf.right.lb]
 set padLeft 5
-message .n.f4.bp1 -width $tw -bg blue -fg yellow -justify left -padx [expr 0 + $padLeft] -text "La Parole pour Lundi, 12 janvier 2017"
-message .n.f4.bp2 -bg black -fg orange -justify left -width $tw -padx [expr 7 + $padLeft] -text "J\u00E9sus-Christ s\u2019est d\u00E9pouill\u00e9 lui-m\u00EAme
-en prenant une condition de serviteur,
-en devenant semblable aux autres humains."
-message .n.f4.bp3 -bg black -fg $bg -justify left -padx [expr 0 + $padLeft] -width $tw -text "\t\t ~Philippiens 2,7"
-message .n.f4.bp4 -bg black -fg orange -justify left -padx [expr 7 + $padLeft] -width $tw -text "Le Fils de l\u2019homme est venu, non pour \u00EAtre servi,
-mais pour servir et donner sa vie en ran\u00e7on pour beaucoup."
-message .n.f4.bp5 -bg black -fg $bg -width $tw  -padx [expr 0 + $padLeft] -text "\t\t ~Matthieu 8,28"
-message .n.f4.localhost -bg black -fg green -width $tw -padx [expr 0 + $padLeft] -text "bibelpix@localhost"
-message .n.f4.localhost2 -bg black -fg blue -padx 0 -width $tw -text "~$"
 
-pack .n.f4.bp1 -in .n.f4.f1 -anchor w -fill none
-pack .n.f4.bp2 .n.f4.bp3 .n.f4.bp4 .n.f4.bp5 -in .n.f4.f1 -anchor w -fill none
-pack .n.f4.localhost .n.f4.localhost2 -in .n.f4.f1 -side left -fill x
-
+#Create bp text widget 
+text .n.f4.mainf.right.bp -width 70  
+set t .n.f4.mainf.right.bp
+$t insert 1.0 $dwtext
+$t configure -foreground orange -background black -pady 5 -padx 5
+#change 1st line
+$t tag add intro 1.0 1.end
+$t tag conf intro -foreground yellow -background blue
+#add last line
+$t insert end "\n\nbiblepix@localhost ~ $" grün
+$t tag conf grün -foreground green
+pack $t
