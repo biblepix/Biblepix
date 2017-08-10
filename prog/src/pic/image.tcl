@@ -1,7 +1,7 @@
 # ~/Biblepix/progs/src/pic/image.tcl
 # Initiates main image process, called by biblepix.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 17jun2017 
+# Updated 10jul2017 
 
 package require Tk
 
@@ -19,17 +19,12 @@ if {[info procs createBMPs] == ""} {
 }
 createBMPs
 
-## TODO Rheienfolge ändern ?
-#Select & create random background JPEG
-#set hgfile [getRandomJPG]
-#image create photo hgbild -file $hgfile
-
 if {[info procs fgbild>hgbild] == ""} {
 	source $Hgbild
 }
 
-#Select & create random background JPEG
-set hgfile [getRandomJPG]
+#Select & create random background JPEG/PNG
+set hgfile [getRandomPhoto]
 image create photo hgbild -file $hgfile
 
 #Select & create random foreground BMP

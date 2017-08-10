@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 9aug17 
+# Updated : 10aug17 
 
 #Make sure either $twddir or SELECTED contain $jahr-TWD files,
 # else stop saving process & return to Setup!
@@ -20,7 +20,7 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	NewsHandler::QueryNews "$noTWDFilesFound" red
 
 #return to PHOTOS section if $picsdir empty
-} elseif {	[catch {glob $jpegdir/*}] } {
+} elseif { [catch {glob $jpegdir/*}] } {
  
 	.n select .n.f6
 	NewsHandler::QueryNews "$noPhotosFound" red
@@ -34,7 +34,7 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	set imgstatus [set imgyesState]
 	set sigstatus [set sigyesState]
 	set introlinestatus [set enableintro]
-    catch {set termstatus [set termyesnoState]}
+	catch {set termstatus [set termyesnoState]}
 	set fontcolourstatus [$fontcolorSpin get]
 	set fontsizestatus [$fontsizeSpin get]
 	set fontweightstatus [set fontweightState]
@@ -52,9 +52,9 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 	puts $chan "set enableintro $introlinestatus"
 	puts $chan "set enablepic $imgstatus"
 	puts $chan "set enablesig $sigstatus"
-    if {[info exists termstatus]} {
-        puts $chan "set enableterm $termstatus"
-    }
+	if {[info exists termstatus]} {
+		puts $chan "set enableterm $termstatus"
+	}
 	puts $chan "set slideshow $slidestatus"
 	puts $chan "set fontfamily \{$fontfamilystatus\}"
 	puts $chan "set fontsize $fontsizestatus"
@@ -110,8 +110,8 @@ if { [catch {glob $twddir/*$jahr.twd}] } {
 		#create random BMP if $imgdir empty
 		if { [glob -nocomplain $imgdir/*.bmp] == "" } {
 			package require Img
-			set jpegpath [getRandomJPG]
-			set quickimg [image create photo -file $jpegpath]
+			set photopath [getRandomPhoto]
+			set quickimg [image create photo -file $photopath]
 			$quickimg write $TwdBMP -format bmp
 		}
 		foreach file [glob -nocomplain -directory $bmpdir *] {

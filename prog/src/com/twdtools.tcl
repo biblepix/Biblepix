@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/twdtools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 10jul17
+# Updated 10aug17
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if {[catch {package require tdom}]} {
@@ -35,14 +35,14 @@ proc getRandomBMP {} {
 	set randIndex [expr {int(rand()*[llength $bmplist])}]
 	return [lindex $bmplist $randIndex]
 }
-proc getRandomJPG {} {
-	#Ausgabe mit Pfad
+proc getRandomPhoto {} {
+	#Ausgabe JPG/PNG mit Pfad
 	global platform jpegdir
 	
 	if {$platform=="unix"} {
-		set imglist [glob -nocomplain -directory $jpegdir *.jpg *.jpeg *.JPG *.JPEG]
+		set imglist [glob -nocomplain -directory $jpegdir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
 	} elseif {$platform=="windows"} {
-		set imglist [glob -nocomplain -directory $jpegdir *.jpg *.jpeg]
+		set imglist [glob -nocomplain -directory $jpegdir *.jpg *.jpeg *.png]
 	}
 	
 	return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ] 
