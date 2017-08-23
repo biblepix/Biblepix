@@ -119,7 +119,7 @@ puts "Difference: $diffX"
 	#3. Overwrite corrected image & save as PNG	
 	set filename [file tail $imagePath]	
 	if {![regexp png|PNG $filename] } {
-		set filename "[file rootname].png"
+		set filename "[file rootname $filename].png"
 	}
 	$finalBild write [file join $jpegDir $filename] -format PNG
 	

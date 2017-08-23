@@ -219,6 +219,7 @@ global jpegDir lang
 
 proc delPic {imgName} {
 global fileJList jpegDir lang
+	# TODO text anpassen und nach setuptext verschieben
 	set msg "Deleted [file tail $imgName] from [file nativename $jpegDir]"
 	set msgDE "[file tail $imgName] aus [file nativename $jpegDir] gelöscht"
 	if  {$lang=="de"} {set msg $msgDE}
