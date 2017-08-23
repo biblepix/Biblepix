@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6jul17
+# Updated: 5aug17
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
@@ -58,9 +58,12 @@ global Biblepix Setup slideshow tclpath unixdir env
 
 	if {$slideshow>0} {			
 		set interval [expr $slideshow/60]
-		set BPcrontext "*/$interval * * * * $cronScript"	
+		set BPcrontext "
+*/$interval * * * * $cronScript"	
 	} else {
-		set BPcrontext "@reboot $cronScript"
+		set BPcrontext "
+@daily $cronScript
+@reboot $cronScript"
 	}	
 			
 	#Check presence of saved crontab
@@ -72,7 +75,7 @@ global Biblepix Setup slideshow tclpath unixdir env
 
 	#Create/append new crontext, save&execute
 	if {[info exists crontext]} {
-		append crontext \n$BPcrontext
+		append crontext $BPcrontext
 	} else {
 		set crontext $BPcrontext
 	}
@@ -86,32 +89,13 @@ global Biblepix Setup slideshow tclpath unixdir env
 	
 ### 2. Prepare cronscript text
 	
-	#Check for newest XAUTH file (likely the one in use!)
-	set authfiles [glob $env(HOME)/.*thority]
-
-	foreach file $authfiles {
-		lappend authfileTimeList [file mtime $file]$file
-	}
-	#biggest=newest is last
-	set sorted [lsort $authfileTimeList]
-	regsub -all {[[:digit:]]} [lindex $sorted end] {} XAUTH 
-	
-	#Check for Xlock file
-	if {[file exists /tmp/.X0-lock]} {
-		#Gentoo,Ubuntu,openSuse
-		set XLOCK /tmp/.X11-unix/X0
-	} else {
-		#Gentoo, ?Rest
-		set XLOCK /tmp/.X0-lock
-	}
-
-	#create cronScript text
 	set cronScriptText "
-	until \[ -S $XLOCK \] ; do
-		sleep 30
-	done
-	while \[ $XAUTH -ot $XLOCK \] ; do 
-		sleep 30
+	count=0
+	limit=5
+	#wait max. 5 min. for X
+	while \[ ! xhost \] \&\& \[ \"\$count\" -lt \"\$limit\" \] ; do 
+		sleep 60
+		((count++))
 	done
 	export DISPLAY=:0
 	$tclpath $Biblepix
@@ -206,7 +190,7 @@ global LinIcon srcdir Setup wishpath bp
 
 proc setLinBackground {} {
 #Sets background picture/slideshow for KDE / GNOME / XFCE4
-global env slideshow srcdir imgDir unixdir Config TwdPNG TwdBMP TwdTIF
+global env slideshow srcdir imgDir unixdir Config TwdPNG TwdBMP TwdTIF KDErestart
 
 	#KDE3
 	if {[auto_execok dcop] != ""} {

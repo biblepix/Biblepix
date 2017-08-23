@@ -2,25 +2,54 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 10aug17 
+# Updated : 5jul17 
 
-#Make sure either $twdDir or SELECTED contain $jahr-TWD files,
+#Make sure either $twddir or SELECTED contain $jahr-TWD files,
 # else stop saving process & return to Setup!
 set SELECTED_TWD_FILES [.n.f1.twdremoteframe.lb curselection]
 
 # A: If SELECTED NOT EMPTY: Start TWD download
 if { $SELECTED_TWD_FILES != ""} {
-	downloadTWDFiles
+
+	if { [catch {set root [getRemoteRoot]}] } {
+		NewsHandler::QueryNews "$noConnTwd" red
+	} else {
+		NewsHandler::QueryNews "$gettingTwd" orange
+		
+		cd $twddir
+		#get hrefs alphabetically ordered
+		set urllist [$root selectNodes {//tr/td/a}]
+    
+	    	set hrefs ""
+		foreach url $urllist {lappend hrefs [$url @href]}
+		set urllist [lsort $hrefs]
+		set selectedindices [.n.f1.twdremoteframe.lb curselection] 
+		  
+		foreach item $selectedindices {
+			set url [lindex $urllist $item]
+			set filename [file tail $url]
+			NewsHandler::QueryNews "Downloading $filename..." lightblue
+			set chan [open $filename w]
+			fconfigure $chan -encoding utf-8
+			http::geturl $url -channel $chan
+			close $chan
+			after 1000 {
+			.n.f1.f1.twdlocal insert end $filename
+			}
+		}
+
+	} ;#END TWD DOWNLOAD
+
 }
 
-# return to INTERNATIONAL section if $twdDir empty
-if { [catch {glob $twdDir/*$jahr.twd}] } {
+# return to INTERNATIONAL section if $twddir empty
+if { [catch {glob $twddir/*$jahr.twd}] } {
 		
 	.n select .n.f1
 	NewsHandler::QueryNews "$noTWDFilesFound" red
 
 #return to PHOTOS section if $picsdir empty
-} elseif { [catch {glob $jpegDir/*}] } {
+} elseif {	[catch {glob $jpegdir/*}] } {
  
 	.n select .n.f6
 	NewsHandler::QueryNews "$noPhotosFound" red
@@ -34,7 +63,6 @@ if { [catch {glob $twdDir/*$jahr.twd}] } {
 	set imgstatus [set imgyesState]
 	set sigstatus [set sigyesState]
 	set introlinestatus [set enableintro]
-	catch {set termstatus [set termyesnoState]}
 	set fontcolourstatus [$fontcolorSpin get]
 	set fontsizestatus [$fontsizeSpin get]
 	set fontweightstatus [set fontweightState]
@@ -52,9 +80,6 @@ if { [catch {glob $twdDir/*$jahr.twd}] } {
 	puts $chan "set enableintro $introlinestatus"
 	puts $chan "set enablepic $imgstatus"
 	puts $chan "set enablesig $sigstatus"
-	if {[info exists termstatus]} {
-		puts $chan "set enableterm $termstatus"
-	}
 	puts $chan "set slideshow $slidestatus"
 	puts $chan "set fontfamily \{$fontfamilystatus\}"
 	puts $chan "set fontsize $fontsizestatus"
@@ -107,11 +132,11 @@ if { [catch {glob $twdDir/*$jahr.twd}] } {
 
 	#Delete old BMPs & start Biblepix
 	if {$enablepic} {
-		#create random BMP if $imgDir empty
-		if { [glob -nocomplain $imgDir/*.bmp] == "" } {
+		#create random BMP if $imgdir empty
+		if { [glob -nocomplain $imgdir/*.bmp] == "" } {
 			package require Img
-			set photopath [getRandomPhoto]
-			set quickimg [image create photo -file $photopath]
+			set jpegpath [getRandomJPG]
+			set quickimg [image create photo -file $jpegpath]
 			$quickimg write $TwdBMP -format bmp
 		}
 		foreach file [glob -nocomplain -directory $bmpdir *] {
@@ -121,14 +146,12 @@ if { [catch {glob $twdDir/*$jahr.twd}] } {
 		source $Biblepix
 	}
 
-#TODO: IF BIBLEPIX.TCL exits the following commands are ignored
+	#Delete any old JPGs from $imgdir (pre 2.2)
+	file delete [glob -nocomplain $imgdir/*.jpg]
 
-	#Delete any old JPGs from $imgDir (pre 2.2) - not needed now!
-#	file delete [glob -nocomplain $imgDir/*.jpg]
-
-	#Delete any old TWD files - TODO : isn't there a better place for this?
+	#Delete any old TWD files
 	set vorjahr [expr {$jahr - 1}]
-	set oldtwdlist [glob -nocomplain -directory $twdDir *$vorjahr.twd]
+	set oldtwdlist [glob -nocomplain -directory $twddir *$vorjahr.twd]
 	if {[info exists oldtwdlist]} {
 		NewsHandler::QueryNews "Deleting old language files..." lightblue
 		

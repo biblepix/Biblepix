@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/LoadConfig.tcl
-# sourced by $Globals if $Config missing
+# Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 7jul17
+# Updated: 23aug17
 
 #Source Config and LoadConfig for defaults
 if { [catch {source $Config}] } {

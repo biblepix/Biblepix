@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 7jul17
+# Updated: 23Aug17
 
 # This variable enables the debuging mode in the hole application if set to 1.
 set Debug 1
@@ -131,12 +131,12 @@ array set exaJpgArray "
 #Set Icons array & export
 set bpxIconUrl "http://vollmar.ch/bibelpix"
 array set iconArray "
-	biblepix.svg [file join $unixdir biblepix.svg] 
+	biblepix.png [file join $unixdir biblepix.png] 
 	biblepix.ico [file join $windir biblepix.ico]
 "
 
 set WinIcon [lindex [array get iconArray biblepix.ico] 1]
-set LinIcon [lindex [array get iconArray biblepix.svg] 1]
+set LinIcon [lindex [array get iconArray biblepix.png] 1]
 
 #Set TWD picture paths
 set TwdBMP [file join $imgDir theword.bmp]
@@ -166,11 +166,12 @@ proc sleep { ms } {
     unset ::__sleep__tmp__$uniq
 }
 
-#Define font colours & sun/shade factors
+#Define font colours
 set gold #daa520
 set silver #707585
 set blue #4682b4
 set green #2e8b57
+#Define sun/shade factors
 set sunfactor 2.0
 set shadefactor 0.6
 

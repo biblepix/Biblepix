@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30jun17
+# Updated: 10jul17
 
 source $SetupSaveLinHelpers
 
@@ -57,7 +57,7 @@ if {!$hasError && $Error!=""} {
 if {$enablepic} {
 	tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangeDesktop
 	
-	catch setLinBackground Error
+	catch {setLinBackground} Error
 
 	if {!$hasError && $Error!=""} {
 		tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb

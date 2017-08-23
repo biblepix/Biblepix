@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 29jun17
+# Updated 10aug17
 
 #Create left & right main frames
 pack [frame .n.f2.fleft] -expand 0 -fill y -side left
@@ -70,7 +70,7 @@ if {!$slideshow} {
 
 #1. Create TextPos Canvas
 set textPosFactor 3
-image create photo origbild -file [getRandomJPG]
+image create photo origbild -file [getRandomPhoto]
 image create photo canvasbild
 canvasbild copy origbild -subsample $textPosFactor -shrink
 

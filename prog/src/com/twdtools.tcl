@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/tcl/share/twdtools.tcl
+# ~/Biblepix/prog/src/com/twdtools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 23dec16
+# Updated 23aug17
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if {[catch {package require tdom}]} {
@@ -35,14 +35,14 @@ proc getRandomBMP {} {
 	set randIndex [expr {int(rand()*[llength $bmplist])}]
 	return [lindex $bmplist $randIndex]
 }
-proc getRandomJPG {} {
-	#Ausgabe mit Pfad
+proc getRandomPhoto {} {
+	#Ausgabe JPG/PNG mit Pfad
 	global platform jpegDir
 	
 	if {$platform=="unix"} {
-		set imglist [glob -nocomplain -directory $jpegDir *.jpg *.jpeg *.JPG *.JPEG]
+		set imglist [glob -nocomplain -directory $jpegDir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
 	} elseif {$platform=="windows"} {
-		set imglist [glob -nocomplain -directory $jpegDir *.jpg *.jpeg]
+		set imglist [glob -nocomplain -directory $jpegDir *.jpg *.jpeg *.png]
 	}
 	
 	return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ] 
@@ -67,9 +67,13 @@ global tab datum ind enableintro
 
 	set root [getTWDFileRoot $twdFile]
 	
-#Datumszeile
+#Set Datumszeile & return error if empty
+	set titelnode [$root selectNodes /thewordfile/theword\[@date='$datum'\]//title/text()]
+	if {$titelnode==""} {
+		return "No Bible text found for today."
+	}
+
 	if {$enableintro} {
-		set titelnode [$root selectNodes /thewordfile/theword\[@date='$datum'\]//title/text()]
 		set dw "* [$titelnode data] *\n"
 	} else {
 		set ind ""
@@ -134,8 +138,12 @@ proc formatSigText {twdFile} {
 	
 	set root [getTWDFileRoot $twdFile]
 	
-	#Datumszeile obligatorisch
+	#Datumszeile obligatorisch, return error if empty
 	set titelnode [$root selectNodes /thewordfile/theword\[@date='$datum'\]//title/text()]
+	if {$titelnode==""} {
+		return "No Bible text found for today."
+	}
+
 	set dwsig "===== [$titelnode data] ====="
 	
 #Spruch 1
@@ -198,8 +206,11 @@ proc formatTermText {twdFile} {
 	
 	set root [getTWDFileRoot $twdFile]
 
-	#Datumszeile obligatorisch
+	#Datumszeile obligatorisch, return error if empty
 	set titelnode [$root selectNodes /thewordfile/theword\[@date='$datum'\]//title/text()]
+	if {$titelnode==""} {
+		return "No Bible text found for today."
+	}
 	set dwterm "echo -e \$\{titbg\}\$\{tit\}\"* [$titelnode data] *\""
 		
 #Spruch 1
