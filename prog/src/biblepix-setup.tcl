@@ -41,13 +41,18 @@ if {[catch {source $Globals}]} {
 	
 	# 1.  D O   H T T P  U P D A T E   (if not initial)
 
-	.updateFrame.progbar start
-	
 	source $Http
 
 	if { [info exists InitialJustDone] } {
+		set pbTitle "resizing Image"
+
+		source $Imgtools
+		loadExamplePhotos
+		
 		set pbTitle $uptodateHttp
 	} else {	
+		.updateFrame.progbar start
+		
 		set pbTitle $updatingHttp
 			
 		# a) Do Update if $config exists
@@ -57,15 +62,18 @@ if {[catch {source $Globals}]} {
 			} else {
 			set error [runHTTP Initial]
 			
-			downloadFileArray exaJpgArray bpxJpegUrl
-			downloadFileArray iconArray bpxIconUrl
+			downloadFileArray exaJpgArray $bpxJpegUrl
+			downloadFileArray iconArray $bpxIconUrl
+		
+			set pbTitle "resizing Image"
 
 			source $Imgtools
 			loadExamplePhotos
 		}
+		
+		.updateFrame.progbar stop
 	}
 
-	.updateFrame.progbar stop
 
 	# 2. B U I L D  M A I N  G U I
 

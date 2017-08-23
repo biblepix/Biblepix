@@ -66,12 +66,6 @@ proc makeDirs {} {
 
 #SET ARRAYS FOR DOWNLOAD
 
-if { $Debug } {
-	set Http [file join $sharedir httpMock.tcl]
-} else {
-	set Http [file join $sharedir http.tcl]
-}
-
 #Set filepaths array
 array set filepaths "
 Readme [file join $rootdir README]
@@ -115,6 +109,12 @@ foreach i [array names filepaths] {
 	set name [lindex $ivalues 0]
 	set path [lindex $ivalues 1]
 	set $name $path
+}
+
+if { $Debug } {
+	set Http [file join $sharedir httpMock.tcl]
+} else {
+	set Http [file join $sharedir http.tcl]
 }
 
 #Set JPEGs array

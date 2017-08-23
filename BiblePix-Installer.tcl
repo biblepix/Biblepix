@@ -13,7 +13,7 @@ package require http
 
 #Text messages (when Texts not available)
 set downloadingHttp "Downloading BiblePix program files...\nLade BibelPix-Programmdateien herunter..."
-set noConHttp "No Internet connection. Try later. Exiting...\nKeine Internetverbindung. Versuchen Sie es später. Abbruch..."
+set noConnHttp "No Internet connection. Try later. Exiting...\nKeine Internetverbindung. Versuchen Sie es später. Abbruch..."
 set uptodateHttp "Program files downloaded successfulfy.\nErster Download gelungen!"
 
 #1. SET HOME DIRECTORY & CLEAN OUT
@@ -41,23 +41,50 @@ if { [info exists env(LOCALAPPDATA)] } {
 	catch {file delete -force [file join $rootdir prog tcl]}
 }
 
-proc testHttpCon {} {
-global bpxReleaseUrl noConHttp
-
-	set testtoken [http::geturl $bpxReleaseUrl/http.tcl -validate 1]
-	set error 0
+proc setProxy {} {
+	if { [catch {package require autoproxy} ] } {
+		set host localhost
+		set port 80
+	} else {
+		autoproxy::init
+		set host [autoproxy::cget -host]
+		set port [autoproxy::cget -port]
+	}
 	
-	if { [http::error $testtoken] != "" || [http::ncode $testtoken] != 200} {       
+	http::config -proxyhost $host -proxyport $port		
+}
+
+#returns 0 or 1
+proc testHttpCon {} {
+	global bpxReleaseUrl
+	
+
+	proc getTesttoken {} {
+		global bpxReleaseUrl
 		
-		#try proxy & test again
-		http::config -proxyhost localhost -proxyport 80
-		set testtoken [http::geturl $bpxReleaseUrl/http.tcl -validate 1]
+		set testfile "$bpxReleaseUrl/README"
 		
-		if { [http::error $testtoken] != "" || [http::ncode $testtoken] != 200} {        
-			set ::httpStatus $noConHttp
+		catch {set testtoken [http::geturl $testfile -validate 1]}
+		
+		if {! [info exists testtoken] || 
+			[http::error $testtoken] != "" || 
+			[http::ncode $testtoken] != 200} {
 			set error 1
+		} else {
+			set error 0
 		}
 	}
+
+	set error [getTesttoken]
+	
+	#try proxy & retry connexion
+	if {$error} {
+		setProxy
+		set error [getTesttoken]
+	}	
+	
+puts "error: $error"	
+
 	return $error
 }
 
@@ -69,7 +96,6 @@ label .if.initialL -foreground blue -font "TkCaptionFont 18" -text "BiblePix Ins
 message .if.initialMsg -background lightblue -textvariable httpStatus -width 600 -borderwidth 10 -font "TkTextFont 14"
 ttk::progressbar .if.pb -mode indeterminate -length 400
 pack .if.initialL .if.initialMsg .if.pb
-.if.pb start
 
 set httpStatus $downloadingHttp
 
@@ -77,60 +103,70 @@ set error [testHttpCon]
 
 if { $error } {
 	#exit if error
-	set httpStatus $noConHttp
-        after 5000 {
-        exit
-        }
-}
-    
-# 3. FETCH Globals, Http
-
-#fetches Globals, Http
-proc fetchInitialFiles {} {
-	global bpxReleaseUrl
-	lappend filelist globals.tcl http.tcl
+	set httpStatus $noConnHttp
 	
-	foreach filename $filelist {
-		set token [http::geturl $bpxReleaseUrl/$filename]
-		set data [http::data $token]
-		if { "[string index $data 0]" == "#"} {
-			set chan [open $filename w]
-			puts $chan $data
-			close $chan
-			http::cleanup $token
+	after 5000 { exit }
+} else {
+    
+	# 3. FETCH Globals, Http
+
+	#fetches Globals, Http
+	proc fetchInitialFiles {} {
+		global bpxReleaseUrl
+		lappend filelist globals.tcl http.tcl
+		
+		foreach filename $filelist {
+			set token [http::geturl $bpxReleaseUrl/$filename]
+			set data [http::data $token]
+			if { "[string index $data 0]" == "#"} {
+				set chan [open $filename w]
+				puts $chan $data
+				close $chan
+				http::cleanup $token
+			}
 		}
 	}
-}
 
-#Create directory structure & source Globals
-file mkdir $srcdir
-cd $srcdir
-fetchInitialFiles
+	.if.pb start
+	
+	#Create directory structure & source Globals
+	file mkdir $srcdir
+	cd $srcdir
+	fetchInitialFiles
 
-source $srcdir/globals.tcl
-makeDirs
+	source $srcdir/globals.tcl
+	makeDirs
 
-# 5. FETCH ALL prog files (securely, re-fetching above 2!)
-source $srcdir/http.tcl
-runHTTP Initial
+	# 5. FETCH ALL prog files (securely, re-fetching above 2!)
+	source $srcdir/http.tcl
 
-downloadFileArray exaJpgArray bpxJpegUrl
-downloadFileArray iconArray bpxIconUrl
+	set error [runHTTP Initial]
+	if { $error } {
+		#exit if error
+		set httpStatus $noConnHttp
+		.if.pb stop
+		
+		after 5000 { exit }
+	} else {
+	
+		downloadFileArray exaJpgArray $bpxJpegUrl
+		downloadFileArray iconArray $bpxIconUrl
 
-source $Imgtools
-loadExamplePhotos
+		#delete extra files (refetched!)
+		file delete $srcdir/globals.tcl $srcdir/http.tcl
+		
+		.if.pb stop
 
-#delete extra files (refetched!)
-file delete $srcdir/globals.tcl $srcdir/http.tcl
+		#set Status message
+		set ::InitialJustDone 1 ;#export for Setup
+		.if.initialMsg configure -bg green
+		set httpStatus $uptodateHttp
 
-#set Status message
-set ::InitialJustDone 1 ;#export for Setup
-.if.initialMsg configure -bg green
-set httpStatus $uptodateHttp
-
-# 5. Run Setup, providing var for not do above again
-after 2000 {
-	pack forget .if
-	set ::httpStatus $httpStatus
-	source $Setup
+		# 5. Run Setup, providing var for not do above again
+		after 2000 {
+			pack forget .if
+			set ::httpStatus $httpStatus
+			source $Setup
+		}
+	}
 }
