@@ -23,8 +23,7 @@
             if [regexp " *set " $i] {eval $i}
         } ;# do changes in geometry before creation
         if ![winfo exists $c] {
-            canvas $c -width $w -height $h -bg white -relief raised\
-                -borderwidth 1
+            canvas $c -width $w -height $h -bg white -relief raised -borderwidth 1
         }
         set b [$c cget -borderwidth]
         eval $opt(-flag)
