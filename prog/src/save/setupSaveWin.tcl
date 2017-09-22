@@ -16,37 +16,37 @@ set winpath [file nativename $windir]
 
 #1a. Register Autorun always
 if { [info exists Debug] && $Debug } {
-	setWinAutorun
+  setWinAutorun
 } else {
-	set autorunError [catch setWinAutorun]
+  set autorunError [catch setWinAutorun]
 }
 
 #1b. Execute single pic theme if running slideshow detected
 if {$enablepic} {
-	#Detect running slideshow (entry reset by Windows when user sets bg)
-	set regpathExplorer [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
-	
-	# Fallback behavior if BackgroundType is missing.
-	if {[catch {set BackgroundType [registry get $regpathExplorer BackgroundType]}]} {
-		tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangeDesktop
-		
-		if { [info exists Debug] && $Debug } {
-			setWinTheme
-		} else {
-			set themeError [catch setWinTheme]
-		}
-	} else {
-		#BackgroundType: 0 = Einzelbild, 1 = Farbe, 2 = SlideShow
-		if {$BackgroundType == 2} {
-			tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangeDesktop
-			
-			if { [info exists Debug] && $Debug } {
-				setWinTheme
-			} else {
-				set themeError [catch setWinTheme]
-			}
-		}
-	}
+  #Detect running slideshow (entry reset by Windows when user sets bg)
+  set regpathExplorer [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
+  
+  # Fallback behavior if BackgroundType is missing.
+  if {[catch {set BackgroundType [registry get $regpathExplorer BackgroundType]}]} {
+    tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangeDesktop
+    
+    if { [info exists Debug] && $Debug } {
+      setWinTheme
+    } else {
+      set themeError [catch setWinTheme]
+    }
+  } else {
+    #BackgroundType: 0 = Einzelbild, 1 = Farbe, 2 = SlideShow
+    if {$BackgroundType == 2} {
+      tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangeDesktop
+      
+      if { [info exists Debug] && $Debug } {
+        setWinTheme
+      } else {
+        set themeError [catch setWinTheme]
+      }
+    }
+  }
 }
 
 # B)  A D M I N   R E G I S T E R I N G S
@@ -62,35 +62,35 @@ regsub -all {[{}]} "$wishpath [file nativename $Setup]" {} commandPathStandardKe
 
 #1. Prüfe Grundeintrag und Schlüssel
 if { [catch {registry get $regpath_desktop {}} ] ||
-	[registry get $regpath_desktop Icon] != $iconKeyValue ||
-	[registry get $regpath_desktop Position] != $posKeyValue ||
-	[registry get $commandPath {}] != $commandPathStandardKeyValue
-	} {
-	
-	tk_messageBox -type ok -title "BiblePix Registry Installation" -icon info -message $winRegister
-	if { [info exists Debug] && $Debug } {
-		setWinContextMenu
-	} else {
-		set regError [catch setWinContextMenu]
-	}
+  [registry get $regpath_desktop Icon] != $iconKeyValue ||
+  [registry get $regpath_desktop Position] != $posKeyValue ||
+  [registry get $commandPath {}] != $commandPathStandardKeyValue
+  } {
+  
+  tk_messageBox -type ok -title "BiblePix Registry Installation" -icon info -message $winRegister
+  if { [info exists Debug] && $Debug } {
+    setWinContextMenu
+  } else {
+    set regError [catch setWinContextMenu]
+  }
 }
 
 set ok 1
 
 #Final message if no errors
 if { [info exists autorunError] && $autorunError } {
-	set ok 0
+  set ok 0
     tk_messageBox -type ok -icon error -title "BiblePix Autorun Installation" -message $winChangeDesktopProb
 } 
 if { [info exists regError] && $regError } {
-	set ok 0
-	tk_messageBox -type ok -title "BiblePix Registry Installation" -icon error -message $winRegisterProb
+  set ok 0
+  tk_messageBox -type ok -title "BiblePix Registry Installation" -icon error -message $winRegisterProb
 }
 if { [info exists themeError] && $themeError } {
-	set ok 0
-	tk_messageBox -type ok -icon error -title "BiblePix Theme Installation" -message $winChangeDesktopProb
+  set ok 0
+  tk_messageBox -type ok -icon error -title "BiblePix Theme Installation" -message $winChangeDesktopProb
 }
 
 if {$ok} {
-	tk_messageBox -type ok -title "BiblePix Installation" -icon info -message $changeDesktopOk
+  tk_messageBox -type ok -title "BiblePix Installation" -icon info -message $changeDesktopOk
 }

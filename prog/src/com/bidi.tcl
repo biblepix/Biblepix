@@ -9,83 +9,83 @@
 proc fixHebWin {dw} {
 #Fixes Hebrew word order for Setup Text Window
 
-	global tab ind
+  global tab ind
 
-	#move tilde to right
-	regsub -all -line {(~ )(.*)} $dw {\2 ~} dw
+  #move tilde to right
+  regsub -all -line {(~ )(.*)} $dw {\2 ~} dw
 
-	#Move punctuation marks to left of words
-	regsub -all -line {(.*)([.,:;?!])$} $dw {\2\1} dw
+  #Move punctuation marks to left of words
+  regsub -all -line {(.*)([.,:;?!])$} $dw {\2\1} dw
 
-	#Move TABs and INDs to right of line
-	regsub -all "$tab" $dw {TTT} dw
-	regsub -all "$ind" $dw {BBB} dw
-	regsub -all -line {(TTT)(.*)} $dw {\2\1} dw
-	regsub -all -line {(BBB)(.*)} $dw {\2\1} dw
-	regsub -all {TTT} $dw "$tab" dw
-	regsub -all {BBB} $dw "$ind" dw
+  #Move TABs and INDs to right of line
+  regsub -all "$tab" $dw {TTT} dw
+  regsub -all "$ind" $dw {BBB} dw
+  regsub -all -line {(TTT)(.*)} $dw {\2\1} dw
+  regsub -all -line {(BBB)(.*)} $dw {\2\1} dw
+  regsub -all {TTT} $dw "$tab" dw
+  regsub -all {BBB} $dw "$ind" dw
 
-	#Move digits from end of line to beg
-	regsub -all -line {(^[0-9]+)(.*)} $dw {\2\1} dw
+  #Move digits from end of line to beg
+  regsub -all -line {(^[0-9]+)(.*)} $dw {\2\1} dw
 
-	return $dw
+  return $dw
 }
 
 proc fixArabWin {dw} {
 #Fixes Arabic punctuation marks for Canvas & Setup Text Window
 
-	global tab ind
+  global tab ind
 
-	#move tilde to right
-	regsub -all -line {(~ )(.*)} $dw {\2 ~} dw
+  #move tilde to right
+  regsub -all -line {(~ )(.*)} $dw {\2 ~} dw
 
-	regsub -all "$tab" $dw {TTT} dw
-	regsub -all "$ind" $dw {III} dw
+  regsub -all "$tab" $dw {TTT} dw
+  regsub -all "$ind" $dw {III} dw
 
-	#move quotes if they are on edge of line
-	regsub -all -line {^(III|TTT)([«])(.*)$} $dw {\1\3PLP} dw
-	regsub -all -line {^(III|TTT)(.*)([»])([.,:;?!\u060c\u060d\u066b\u066c]?)$} $dw {\1\4PRP\2} dw
-	regsub -all  {PLP} $dw "\u00bb" dw
-	regsub -all  {PRP} $dw "\u00ab" dw
+  #move quotes if they are on edge of line
+  regsub -all -line {^(III|TTT)([«])(.*)$} $dw {\1\3PLP} dw
+  regsub -all -line {^(III|TTT)(.*)([»])([.,:;?!\u060c\u060d\u066b\u066c]?)$} $dw {\1\4PRP\2} dw
+  regsub -all  {PLP} $dw "\u00bb" dw
+  regsub -all  {PRP} $dw "\u00ab" dw
 
-	#Move punctuation marks to left of words
-	regsub -all -line {(.*)([.,:;?!\u060c\u060d\u066b\u066c])([\u00bb]?)$} $dw {\2\1\3} dw
+  #Move punctuation marks to left of words
+  regsub -all -line {(.*)([.,:;?!\u060c\u060d\u066b\u066c])([\u00bb]?)$} $dw {\2\1\3} dw
 
-	#Move TABs and INDs to right of line
-	regsub -all -line {(TTT)(.*)} $dw {\2\1} dw
-	regsub -all -line {(III)(.*)} $dw {\2\1} dw
-	regsub -all {TTT} $dw "$tab" dw
-	regsub -all {III} $dw "$ind" dw
+  #Move TABs and INDs to right of line
+  regsub -all -line {(TTT)(.*)} $dw {\2\1} dw
+  regsub -all -line {(III)(.*)} $dw {\2\1} dw
+  regsub -all {TTT} $dw "$tab" dw
+  regsub -all {III} $dw "$ind" dw
 
-	#reorder chapter and verse
-	regsub -all {([0-9]+):([0-9]+)} $dw {\2:\1} dw
+  #reorder chapter and verse
+  regsub -all {([0-9]+):([0-9]+)} $dw {\2:\1} dw
 
-	return $dw
+  return $dw
 }
 
 proc fixHebUnix {dw} {
 #Fixes Hebrew for Unix canvas
-	#set all characters right-to-left
-	set dwsplit [split $dw \n]
-	foreach line $dwsplit {
-		append dwneu [string reverse $line]\n
-	}
-	set dw $dwneu
+  #set all characters right-to-left
+  set dwsplit [split $dw \n]
+  foreach line $dwsplit {
+    append dwneu [string reverse $line]\n
+  }
+  set dw $dwneu
 
-	#delete all Dagesh's because of wrong positioning
-	regsub -all {\u05BC} $dw {} dw
+  #delete all Dagesh's because of wrong positioning
+  regsub -all {\u05BC} $dw {} dw
 #regsub -all {ּ} $dw {} dw 
 
-	#revert digits back
-	set zahlen [regexp -all -inline {[0-9]+} $dw]
-	foreach zahl $zahlen {
-		 regsub $zahl $dw [string reverse $zahl] dw
-	}
-	#Reposition punctuation marks
-	regsub -all {([.,:;?!])( )} $dw {\1} dw
-	#Delete last \n
-	set dw [string range $dw 0 end-1]
-	return $dw
+  #revert digits back
+  set zahlen [regexp -all -inline {[0-9]+} $dw]
+  foreach zahl $zahlen {
+     regsub $zahl $dw [string reverse $zahl] dw
+  }
+  #Reposition punctuation marks
+  regsub -all {([.,:;?!])( )} $dw {\1} dw
+  #Delete last \n
+  set dw [string range $dw 0 end-1]
+  return $dw
 }
 
 
@@ -199,15 +199,15 @@ array set ::zhe {0 NL 2 \ufb8b 3 \ufb8b}
 array set ::dde {0 NL 2 \ufb89 3 \ufb89}
 array set ::rre {0 NL 2 \ufb8d 3 \ufb8d}
 
-array set ::kaf_urdu 		{1 \uFEDB 2 \uFEDC 3 \uFEDA}
-array set ::choti_ye  		{1 \uFEF3 2 \uFEF4 3 \uFEF0}
-array set ::bari_ye 		{3 \uFBAF}
-array set ::bari_ye_hamza 	{3 \uFBB1}
-array set ::nun_ghunna 		{1 \u06ba 3 \ufb9f}
+array set ::kaf_urdu     {1 \uFEDB 2 \uFEDC 3 \uFEDA}
+array set ::choti_ye      {1 \uFEF3 2 \uFEF4 3 \uFEF0}
+array set ::bari_ye     {3 \uFBAF}
+array set ::bari_ye_hamza   {3 \uFBB1}
+array set ::nun_ghunna     {1 \u06ba 3 \ufb9f}
 #he_goal = choti_he - with hamza only final?
-array set ::he_goal 		{1 \uFBA8 2 \uFBA9 3 \uFBA7}
-array set ::he_goal_hamza 	{3 \u06c2}
-array set ::do_chashmi_he 	{1 \uFEEB 2 \uFEEC}
+array set ::he_goal     {1 \uFBA8 2 \uFBA9 3 \uFBA7}
+array set ::he_goal_hamza   {3 \u06c2}
+array set ::do_chashmi_he   {1 \uFEEB 2 \uFEEC}
 
 #Non-left-linkers (pos. 0)
 array set ::alif {0 NL 2 \uFE8E 3 \uFE8E}
@@ -232,59 +232,59 @@ array set ::alif_maqsura {3 \uFEF0}
 proc formatLetter {letter index} {
 # Converts an Arabic letter to desired form
 # Indices: 1=initial 2=middle 3=final-linked
-	variable ::huruf
-	set newletter ""
-	set lettername ""
+  variable ::huruf
+  set newletter ""
+  set lettername ""
 
-	#set lettername if in array
-	set htmcode [scan $letter %c]
+  #set lettername if in array
+  set htmcode [scan $letter %c]
         catch { set lettername $::huruf($htmcode) }
       #set lettername [string index [array get ::huruf $htmcode] end]
       
-	#set & export array variable
-	variable ::$lettername
-	upvar ::$lettername harf
-	
+  #set & export array variable
+  variable ::$lettername
+  upvar ::$lettername harf
+  
 #puts "
 #LETTERNAME+INDEX: $lettername $index"
 
-	#1.Skip non-letters, leaving $linkinfo empty
-	if {$lettername==""} {
-		set newletter $letter
+  #1.Skip non-letters, leaving $linkinfo empty
+  if {$lettername==""} {
+    set newletter $letter
 
-	#2.Reformat letter
-	} else {
-		
-		#set $linkinfo
-		if { [array get harf 0] == "" } {
-			set linkinfo 1
-		} else {
-			set linkinfo 0
-		}
+  #2.Reformat letter
+  } else {
+    
+    #set $linkinfo
+    if { [array get harf 0] == "" } {
+      set linkinfo 1
+    } else {
+      set linkinfo 0
+    }
 
-		#skip if form (1) not found in array
-		if { [catch {set newletter $harf($index)}] } {
-			set newletter $letter
+    #skip if form (1) not found in array
+    if { [catch {set newletter $harf($index)}] } {
+      set newletter $letter
 
-		#replace form
-		} else {
+    #replace form
+    } else {
 
-			set newletter [string map "$letter $newletter" $letter]
-
-
-		}
-
-	}
+      set newletter [string map "$letter $newletter" $letter]
 
 
-	#return letter +/- left-linking value
-	lappend fulletter $newletter
-	catch {lappend fulletter $linkinfo}
+    }
 
-#puts "LETTER+INDEX: $fulletter	I$index"
+  }
+
+
+  #return letter +/- left-linking value
+  lappend fulletter $newletter
+  catch {lappend fulletter $linkinfo}
+
+#puts "LETTER+INDEX: $fulletter  I$index"
 #catch {puts "N E W L E T T E R: $newletter"}
 
-	return $fulletter
+  return $fulletter
 
 } ;#end formatLetter
 
@@ -294,72 +294,72 @@ proc formatWord {word} {
 set wordlength [string length $word]
 
 #Skip if short
-	if {$wordlength<2} { 
+  if {$wordlength<2} { 
 #puts "SHORT: $word"
 
 #Skip if ascii & revert
-	} elseif { [string is ascii $word] } {
+  } elseif { [string is ascii $word] } {
 
-	set word [string reverse $word]
+  set word [string reverse $word]
 
 #puts "ASCII: $word"
 
 # M A I N
-	} else {
+  } else {
 
 #1. Set first letter to initial form
-	set firstpos 0
-	set first_letter [string index $word $firstpos]
-	set htmfirst [scan $first_letter %c]
-	#skip non-letters {" etc.}
-	while { [array names ::huruf $htmfirst] == ""} {
-		incr firstpos
-		set first_letter [string index $word $firstpos]
-		set htmfirst [scan $first_letter %c]
-	}
-	set fulletter [formatLetter $first_letter 1]
-	set first_letter [lindex $fulletter 0]
-	set linkinfo [lindex $fulletter 1]
-	set word [string replace $word $firstpos $firstpos $first_letter]
+  set firstpos 0
+  set first_letter [string index $word $firstpos]
+  set htmfirst [scan $first_letter %c]
+  #skip non-letters {" etc.}
+  while { [array names ::huruf $htmfirst] == ""} {
+    incr firstpos
+    set first_letter [string index $word $firstpos]
+    set htmfirst [scan $first_letter %c]
+  }
+  set fulletter [formatLetter $first_letter 1]
+  set first_letter [lindex $fulletter 0]
+  set linkinfo [lindex $fulletter 1]
+  set word [string replace $word $firstpos $firstpos $first_letter]
 
 #puts "\nword w/first: $word"
 
 
 #2. Set middle part to medium form
 
-	#set full word & midword lengths
-	set midlength [expr $wordlength-1]
-	set last_char [string index $word end]
-	set htmlast [scan $last_char %c]
+  #set full word & midword lengths
+  set midlength [expr $wordlength-1]
+  set last_char [string index $word end]
+  set htmlast [scan $last_char %c]
 
-	#reduce wordlength to exclude last_letter & non-letters
-	while { [array names ::huruf $htmlast] == ""} {
-		incr midlength -1
-		set last_char [string index $word $midlength]
-		set htmlast [scan $last_char %c]
-	}
+  #reduce wordlength to exclude last_letter & non-letters
+  while { [array names ::huruf $htmlast] == ""} {
+    incr midlength -1
+    set last_char [string index $word $midlength]
+    set htmlast [scan $last_char %c]
+  }
 
-	#scan $midword from 2nd to 2nd-but-last letter
-	for {set letterpos 1} {$letterpos<$midlength} {incr letterpos} {
-		set letter [string index $word $letterpos]
+  #scan $midword from 2nd to 2nd-but-last letter
+  for {set letterpos 1} {$letterpos<$midlength} {incr letterpos} {
+    set letter [string index $word $letterpos]
 
 #puts "LINKINFO-PREV:  $linkinfo"
-		if {$linkinfo==0} {
-			set index 1
-		} else {
-			set index 2
-		}
+    if {$linkinfo==0} {
+      set index 1
+    } else {
+      set index 2
+    }
 
-		set fulletter [formatLetter $letter $index]
-		set newletter [lindex $fulletter 0]
-		
-		#set linkinfo only if real letter
-		if { [lindex $fulletter 1] != ""} {
-			set linkinfo [lindex $fulletter 1]
-			set word [string replace $word $letterpos $letterpos $newletter]
-		}
+    set fulletter [formatLetter $letter $index]
+    set newletter [lindex $fulletter 0]
+    
+    #set linkinfo only if real letter
+    if { [lindex $fulletter 1] != ""} {
+      set linkinfo [lindex $fulletter 1]
+      set word [string replace $word $letterpos $letterpos $newletter]
+    }
 
-	} ;#end for
+  } ;#end for
 
 #puts "word w/middle: $word"
 
@@ -367,27 +367,27 @@ set wordlength [string length $word]
 
 #3. Set last letter to final form if previous is linking
 
-		if {$linkinfo==1} {
-			set last_letter_full [formatLetter $last_char 3]
-			set last_letter [lindex $last_letter_full 0]
+    if {$linkinfo==1} {
+      set last_letter_full [formatLetter $last_char 3]
+      set last_letter [lindex $last_letter_full 0]
 
 #POSITION BESTIMMEN!!!!!!!!!!!!!!!
-			#set pos [string length $midlength]
-			#Pos stimmt nicht, regsub + string match auch nicht gut...
-			#set word [string replace $word $pos $pos $last_letter]
-			#
-			regsub $last_char $word $last_letter word
+      #set pos [string length $midlength]
+      #Pos stimmt nicht, regsub + string match auch nicht gut...
+      #set word [string replace $word $pos $pos $last_letter]
+      #
+      regsub $last_char $word $last_letter word
 
 #puts "lastchar: $last_char"
 #puts "lastletter: $last_letter"
-	}
+  }
 #puts "word w/last: $word"
 
-	} ;#end main
+  } ;#end main
 
 set linkinfo 0
 
-	return $word
+  return $word
 
 } ;#end formatWord
 
@@ -396,24 +396,24 @@ set linkinfo 0
 # S T A R T  M A I N  P R O C E S S
 
 #split $dw into lines
-	set dwsplit [split $dw \n]
+  set dwsplit [split $dw \n]
 
-	foreach line $dwsplit {
+  foreach line $dwsplit {
 
-		foreach word $line {
+    foreach word $line {
 
-		#Skip digits & pre-reverse if longer than ??????????????
+    #Skip digits & pre-reverse if longer than ??????????????
 
-	set newword [formatWord $word]
-	append newline "$newword "
+  set newword [formatWord $word]
+  append newline "$newword "
 
-		} ;#end foreach word
+    } ;#end foreach word
 
-		set line [string reverse $newline]\n
-		append dwneu $line
-		unset newline
+    set line [string reverse $newline]\n
+    append dwneu $line
+    unset newline
 
-	} ;#end foreach line
+  } ;#end foreach line
 
 regsub -all {~} $dwneu {~                       } dwneu
 return $dwneu

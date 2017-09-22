@@ -6,27 +6,27 @@
 set fileJList ""
 
 if {$platform == "unix"} {
-	#Bildordner names change with language!
-	set HOME $env(HOME)
+  #Bildordner names change with language!
+  set HOME $env(HOME)
         
         if { [file exists $HOME/Pictures] } {
-		set bildordner $HOME/Pictures
+    set bildordner $HOME/Pictures
         } elseif { [file exists $HOME/Bilder] } {
-		set bildordner $HOME/Bilder
-        } else {	
-		set bildordner $HOME
-	}
+    set bildordner $HOME/Bilder
+        } else {  
+    set bildordner $HOME
+  }
         
         set types {
-		{ {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
-	}
+    { {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
+  }
         
 } elseif {$platform == "windows"} {
-	#Bildordner is always "Pictures"
-	set bildordner $env(USERPROFILE)/Pictures
-	set types {
-		{ {Image Files} {.jpg .jpeg .png} }
-	}
+  #Bildordner is always "Pictures"
+  set bildordner $env(USERPROFILE)/Pictures
+  set types {
+    { {Image Files} {.jpg .jpeg .png} }
+  }
 }
 
 #Create Titel
@@ -52,8 +52,8 @@ button .n.f6.mainf.right.bar.> -text > -command {set fileJList [step $fileJList 
 label .imgName -textvar imgName
 button .n.f6.mainf.right.bar.collect -textvar f6.show -bg gold -command {set fileJList [doCollect .n.f6.mainf.right.bild.c]}
 foreach button [winfo children .n.f6.mainf.right.bar] {
-	$button configure -height 1
-	pack $button -side left -fill x
+  $button configure -height 1
+  pack $button -side left -fill x
 }
 
 #Create canvas right

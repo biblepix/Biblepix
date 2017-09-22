@@ -10,9 +10,9 @@ checkbutton .n.f3.sigyes -textvar f3.btn -variable sigyesState
 pack .n.f3.sigyes -anchor w
 
 if {$enablesig==1} {
-	set sigyesState 1
+  set sigyesState 1
 } else {
-	set sigyesState 0  
+  set sigyesState 0  
 }
 pack [frame .n.f3.topframe] -expand false -fill x
 pack [frame .n.f3.topframe.left] -side left -expand false 

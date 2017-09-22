@@ -55,14 +55,14 @@ pack .ftop.titelmitlogo -side left
 .n add [frame .n.f3 -padx $px] -text E-Mail
 
 if {$platform=="unix"} {
-	.n add [frame .n.f4 -padx $px] -text Terminal
+  .n add [frame .n.f4 -padx $px] -text Terminal
 }
 
 .n add [frame .n.f5 -padx $px] -text Manual
 
 #Reposition window to screen top
 if { [winfo y .] > 20 } {
-	wm geometry . +$wMx+$wMy
+  wm geometry . +$wMx+$wMy
 }
 
 #Fill .fbottom
@@ -77,9 +77,9 @@ pack .label -in .fbottom -side left
 # TODO colorieren
 message .news -textvariable news -width [expr $wWidth - 350]
 if {![info exists error] || !$error} {
-	NewsHandler::QueryNews "$uptodateHttp" green
+  NewsHandler::QueryNews "$uptodateHttp" green
 } else {
-	NewsHandler::QueryNews "$noConnHttp" red
+  NewsHandler::QueryNews "$noConnHttp" red
 }
 pack .news -in .fbottom -fill x
 

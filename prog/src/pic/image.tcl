@@ -7,20 +7,20 @@ package require Tk
 
 #Load Img/tkimg (part of ActiveTcl, Linux distros need to install separately)
 if { [catch {package require Img}] } {
-	source -encoding utf-8 $Texts
-	setTexts $lang
-	tk_messageBox -title BiblePix -type ok -icon error -message $packageRequireImg
-	exit
+  source -encoding utf-8 $Texts
+  setTexts $lang
+  tk_messageBox -title BiblePix -type ok -icon error -message $packageRequireImg
+  exit
 }
 
 #Source procs only once, to be re-run multiple times
 if {[info procs createBMPs] == ""} {
-	source $Textbild
+  source $Textbild
 }
 createBMPs
 
 if {[info procs fgbild>hgbild] == ""} {
-	source $Hgbild
+  source $Hgbild
 }
 
 #Select & create random background JPEG/PNG

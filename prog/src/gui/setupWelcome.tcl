@@ -40,7 +40,7 @@ message .n.f0.fbot.possibilities3 -textvar welc.txt4 -font bpfont1 -width $tw -j
 
 pack .n.f0.fbot.subtit2 .n.f0.fbot.possibilities1 -anchor nw
 if {$platform=="unix"} {
-	pack .n.f0.fbot.possibilities2 -anchor nw
+  pack .n.f0.fbot.possibilities2 -anchor nw
 }
 pack .n.f0.fbot.possibilities3 -anchor nw
 

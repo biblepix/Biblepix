@@ -6,11 +6,11 @@
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
 global readmetext
-	set BEG [string first "\<$lang" $readmetext]
-	set END [string first "\<\/$lang" $readmetext]
-	set readmeLang [string range $readmetext $BEG $END]   
-	.n.f5.man replace 1.1 end $readmeLang 
-	return $readmeLang
+  set BEG [string first "\<$lang" $readmetext]
+  set END [string first "\<\/$lang" $readmetext]
+  set readmeLang [string range $readmetext $BEG $END]   
+  .n.f5.man replace 1.1 end $readmeLang 
+  return $readmeLang
 }
 
 
@@ -89,21 +89,21 @@ set ::delete $delete($lang)
 #Arabic & Hebrew explanation for text positioning
 set rtltext ""
 if {[catch "glob $twdDir/he_*"]} {
-	set rtl "" } else {
-	set rtl "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
-	if {$platform=="unix"} {
-		set rtl [string reverse $rtl]
-	}
-	append rtltext \n $rtl 
+  set rtl "" } else {
+  set rtl "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
+  if {$platform=="unix"} {
+    set rtl [string reverse $rtl]
+  }
+  append rtltext \n $rtl 
 }
 if {[catch "glob $twdDir/ar_*"]} {
-	set rtl "" } else {
-	set rtl  "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
-	if {$platform=="unix"} {
-		source $Bidi
-		set rtl [fixArabUnix $rtl]
-	}
-	append rtltext \n $rtl 
+  set rtl "" } else {
+  set rtl  "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
+  if {$platform=="unix"} {
+    source $Bidi
+    set rtl [fixArabUnix $rtl]
+  }
+  append rtltext \n $rtl 
 }
 
 set textpos(en) "Text position"
@@ -145,7 +145,7 @@ set welcTxt4(en) "* MANUAL:\tStudy the Complete Guide to the $bp program"
 set ::welc.txt4 $welcTxt4($lang)
 
 set uninst(en) "Uninstall $bp"
-set uninst(de) "$bp deinstallieren"	
+set uninst(de) "$bp deinstallieren"  
 set ::uninst $uninst($lang)
 
 set f1Tit(en) "Current list of languages for $dw"
@@ -165,7 +165,7 @@ set TwdRemoteTit2(de) "Sprache\tJahr\t\tBibelausgabe"
 set ::f1.twdremotetit2 $TwdRemoteTit2($lang)
 
 set f1Txt(en) "$bp will create $dw in any language or Bible version installed on your computer. If several language files are found, $bp will randomly pick one at each run. Any new language files you select (see below) will be downloaded after you click OK. Pay attention to the year (current or next)!"
-set f1Txt(de) "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien auswählen (s. unten), werden diese heruntergeladen, sobald Sie OK drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)!"	
+set f1Txt(de) "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien auswählen (s. unten), werden diese heruntergeladen, sobald Sie OK drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)!"  
 set ::f1.txt $f1Txt($lang)
 
 set f2Tit(en) "Put $dw on your background images"
@@ -174,7 +174,7 @@ set ::f2.tit $f2Tit($lang)
 
 set f2Box(en) "Create background image"
 set f2Box(de) "Hintergrundbild erzeugen"
-set ::f2.box $f2Box($lang)	
+set ::f2.box $f2Box($lang)  
         
 set f2Farbe(en) "Font colour"
 set f2Farbe(de) "Schriftfarbe"
@@ -216,13 +216,13 @@ set ::f2thai_txt "พระคำสำหรับวันศุกร์"
 
 if {$platform=="unix"} {
 #unix needs BMP+PNG
-	set formats "'[file tail $TwdBMP]' & '[file tail $TwdPNG]'"
-	set picN(de) "in 2 Formaten: $formats"
-	set picN(en) "in 2 formats: $formats"
-	set picNo $picN($lang)
+  set formats "'[file tail $TwdBMP]' & '[file tail $TwdPNG]'"
+  set picN(de) "in 2 Formaten: $formats"
+  set picN(en) "in 2 formats: $formats"
+  set picNo $picN($lang)
 } else {
 #win has only TIF
-	set picNo ": '[file tail $TwdTIF]'"
+  set picNo ": '[file tail $TwdTIF]'"
 }
 set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image $picNo will be put in \n\n\t [file nativename $imgDir] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. For only 1 picture per day, unset this feature (see above).\n\nThe Text Position window allows you to put $dw wherever you like on your screen. $rtltext\n\nThe font size is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters = better contrast).\n\nIf the new background image fails to appear automatically, please consult the Manual page for a solution."
 set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild $picNo steht jeweils in \n\n\t [file nativename $imgDir] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Soll nur 1 Bild pro Tag angezeigt werden, kann die Diaschau deaktiviert werden (s.o.).\n\nIm Fenster 'Textposition' können Sie $dw an die gewünschte Stelle auf dem Bildschirm verschieben. $rtltext\n\nDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, Grösse und Dicke anzupassen (grössere Buchstaben = besserer Kontrast).\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, finden Sie im Manual eine Lösung."
@@ -234,7 +234,7 @@ set ::f6.tit $f6Tit($lang)
 
 set f6Txt(en) "Here you can add any suitable photos from your Pictures directory and put them into the $bp photo collection, or remove them from there. The photos should ideally be in landscape format and have a plain-colour surface (e.g. sky) in the top-left area. \n\nIf the size of a photo does not agree with the screen dimensions, $bp will fit it to size and save it to the $bp Photos directory."
 set f6Txt(de) "Hier können Sie beliebig viele Fotos aus Ihrem persönlichen Bildordner in die $bp-Fotosammlung ziehen. Die Fotos sollten im Querformat aufgenommen sein und eine möglichst ebenfarbige Fläche für den Text im oberen Drittel aufweisen (z.B. Himmel). \n\nFalls das Bildformat nicht mit der Bildschirmgrösse übereinstimmt, speichert $bp das Foto im passenden Format im $bp-Fotoordner ab."
-set ::f6.txt $f6Txt($lang)	
+set ::f6.txt $f6Txt($lang)  
 
 set f6Add(en) "Add to $bp Photo Collection:"
 set f6Add(de) "Zur $bp-Fotosammlung hinzufügen:"
@@ -246,7 +246,7 @@ set ::f6.show $f6Show($lang)
 
 set f6Find(en) "Find new photos"
 set f6Find(de) "Neue Fotos suchen"
-set ::f6.find $f6Find($lang)	
+set ::f6.find $f6Find($lang)  
 
 set f6Del(en) "Delete from $bp Photo Collection:"
 set f6Del(de) "Aus der $bp-Fotosammlung löschen:"
@@ -273,7 +273,7 @@ Yours faithfully,
 Peter Vollmar
 Homepage: www.vollmar.ch
 The Word: www.biblepix.vollmar.ch
-	
+  
 ===== The Word for Wednesday, December 10, 2014 =====
 \tBy faith the people crossed the Red Sea as on dry land,
 \tbut the Egyptians, when they attempted
@@ -303,7 +303,7 @@ Das Wort: www.biblepix.vollmar.ch
 \tBieg nicht ab, weder rechts noch links,
 \thalt deinen Fuß vom Bösen zurück.
 \t\t\t~ Sprüche 4:26-27 
-"	
+"  
 set ::f3.ex $f3Expl($lang)
 
 set f4Tit(en)  "Display $dw in your Linux/Mac terminals"
@@ -323,7 +323,7 @@ Beispiel:"
 
 set ::f4.ex  "
 Example:"
-	
+  
 
 ######## S E T U P S A V E   T E X T S  ################################
 set linChangeDesktop(de) "BiblePix versucht nun, Ihre Desktop-Einstellungen zu ändern."
@@ -334,7 +334,7 @@ set winChangeDesktop(de) "$linChangeDesktop($lang) \nKlicken Sie im Dialogfenste
 set winChangeDesktop(en) "$linChangeDesktop($lang)\nIn the Desktop dialogue box, choose the BiblePix theme and then close the window."
 set ::winChangeDesktop $winChangeDesktop($lang)
 
-set winChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung des Desktophintergrunds.\nBitte rechtsklicken Sie auf Ihrem Desktop und wählen Sie \"Anpassen\"', dort finden Sie das BibelPix-Thema.\nKlicken Sie darauf, um es zu aktivieren, dann schliessen Sie das Fenster."	
+set winChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung des Desktophintergrunds.\nBitte rechtsklicken Sie auf Ihrem Desktop und wählen Sie \"Anpassen\"', dort finden Sie das BibelPix-Thema.\nKlicken Sie darauf, um es zu aktivieren, dann schliessen Sie das Fenster."  
 set winChangeDesktopProb(en) "We are having a problem changing your Desktop background.\nPlease right-click on your Desktop and select \"Customize\".\nFind the BiblePix theme, click on it and then close the window."
 set ::winChangeDesktopProb $winChangeDesktopProb($lang)
 

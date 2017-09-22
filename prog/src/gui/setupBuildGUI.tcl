@@ -8,20 +8,20 @@ setFlags
 
 #Create title logo with icon
 catch {
-	package require Img
-	image create photo Logo -file $WinIcon -format ICO
-	.ftop.titelmitlogo configure -compound left -image Logo
+  package require Img
+  image create photo Logo -file $WinIcon -format ICO
+  .ftop.titelmitlogo configure -compound left -image Logo
 }
 
 #Configure Fonts                     ??? -PIXELS ???
 font create bpfont1 -family TkTextFont
 
 if {$wHeight < 700} {
-	font configure bpfont1 -size 10
+  font configure bpfont1 -size 10
 } elseif {$wHeight < 900} {
-	font configure bpfont1 -size 11
+  font configure bpfont1 -size 11
 } else {
-	font configure bpfont1 -size 12
+  font configure bpfont1 -size 12
 }
 
 font create bpfont2 -family TkHeadingFont -size 12 -weight bold
@@ -33,57 +33,57 @@ catch {font create bpfont4 -family TkCaptionFont -size 30 -weight bold}
 
 # 1. Welcome
 if { [info exists Debug] && $Debug } {
-	source $SetupWelcome
+  source $SetupWelcome
 } else {
-	catch {source $SetupWelcome}
+  catch {source $SetupWelcome}
 }
  
 # 2. International
 if { [info exists Debug] && $Debug } {
-	source $SetupInternational
+  source $SetupInternational
 } else {
-	catch {source $SetupInternational}
+  catch {source $SetupInternational}
 }
 set status [getRemoteTWDFileList]
 
 # 3. Desktop
 if { [info exists Debug] && $Debug } {
-	source $SetupDesktop
+  source $SetupDesktop
 } else {
-	catch {source $SetupDesktop}
+  catch {source $SetupDesktop}
 }
  
 #4. E-Mail
 if { [info exists Debug] && $Debug } {
-	source $SetupEmail
+  source $SetupEmail
 } else {
-	catch {source $SetupEmail}
+  catch {source $SetupEmail}
 }
 
 #5. Photos
 if { [info exists Debug] && $Debug } {
-	source $SetupPhotos
+  source $SetupPhotos
 } else {
-	if { [catch {source $SetupPhotos} ] } {
-		if { [catch {package require Img} ] } {
-			#put warning in Photos tag window
-			message .n.f6.warning -pady 50 -justify center -background red -foreground yellow -text $packageRequireImg
-		}
-	}
+  if { [catch {source $SetupPhotos} ] } {
+    if { [catch {package require Img} ] } {
+      #put warning in Photos tag window
+      message .n.f6.warning -pady 50 -justify center -background red -foreground yellow -text $packageRequireImg
+    }
+  }
 }
 
 #6. Terminal
 if {$platform=="unix"} {
-	if { [info exists Debug] && $Debug } {
-		source $SetupTerminal
-	} else {
-		catch {source $SetupTerminal}
-	}
+  if { [info exists Debug] && $Debug } {
+    source $SetupTerminal
+  } else {
+    catch {source $SetupTerminal}
+  }
 }
 
 #7. Readme
 if { [info exists Debug] && $Debug } {
-	source $SetupReadme
+  source $SetupReadme
 } else {
-	catch {source $SetupReadme}
+  catch {source $SetupReadme}
 }

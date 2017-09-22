@@ -13,22 +13,22 @@ catch {font create BiblepixFont -family $fontfamily}
 proc text>bmp {bmpfile twdfile} {
 global fontsize fontfamily fontweight hghex fghex bmpdir platform Twdtools Bidi os
 
-	set screenX [winfo screenwidth .]
+  set screenX [winfo screenwidth .]
 
   #Create & preconfigure empty one-line text widget
   catch {text .t }
   .t configure -background $hghex -foreground $fghex -height 1 -relief flat -borderwidth 0 -pady 0
   pack .t   
 
-	#Configure font
-	font configure BiblepixFont -size -$fontsize -weight $fontweight
+  #Configure font
+  font configure BiblepixFont -size -$fontsize -weight $fontweight
   
-	#force non-bold for Chinese
-	if  {[string range $twdfile 0 1] == "zh"} {
-		font configure BiblepixFont -weight normal
-	}
+  #force non-bold for Chinese
+  if  {[string range $twdfile 0 1] == "zh"} {
+    font configure BiblepixFont -weight normal
+  }
   
-	.t configure -font BiblepixFont 
+  .t configure -font BiblepixFont 
 
   #Get $dw
   source $Twdtools
@@ -60,11 +60,11 @@ global fontsize fontfamily fontweight hghex fghex bmpdir platform Twdtools Bidi 
     font configure BiblepixFont -weight normal       
     set RTL 1
     source $Bidi
-		
-		if {$os == "Windows NT"} {
-			set dw [fixArabWin $dw]
-		} else {
-			set dw [fixArabUnix $dw]
+    
+    if {$os == "Windows NT"} {
+      set dw [fixArabWin $dw]
+    } else {
+      set dw [fixArabUnix $dw]
     }
   }
     
@@ -152,22 +152,22 @@ global fontsize fontfamily fontweight hghex fghex bmpdir platform Twdtools Bidi 
 proc createBMPs {} {
   global bmpdir platform slideshow
 
-	set heute [clock format [clock seconds] -format %d]
-	puts "Checking text pics..."
-	
-	#Delete old bmp's
-	set bmplist [getBMPlist]
-	if {$bmplist != ""} {
-		foreach bmpname $bmplist {
-			set bmpfile [file join $bmpdir $bmpname]
- 			if {[clock format [file mtime $bmpfile] -format %d] != $heute} {
-				puts " Deleting $bmpname"
-				file delete -force $bmpfile
-			}
-		}
-	}
-		
-	#renew lists
+  set heute [clock format [clock seconds] -format %d]
+  puts "Checking text pics..."
+  
+  #Delete old bmp's
+  set bmplist [getBMPlist]
+  if {$bmplist != ""} {
+    foreach bmpname $bmplist {
+      set bmpfile [file join $bmpdir $bmpname]
+       if {[clock format [file mtime $bmpfile] -format %d] != $heute} {
+        puts " Deleting $bmpname"
+        file delete -force $bmpfile
+      }
+    }
+  }
+    
+  #renew lists
   if {$slideshow} {
     set bmplist [getBMPlist]
     set twdlist [getTWDlist]
@@ -178,7 +178,7 @@ proc createBMPs {} {
     set bmplist [getRandomBMP]
   }
 
-	#Create today's missing bmp's
+  #Create today's missing bmp's
   foreach twdfile $twdlist {
     regsub ".twd" $twdfile ".bmp" bmpname
     set bmpfile [file join $bmpdir $bmpname]
@@ -193,9 +193,9 @@ proc createBMPs {} {
   #Withdraw/Iconify window when finished
   wm overrideredirect . 0
   
-	if {$platform=="unix"} {
-		wm withdraw .
-	} else {
-		wm iconify .
-	}
+  if {$platform=="unix"} {
+    wm withdraw .
+  } else {
+    wm iconify .
+  }
 } ;#end createBMPs

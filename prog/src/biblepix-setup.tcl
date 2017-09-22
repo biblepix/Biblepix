@@ -23,59 +23,59 @@ ttk::progressbar .updateFrame.progbar -mode indeterminate -length 200
 pack .updateFrame.pbTitle .updateFrame.progbar
 
 if {[catch {source $Globals}]} {
-	set pbTitle "Update not possible.\nYou must download and rerun the BiblePix Installer from bible2.net."
-	after 7000 {exit}
+  set pbTitle "Update not possible.\nYou must download and rerun the BiblePix Installer from bible2.net."
+  after 7000 {exit}
 } else {
 
-	#Rename $maindir from 2.3
-	catch {file rename $srcdir/main $srcdir/pic}
-	
-	#Make empty dirs in case of GIT download
-	makeDirs	
+  #Rename $maindir from 2.3
+  catch {file rename $srcdir/main $srcdir/pic}
+  
+  #Make empty dirs in case of GIT download
+  makeDirs  
 
-	#Set initial texts if missing
-	if {[catch {source -encoding utf-8 $SetupTexts ; setTexts $lang}]} {
-		set updatingHttp "Updating BiblePix program files..."
-		set noConnHttp "No connection for BiblePix update. Try later."
-	}
-	
-	# 1.  D O   H T T P  U P D A T E   (if not initial)
+  #Set initial texts if missing
+  if {[catch {source -encoding utf-8 $SetupTexts ; setTexts $lang}]} {
+    set updatingHttp "Updating BiblePix program files..."
+    set noConnHttp "No connection for BiblePix update. Try later."
+  }
+  
+  # 1.  D O   H T T P  U P D A T E   (if not initial)
 
-	source $Http
+  source $Http
 
-	if { [info exists InitialJustDone] } {
-		set pbTitle "resizing Image"
+  if { [info exists InitialJustDone] } {
+    set pbTitle "resizing Image"
 
-		source $Imgtools
-		loadExamplePhotos
-		
-		set pbTitle $uptodateHttp
-	} else {	
-		.updateFrame.progbar start
-		
-		set pbTitle $updatingHttp
-			
-		# a) Do Update if $config exists
-		if { [file exists $Config] } {
+    source $Imgtools
+    loadExamplePhotos
+    
+    set pbTitle $uptodateHttp
+  } else {  
+    .updateFrame.progbar start
+    
+    set pbTitle $updatingHttp
+      
+    # a) Do Update if $config exists
+    if { [file exists $Config] } {
       catch {runHTTP 0}
-		# b) Do Reinstall
-		} else {
+    # b) Do Reinstall
+    } else {
       catch {runHTTP 1}
-			
-			downloadFileArray exaJpgArray $bpxJpegUrl
-			downloadFileArray iconArray $bpxIconUrl
-		
-			set pbTitle "resizing Image"
+      
+      downloadFileArray exaJpgArray $bpxJpegUrl
+      downloadFileArray iconArray $bpxIconUrl
+    
+      set pbTitle "resizing Image"
 
-			source $Imgtools
-			loadExamplePhotos
-		}
-		
-		.updateFrame.progbar stop
-	}
+      source $Imgtools
+      loadExamplePhotos
+    }
+    
+    .updateFrame.progbar stop
+  }
 
 
-	# 2. B U I L D  M A I N  G U I
+  # 2. B U I L D  M A I N  G U I
 
-	source $SetupMainFrame
+  source $SetupMainFrame
 }

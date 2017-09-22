@@ -40,9 +40,9 @@ checkbutton .n.f2.fright.ftop.introBtn -textvar f2.introline -variable enableint
 #if {$enableintro} {set introlineState 1} else {set introlineState 0}
 set showdateBtn .n.f2.fright.ftop.introBtn
 $showdateBtn configure -command {
-	set textfile [getRandomTWDFile]
+  set textfile [getRandomTWDFile]
         if {$textfile != ""} {
-        	$textposCanv itemconfigure mv -text [formatImgText [getRandomTWDFile] ]
+          $textposCanv itemconfigure mv -text [formatImgText [getRandomTWDFile] ]
         }
 }
 
@@ -59,13 +59,13 @@ spinbox .n.f2.fright.ftop.slideSpin -from 10 -to 600 -increment 10 -width 3
 set slideSpin .n.f2.fright.ftop.slideSpin
 $slideSpin set $slideshow
 if {!$slideshow} {
-	$slideBtn deselect 
-	set slideshowState 0
-	$slideSpin configure -state disabled
+  $slideBtn deselect 
+  set slideshowState 0
+  $slideSpin configure -state disabled
 } else {
-	$slideBtn select
-	set slideshowState 1
-	$slideSpin configure -state normal
+  $slideBtn select
+  set slideshowState 1
+  $slideSpin configure -state normal
 }
 
 #1. Create TextPos Canvas
@@ -88,7 +88,7 @@ $textposCanv bind mv <B1-Motion> {move %W %x %y}
 
 #2. Create InternationalText Canvas
 if {! [regexp displayfont [font names] ] } {
-	font create displayfont -family $fontfamily -size -$fontsize -weight bold
+  font create displayfont -family $fontfamily -size -$fontsize -weight bold
 }
 
 canvas .n.f2.fright.fbot2.inttextcanv -width 700 -height 150 -borderwidth 2 -relief raised
@@ -101,12 +101,12 @@ $inttextCanv create image 0 0 -image intTextBG -anchor nw
 # set international text
 set inttextHeader [label .n.f2.fright.fbot2.inttexttxt -textvar f2.fontexpl]
 if {$platform=="unix"} {
-	source $Bidi
-	set ar_txt [fixArabUnix $f2ar_txt]
-	set he_txt [fixHebUnix $f2he_txt]	
-	set internationaltext "$f2ltr_txt $ar_txt $he_txt $f2thai_txt"
+  source $Bidi
+  set ar_txt [fixArabUnix $f2ar_txt]
+  set he_txt [fixHebUnix $f2he_txt]  
+  set internationaltext "$f2ltr_txt $ar_txt $he_txt $f2thai_txt"
 } else {
-	set internationaltext "$f2ltr_txt $f2ar_txt $f2he_txt $f2thai_txt"
+  set internationaltext "$f2ltr_txt $f2ar_txt $f2he_txt $f2thai_txt"
 }
 #create sun / shade /main text
 source $Imgtools
@@ -125,7 +125,7 @@ spinbox .n.f2.fright.fbot1.fontcolorSpin -width 10 -values {blue green gold silv
 set fontcolorTxt .n.f2.fright.fbot1.fontcolorTxt
 set fontcolorSpin .n.f2.fright.fbot1.fontcolorSpin
 $fontcolorSpin configure -command {
-	setCanvasText [set %s]
+  setCanvasText [set %s]
      #   $textposCanv itemconfigure mv -fill %s
         }
 
@@ -133,9 +133,9 @@ $fontcolorSpin set $fontcolortext
 
 #2. Fontsize spinbox
 if {!$fontsize} {
-	#set initial font size if no $config found
-	set screeny [winfo screenheight .]
-	set fontsize [ expr round($screeny/40) ] 
+  #set initial font size if no $config found
+  set screeny [winfo screenheight .]
+  set fontsize [ expr round($screeny/40) ] 
 }
 
 message .n.f2.fright.fbot1.fontsizeTxt -width 200 -textvar f2.fontsizetext
@@ -148,19 +148,19 @@ $fontsizeSpin set $fontsize
 checkbutton .n.f2.fright.fbot1.fontweightBtn -width 5 -variable fontweightState -textvar f2.fontweight 
 set fontweightBtn .n.f2.fright.fbot1.fontweightBtn
 $fontweightBtn configure -command {
-	if {$fontweightState==1} {
-		font configure displayfont -weight bold
-	} else {
-		font configure displayfont -weight normal
-   	}
+  if {$fontweightState==1} {
+    font configure displayfont -weight bold
+  } else {
+    font configure displayfont -weight normal
+     }
 }
 
 if {$fontweight=="bold"} {
-	set fontweightState 1
+  set fontweightState 1
         font configure displayfont -weight bold
 } else {
-	set fontweightState 0
-	font configure displayfont -weight normal
+  set fontweightState 0
+  font configure displayfont -weight normal
 }
 
 #4. Fontfamily dropdown Menu
@@ -173,8 +173,8 @@ set fontfamilySpin .n.f2.fright.fbot1.fontfamilyDrop
 set Fontlist [lsort [font families]]
 lappend Fontlist TkTextFont
 $fontfamilySpin configure -values $Fontlist -validate focusin -validatecommand {
-	font configure displayfont -family [$fontfamilySpin get]
-	return 0
+  font configure displayfont -family [$fontfamilySpin get]
+  return 0
 }
 ##set current fontfamily
 $fontfamilySpin set $fontfamily

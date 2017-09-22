@@ -18,21 +18,21 @@ set wishpath [auto_execok wish]
 
 #Set rootdir from $srcdir as provided by calling progs
 proc setRootDir {srcdir} {
-	cd $srcdir
-	cd ../..
-	return [pwd]
+  cd $srcdir
+  cd ../..
+  return [pwd]
 }
 
 if { [info exists srcdir] } {
-	#set
-	set rootdir "[setRootDir $srcdir]"	
+  #set
+  set rootdir "[setRootDir $srcdir]"  
 } else {
-	#reset
-	if { [info exists env(LOCALAPPDATA)] } {
-		set rootdir "[file join $env(LOCALAPPDATA) Biblepix]"
-	} else {
-		set rootdir "[file join $env(HOME) Biblepix]"
-	}
+  #reset
+  if { [info exists env(LOCALAPPDATA)] } {
+    set rootdir "[file join $env(LOCALAPPDATA) Biblepix]"
+  } else {
+    set rootdir "[file join $env(HOME) Biblepix]"
+  }
 }
 
 #Set dirnames
@@ -57,11 +57,11 @@ set maindir [file join $srcdir pic]
 set savedir [file join $srcdir save]
 
 proc makeDirs {} {
-	global sigDir exaJpgDir imgDir jpegDir progDir twdDir bmpdir confdir piddir srcdir unixdir windir sharedir guidir maildir maindir savedir
+  global sigDir exaJpgDir imgDir jpegDir progDir twdDir bmpdir confdir piddir srcdir unixdir windir sharedir guidir maildir maindir savedir
 
-	file mkdir $sigDir $exaJpgDir $imgDir $jpegDir $progDir $twdDir
-	file mkdir $bmpdir $confdir $piddir $srcdir $unixdir $windir
-	file mkdir $sharedir $guidir $maildir $maindir $savedir
+  file mkdir $sigDir $exaJpgDir $imgDir $jpegDir $progDir $twdDir
+  file mkdir $bmpdir $confdir $piddir $srcdir $unixdir $windir
+  file mkdir $sharedir $guidir $maildir $maindir $savedir
 }
 
 #SET ARRAYS FOR DOWNLOAD
@@ -105,34 +105,34 @@ Terminal [file join $unixdir term.sh]
 
 #Export single filepaths               
 foreach i [array names filepaths] {
-	set ivalues [array get filepaths $i]
-	set name [lindex $ivalues 0]
-	set path [lindex $ivalues 1]
-	set $name $path
+  set ivalues [array get filepaths $i]
+  set name [lindex $ivalues 0]
+  set path [lindex $ivalues 1]
+  set $name $path
 }
 
 if { $Debug } {
-	set Http [file join $sharedir httpMock.tcl]
+  set Http [file join $sharedir httpMock.tcl]
 } else {
-	set Http [file join $sharedir http.tcl]
+  set Http [file join $sharedir http.tcl]
 }
 
 #Set JPEGs array
 set bpxJpegUrl "http://vollmar.ch/bibelpix/jpeg"
 array set exaJpgArray "
-	utah.jpg [file join $exaJpgDir utah.jpg]
-	eire.jpg [file join $exaJpgDir eire.jpg]
-	lake.jpg [file join $exaJpgDir lake.jpg]
-	palms.jpg [file join $exaJpgDir palms.jpg]
-	mountain.jpg [file join $exaJpgDir mountain.jpg]
-	nevada.jpg [file join $exaJpgDir nevada.jpg]
+  utah.jpg [file join $exaJpgDir utah.jpg]
+  eire.jpg [file join $exaJpgDir eire.jpg]
+  lake.jpg [file join $exaJpgDir lake.jpg]
+  palms.jpg [file join $exaJpgDir palms.jpg]
+  mountain.jpg [file join $exaJpgDir mountain.jpg]
+  nevada.jpg [file join $exaJpgDir nevada.jpg]
 "
 
 #Set Icons array & export
 set bpxIconUrl "http://vollmar.ch/bibelpix"
 array set iconArray "
-	biblepix.png [file join $unixdir biblepix.png] 
-	biblepix.ico [file join $windir biblepix.ico]
+  biblepix.png [file join $unixdir biblepix.png] 
+  biblepix.ico [file join $windir biblepix.ico]
 "
 
 set WinIcon [lindex [array get iconArray biblepix.ico] 1]
