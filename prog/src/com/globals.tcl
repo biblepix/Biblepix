@@ -6,6 +6,7 @@
 
 # This variable enables the debuging mode in the hole application if set to 1.
 set Debug 1
+set Mocking 0
 
 set version "2.4"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
@@ -111,7 +112,7 @@ foreach i [array names filepaths] {
   set $name $path
 }
 
-if { $Debug } {
+if { $Debug && $Mocking} {
   set Http [file join $sharedir httpMock.tcl]
 } else {
   set Http [file join $sharedir http.tcl]
