@@ -69,7 +69,7 @@ proc loadExamplePhotos {} {
   foreach fileName [array names exaJpgArray] {
     set filePath [lindex [array get exaJpgArray $fileName] 1]
     
-    checkImgSizeAndSave filePath
+    checkImgSizeAndSave $filePath
   }
 }
 
