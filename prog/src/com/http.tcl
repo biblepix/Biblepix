@@ -28,11 +28,11 @@ proc getTesttoken {} {
   set testtoken [http::geturl $testfile -validate 1]
   
   if {[http::error $testtoken] != ""} {
-    error "testtoken -> error:" + [http::error $testtoken]
+    error [string cat "testtoken -> error:" [http::error $testtoken]]
   }
   
   if {[http::ncode $testtoken] != 200} {           
-    error "testtoken -> ncode:" + [http::ncode $testtoken]
+    error [string cat "testtoken -> ncode:" [http::ncode $testtoken]]
   }
   
   return $testtoken
@@ -41,13 +41,13 @@ proc getTesttoken {} {
 # throws an error if the test fails
 proc testHttpCon {} {
   if { [catch getTesttoken error] } {
-    puts "http.tcl -> testHttpCon -> error: $error"  
+    puts "ERROR: http.tcl -> testHttpCon: $error"  
     
     #try proxy & retry connexion
     setProxy
     
     if { [catch getTesttoken error] } {
-      puts "http.tcl -> testHttpCon -> error: $error"
+      puts "ERROR: http.tcl -> testHttpCon -> proxy: $error"
       error $error
     }
   }
@@ -88,7 +88,7 @@ proc runHTTP isInitial {
     set ::ftpStatus $noConnHttp
     catch {NewsHandler::QueryNews "$noConnHttp" red}    
     
-    puts "http.tcl -> runHTTP($args) -> Error: $Error"
+    puts "ERROR: http.tcl -> runHTTP($args): $Error"
     error $Error
   } else {        
     foreach var [array names filepaths] {    
@@ -114,9 +114,9 @@ proc runHTTP isInitial {
         puts "New Time: $newsecs\nOld Time: $oldsecs\n"
         
         #download if times incorrect OR if oldfile is older/non-existent
-        if {  ! [string is digit $newsecs] || 
-              ! [string is digit $oldsecs] ||
-              $oldsecs<$newsecs } {
+        if { ! [string is digit $newsecs] || 
+             ! [string is digit $oldsecs] ||
+             $oldsecs<$newsecs } {
           downloadFile $filepath $filename $token
         }
       }

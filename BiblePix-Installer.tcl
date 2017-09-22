@@ -74,13 +74,13 @@ proc getTesttoken {} {
 # throws an error if the test fails
 proc testHttpCon {} {
   if { [catch getTesttoken error] } {
-    puts "BiblePix-Installer.tcl -> testHttpCon -> error: $error"  
+    puts "ERROR: BiblePix-Installer.tcl -> testHttpCon: $error"  
     
     #try proxy & retry connexion
     setProxy
     
     if { [catch getTesttoken error] } {
-      puts "BiblePix-Installer.tcl -> testHttpCon -> proxy -> error: $error"
+      puts "ERROR: BiblePix-Installer.tcl -> testHttpCon -> proxy: $error"
       error $error
     }
   }
@@ -101,7 +101,7 @@ if { [catch testHttpCon Error] } {
   #exit if error
   set httpStatus $noConnHttp
   
-  puts "BiblePix-Installer.tcl -> Error: $Error"
+  puts "ERROR: BiblePix-Installer.tcl: $Error"
   
   after 5000 { exit }
 } else {
@@ -139,15 +139,15 @@ if { [catch testHttpCon Error] } {
   source $srcdir/http.tcl
 
   if { [catch {runHTTP 1} Error] } {
+  
     #exit if error
     set httpStatus $noConnHttp
     .if.pb stop
     
-    puts "BiblePix-Installer.tcl -> Error: $Error"
+    puts "ERROR: BiblePix-Installer.tcl: $Error"
     
     after 5000 { exit }
-  } else {
-  
+  } else {  
     downloadFileArray exaJpgArray $bpxJpegUrl
     downloadFileArray iconArray $bpxIconUrl
 
