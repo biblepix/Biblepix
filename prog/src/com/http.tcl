@@ -2,7 +2,7 @@
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 23aug17
+# Updated: 22Sep17
 
 package require http
 
@@ -21,35 +21,36 @@ proc setProxy {} {
 	http::config -proxyhost $host -proxyport $port		
 }
 
-#returns 0 or 1
+proc getTesttoken {} {
+  global bpxReleaseUrl
+
+  set testfile "$bpxReleaseUrl/README"    
+  set testtoken [http::geturl $testfile -validate 1]
+  
+  if {[http::error $testtoken] != ""} {
+    error "testtoken -> error:" + [http::error $testtoken]
+  }
+  
+  if {[http::ncode $testtoken] != 200} {           
+    error "testtoken -> ncode:" + [http::ncode $testtoken]
+  }
+  
+  return $testtoken
+}
+
+# throws an error if the test fails
 proc testHttpCon {} {
-	global bpxReleaseUrl version
-	
-	set testfile "$bpxReleaseUrl/README"
-	catch {set testtoken [http::geturl $testfile -validate 1]}
-
-	proc getTesttoken {} {
-		global testtoken
-		if {! [info exists testtoken] || 
-			[http::error $testtoken] != "" || 
-			[http::ncode $testtoken] != 200} {
-			set error 1
-		} else {
-			set error 0
-		}
-	}
-
-	set error [getTesttoken]
-	
-	#try proxy & retry connexion
-	if {$error} {
+	if { [catch getTesttoken error] } {
+    puts "http.tcl -> testHttpCon -> error: $error"	
+    
+    #try proxy & retry connexion
 		setProxy
-		set error [getTesttoken]
-	}	
-	
-puts "error: $error"	
-
-	return $error
+    
+    if { [catch getTesttoken error] } {
+      puts "http.tcl -> testHttpCon -> error: $error"
+      error $error
+    }
+	}
 }
 
 proc downloadFileArray {fileArray url} {
@@ -68,7 +69,7 @@ proc downloadFile {filePath fileName token} {
 	global bpxReleaseUrl
 
 	#download file into channel unless error message
-	if { "[http::ncode $token]"==200} {
+	if { "[http::ncode $token]" == 200 } {
 		set chan [open $filePath w]
 		
 		fconfigure $chan -encoding utf-8
@@ -79,25 +80,16 @@ proc downloadFile {filePath fileName token} {
 	}
 }
 
-#args can be "Initial" or empty
-proc runHTTP args {
+proc runHTTP isInitial {
 	global filepaths bpxReleaseUrl uptodateHttp noConnHttp
-	
-	set Initial 0
-	set Error 0
-		
-	if {$args!=""} {
-		set Initial 1
-	}
-     
-	#Test connexion & start download
-	catch testHttpCon Error
-	
-puts "Error: $Error"
- 
-	if {$Error != 0} {
+  
+	#Test connexion & start download 
+	if { [catch testHttpCon Error] } {    
 		set ::ftpStatus $noConnHttp
-		catch {NewsHandler::QueryNews "$noConnHttp" red}				 
+		catch {NewsHandler::QueryNews "$noConnHttp" red}		
+    
+    puts "http.tcl -> runHTTP($args) -> Error: $Error"
+    error $Error
 	} else {				
 		foreach var [array names filepaths] {		
 			set filepath $filepaths($var)
@@ -108,7 +100,7 @@ puts "Error: $Error"
 			array set meta [http::meta $token]
 			
 			#a) Overwrite file if "Initial" 
-			if {$Initial} {
+			if {$isInitial} {
 
 				downloadFile $filepath $filename $token
 			
@@ -119,27 +111,23 @@ puts "Error: $Error"
 				catch {clock scan $newtime} newsecs
 				catch {file mtime $filepath} oldsecs
 
-puts "New Time: $newsecs\nOld Time: $oldsecs\n"
+        puts "New Time: $newsecs\nOld Time: $oldsecs\n"
+        
 				#download if times incorrect OR if oldfile is older/non-existent
 				if {	! [string is digit $newsecs] || 
-					! [string is digit $oldsecs] ||
-					$oldsecs<$newsecs 
-				} {
+              ! [string is digit $oldsecs] ||
+              $oldsecs<$newsecs } {
 					downloadFile $filepath $filename $token
 				}
 			}
-
-		} ;#end FOR loop
+		} ;#end FOREACH loop
       
-	#Success message (source Texts again for Initial)
-	catch {.if.initialMsg configure -bg green}
-	catch {NewsHandler::QueryNews "$uptodateHttp" green}
-	catch {set ::ftpStatus $uptodateHttp}
+    #Success message (source Texts again for Initial)
+    catch {.if.initialMsg configure -bg green}
+    catch {NewsHandler::QueryNews "$uptodateHttp" green}
+    catch {set ::ftpStatus $uptodateHttp}
 	
 	} ;#end main condition
-
-	return $Error
-
 } ;#end runHTTP
 
                 

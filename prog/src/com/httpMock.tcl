@@ -12,9 +12,9 @@ proc setProxy {} {
 	http::config -proxyhost $host -proxyport $port		
 }
 
-proc runHTTP args {
+proc runHTTP isInitial {
 	sleep 1000
-	return 1
+	error "http is mocked"
 } ;#end runHTTP
 
                 
@@ -85,3 +85,40 @@ proc getRemoteTWDFileList {} {
 	return $status
 }
 
+proc downloadTWDFiles {} {
+	global twdDir noConnTwd gettingTwd
+
+	if { [catch {set root [getRemoteRoot]}] } {
+		NewsHandler::QueryNews "$noConnTwd" red
+		return 1
+	}
+
+#	NewsHandler::QueryNews "$gettingTwd" orange - falsche Message!
+		
+	cd $twdDir
+	#get hrefs alphabetically ordered
+	set urllist [$root selectNodes {//tr/td/a}]
+	set hrefs ""
+
+	foreach url $urllist {lappend hrefs [$url @href]}
+	set urllist [lsort $hrefs]
+	set selectedindices [.n.f1.twdremoteframe.lb curselection] 
+		  
+	foreach item $selectedindices {
+		set url [lindex $urllist $item]
+    regsub -all {https} $url http url    
+		set filename [file tail $url]
+    
+		NewsHandler::QueryNews "Downloading $filename..." lightblue
+    
+		set chan [open $filename w]
+		fconfigure $chan -encoding utf-8
+		http::geturl $url -channel $chan
+		close $chan
+    
+		after 5000 .n.f1.f1.twdlocal insert end $filename
+	}
+    #deselect all downloaded files
+    .n.f1.twdremoteframe.lb selection clear 0 end
+
+}

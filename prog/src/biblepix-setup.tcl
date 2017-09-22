@@ -5,7 +5,7 @@
 ################################################################################
 # Version: 2.4
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7jul17
+# Updated: 22Sep17
 
 package require Tk
 
@@ -57,10 +57,10 @@ if {[catch {source $Globals}]} {
 			
 		# a) Do Update if $config exists
 		if { [file exists $Config] } {
-			set error [runHTTP]
+      catch {runHTTP 0}
 		# b) Do Reinstall
-			} else {
-			set error [runHTTP Initial]
+		} else {
+      catch {runHTTP 1}
 			
 			downloadFileArray exaJpgArray $bpxJpegUrl
 			downloadFileArray iconArray $bpxIconUrl

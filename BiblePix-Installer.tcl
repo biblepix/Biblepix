@@ -4,9 +4,9 @@
 # Overwrites any old program version
 # Version: 2.3
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7jul17
+# Updated: 22Sep17
 
-set version 2.3
+set version 2.4
 set bpxReleaseUrl "http://vollmar.ch/bibelpix/release"
 
 package require http
@@ -54,38 +54,36 @@ proc setProxy {} {
 	http::config -proxyhost $host -proxyport $port		
 }
 
-#returns 0 or 1
+proc getTesttoken {} {
+  global bpxReleaseUrl
+
+  set testfile "$bpxReleaseUrl/README"    
+  set testtoken [http::geturl $testfile -validate 1]
+  
+  if {[http::error $testtoken] != ""} {
+    error "testtoken -> error:" + [http::error $testtoken]
+  }
+  
+  if {[http::ncode $testtoken] != 200} {           
+    error "testtoken -> ncode:" + [http::ncode $testtoken]
+  }
+  
+  return $testtoken
+}
+
+# throws an error if the test fails
 proc testHttpCon {} {
-	global bpxReleaseUrl
-	
-
-	proc getTesttoken {} {
-		global bpxReleaseUrl
-		
-		set testfile "$bpxReleaseUrl/README"
-		
-		catch {set testtoken [http::geturl $testfile -validate 1]}
-		
-		if {! [info exists testtoken] || 
-			[http::error $testtoken] != "" || 
-			[http::ncode $testtoken] != 200} {
-			set error 1
-		} else {
-			set error 0
-		}
-	}
-
-	set error [getTesttoken]
-	
-	#try proxy & retry connexion
-	if {$error} {
+	if { [catch getTesttoken error] } {
+    puts "BiblePix-Installer.tcl -> testHttpCon -> error: $error"	
+    
+    #try proxy & retry connexion
 		setProxy
-		set error [getTesttoken]
-	}	
-	
-puts "error: $error"	
-
-	return $error
+    
+    if { [catch getTesttoken error] } {
+      puts "BiblePix-Installer.tcl -> testHttpCon -> proxy -> error: $error"
+      error $error
+    }
+	}
 }
 
 # 2. SET UP PRELIMINARY MESSAGE WINDOW & PROGRESS BAR
@@ -99,11 +97,11 @@ pack .if.initialL .if.initialMsg .if.pb
 
 set httpStatus $downloadingHttp
 
-set error [testHttpCon]
-
-if { $error } {
+if { [catch testHttpCon Error] } {
 	#exit if error
 	set httpStatus $noConnHttp
+  
+  puts "BiblePix-Installer.tcl -> Error: $Error"
 	
 	after 5000 { exit }
 } else {
@@ -140,11 +138,12 @@ if { $error } {
 	# 5. FETCH ALL prog files (securely, re-fetching above 2!)
 	source $srcdir/http.tcl
 
-	set error [runHTTP Initial]
-	if { $error } {
+	if { [catch {runHTTP 1} Error] } {
 		#exit if error
 		set httpStatus $noConnHttp
 		.if.pb stop
+    
+    puts "BiblePix-Installer.tcl -> Error: $Error"
 		
 		after 5000 { exit }
 	} else {
