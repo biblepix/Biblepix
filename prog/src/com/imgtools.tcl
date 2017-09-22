@@ -198,7 +198,7 @@ proc resize {src newx newy {dest ""} } {
  ######## IDEAL FOR EVEN SIDED ZOOMING ############# pv
 
   global resizing
-  NewsHandler::QueryNews "$resizing" orange
+  catch {NewsHandler::QueryNews "$resizing" orange}
   
   set mx [image width $src]
   set my [image height $src]
