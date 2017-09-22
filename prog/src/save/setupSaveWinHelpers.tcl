@@ -1,7 +1,14 @@
 # ~/Biblepix/prog/src/share/setupSaveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6apr17
+# Updated: 22Sep17
+
+package require registry
+
+#Set Registry compatible paths
+set wishpath [file nativename [auto_execok wish]]
+set srcpath [file nativename $srcdir]
+set winpath [file nativename $windir]
 
 proc setWinAutorun args {
 #sets/unsets BiblePix Autorun
