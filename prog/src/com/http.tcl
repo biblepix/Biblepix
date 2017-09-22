@@ -219,7 +219,11 @@ proc downloadTWDFiles {} {
       
   foreach item $selectedindices {
     set url [lindex $urllist $item]
-    regsub -all {https} $url http url    
+    
+    # https mit http ersetzen
+    set indexOfSInHttps [expr [string first https $url] + 4]
+    set url [string replace $url $indexOfSInHttps $indexOfSInHttps]
+    
     set filename [file tail $url]
     
     NewsHandler::QueryNews "Downloading $filename..." lightblue
