@@ -219,14 +219,17 @@ proc downloadTWDFiles {} {
 		  
 	foreach item $selectedindices {
 		set url [lindex $urllist $item]
+    regsub -all {https} $url http url    
 		set filename [file tail $url]
+    
 		NewsHandler::QueryNews "Downloading $filename..." lightblue
+    
 		set chan [open $filename w]
 		fconfigure $chan -encoding utf-8
 		http::geturl $url -channel $chan
 		close $chan
+    
 		after 5000 .n.f1.f1.twdlocal insert end $filename
-		
 	}
     #deselect all downloaded files
     .n.f1.twdremoteframe.lb selection clear 0 end
