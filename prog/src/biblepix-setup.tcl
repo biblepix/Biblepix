@@ -43,16 +43,15 @@ if {[catch {source $Globals}]} {
 
   source $Http
 
+  .updateFrame.progbar start
+
   if { [info exists InitialJustDone] } {
     set pbTitle "resizing Image"
-
     source $Imgtools
     loadExamplePhotos
     
     set pbTitle $uptodateHttp
-  } else {  
-    .updateFrame.progbar start
-    
+  } else {    
     set pbTitle $updatingHttp
       
     # a) Do Update if $config exists
@@ -70,9 +69,9 @@ if {[catch {source $Globals}]} {
       source $Imgtools
       loadExamplePhotos
     }
-    
-    .updateFrame.progbar stop
   }
+  
+  .updateFrame.progbar stop
 
 
   # 2. B U I L D  M A I N  G U I
