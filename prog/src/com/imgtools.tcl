@@ -77,6 +77,15 @@ proc loadExamplePhotos {} {
 proc checkImgSizeAndSave {imagePath} {
   global jpegDir
   
+  set targetFileName [file tail $imagePath]  
+  if {![regexp png|PNG $targetFileName] } {
+    set targetFileName "[file rootname $targetFileName].png"
+  }
+  
+  if { [file exists [file join $jpegDir $targetFileName]] } {
+    return
+  }
+  
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
   
@@ -86,6 +95,9 @@ proc checkImgSizeAndSave {imagePath} {
   set imgY [image height $tempBild]
   
   #Compare img dimensions with screen dimensions
+  if {$screenX == $imgX && $screenY == $imgY} {
+    return
+  }
 
   set reqRatio [expr $screenX./$screenY]
   set imgRatio [expr $imgX./$imgY]
@@ -118,11 +130,7 @@ proc checkImgSizeAndSave {imagePath} {
   set finalBild [resize $tempBild $screenX $screenY]
   
   #3. Overwrite corrected image & save as PNG  
-  set filename [file tail $imagePath]  
-  if {![regexp png|PNG $filename] } {
-    set filename "[file rootname $filename].png"
-  }
-  $finalBild write [file join $jpegDir $filename] -format PNG
+  $finalBild write [file join $jpegDir $targetFileName] -format PNG
   
   $tempBild blank
   $finalBild blank  
