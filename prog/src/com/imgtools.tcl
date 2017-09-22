@@ -73,48 +73,49 @@ proc loadExamplePhotos {} {
   }
 }
 
-proc checkImgSizeAndSave {imagePath} {
 #Checks and resizes badly fitting tempBild
-global jpegDir
+proc checkImgSizeAndSave {imagePath} {
+  global jpegDir
   
-  set screenx [winfo screenwidth .]
-  set screeny [winfo screenheight .]
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
   
   set tempBild [image create photo -file $imagePath]
   
+  set imgX [image width $tempBild]
+  set imgY [image height $tempBild]
+  
   #Compare img dimensions with screen dimensions
-  set imgx [image width $tempBild]
-  set imgy [image height $tempBild]
 
-  set reqRatio [expr $screenx./$screeny]
-  set imgRatio [expr $imgx./$imgy]
+  set reqRatio [expr $screenX./$screenY]
+  set imgRatio [expr $imgX./$imgY]
 
-puts "Real image height: $imgy"
+  puts "Real image height: $imgY"
 
   #Bild zu hoch
-  if {$imgRatio<$reqRatio} {
+  if {$imgRatio < $reqRatio} {
 
-    set reqImgY  [expr round($imgx/$reqRatio)]
-    set diffY [expr round($imgy - $reqImgY)]
+    set reqImgY  [expr round($imgX/$reqRatio)]
+    set diffY [expr round($imgY - $reqImgY)]
 
-puts "Difference: $diffY"
+    puts "Difference: $diffY"
 
-    cutY $tempBild $imgx $imgy $diffY
+    cutY $tempBild $imgX $imgY $diffY
     
   #Bild zu breit
-  } else {
+  } elseif {$imgRatio > $reqRatio} {
 
-    set reqImgX [expr round($imgy*$reqRatio)]
-    set diffX  [expr round($imgx - $reqImgX)]
+    set reqImgX [expr round($imgY*$reqRatio)]
+    set diffX  [expr round($imgX - $reqImgX)]
 
-puts "ReqImgX $reqImgX"
-puts "Difference: $diffX"
+    puts "ReqImgX $reqImgX"
+    puts "Difference: $diffX"
 
-    cutX $tempBild $imgx $imgy $diffX
+    cutX $tempBild $imgX $imgY $diffX
   }
   
   #2. Resize evenly
-  set finalBild [resize $tempBild $screenx $screeny]
+  set finalBild [resize $tempBild $screenX $screenY]
   
   #3. Overwrite corrected image & save as PNG  
   set filename [file tail $imagePath]  
@@ -124,8 +125,7 @@ puts "Difference: $diffX"
   $finalBild write [file join $jpegDir $filename] -format PNG
   
   $tempBild blank
-  $finalBild blank
-  
+  $finalBild blank  
 } ;#end checkImageSize
 
 # Syntax: oberen Punkt einer Diagonale: x1+y1
