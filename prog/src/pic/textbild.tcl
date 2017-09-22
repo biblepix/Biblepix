@@ -5,7 +5,7 @@
 
 #Set window bottom-left, no frame
 wm overrideredirect . 1
-wm geometry . +0-30
+wm geometry . +0-0
 
 #Create font only once
 catch {font create BiblepixFont -family $fontfamily}
