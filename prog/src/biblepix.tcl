@@ -3,7 +3,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9aug17
+# Updated: 22Sep17
 ######################################################################
 
 #Verify location & source Globals
@@ -80,7 +80,8 @@ exit
 		set pidfile $piddir/[pid]
 		set pidfiledatum [clock format [file mtime $pidfile] -format %d]
 		while {[file exists $pidfile]} {
-			if {$pidfiledatum==$heute} {				
+			if {$pidfiledatum==$heute} {		
+				setWinBG		
 				sleep [expr $slideshow*1000]
 				
 				source $Image
@@ -98,7 +99,7 @@ exit
                         
 			while {$limit<4} {
 				sleep 60000
-        		setWinBG
+        setWinBG
 				incr limit
 			}
 		}
