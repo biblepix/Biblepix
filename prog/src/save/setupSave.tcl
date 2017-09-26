@@ -133,3 +133,4 @@ if { [catch {glob $twdDir/*$jahr.twd}] } {
   }
   
   source $Biblepix
+} ;#END WRITE CONFIG
