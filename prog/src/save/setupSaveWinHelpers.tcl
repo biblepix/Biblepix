@@ -10,19 +10,20 @@ set wishpath [file nativename [auto_execok wish]]
 set srcpath [file nativename $srcdir]
 set winpath [file nativename $windir]
 
-proc setWinAutorun args {
 #sets/unsets BiblePix Autorun
 #no admin rights required
-       global wishpath srcpath
+proc setWinAutorun args {
+  global wishpath srcpath
 
-        set regpath_autorun [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Run} \\]
-        set regtext "$wishpath [file nativename [file join $srcpath biblepix.tcl]]"
-        regsub -all {[\{\}]} $regtext {} regtext
+  set regpath_autorun [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Run} \\]
 
   if {$args == ""} {
+    set regtext "$wishpath [file nativename [file join $srcpath biblepix.tcl]]"
+    regsub -all {[\{\}]} $regtext {} regtext
+    
     registry set $regpath_autorun Biblepix $regtext
   } else {
-    registry delete $regpath_autorun Biblepix
+    catch {registry delete $regpath_autorun Biblepix}
   }
 }
 
