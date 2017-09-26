@@ -53,8 +53,10 @@ proc testHttpCon {} {
   }
 }
 
-proc downloadFileArray {fileArray url} {
+proc downloadFileArray {fileArrayName url} {
+  upvar $fileArrayName fileArray
   foreach fileName [array names fileArray] {
+    puts $fileName 
     set filePath [lindex [array get fileArray $fileName] 1]
     set chan [open $filePath w]
     
