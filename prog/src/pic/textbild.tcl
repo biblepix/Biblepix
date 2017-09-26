@@ -10,7 +10,7 @@ wm geometry . +0-0
 #Create font only once
 catch {font create BiblepixFont -family $fontfamily}
 
-proc text>bmp {bmpfile twdfile} {
+proc text>bmp {bmpFilePath twdFileName} {
 global fontsize fontfamily fontweight hghex fghex bmpdir platform Twdtools Bidi os
 
   set screenX [winfo screenwidth .]
@@ -24,7 +24,7 @@ global fontsize fontfamily fontweight hghex fghex bmpdir platform Twdtools Bidi 
   font configure BiblepixFont -size -$fontsize -weight $fontweight
   
   #force non-bold for Chinese
-  if  {[string range $twdfile 0 1] == "zh"} {
+  if  {[string range $twdFileName 0 1] == "zh"} {
     font configure BiblepixFont -weight normal
   }
   
@@ -32,7 +32,10 @@ global fontsize fontfamily fontweight hghex fghex bmpdir platform Twdtools Bidi 
 
   #Get $dw
   source $Twdtools
-  set dw [formatImgText $twdfile]
+  
+  # TODO im Fehlerfall die TWD-Datei neu herunterladen
+  set dw [formatImgText $twdFileName]
+  
   set RTL 0
   set Leftmargin 0
 
@@ -144,7 +147,7 @@ global fontsize fontfamily fontweight hghex fghex bmpdir platform Twdtools Bidi 
     textbild copy cutleft
   }
       
-  textbild write $bmpfile -format bmp
+  textbild write $bmpFilePath -format bmp
   textbild blank           
 } ;#END text>bmp
 
@@ -158,11 +161,11 @@ proc createBMPs {} {
   #Delete old bmp's
   set bmplist [getBMPlist]
   if {$bmplist != ""} {
-    foreach bmpname $bmplist {
-      set bmpfile [file join $bmpdir $bmpname]
-       if {[clock format [file mtime $bmpfile] -format %d] != $heute} {
-        puts " Deleting $bmpname"
-        file delete -force $bmpfile
+    foreach bmpFileName $bmplist {
+      set bmpFilePath [file join $bmpdir $bmpFileName]
+       if {[clock format [file mtime $bmpFilePath] -format %d] != $heute} {
+        puts " Deleting $bmpFileName"
+        file delete -force $bmpFilePath
       }
     }
   }
@@ -170,23 +173,25 @@ proc createBMPs {} {
   #renew lists
   if {$slideshow} {
     set bmplist [getBMPlist]
-    set twdlist [getTWDlist]
+    set twdFileNames [getTWDlist]
   } else {
   
     #pick 1 random pic+TWD for single pic mode
-    set twdlist [getRandomTWDFile]
+    set twdFileNames [getRandomTWDFile]
     set bmplist [getRandomBMP]
   }
 
   #Create today's missing bmp's
-  foreach twdfile $twdlist {
-    regsub ".twd" $twdfile ".bmp" bmpname
-    set bmpfile [file join $bmpdir $bmpname]
-    if {[file exists $bmpfile]} {
-      puts " $bmpname up-to-date"
+  foreach twdFileName $twdFileNames {
+    regsub ".twd" $twdFileName ".bmp" bmpFileName
+    set bmpFilePath [file join $bmpdir $bmpFileName]
+    if {[file exists $bmpFilePath]} {
+      puts " $bmpFileName up-to-date"
     } else {
-      puts " Creating $bmpname"
-      text>bmp $bmpfile $twdfile
+      puts " Creating $bmpFileName"
+      if { [catch {text>bmp $bmpFilePath $twdFileName} result] } {
+        puts $result
+      }
     }
   }
 
