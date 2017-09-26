@@ -12,6 +12,20 @@ proc setProxy {} {
   http::config -proxyhost $host -proxyport $port    
 }
 
+proc downloadFileArray {fileArrayName url} {
+  upvar $fileArrayName fileArray
+  foreach fileName [array names fileArray] {
+    puts $fileName 
+    set filePath [lindex [array get fileArray $fileName] 1]
+    set chan [open $filePath w]
+    
+    fconfigure $chan -encoding binary -translation binary
+    http::geturl $url/$fileName -channel $chan
+    
+    close $chan
+  }
+}
+
 proc runHTTP isInitial {
   sleep 1000
   error "http is mocked"
