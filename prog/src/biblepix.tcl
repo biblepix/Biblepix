@@ -14,17 +14,18 @@ source $Globals
 #Parse TWD file & get text for all functions - or start Setup
 source $Twdtools
 
-if {[catch "set twdfile [getRandomTWDFile]"] } {
+if {[catch "set twdfile [getRandomTWDFile]"]} {
   source -encoding utf-8 $SetupTexts
   setTexts $lang
   tk_messageBox -title BiblePix -type ok -icon error -message $noTWDFilesFound
+  
   catch {source $Setup} ; # catch if run by running Setup :-)
-
 } else {
 
   #Create term.sh for Unix terminal if $enableterm
   if {[info exists enableterm]} {
-        catch {set dwterm [formatTermText $twdfile] }
+    catch {set dwterm [formatTermText $twdfile]}
+    
     if {$dwterm != ""} {
       set f [open $Terminal w]
       puts $f ". $confdir/term.conf"
@@ -33,17 +34,17 @@ if {[catch "set twdfile [getRandomTWDFile]"] } {
       file attributes $Terminal -permissions +x
     }
   }
-        
-    #Prepare changing Win desktop
+
+  #Prepare changing Win desktop
   if {$platform=="windows"} {
     package require registry
     set regpath [join {HKEY_CURRENT_USER {Control Panel} Desktop} \\]
-    }
+  }
 }
 
 proc setWinBG {} {
   global TwdTIF regpath platform
-  if {$platform=="windows"} { 
+  if {$platform=="windows"} {
     registry set $regpath Wallpaper [file nativename $TwdTIF]
     exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
   }
@@ -53,6 +54,7 @@ proc setWinBG {} {
 foreach file [glob -nocomplain -directory $piddir *] {
   file delete -force $file
 }
+
 set pidfile [open $piddir/[pid] w]
 close $pidfile
 
@@ -63,6 +65,7 @@ if {$enablesig} {
 
 #Create image & start slideshow
 if {$enablepic } {
+
   #run once
   source $Image
   setWinBG
@@ -74,17 +77,18 @@ if {$enablepic } {
 
   #if Slideshow == 1
   if {$slideshow > 0} {
+  
     #rerun until pidfile renamed by new instance
     set pidfile $piddir/[pid]
     set pidfiledatum [clock format [file mtime $pidfile] -format %d]
     while {[file exists $pidfile]} {
-      if {$pidfiledatum==$heute} {    
-        setWinBG    
+      if {$pidfiledatum==$heute} {
         sleep [expr $slideshow*1000]
         
         source $Image
         setWinBG
       } else {
+      
         #Calling new instance of myself
         source $Biblepix
       }
