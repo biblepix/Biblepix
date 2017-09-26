@@ -77,7 +77,7 @@ proc setWinContextMenu args {
   set regpath "[file nativename $windir]\\install.reg"
   regsub -all {\\} $regpath {\\\\} regpath
   
-  exec cmd /c regedit.exe $regpath
+  catch {exec cmd /c regedit.exe $regpath}
 
 } ;#END setWinContextMenu
 
