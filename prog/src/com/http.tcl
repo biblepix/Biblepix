@@ -221,6 +221,7 @@ proc downloadTWDFiles {} {
     set url [lindex $urllist $item]
     
     # https mit http ersetzen
+    # TODO soon to be removed
     set indexOfSInHttps [expr [string first https $url] + 4]
     set url [string replace $url $indexOfSInHttps $indexOfSInHttps]
     
