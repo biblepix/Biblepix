@@ -10,7 +10,7 @@ set Mocking 0
 
 set version "2.4"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
-set bpxReleaseUrl "http://vollmar.ch/bibelpix/release"
+set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
 
 set platform $tcl_platform(platform)
 set os $tcl_platform(os)
@@ -121,7 +121,7 @@ if { $Debug && $Mocking} {
 }
 
 #Set JPEGs array
-set bpxJpegUrl "http://vollmar.ch/bibelpix/jpeg"
+set bpxJpegUrl "http://vollmar.ch/biblepix/jpeg"
 array set exaJpgArray "
   utah.jpg [file join $exaJpgDir utah.jpg]
   eire.jpg [file join $exaJpgDir eire.jpg]
@@ -132,7 +132,7 @@ array set exaJpgArray "
 "
 
 #Set Icons array & export
-set bpxIconUrl "http://vollmar.ch/bibelpix"
+set bpxIconUrl "http://vollmar.ch/biblepix"
 array set iconArray "
   biblepix.png [file join $unixdir biblepix.png] 
   biblepix.ico [file join $windir biblepix.ico]

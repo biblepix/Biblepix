@@ -7,7 +7,7 @@
 # Updated: 22Sep17
 
 set version 2.4
-set bpxReleaseUrl "http://vollmar.ch/bibelpix/release"
+set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
 
 package require http
 
