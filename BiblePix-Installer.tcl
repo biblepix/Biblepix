@@ -2,7 +2,7 @@
 # ~/?Downloads/BiblePix-Installer.tcl (location unimportant, can be deleted after first use)
 # Download file to install BiblePix on a Linux or Windows PC
 # Overwrites any old program version
-# Version: 2.3
+# Version: 2.4
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 22Sep17
 
