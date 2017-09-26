@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 23Aug17
+# Updated: 26Sep17
 
 # This variable enables the debuging mode in the hole application if set to 1.
 set Debug 1
@@ -186,4 +186,4 @@ set hgrgb "0 0 0"
 set fghex "#000001"
 set fgrgb "0 0 1"
 
-source $LoadConfig
+catch {source $LoadConfig}

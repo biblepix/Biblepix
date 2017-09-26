@@ -138,16 +138,18 @@ if { [catch testHttpCon Error] } {
   # 5. FETCH ALL prog files (securely, re-fetching above 2!)
   source $srcdir/http.tcl
 
-  if { [catch {runHTTP 1} Error] } {
+  if { [catch {runHTTP 1} result] } {
   
     #exit if error
     set httpStatus $noConnHttp
     .if.pb stop
     
-    puts "ERROR: BiblePix-Installer.tcl: $Error"
+    puts "ERROR: BiblePix-Installer.tcl: $result"
     
     after 5000 { exit }
-  } else {  
+  } else {
+    source $Http
+    
     downloadFileArray exaJpgArray $bpxJpegUrl
     downloadFileArray iconArray $bpxIconUrl
 

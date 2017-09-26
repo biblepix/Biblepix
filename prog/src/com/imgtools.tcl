@@ -69,7 +69,10 @@ proc copyAndResizeExamplePhotos {} {
   foreach fileName [array names exaJpgArray] {
     set filePath [lindex [array get exaJpgArray $fileName] 1]
     
-    checkImgSizeAndSave $filePath
+    if { [catch {checkImgSizeAndSave $filePath} result] } {
+      puts $result
+      # TODO im Fehlerfall Bild neu herunterladen
+    }
   }
 }
 

@@ -101,7 +101,6 @@ proc runHTTP isInitial {
       
       #a) Overwrite file if "Initial" 
       if {$isInitial} {
-
         downloadFile $filepath $filename $token
       
       #b) Overwrite file if remote is newer
