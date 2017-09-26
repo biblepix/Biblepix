@@ -2,16 +2,16 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 10aug17 
+# Updated : 26sep17 pv 
 
+# TODO - remove, this is handled via Download button now
 #Make sure either $twdDir or SELECTED contain $jahr-TWD files,
 # else stop saving process & return to Setup!
-set SELECTED_TWD_FILES [.n.f1.twdremoteframe.lb curselection]
-
+#set SELECTED_TWD_FILES [.n.f1.twdremoteframe.lb curselection]
 # A: If SELECTED NOT EMPTY: Start TWD download
-if { $SELECTED_TWD_FILES != ""} {
-  downloadTWDFiles
-}
+#if { $SELECTED_TWD_FILES != ""} {
+#  downloadTWDFiles
+#}
 
 # return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $twdDir/*$jahr.twd}] } {
