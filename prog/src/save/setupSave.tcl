@@ -103,7 +103,19 @@ if { [catch {glob $twdDir/*$jahr.twd}] } {
       close $chan
     }   
   }
-
+  
+  #Delete any old TWD files - TODO : isn't there a better place for this?
+  set vorjahr [expr {$jahr - 1}]
+  set oldtwdlist [glob -nocomplain -directory $twdDir *$vorjahr.twd]
+  if {[info exists oldtwdlist]} {
+    NewsHandler::QueryNews "Deleting old language files..." lightblue
+    
+    foreach file $oldtwdlist {
+      file delete $file
+    }
+    
+    NewsHandler::QueryNews "Old TWD files deleted." green
+  }
 
   #Delete old BMPs & start Biblepix
   if {$enablepic} {
@@ -118,36 +130,6 @@ if { [catch {glob $twdDir/*$jahr.twd}] } {
       file delete -force $file
     }
 
-    source $Biblepix
   }
-
-#TODO: IF BIBLEPIX.TCL exits the following commands are ignored
-
-  #Delete any old JPGs from $imgDir (pre 2.2) - not needed now!
-#  file delete [glob -nocomplain $imgDir/*.jpg]
-
-  #Delete any old TWD files - TODO : isn't there a better place for this?
-  set vorjahr [expr {$jahr - 1}]
-  set oldtwdlist [glob -nocomplain -directory $twdDir *$vorjahr.twd]
-  if {[info exists oldtwdlist]} {
-    NewsHandler::QueryNews "Deleting old language files..." lightblue
-    
-    foreach file $oldtwdlist {
-      file delete $file
-    }
-    
-    NewsHandler::QueryNews "Old TWD files deleted." green
-
-  }
-
-#Finish WERDEN DIESE BEFEHLE NOCH AUSGEFÜHRT???
-  #Withdraw Tk window
-  if {$platform=="unix"} {
-    wm withdraw .
-  } else {
-    wm iconify .
-  }
-} ;#END WRITE CONFIG
-
-#for now: can't exit because of running biblepix.tcl
-#after 7000 {exit}
+  
+  source $Biblepix
