@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9aug17
+# Updated: 26sep17 pv
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -164,8 +164,8 @@ set TwdRemoteTit2(en) "Language\tYear\t\tBible Version"
 set TwdRemoteTit2(de) "Sprache\tJahr\t\tBibelausgabe"
 set ::f1.twdremotetit2 $TwdRemoteTit2($lang)
 
-set f1Txt(en) "$bp will create $dw in any language or Bible version installed on your computer. If several language files are found, $bp will randomly pick one at each run. Any new language files you select (see below) will be downloaded after you click OK. Pay attention to the year (current or next)!"
-set f1Txt(de) "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien auswählen (s. unten), werden diese heruntergeladen, sobald Sie OK drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)!"  
+set f1Txt(en) "$bp will create $dw in any language or Bible version installed on your computer. If several language files are found, $bp will randomly pick one at each run. Any new language files you select (see below) will be downloaded upon clicking the 'Download' button. Pay attention to the year (current or next)!"
+set f1Txt(de) "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien auswählen (s. unten), werden diese heruntergeladen, sobald Sie die Taste 'Download' drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)!"  
 set ::f1.txt $f1Txt($lang)
 
 set f2Tit(en) "Put $dw on your background images"
