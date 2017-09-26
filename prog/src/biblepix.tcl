@@ -98,11 +98,11 @@ if {$enablepic } {
   } else {
     if {$platform=="windows"} {
       
-      #run every minute up to 5x so Windows has time to update
+      #run every 10s up to 10x so Windows has time to update
       set limit 0
       
-      while {$limit<4} {
-        sleep 60000
+      while {$limit<9} {
+        sleep 10000
         setWinBG
         incr limit
       }
