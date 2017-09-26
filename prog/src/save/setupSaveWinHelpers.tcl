@@ -81,19 +81,13 @@ proc setWinContextMenu args {
 
 } ;#END setWinContextMenu
 
-proc setWinTheme args {
-#Runs /Deletes 'single pic' theme if running slideshow detected
-global env enablepic slideshow TwdTIF winChangeDesktop
 
-  #Detect running slideshow (entry reset by Windows when user sets bg)
-  set regpathExplorer [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
+#Runs 'single pic' theme if running slideshow detected
+proc setWinTheme {
+  global env TwdTIF
 
-  # Fallback behavior if BackgroundType is missing or wrong.
-  if {[catch {set BackgroundType [registry get $regpathExplorer BackgroundType]}] || $BackgroundType != 0} {  
-    tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangeDesktop
-
-      set themepath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Biblepix.theme]
-    set themetext "\[Theme\]
+  set themepath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Biblepix.theme]
+  set themetext "\[Theme\]
 DisplayName=BiblePix
 
 \[Control Panel\\Desktop\]
@@ -110,15 +104,14 @@ VisualStyleVersion=10
 \[MasterThemeSelector\]
 MTSM=DABJDKT"
 
-    #1.Save current theme to $windir (for Uninstall)
-    set CustomThemePath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Custom.theme]
-    catch {file copy $CustomThemePath $windir}
+  #1.Save current theme to $windir (for Uninstall)
+  set CustomThemePath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Custom.theme]
+  catch {file copy $CustomThemePath $windir}
 
-    #2.Write & execute BP theme
-    set chan [open $themepath w]
-    puts $chan $themetext
-    close $chan
-          exec cmd /c $themepath
-  }
-
-}  ;#END setWinTheme
+  #2.Write & execute BP theme
+  set chan [open $themepath w]
+  puts $chan $themetext
+  close $chan
+  
+  exec cmd /c $themepath
+} ;#END setWinTheme
