@@ -63,7 +63,7 @@ global inttextCanv internationaltext
   $inttextCanv itemconfigure shade -fill $shade
 }
 
-proc loadExamplePhotos {} {
+proc copyAndResizeExamplePhotos {} {
   global exaJpgArray
   
   foreach fileName [array names exaJpgArray] {

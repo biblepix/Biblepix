@@ -37,41 +37,37 @@ if {[catch {source $Globals}]} {
   }
   
   # 1.  D O   H T T P  U P D A T E   (if not initial)
-
-  source $Http
-
-  .updateFrame.progbar start
-
-  if { [info exists InitialJustDone] } {
-    set pbTitle "resizing Image"
-    source $Imgtools
-    loadExamplePhotos
-    
-    set pbTitle $uptodateHttp
-  } else {    
-    set pbTitle $updatingHttp
-      
-    # a) Do Update if $config exists
-    if { [file exists $Config] } {
-      catch {runHTTP 0}
-    # b) Do Reinstall
-    } else {
-      catch {runHTTP 1}
-      
-      downloadFileArray exaJpgArray $bpxJpegUrl
-      downloadFileArray iconArray $bpxIconUrl
-    
-      set pbTitle "resizing Image"
-
-      source $Imgtools
-      loadExamplePhotos
-    }
-  }
   
-  .updateFrame.progbar stop
+  if {[catch {source $Http}]} {
+    set pbTitle "Update not possible.\nYou must download and rerun the BiblePix Installer from bible2.net."
+    after 7000 {exit}
+  } else {
 
+    .updateFrame.progbar start
 
-  # 2. B U I L D  M A I N  G U I
+    if { [info exists InitialJustDone] } {
+      set pbTitle "Resizing image ..."
+      source $Imgtools
+      copyAndResizeExamplePhotos
+      
+      set pbTitle $uptodateHttp
+    } else {    
+      set pbTitle $updatingHttp
+        
+      catch {runHTTP 0}
+      
+      if { ![file exists $Config] } {      
+        set pbTitle "Resizing image ..."
 
-  source $SetupMainFrame
+        source $Imgtools
+        copyAndResizeExamplePhotos
+      }
+    }
+    
+    .updateFrame.progbar stop
+
+    # 2. B U I L D  M A I N  G U I
+
+    source $SetupMainFrame
+  }
 }
