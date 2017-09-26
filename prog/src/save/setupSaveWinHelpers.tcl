@@ -47,7 +47,7 @@ proc setWinContextMenu args {
   if {$args != ""} {
     set regtext "Windows Registry Editor Version 5.00
 
-\-\[HKEY_CLASSES_ROOT\\DesktopBackground\\Shell\\Biblepix\]
+\[\-HKEY_CLASSES_ROOT\\DesktopBackground\\Shell\\Biblepix\]
 "
   } else {
     set regtext "Windows Registry Editor Version 5.00
@@ -83,7 +83,7 @@ proc setWinContextMenu args {
 
 
 #Runs 'single pic' theme if running slideshow detected
-proc setWinTheme {
+proc setWinTheme {} {
   global env TwdTIF
 
   set themepath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Biblepix.theme]
