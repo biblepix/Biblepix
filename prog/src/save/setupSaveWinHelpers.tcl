@@ -27,29 +27,30 @@ proc setWinAutorun args {
   }
 }
 
-proc setWinContextMenu args {
 #sets/unsets BiblePix Context Menu
 #ADMIN RIGHTS REQUIRED
 #adds context menu & icon
 #removes any "Policies\System Wallpaper" key (blocks user intervention)
-global wishpath Setup srcpath winpath winRegister windir
+proc setWinContextMenu args {
+  global wishpath Setup winpath windir
+  
+  set SetupPath [file nativename $Setup]
 
   #amend paths for .reg file (double \\ needed)
   regsub -all {\\} $wishpath {\\\\} wishpath
-  regsub -all {\\} $srcpath {\\\\} srcpath
+  regsub -all {\\} $SetupPath {\\\\} SetupPath
   regsub -all {\\} $winpath {\\\\} winpath
 
-  set setuppath "$wishpath $srcpath\\\\biblepix-setup.tcl"
+  set setupCommand "$wishpath $SetupPath"
+  
   #detect if "unset"
   if {$args != ""} {
-  set regtext "Windows Registry Editor Version 5.00
+    set regtext "Windows Registry Editor Version 5.00
 
 \-\[HKEY_CLASSES_ROOT\\DesktopBackground\\Shell\\Biblepix\]
 "
-
   } else {
-
-  set regtext "Windows Registry Editor Version 5.00
+    set regtext "Windows Registry Editor Version 5.00
 
 \[HKEY_CLASSES_ROOT\\DesktopBackground\\Shell\\Biblepix\]
 \@=\"BiblePix Setup\"
@@ -57,12 +58,13 @@ global wishpath Setup srcpath winpath winRegister windir
 \"Position\"=\"Bottom\"
 
 \[HKEY_CLASSES_ROOT\\DesktopBackground\\Shell\\Biblepix\\Command\]
-\@=\"$setuppath\"
+\@=\"$setupCommand\"
 
 \[HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\]
 \"Wallpaper\"=-
 "
   }
+  
   #remove any {} from paths
   regsub -all {[\{\}]} $regtext {} regtext
 
@@ -74,10 +76,10 @@ global wishpath Setup srcpath winpath winRegister windir
   #Execute regfile
   set regpath "[file nativename $windir]\\install.reg"
   regsub -all {\\} $regpath {\\\\} regpath
+  
   exec cmd /c regedit.exe $regpath
 
-}  ;#END setWinContextMenu
-
+} ;#END setWinContextMenu
 
 proc setWinTheme args {
 #Runs /Deletes 'single pic' theme if running slideshow detected
