@@ -95,39 +95,39 @@ proc checkImgSizeAndSave {imagePath} {
   set imgY [image height $tempBild]
   
   #Compare img dimensions with screen dimensions
-  if {$screenX == $imgX && $screenY == $imgY} {
-    return
-  }
+  if {$screenX != $imgX || $screenY != $imgY} {
+    set reqRatio [expr $screenX./$screenY]
+    set imgRatio [expr $imgX./$imgY]
 
-  set reqRatio [expr $screenX./$screenY]
-  set imgRatio [expr $imgX./$imgY]
+    puts "Real image height: $imgY"
 
-  puts "Real image height: $imgY"
+    #Bild zu hoch
+    if {$imgRatio < $reqRatio} {
 
-  #Bild zu hoch
-  if {$imgRatio < $reqRatio} {
+      set reqImgY  [expr round($imgX/$reqRatio)]
+      set diffY [expr round($imgY - $reqImgY)]
 
-    set reqImgY  [expr round($imgX/$reqRatio)]
-    set diffY [expr round($imgY - $reqImgY)]
+      puts "Difference: $diffY"
 
-    puts "Difference: $diffY"
+      cutY $tempBild $imgX $imgY $diffY
+      
+    #Bild zu breit
+    } elseif {$imgRatio > $reqRatio} {
 
-    cutY $tempBild $imgX $imgY $diffY
+      set reqImgX [expr round($imgY*$reqRatio)]
+      set diffX  [expr round($imgX - $reqImgX)]
+
+      puts "ReqImgX $reqImgX"
+      puts "Difference: $diffX"
+
+      cutX $tempBild $imgX $imgY $diffX
+    }
     
-  #Bild zu breit
-  } elseif {$imgRatio > $reqRatio} {
-
-    set reqImgX [expr round($imgY*$reqRatio)]
-    set diffX  [expr round($imgX - $reqImgX)]
-
-    puts "ReqImgX $reqImgX"
-    puts "Difference: $diffX"
-
-    cutX $tempBild $imgX $imgY $diffX
+    #2. Resize evenly
+    set finalBild [resize $tempBild $screenX $screenY]
+  } else {
+    set finalBild $tempBild 
   }
-  
-  #2. Resize evenly
-  set finalBild [resize $tempBild $screenX $screenY]
   
   #3. Overwrite corrected image & save as PNG  
   $finalBild write [file join $jpegDir $targetFileName] -format PNG
