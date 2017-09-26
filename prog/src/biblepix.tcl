@@ -69,9 +69,7 @@ if {$enablepic } {
   
   #exit if $crontab exists
   if {[info exists crontab]} {
-#    return
-#return 0
-exit
+    exit
   }
 
   #if Slideshow == 1
@@ -91,21 +89,24 @@ exit
         source $Biblepix
       }
     }
-    #if Slideshow == 0    
+  
+  #if Slideshow == 0    
   } else {
     if {$platform=="windows"} {
-            #run every minute up to 5x so Windows has time to update
+      
+      #run every minute up to 5x so Windows has time to update
       set limit 0
-                        
+      
       while {$limit<4} {
         sleep 60000
         setWinBG
         incr limit
       }
     }
-    } ;#END if slideshow
-
+  } ;#END if slideshow
 } ;#END if enablepic
+
+exit
 
 
 
