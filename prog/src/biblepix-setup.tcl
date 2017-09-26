@@ -5,7 +5,7 @@
 ################################################################################
 # Version: 2.4
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22Sep17
+# Updated: 26Sep17
 
 package require Tk
 

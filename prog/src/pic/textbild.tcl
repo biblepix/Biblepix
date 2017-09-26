@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/pic/textbild.tcl
 # Creates text picture, called by image.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22Sep17 
+# Updated: 26Sep17 
 
 #Set window bottom-left, no frame
 wm overrideredirect . 1

@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 26sep17 pv 
+# Updated : 26sep17 
 
 # TODO - remove, this is handled via Download button now
 #Make sure either $twdDir or SELECTED contain $jahr-TWD files,
