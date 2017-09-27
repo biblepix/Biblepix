@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26sep17 pv
+# Updated: 27sep17 pv
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -64,8 +64,8 @@ set gettingTwd(en) "Fetching current list of Bible text files from bible2.net...
 set gettingTwd(de) "Hole aktuelle Bibeltext-Liste von bible2.net..."
 set ::gettingTwd $gettingTwd($lang)
 
-set noTwdFilesFound(en) "Auf Ihrem PC sind noch keine Bibeltextdateien installiert.\nBitte wählen Sie mindestens 1 Sprachdatei in der Rubrik 'International'."
-set noTwdFilesFound(de) "No Bible text files have been installed yet on your PC.\nPlease choose at least one language text file in the 'International' section."
+set noTwdFilesFound(en) "Auf Ihrem PC sind noch keine Bibeltextdateien installiert.\nBitte wählen Sie mindestens 1 Sprachdatei \naus der Rubrik 'International'."
+set noTwdFilesFound(de) "No Bible text files have been installed yet on your PC.\nPlease choose at least one language text file \nfrom the 'International' section."
 set ::noTWDFilesFound $noTwdFilesFound($lang)
 
 set connTwd(en) "Connection to bible2.net established."
@@ -252,8 +252,8 @@ set f6Del(en) "Delete from $bp Photo Collection:"
 set f6Del(de) "Aus der $bp-Fotosammlung löschen:"
 set ::f6.del $f6Del($lang)
 
-set resizing(en) "Resizing picture to fit screen..."
-set resizing(de) "Passe Bildgrösse dem Bildschirm an..."
+set resizing(en) "Preliminary preparations: Resizing example pictures to fit screen; please wait a moment..."
+set resizing(de) "Installationsvorbereitung: Passe Bildgrösse der Beispielbiler dem Bildschirm an; bitte haben Sie einen Augenblick Geduld..."
 set ::resizing $resizing($lang) 
 
 set f3Tit(en) "Add $dw to your e-mail signatures"
