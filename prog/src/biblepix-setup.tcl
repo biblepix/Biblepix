@@ -14,6 +14,8 @@ set srcdir [file dirname [info script]]
 set Globals "[file join $srcdir com globals.tcl]"
 
 #Set initial FTP message & progress bar
+destroy .updateFrame
+
 frame .updateFrame -padx 40 -pady 50 -borderwidth 20
 pack .updateFrame -fill y -expand true
 
@@ -65,7 +67,9 @@ if {[catch {source $Globals}]} {
     }
     
     .updateFrame.progbar stop
-
+    
+    pack forget .updateFrame.pbTitle .updateFrame.progbar .updateFrame
+    
     # 2. B U I L D  M A I N  G U I
 
     source $SetupMainFrame
