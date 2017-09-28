@@ -53,7 +53,9 @@ if {[catch {source $Globals}]} {
       copyAndResizeExamplePhotos
       
       set pbTitle $uptodateHttp
-    } else {    
+    } elseif { [info exists UpdateJustDone] } {      
+      set pbTitle $uptodateHttp
+    } else {
       set pbTitle $updatingHttp
         
       catch {runHTTP 0}
