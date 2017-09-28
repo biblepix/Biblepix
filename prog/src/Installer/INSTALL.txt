@@ -1,5 +1,0 @@
-If you have downloaded BiblePix from GitHub, you should just execute biblepix-setup.tcl in the previous directory.
-By running BiblePix-Installer.tcl you could actually replace the Git version by an older version, which may not be desirable. 
-
-Nach einer Git-Installation muss lediglich die Datei biblepix-setup.tcl im vorhergehenden Verzeichnis ausgeführt werden.
-Durch das Ausführen von BiblePix-Installer.tcl könnte die GitHub-Version durch eine ältere ersetzt werden, was möglicherweise nicht erwünscht ist.
