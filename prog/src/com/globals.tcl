@@ -17,16 +17,9 @@ set os $tcl_platform(os)
 set tclpath [auto_execok tclsh]
 set wishpath [auto_execok wish]
 
-#Set rootdir from $srcdir as provided by calling progs
-proc setRootDir {srcdir} {
-  cd $srcdir
-  cd ../..
-  return [pwd]
-}
-
 if { [info exists srcdir] } {
   #set
-  set rootdir "[setRootDir $srcdir]"  
+  set rootdir "[file dirname [file dirname $srcdir]]"  
 } else {
   #reset
   if { [info exists env(LOCALAPPDATA)] } {
