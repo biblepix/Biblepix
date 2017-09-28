@@ -72,6 +72,8 @@ if {[catch {source $Globals}]} {
     
     pack forget .updateFrame.pbTitle .updateFrame.progbar .updateFrame
     
+    catch {source $UpdateInjection}
+    
     # 2. B U I L D  M A I N  G U I
 
     source $SetupMainFrame
