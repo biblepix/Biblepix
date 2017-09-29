@@ -8,13 +8,13 @@
 if { [catch {glob $twdDir/*$jahr.twd}] } {
   .n select .n.f1
   NewsHandler::QueryNews "$noTWDFilesFound" red
-  return 1
+  return
 
 # Return to PHOTOS section if $picsdir empty
 } elseif { [catch {glob $jpegDir/*}] } {
  .n select .n.f6
   NewsHandler::QueryNews "$noPhotosFound" red
-  return 1
+  return
 }
 
 
@@ -29,7 +29,7 @@ set fontsizestatus [$fontsizeSpin get]
 set fontweightstatus [set fontweightState]
 set fontfamilystatus [$fontfamilySpin get]
 
-if {$fontweightstatus==1} {
+if {$fontweightstatus == 1} {
   set fontweight "bold"
 } else {
   set fontweight "normal"
@@ -78,6 +78,7 @@ close $chan
 
 #F I N I S H
 NewsHandler::QueryNews "Changes recorded. Exiting..." green
+
 #leere das gesamte Fenster, weil es wiederverwendet wird.
 pack forget .n .fbottom .ftop
 

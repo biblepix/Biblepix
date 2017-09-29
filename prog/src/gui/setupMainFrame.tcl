@@ -2,9 +2,7 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 20feb17
-
-pack forget .updateFrame.pbTitle .updateFrame.progbar .updateFrame
+# Updated: 28Sep17
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
