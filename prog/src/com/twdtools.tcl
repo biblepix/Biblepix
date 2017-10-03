@@ -16,6 +16,7 @@ proc getTWDlist {} {
   set twdlist [glob -nocomplain -tails -directory $twdDir *_$jahr.twd]
   return $twdlist
 }
+
 proc getBMPlist {} {
   global bmpdir
   set bmplist [glob -nocomplain -tails -directory $bmpdir *.bmp]
@@ -130,11 +131,11 @@ global tab datum ind enableintro
   return $dw
 }
 
+## formatSigText
+#  Formatiert den TWD-Text for die Signaturdateien.
+#  Returns $dwsig for signature
 proc formatSigText {twdFile} {
-##Returns $dwsig for signature
-#  global Globals
   global datum tab ind
- #       source $Globals
   
   set root [getTWDFileRoot $twdFile]
   

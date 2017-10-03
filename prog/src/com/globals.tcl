@@ -163,12 +163,11 @@ proc sleep { ms } {
     unset ::__sleep__tmp__$uniq
 }
 
-#Define font colours
+#Define font colours & sun/shade factors
 set gold #daa520
 set silver #707585
 set blue #4682b4
 set green #2e8b57
-#Define sun/shade factors
 set sunfactor 2.0
 set shadefactor 0.6
 

@@ -3,45 +3,45 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26Sep17
+# Updated: 2oct17
 ######################################################################
 
 #Verify location & source Globals
 set srcdir [file dirname [info script]]
 set Globals "[file join $srcdir com globals.tcl]"
 source $Globals
-
-#Parse TWD file & get text for all functions - or start Setup
 source $Twdtools
 
+#Run Setup if TWD file not found
 if {[catch "set twdfile [getRandomTWDFile]"]} {
   source -encoding utf-8 $SetupTexts
   setTexts $lang
   tk_messageBox -title BiblePix -type ok -icon error -message $noTWDFilesFound
-  
-  catch {source $Setup} ; # catch if run by running Setup :-)
-} else {
+  #catch if run by running Setup
+  catch {source $Setup} 
+  return
+}
 
-  #Create term.sh for Unix terminal if $enableterm
-  if {[info exists enableterm]} {
-    catch {set dwterm [formatTermText $twdfile]}
-    
-    if {$dwterm != ""} {
-      set f [open $Terminal w]
-      puts $f ". $confdir/term.conf"
-      puts $f $dwterm
-      close $f
-      file attributes $Terminal -permissions +x
-    }
-  }
+#1. U p d a t e   s i g n a t u r e s  if $enablesig
+if {$enablesig} {
+  source $Signature
+}
 
-  #Prepare changing Win desktop
-  if {$platform=="windows"} {
-    package require registry
-    set regpath [join {HKEY_CURRENT_USER {Control Panel} Desktop} \\]
+#2. C r e a t e   t e r m . s h   for Unix terminal if $enableterm
+if {[info exists enableterm] && $enableterm} {
+  catch {formatTermText $twdfile} dwterm
+
+  if {$dwterm != 1} {
+    #create shell script
+    set chan [open $Terminal w]
+    puts $chan ". $TerminalConf"
+    puts $chan $dwterm
+    close $chan
+    file attributes $Terminal -permissions +x
   }
 }
 
+#3. P r e p a r e   c h a n g i n g   W i n   d e s k t o p
 proc setWinBG {} {
   global TwdTIF regpath platform
   if {$platform=="windows"} {
@@ -50,20 +50,19 @@ proc setWinBG {} {
   }
 }
 
+if {$platform=="windows"} {
+  package require registry
+  set regpath [join {HKEY_CURRENT_USER {Control Panel} Desktop} \\]
+}
+
 #Stop any running biblepix.tcl
 foreach file [glob -nocomplain -directory $piddir *] {
   file delete -force $file
 }
-
 set pidfile [open $piddir/[pid] w]
 close $pidfile
 
-#Update signatures
-if {$enablesig} {
-  source $Signature
-}
-
-#Create image & start slideshow
+#4. C r e a t e   i m a g e   & start slideshow
 if {$enablepic } {
 
   #run once
@@ -111,9 +110,3 @@ if {$enablepic } {
 } ;#END if enablepic
 
 exit
-
-
-
-
-
-
