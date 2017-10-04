@@ -41,7 +41,6 @@ if {[info exists enableterm] && $enableterm} {
     file attributes $Terminal -permissions +x
   } elseif { [info exists Debug] && $Debug } {
       error $result
-    }
   }
 }
 
