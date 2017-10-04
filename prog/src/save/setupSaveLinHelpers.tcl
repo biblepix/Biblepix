@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3oct17
+# Updated: 4oct17
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
@@ -16,14 +16,14 @@ global Biblepix Setup slideshow tclpath unixdir env
 
   #Exit if crontab not found
   if { [auto_execok crontab] ==""} {
-    return 1
+    return
   }
 
   #Exit if cron OR crond not running
   if {   ! [string is digit $cronpid] && 
     ! [string is digit $crondpid]
     } {
-    return 1
+    return
   }  
   
   #if ARGS: Delete any crontab entries & exit
@@ -33,7 +33,7 @@ global Biblepix Setup slideshow tclpath unixdir env
     } else {
       exec crontab -r
     }
-    return 1
+    return
   }
   
   
@@ -89,16 +89,16 @@ global Biblepix Setup slideshow tclpath unixdir env
   
 ### 2. Prepare cronscript text
   
-  set cronScriptText "
-  count=0
-  limit=5
-  #wait max. 5 min. for X
-  while \[ ! xhost \] \&\& \[ \"\$count\" -lt \"\$limit\" \] ; do 
-    sleep 60
-    ((count++))
-  done
-  export DISPLAY=:0
-  $tclpath $Biblepix
+  set cronScriptText "# ~/Biblepix/prog/unix/cron.sh\n# Bash script to add BiblePix to crontab
+count=0
+limit=5
+#wait max. 5 min. for X
+while \[ ! xhost \] \&\& \[ \"\$count\" -lt \"\$limit\" \] ; do 
+  sleep 60
+  ((count++))
+done
+export DISPLAY=:0
+$tclpath $Biblepix
   "
   #save cronscript & make executable
   set chan [open $cronScript w]

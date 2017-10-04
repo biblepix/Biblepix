@@ -3,7 +3,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2oct17
+# Updated: 4oct17
 ######################################################################
 
 #Verify location & source Globals
@@ -27,17 +27,19 @@ if {$enablesig} {
   source $Signature
 }
 
-#2. C r e a t e   t e r m . s h   for Unix terminal if $enableterm
+#2. C r e a t e   t e r m . s h  for Unix terminal if $enableterm
 if {[info exists enableterm] && $enableterm} {
-  if {![catch {formatTermText $twdfile} result]} {
+  if {![catch {formatTermText $twdfile} dwTerm]} {
     #create shell script
     set chan [open $Terminal w]
+    puts $chan "# ~/Biblepix/prog/unix/term.sh"
+    puts $chan "# Bash script to display 'The Word' in a Linux terminal"
+    puts $chan "# Recreated by biblepix.tcl on [clock format [clock seconds] -format {%d%b%Y at %H:%M}]\n"
     puts $chan ". $confdir/term.conf"
-    puts $chan $result
+    puts $chan $dwTerm
     close $chan
     file attributes $Terminal -permissions +x
-  } else {
-    if { [info exists Debug] && $Debug } {
+  } elseif { [info exists Debug] && $Debug } {
       error $result
     }
   }
