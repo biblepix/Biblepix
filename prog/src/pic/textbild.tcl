@@ -81,8 +81,6 @@ global fontsize fontfamily fontweight hghex fghex bmpdir platform Twdtools Bidi 
   #Split $dw into lines
   set dwsplit [split $dw \n]
   
-  puts $dwsplit
-  
   #Copy text lines to image    
   foreach zeile $dwsplit {
     puts $zeile
@@ -93,6 +91,7 @@ global fontsize fontfamily fontweight hghex fghex bmpdir platform Twdtools Bidi 
 
     #set line width in characters
     set Charno [.t count -chars 1.0 1.end]
+       
     .t configure -width $Charno
 
     #set line width in pixels
@@ -100,11 +99,26 @@ global fontsize fontfamily fontweight hghex fghex bmpdir platform Twdtools Bidi 
     update
     set Lwidth [lindex [.t bbox 1.end] 0]
 
+    set extraChars 0
+    
+    # Wenn Lwidth leer ist, ist der Text grösser als $Charno * standart Zeichengrösse.
+    # Solange das der Fall ist, soll das Textfeld vergrössert werden.
+    while {$Lwidth == ""} {    
+      incr extraChars
+      
+      .t configure -width [expr $Charno + $extraChars]
+
+      #set line width in pixels
+      wm state . normal
+      update
+      set Lwidth [lindex [.t bbox 1.end] 0]    
+    }
+
     #set longest line for RTL
     lappend Linelength $Lwidth
 
-    #copy text line to image if width not 0
-    if { [catch "image create photo tmpbild -data .t -format window -width $Lwidth"] } {
+    if { [catch {image create photo tmpbild -data .t -format window -width $Lwidth}] } {
+      puts "image could not be created"
       continue
     }
 
