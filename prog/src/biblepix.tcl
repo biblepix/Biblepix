@@ -29,15 +29,17 @@ if {$enablesig} {
 
 #2. C r e a t e   t e r m . s h   for Unix terminal if $enableterm
 if {[info exists enableterm] && $enableterm} {
-  catch {formatTermText $twdfile} dwterm
-
-  if {$dwterm != 1} {
+  if {![catch {formatTermText $twdfile} result]} {
     #create shell script
     set chan [open $Terminal w]
     puts $chan ". $TerminalConf"
-    puts $chan $dwterm
+    puts $chan $result
     close $chan
     file attributes $Terminal -permissions +x
+  } else {
+    if { [info exists Debug] && $Debug } {
+      error $result
+    }
   }
 }
 
