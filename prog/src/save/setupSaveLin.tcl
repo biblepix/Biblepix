@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2oct17
+# Updated: 4oct17
 
 source $SetupSaveLinHelpers
 set hasError 0
@@ -24,6 +24,12 @@ catch setLinMenu Error
 if {!$hasError && $Error!=""} {
   tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
   set hasError 1
+}
+
+#Run copyLinTerminalConf if $enableterm==1
+if {$enableterm} {
+copyLinTerminalConf
+  
 }
 
 ## SET BACKGROUND PICTURE/SLIDESHOW if $enablepic

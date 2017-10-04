@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5aug17
+# Updated: 3oct17
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
@@ -115,9 +115,9 @@ global Biblepix Setup slideshow tclpath unixdir env
     
 } ;#end setLinCrontab
 
-proc setLinAutostart args {
 #Makes Autostart entries for GNOME&KDE
 #only executed if setLinCrontab fails
+proc setLinAutostart args {
 global Biblepix Setup LinIcon tclpath srcdir bp
   
   set KDEdir [glob -nocomplain ~/.kde*]
@@ -357,21 +357,79 @@ global env slideshow srcdir imgDir unixdir Config TwdPNG TwdBMP TwdTIF KDErestar
 
 } ;#END setLinBackground
 
-#Reserve für crontab, not needed now
-proc hashtag {} {
-      #Check interpreter hashbang in $Biblepix
-      set chan [open $Biblepix r]
-      set hashbang [gets $chan]
-      close $chan
 
-      set tclpath_full "#!$tclpath"
+## copyLinTerminalConf
+# Copies configuration file for Linux terminal to $confdir 
+# Called by SetupSaveLin if $enableterm==1
+proc copyLinTerminalConf {} {
+  global confdir
+  
+  set configText {
+  #!/bin/sh
+  # ~/Biblepix/prog/conf/term.conf
+  # Sets font variables for display of 'The Word' in a Linux terminal
+  # Called by ~/Biblepix/prog/unix/term.sh
+  # This command will produce 'The Word' in your shells:
+  #   sh ~/Biblepix/prog/unix/term.sh
+  # You can put it in ~/.bashrc for automation.
+  # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
+  # Updated: 5oct17  
 
-      if {$hashbang != $tclpath_full} {
-        set chan [open $Biblepix w]
-        #replace 1st line
-        regsub -line {.*} $text $tclpath_full text
-        puts $chan $text
-        close $chan 
-      }
-        
-}
+  ############################################################
+  # N O  C H A N G E S  H E R E !
+  # To change, replace variables further down!
+  ############################################################
+  #text colours (for normal text)
+  txtred='\e[0;31m' # Red
+  txtylw='\e[0;33m' # Yellow
+  txtblu='\e[0;34m' # Blue
+  txtpur='\e[0;35m' # Purple
+  txtcyn='\e[0;36m' # Cyan
+  txtwht='\e[0;37m' # White
+  txtgrn='\e[0;32m' # Green
+  #bold text colours (for title)
+  bldblu='\e[1;34m' # Bold blue
+  bldblk='\e[1;30m' # Bold black
+  bldred='\e[1;31m' # Bold red
+  bldgrn='\e[1;32m' # Bold green
+  bldylw='\e[1;33m' # Bold yellow
+  bldwht='\e[1;37m' # Bold white
+  yontem=f$x
+  #background colours (for title)
+  bakblu='\e[44m'   # Blue
+  bakcyn='\e[46m'   # Cyan
+  bakwht='\e[47m'   # White
+  bakred='\e[41m'   # Red
+  bakgrn='\e[42m'   # Green
+  #Reset colour to shell default
+  txtrst='\e[0m'
+
+  #########################################################
+  # M A K E   A N Y  C H A N G E S   H E R E :
+  # Variables used by BiblePix
+  # To change, replace with any of the above, preceded by $
+  #########################################################
+
+  #Title background
+  titbg=$bakblu
+  #Title
+  tit=$bldylw
+  #Introline
+  int=$txtred
+  #Reference
+  ref=$txtgrn
+  #Reset to default
+  txt=$txtrst
+  #Tabulators
+  tab="\t\t\t"
+  }
+  
+  #Copy to file if new or corrupt
+  set termConfFile "$confdir/term.conf"
+  catch {file size $termConfFile} size
+  if {![string is digit $size] || $size<50} {
+    set chan [open $termConfFile w]
+    puts $chan $configText
+    close $chan
+  }
+} ;#END copyLinTerminalConf

@@ -34,7 +34,7 @@ if {[info exists enableterm] && $enableterm} {
   if {$dwterm != 1} {
     #create shell script
     set chan [open $Terminal w]
-    puts $chan ". $TerminalConf"
+    puts $chan ". $confdir/term.conf"
     puts $chan $dwterm
     close $chan
     file attributes $Terminal -permissions +x
