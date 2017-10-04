@@ -2,6 +2,9 @@ Texts/
 prog/pid/
 prog/conf/
 prog/bmp/
+prog/unix/term.sh
+prog/unix/crontab.ORIG
+prog/unix/cron.sh
 Photos/
 Email/
 Image/
