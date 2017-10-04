@@ -19,7 +19,7 @@ set wishpath [auto_execok wish]
 
 if { [info exists srcdir] } {
   #set
-  set rootdir "[file dirname [file dirname $srcdir]]"  
+  set rootdir "[file dirname [file dirname [file normalize $srcdir ]]]"  
 } else {
   #reset
   if { [info exists env(LOCALAPPDATA)] } {
