@@ -32,7 +32,7 @@ if {[info exists enableterm] && $enableterm} {
   if {![catch {formatTermText $twdfile} result]} {
     #create shell script
     set chan [open $Terminal w]
-    puts $chan ". $TerminalConf"
+    puts $chan ". $confdir/term.conf"
     puts $chan $result
     close $chan
     file attributes $Terminal -permissions +x
