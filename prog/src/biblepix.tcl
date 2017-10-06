@@ -40,7 +40,7 @@ if {[info exists enableterm] && $enableterm} {
     close $chan
     file attributes $Terminal -permissions +x
   } elseif { [info exists Debug] && $Debug } {
-      error $result
+      error $dwTerm
   }
 }
 
