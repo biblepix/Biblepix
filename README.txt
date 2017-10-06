@@ -7,7 +7,7 @@
 # 	      www.biblepix.vollmar.ch                       #
 # Version: 2.4                                           #
 # Systems: Linux, Windows                                #
-# Updated: May 17                                        #
+# Updated: Oct 17                                        #
 ##########################################################
 
 ####################
@@ -236,9 +236,9 @@ So wird 'Das Wort' als Einzelbild angezeigt. Um ein Wechselbild zu erzwingen (Op
 	° biblepix.tcl (Hauptprogramm)
 	° biblepix-setup.tcl (Einrichtungsprogramm)
 
-* Falls nach einem Update das Setup nicht mehr läuft, löschen Sie die Datei
-		~/Biblepix/prog/conf/biblepix.conf
-	Dann starten Sie das Setup erneut.
+* Falls nach einem Update das Setup nicht mehr läuft, führen Sie die Datei
+    ° BiblePix-Installer.tcl
+  nochmals aus. Sie befindet sich im Verzeichnis ~/Biblepix/prog/src/Installer.
 
 * Debugmodus: um Programmfehler aufzuspüren, öffnen Sie die Datei
 		~/Biblepix/prog/src/com/globals.tcl
@@ -463,8 +463,9 @@ Note that the tilde (~) stands for the Home directory as described above.
 	° biblepix-setup.tcl (setup program)
 
 * If after an update the BiblePix Setup or the BiblePix program fails to run, 
-	delete the file ~/Biblepix/prog/conf/biblepix.conf
-	Then rerun Setup.
+	reinstall by running 
+	  ° BiblePix-Installer.tcl
+	The file is found in the ~/Biblepix/prog/Installer directory.
 
 * Debug mode: to help resolve any problems, edit the file
 			~/Biblepix/prog/src/com/globals.tcl
