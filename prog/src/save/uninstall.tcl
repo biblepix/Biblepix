@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/uninstall.tcl
 # sourced by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12nov17
+# Updated: 22Sep17
 
 set msg1 "Do you really want to remove BiblePix from your computer?"
 set msg1DE "Wollen Sie wirklich BibelPix von Ihrem Computer entfernen?"
@@ -37,10 +37,9 @@ if {$antwort=="yes"} {
         catch {exec bash $unixdir/KDErestore.sh}
       }
 
-      #remove any cron entries & restore any saved crontab
+      #remove any cron entries
       if {$crontab} {
-        source $SetupSaveLinHelpers
-        setLinCrontab delete
+        catch {exec crontab -r}
       }
 
     } elseif {$platform=="windows"} {   
