@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2oct17 pv
+# Updated: 12nov17 pv
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -273,17 +273,6 @@ Yours faithfully,
 Peter Vollmar
 Homepage: www.vollmar.ch
 The Word: www.biblepix.vollmar.ch
-  
-===== The Word for Wednesday, December 10, 2014 =====
-\tBy faith the people crossed the Red Sea as on dry land,
-\tbut the Egyptians, when they attempted
-\tto do the same, were drowned.
-\t\t\t~ Hebrews 11:29 
-\tPonder the path of your feet;
-\tthen all your ways will be sure.
-\tDo not swerve to the right or to the left;
-\tturn your foot away from evil.
-\t\t\t~ Proverbs 4:26-27 
 "
 
 set f3Expl(de) "
@@ -291,20 +280,8 @@ Mit freundlichem Gruss
 Peter Vollmar
 Homepage: www.vollmar.ch
 Das Wort: www.biblepix.vollmar.ch
-
-===== Das Word für Mittwoch, 10. Dezember 2014 =====
-\tAufgrund des Glaubens zogen die Israeliten durchs Rote Meer
-\twie durch trockenes Land;
-\tals die Ägypter dasselbe versuchten,
-\twurden sie vom Meer verschlungen.
-\t\t\t~ Hebräer 11:29 
-\tEbne die Strasse für deinen Fuß,
-\tund alle deine Wege seien geordnet.
-\tBieg nicht ab, weder rechts noch links,
-\thalt deinen Fuß vom Bösen zurück.
-\t\t\t~ Sprüche 4:26-27 
 "  
-set ::f3.ex $f3Expl($lang)
+set ::f3dw $f3Expl($lang)
 
 set f4Tit(en)  "Display $dw in your Linux terminals"
 set f4Tit(de)  "$dw in Ihren Linux-Terminals"
