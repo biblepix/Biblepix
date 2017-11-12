@@ -2,10 +2,10 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 26Sep17
+# Updated: 12nov17
 
 # This variable enables the debuging mode in the hole application if set to 1.
-set Debug 1
+set Debug 0
 set Mocking 0
 
 set version "2.4"
@@ -94,7 +94,7 @@ Globals [file join $sharedir globals.tcl]
 Imgtools [file join $sharedir imgtools.tcl]
 LoadConfig [file join $sharedir LoadConfig.tcl]
 Twdtools [file join $sharedir twdtools.tcl]
-Uninstall [file join $sharedir uninstall.tcl]
+Uninstall [file join $savedir uninstall.tcl]
 Signature [file join $maildir signature.tcl]
 Config [file join $confdir biblepix.conf]
 Terminal [file join $unixdir term.sh]
