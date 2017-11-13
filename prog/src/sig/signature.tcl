@@ -4,61 +4,52 @@
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 15nov15
 
-set dwsig ""
-set twdfile ""
-#get new sig text
 source $Twdtools
 
 puts "Updating signatures..."
 
-set twdlist [getTWDlist]
-foreach twdfile $twdlist {
-  #get sig text
-  set dwsig [formatSigText $twdfile]
-  #set endung mit 4 Extrabuchstaben nach Sprache_
-  set endung [string range $twdfile 0 5] 
-  set sigfile [file join $sigDir signature-$endung]
+set twdList [getTWDlist]
+foreach twdFileName $twdList {
+  set twdSig [getTodaysTwdSig $twdFileName]
 
-  #create new sigfile if inexistent
-  if {![file exists $sigfile]} {
-    set sigfilechan [open $sigfile w]
-    close $sigfilechan
-    set sigalt ""
-  } else {
-  #read old sigfile if existent
-    set sigfilechan [open $sigfile r]
-    set sigalt [read $sigfilechan]
-    close $sigfilechan
-  }
-   
+  #set endung mit 5 Extrabuchstaben nach Sprache_
+  set endung [string range $twdFileName 0 6] 
+  set sigFile [file join $sigDir signature-$endung]
+  
+  #create the File if it doesn't exist and open it.
+  set sigFileChan [open $sigFile a+]
+  seek $sigFileChan 0
+  
   #check date, skip if today's and not empty
-  set dateidatum [clock format [file mtime $sigfile] -format %d]
-   
-  if { $heute==$dateidatum && [file size $sigfile]!=0 } {
-    puts " [file tail $sigfile] is up-to-date"
-       continue 
-    } 
- 
+  set dateidatum [clock format [file mtime $sigFile] -format %d]
+  
+  if {$heute == $dateidatum && [file size $sigFile] != 0} {
+    puts " [file tail $sigFile] is up-to-date"
+    continue
+  }
+
+  
+  #read the old sigFile
+  set sigOld [read $sigFileChan]
+
   #cut out old verse and add blank line if missing
-  set anf [string first === $sigalt]
-  if {$anf == "-1"} { 
-    set sigorig $sigalt 
+  set startIndex [string first "=====" $sigOld]
+  if {$startIndex == "-1"} {
+    set sigHead $sigOld
   } else {
-    set sigorig [string replace $sigalt $anf end]
-    if {![string match *\n\n===* $sigalt]} {
-    set sigorig [append sigorig "\n"]
+    set sigHead [string replace $sigOld $startIndex end]
+    if {![string match *\n\n=====* $sigOld]} {
+      append sigHead "\n\n"
     }
   }
 
-  #overwrite sigfile with new text
-  set signeu [append signeu "$sigorig$dwsig"]
-  set sigfilechan [open $sigfile w]
-  #channel for Win
-  chan configure $sigfilechan -encoding utf-8
-  puts $sigfilechan $signeu
-  close $sigfilechan
+  append sigNew "$sigHead$twdSig"
+  
+  seek $sigFileChan 0
+  
+  chan configure $sigFileChan -encoding utf-8
+  puts $sigFileChan $sigNew
+  close $sigFileChan
 
   puts "Creating signature for signature-$endung"
-
-  unset sigorig sigalt signeu
 } ;#END main loop

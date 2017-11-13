@@ -364,6 +364,34 @@ proc formatSigText {twdFile} {
   return $dwsig
 }
 
+proc getTodaysTwdSig {twdFileName} {
+  global ind
+  
+  set twdLanguage [getTwdLanguage $twdFileName]
+  
+  set twdDomDoc [parseTwdFileDomDoc $twdFileName]
+  set twdTodayNode [getDomNodeForToday $twdDomDoc]
+  
+  if {$twdTodayNode == ""} {
+    set twdText "No Bible text found for today."
+  } else {
+    set twdTitle [getTwdTitle $twdTodayNode $twdLanguage]
+    set twdText "===== $twdTitle =====\n"
+    
+    set parolNode [getTwdParolNode 1 $twdTodayNode]
+    set twdText [appendParolToText $parolNode $twdText $twdLanguage $ind]
+    
+    append twdText \n
+    
+    set parolNode [getTwdParolNode 2 $twdTodayNode]
+    set twdText [appendParolToText $parolNode $twdText $twdLanguage $ind]
+  }
+  
+  $twdDomDoc delete
+  
+  return $twdText
+}
+
 proc formatTermText {twdFile} {
 #ONLY FOR UNIX!!!
 ##Returns $dwterm, to be processed by term.sh
