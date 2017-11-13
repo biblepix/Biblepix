@@ -16,26 +16,26 @@ if {$enablesig==1} {
 }
 pack [frame .n.f3.topframe] -expand false -fill x
 pack [frame .n.f3.topframe.left] -side left -expand false 
-pack [frame .n.f3.topframe.right] -side right -expand true
+pack [frame .n.f3.topframe.right] -side right -expand 0
+.n.f3.topframe.right configure -borderwidth 2 -relief sunken -padx 50 -pady 30 -bg $bg
 
-message .n.f3.topframe.left.t2 -textvar f3.txt -font bpfont1 -width 0 -padx $px -pady $py
+#Create Message
+message .n.f3.topframe.left.t2 -font bpfont1  -padx $px -pady $py -textvar f3.txt 
 pack .n.f3.topframe.left.t2 -anchor nw
 
-#Create Label mit aktuellem Vers
-set sigLabel [label .n.f3.topframe.right.sig -font TkIconFont -bg $bg -relief sunken -width 60 -foreground blue -pady 3 -padx 3 -justify left -textvariable dwSig]
+#Create Label 1
+set sigLabel1 [label .n.f3.topframe.right.sig -font TkIconFont -bg $bg -width 0 -foreground blue -pady 3 -padx 3 -justify left -textvariable f3dw]
 
-#Create new variable 
+#Create Label 2
+set sigLabel2 [label .n.f3.topframe.right.sig2 -font TkIconFont -bg $bg -width 0 -foreground blue -pady 3 -padx 3 -justify left -textvariable dwsig]
+
+#Adapt $dwtext for signature 
 set dwsig $dwtext
 regsub -all {\*} $dwsig {=====} dwsig
 
 #Justify right for Hebrew & Arabic
-if { [regexp {[\u05d0-\u05ea]} $dwsig] } {
-  $sigLabel configure -justify right
+if { [regexp {[\u05d0-\u076c]} $dwsig] } {
+  $sigLabel2 configure -justify right
 }
 
-if { [regexp {[\u0600-\u076c]} $dwsig] } {
-  $sigLabel configure -justify right
-}
-    
-set dwSig [join [list $f3dw $dwsig] \n] 
-pack .n.f3.topframe.right.sig -anchor nw
+pack $sigLabel1 $sigLabel2 -anchor w
