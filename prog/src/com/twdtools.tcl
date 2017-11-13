@@ -60,6 +60,58 @@ global twdDir
   return [$doc documentElement]
 }
 
+proc parseTwdFileDomDoc {twdFile} {
+global twdDir
+  set path [file join $twdDir $twdFile]
+  set file [open $path]
+  chan configure $file -encoding utf-8
+  set TWD [read $file]
+  close $file
+  return [dom parse $TWD]
+}
+
+proc getDomNodeForToday {domDoc} {
+  global datum
+  set rootDomNode [$domDoc documentElement]
+  return [$rootDomNode selectNodes /thewordfile/theword\[@date='$datum'\]]
+}
+
+proc getTwdTitle {twdNode} {
+  return [parseToText [$twdNode selectNodes title]]
+}
+
+proc getTwdParolNode {no twdNode} {
+  return [$twdNode selectNodes parol\[$no\]]
+}
+
+proc getParolIntro {parolNode} {
+  return [parseToText [$parolNode selectNodes intro]]
+}
+
+proc getParolText {parolNode} {
+  return [parseToText [$parolNode selectNodes text]]
+}
+
+proc getParolRef {parolNode} {
+  return [parseToText [$parolNode selectNodes ref]]
+}
+
+proc parseToText {node} {
+  if {$node == ""} {
+    return ""
+  }
+  
+  set emNodes [$node selectNodes em/text()]
+  if {$emNodes != ""} {
+    foreach emNode $emNodes {
+      $emNode nodeValue "_[$emNode nodeValue]_"
+    }
+  }
+  
+  return [$node asText]
+}
+
+
 ## O U T P U T
 
 proc formatImgText {twdFile} {
