@@ -64,7 +64,7 @@ global twdDir
 
 proc formatImgText {twdFile} {
 ##Returns $dw for Img & Textfenster
-global tab datum ind enableintro
+global tab datum ind enabletitle
 
   set root [getTWDFileRoot $twdFile]
   
@@ -74,7 +74,7 @@ global tab datum ind enableintro
     return "No Bible text found for today."
   }
 
-  if {$enableintro} {
+  if {$enabletitle} {
     set dw "* [$titelnode data] *\n"
   } else {
     set ind ""
@@ -266,7 +266,7 @@ proc formatTermText {twdFile} {
 }
 
 proc setTWDWelcome {dwWidget} {
-global srcdir platform lang enableintro Twdtools Bidi noTWDFilesFound
+global srcdir platform lang Twdtools Bidi noTWDFilesFound
   
   # get TWD
   set twdfile [getRandomTWDFile]

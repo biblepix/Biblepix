@@ -31,10 +31,10 @@ if { ![info exists lang] } {
 }
 
 #Set Intro
-if {![info exists enableintro]} {
-  set enableintro 1
+if {![info exists enabletitle]} {
+  set enabletitle 1
   # set chan [open $Config a]
-  # puts $chan "set enableintro $enableintro"
+  # puts $chan "set enabletitle $enabletitle"
   # close $chan
 }
 

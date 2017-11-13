@@ -36,8 +36,8 @@ pack .n.f2.fleft.intro -anchor nw
 # F I L L   R I G H T
 
 #3. ShowDate checkbutton
-checkbutton .n.f2.fright.ftop.introBtn -textvar f2.introline -variable enableintro
-#if {$enableintro} {set introlineState 1} else {set introlineState 0}
+checkbutton .n.f2.fright.ftop.introBtn -textvar f2.introline -variable enabletitle
+#if {$enabletitle} {set introlineState 1} else {set introlineState 0}
 set showdateBtn .n.f2.fright.ftop.introBtn
 $showdateBtn configure -command {
   set textfile [getRandomTWDFile]
