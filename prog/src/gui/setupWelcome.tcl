@@ -25,12 +25,11 @@ pack .n.f0.ftop.left.subtit1 -anchor nw
 pack .n.f0.ftop.left.whatis  -anchor nw -side left
 
 #Set TheWord Button right
-button .n.f0.ftop.right.daswort -font bpfont1 -textvar dwtext -bg $bg -activebackground lightblue -fg blue -pady $py -padx $px -bd 5 
-set dwWidget .n.f0.ftop.right.daswort
-pack $dwWidget -anchor n
-source $Twdtools
-$dwWidget configure -command {set dwtext [setTWDWelcome $dwWidget]}
-set dwtext [setTWDWelcome $dwWidget]
+button .n.f0.ftop.right.daswort -font bpfont1 -bg $bg -activebackground lightblue -fg blue -pady $py -padx $px -bd 5 
+set twdWidget .n.f0.ftop.right.daswort
+pack $twdWidget -anchor n
+$twdWidget configure -command {fillWidgetWithTodaysTwd $twdWidget}
+fillWidgetWithTodaysTwd $twdWidget
 
 #Set text2 bottom
 label .n.f0.fbot.subtit2 -font bpfont2 -textvar welc.subtit2 -padx $px -pady $py

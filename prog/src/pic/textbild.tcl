@@ -8,22 +8,24 @@ wm overrideredirect . 1
 wm geometry . +0-30
 
 set screenX [winfo screenwidth .]
+set maxLineWidth 0
 
 #Create font only once
 catch {font create BiblepixFont}
 catch {font create BiblepixItalicFont -slant italic}
 
 proc text>bmp {bmpFilePath twdFileName} {
-global fontsize fontfamily fontweight hghex fghex Twdtools enabletitle ind
+global fontsize fontfamily fontweight hghex fghex Twdtools enabletitle ind screenX maxLineWidth
+
+  source $Twdtools
 
   #Configure font
   font configure BiblepixFont -family $fontfamily -size -$fontsize -weight $fontweight
   font configure BiblepixItalicFont -family $fontfamily -size -$fontsize -weight $fontweight
   
-  set twdLanguage [string range $twdFileName 0 1]
-  set ::maxLineWidth 0
+  set twdLanguage [getTwdLanguage $twdFileName]
   set indent 0
-  set RTL 0
+  set RtL [isRtL $twdLanguage]
   
   #force non-bold for Chinese
   if {$twdLanguage == "zh"} {
@@ -31,13 +33,11 @@ global fontsize fontfamily fontweight hghex fghex Twdtools enabletitle ind
     font configure BiblepixItalicFont -weight normal
   }
   
-  #force non-bold and set RTL for Hebrew & Arabic
-  if {$twdLanguage == "he" || $twdLanguage == "ar" || $twdLanguage == "ur" || $twdLanguage == "fa"} {
+  #force non-bold for RtL
+  if {$RtL} {
     font configure BiblepixFont -weight normal
     font configure BiblepixItalicFont -weight normal
-    set RTL 1    
   }
-  
 
   #Create & preconfigure empty one-line text widget
   catch {text .textImgTextWidget }
@@ -47,76 +47,80 @@ global fontsize fontfamily fontweight hghex fghex Twdtools enabletitle ind
   .textImgTextWidget configure -font BiblepixFont 
   .textImgTextWidget tag configure kursiv -font BiblepixItalicFont
   pack .textImgTextWidget
-
-  source $Twdtools
   
-  set twdDomDoc [parseTwdFileDomDoc $twdFileName]  
+  set twdDomDoc [parseTwdFileDomDoc $twdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   
   set textImg [image create photo]
   
-  if {$RTL} {  
+  if {$twdTodayNode == ""} {
+    addTextLineToTextImg "No Bible text found for today." $textImg
+  } else {
+    if {$RtL} {
       $textImg configure -width $screenX
-  }
-  
-  if {$enabletitle} {
-    set twdTitle [getTwdTitle $twdTodayNode]
-    addTextLineTotextImg $twdTitle $textImg $twdLanguage $RTL 0
-    set indent [font measure BiblepixFont $ind]
-  }
-  
-  set parolNode [getTwdParolNode 1 $twdTodayNode]  
-  addParolTotextImg $parolNode $textImg $twdLanguage $RTL $indent
-  
-  set parolNode [getTwdParolNode 2 $twdTodayNode]  
-  addParolTotextImg $parolNode $textImg $twdLanguage $RTL $indent
+    }
+    
+    if {$enabletitle} {
+      set twdTitle [getTwdTitle $twdTodayNode $twdLanguage 1]
+      addTextLineToTextImg $twdTitle $textImg $RtL
+      set indent [font measure BiblepixFont $ind]
+    }
+    
+    set parolNode [getTwdParolNode 1 $twdTodayNode]
+    addParolToTextImg $parolNode $textImg $twdLanguage $RtL $indent
+    
+    set parolNode [getTwdParolNode 2 $twdTodayNode]
+    addParolToTextImg $parolNode $textImg $twdLanguage $RtL $indent
 
-  #Cut out left whitespace for RTL
-  if {$RTL} {
-    set tempBild [image create photo]
-    $tempBild copy $textImg -from [expr $screenX - $maxLineWidth] 0 -shrink
-    $textImg blank
-    $textImg configure -width [image width $tempBild]
-    $textImg copy $tempBild
-    $tempBild blank
+    #Cut out left whitespace for RtL
+    if {$RtL} {
+      set tempImg [image create photo]
+      $tempImg copy $textImg -from [expr $screenX - $maxLineWidth] 0 -shrink
+      $textImg blank
+      $textImg configure -width [image width $tempImg]
+      $textImg copy $tempImg
+      image delete $tempImg
+    }
   }
-      
+  
   $textImg write $bmpFilePath -format bmp
-  $textImg blank           
+  image delete $textImg
+  
+  $twdDomDoc delete
 } ;#END text>bmp
 
-proc addParolTotextImg {parolNode textImg twdLanguage RTL indent} {
+proc addParolToTextImg {parolNode textImg twdLanguage RtL {indent 0}} {
   global tab
   
-  set intro [getParolIntro $parolNode]
+  set intro [getParolIntro $parolNode $twdLanguage 1]
   if {$intro != ""} {
-    addTextLineTotextImg $intro $textImg $twdLanguage $RTL $indent
+    addTextLineToTextImg $intro $textImg $RtL $indent
   }
   
-  set text [getParolText $parolNode]
-  set textLines [split $text \n]  
-   
+  set text [getParolText $parolNode $twdLanguage 1]
+  set textLines [split $text \n]
+  
   foreach line $textLines {
-    addTextLineTotextImg $line $textImg $twdLanguage $RTL $indent
+    addTextLineToTextImg $line $textImg $RtL $indent
   }
   
-  set ref [getParolRef $parolNode]
-  addTextLineTotextImg $ref $textImg $twdLanguage $RTL [font measure BiblepixFont $tab]
+  set ref [getParolRef $parolNode $twdLanguage 1]
+  addTextLineToTextImg $ref $textImg $RtL [font measure BiblepixFont $tab]
 }
 
-proc addTextLineTotextImg {text textImg twdLanguage RTL indent} {
-  global screenX maxLineWidth os 
+proc addTextLineToTextImg {text textImg {RtL 0} {indent 0}} {
+  global screenX maxLineWidth
   
-  set lineWidth [prepareTextWidgetAndGetLineWidth .textImgTextWidget $text $twdLanguage]
+  set lineWidth [prepareTextWidgetAndGetLineWidth .textImgTextWidget $text]
   
   set ::maxLineWidth [::tcl::mathfunc::max $maxLineWidth $lineWidth]
   
-  if { [catch {set tempBild [image create photo -data .textImgTextWidget -format window -width $lineWidth]}] } {
-    puts "tempBild could not be created. Line skipped"
+  if { [catch {set tempImg [image create photo -data .textImgTextWidget -format window -width $lineWidth]}] } {
+    puts "tempImg could not be created. Line skipped"
     return
   }
   
-  if {$RTL} {
+  if {$RtL} {
     set leftMargin [expr $screenX - $lineWidth - $indent]
     
     if {$leftMargin<0} {
@@ -126,36 +130,10 @@ proc addTextLineTotextImg {text textImg twdLanguage RTL indent} {
     set leftMargin $indent
   }
   
-  appendTempBildTotextImg $tempBild $textImg $leftMargin  
+  appendTempImgToTextImg $tempImg $textImg $leftMargin  
 }
 
-proc prepareTextWidgetAndGetLineWidth {textWidget text twdLanguage} {
-  global Bidi
-  
-  #Fix Hebrew
-  if {$twdLanguage == "he"} {
-    puts "Computing Hebrew text..."
-    source $Bidi
-
-    if {$os == "Windows NT"} {
-      set text [fixHebWin $text]
-    } else {
-      set text [fixHebUnix $text]
-    }
-  }
-
-  #Fix Arabic
-  if {$twdLanguage == "ar" || $twdLanguage == "ur" || $twdLanguage == "fa"} {
-    puts "Computing Arabic text..."
-    source $Bidi
-    
-    if {$os == "Windows NT"} {
-      set text [fixArabWin $text]
-    } else {
-      set text [fixArabUnix $text]
-    }
-  }
-  
+proc prepareTextWidgetAndGetLineWidth {textWidget text} {
   $textWidget delete 1.0 end  
   $textWidget insert 1.0 [string map {_ {}} $text]
   
@@ -199,14 +177,14 @@ proc prepareTextWidgetAndGetLineWidth {textWidget text twdLanguage} {
   return $lineWidth
 }
 
-proc appendTempBildTotextImg {tempBild textImg leftMargin} {
+proc appendTempImgToTextImg {tempImg textImg leftMargin} {
   global screenX
   
   #adapt textImg width successively
-  set tempBildWidth [image width $tempBild]
+  set tempImgWidth [image width $tempImg]
 
-  if {$tempBildWidth > [image width $textImg]} {
-      $textImg configure -width [::tcl::mathfunc::min $tempBildWidth $screenX]
+  if {$tempImgWidth > [image width $textImg]} {
+      $textImg configure -width [::tcl::mathfunc::min $tempImgWidth $screenX]
       update
   }
 
@@ -218,7 +196,9 @@ proc appendTempBildTotextImg {tempBild textImg leftMargin} {
     set imgHeight 0
   }
  
-  $textImg copy $tempBild -to $leftMargin $imgHeight -shrink
+  $textImg copy $tempImg -to $leftMargin $imgHeight -shrink
+  
+  image delete $tempImg
 }
 
 #Creates today's missing BMPs / Executes text>bmp

@@ -394,3 +394,32 @@ proc deleteImg {localJList c} {
   
   return $localJList
 }
+
+
+##### Procs for SetupWelcome ####################################################
+
+proc fillWidgetWithTodaysTwd {twdWidget} {
+global Twdtools noTWDFilesFound
+
+  if {[info procs getRandomTwdFile] == ""} {
+    source $Twdtools
+  }
+
+  set twdFileName [getRandomTwdFile]
+
+  if {$twdFileName == ""} {
+    $twdWidget conf -fg black -bg red
+    $twdWidget conf -activeforeground black -activebackground orange
+    set twdText $noTWDFilesFound
+  } else {
+    if {[isRtL [getTwdLanguage $twdFileName]]} {
+      $twdWidget conf -justify right
+    } else {
+      $twdWidget conf -justify left
+    }
+    
+    set twdText [getTodaysTwdText $twdFileName]
+  }
+  
+  $twdWidget conf -text $twdText
+}
