@@ -5,8 +5,8 @@
 # Updated: 12nov17
 
 # This variable enables the debuging mode in the hole application if set to 1.
-set Debug 1
-set Mocking 1
+set Debug 0
+set Mocking 0
 
 set version "2.4"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
@@ -62,7 +62,7 @@ proc makeDirs {} {
 
 #Set filepaths array
 array set filepaths "
-Readme [file join $rootdir README]
+Readme [file join $rootdir README.txt]
 UpdateInjection [file join $srcdir updateInjection.tcl]
 Biblepix [file join $srcdir biblepix.tcl]
 Setup [file join $srcdir biblepix-setup.tcl]
@@ -85,7 +85,7 @@ SetupSave [file join $savedir setupSave.tcl]
 SetupSaveLin [file join $savedir setupSaveLin.tcl]
 SetupSaveLinHelpers [file join $savedir setupSaveLinHelpers.tcl]
 SetupSaveWin [file join $savedir setupSaveWin.tcl]
-SetupSaveWinHelpers [file join $savedir setupSaveWinHelpers.tcl ]
+SetupSaveWinHelpers [file join $savedir setupSaveWinHelpers.tcl]
 Bidi [file join $sharedir bidi.tcl]
 Flags [file join $sharedir flags.tcl]
 Http [file join $sharedir http.tcl]

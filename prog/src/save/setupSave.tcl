@@ -23,7 +23,7 @@ if { [catch {glob $twdDir/*$jahr.twd}] } {
 #1.Fetch status variables from GUI
 set imgstatus [set imgyesState]
 set sigstatus [set sigyesState]
-set introlinestatus [set enableintro]
+set titlelinestatus [set enabletitle]
 set fontcolourstatus [$fontcolorSpin get]
 set fontsizestatus [$fontsizeSpin get]
 set fontweightstatus [set fontweightState]
@@ -50,7 +50,7 @@ catch {set termstatus [set termyesnoState]}
 #2.Write general vars to $Config
 set chan [open $Config w]
 puts $chan "set lang $lang"
-puts $chan "set enableintro $introlinestatus"
+puts $chan "set enabletitle $titlelinestatus"
 puts $chan "set enablepic $imgstatus"
 puts $chan "set enablesig $sigstatus"
 puts $chan "set slideshow $slidestatus"

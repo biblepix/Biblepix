@@ -35,7 +35,7 @@ set padLeft 5
 #Create bp text widget 
 text .n.f4.mainf.right.bp -width 70  
 set t .n.f4.mainf.right.bp
-$t insert 1.0 $dwtext
+$t insert 1.0 $setupTwdText
 $t configure -foreground orange -background black -pady 5 -padx 5
 #change 1st line
 $t tag add intro 1.0 1.end

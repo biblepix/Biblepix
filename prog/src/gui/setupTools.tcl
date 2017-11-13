@@ -151,8 +151,7 @@ global Flags
 # C A N V A S   M O V E   P R O C S
 
 proc createMovingTextBox {textposCanv} {
-global marginleft margintop textPosFactor fontsize fontfamily
-global fontcolortext gold green blue silver noTWDFilesFound dwtext
+global marginleft margintop textPosFactor fontsize setupTwdText
 
   set screenx [winfo screenwidth .]
   set screeny [winfo screenheight .]
@@ -165,7 +164,7 @@ global fontcolortext gold green blue silver noTWDFilesFound dwtext
   set y2 [expr ($margintop/$textPosFactor)+$textPosSubwinY]
   
   $textposCanv create text [expr $marginleft/$textPosFactor] [expr $margintop/$textPosFactor] -anchor nw -justify left -tags mv 
-  $textposCanv itemconfigure mv -text $dwtext
+  $textposCanv itemconfigure mv -text $setupTwdText
   $textposCanv itemconfigure mv -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill orange  -activefill red
 }
 
@@ -393,4 +392,33 @@ proc deleteImg {localJList c} {
   }
   
   return $localJList
+}
+
+
+##### Procs for SetupWelcome ####################################################
+
+proc fillWidgetWithTodaysTwd {twdWidget} {
+global Twdtools noTWDFilesFound
+
+  if {[info procs getRandomTwdFile] == ""} {
+    source $Twdtools
+  }
+
+  set twdFileName [getRandomTwdFile]
+
+  if {$twdFileName == ""} {
+    $twdWidget conf -fg black -bg red
+    $twdWidget conf -activeforeground black -activebackground orange
+    set twdText $noTWDFilesFound
+  } else {
+    if {[isRtL [getTwdLanguage $twdFileName]]} {
+      $twdWidget conf -justify right
+    } else {
+      $twdWidget conf -justify left
+    }
+    
+    set twdText [getTodaysTwdText $twdFileName]
+  }
+  
+  $twdWidget conf -text $twdText
 }

@@ -29,9 +29,8 @@ set sigLabel1 [label .n.f3.topframe.right.sig -font TkIconFont -bg $bg -width 0 
 #Create Label 2
 set sigLabel2 [label .n.f3.topframe.right.sig2 -font TkIconFont -bg $bg -width 0 -foreground blue -pady 3 -padx 3 -justify left -textvariable dwsig]
 
-#Adapt $dwtext for signature 
-set dwsig $dwtext
-regsub -all {\*} $dwsig {=====} dwsig
+#Adapt $setupTwdText for signature 
+set dwsig [getTodaysTwdSig $setupTwdFileName]
 
 #Justify right for Hebrew & Arabic
 if { [regexp {[\u05d0-\u076c]} $dwsig] } {

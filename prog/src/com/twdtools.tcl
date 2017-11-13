@@ -22,20 +22,22 @@ proc getBMPlist {} {
   set bmplist [glob -nocomplain -tails -directory $bmpdir *.bmp]
   return $bmplist
 }
-  
+
 #Randomizers
-proc getRandomTWDFile {} {
+proc getRandomTwdFile {} {
   #Ausgabe ohne Pfad
   set twdlist [getTWDlist]
   set randIndex [expr {int(rand()*[llength $twdlist])}]
   return [lindex $twdlist $randIndex]
 }
+
 proc getRandomBMP {} {
   #Ausgabe ohne Pfad
   set bmplist [getBMPlist]
   set randIndex [expr {int(rand()*[llength $bmplist])}]
   return [lindex $bmplist $randIndex]
 }
+
 proc getRandomPhoto {} {
   #Ausgabe JPG/PNG mit Pfad
   global platform jpegDir
@@ -60,32 +62,175 @@ global twdDir
   return [$doc documentElement]
 }
 
+proc parseTwdFileDomDoc {twdFile} {
+global twdDir
+  set path [file join $twdDir $twdFile]
+  set file [open $path]
+  chan configure $file -encoding utf-8
+  set Twd [read $file]
+  close $file
+  return [dom parse $Twd]
+}
+
+proc getDomNodeForToday {domDoc} {
+  global datum
+  set rootDomNode [$domDoc documentElement]
+  return [$rootDomNode selectNodes /thewordfile/theword\[@date='$datum'\]]
+}
+
+proc parseToText {node twdLanguage {withTags 0}} {
+  global Bidi os
+  
+  if {$node == ""} {
+    return ""
+  }
+  
+  if {$withTags} {
+    set emNodes [$node selectNodes em/text()]
+    if {$emNodes != ""} {
+      foreach emNode $emNodes {
+        $emNode nodeValue "_[$emNode nodeValue]_"
+      }
+    }
+  }
+  
+  set text [$node asText]
+  
+  #Fix Hebrew
+  if {$twdLanguage == "he"} {
+    puts "Computing Hebrew text..."
+    if {[info procs fixHebWin] == ""} {
+      source $Bidi
+    }
+
+    if {$os == "Windows NT"} {
+      set text [fixHebWin $text]
+    } else {
+      set text [fixHebUnix $text]
+    }
+  }
+
+  #Fix Arabic
+  if {$twdLanguage == "ar" || $twdLanguage == "ur" || $twdLanguage == "fa"} {
+    puts "Computing Arabic text..."
+    if {[info procs fixArabWin] == ""} {
+      source $Bidi
+    }
+    
+    if {$os == "Windows NT"} {
+      set text [fixArabWin $text]
+    } else {
+      set text [fixArabUnix $text]
+    }
+  }
+  
+  return $text
+}
+
+proc appendParolToText {parolNode twdText twdLanguage indent {RtL 0}} {
+  global tab
+  
+  set intro [getParolIntro $parolNode $twdLanguage]
+  if {$intro != ""} {
+    if {$RtL} {
+      append twdText $intro $indent\n
+    } else {
+      append twdText $indent $intro\n
+    }
+  }
+  
+  set text [getParolText $parolNode $twdLanguage]
+  set textLines [split $text \n]
+   
+  foreach line $textLines {
+    if {$RtL} {
+      append twdText $line $indent\n
+    } else {
+      append twdText $indent $line\n
+    }
+  }
+  
+  set ref [getParolRef $parolNode $twdLanguage]
+  if {$RtL} {
+    append twdText $ref $tab
+  } else {
+    append twdText $tab $ref
+  }
+  
+  return $twdText
+}
+
 ## O U T P U T
 
+proc getTwdLanguage {twdFileName} {
+  return [string range $twdFileName 0 1]
+}
 
-#TODO: <em>-Tag  innerhalb von <text> verarbeiten:
-#1. set sel [$root selectNodes {//text/em}]
-#   set string [sel text]
-#  '//text asText' gibt ganzen Text UNMARKIERT aus
+proc isRtL {twdLanguage} {
+  if {$twdLanguage == "he" || $twdLanguage == "ar" || $twdLanguage == "ur" || $twdLanguage == "fa"} {
+    return 1
+  } else {
+    return 0
+  }
+}
 
-#1. DIESER BEFEHL GIBT ALLE em-Texte als Text-Nodes (nodeValue=) aus:
-# set emTextNodes [$root selectNodes {//em/text()}]
-#muss über beide Text-Teile separat iteriert werden
+proc getTwdTitle {twdNode twdLanguage {withTags 0}} {
+  return [parseToText [$twdNode selectNodes title] $twdLanguage $withTags]
+}
 
-#2. DIESER BEFEHL ÄNDERT ALLE em-Texte nach: _TEXT_
-#muss über beide Text-Teile separat iteriert werden
+proc getTwdParolNode {no twdNode} {
+  return [$twdNode selectNodes parol\[$no\]]
+}
 
-#2. Text irgendwie markieren [string index ... ]?
-#3. im text-widget als kursiv markieren
-# set kursivBeg [string first _ $t]
-# set kursivEnd [string last _ $t]
-# .t tag add kursiv $kursivBeg $kursivEnd
-# .t tag configure kursiv -font italic
-# string map {_ {}} $t
+proc getParolIntro {parolNode twdLanguage {withTags 0}} {
+  return [parseToText [$parolNode selectNodes intro] $twdLanguage $withTags]
+}
+
+proc getParolText {parolNode twdLanguage {withTags 0}} {
+  return [parseToText [$parolNode selectNodes text] $twdLanguage $withTags]
+}
+
+proc getParolRef {parolNode twdLanguage {withTags 0}} {
+  return [string cat "~ " [parseToText [$parolNode selectNodes ref] $twdLanguage $withTags]]
+}
+
+proc getTodaysTwdText {twdFileName} {
+  global enabletitle ind
+  
+  set twdLanguage [getTwdLanguage $twdFileName]
+  set indent ""
+  set RtL [isRtL $twdLanguage]
+  set twdText ""
+  
+  set twdDomDoc [parseTwdFileDomDoc $twdFileName]
+  set twdTodayNode [getDomNodeForToday $twdDomDoc]
+  
+  if {$twdTodayNode == ""} {
+    set twdText "No Bible text found for today."
+  } else {
+    if {$enabletitle} {
+      set twdTitle [getTwdTitle $twdTodayNode $twdLanguage]
+      append twdText $twdTitle\n
+      set indent $ind
+    }
+    
+    set parolNode [getTwdParolNode 1 $twdTodayNode]
+    set twdText [appendParolToText $parolNode $twdText $twdLanguage $indent $RtL]
+    
+    append twdText \n
+    
+    set parolNode [getTwdParolNode 2 $twdTodayNode]
+    set twdText [appendParolToText $parolNode $twdText $twdLanguage $indent $RtL]
+  }
+  
+  $twdDomDoc delete
+  
+  return $twdText
+}
 
 proc formatImgText {twdFile} {
 ##Returns $dw for Img & Textfenster
-global tab datum ind enableintro
+global tab datum ind enabletitle
 
   set root [getTWDFileRoot $twdFile]
   
@@ -95,7 +240,7 @@ global tab datum ind enableintro
     return "No Bible text found for today."
   }
 
-  if {$enableintro} {
+  if {$enabletitle} {
     set dw "* [$titelnode data] *\n"
   } else {
     set ind ""
@@ -140,7 +285,7 @@ global tab datum ind enableintro
     append dw $ind $intro\n 
   }
   #Bibeltext
-  foreach line [split [$textnode text] \n] {  
+  foreach line [split [$textnode text] \n] {
     append dw $ind $line\n 
   }    
   #Bibelstelle
@@ -219,6 +364,34 @@ proc formatSigText {twdFile} {
   return $dwsig
 }
 
+proc getTodaysTwdSig {twdFileName} {
+  global ind
+  
+  set twdLanguage [getTwdLanguage $twdFileName]
+  
+  set twdDomDoc [parseTwdFileDomDoc $twdFileName]
+  set twdTodayNode [getDomNodeForToday $twdDomDoc]
+  
+  if {$twdTodayNode == ""} {
+    set twdText "No Bible text found for today."
+  } else {
+    set twdTitle [getTwdTitle $twdTodayNode $twdLanguage]
+    set twdText "===== $twdTitle =====\n"
+    
+    set parolNode [getTwdParolNode 1 $twdTodayNode]
+    set twdText [appendParolToText $parolNode $twdText $twdLanguage $ind]
+    
+    append twdText \n
+    
+    set parolNode [getTwdParolNode 2 $twdTodayNode]
+    set twdText [appendParolToText $parolNode $twdText $twdLanguage $ind]
+  }
+  
+  $twdDomDoc delete
+  
+  return $twdText
+}
+
 proc formatTermText {twdFile} {
 #ONLY FOR UNIX!!!
 ##Returns $dwterm, to be processed by term.sh
@@ -286,54 +459,4 @@ proc formatTermText {twdFile} {
   return $dwterm
 }
 
-proc setTWDWelcome {dwWidget} {
-global srcdir platform lang enableintro Twdtools Bidi noTWDFilesFound
-  
-  # get TWD
-  set twdfile [getRandomTWDFile]
 
-  # check TWD
-  if {$twdfile==""} {
-    $dwWidget conf -fg black -bg red -activeforeground black -activebackground orange
-    set dw $noTWDFilesFound
-  
-  } else {    
-  # get TWD
-    source $Twdtools
-    set dw [formatImgText $twdfile]
-    $dwWidget conf -justify left
-
-    #Check for Hebrew text 
-    if { [regexp {[\u05d0-\u05ea]} $dw] } {
-      set justify right
-      source $Bidi
-      #Unix
-      if {$platform=="unix"} {
-        set dw [fixHebUnix $dw]
-      
-      #Win
-      } elseif {$platform=="windows"} {
-        set ind ""
-        set dw [fixHebWin $dw]
-      }
-      $dwWidget conf -justify right
-     
-         
-     #Check for Arabic text
-    } elseif { [regexp {[\u0600-\u076c]} $dw] } {
-      set justify right
-      source $Bidi
-      #Unix
-      if {$platform=="unix"} {
-        set dw [fixArabUnix $dw]
-      } elseif {$platform=="windows"} {
-      #Win
-        set ind ""
-        set dw [fixArabWin $dw]
-      }
-      $dwWidget conf -justify right
-    }
-  }
-  return $dw
-        
-} ;#end setTWD
