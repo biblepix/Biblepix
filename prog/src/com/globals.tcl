@@ -62,7 +62,7 @@ proc makeDirs {} {
 
 #Set filepaths array
 array set filepaths "
-Readme [file join $rootdir README]
+Readme [file join $rootdir README.txt]
 UpdateInjection [file join $srcdir updateInjection.tcl]
 Biblepix [file join $srcdir biblepix.tcl]
 Setup [file join $srcdir biblepix-setup.tcl]
