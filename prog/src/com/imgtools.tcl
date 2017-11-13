@@ -132,7 +132,7 @@ proc checkImgSizeAndSave {imagePath} {
     set finalBild $tempBild 
   }
   
-  #3. Overwrite corrected image & save as PNG  
+  #3. Overwrite corrected image & save as PNG
   $finalBild write [file join $jpegDir $targetFileName] -format PNG
   
   $tempBild blank

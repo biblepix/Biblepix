@@ -13,7 +13,7 @@ source $Globals
 source $Twdtools
 
 #Run Setup if TWD file not found
-if {[catch "set twdfile [getRandomTWDFile]"]} {
+if {[catch "set twdfile [getRandomTwdFile]"]} {
   source -encoding utf-8 $SetupTexts
   setTexts $lang
   tk_messageBox -title BiblePix -type ok -icon error -message $noTWDFilesFound

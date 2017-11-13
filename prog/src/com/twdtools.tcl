@@ -22,20 +22,22 @@ proc getBMPlist {} {
   set bmplist [glob -nocomplain -tails -directory $bmpdir *.bmp]
   return $bmplist
 }
-  
+
 #Randomizers
-proc getRandomTWDFile {} {
+proc getRandomTwdFile {} {
   #Ausgabe ohne Pfad
   set twdlist [getTWDlist]
   set randIndex [expr {int(rand()*[llength $twdlist])}]
   return [lindex $twdlist $randIndex]
 }
+
 proc getRandomBMP {} {
   #Ausgabe ohne Pfad
   set bmplist [getBMPlist]
   set randIndex [expr {int(rand()*[llength $bmplist])}]
   return [lindex $bmplist $randIndex]
 }
+
 proc getRandomPhoto {} {
   #Ausgabe JPG/PNG mit Pfad
   global platform jpegDir
@@ -65,9 +67,9 @@ global twdDir
   set path [file join $twdDir $twdFile]
   set file [open $path]
   chan configure $file -encoding utf-8
-  set TWD [read $file]
+  set Twd [read $file]
   close $file
-  return [dom parse $TWD]
+  return [dom parse $Twd]
 }
 
 proc getDomNodeForToday {domDoc} {
@@ -171,7 +173,7 @@ global tab datum ind enabletitle
     append dw $ind $intro\n 
   }
   #Bibeltext
-  foreach line [split [$textnode text] \n] {  
+  foreach line [split [$textnode text] \n] {
     append dw $ind $line\n 
   }    
   #Bibelstelle

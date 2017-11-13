@@ -247,7 +247,7 @@ proc createBMPs {} {
   } else {
   
     #pick 1 random pic+TWD for single pic mode
-    set twdFileNames [getRandomTWDFile]
+    set twdFileNames [getRandomTwdFile]
     set bmplist [getRandomBMP]
   }
 
