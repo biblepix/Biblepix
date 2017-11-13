@@ -62,6 +62,27 @@ global twdDir
 
 ## O U T P U T
 
+
+#TODO: <em>-Tag  innerhalb von <text> verarbeiten:
+#1. set sel [$root selectNodes {//text/em}]
+#   set string [sel text]
+#  '//text asText' gibt ganzen Text UNMARKIERT aus
+
+#1. DIESER BEFEHL GIBT ALLE em-Texte als Text-Nodes (nodeValue=) aus:
+# set emTextNodes [$root selectNodes {//em/text()}]
+#muss über beide Text-Teile separat iteriert werden
+
+#2. DIESER BEFEHL ÄNDERT ALLE em-Texte nach: _TEXT_
+#muss über beide Text-Teile separat iteriert werden
+
+#2. Text irgendwie markieren [string index ... ]?
+#3. im text-widget als kursiv markieren
+# set kursivBeg [string first _ $t]
+# set kursivEnd [string last _ $t]
+# .t tag add kursiv $kursivBeg $kursivEnd
+# .t tag configure kursiv -font italic
+# string map {_ {}} $t
+
 proc formatImgText {twdFile} {
 ##Returns $dw for Img & Textfenster
 global tab datum ind enableintro

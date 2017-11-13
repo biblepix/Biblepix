@@ -5,8 +5,8 @@
 # Updated: 12nov17
 
 # This variable enables the debuging mode in the hole application if set to 1.
-set Debug 0
-set Mocking 0
+set Debug 1
+set Mocking 1
 
 set version "2.4"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
