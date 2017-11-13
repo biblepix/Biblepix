@@ -6,6 +6,13 @@
 
 setFlags
 
+set setupTwdFileName [getRandomTwdFile]
+if {$setupTwdFileName == ""} {
+  set setupTwdText $noTWDFilesFound
+} else {
+  set setupTwdText [getTodaysTwdText $setupTwdFileName]
+}
+
 #Create title logo with icon
 catch {
   package require Img

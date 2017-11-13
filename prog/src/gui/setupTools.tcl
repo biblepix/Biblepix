@@ -151,8 +151,7 @@ global Flags
 # C A N V A S   M O V E   P R O C S
 
 proc createMovingTextBox {textposCanv} {
-global marginleft margintop textPosFactor fontsize fontfamily
-global fontcolortext gold green blue silver noTWDFilesFound dwtext
+global marginleft margintop textPosFactor fontsize setupTwdText
 
   set screenx [winfo screenwidth .]
   set screeny [winfo screenheight .]
@@ -165,7 +164,7 @@ global fontcolortext gold green blue silver noTWDFilesFound dwtext
   set y2 [expr ($margintop/$textPosFactor)+$textPosSubwinY]
   
   $textposCanv create text [expr $marginleft/$textPosFactor] [expr $margintop/$textPosFactor] -anchor nw -justify left -tags mv 
-  $textposCanv itemconfigure mv -text $dwtext
+  $textposCanv itemconfigure mv -text $setupTwdText
   $textposCanv itemconfigure mv -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill orange  -activefill red
 }
 

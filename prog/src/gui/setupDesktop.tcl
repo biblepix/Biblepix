@@ -37,13 +37,11 @@ pack .n.f2.fleft.intro -anchor nw
 
 #3. ShowDate checkbutton
 checkbutton .n.f2.fright.ftop.introBtn -textvar f2.introline -variable enabletitle
-#if {$enabletitle} {set introlineState 1} else {set introlineState 0}
 set showdateBtn .n.f2.fright.ftop.introBtn
 $showdateBtn configure -command {
-  set textfile [getRandomTWDFile]
-        if {$textfile != ""} {
-          $textposCanv itemconfigure mv -text [formatImgText [getRandomTWDFile] ]
-        }
+  if {$setupTwdFileName != ""} {
+    $textposCanv itemconfigure mv -text [getTodaysTwdText $setupTwdFileName]
+  }
 }
 
 #4. SlideshowYesNo checkbutton
