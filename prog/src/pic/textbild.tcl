@@ -130,7 +130,7 @@ proc addTextLineToTextImg {text textImg {RtL 0} {indent 0}} {
     set leftMargin $indent
   }
   
-  appendTempImgToTextImg $tempImg $textImg $leftMargin  
+  appendTempImgToTextImg $tempImg $textImg $leftMargin
 }
 
 proc prepareTextWidgetAndGetLineWidth {textWidget text} {
@@ -138,7 +138,7 @@ proc prepareTextWidgetAndGetLineWidth {textWidget text} {
   $textWidget insert 1.0 [string map {_ {}} $text]
   
   if {[regexp {_} $text]} {
-    set firstIndex [string first _ $text 0]  
+    set firstIndex [string first _ $text 0]
     set offset 1
     
     while {$firstIndex > 0} {
@@ -147,7 +147,7 @@ proc prepareTextWidgetAndGetLineWidth {textWidget text} {
       if {$secondIndex > 0} {
         $textWidget tag add kursiv 1.[expr $firstIndex - $offset] 1.[expr $secondIndex - $offset]
       } else {
-        $textWidget tag add kursiv 1.[expr $firstIndex - $offset] 1.end     
+        $textWidget tag add kursiv 1.[expr $firstIndex - $offset] 1.end
       }
       
       set firstIndex [string first _ $text [expr $secondIndex + 1]]
@@ -156,7 +156,7 @@ proc prepareTextWidgetAndGetLineWidth {textWidget text} {
   }
 
   #set line width in characters
-  set Charno [$textWidget count -chars 1.0 1.end]     
+  set Charno [$textWidget count -chars 1.0 1.end]
 
   set lineWidth ""
   set extraChars 0
@@ -169,7 +169,7 @@ proc prepareTextWidgetAndGetLineWidth {textWidget text} {
     #set line width in pixels
     wm state . normal
     update
-    set lineWidth [lindex [$textWidget bbox 1.end] 0]     
+    set lineWidth [lindex [$textWidget bbox 1.end] 0]
     
     incr extraChars
   }
@@ -240,7 +240,7 @@ proc createBMPs {} {
     } else {
       puts " Creating $bmpFileName"
       if { [catch {text>bmp $bmpFilePath $twdFileName} result] } {
-        puts $result
+        error $result
       }
     }
   }

@@ -33,7 +33,7 @@ set sigLabel2 [label .n.f3.topframe.right.sig2 -font TkIconFont -bg $bg -width 0
 set dwsig [getTodaysTwdSig $setupTwdFileName]
 
 #Justify right for Hebrew & Arabic
-if { [regexp {[\u05d0-\u076c]} $dwsig] } {
+if { [isRtL [getTwdLanguage $setupTwdFileName]] } {
   $sigLabel2 configure -justify right
 }
 
