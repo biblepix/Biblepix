@@ -18,6 +18,7 @@ foreach twdFileName $twdList {
   
   #create the File if it doesn't exist and open it.
   set sigFileChan [open $sigFile a+]
+  chan configure $sigFileChan -encoding utf-8
   seek $sigFileChan 0
   
   #check date, skip if today's and not empty
@@ -27,7 +28,6 @@ foreach twdFileName $twdList {
     puts " [file tail $sigFile] is up-to-date"
     continue
   }
-
   
   #read the old sigFile
   set sigOld [read $sigFileChan]
@@ -43,12 +43,11 @@ foreach twdFileName $twdList {
     }
   }
 
-  append sigNew "$sigHead$twdSig"
+  set sigNew "$sigHead$twdSig"
   
   seek $sigFileChan 0
-  
-  chan configure $sigFileChan -encoding utf-8
   puts $sigFileChan $sigNew
+  chan truncate $sigFileChan [tell $sigFileChan]
   close $sigFileChan
 
   puts "Creating signature for signature-$endung"
