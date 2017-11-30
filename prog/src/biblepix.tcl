@@ -29,7 +29,7 @@ if {$enablesig} {
 
 #2. C r e a t e   t e r m . s h  for Unix terminal if $enableterm
 if {[info exists enableterm] && $enableterm} {
-  if {![catch {formatTermText $twdfile} dwTerm]} {
+  if {![catch {getTodaysTwdTerm $twdfile} dwTerm]} {
     #create shell script
     set chan [open $Terminal w]
     puts $chan "# ~/Biblepix/prog/unix/term.sh"

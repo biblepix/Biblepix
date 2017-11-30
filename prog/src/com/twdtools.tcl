@@ -160,6 +160,27 @@ proc appendParolToText {parolNode twdText twdLanguage indent {RtL 0}} {
   return $twdText
 }
 
+proc appendParolToTermText {parolNode twdText indent} {
+  global tab
+  
+  set intro [getParolIntro $parolNode]
+  if {$intro != ""} {
+    append twdText "echo -e \$\{txtrst\}\$\{int\}\"$indent$intro\"\n"
+  }
+  
+  set text [getParolText $parolNode]
+  set textLines [split $text \n]
+   
+  foreach line $textLines {
+    append twdText "echo -e \$\{txt\}\"$indent$line\"\n"
+  }
+  
+  set ref [getParolRef $parolNode]
+  append twdText "echo -e \$\{ref\}\$\{tab\}\"$ref\""
+  
+  return $twdText
+}
+
 ## O U T P U T
 
 proc getTwdLanguage {twdFileName} {
@@ -182,15 +203,15 @@ proc getTwdParolNode {no twdNode} {
   return [$twdNode selectNodes parol\[$no\]]
 }
 
-proc getParolIntro {parolNode twdLanguage {withTags 0}} {
+proc getParolIntro {parolNode {twdLanguage "de"} {withTags 0}} {
   return [parseToText [$parolNode selectNodes intro] $twdLanguage $withTags]
 }
 
-proc getParolText {parolNode twdLanguage {withTags 0}} {
+proc getParolText {parolNode {twdLanguage "de"} {withTags 0}} {
   return [parseToText [$parolNode selectNodes text] $twdLanguage $withTags]
 }
 
-proc getParolRef {parolNode twdLanguage {withTags 0}} {
+proc getParolRef {parolNode {twdLanguage "de"} {withTags 0}} {
   return [string cat "~ " [parseToText [$parolNode selectNodes ref] $twdLanguage $withTags]]
 }
 
@@ -228,142 +249,6 @@ proc getTodaysTwdText {twdFileName} {
   return $twdText
 }
 
-proc formatImgText {twdFile} {
-##Returns $dw for Img & Textfenster
-global tab datum ind enabletitle
-
-  set root [getTWDFileRoot $twdFile]
-  
-#Set Datumszeile & return error if empty
-  set titelnode [$root selectNodes /thewordfile/theword\[@date='$datum'\]//title/text()]
-  if {$titelnode==""} {
-    return "No Bible text found for today."
-  }
-
-  if {$enabletitle} {
-    set dw "* [$titelnode data] *\n"
-  } else {
-    set ind ""
-  }
-  
-#Spruch 1
-  set parol [$root selectNodes /thewordfile/theword\[@date='$datum'\]//parol\[1\]]
-  #intro
-  set intronode [$parol firstChild]
-  set intro ""
-  if { [$intronode nodeName] == "intro" } {
-    set intro [$intronode text]
-    set textnode [$intronode nextSibling]
-  } else {
-    set textnode [$parol firstChild]
-  }
-  if {$intro != ""} {
-    append dw $ind $intro\n
-  }
-  #Bibeltext
-  foreach line [split [$textnode text] \n] {  
-    append dw $ind $line\n
-  }    
-  #Bibelstelle
-  set refnode [$textnode nextSibling]
-  set ref [$refnode text]
-  regsub {\(.*\)} $ref {} ref
-  append dw $tab "~ $ref\n" 
-  
-#Spruch 2
-  set parol [$parol nextSibling]
-  #intro
-  set intronode [$parol firstChild]
-  set intro ""
-  if { [$intronode nodeName] == "intro" } {
-    set intro [$intronode text]
-    set textnode [$intronode nextSibling]
-  } else {
-    set textnode [$parol firstChild]
-  }
-  if {$intro != ""} {
-    append dw $ind $intro\n 
-  }
-  #Bibeltext
-  foreach line [split [$textnode text] \n] {
-    append dw $ind $line\n 
-  }    
-  #Bibelstelle
-  set refnode [$textnode nextSibling]
-  set ref [$refnode text]
-  regsub {\(.*\)} $ref {} ref
-  append dw $tab "~ $ref"
-
-  return $dw
-}
-
-## formatSigText
-#  Formatiert den TWD-Text for die Signaturdateien.
-#  Returns $dwsig for signature
-proc formatSigText {twdFile} {
-  global datum tab ind
-  
-  set root [getTWDFileRoot $twdFile]
-  
-  #Datumszeile obligatorisch, return error if empty
-  set titelnode [$root selectNodes /thewordfile/theword\[@date='$datum'\]//title/text()]
-  if {$titelnode==""} {
-    return "No Bible text found for today."
-  }
-
-  set dwsig "===== [$titelnode data] ====="
-  
-#Spruch 1
-  set parol [$root selectNodes /thewordfile/theword\[@date='$datum'\]//parol\[1\]]
-  #intro
-  set intronode [$parol firstChild]
-  set intro ""
-  if { [$intronode nodeName] == "intro" } {
-    set intro [$intronode text]
-    set textnode [$intronode nextSibling]
-  } else {
-    set textnode [$parol firstChild]
-  }
-  if {$intro != ""} {
-    append dwsig \n "   $intro"
-  }
-  #Bibeltext
-  foreach line [split [$textnode text] \n] {  
-    append dwsig \n "   $line"
-  }
-  #Bibelstelle
-  set refnode [$textnode nextSibling]
-  set ref [$refnode text]
-  regsub {\(.*\)} $ref {} ref
-  append dwsig \n "\t\t\t\~ $ref"
-  
-#Spruch 2
-  set parol [$parol nextSibling]
-  #intro
-  set intronode [$parol firstChild]
-  set intro ""
-  if { [$intronode nodeName] == "intro" } {
-    set intro [$intronode text]
-    set textnode [$intronode nextSibling]
-  } else {
-    set textnode [$parol firstChild]
-  }
-  if {$intro != ""} {
-    append dwsig \n "   $intro"
-  }
-  #Bibeltext
-  foreach line [split [$textnode text] \n] {  
-    append dwsig \n "   $line"
-  }
-  #Bibelstelle
-  set refnode [$textnode nextSibling]
-  set ref [$refnode text]
-  regsub {\(.*\)} $ref {} ref
-  append dwsig \n "\t\t\t\~ $ref"
-  
-  return $dwsig
-}
-
 proc getTodaysTwdSig {twdFileName} {
   global ind
   
@@ -392,71 +277,30 @@ proc getTodaysTwdSig {twdFileName} {
   return $twdText
 }
 
-proc formatTermText {twdFile} {
-#ONLY FOR UNIX!!!
-##Returns $dwterm, to be processed by term.sh
-
-  global datum tab ind
-   #     source $Globals
+proc getTodaysTwdTerm {twdFileName} {
+  global ind
   
-  set root [getTWDFileRoot $twdFile]
-
-  #Datumszeile obligatorisch, return error if empty
-  set titelnode [$root selectNodes /thewordfile/theword\[@date='$datum'\]//title/text()]
-  if {$titelnode==""} {
-    return "No Bible text found for today."
-  }
-  set dwterm "echo -e \$\{titbg\}\$\{tit\}\"* [$titelnode data] *\""
+  set twdLanguage [getTwdLanguage $twdFileName]
+  
+  set twdDomDoc [parseTwdFileDomDoc $twdFileName]
+  set twdTodayNode [getDomNodeForToday $twdDomDoc]
+  
+  if {$twdTodayNode == ""} {
+    set twdTerm "echo -e \$\{error\}\"No Bible text found for today.\""
+  } else {
+    set twdTitle [getTwdTitle $twdTodayNode $twdLanguage]
+    set twdTerm "echo -e \$\{titbg\}\$\{tit\}\"* $twdTitle *\"\n"
     
-#Spruch 1
-  set parol [$root selectNodes /thewordfile/theword\[@date='$datum'\]//parol\[1\]]
-  #intro
-  set intronode [$parol firstChild]
-  set intro ""
-  if { [$intronode nodeName] == "intro" } {
-    set intro [$intronode text]
-    set textnode [$intronode nextSibling]
-  } else {
-    set textnode [$parol firstChild]
+    set parolNode [getTwdParolNode 1 $twdTodayNode]
+    set twdTerm [appendParolToTermText $parolNode $twdTerm $twdLanguage $ind]
+    
+    append twdTerm \n
+    
+    set parolNode [getTwdParolNode 2 $twdTodayNode]
+    set twdTerm [appendParolToTermText $parolNode $twdTerm $twdLanguage $ind]
   }
-  if {$intro != ""} {
-    append dwterm \n "echo -e \$\{txtrst\}\$\{int\}\" $intro\""
-  }
-  #Bibeltext
-  foreach line [split [$textnode text] \n] {  
-    append dwterm \n "echo -e \$\{txt\}\" $line\""
-  }
-  #Bibelstelle
-  set refnode [$textnode nextSibling]
-  set ref [$refnode text]
-  regsub {\(.*\)} $ref {} ref
-  append dwterm \n "echo -e \$\{ref\}\$\{tab\}\"$ref\""
   
-#Spruch 2
-  set parol [$parol nextSibling]
-  #intro
-  set intronode [$parol firstChild]
-  set intro ""
-  if { [$intronode nodeName] == "intro" } {
-    set intro [$intronode text]
-    set textnode [$intronode nextSibling]
-  } else {
-    set textnode [$parol firstChild]
-  }
-  if {$intro != ""} {
-    append dwterm \n "echo -e \$\{txtrst\}\$\{int\}\" $intro\""
-  }
-  #Bibeltext
-  foreach line [split [$textnode text] \n] {  
-    append dwterm \n "echo -e \$\{txt\}\" $line\""
-  }
-  #Bibelstelle
-  set refnode [$textnode nextSibling]
-  set ref [$refnode text]
-  regsub {\(.*\)} $ref {} ref
-  append dwterm \n "echo -e \$\{ref\}\$\{tab\}\"$ref\""
-
-  return $dwterm
+  $twdDomDoc delete
+  
+  return $twdText
 }
-
-
