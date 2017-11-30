@@ -181,7 +181,7 @@ proc appendTempImgToTextImg {tempImg textImg leftMargin} {
   global screenX
   
   #adapt textImg width successively
-  set tempImgWidth [image width $tempImg]
+  set tempImgWidth [expr [image width $tempImg] + $leftMargin]
 
   if {$tempImgWidth > [image width $textImg]} {
       $textImg configure -width [::tcl::mathfunc::min $tempImgWidth $screenX]
