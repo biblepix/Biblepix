@@ -13,7 +13,7 @@ foreach twdFileName $twdList {
   set twdSig [getTodaysTwdSig $twdFileName]
 
   #set endung mit 5 Extrabuchstaben nach Sprache_
-  set endung [string range $twdFileName 0 6] 
+  set endung [string range $twdFileName 0 5] 
   set sigFile [file join $sigDir signature-$endung]
   
   #create the File if it doesn't exist and open it.
