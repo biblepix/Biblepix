@@ -127,7 +127,7 @@ proc parseToText {node twdLanguage {withTags 0}} {
   return $text
 }
 
-proc appendParolToText {parolNode twdText twdLanguage indent {RtL 0}} {
+proc appendParolToText {parolNode twdText indent {twdLanguage "de"} {RtL 0}} {
   global tab
   
   set intro [getParolIntro $parolNode $twdLanguage]
@@ -195,7 +195,7 @@ proc isRtL {twdLanguage} {
   }
 }
 
-proc getTwdTitle {twdNode twdLanguage {withTags 0}} {
+proc getTwdTitle {twdNode {twdLanguage "de"} {withTags 0}} {
   return [parseToText [$twdNode selectNodes title] $twdLanguage $withTags]
 }
 
@@ -236,12 +236,12 @@ proc getTodaysTwdText {twdFileName} {
     }
     
     set parolNode [getTwdParolNode 1 $twdTodayNode]
-    set twdText [appendParolToText $parolNode $twdText $twdLanguage $indent $RtL]
+    set twdText [appendParolToText $parolNode $twdText $indent $twdLanguage $RtL]
     
     append twdText \n
     
     set parolNode [getTwdParolNode 2 $twdTodayNode]
-    set twdText [appendParolToText $parolNode $twdText $twdLanguage $indent $RtL]
+    set twdText [appendParolToText $parolNode $twdText $indent $twdLanguage $RtL]
   }
   
   $twdDomDoc delete
@@ -252,24 +252,22 @@ proc getTodaysTwdText {twdFileName} {
 proc getTodaysTwdSig {twdFileName} {
   global ind
   
-  set twdLanguage [getTwdLanguage $twdFileName]
-  
   set twdDomDoc [parseTwdFileDomDoc $twdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   
   if {$twdTodayNode == ""} {
     set twdText "No Bible text found for today."
   } else {
-    set twdTitle [getTwdTitle $twdTodayNode $twdLanguage]
+    set twdTitle [getTwdTitle $twdTodayNode]
     set twdText "===== $twdTitle =====\n"
     
     set parolNode [getTwdParolNode 1 $twdTodayNode]
-    set twdText [appendParolToText $parolNode $twdText $twdLanguage $ind]
+    set twdText [appendParolToText $parolNode $twdText $ind]
     
     append twdText \n
     
     set parolNode [getTwdParolNode 2 $twdTodayNode]
-    set twdText [appendParolToText $parolNode $twdText $twdLanguage $ind]
+    set twdText [appendParolToText $parolNode $twdText $ind]
   }
   
   $twdDomDoc delete
@@ -280,24 +278,22 @@ proc getTodaysTwdSig {twdFileName} {
 proc getTodaysTwdTerm {twdFileName} {
   global ind
   
-  set twdLanguage [getTwdLanguage $twdFileName]
-  
   set twdDomDoc [parseTwdFileDomDoc $twdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   
   if {$twdTodayNode == ""} {
     set twdTerm "echo -e \$\{error\}\"No Bible text found for today.\""
   } else {
-    set twdTitle [getTwdTitle $twdTodayNode $twdLanguage]
+    set twdTitle [getTwdTitle $twdTodayNode]
     set twdTerm "echo -e \$\{titbg\}\$\{tit\}\"* $twdTitle *\"\n"
     
     set parolNode [getTwdParolNode 1 $twdTodayNode]
-    set twdTerm [appendParolToTermText $parolNode $twdTerm $twdLanguage $ind]
+    set twdTerm [appendParolToTermText $parolNode $twdTerm $ind]
     
     append twdTerm \n
     
     set parolNode [getTwdParolNode 2 $twdTodayNode]
-    set twdTerm [appendParolToTermText $parolNode $twdTerm $twdLanguage $ind]
+    set twdTerm [appendParolToTermText $parolNode $twdTerm $ind]
   }
   
   $twdDomDoc delete
