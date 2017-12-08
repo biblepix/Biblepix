@@ -2,11 +2,11 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 12nov17
+# Updated: 4dec17
 
 # This variable enables the debuging mode in the hole application if set to 1.
-set Debug 0
-set Mocking 0
+set Debug 1
+set Mocking 1
 
 set version "2.4"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
@@ -39,6 +39,7 @@ set twdDir [file join $rootdir Texts]
 
 set bmpdir [file join $progDir bmp]
 set confdir [file join $progDir conf]
+set fontdir [file join $progDir font]
 set piddir [file join $progDir pid]
 set srcdir [file join $progDir src]
 set unixdir [file join $progDir unix]
