@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15nov17 pv
+# Updated: 11dec17 pv
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -228,6 +228,7 @@ set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every ti
 set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild $picNo steht jeweils in \n\n\t [file nativename $imgDir] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Soll nur 1 Bild pro Tag angezeigt werden, kann die Diaschau deaktiviert werden (s.o.).\n\nIm Fenster 'Textposition' können Sie $dw an die gewünschte Stelle auf dem Bildschirm verschieben. $rtltext\n\nDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, Grösse und Dicke anzupassen (grössere Buchstaben = besserer Kontrast).\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, finden Sie im Manual eine Lösung."
 set ::f2.txt $f2Txt($lang)
 
+### S E T U P   P H O T O S ##############################
 set f6Tit(en) "Manage your photos for $bp"
 set f6Tit(de) "Fotos für $bp organisieren"
 set ::f6.tit $f6Tit($lang)
@@ -252,10 +253,35 @@ set f6Del(en) "Delete from $bp Photo Collection:"
 set f6Del(de) "Aus der $bp-Fotosammlung löschen:"
 set ::f6.del $f6Del($lang)
 
-set resizing(en) "Resizing photo to fit screen \u2014 please wait a moment..."
-set resizing(de) "Passe Bildgrösse dem Bildschirm an \u2014 bitte haben Sie einen Augenblick Geduld..."
-set ::resizing $resizing($lang) 
+set pressToResize(en) "Press to resize picture"
+set pressToResize(de) "Drücken Sie um die Bildgrösse anzupassen"
+set ::pressToResize $pressToResize($lang)
 
+set setCutArea(en) "Set cutting area to taste and press button again to continue..."
+set setCutArea(de) "Verschieben Sie den Ausschneiderahmen nach Wunsch und drücken Sie nochmals die Taste..."
+set ::setCutArea $setCutArea($lang)
+
+set resizingPic(en) "Resizing photo to fit screen \u2014 please wait a moment..."
+set resizingPic(de) "Passe Bildgrösse dem Bildschirm an \u2014 bitte haben Sie einen Augenblick Geduld..."
+set ::resizingPic $resizingPic($lang) 
+
+global jpegDir
+set imgName ""
+catch {set imgName [file tail [origPic conf -file]]} 
+
+set copiedPic(en) "Copied $imgName to [file nativename $jpegDir]"
+set copiedPic(de) "$imgName nach [file nativename $jpegDir] kopiert"
+set ::copiedPic $copiedPic($lang)
+
+set picSchonDa(en) "Photo already in $bp Photos folder"
+set picSchonDa(de) "Foto bereits im $bp-Bildordner"
+set ::picSchonDa $picSchonDa($lang)
+
+set deletedPic(en) "Deleted [file tail $imgName] from [file nativename $jpegDir]"
+set deletedPic(de) "[file tail $imgName] aus [file nativename $jpegDir] gelöscht"
+set ::deletedPic $deletedPic($lang)
+
+### S E T U P   S I G N A T U R E  #######################
 set f3Tit(en) "Add $dw to your e-mail signatures"
 set f3Tit(de) "$dw auf Ihren E-Mail-Signaturen"
 set ::f3.tit  $f3Tit($lang)
