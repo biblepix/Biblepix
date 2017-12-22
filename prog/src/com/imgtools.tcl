@@ -134,9 +134,9 @@ proc checkImgSizeAndSave {imagePath} {
   
   #3. Overwrite corrected image & save as PNG
   $finalBild write [file join $jpegDir $targetFileName] -format PNG
-  
-  $tempBild blank
-  $finalBild blank  
+
+  image delete $tempBild
+  image delete $finalBild
 } ;#end checkImageSize
 
 # Syntax: oberen Punkt einer Diagonale: x1+y1
@@ -162,8 +162,7 @@ puts $diffhalb
   
   $src blank 
   $src copy $ausschnitt -shrink
-  $ausschnitt blank
-  return $src
+  image delete $ausschnitt
 }
 
 proc cutY {src imgx imgy diffY} {  
@@ -181,8 +180,7 @@ proc cutY {src imgx imgy diffY} {
 
   $src blank
   $src copy $ausschnitt -shrink
-  $ausschnitt blank
-  return $src
+  image delete $ausschnitt
 }
 
 proc resize {src newx newy {dest ""} } { 

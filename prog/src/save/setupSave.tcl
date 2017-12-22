@@ -117,6 +117,7 @@ if {$enablepic} {
     set photopath [getRandomPhoto]
     set quickimg [image create photo -file $photopath]
     $quickimg write $TwdBMP -format bmp
+    image delete $quickimg
   }
   foreach file [glob -nocomplain -directory $bmpdir *] {
     file delete -force $file
