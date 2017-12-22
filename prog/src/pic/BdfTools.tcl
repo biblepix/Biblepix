@@ -27,16 +27,38 @@ proc scanBdf {BdfFile} {
   # A) SCAN BDF FOR GENERAL INFORMATION 
   
   ##get font name + size
-  regexp -line {^FONT .*$} $BdfText Fontspec
-  regexp -line {^SIZE .*$} $BdfText Fontsize
-  regexp -line {^NAME .*$} $BdfText Fontname
+  if {[regexp -line {(^FONT )(.*$)} $BdfText -> name value]} {
+    set FontSpec $value
+  } else {
+    set FontSpec "Not defined"
+  }
+  
+  if {[regexp -line {(^SIZE )(.*$)} $BdfText -> name value]} {
+    set FontSize $value
+  } else {
+    set FontSize "Not defined"
+  }
+  
+  if {[regexp -line {(^FULL_NAME )(.*$)} $BdfText -> name value]} {
+    set FontName $value
+  } else {
+    set FontName "Not defined"
+  }
 
   ##get character width, height and offsets
   regexp -line {^FONTBOUNDINGBOX .*$} $BdfText FBBList
-    
-  ##get number of characters
-  regexp -line {^CHARS .*$} $BdfText numCharsList
-  set numChars [lindex $numCharsList 1]
+  if {[regexp -line {(^FONT_ASCENT )(.*$)} $BdfText -> name value]} {
+    set FontAsc $value
+  } else {
+    set FontAsc "Not defined"
+  }
+  
+  ##get number of characters  
+  if {[regexp -line {(^CHARS )(.*$)} $BdfText -> name value]} {
+    set numChars $value
+  } else {
+    set numChars "Not defined"
+  }
 
   set TclFontFile [string map {.bdf .tcl} $BdfFile]
   set TclFontChan [open $fontdir/$TclFontFile w]
@@ -44,8 +66,9 @@ proc scanBdf {BdfFile} {
   # Save general information to TclFontFile
   puts $TclFontChan "\# $fontdir\/$TclFontFile
 \# BiblePix font extracted from $BdfFile
-\# Font Specification: $Fontspec
-\# Font size: $Fontsize
+\# Font Name: $FontName
+\# Font size: $FontSize
+\# Font Specification: $FontSpec
 \# Created $heute
   
 \# FONTBOUNDINGBOX INFO
@@ -53,6 +76,7 @@ set FBBx [lindex $FBBList 1]
 set FBBy [lindex $FBBList 2]
 set FBBxoff [lindex $FBBList 3]
 set FBByoff [lindex $FBBList 4]
+set FontAsc $FontAsc
 set numChars $numChars
 "
     
@@ -61,7 +85,7 @@ set numChars $numChars
 
   set indexEndChar 0
 
-  for {set charNo 0} {$charNo <= $numChars} {incr charNo} {
+  for {set charNo 0} {$charNo < $numChars} {incr charNo} {
     
     #Set next character indices
     set indexBegChar [string first {STARTCHAR} $BdfText $indexEndChar]
@@ -77,6 +101,9 @@ set numChars $numChars
         
     ##set BBX (for typesetting proc)
     regexp -line {^BBX .*$} $charText BBXList
+    
+    ##set DW
+    regexp -line {^DWIDTH .*$} $charText DWList
         
     ##create BITMAP list 
     set indexBegBMP [expr [string first BITMAP $charText] +6]
@@ -84,21 +111,23 @@ set numChars $numChars
     set BMPList [string range $charText $indexBegBMP $indexEndBMP]
     
     #Convert bitmap list to binary
-    set binlist ""
+    set binList ""
     foreach line $BMPList {
-      lappend binlist [hex2bin $line]
+      lappend binList [hex2bin $line]
     }
     
     #Colour + format binary bitmap list
-    set binlist [colourBinlist $binlist]
+    set binList [colourBinlist $binList $BBXList]
     
     # 2. Create character array & append to TclFontFile
     puts $TclFontChan "array set print_$enc \{ 
-  BBx [lindex $BBXList 1]
-  BBy [lindex $BBXList 2]
-  BBxoff [lindex $BBXList 3]
-  BByoff [lindex $BBXList 4]
-  BITMAP \{ $binlist \}
+  BBx [expr [lindex $BBXList 1] + 2]
+  BBy [expr [lindex $BBXList 2] + 2]
+  BBxoff [expr [lindex $BBXList 3] - 1]
+  BByoff [expr [lindex $BBXList 4] - 1]
+  DWx [expr [lindex $DWList 1] + 2]
+  DWy [lindex $DWList 2]
+  BITMAP \{ $binList \}
 \}
 "
   } ;#END LOOP
@@ -113,100 +142,74 @@ proc hex2bin {hex} {
   return $bin
 }
 
+proc calcColorLine {sunLine charLine shadeLine BBx} {
+  set sunLine1 [string cat $sunLine "00"]
+  set sunLine2 [string cat "0" $sunLine "0"]
+  set charLine [string cat "0" $charLine "0"]
+  set shadeLine1 [string cat "00" $shadeLine]
+  set shadeLine2 [string cat "0" $shadeLine "0"]
+  
+  set colourLine ""
+  
+  for {set index 0} {$index < [expr $BBx + 2]} {incr index} {
+    if {[string index $charLine $index] == "1"} {
+      set colourLine [string cat $colourLine "1"]
+    } elseif {[string index $sunLine1 $index] == "1"} {
+      set colourLine [string cat $colourLine "2"]
+    } elseif {[string index $shadeLine1 $index] == "1"} {
+      set colourLine [string cat $colourLine "3"]
+    } elseif {[string index $sunLine2 $index] == "1"} {
+      set colourLine [string cat $colourLine "2"]
+    } elseif {[string index $shadeLine2 $index] == "1"} {
+      set colourLine [string cat $colourLine "3"]
+    } else {
+      set colourLine [string cat $colourLine "0"]
+    }
+  }
+  
+  return $colourLine
+}
+
 # S c h e m a   bei Sonne von links oben:
-#    S
-#   S#
-#  S###
-# S#####
-#  ###s
-#   #s
-#   ss
+#   S
+#  SS#
+# SS###
+#  #####
+#   ###ss
+#    #ss
+#     s
        
 # Colour a single bitmap character
-proc colourBinlist {binlist} {
+proc colourBinlist {binList BBXList} {
+  set colourList ""
   
-  # Vorarbeit: alle Zeilen gleich lang
-  #add ^0 to all original lines if at least 1 line is ^1
-  foreach line $binlist {
-    if {[regexp ^1 $line]} {
-    set lineBeg1 1
-    break
-    }
+  set BBx [lindex $BBXList 1]
+  
+  set sunLine [string repeat "0" $BBx]
+  set charLine [string repeat "0" $BBx]
+  
+  foreach line $binList {
+    set shadeLine $charLine
+    set charLine $sunLine
+    set sunLine $line
+    
+    lappend colourList [calcColorLine $sunLine $charLine $shadeLine $BBx]
   }
   
-  if {[info exists lineBeg1]} {
-    foreach line $binlist {
-      regsub ^1 $line 01 newline
-      lappend tmpBinlist $newline
-    }
-  puts "Adding 0 at beginning of line..."
-      
-  } else {
-  
-    set tmpBinlist $binlist
-  }
-
-  
-  foreach line $tmpBinlist {
-
-    #1. Sun left: change any 0|1 into 2|1 (sun=2)
-    regsub -all 01 $line 21 line
-      
-    #2. Shade right: change any 1|0 pixel into 1|3 (shade=3)
-    regsub -all 10 $line 13 line
-    regsub 1$ $line 13 line ;#TODO: this is adding an extra 0 !
-        
-    lappend newBinlist $line
-        
-  } ;#END loop 
-  
-  
-  # 3. Add sun line at top
-  set firstline [lindex $binlist 0]
-  set newFirstline [string map {1 2} $firstline]
-  ## um 1 n.links versetzen
-  regsub ^0 $newFirstline {} newFirstline
-  regsub .$ $newFirstline &0 newFirstline
-  append Binlist "$newFirstline " $newBinlist
-  
-  # 4. Add shade line at bottom
-  set lastline [lindex $binlist end]
-  set newLastline [string map {1 3} $lastline]
-  ## um 1 n.rechts versetzen
-  regsub ^0 $newLastline 00 newLastline
-  regsub 0$ $newLastline {} newLastline
-  append Binlist " $newLastline"
-     
-  # 5. Correct any spurious sun or shade pixels
-  ## eliminate current sun/shade pixel if previous line's pixels are more left
-  foreach line $Binlist {
-    set curSunPos [string first 2 $line]
-    set curShaPos [string last 3 $line]
-
-    if {[info exists prevSunPos] && $curSunPos>$prevSunPos} {
-
-      set line [string map {02 00} $line]
-      set correctedBinlist [lreplace $Binlist end end $line]
-
-    } elseif {[info exists prevShaPos] && $curShaPos>$prevShaPos} {
-            
-      set line [string map {13 10} $line]
-      set correctedBinlist [lreplace $Binlist end end $line]
-
-    }
-    #reset prev to current
-    set prevSunPos $curSunPos
-    set prevShaPos $curShaPos
-  
+  for {set i 0} {$i < 2} {incr i} {
+    set shadeLine $charLine
+    set charLine $sunLine
+    set sunLine [string repeat "0" $BBx]
+    
+    lappend colourList [calcColorLine $sunLine $charLine $shadeLine $BBx]
   }
   
-  if {[info exists correctedBinlist]} {
-    set Binlist $correctedBinlist
-  }
-  
-  return $Binlist
+  return $colourList
 } 
 
+scanBdf 24.iso8859.bdf
+scanBdf etl24-latin2.bdf
+scanBdf heb24-etl.bdf
 
 
 #### R E S E R V E #############################################################
@@ -298,3 +301,4 @@ proc printChar {bitmap image} {
   
 } ;#END PROC
 
+exit
