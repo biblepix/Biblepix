@@ -3,7 +3,7 @@
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated 15jun2017
 
-source $Imgtools  
+source $Imgtools
 
 proc fgbild>hgbild {hgfile bmpfile} {
 #Puts text picture on background image, adding Sun & Shade pixels
@@ -17,7 +17,7 @@ global  fontcolor fgrgb sun shade
   fgbild blank
   fgbild read $bmpfile
   hgbild blank
-  hgbild read $hgfile  
+  hgbild read $hgfile
   
   
   set screenx [winfo screenwidth .]
