@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 20feb17
+# Updated: 2jan18
 
 setFlags
 
@@ -14,10 +14,11 @@ if {$setupTwdFileName == ""} {
 }
 
 #Create title logo with icon
-catch {
-  package require Img
-  image create photo Logo -file $WinIcon -format ICO
-  .ftop.titelmitlogo configure -compound left -image Logo
+if { [catch {package require Img} ] } {
+	NewsHandler::QueryNews $packageRequireImg red
+} else {
+	image create photo Logo -file $WinIcon -format ICO
+	.ftop.titelmitlogo configure -compound left -image Logo
 }
 
 #Configure Fonts                     ??? -PIXELS ???
@@ -71,10 +72,10 @@ if { [info exists Debug] && $Debug } {
 if { [info exists Debug] && $Debug } {
   source $SetupPhotos
 } else {
+
   if { [catch {source $SetupPhotos} ] } {
     if { [catch {package require Img} ] } {
-      #put warning in Photos tag window
-      message .n.f6.warning -pady 50 -justify center -background red -foreground yellow -text $packageRequireImg
+      NewsHandler::QueryNews $packageRequireImg red
     }
   }
 }

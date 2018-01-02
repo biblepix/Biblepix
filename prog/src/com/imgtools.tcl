@@ -2,10 +2,14 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9dec17
+# Updated: 2jan18
 
-package require Img
-
+#Check for Img package
+if { [catch {package require Img} ] } {
+  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message $packageRequireImg
+  exit
+}
+    
 ####### Procs for $Hgbild #####################
 
 #called by setShade + setSun
