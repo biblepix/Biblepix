@@ -5,7 +5,7 @@
 
 proc setLinCrontab args {
 #Detects running crond & installs new crontab
-#returns 0 or 1
+#returns 0 = y or 1 = no
 global Biblepix Setup slideshow tclpath unixdir env
 
   set cronfileOrig $unixdir/crontab.ORIG
@@ -17,7 +17,7 @@ global Biblepix Setup slideshow tclpath unixdir env
     } else {
       exec crontab -r
     }
-    return
+    return 1
   }
   
   #check for running cron/crond
@@ -26,17 +26,15 @@ global Biblepix Setup slideshow tclpath unixdir env
 
   #Exit if crontab not found
   if { [auto_execok crontab] ==""} {
-    return
+    return 1
   }
 
   #Exit if cron OR crond not running
   if {   ! [string is digit $cronpid] && 
     ! [string is digit $crondpid]
     } {
-    return
+    return 1
   }  
-  
-  
   
   
 ### 1. Prepare crontab text

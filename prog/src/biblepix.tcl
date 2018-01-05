@@ -3,7 +3,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4oct17
+# Updated: 4jan18
 ######################################################################
 
 #Verify location & source Globals
@@ -16,6 +16,7 @@ source $Twdtools
 if {[catch "set twdfile [getRandomTwdFile]"]} {
   source -encoding utf-8 $SetupTexts
   setTexts $lang
+	package require Tk
   tk_messageBox -title BiblePix -type ok -icon error -message $noTWDFilesFound
   #catch if run by running Setup
   catch {source $Setup} 
