@@ -4,10 +4,10 @@
 #                           |                > > > ENGLISH FURTHER DOWN > > >
 #                                                        #
 # Authors: Peter Vollmar & Joel Hochreutener             #
-# 	      www.biblepix.vollmar.ch                       #
+# 	       www.biblepix.vollmar.ch                       #
 # Version: 2.4                                           #
 # Systems: Linux, Windows                                #
-# Updated: Oct 17                                        #
+# Updated: Jan 18                                        #
 ##########################################################
 
 ####################
@@ -19,7 +19,7 @@
 
 B I B E L P I X   P R O G R A M M B E S C H R E I B U N G
 
-BibelPix ist ein Tcl-Programm, das für das Projekt "Bibel2.0" geschrieben wurde. 
+BibelPix ist ein Tcl-Programm, das für das Projekt "Bibel 2.0" geschrieben wurde. 
 Bibel2.0 setzt sich zum Ziel, "Das Wort" - 2 ausgewählte Bibelsprüche für jeden Tag des Jahres - in einer wachsenden Anzahl von Sprachen zu verbreiten.
 
 BibelPix zeigt "Das Wort"
@@ -27,12 +27,12 @@ BibelPix zeigt "Das Wort"
  * in vielen Sprachen
  * als Desktop-Hintergrundbild
  * in E-Mail-Signaturen
- * in Terminal/Konsole
+ * im Terminal (Unix-Konsole)
  * zufälliger Bildwechsel
  * zufälliger Sprachwechsel
  * Diaschau für KDE, GNOME, XFCE4 und WINDOWS
  
-an. Sämtliche Funktionen können automatisiert werden.
+an.
 
 Funktionen:	eingehend beschrieben im Setup-Programm 
 Updates:		automatisch bei Ausführung des Setup-Programms
@@ -72,7 +72,9 @@ Danach in einer Konsole das BibelPix-Setup starten mit dem Kommando:
 
 wobei die Tilde (~) für das oben beschriebene Heim-Verzeichnis steht.
 
-Das Setup kann auch aus einem Dateimanager mit Doppelklick ausgeführt werden. 
+Das Setup kann auch aus einem Dateimanager mit Doppelklick ausgeführt werden.
+ 
+Da die Git-Version in stetiger Entwicklung begriffen ist, ist die FUNKTION NICHT GARANTIERT!
 
 
 2.  L I N U X
@@ -129,7 +131,6 @@ mitsamt Programm-Icon ins Programm-Menü Ihres Desktops aufzunehmen (meist unter
 		tclsh Biblepix/prog/src/biblepix.tcl
      
    Sollte keine dieser Dateien existieren, werden sie womöglich von Ihrem System nicht berücksichtigt. Sie können sie jedoch problemlos erstellen und ausprobieren. 
-     	ּ
      	 
    4. Automatische Desktop-Einrichtung
    
@@ -154,8 +155,7 @@ mitsamt Programm-Icon ins Programm-Menü Ihres Desktops aufzunehmen (meist unter
    KDE: für Slide Show Pfad zum Bildordner angeben, für Einzelbild Pfad zum Bild
    GNOME: Pfad zum Bild angeben, erkennt Bildwechsel automatisch
    XFCE4: Pfad zum Bild angeben, Bildwechsel erfolgt durch BibelPix
-   
-   
+  
    5. Login Manager konfigurieren
    
    Wenn Sie sich mit Passwort anmelden, benutzen Sie wahrscheinlich einen der untenstehenden Login-Managers.
@@ -200,7 +200,6 @@ mitsamt Programm-Icon ins Programm-Menü Ihres Desktops aufzunehmen (meist unter
 	Folgendes Kommando als gewöhnlicher User eingeben (keine Zeilenumbrüche!):
 	
 	dbus-send --system --print-reply --dest=org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u) org.freedesktop.Accounts.User.SetBackgroundFile string:/home/YOURNAME/Biblepix/Image/theword.*
-
   
 
 3. W I N D O W S
@@ -219,10 +218,6 @@ mitsamt Programm-Icon ins Programm-Menü Ihres Desktops aufzunehmen (meist unter
 
 So wird 'Das Wort' als Einzelbild angezeigt. Um ein Wechselbild zu erzwingen (Option Diaschau), müssen Sie ein zweites Bild in denselben Ordner kopieren.   
    
-   
-4. M A C  O S
- to follow soon :-)
-
 
 4. A L L G E M E I N E S  Z U M  P R O G R A M M
 
@@ -236,9 +231,9 @@ So wird 'Das Wort' als Einzelbild angezeigt. Um ein Wechselbild zu erzwingen (Op
 	° biblepix.tcl (Hauptprogramm)
 	° biblepix-setup.tcl (Einrichtungsprogramm)
 
-* Falls nach einem Update das Setup nicht mehr läuft, führen Sie die Datei
-    ° BiblePix-Installer.tcl
-  nochmals aus. Sie befindet sich im Verzeichnis ~/Biblepix/prog/src/Installer.
+* Falls nach einem Update das Setup nicht mehr läuft, löschen Sie die Datei
+		~/Biblepix/prog/conf/biblepix.conf
+	Dann starten Sie das Setup erneut.
 
 * Debugmodus: um Programmfehler aufzuspüren, öffnen Sie die Datei
 		~/Biblepix/prog/src/com/globals.tcl
@@ -277,11 +272,12 @@ Systems: 			Linux, Windows
 System requirements: Tcl/Tk library, additional packages tDom and tkimg (or libtk-img)
 
 
-I N S T A L L A T I O N
+I  N  S  T  A  L  L  A  T  I  O  N
 
 Before installing BiblePix, make sure Tcl/Tk as well as the above-mentioned 
 extra packages are present on your PC. Tcl/Tk is a system independent platform 
 for many operating systems.
+
 
 1.  G I T
 
@@ -311,6 +307,7 @@ or in a file manager by changing to the '~/Biblepix/prog/src' directory and
 clicking on the file 'biblepix-setup.tcl'.
 
 Note that the tilde (~) stands for the Home directory as described above.
+Not also that the proper function of the Git version CANNOT BE GUARANTEED!
 
 
 2.  L I N U X
@@ -426,7 +423,6 @@ Note that the tilde (~) stands for the Home directory as described above.
 	dbus-send --system --print-reply --dest=org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u) org.freedesktop.Accounts.User.SetBackgroundFile string:/home/YOURNAME/Biblepix/Image/theword.png
 
 
-
 3. W I N D O W S
 
    1. Download and install the ActiveTcl package from http://www.activestate.com/activetcl/downloads
@@ -446,12 +442,7 @@ Note that the tilde (~) stands for the Home directory as described above.
 	"Slide Show" instead of "single picture".
 
 	
-   
-4. M A C  O S
- to follow soon :-)
-
-
-5. G E N E R A L  P R O G R A M  I N F O R M A T I O N
+5. G E N E R A L   I N F O R M A T I O N
 
 * Place of installation (~): see above under GIT
  
@@ -463,9 +454,8 @@ Note that the tilde (~) stands for the Home directory as described above.
 	° biblepix-setup.tcl (setup program)
 
 * If after an update the BiblePix Setup or the BiblePix program fails to run, 
-	reinstall by running 
-	  ° BiblePix-Installer.tcl
-	The file is found in the ~/Biblepix/prog/Installer directory.
+	delete the file ~/Biblepix/prog/conf/biblepix.conf
+	Then rerun Setup.
 
 * Debug mode: to help resolve any problems, edit the file
 			~/Biblepix/prog/src/com/globals.tcl
@@ -478,6 +468,3 @@ Note that the tilde (~) stands for the Home directory as described above.
 Enjoy!
 Peter Vollmar & Joel Hochreutener
 biblepix.vollmar.ch
-
-------------------------------------------------------------
-

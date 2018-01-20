@@ -28,6 +28,11 @@ set BP(en) BiblePix
 set BP(de) BibelPix
 set bp $BP($lang)
 set ::bp $bp
+
+#Buttons
+set cancel(de) Abbruch
+set cancel(en) Cancel
+set ::cancel $cancel($lang)
                
 #### M I S S I N G   P A C K A G E  ############                              
 

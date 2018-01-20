@@ -71,8 +71,9 @@ proc copyAndResizeExamplePhotos {} {
   }
 }
 
-# checkImgSize - called by addPic + copyAndResizeSamplePics
-# Return codes: 
+# checkImgSize 
+## called by addPic + ***copyAndResizeSamplePics***???
+## Return codes: 
 ## 0 = no resizing necessary
 ## 1 = img already exists
 ## x2 + y2 for further processing
@@ -136,8 +137,9 @@ proc checkImgSize {} {
 #  #######
 #  ####### 7/3
 
-# doResize - called by addPic + copyAndResizeSamplePics
-##organises resizing processes
+# doResize
+## called by addPic + **copyAndResizeSamplePics**???
+## organises all resizing processes
 proc doResize {cutEdge} {
   global SetupTexts jpegDir canvPicMargin
   
@@ -151,7 +153,7 @@ proc doResize {cutEdge} {
   lassign [getAreaChooserCoords] x1 y1 x2 y2
     
   #Compute cutting coordinates of Original Picture TODO: get from addPic !!!
-  set cutImgCoords [checkImgSize]
+  set cutImgCoords "[checkImgSize]"
   set cutImgX [lindex $cutImgCoords 0]
   set cutImgY [lindex $cutImgCoords 1]
   
@@ -183,7 +185,7 @@ proc doResize {cutEdge} {
   proc resizeNeeded {} {
   if {$cutImgW != $origImgW || $cutImgH != $origImgH} {
  
-    NewsHandler::QueryNews "Haben Sie etwas Geduld..." orange
+    NewsHandler::QueryNews $::resizingPic orange
      
     #TODO: dieses kommando ist unmöglich!!!
     #set finalImage [Resize::resize $cutImg]
@@ -205,7 +207,7 @@ set finalImage $cutImg
   #Save new image to Photos directory
   #$finalImage write [file join $jpegDir $imgName] -format PNG
  
-  #Reset Button & showPic to old values - Resize::resize may still be working!
+  #Reset Button & showPic to old values - Resize::resize may still be running!
   after 5000 {
     .addBtn configure -bg green -command {addPic $imgCanvas}
     #source $SetupTexts - TODO: WARUM GEHT DAS NICHT?
@@ -215,7 +217,7 @@ set finalImage $cutImg
   
 } ;#END doResize
 
-# trimPic - resizes origPic
+# trimPic - resizes origPic - ERSETZT cutX und cutY
 # funktion 'ausschnitt' wird immer neu überschrieben
 proc trimPic {x1 y1 x2 y2} {
   global canvImgFactor
@@ -234,7 +236,7 @@ proc trimPic {x1 y1 x2 y2} {
   return origPic
 }
 
-# Create name space for Resizing proc
+# Create name space for Resizing proc - TODO: NOT NEEDED!
 namespace eval Resize {
   namespace export resize
   
