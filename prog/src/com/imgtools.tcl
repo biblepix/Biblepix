@@ -71,8 +71,9 @@ proc copyAndResizeExamplePhotos {} {
   }
 }
 
-# checkImgSize 
+# checkImgSize -TODO: CHANGE NAME TO checkOrigPicSize ???
 ## called by addPic + ***copyAndResizeSamplePics***???
+## Compares [origPic] with screenX + screenY
 ## Return codes: 
 ## 0 = no resizing necessary
 ## 1 = img already exists
@@ -151,6 +152,7 @@ proc doResize {cutEdge} {
   
   #Get coordinates of Area Chooser
   lassign [getAreaChooserCoords] x1 y1 x2 y2
+puts "AreaChooser: $x1 $y1 $x2 $y2"
     
   #Compute cutting coordinates of Original Picture TODO: get from addPic !!!
   set cutImgCoords "[checkImgSize]"
@@ -166,6 +168,8 @@ proc doResize {cutEdge} {
       set cutImg [trimPic $x1 $y1 $x2 $origImgY]
    }
    
+
+
   #2. Try to double or halve before Resize
   #set screenX [winfo screenwidth .]
   #set Xdiff [expr $origImgX $screenX]]
@@ -209,10 +213,11 @@ set finalImage $cutImg
  
   #Reset Button & showPic to old values - Resize::resize may still be running!
   after 5000 {
-    .addBtn configure -bg green -command {addPic $imgCanvas}
+#    .addBtn configure -bg green -command {addPic $imgCanvas}
     #source $SetupTexts - TODO: WARUM GEHT DAS NICHT?
     set f6.add "Wie es war im Anfang..." 
-    .imgCanvas delete areaChooser
+#    .imgCanvas delete areaChooser
+	restorePhotosTab
   }
   
 } ;#END doResize

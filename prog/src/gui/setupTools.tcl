@@ -217,8 +217,12 @@ proc move {w x y} {
 #called by addPic
 proc createPhotoAreaChooser {canv x1 y1 x2 y2} {
   global canvPicMargin
-  $canv create rectangle 0 0 [expr $x2 + $canvPicMargin] [expr $y2 + $canvPicMargin] -tags {mv areaChooser}
-  $canv itemconfigure areaChooser -outline red -activeoutline yellow -fill {} -width $canvPicMargin
+	set thickness 8
+	.imgCanvas coords img 0.0 0.0
+  #$canv create rectangle 0 0 [expr $x2 + $canvPicMargin] [expr $y2 + $canvPicMargin] -tags {mv areaChooser}
+	$canv create rectangle 0 [expr $thickness/2] $x2 $y2 -tags {mv areaChooser}
+#  $canv itemconfigure areaChooser -outline red -activeoutline yellow -fill {} -width $canvPicMargin
+ $canv itemconfigure areaChooser -outline red -activeoutline yellow -fill {} -width $thickness
 }
 
 #Get current coordinates from PhotoAreaChooser
@@ -228,6 +232,29 @@ proc getAreaChooserCoords {} {
 }
 
 ##### S E T U P P H O T O S   P R O C S ####################################################
+proc hidePhotosTab {cutEdge} {
+	
+	.n hide .n.f6
+	catch {frame .n.resizeF}
+	.n add .n.resizeF -text "Resize Photo"
+	.n insert 4 .n.resizeF
+	.n select 4
+
+	catch {button .resizeConfirmBtn}
+	catch {button .resizeCancelBtn} 
+	.resizeConfirmBtn configure -textvar ::pressToResize -command "doResize $cutEdge"
+  	.resizeCancelBtn configure -textvar ::cancel -command "restorePhotosTab"
+	pack .imgCanvas -in .n.resizeF
+	pack .resizeConfirmBtn .resizeCancelBtn -in .n.resizeF -side right
+}
+
+proc restorePhotosTab {} {
+  	.n forget .n.resizeF
+  	.n add .n.f6
+    	.n select 3
+        pack .imgCanvas -in .n.f6.mainf.right.bild -side left
+        .imgCanvas delete areaChooser
+}
 
 # addPic - called by SetupPhoto
 # adds new Picture to BiblePix Photo collection
@@ -239,86 +266,58 @@ proc addPic {} {
 
   set imgName [file tail [origPic conf -file]]
 
-  # Set cutting coordinates for origPic
+  # Get cutting coordinates from [origPic]
   set cutImgCoords "[checkImgSize]"
-    set CutX1 0
-    set CutY1 0
-    set CutX2 [lindex $cutImgCoords 0]
-    set CutY2 [lindex $cutImgCoords 1]
-    set cutEdge [lindex $cutImgCoords 2]
+  set CutX1 0
+  set CutY1 0
+  set CutX2 [lindex $cutImgCoords 0]
+  set CutY2 [lindex $cutImgCoords 1]
+  set cutEdge [lindex $cutImgCoords 2]
 
-  ##Image is already there (return code 1)
+  ##a) Image is already there (return code 1)
   if {$cutImgCoords==1} {
     NewsHandler::QueryNews $::picSchonDa lightblue
 		return 0
 
-  ##Image has right size (return code 0)
+  ##b) Image has right size (return code 0)
   } elseif {$cutImgCoords==0} {
     NewsHandler::QueryNews $::copiedPic lightblue
 		return 0
 	}
 
-  ##Image size to be changed
+  ##c) I m a g e   s i z e   t o   b e   c h a n g e d 
 
-#1. hide Photos tab & create temporary tab
-	.n hide .n.f6
-        catch {frame .n.resizeF}
-	.n add .n.resizeF -text "Resize Photo"
-        .n insert 4 .n.resizeF
-        .n select 4
+  #Hide Photos tab & create temporary tab
+#	hidePhotosTab  
 
-	catch {button .resizeConfirmBtn}
-        catch {button .resizeCancelBtn} 
-	.resizeConfirmBtn configure -textvar ::pressToResize -command "doResize $cutEdge"
-  	.resizeCancelBtn configure -textvar ::cancel -command "restorePhotosTab"
-	pack .imgCanvas -in .n.resizeF
-	pack .resizeConfirmBtn .resizeCancelBtn -in .n.resizeF -side right
-  
-  proc restorePhotosTab {} {
-  	.n forget .n.resizeF
-  	.n add .n.f6
-    	.n select 3
-        pack .imgCanvas -in .n.f6.mainf.right.bild -side left
-        .imgCanvas delete areaChooser
-        }
-  
-#2.
-	# C r e a t e   P h o t o  a r e a  c h o o s e r
+	# Cr e a t e   P h o t o  a r e a  c h o o s e r
 
 	##get coordinates of current Show Pic (tag='img')
 	set canvImgCoords [.imgCanvas bbox img]
-
 	set SPx1 [lindex $canvImgCoords 0]
 	set SPy1 [lindex $canvImgCoords 1]
 	set SPx2 [lindex $canvImgCoords 2]
 	set SPy2 [lindex $canvImgCoords 3]
-
-
 
 puts "ShowPix X2: $SPx2"
 puts "ShowPix Y2: $SPy2"
 puts "CutX2: $CutX2 "
 puts "CutY2: $CutY2"
 
-	##set cutting coordinates for canvPic
+	##set cutting coordinates for cutFrame
 	set canvCutX2 [expr $CutX2 / $canvImgFactor]
 	set canvCutY2 [expr $CutY2 / $canvImgFactor]
 puts "canvCutX2 $canvCutX2"
 puts "canvCutY2 $canvCutY2 "
 
+	# 1. Create new frame for Image cutting dialogue
+	hidePhotosTab $cutEdge
+	pack .imgCanvas -in .n.resizeF
 
-
-#Create new top window for Image cutting dialogue
-
-
-##repack imgCanvas in new Window
-pack .imgCanvas -in .n.resizeF
-#pack .resizeConfirmBtn -in .n.resizeF -anchor n
-
-	# Create AreaChooser with cutting coordinates
+	# 2. Create AreaChooser with cutting coordinates
 	createPhotoAreaChooser .imgCanvas 0 0 $canvCutX2 $canvCutY2
-
-	##activate chooser (tag='areaChooser') -TODO: Rahmen kann über Bild hinausgehen
+	
+	##activate chooser (tag='areaChooser') -TODO: Rahmen kann über Bild hinausgehen !!!
 	if {$cutEdge=="X"} {
 		#limit move capability to x
 		set y 0
@@ -327,18 +326,12 @@ pack .imgCanvas -in .n.resizeF
 		#limit move capability to y
 		set x 0
 		set y "%y"
-	}
+	}	
 
-	##reconfigure Button -TODO : need new proc(s):
-	# change button >doResize - keep message as long as nothing done!
-		NewsHandler::QueryNews $::setCutArea yellow
-#	.addBtn conf -bg red -command "???doResize $cutEdge" ;#TODO: Funktion geht nicht !!!
-#  set ::f6.add "$::pressToResize"
-
-	##
 	.imgCanvas bind mv <1> {movestart %W %x %y}
 	.imgCanvas bind mv <B1-Motion> "move %W $x $y"
 
+	NewsHandler::QueryNews $::setCutArea yellow
 
 } ;#END addPic
 
