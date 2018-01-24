@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6jan18 pv
+# Updated: 24jan18 pv
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -258,13 +258,9 @@ set f6Del(en) "Delete from $bp Photo Collection:"
 set f6Del(de) "Aus der $bp-Fotosammlung löschen:"
 set ::f6.del $f6Del($lang)
 
-set pressToResize(en) "Press to resize picture"
-set pressToResize(de) "Drücken Sie um die Bildgrösse anzupassen"
-set ::pressToResize $pressToResize($lang)
-
-set setCutArea(en) "Set cutting area to taste and press button again to continue..."
-set setCutArea(de) "Verschieben Sie den Ausschneiderahmen nach Wunsch und drücken Sie nochmals die Taste..."
-set ::setCutArea $setCutArea($lang)
+set moveFrameToResize(en) "Move frame to select desired image section and press Ok to resize."
+set moveFrameToResize(de) "Verschieben Sie den Auswahlrahmen nach Belieben und drücken Sie Ok, um die Bildgrösse anzupassen."
+set ::moveFrameToResize $moveFrameToResize($lang)
 
 set resizingPic(en) "Resizing photo to fit screen \u2014 please wait a moment..."
 set resizingPic(de) "Passe Bildgrösse dem Bildschirm an \u2014 bitte haben Sie einen Augenblick Geduld..."

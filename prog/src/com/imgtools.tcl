@@ -154,7 +154,12 @@ proc doResize {cutEdge} {
   lassign [getAreaChooserCoords] x1 y1 x2 y2
 puts "AreaChooser: $x1 $y1 $x2 $y2"
     
-  #Compute cutting coordinates of Original Picture TODO: get from addPic !!!
+  
+
+#TODO: GET THIS WORKING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+#Compute cutting coordinates of Original Picture TODO: get from addPic !!!
   set cutImgCoords "[checkImgSize]"
   set cutImgX [lindex $cutImgCoords 0]
   set cutImgY [lindex $cutImgCoords 1]
@@ -215,11 +220,14 @@ set finalImage $cutImg
   after 5000 {
 #    .addBtn configure -bg green -command {addPic $imgCanvas}
     #source $SetupTexts - TODO: WARUM GEHT DAS NICHT?
-    set f6.add "Wie es war im Anfang..." 
+#   set f6.add "Wie es war im Anfang..." 
 #    .imgCanvas delete areaChooser
 	restorePhotosTab
-  }
   
+	}
+	
+	NewsHandler::QueryNews $::copiedPic lightblue
+
 } ;#END doResize
 
 # trimPic - resizes origPic - ERSETZT cutX und cutY

@@ -233,19 +233,21 @@ proc getAreaChooserCoords {} {
 
 ##### S E T U P P H O T O S   P R O C S ####################################################
 proc hidePhotosTab {cutEdge} {
-	
 	.n hide .n.f6
 	catch {frame .n.resizeF}
 	.n add .n.resizeF -text "Resize Photo"
 	.n insert 4 .n.resizeF
 	.n select 4
 
+	#Create title & buttons
+	catch {message .resizeLbl -textvariable ::moveFrameToResize -font {TkHeadingFont 20} -bg blue -fg yellow -pady 50 -width 0}
 	catch {button .resizeConfirmBtn}
 	catch {button .resizeCancelBtn} 
-	.resizeConfirmBtn configure -textvar ::pressToResize -command "doResize $cutEdge"
-  	.resizeCancelBtn configure -textvar ::cancel -command "restorePhotosTab"
+	.resizeConfirmBtn configure -text Ok -command "doResize $cutEdge" -bg green
+  	.resizeCancelBtn configure -textvar ::cancel -command "restorePhotosTab" -bg red
+	pack .resizeLbl -in .n.resizeF
 	pack .imgCanvas -in .n.resizeF
-	pack .resizeConfirmBtn .resizeCancelBtn -in .n.resizeF -side right
+	pack .resizeCancelBtn .resizeConfirmBtn -in .n.resizeF -side right
 }
 
 proc restorePhotosTab {} {
@@ -330,8 +332,6 @@ puts "canvCutY2 $canvCutY2 "
 
 	.imgCanvas bind mv <1> {movestart %W %x %y}
 	.imgCanvas bind mv <B1-Motion> "move %W $x $y"
-
-	NewsHandler::QueryNews $::setCutArea yellow
 
 } ;#END addPic
 
