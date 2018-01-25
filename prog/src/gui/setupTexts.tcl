@@ -266,21 +266,28 @@ set resizingPic(en) "Resizing photo to fit screen \u2014 please wait a moment...
 set resizingPic(de) "Passe Bildgrösse dem Bildschirm an \u2014 bitte haben Sie einen Augenblick Geduld..."
 set ::resizingPic $resizingPic($lang) 
 
-global jpegDir
-set imgName ""
-catch {set imgName [file tail [origPic conf -file]]} 
 
-set copiedPic(en) "Copied $imgName to [file nativename $jpegDir]"
-set copiedPic(de) "$imgName nach [file nativename $jpegDir] kopiert"
-set ::copiedPic $copiedPic($lang)
+proc ::copiedPic {picPath} {
+  global jpegDir lang
+  if {$lang == "en"} {
+    return "Copied [file tail $picPath] to [file nativename $jpegDir]"
+  } elseif {$lang == "de"} {
+    return "[file tail $picPath] nach [file nativename $jpegDir] kopiert"
+  }
+}
+
+proc ::deletedPic {picPath} {
+  global jpegDir lang
+  if {$lang == "en"} {
+    return "Deleted [file tail $picPath] from [file nativename $jpegDir]"
+  } elseif {$lang == "de"} {
+    return "[file tail $picPath] aus [file nativename $jpegDir] gelöscht"
+  }
+}
 
 set picSchonDa(en) "Photo already in $bp Photos folder"
 set picSchonDa(de) "Foto bereits im $bp-Bildordner"
 set ::picSchonDa $picSchonDa($lang)
-
-set deletedPic(en) "Deleted [file tail $imgName] from [file nativename $jpegDir]"
-set deletedPic(de) "[file tail $imgName] aus [file nativename $jpegDir] gelöscht"
-set ::deletedPic $deletedPic($lang)
 
 ### S E T U P   S I G N A T U R E  #######################
 set f3Tit(en) "Add $dw to your e-mail signatures"

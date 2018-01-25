@@ -148,6 +148,9 @@ set heute [clock format [clock seconds] -format %d]
 set tab "                              "
 set ind "     "
 
+#Global Settings
+set canvPicMargin 6
+
 #Global functions
 proc uniqkey { } {
     set key   [ expr { pow(2,31) + [ clock clicks ] } ]

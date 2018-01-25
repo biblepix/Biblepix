@@ -73,15 +73,15 @@ proc copyAndResizeExamplePhotos {} {
 
 # checkImgSize -TODO: CHANGE NAME TO checkOrigPicSize ???
 ## called by addPic + ***copyAndResizeSamplePics***???
-## Compares [origPic] with screenX + screenY
+## Compares [photosCurrOrigPic] with screenX + screenY
 ## Return codes: 
 ## 0 = no resizing necessary
 ## 1 = img already exists
-## x2 + y2 for further processing
+## x2 + y2 and cutEdge for further processing
 proc checkImgSize {} {
   global jpegDir
   
-  set imgFilePath [lindex [origPic conf -file] end]
+  set imgFilePath [lindex [photosCurrOrigPic conf -file] end]
   set targetFileName [file tail $imgFilePath]  
   
   if {![regexp png|PNG $targetFileName] } {
@@ -95,9 +95,9 @@ proc checkImgSize {} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
   
-  #Set origPic dimensions, while x1=0 y1=0
-  set x2 [image width origPic]
-  set y2 [image height origPic]
+  #Set photosCurrOrigPic dimensions, while x1=0 y1=0
+  set x2 [image width photosCurrOrigPic]
+  set y2 [image height photosCurrOrigPic]
   set imgX $x2
   set imgY $y2
   
@@ -141,14 +141,12 @@ proc checkImgSize {} {
 # doResize
 ## called by addPic + **copyAndResizeSamplePics**???
 ## organises all resizing processes
-proc doResize {cutEdge} {
-  global SetupTexts jpegDir canvPicMargin
-  
-  set imgName [file tail [origPic conf -file]]
+proc doResize {} {
+  global SetupTexts jpegDir canvPicMargin picPath
   
   #Get coordinates of Original Picture
-  set origImgX [image width origPic]
-  set origImgY [image height origPic]
+  set origImgX [image width photosCurrOrigPic]
+  set origImgY [image height photosCurrOrigPic]
   
   #Get coordinates of Area Chooser
   lassign [getAreaChooserCoords] x1 y1 x2 y2
@@ -163,10 +161,11 @@ puts "AreaChooser: $x1 $y1 $x2 $y2"
   set cutImgCoords "[checkImgSize]"
   set cutImgX [lindex $cutImgCoords 0]
   set cutImgY [lindex $cutImgCoords 1]
+  set cutEdge [lindex $cutImgCoords 2]
   
   #1. Trim either side
     if {$cutEdge=="Y"} {
-      set cutImg [trimPic $canvPicMargin $y1 $origImgX $y2]
+      set cutImg [trimPic $x1 $y1 $origImgX $y2]
     
       } elseif {$cutEdge=="X"} {
      
@@ -175,22 +174,8 @@ puts "AreaChooser: $x1 $y1 $x2 $y2"
    
 
 
-  #2. Try to double or halve before Resize
-  #set screenX [winfo screenwidth .]
-  #set Xdiff [expr $origImgX $screenX]]
- # tcl::mathfunc::max $screenX $Xdiff
   
-  #while {$diffX < $screenX} {
-  
-  #TODO: Danke Herr für mein Sprachtalent ;-|
-  
-  #}
-  
-  #3. Check if Resize::resize is necessary after cutting
-  
-  
-  
-  #TODO: THERE MAY BE CASES WHERE 2. is needed without 1. !!!
+  #2. Check if Resize::resize is necessary after cutting
   proc resizeNeeded {} {
   if {$cutImgW != $origImgW || $cutImgH != $origImgH} {
  
@@ -200,8 +185,8 @@ puts "AreaChooser: $x1 $y1 $x2 $y2"
     #set finalImage [Resize::resize $cutImg]
     set screenX [winfo screenwidth .]
     set screenY [winfo screenheight .]
-   # set finalImage [Resize::resize origPic $screenX $screenY]
-   Resize::resize origPic $screenX $screenY
+   # set finalImage [Resize::resize photosCurrOrigPic $screenX $screenY]
+   Resize::resize photosCurrOrigPic $screenX $screenY
 image width $finalImage
 image height $finalImage
 
@@ -214,7 +199,7 @@ image height $finalImage
 set finalImage $cutImg
 
   #Save new image to Photos directory
-  #$finalImage write [file join $jpegDir $imgName] -format PNG
+  #$finalImage write [file join $jpegDir $picPath] -format PNG
  
   #Reset Button & showPic to old values - Resize::resize may still be running!
   after 5000 {
@@ -230,7 +215,7 @@ set finalImage $cutImg
 
 } ;#END doResize
 
-# trimPic - resizes origPic - ERSETZT cutX und cutY
+# trimPic - resizes photosCurrOrigPic - ERSETZT cutX und cutY
 # funktion 'ausschnitt' wird immer neu überschrieben
 proc trimPic {x1 y1 x2 y2} {
   global canvImgFactor
@@ -241,12 +226,9 @@ proc trimPic {x1 y1 x2 y2} {
   puts "Trimpic: $x1 $y1 $x2 $y2"
   
   image create photo ausschnitt
-  ausschnitt copy origPic -from $x1 $y1 $x2 $y2 -shrink
-  origPic blank
-  origPic copy ausschnitt -shrink
-  ausschnitt blank
-  #Funktion ausgeben?
-  return origPic
+  ausschnitt copy photosCurrOrigPic -from $x1 $y1 $x2 $y2 -shrink
+  photosCurrOrigPic blank
+  photosCurrOrigPic copy ausschnitt -shrink
 }
 
 # Create name space for Resizing proc - TODO: NOT NEEDED!
