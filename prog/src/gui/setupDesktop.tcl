@@ -1,43 +1,43 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 10aug17
+# Updated 29jan18
 
 #Create left & right main frames
-pack [frame .n.f2.fleft] -expand 0 -fill y -side left
-pack [frame .n.f2.fright] -expand 0 -fill y -side right -pady 5 -padx 5
+pack [frame .nb.desktop.fleft] -expand 0 -fill y -side left
+pack [frame .nb.desktop.fright] -expand 0 -fill y -side right -pady 5 -padx 5
 
 #Create left & right subframes
-#pack [frame .n.f2.fleft.f1] [frame .n.f2.fleft.f2] -fill none -expand 0 -fill x -side left
-pack [frame .n.f2.fright.ftop -relief ridge -borderwidth 3] -fill x -expand 0 -pady 2
-pack [frame .n.f2.fright.fbot -relief ridge -borderwidth 3] -pady $py -padx $px -fill x -expand 0
-pack [frame .n.f2.fright.fbot1] -pady $py -fill x
-pack [frame .n.f2.fright.fbot2] -fill x
+#pack [frame .nb.desktop.fleft.f1] [frame .nb.desktop.fleft.f2] -fill none -expand 0 -fill x -side left
+pack [frame .nb.desktop.fright.ftop -relief ridge -borderwidth 3] -fill x -expand 0 -pady 2
+pack [frame .nb.desktop.fright.fbot -relief ridge -borderwidth 3] -pady $py -padx $px -fill x -expand 0
+pack [frame .nb.desktop.fright.fbot1] -pady $py -fill x
+pack [frame .nb.desktop.fright.fbot2] -fill x
 
 #F I L L   L E F T 
 
 #Create title
-label .n.f2.fleft.baslik -textvar f2.tit -font bpfont3
+label .nb.desktop.fleft.baslik -textvar f2.tit -font bpfont3
 
 #1. ImageYesno checkbutton 
-checkbutton .n.f2.fleft.imgyes -textvar f2.box -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
+checkbutton .nb.desktop.fleft.imgyes -textvar f2.box -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
 if {$enablepic} {set imgyesState 1} else {set imgyesState 0}
-set imgyesnoBtn .n.f2.fleft.imgyes
+set imgyesnoBtn .nb.desktop.fleft.imgyes
 
 #2. Main text
-message .n.f2.fleft.intro -textvar f2.txt -font bpfont1 -width 500 -padx $px -pady $py -justify left
+message .nb.desktop.fleft.intro -textvar f2.txt -font bpfont1 -width 500 -padx $px -pady $py -justify left
 
 #P A C K   L E F T 
-pack .n.f2.fleft.baslik -anchor w
+pack .nb.desktop.fleft.baslik -anchor w
 pack $imgyesnoBtn -side top -anchor w
-pack .n.f2.fleft.intro -anchor nw
+pack .nb.desktop.fleft.intro -anchor nw
 
 
 # F I L L   R I G H T
 
 #3. ShowDate checkbutton
-checkbutton .n.f2.fright.ftop.introBtn -textvar f2.introline -variable enabletitle
-set showdateBtn .n.f2.fright.ftop.introBtn
+checkbutton .nb.desktop.fright.ftop.introBtn -textvar f2.introline -variable enabletitle
+set showdateBtn .nb.desktop.fright.ftop.introBtn
 $showdateBtn configure -command {
   if {$setupTwdFileName != ""} {
     $textposCanv itemconfigure mv -text [getTodaysTwdText $setupTwdFileName]
@@ -45,16 +45,16 @@ $showdateBtn configure -command {
 }
 
 #4. SlideshowYesNo checkbutton
-checkbutton .n.f2.fright.ftop.slideBtn -textvar f2.slideshow -variable slideshowState -command {setSlideSpin $slideshowState}
-set slideBtn .n.f2.fright.ftop.slideBtn
+checkbutton .nb.desktop.fright.ftop.slideBtn -textvar f2.slideshow -variable slideshowState -command {setSlideSpin $slideshowState}
+set slideBtn .nb.desktop.fright.ftop.slideBtn
 
 #5. Slideshow spinbox
-message .n.f2.fright.ftop.slidetxt -textvar f2.int -width 200
-set slideTxt .n.f2.fright.ftop.slidetxt
-message .n.f2.fright.ftop.sectxt -text sec -width 100
-set slideSec .n.f2.fright.ftop.sectxt
-spinbox .n.f2.fright.ftop.slideSpin -from 10 -to 600 -increment 10 -width 3
-set slideSpin .n.f2.fright.ftop.slideSpin
+message .nb.desktop.fright.ftop.slidetxt -textvar f2.int -width 200
+set slideTxt .nb.desktop.fright.ftop.slidetxt
+message .nb.desktop.fright.ftop.sectxt -text sec -width 100
+set slideSec .nb.desktop.fright.ftop.sectxt
+spinbox .nb.desktop.fright.ftop.slideSpin -from 10 -to 600 -increment 10 -width 3
+set slideSpin .nb.desktop.fright.ftop.slideSpin
 $slideSpin set $slideshow
 if {!$slideshow} {
   $slideBtn deselect 
@@ -74,11 +74,11 @@ canvasbild copy origbild -subsample $textPosFactor -shrink
 
 set screeny [winfo screenheight .]
 
-set textposCanv [canvas .n.f2.fright.fbot.textposcanv -bg lightgrey -borderwidth 1]
+set textposCanv [canvas .nb.desktop.fright.fbot.textposcanv -bg lightgrey -borderwidth 1]
 $textposCanv configure -width [image width canvasbild] -height [expr $screeny/$textPosFactor]
 $textposCanv create image 0 0 -image canvasbild -anchor nw
 
-set textposTxt [label .n.f2.fright.fbot.textpostxt -textvar textpos]
+set textposTxt [label .nb.desktop.fright.fbot.textpostxt -textvar textpos]
 createMovingTextBox $textposCanv
 $textposCanv bind mv <1> {movestart %W %x %y}
 $textposCanv bind mv <B1-Motion> {move %W %x %y}
@@ -89,15 +89,15 @@ if {! [regexp displayfont [font names] ] } {
   font create displayfont -family $fontfamily -size -$fontsize -weight bold
 }
 
-canvas .n.f2.fright.fbot2.inttextcanv -width 700 -height 150 -borderwidth 2 -relief raised
-set inttextCanv .n.f2.fright.fbot2.inttextcanv
+canvas .nb.desktop.fright.fbot2.inttextcanv -width 700 -height 150 -borderwidth 2 -relief raised
+set inttextCanv .nb.desktop.fright.fbot2.inttextcanv
 
 #create background image
 image create photo intTextBG -file $guidir/testbild.png
 $inttextCanv create image 0 0 -image intTextBG -anchor nw 
 
 # set international text
-set inttextHeader [label .n.f2.fright.fbot2.inttexttxt -textvar f2.fontexpl]
+set inttextHeader [label .nb.desktop.fright.fbot2.inttexttxt -textvar f2.fontexpl]
 if {$platform=="unix"} {
   source $Bidi
   set ar_txt [fixArabUnix $f2ar_txt]
@@ -118,10 +118,10 @@ $inttextCanv create text 10 20 -fill $fontcolor -tags {textitem main}
 $inttextCanv itemconfigure textitem -text $internationaltext -anchor nw -width 680 -font displayfont
 
 #1. Fontcolour spinbox
-message .n.f2.fright.fbot1.fontcolorTxt -width 200 -textvar f2.farbe
-spinbox .n.f2.fright.fbot1.fontcolorSpin -width 10 -values {blue green gold silver} 
-set fontcolorTxt .n.f2.fright.fbot1.fontcolorTxt
-set fontcolorSpin .n.f2.fright.fbot1.fontcolorSpin
+message .nb.desktop.fright.fbot1.fontcolorTxt -width 200 -textvar f2.farbe
+spinbox .nb.desktop.fright.fbot1.fontcolorSpin -width 10 -values {blue green gold silver} 
+set fontcolorTxt .nb.desktop.fright.fbot1.fontcolorTxt
+set fontcolorSpin .nb.desktop.fright.fbot1.fontcolorSpin
 $fontcolorSpin configure -command {
   setCanvasText [set %s]
      #   $textposCanv itemconfigure mv -fill %s
@@ -136,15 +136,15 @@ if {!$fontsize} {
   set fontsize [ expr round($screeny/40) ] 
 }
 
-message .n.f2.fright.fbot1.fontsizeTxt -width 200 -textvar f2.fontsizetext
-spinbox .n.f2.fright.fbot1.fontsizeSpin -width 2 -from 20 -to 40 -command {font configure displayfont -size -%s}
-set fontsizeTxt .n.f2.fright.fbot1.fontsizeTxt
-set fontsizeSpin .n.f2.fright.fbot1.fontsizeSpin
+message .nb.desktop.fright.fbot1.fontsizeTxt -width 200 -textvar f2.fontsizetext
+spinbox .nb.desktop.fright.fbot1.fontsizeSpin -width 2 -from 20 -to 40 -command {font configure displayfont -size -%s}
+set fontsizeTxt .nb.desktop.fright.fbot1.fontsizeTxt
+set fontsizeSpin .nb.desktop.fright.fbot1.fontsizeSpin
 $fontsizeSpin set $fontsize
 
 #3. Fontweight checkbutton
-checkbutton .n.f2.fright.fbot1.fontweightBtn -width 5 -variable fontweightState -textvar f2.fontweight 
-set fontweightBtn .n.f2.fright.fbot1.fontweightBtn
+checkbutton .nb.desktop.fright.fbot1.fontweightBtn -width 5 -variable fontweightState -textvar f2.fontweight 
+set fontweightBtn .nb.desktop.fright.fbot1.fontweightBtn
 $fontweightBtn configure -command {
   if {$fontweightState==1} {
     font configure displayfont -weight bold
@@ -162,10 +162,10 @@ if {$fontweight=="bold"} {
 }
 
 #4. Fontfamily dropdown Menu
-message .n.f2.fright.fbot1.fontfamilyTxt -width 250 -textvar f2.fontfamilytext
-ttk::combobox .n.f2.fright.fbot1.fontfamilyDrop -width 20 -height 30
-set fontfamilyTxt .n.f2.fright.fbot1.fontfamilyTxt
-set fontfamilySpin .n.f2.fright.fbot1.fontfamilyDrop
+message .nb.desktop.fright.fbot1.fontfamilyTxt -width 250 -textvar f2.fontfamilytext
+ttk::combobox .nb.desktop.fright.fbot1.fontfamilyDrop -width 20 -height 30
+set fontfamilyTxt .nb.desktop.fright.fbot1.fontfamilyTxt
+set fontfamilySpin .nb.desktop.fright.fbot1.fontfamilyDrop
 
 ##get System font list + add TkTextFont
 set Fontlist [lsort [font families]]
@@ -179,7 +179,7 @@ $fontfamilySpin set $fontfamily
 
 #P A C K   R I G H T
 
-#pack [frame .n.f2.fright.f1]
+#pack [frame .nb.desktop.fright.f1]
 pack $showdateBtn -anchor w
 
 pack $slideBtn -anchor w -side left

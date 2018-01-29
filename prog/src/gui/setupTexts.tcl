@@ -9,7 +9,7 @@ global readmetext
   set BEG [string first "\<$lang" $readmetext]
   set END [string first "\<\/$lang" $readmetext]
   set readmeLang [string range $readmetext $BEG $END]   
-  .n.f5.man replace 1.1 end $readmeLang 
+  .nb.manual.man replace 1.1 end $readmeLang 
   return $readmeLang
 }
 
@@ -258,6 +258,15 @@ set f6Del(en) "Delete from $bp Photo Collection:"
 set f6Del(de) "Aus der $bp-Fotosammlung löschen:"
 set ::f6.del $f6Del($lang)
 
+#RESIZING
+set resizeF_tit(en) "Resizing Photo" 
+set resizeF_tit(de) "Bildgrösse ändern"
+set ::resizeF_tit $resizeF_tit($lang)
+
+set resizeF_txt(de) "Ihr Photo passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. Verschieben Sie den Auswahlrahmen nach Belieben und drücken Sie Ok, um die Bildgrösse anzupassen."
+set resizeF_txt(en) "The size of your photo does not correspond to the screen size. Please move the selection frame as desired and press Ok to resize picture."
+set ::resizeF_txt resizeF_txt($lang)
+
 set moveFrameToResize(en) "Move frame to select desired image section and press Ok to resize."
 set moveFrameToResize(de) "Verschieben Sie den Auswahlrahmen nach Belieben und drücken Sie Ok, um die Bildgrösse anzupassen."
 set ::moveFrameToResize $moveFrameToResize($lang)
@@ -291,6 +300,7 @@ set ::picSchonDa $picSchonDa($lang)
 
 ### S E T U P   S I G N A T U R E  #######################
 set f3Tit(en) "Add $dw to your e-mail signatures"
+
 set f3Tit(de) "$dw auf Ihren E-Mail-Signaturen"
 set ::f3.tit  $f3Tit($lang)
 

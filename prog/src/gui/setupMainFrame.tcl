@@ -38,25 +38,25 @@ frame .ftop
 pack .ftop -fill x
 
 #Create notebook
-ttk::notebook .n -width [expr $wWidth - 50] -height [expr $wHeight - 200]
-pack .n -fill y -expand true -padx $px -pady $py
+ttk::notebook .nb -width [expr $wWidth - 50] -height [expr $wHeight - 200]
+pack .nb -fill y -expand true -padx $px -pady $py
 
 #Create Title (LOGO to be created later)
 ttk::label .ftop.titelmitlogo -textvar bpsetup -font bpfont4
 pack .ftop.titelmitlogo -side left
 
 #Create notebook Tabs
-.n add [frame .n.f0 -padx $px] -text Welcome
-.n add [frame .n.f1 -padx $px] -text International
-.n add [frame .n.f2 -padx $px] -text Desktop
-.n add [frame .n.f6 -padx $px] -text Photos
-.n add [frame .n.f3 -padx $px] -text E-Mail
+.nb add [frame .nb.welcome -padx $px] -text Welcome
+.nb add [frame .nb.international -padx $px] -text International
+.nb add [frame .nb.desktop -padx $px] -text Desktop
+.nb add [frame .nb.photos -padx $px] -text Photos
+.nb add [frame .nb.email -padx $px] -text E-Mail
 
 if {$platform=="unix"} {
-  .n add [frame .n.f4 -padx $px] -text Terminal
+  .nb add [frame .nb.terminal -padx $px] -text Terminal
 }
 
-.n add [frame .n.f5 -padx $px] -text Manual
+.nb add [frame .nb.manual -padx $px] -text Manual
 
 #Reposition window to screen top
 if { [winfo y .] > 20 } {
