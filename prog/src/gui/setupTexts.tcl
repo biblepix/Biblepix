@@ -263,9 +263,9 @@ set resizeF_tit(en) "Resizing Photo"
 set resizeF_tit(de) "Bildgrösse ändern"
 set ::resizeF_tit $resizeF_tit($lang)
 
-set resizeF_txt(de) "Ihr Photo passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. Verschieben Sie den Auswahlrahmen nach Belieben und drücken Sie Ok, um die Bildgrösse anzupassen."
-set resizeF_txt(en) "The size of your photo does not correspond to the screen size. Please move the selection frame as desired and press Ok to resize picture."
-set ::resizeF_txt resizeF_txt($lang)
+set resizeF_txt(de) "Ihr Photo passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. Verschieben Sie das Bild nach Belieben und drücken Sie Ok zum Speichern."
+set resizeF_txt(en) "The size of your photo does not correspond to the screen size. Please move picture as desired and press Ok to save."
+set ::resizeF_txt $resizeF_txt($lang)
 
 set moveFrameToResize(en) "Move frame to select desired image section and press Ok to resize."
 set moveFrameToResize(de) "Verschieben Sie den Auswahlrahmen nach Belieben und drücken Sie Ok, um die Bildgrösse anzupassen."

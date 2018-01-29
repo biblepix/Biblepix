@@ -11,25 +11,22 @@
 #Pack .resizeF in nb.photos
 #.n tab nb.photos -state normal
 #.n select 4
-pack [frame .resizeF] -in .nb.photos 
+
+.nb add [frame .resizeF] -text "Photo Resize"
+#pack [frame .resizeF] -in .nb.resize
+.nb select .resizeF
+
 label .resizeF.tit -textvar resizeF_tit -font bpfont3
 message .resizeF.txt -textvar resizeF_txt
 pack .resizeF.tit .resizeF.txt -anchor w -in .resizeF
+pack .imgCanvas -in .resizeF -side left
 
-#End: reenable all tabs & main buttons
-
-
-#Create title & buttons
-  catch {message .resizeLbl -textvariable ::moveFrameToResize -font {TkHeadingFont 20} -bg blue -fg yellow -pady 50 -width 0}
-  catch {button .resizeConfirmBtn}
-  catch {button .resizeCancelBtn}
-
-  .resizeConfirmBtn configure -text Ok -command {doResize} -bg green
-  .resizeCancelBtn configure -textvar ::cancel -command {restorePhotosTab}
-
-  pack .resizeLbl -in .resizeF
-  pack .imgCanvas -in .resizeF
-  pack .resizeCancelBtn .resizeConfirmBtn -in .resizeF -side right
+#Create buttons
+button .resizeConfirmBtn
+button .resizeCancelBtn
+.resizeConfirmBtn configure -text Ok -command {doResize} -bg green
+.resizeCancelBtn configure -textvar ::cancel -command {restorePhotosTab}
+pack .resizeCancelBtn .resizeConfirmBtn -in .resizeF -side right
   
   #Create selection frame/ area chooser ???
   set screenX [winfo screenwidth .]

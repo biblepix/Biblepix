@@ -269,28 +269,28 @@ proc openResizeWindow {} {
   global SetupResizePhoto
   .nb hide .nb.photos
   
+  #disable all other Tabs & Buttons
   foreach tab [.nb tabs] {.nb tab $tab -state disabled}
   .b4 conf -state disable
   .b5 conf -state disable
 
-  #Pack .resizeF in nb.photos
-  #pack [frame .resizeF] -in nb.photos
-  .nb tab .nb.photos -state normal
-  .nb select .nb.photos
-
+  #reenable Photos tab with new content 
+ # .nb add .nb.resize 3
   source $SetupResizePhoto
+  #.nb tab .nb.photos -state normal
+  #.nb select .nb.photos
 }
 
 proc restorePhotosTab {} {
-  .nb forget .nb.resizeF
+  .nb forget .resizeF
   .nb add .nb.photos
-  .nb select .nb.photos
+    
   foreach tab [.nb tabs] {.nb tab $tab -state normal}
   .b4 conf -state normal
   .b5 conf -state normal
-
   pack .imgCanvas -in .nb.photos.mainf.right.bild -side left
-  .imgCanvas delete areaChooser
+  #.imgCanvas delete areaChooser
+  .nb select .nb.photos
 }
 
 proc getPngFileName {fileName} {
