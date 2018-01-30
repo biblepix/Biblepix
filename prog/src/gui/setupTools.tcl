@@ -203,7 +203,6 @@ proc move {w x y maxX maxY} {
   if {[+ $subX2 $dx] > [expr $maxX + (1.5 * $canvPicMargin)] } {set dx [expr $maxX + (1.5 * $canvPicMargin) - $subX2]}
   if {[+ $subY2 $dy] > [expr $maxY + (1.5 * $canvPicMargin)] } {set dy [expr $maxY + (1.5 * $canvPicMargin) - $subY2]}
 
-  #Normalfall
   $w move current $dx $dy
   
   set ::X [+ $::X $dx]
@@ -225,6 +224,8 @@ proc getAreaChooserCoords {c} {
 
 ##### S E T U P P H O T O S   P R O C S ####################################################
 proc openResizeWindow {c} {
+  global moveFrameToResize
+
   .nb hide .nb.photos
   catch {frame .nb.resizeF}
   .nb add .nb.resizeF -text "Resize Photo"
@@ -232,7 +233,7 @@ proc openResizeWindow {c} {
   .nb select 4
 
   #Create title & buttons
-  catch {message .resizeLbl -textvariable ::moveFrameToResize -font {TkHeadingFont 20} -bg blue -fg yellow -pady 50 -width 0}
+  catch {message .resizeLbl -text "$moveFrameToResize" -font {TkHeadingFont 20} -bg blue -fg yellow -pady 50 -width 0}
   catch {button .resizeConfirmBtn}
   catch {button .resizeCancelBtn}
 
@@ -242,12 +243,9 @@ proc openResizeWindow {c} {
   pack .resizeLbl -in .nb.resizeF
   pack $c -in .nb.resizeF
   pack .resizeCancelBtn .resizeConfirmBtn -in .nb.resizeF -side right
-  
-  #disable all other Tabs & Buttons
-  foreach tab [.nb tabs] {.nb tab $tab -state disabled}
-  .b4 conf -state disable
-  .b5 conf -state disable
 
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
   set imgX [image width photosCanvPic]
   set imgY [image height photosCanvPic]
 
@@ -269,15 +267,11 @@ proc openResizeWindow {c} {
 }
 
 proc restorePhotosTab {c} {
-  .nb forget .resizeF
+  .nb forget .nb.resizeF
   .nb add .nb.photos
-    
-  foreach tab [.nb tabs] {.nb tab $tab -state normal}
-  .b4 conf -state normal
-  .b5 conf -state normal
-  pack $c -in .nb.photos.mainf.right.bild -side left
-  #.imgCanvas delete areaChooser
   .nb select .nb.photos
+  pack $c -in .nb.photos.mainf.right.bild -side left
+  $c delete areaChooser
 }
 
 proc needsResize {} {
