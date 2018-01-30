@@ -17,17 +17,23 @@
 .nb select .resizeF
 
 label .resizeF.tit -textvar resizeF_tit -font bpfont3
-message .resizeF.txt -textvar resizeF_txt
+message .resizeF.txt -textvar resizeF_txt -width 300 -fg red -font "TkTextFont 16" -pady 20 -padx 20
 pack .resizeF.tit .resizeF.txt -anchor w -in .resizeF
-pack .imgCanvas -in .resizeF -side left
+
+#Create Bild frame - TODO: get reqImgW und reqImgH
+set reqX2 600
+set reqY2 400
+pack [frame .resizeF.bildF -relief sunken -bd 3] -anchor e -pady 3 -expand 1 -fill x
+pack .imgCanvas -in .resizeF.bildF -side left
+.imgCanvas configure -width $reqX2 -height $reqY2
 
 #Create buttons
-button .resizeConfirmBtn
-button .resizeCancelBtn
-.resizeConfirmBtn configure -text Ok -command {doResize} -bg green
-.resizeCancelBtn configure -textvar ::cancel -command {restorePhotosTab}
+button .resizeConfirmBtn -text Ok -command {doResize} -bg green
+button .resizeCancelBtn -textvar ::cancel -command {restorePhotosTab}
 pack .resizeCancelBtn .resizeConfirmBtn -in .resizeF -side right
-  
+
+
+
   #Create selection frame/ area chooser ???
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
