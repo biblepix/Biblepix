@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8dec17
+# Updated: 30jan18
 
 source $JList
 
