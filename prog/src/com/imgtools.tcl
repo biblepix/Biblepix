@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jan18
+# Updated: 30jan18
 
 #Check for Img package
 if { [catch {package require Img} ] } {
@@ -74,8 +74,8 @@ proc copyAndResizeSamplePhotos {} {
       } else {
       
       set newPic [resize $screenX $screenY origJpeg]
-      #TDOO: getPngName
-      $newPic write [join $jpegdir $fileName] -format PNG
+      set pngFileName [getPngFileName $fileName]
+      $newPic write [join $jpegdir $pngFileName] -format PNG
     }
   }
 } ;#END checkSamplePhotos
