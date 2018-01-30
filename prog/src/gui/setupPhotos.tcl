@@ -5,6 +5,8 @@
 
 set fileJList ""
 
+source $SetupResizePhoto
+
 #Create title
 label .nb.photos.l1 -textvar f6.tit -font bpfont3 -justify left
 pack .nb.photos.l1 -anchor w
@@ -33,16 +35,11 @@ pack .nb.photos.mainf.right.bar.> -side left -fill x
 pack .nb.photos.mainf.right.bar.collect -side right -fill x
 
 #Build Photo canvas right
-set screenX [winfo screenwidth .]
-set screenY [winfo screenheight .]
-set factor [expr $screenX./$screenY]
-set canvX 650
-set canvY [expr round($canvX/$factor)]
-canvas .imgCanvas -width $canvX -height $canvY
+canvas .imgCanvas -width $photosCanvX -height $photosCanvY
 pack .imgCanvas -in .nb.photos.mainf.right.bild -side left
 
 label .picPath -textvar picPath
-button .addBtn -textvar f6.add -bg green -command {addPic .imgCanvas}
+button .addBtn -textvar f6.add -bg green -command {addPic}
 button .delBtn -textvar f6.del -bg red -command {delPic .imgCanvas}
 
 set fileJList [doCollect .imgCanvas]

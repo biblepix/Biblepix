@@ -1,58 +1,34 @@
 # ~/Biblepix/prog/src/gui/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 26jan18
+# Updated 30jan18
 
-#Disable all tabs & main buttons
-#foreach tab [.n tabs] {.n tab $tab -state disabled}
-#.b4 conf -state disable
-#.b5 conf -state disable
+proc openResizeWindow {} {
+  global moveFrameToResize photosCanvMargin
 
-#Pack .resizeF in nb.photos
-#.n tab nb.photos -state normal
-#.n select 4
+  toplevel .dlg
 
-.nb add [frame .resizeF] -text "Photo Resize"
-#pack [frame .resizeF] -in .nb.resize
-.nb select .resizeF
-
-label .resizeF.tit -textvar resizeF_tit -font bpfont3
-message .resizeF.txt -textvar resizeF_txt -width 300 -fg red -font "TkTextFont 16" -pady 20 -padx 20
-pack .resizeF.tit .resizeF.txt -anchor w -in .resizeF
-
-#Create Bild frame - TODO: get reqImgW und reqImgH
-set reqX2 600
-set reqY2 400
-pack [frame .resizeF.bildF -relief sunken -bd 3] -anchor e -pady 3 -expand 1 -fill x
-pack .imgCanvas -in .resizeF.bildF -side left
-.imgCanvas configure -width $reqX2 -height $reqY2
-
-#Create buttons
-button .resizeConfirmBtn -text Ok -command {doResize} -bg green
-button .resizeCancelBtn -textvar ::cancel -command {restorePhotosTab}
-pack .resizeCancelBtn .resizeConfirmBtn -in .resizeF -side right
-
-
-
-  #Create selection frame/ area chooser ???
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-
   set imgX [image width photosCanvPic]
   set imgY [image height photosCanvPic]
 
-  set factor [expr $imgX. / $screenX]
+  canvas .dlg.dlgCanvas -width [expr $imgX + 2 * $photosCanvMargin] -height [expr $imgY + 2 * $photosCanvMargin]
 
-  #limit move capability to y
-  set x 0
-  set y "%y"
+  set okButton {set ::Modal.Result [doResize .dlg.dlgCanvas]}
+  set cancelButton {set ::Modal.Result "Canceled"}
+  
+  #Create title & buttons
+  ttk::label .dlg.resizeLbl -text "$moveFrameToResize" -font {TkHeadingFont 20}
+  ttk::button .dlg.resizeConfirmBtn -text Ok -command $okButton
+  ttk::button .dlg.resizeCancelBtn -textvar ::cancel -command $cancelButton
+  
+  .dlg.dlgCanvas create image $photosCanvMargin $photosCanvMargin -image photosCanvPic -anchor nw -tag img
+
+  set factor [expr $imgX. / $screenX]
 
   if {[expr $imgY. / $factor] < $screenY} {
     set factor [expr $imgY. / $screenY]
-
-    #limit move capability to x
-    set y 0
-    set x "%x"
   }
 
   ##set cutting coordinates for cutFrame
@@ -60,8 +36,31 @@ pack .resizeCancelBtn .resizeConfirmBtn -in .resizeF -side right
   set canvCutY2 [expr $screenY * $factor]
 
   # 2. Create AreaChooser with cutting coordinates
-#  createPhotoAreaChooser .imgCanvas $canvCutX2 $canvCutY2
+  createPhotoAreaChooser .dlg.dlgCanvas $canvCutX2 $canvCutY2
 
-  #TODO: Rahmen kann über Bild hinausgehen !!!
-  .imgCanvas bind mv <1> {movestart %W %x %y}
-  .imgCanvas bind mv <B1-Motion> "move %W $x $y"
+  pack .dlg.resizeLbl
+  pack .dlg.dlgCanvas
+  pack .dlg.resizeCancelBtn .dlg.resizeConfirmBtn -side right
+
+  focus .dlg.resizeConfirmBtn
+  bind .dlg <Return> $cancelButton
+  bind .dlg <Escape> $cancelButton
+
+  .dlg.dlgCanvas bind mv <1> {movestart %W %x %y}
+  .dlg.dlgCanvas bind mv <B1-Motion> "move %W %x %y $imgX $imgY"
+  
+  Show.Modal .dlg -destroy 1 -onclose $cancelButton
+}
+
+#called by addPic
+proc createPhotoAreaChooser {canv x2 y2} {
+  global photosCanvMargin
+  $canv create rectangle [expr $photosCanvMargin / 2] [expr $photosCanvMargin / 2] [expr $x2 + (1.5 * $photosCanvMargin)] [expr $y2 + (1.5 * $photosCanvMargin)] -tags {mv areaChooser}
+  $canv itemconfigure areaChooser -outline red -activeoutline yellow -fill {} -width $photosCanvMargin
+}
+
+#Get current coordinates from PhotoAreaChooser
+proc getAreaChooserCoords {c} {
+  set imgCoords [$c bbox areaChooser]
+  return $imgCoords
+}

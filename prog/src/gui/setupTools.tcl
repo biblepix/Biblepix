@@ -182,7 +182,7 @@ proc movestart {w x y} {
 }
 
 proc move {w x y maxX maxY} {
-  global canvPicMargin
+  global photosCanvMargin
 
   proc + {a b} {expr {$a + $b}}
   proc - {a b} {expr {$a - $b}}
@@ -198,10 +198,10 @@ proc move {w x y maxX maxY} {
 
   lassign [$w coords mv] subX1 subY1 subX2 subY2
 
-  if {[+ $subX1 $dx] < [expr $canvPicMargin / 2] } {set dx [expr $subX1 - ($canvPicMargin / 2)]}
-  if {[+ $subY1 $dy] < [expr $canvPicMargin / 2] } {set dy [expr $subY1 - ($canvPicMargin / 2)]}
-  if {[+ $subX2 $dx] > [expr $maxX + (1.5 * $canvPicMargin)] } {set dx [expr $maxX + (1.5 * $canvPicMargin) - $subX2]}
-  if {[+ $subY2 $dy] > [expr $maxY + (1.5 * $canvPicMargin)] } {set dy [expr $maxY + (1.5 * $canvPicMargin) - $subY2]}
+  if {[+ $subX1 $dx] < [expr $photosCanvMargin / 2] } {set dx [expr $subX1 - ($photosCanvMargin / 2)]}
+  if {[+ $subY1 $dy] < [expr $photosCanvMargin / 2] } {set dy [expr $subY1 - ($photosCanvMargin / 2)]}
+  if {[+ $subX2 $dx] > [expr $maxX + (1.5 * $photosCanvMargin)] } {set dx [expr $maxX + (1.5 * $photosCanvMargin) - $subX2]}
+  if {[+ $subY2 $dy] > [expr $maxY + (1.5 * $photosCanvMargin)] } {set dy [expr $maxY + (1.5 * $photosCanvMargin) - $subY2]}
 
   $w move current $dx $dy
   
@@ -209,71 +209,7 @@ proc move {w x y maxX maxY} {
   set ::Y [+ $::Y $dy]
 }
 
-#called by addPic
-proc createPhotoAreaChooser {canv x2 y2} {
-  global canvPicMargin
-  $canv create rectangle [expr $canvPicMargin / 2] [expr $canvPicMargin / 2] [expr $x2 + (1.5 * $canvPicMargin)] [expr $y2 + (1.5 * $canvPicMargin)] -tags {mv areaChooser}
-  $canv itemconfigure areaChooser -outline red -activeoutline yellow -fill {} -width $canvPicMargin
-}
-
-#Get current coordinates from PhotoAreaChooser
-proc getAreaChooserCoords {c} {
-  set imgCoords [$c bbox areaChooser]
-  return $imgCoords
-}
-
 ##### S E T U P P H O T O S   P R O C S ####################################################
-proc openResizeWindow {c} {
-  global moveFrameToResize
-
-  .nb hide .nb.photos
-  catch {frame .nb.resizeF}
-  .nb add .nb.resizeF -text "Resize Photo"
-  .nb insert 4 .nb.resizeF
-  .nb select 4
-
-  #Create title & buttons
-  catch {message .resizeLbl -text "$moveFrameToResize" -font {TkHeadingFont 20} -bg blue -fg yellow -pady 50 -width 0}
-  catch {button .resizeConfirmBtn}
-  catch {button .resizeCancelBtn}
-
-  .resizeConfirmBtn configure -text Ok -command "doResize $c" -bg green
-  .resizeCancelBtn configure -textvar ::cancel -command "restorePhotosTab $c" -bg red
-
-  pack .resizeLbl -in .nb.resizeF
-  pack $c -in .nb.resizeF
-  pack .resizeCancelBtn .resizeConfirmBtn -in .nb.resizeF -side right
-
-  set screenX [winfo screenwidth .]
-  set screenY [winfo screenheight .]
-  set imgX [image width photosCanvPic]
-  set imgY [image height photosCanvPic]
-
-  set factor [expr $imgX. / $screenX]
-
-  if {[expr $imgY. / $factor] < $screenY} {
-    set factor [expr $imgY. / $screenY]
-  }
-
-  ##set cutting coordinates for cutFrame
-  set canvCutX2 [expr $screenX * $factor]
-  set canvCutY2 [expr $screenY * $factor]
-
-  # 2. Create AreaChooser with cutting coordinates
-  createPhotoAreaChooser $c $canvCutX2 $canvCutY2
-
-  $c bind mv <1> {movestart %W %x %y}
-  $c bind mv <B1-Motion> "move %W %x %y $imgX $imgY"
-}
-
-proc restorePhotosTab {c} {
-  .nb forget .nb.resizeF
-  .nb add .nb.photos
-  .nb select .nb.photos
-  pack $c -in .nb.photos.mainf.right.bild -side left
-  $c delete areaChooser
-}
-
 proc needsResize {} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
@@ -292,7 +228,7 @@ proc needsResize {} {
 # addPic - called by SetupPhoto
 # adds new Picture to BiblePix Photo collection
 # setzt Funktion 'photosCurrOrigPic' voraus und leitet Subprozesse ein
-proc addPic {c} {
+proc addPic {} {
   global picPath jpegDir picSchonDa
   
   set targetPicPath [file join $jpegDir [getPngFileName [file tail $picPath]]]
@@ -303,7 +239,7 @@ proc addPic {c} {
   }
   
   if {[needsResize]} {
-    openResizeWindow $c
+    openResizeWindow
   } else {
     photosCurrOrigPic write $targetPicPath -format PNG
     NewsHandler::QueryNews "[copiedPic $picPath]" lightblue
@@ -444,23 +380,23 @@ proc refreshImg {localJList c} {
 #Creates functions 'photosCurrOrigPic' and 'photosCanvPic'
 ##to be processed by all other progs (no vars!)
 proc openImg {imgFilePath imgCanvas} {
-  global canvPicMargin
+  global photosCanvMargin photosCanvX photosCanvY
   image create photo photosCurrOrigPic -file $imgFilePath
 
   #scale photosCurrOrigPic to photosCanvPic
-  set imgx [image width photosCurrOrigPic]
-  set imgy [image height photosCurrOrigPic]
-  set factor [expr round(($imgx/650)+0.999999)]
+  set imgX [image width photosCurrOrigPic]
+  set imgY [image height photosCurrOrigPic]
+  set factor [expr round(($imgX / $photosCanvX)+0.999999)]
 
-  if {[expr $imgy / $factor] > 400} {
-    set factor [expr round(($imgy/400)+0.999999)]
+  if {[expr $imgY / $factor] > $photosCanvY} {
+    set factor [expr round(($imgY / $photosCanvY)+0.999999)]
   }
 
   catch {image delete photosCanvPic}
   image create photo photosCanvPic
 
   photosCanvPic copy photosCurrOrigPic -subsample $factor -shrink
-  $imgCanvas create image $canvPicMargin $canvPicMargin -image photosCanvPic -anchor nw -tag img
+  $imgCanvas create image $photosCanvMargin $photosCanvMargin -image photosCanvPic -anchor nw -tag img
 }
 
 proc hideImg {imgCanvas} {

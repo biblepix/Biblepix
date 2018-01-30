@@ -9,7 +9,7 @@ if { [catch {package require Img} ] } {
   tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message $packageRequireImg
   exit
 }
-    
+
 ####### Procs for $Hgbild #####################
 
 #called by setShade + setSun
@@ -44,7 +44,7 @@ proc setSun {rgb} {
   global sunfactor
   foreach c [split $rgb] {
     lappend sunrgbList [expr {int($sunfactor*$c)}]
-  } 
+  }
 
   #avoid brightness values over 255
   foreach i $sunrgbList {
@@ -66,13 +66,13 @@ proc copyAndResizeSamplePhotos {} {
     image create photo origJpeg -file $filePath 
     set imgX [image width origJpeg]
     set imgY [image height origJpeg]
-    
+
     #copy over as JPEG if size OK
     if {$screenX == $imgX && $screeny == $imgy} {
       file copy $fileName [join $jpegdir $fileName]
-      
+
       } else {
-      
+
       set newPic [resize $screenX $screenY origJpeg]
       set pngFileName [getPngFileName $fileName]
       $newPic write [join $jpegdir $pngFileName] -format PNG
@@ -97,26 +97,22 @@ proc getPngFileName {fileName} {
 ## called by addPic + **copyAndResizeSamplePics**???
 ## organises all resizing processes
 proc doResize {c} {
-  global jpegDir picPath canvPicMargin
-  
+  global jpegDir picPath photosCanvMargin
+
   set targetPicPath [file join $jpegDir [getPngFileName [file tail $picPath]]]
-  
+
   set origX [image width photosCurrOrigPic]
   set imgX [image width photosCanvPic]
 
   set factor [expr $origX / $imgX]
-  
+
   #Get coordinates of Area Chooser
   lassign [getAreaChooserCoords $c] x1 y1 x2 y2
-  
-puts "AreaChooser: $x1 $y1 $x2 $y2"
-  
+
   set x1 [expr round($x1 * $factor)]
   set y1 [expr round($y1 * $factor)]
-  set x2 [expr round($x2 - (2 * $canvPicMargin)) * $factor]
-  set y2 [expr round($y2 - (2 * $canvPicMargin)) * $factor]
-  
-puts "AreaChooser: $x1 $y1 $x2 $y2"
+  set x2 [expr round($x2 - (2 * $photosCanvMargin)) * $factor]
+  set y2 [expr round($y2 - (2 * $photosCanvMargin)) * $factor]
 
   set cutImg [trimPic $x1 $y1 $x2 $y2]
   set screenX [winfo screenwidth .]
@@ -127,8 +123,6 @@ puts "AreaChooser: $x1 $y1 $x2 $y2"
   #Save new image to Photos directory
   $finalImage write $targetPicPath -format PNG
   image delete $finalImage
-
-  restorePhotosTab $c
 
   NewsHandler::QueryNews "[copiedPic $picPath]" lightblue
 } ;#END doResize
@@ -157,15 +151,16 @@ proc resize {src newx newy {dest ""} } {
 
   global resizingPic
   catch {NewsHandler::QueryNews "$resizingPic" orange}
-  
+
   set mx [image width $src]
   set my [image height $src]
-  
+
   if { "$dest" == ""} {
     set dest [image create photo]
   }
-  $dest configure -width $newx -height $newy
   
+  $dest configure -width $newx -height $newy
+
   # Check if we can just zoom using -zoom option on copy
   if { $newx % $mx == 0 && $newy % $my == 0} {
     set ix [expr {$newx / $mx}]
@@ -173,26 +168,25 @@ proc resize {src newx newy {dest ""} } {
     $dest copy $src -zoom $ix $iy
     return $dest
   }
-  
+
   set ny 0
   set ytot $my
-  
+
   for {set y 0} {$y < $my} {incr y} {
-    
+
     #
     # Do horizontal resize
     #
-    
+
     foreach {pr pg pb} [$src get 0 $y] {break}
-    
+
     set row [list]
     set thisrow [list]
     
     set nx 0
     set xtot $mx
-    
+
     for {set x 1} {$x < $mx} {incr x} {
-      
       # Add whole pixels as necessary
       while { $xtot <= $newx } {
         lappend row [format "#%02x%02x%02x" $pr $pg $pb]
@@ -200,129 +194,125 @@ proc resize {src newx newy {dest ""} } {
         incr xtot $mx
         incr nx
       }
-      
+
       # Now add mixed pixels
-      
+
       foreach {r g b} [$src get $x $y] {break}
-      
+
       # Calculate ratios to use
-      
+
       set xtot [expr {$xtot - $newx}]
       set rn $xtot
       set rp [expr {$mx - $xtot}]
-      
+
       # This section covers shrinking an image where
       # more than 1 source pixel may be required to
       # define the destination pixel
-      
+
       set xr 0
       set xg 0
       set xb 0
-      
+
       while { $xtot > $newx } {
         incr xr $r
         incr xg $g
         incr xb $b
-        
+
         set xtot [expr {$xtot - $newx}]
         incr x
         foreach {r g b} [$src get $x $y] {break}
       }
-      
+
       # Work out the new pixel colours
-      
+
       set tr [expr {int( ($rn*$r + $xr + $rp*$pr) / $mx)}]
       set tg [expr {int( ($rn*$g + $xg + $rp*$pg) / $mx)}]
       set tb [expr {int( ($rn*$b + $xb + $rp*$pb) / $mx)}]
-      
+
       if {$tr > 255} {set tr 255}
       if {$tg > 255} {set tg 255}
       if {$tb > 255} {set tb 255}
-      
+
       # Output the pixel
-      
+
       lappend row [format "#%02x%02x%02x" $tr $tg $tb]
       lappend thisrow $tr $tg $tb
       incr xtot $mx
       incr nx
-      
+
       set pr $r
       set pg $g
       set pb $b
     }
-    
+
     # Finish off pixels on this row
     while { $nx < $newx } {
       lappend row [format "#%02x%02x%02x" $r $g $b]
       lappend thisrow $r $g $b
       incr nx
     }
-    
+
     #
     # Do vertical resize
     #
-    
+
     if {[info exists prevrow]} {
-      
       set nrow [list]
-      
+
       # Add whole lines as necessary
       while { $ytot <= $newy } {
-        
         $dest put -to 0 $ny [list $prow]
-        
+
         incr ytot $my
         incr ny
       }
-      
+
       # Now add mixed line
       # Calculate ratios to use
-      
+
       set ytot [expr {$ytot - $newy}]
       set rn $ytot
       set rp [expr {$my - $rn}]
-      
+
       # This section covers shrinking an image
       # where a single pixel is made from more than
       # 2 others.  Actually we cheat and just remove 
       # a line of pixels which is not as good as it should be
-      
+
       while { $ytot > $newy } {
-        
         set ytot [expr {$ytot - $newy}]
         incr y
         continue
       }
-      
+
       # Calculate new row
-      
+
       foreach {pr pg pb} $prevrow {r g b} $thisrow {
-        
         set tr [expr {int( ($rn*$r + $rp*$pr) / $my)}]
         set tg [expr {int( ($rn*$g + $rp*$pg) / $my)}]
         set tb [expr {int( ($rn*$b + $rp*$pb) / $my)}]
-        
+
         lappend nrow [format "#%02x%02x%02x" $tr $tg $tb]
       }
-      
+
       $dest put -to 0 $ny [list $nrow]
-      
+
       incr ytot $my
       incr ny
     }
-    
+
     set prevrow $thisrow
     set prow $row
-    
+
     update idletasks
   }
-  
+
   # Finish off last rows
   while { $ny < $newy } {
     $dest put -to 0 $ny [list $row]
     incr ny
   }
   update idletasks
-  
+
   return $dest
 }

@@ -149,7 +149,12 @@ set tab "                              "
 set ind "     "
 
 #Global Settings
-set canvPicMargin 6
+set screenX [winfo screenwidth .]
+set screenY [winfo screenheight .]
+set factor [expr $screenX./$screenY]
+set photosCanvX 650
+set photosCanvY [expr round($photosCanvX/$factor)]
+set photosCanvMargin 6
 
 #Global functions
 proc uniqkey {} {
@@ -213,5 +218,22 @@ if {$platform == "unix"} {
     { {Image Files} {.jpg .jpeg .png} }
   }
 }
-  
+
+proc Show.Modal {win args} {
+  set ::Modal.Result {}
+  array set options [list -onclose {} -destroy 0 {*}$args]
+  wm transient $win .
+  wm protocol $win WM_DELETE_WINDOW [list catch $options(-onclose) ::Modal.Result]
+  set x [expr {([winfo width  .] - [winfo reqwidth  $win]) / 2 + [winfo rootx .]}]
+  set y [expr {([winfo height .] - [winfo reqheight $win]) / 2 + [winfo rooty .]}]
+  wm geometry $win +$x+$y
+  raise $win
+  focus $win
+  grab $win
+  tkwait variable ::Modal.Result
+  grab release $win
+  if {$options(-destroy)} {destroy $win}
+  return ${::Modal.Result}
+}
+
 catch {source $LoadConfig}
