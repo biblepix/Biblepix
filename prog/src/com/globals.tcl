@@ -2,9 +2,9 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 4dec17
+# Updated: 29jan18
 
-# This variable enables the debuging mode in the hole application if set to 1.
+# This variable enables Debugging Mode in the whole application if set to 1.
 set Debug 1
 set Mocking 1
 
@@ -29,9 +29,9 @@ if { [info exists srcdir] } {
   }
 }
 
-#Set dirnames
+#S e t   d i r n a m e s
 set sigDir [file join $rootdir Email]
-set exaJpgDir [file join $rootdir ExamplePhotos]
+set sampleJpgDir [file join $rootdir SamplePhotos]
 set imgDir [file join $rootdir Image]
 set jpegDir [file join $rootdir Photos]
 set progDir [file join $rootdir prog]
@@ -52,9 +52,8 @@ set maindir [file join $srcdir pic]
 set savedir [file join $srcdir save]
 
 proc makeDirs {} {
-  global sigDir exaJpgDir imgDir jpegDir progDir twdDir bmpdir confdir piddir srcdir unixdir windir sharedir guidir maildir maindir savedir
-
-  file mkdir $sigDir $exaJpgDir $imgDir $jpegDir $progDir $twdDir
+  global sigDir sampleJpgDir imgDir jpegDir progDir twdDir bmpdir confdir piddir srcdir unixdir windir sharedir guidir maildir maindir savedir
+  file mkdir $sigDir $imgDir $jpegDir $sampleJpgDir $progDir $twdDir
   file mkdir $bmpdir $confdir $piddir $srcdir $unixdir $windir
   file mkdir $sharedir $guidir $maildir $maindir $savedir
 }
@@ -63,42 +62,43 @@ proc makeDirs {} {
 
 #Set filepaths array
 array set filepaths "
-Readme [file join $rootdir README.txt]
-UpdateInjection [file join $srcdir updateInjection.tcl]
-Biblepix [file join $srcdir biblepix.tcl]
-Setup [file join $srcdir biblepix-setup.tcl]
-Image [file join $maindir image.tcl]
-Hgbild [file join $maindir hgbild.tcl]
-Textbild [file join $maindir textbild.tcl]
-SetupMainFrame [file join $guidir setupMainFrame.tcl]
-SetupBuild [file join $guidir setupBuildGUI.tcl]
-SetupDesktop [file join $guidir setupDesktop.tcl]
-SetupEmail [file join $guidir setupEmail.tcl]
-SetupInternational [file join $guidir setupInternational.tcl]
-SetupPhotos [file join $guidir setupPhotos.tcl]
-SetupReadme [file join $guidir setupReadme.tcl]
-SetupTerminal [file join $guidir setupTerminal.tcl]
-SetupWelcome [file join $guidir setupWelcome.tcl]
-Setuptools [file join $guidir setupTools.tcl]
-SetupTexts [file join $guidir setupTexts.tcl]
-TestBildGUI [file join $guidir testbild.png]
-SetupSave [file join $savedir setupSave.tcl]
-SetupSaveLin [file join $savedir setupSaveLin.tcl]
-SetupSaveLinHelpers [file join $savedir setupSaveLinHelpers.tcl]
-SetupSaveWin [file join $savedir setupSaveWin.tcl]
-SetupSaveWinHelpers [file join $savedir setupSaveWinHelpers.tcl]
-Bidi [file join $sharedir bidi.tcl]
-Flags [file join $sharedir flags.tcl]
-Http [file join $sharedir http.tcl]
-JList [file join $sharedir JList.tcl]
-Globals [file join $sharedir globals.tcl]
-Imgtools [file join $sharedir imgtools.tcl]
-LoadConfig [file join $sharedir LoadConfig.tcl]
-Twdtools [file join $sharedir twdtools.tcl]
-Uninstall [file join $savedir uninstall.tcl]
-Signature [file join $maildir signature.tcl]
-Config [file join $confdir biblepix.conf]
-Terminal [file join $unixdir term.sh]
+  Readme [file join $rootdir README.txt]
+  UpdateInjection [file join $srcdir updateInjection.tcl]
+  Biblepix [file join $srcdir biblepix.tcl]
+  Setup [file join $srcdir biblepix-setup.tcl]
+  Image [file join $maindir image.tcl]
+  Hgbild [file join $maindir hgbild.tcl]
+  Textbild [file join $maindir textbild.tcl]
+  SetupMainFrame [file join $guidir setupMainFrame.tcl]
+  SetupBuild [file join $guidir setupBuildGUI.tcl]
+  SetupDesktop [file join $guidir setupDesktop.tcl]
+  SetupEmail [file join $guidir setupEmail.tcl]
+  SetupInternational [file join $guidir setupInternational.tcl]
+  SetupPhotos [file join $guidir setupPhotos.tcl]
+  SetupReadme [file join $guidir setupReadme.tcl]
+  SetupResizePhoto [file join $guidir setupResizePhoto.tcl]
+  SetupTerminal [file join $guidir setupTerminal.tcl]
+  SetupWelcome [file join $guidir setupWelcome.tcl]
+  Setuptools [file join $guidir setupTools.tcl]
+  SetupTexts [file join $guidir setupTexts.tcl]
+  TestBildGUI [file join $guidir testbild.png]
+  SetupSave [file join $savedir setupSave.tcl]
+  SetupSaveLin [file join $savedir setupSaveLin.tcl]
+  SetupSaveLinHelpers [file join $savedir setupSaveLinHelpers.tcl]
+  SetupSaveWin [file join $savedir setupSaveWin.tcl]
+  SetupSaveWinHelpers [file join $savedir setupSaveWinHelpers.tcl]
+  Bidi [file join $sharedir bidi.tcl]
+  Flags [file join $sharedir flags.tcl]
+  Http [file join $sharedir http.tcl]
+  JList [file join $sharedir JList.tcl]
+  Globals [file join $sharedir globals.tcl]
+  Imgtools [file join $sharedir imgtools.tcl]
+  LoadConfig [file join $sharedir LoadConfig.tcl]
+  Twdtools [file join $sharedir twdtools.tcl]
+  Uninstall [file join $savedir uninstall.tcl]
+  Signature [file join $maildir signature.tcl]
+  Config [file join $confdir biblepix.conf]
+  Terminal [file join $unixdir term.sh]
 "
 
 #Export single filepaths               
@@ -117,13 +117,13 @@ if { $Debug && $Mocking} {
 
 #Set JPEGs array
 set bpxJpegUrl "http://vollmar.ch/biblepix/jpeg"
-array set exaJpgArray "
-  utah.jpg [file join $exaJpgDir utah.jpg]
-  eire.jpg [file join $exaJpgDir eire.jpg]
-  lake.jpg [file join $exaJpgDir lake.jpg]
-  palms.jpg [file join $exaJpgDir palms.jpg]
-  mountain.jpg [file join $exaJpgDir mountain.jpg]
-  nevada.jpg [file join $exaJpgDir nevada.jpg]
+array set sampleJpgArray "
+  utah.jpg [file join $sampleJpgDir utah.jpg]
+  eire.jpg [file join $sampleJpgDir eire.jpg]
+  lake.jpg [file join $sampleJpgDir lake.jpg]
+  palms.jpg [file join $sampleJpgDir palms.jpg]
+  mountain.jpg [file join $sampleJpgDir mountain.jpg]
+  nevada.jpg [file join $sampleJpgDir nevada.jpg]
 "
 
 #Set Icons array & export
@@ -152,19 +152,19 @@ set ind "     "
 set canvPicMargin 6
 
 #Global functions
-proc uniqkey { } {
-    set key   [ expr { pow(2,31) + [ clock clicks ] } ]
-    set key   [ string range $key end-8 end-3 ]
-    set key   [ clock seconds ]$key
-    return $key
+proc uniqkey {} {
+  set key   [ expr { pow(2,31) + [ clock clicks ] } ]
+  set key   [ string range $key end-8 end-3 ]
+  set key   [ clock seconds ]$key
+  return $key
 }
 
 proc sleep { ms } {
-    set uniq [ uniqkey ]
-    set ::__sleep__tmp__$uniq 0
-    after $ms set ::__sleep__tmp__$uniq 1
-    vwait ::__sleep__tmp__$uniq
-    unset ::__sleep__tmp__$uniq
+  set uniq [ uniqkey ]
+  set ::__sleep__tmp__$uniq 0
+  after $ms set ::__sleep__tmp__$uniq 1
+  vwait ::__sleep__tmp__$uniq
+  unset ::__sleep__tmp__$uniq
 }
 
 #Define font colours & sun/shade factors
@@ -183,4 +183,35 @@ set hgrgb "0 0 0"
 set fghex "#000001"
 set fgrgb "0 0 1"
 
+#Bildformate & DesktopPicturesDir
+if {$platform == "unix"} {
+  set HOME $env(HOME)
+  set types {
+    { {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
+  }
+  #en 
+  if { [file exists $HOME/Pictures] } {
+    set DesktopPicturesDir $HOME/Pictures
+  #de
+  } elseif { [file exists $HOME/Bilder] } {
+    set DesktopPicturesDir $HOME/Bilder 
+  #fr
+  } elseif { [file exists $HOME/Images] } {
+    set DesktopPicturesDir $HOME/Images
+  #es
+  } elseif { [file exists $HOME/Imágenes] } {
+    set DesktopPicturesDir $HOME/Imágenes
+  #all else
+  } else {  
+    set DesktopPicturesDir $HOME
+  }
+  
+} elseif {$platform == "windows"} {
+  #DesktopPicturesDir is always "Pictures"
+  set DesktopPicturesDir $env(USERPROFILE)/Pictures
+  set types {
+    { {Image Files} {.jpg .jpeg .png} }
+  }
+}
+  
 catch {source $LoadConfig}

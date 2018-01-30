@@ -131,9 +131,9 @@ global Flags
   bind .en <ButtonPress-1> {
     set lang en
     setTexts en
-    .n.f5.man configure -state normal
-    .n.f5.man replace 1.1 end [setReadmeText en]
-    .n.f5.man configure -state disabled
+    .nb.manual.man configure -state normal
+    .nb.manual.man replace 1.1 end [setReadmeText en]
+    .nb.manual.man configure -state disabled
     .en configure -relief flat
   }
   bind .en <ButtonRelease> { .en configure -relief raised}
@@ -142,9 +142,9 @@ global Flags
   bind .de <ButtonPress-1> {
     set lang de
     setTexts de
-    .n.f5.man configure -state normal
-    .n.f5.man replace 1.1 end [setReadmeText de]
-    .n.f5.man configure -state disabled
+    .nb.manual.man configure -state normal
+    .nb.manual.man replace 1.1 end [setReadmeText de]
+    .nb.manual.man configure -state disabled
     .de configure -relief flat
   }
   bind .de <ButtonRelease> { .de configure -relief raised}
@@ -183,7 +183,7 @@ proc movestart {w x y} {
 
 proc move {w x y maxX maxY} {
   global canvPicMargin
-  
+
   proc + {a b} {expr {$a + $b}}
   proc - {a b} {expr {$a - $b}}
 
@@ -225,11 +225,11 @@ proc getAreaChooserCoords {c} {
 
 ##### S E T U P P H O T O S   P R O C S ####################################################
 proc openResizeWindow {c} {
-  .n hide .n.f6
-  catch {frame .n.resizeF}
-  .n add .n.resizeF -text "Resize Photo"
-  .n insert 4 .n.resizeF
-  .n select 4
+  .nb hide .nb.photos
+  catch {frame .nb.resizeF}
+  .nb add .nb.resizeF -text "Resize Photo"
+  .nb insert 4 .nb.resizeF
+  .nb select 4
 
   #Create title & buttons
   catch {message .resizeLbl -textvariable ::moveFrameToResize -font {TkHeadingFont 20} -bg blue -fg yellow -pady 50 -width 0}
@@ -239,12 +239,14 @@ proc openResizeWindow {c} {
   .resizeConfirmBtn configure -text Ok -command "doResize $c" -bg green
   .resizeCancelBtn configure -textvar ::cancel -command "restorePhotosTab $c" -bg red
 
-  pack .resizeLbl -in .n.resizeF
-  pack $c -in .n.resizeF
-  pack .resizeCancelBtn .resizeConfirmBtn -in .n.resizeF -side right
+  pack .resizeLbl -in .nb.resizeF
+  pack $c -in .nb.resizeF
+  pack .resizeCancelBtn .resizeConfirmBtn -in .nb.resizeF -side right
   
-  set screenX [winfo screenwidth .]
-  set screenY [winfo screenheight .]
+  #disable all other Tabs & Buttons
+  foreach tab [.nb tabs] {.nb tab $tab -state disabled}
+  .b4 conf -state disable
+  .b5 conf -state disable
 
   set imgX [image width photosCanvPic]
   set imgY [image height photosCanvPic]
@@ -267,11 +269,15 @@ proc openResizeWindow {c} {
 }
 
 proc restorePhotosTab {c} {
-  .n forget .n.resizeF
-  .n add .n.f6
-  .n select 3
-  pack $c -in .n.f6.mainf.right.bild -side left
-  $c delete areaChooser
+  .nb forget .resizeF
+  .nb add .nb.photos
+    
+  foreach tab [.nb tabs] {.nb tab $tab -state normal}
+  .b4 conf -state normal
+  .b5 conf -state normal
+  pack $c -in .nb.photos.mainf.right.bild -side left
+  #.imgCanvas delete areaChooser
+  .nb select .nb.photos
 }
 
 proc needsResize {} {
@@ -322,10 +328,10 @@ proc doOpen {bildordner c} {
   refreshImg $localJList $c
 
   if {$localJList != ""} {
-    pack .addBtn -in .n.f6.mainf.right.unten -side left -fill x
+    pack .addBtn -in .nb.photos.mainf.right.unten -side left -fill x
   }
-  pack .picPath -in .n.f6.mainf.right.unten -side left -fill x
-  pack .n.f6.mainf.right.bar.collect -side left
+  pack .picPath -in .nb.photos.mainf.right.unten -side left -fill x
+  pack .nb.photos.mainf.right.bar.collect -side left
   pack forget .delBtn
 
   return $localJList
@@ -335,8 +341,8 @@ proc doCollect {c} {
   set localJList [refreshFileList]
   refreshImg $localJList $c
 
-  pack .delBtn .picPath -in .n.f6.mainf.right.unten -side left -fill x
-  pack forget .addBtn .n.f6.mainf.right.bar.collect
+  pack .delBtn .picPath -in .nb.photos.mainf.right.unten -side left -fill x
+  pack forget .addBtn .nb.photos.mainf.right.bar.collect
 
   return $localJList
 }

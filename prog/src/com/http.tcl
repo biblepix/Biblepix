@@ -2,7 +2,7 @@
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26Sep17
+# Updated: 29jan18
 
 package require http
 
@@ -189,11 +189,11 @@ proc listAllRemoteTWDFiles {lBox} {
 proc getRemoteTWDFileList {} {
   global lang connTwd noConnTwd
   
-  if {![catch {listAllRemoteTWDFiles .n.f1.twdremoteframe.lb}]} {
-    .n.f1.status conf -bg green
+  if {![catch {listAllRemoteTWDFiles .nb.international.twdremoteframe.lb}]} {
+    .nb.international.status conf -bg green
     set status $connTwd
   } else {
-    .n.f1.status conf -bg red
+    .nb.international.status conf -bg red
     set status $noConnTwd
   }
   return $status
@@ -216,7 +216,7 @@ proc downloadTWDFiles {} {
 
   foreach url $urllist {lappend hrefs [$url @href]}
   set urllist [lsort $hrefs]
-  set selectedindices [.n.f1.twdremoteframe.lb curselection] 
+  set selectedindices [.nb.international.twdremoteframe.lb curselection] 
       
   foreach item $selectedindices {
     set url [lindex $urllist $item]
@@ -235,9 +235,9 @@ proc downloadTWDFiles {} {
     http::geturl $url -channel $chan
     close $chan
     
-    after 5000 .n.f1.f1.twdlocal insert end $filename
+    after 5000 .nb.international.f1.twdlocal insert end $filename
   }
     #deselect all downloaded files
-    .n.f1.twdremoteframe.lb selection clear 0 end
+    .nb.international.twdremoteframe.lb selection clear 0 end
 
 }

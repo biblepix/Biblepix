@@ -2,7 +2,7 @@
 # Loads README according to language setting
 # Sourced by imgtools.tcl (bind flag button) &
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21nov16
+# Updated: 29jan18
 
 set chan [open $Readme]
 fconfigure $chan -encoding utf-8
@@ -12,14 +12,14 @@ close $chan
 set ::readmetext $readmetext
 
 #set scrollbar
-scrollbar .n.f5.scroll -orient vertical -command ".n.f5.man yview"
-text .n.f5.man -bg $bg -fg $fg -yscrollcommand {.n.f5.scroll set}
-pack configure .n.f5.man -side left -fill both -expand yes
-pack .n.f5.scroll -side right -fill y
+scrollbar .nb.manual.scroll -orient vertical -command {.nb.manual.man yview}
+text .nb.manual.man -bg $bg -fg $fg -yscrollcommand {.nb.manual.scroll set}
+pack configure .nb.manual.man -side left -fill both -expand yes
+pack .nb.manual.scroll -side right -fill y
 
 #set text by $lang (sourcing $Texts)
 set readmeLang [setReadmeText $lang]
-.n.f5.man replace 1.1 end $readmeLang
-.n.f5.man configure -state disabled
+.nb.manual.man replace 1.1 end $readmeLang
+.nb.manual.man configure -state disabled
 
 

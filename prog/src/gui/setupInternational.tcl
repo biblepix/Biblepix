@@ -1,63 +1,61 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 23aug17
+# Updated 29jan18
 
 #Statusbar
-frame .n.f1.f0 -padx $px
-pack .n.f1.f0 -side bottom -fill x
-label .n.f1.status -textvar status -font bpfont1 -height 1 -bg $bg -relief sunken
-pack .n.f1.status -in .n.f1.f0 -fill x
+frame .nb.international.f0 -padx $px
+pack .nb.international.f0 -side bottom -fill x
+label .nb.international.status -textvar status -font bpfont1 -height 1 -bg $bg -relief sunken
+pack .nb.international.status -in .nb.international.f0 -fill x
 
 #Refresh button
-button .n.f1.refbtn -textvariable refresh -bg lightblue -command {set status [getRemoteTWDFileList]}
-pack .n.f1.refbtn -side bottom -fill x -padx $px
+button .nb.international.refbtn -textvariable refresh -bg lightblue -command {set status [getRemoteTWDFileList]}
+pack .nb.international.refbtn -side bottom -fill x -padx $px
 
 #Title
-label .n.f1.titel -textvar f1.tit -font bpfont3
-message .n.f1.txt -textvar f1.txt -width $tw -font bpfont1 -padx $px -pady $py
-pack .n.f1.titel .n.f1.txt -anchor w
+label .nb.international.titel -textvar f1.tit -font bpfont3
+message .nb.international.txt -textvar f1.txt -width $tw -font bpfont1 -padx $px -pady $py
+pack .nb.international.titel .nb.international.txt -anchor w
 
 #Locallist
-frame .n.f1.f1 -padx $px
-pack .n.f1.f1 -anchor w -fill x
+frame .nb.international.f1 -padx $px
+pack .nb.international.f1 -anchor w -fill x
 
-label .n.f1.f1.twdlocaltit -textvar f1.twdlocaltit -bg $bg -font bpfont2
-pack .n.f1.f1.twdlocaltit -anchor w -fill x
+label .nb.international.f1.twdlocaltit -textvar f1.twdlocaltit -bg $bg -font bpfont2
+pack .nb.international.f1.twdlocaltit -anchor w -fill x
 #set listbox
-listbox .n.f1.f1.twdlocal -bg lightgreen -width $tw -height 0 -selectmode single -activestyle none
+listbox .nb.international.f1.twdlocal -bg lightgreen -width $tw -height 0 -selectmode single -activestyle none
 set twdlist [getTWDlist]
-foreach i [lsort $twdlist] { .n.f1.f1.twdlocal insert end $i }
+foreach i [lsort $twdlist] { .nb.international.f1.twdlocal insert end $i }
 #set deletebutton
-button .n.f1.f1.delbtn -bg $bg -textvar delete -command {
-    file delete $twdDir/[.n.f1.f1.twdlocal get active]
-    .n.f1.f1.twdlocal delete [.n.f1.f1.twdlocal curselection]
+button .nb.international.f1.delbtn -bg $bg -textvar delete -command {
+  file delete $twdDir/[.nb.international.f1.twdlocal get active]
+  .nb.international.f1.twdlocal delete [.nb.international.f1.twdlocal curselection]
 }
 
-pack .n.f1.f1.delbtn -side right -fill none
-pack .n.f1.f1.twdlocal -anchor w
+pack .nb.international.f1.delbtn -side right -fill none
+pack .nb.international.f1.twdlocal -anchor w
 
 #Remotelist
-frame .n.f1.f2 -padx $px
-pack .n.f1.f2 -anchor w -fill x
+frame .nb.international.f2 -padx $px
+pack .nb.international.f2 -anchor w -fill x
 
-label .n.f1.f2.twdremotetit -textvar f1.twdremotetit -bg $bg -justify left -font bpfont2 -padx $px
-pack .n.f1.f2.twdremotetit -fill x
+label .nb.international.f2.twdremotetit -textvar f1.twdremotetit -bg $bg -justify left -font bpfont2 -padx $px
+pack .nb.international.f2.twdremotetit -fill x
 
-pack [frame .n.f1.f3] -anchor w -fill x
-label .n.f1.f3.twdremotetit2 -textvar f1.twdremotetit2 -width 0 -padx 20
-pack .n.f1.f3.twdremotetit2 -side left
+pack [frame .nb.international.f3] -anchor w -fill x
+label .nb.international.f3.twdremotetit2 -textvar f1.twdremotetit2 -width 0 -padx 20
+pack .nb.international.f3.twdremotetit2 -side left
 
 #set remotelist ( inserted later by http.tcl)
-frame .n.f1.twdremoteframe -width $wWidth -padx $px
-listbox .n.f1.twdremoteframe.lb -yscrollcommand {.n.f1.twdremoteframe.sb set} -selectmode multiple -activestyle none -font TkFixedFont -width [expr $wWidth - 50] -height [expr $wHeight - 300] -bg lightblue
-scrollbar .n.f1.twdremoteframe.sb -command {.n.f1.twdremoteframe.lb yview}
+frame .nb.international.twdremoteframe -width $wWidth -padx $px
+listbox .nb.international.twdremoteframe.lb -yscrollcommand {.nb.international.twdremoteframe.sb set} -selectmode multiple -activestyle none -font TkFixedFont -width [expr $wWidth - 50] -height [expr $wHeight - 300] -bg lightblue
+scrollbar .nb.international.twdremoteframe.sb -command {.nb.international.twdremoteframe.lb yview}
 
 #set Download button
-button .n.f1.twdremoteframe.downloadBtn -text Download -command downloadTWDFiles
-
-pack .n.f1.twdremoteframe -anchor w
-
-pack .n.f1.twdremoteframe.downloadBtn -side right -fill x
-pack .n.f1.twdremoteframe.sb -side right -fill y
-pack .n.f1.twdremoteframe.lb -side left -fill x
+button .nb.international.twdremoteframe.downloadBtn -text Download -command downloadTWDFiles
+pack .nb.international.twdremoteframe -anchor w
+pack .nb.international.twdremoteframe.downloadBtn -side right -fill x
+pack .nb.international.twdremoteframe.sb -side right -fill y
+pack .nb.international.twdremoteframe.lb -side left -fill x

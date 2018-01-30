@@ -56,20 +56,29 @@ proc setSun {rgb} {
   return $sun
 }
 
-proc copyAndResizeExamplePhotos {} {
+proc copyAndResizeSamplePhotos {} {
   global exaJpgArray
-  
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+    
   foreach fileName [array names exaJpgArray] {
     set filePath [lindex [array get exaJpgArray $fileName] 1]
- 
- #TODO: ADAPT SYNTAX TO NEW WAY!!!
+    image create photo origJpeg -file $filePath 
+    set imgX [image width origJpeg]
+    set imgY [image height origJpeg]
     
-    if { [catch {checkImgSizeAndSave $filePath} result] } {
-      puts $result
-      # TODO im Fehlerfall Bild neu herunterladen
+    #copy over as JPEG if size OK
+    if {$screenX == $imgX && $screeny == $imgy} {
+      file copy $fileName [join $jpegdir $fileName]
+      
+      } else {
+      
+      set newPic [resize $screenX $screenY origJpeg]
+      #TDOO: getPngName
+      $newPic write [join $jpegdir $fileName] -format PNG
     }
   }
-}
+} ;#END checkSamplePhotos
 
 proc getPngFileName {fileName} {
   if {![regexp png|PNG $fileName]} {
