@@ -75,7 +75,7 @@ canvas .imgCanvas -width $canvX -height $canvY
 pack .imgCanvas -in .n.f6.mainf.right.bild -side left
 
 label .picPath -textvar picPath
-button .addBtn -textvar f6.add -bg green -command {addPic}
-button .delBtn -textvar f6.del -bg red -command {delPic}
+button .addBtn -textvar f6.add -bg green -command {addPic .imgCanvas}
+button .delBtn -textvar f6.del -bg red -command {delPic .imgCanvas}
 
 set fileJList [doCollect .imgCanvas]

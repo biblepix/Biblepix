@@ -72,16 +72,17 @@ image create photo origbild -file [getRandomPhoto]
 image create photo canvasbild
 canvasbild copy origbild -subsample $textPosFactor -shrink
 
-set screeny [winfo screenheight .]
+set screenX [winfo screenwidth .]
+set screenY [winfo screenheight .]
 
 set textposCanv [canvas .n.f2.fright.fbot.textposcanv -bg lightgrey -borderwidth 1]
-$textposCanv configure -width [image width canvasbild] -height [expr $screeny/$textPosFactor]
+$textposCanv configure -width [image width canvasbild] -height [expr $screenY/$textPosFactor]
 $textposCanv create image 0 0 -image canvasbild -anchor nw
 
 set textposTxt [label .n.f2.fright.fbot.textpostxt -textvar textpos]
 createMovingTextBox $textposCanv
 $textposCanv bind mv <1> {movestart %W %x %y}
-$textposCanv bind mv <B1-Motion> {move %W %x %y}
+$textposCanv bind mv <B1-Motion> {move %W %x %y [expr $screenX/$textPosFactor] [expr $screenY/$textPosFactor]}
 
 
 #2. Create InternationalText Canvas
@@ -132,8 +133,8 @@ $fontcolorSpin set $fontcolortext
 #2. Fontsize spinbox
 if {!$fontsize} {
   #set initial font size if no $config found
-  set screeny [winfo screenheight .]
-  set fontsize [ expr round($screeny/40) ] 
+  set screenY [winfo screenheight .]
+  set fontsize [ expr round($screenY/40) ] 
 }
 
 message .n.f2.fright.fbot1.fontsizeTxt -width 200 -textvar f2.fontsizetext

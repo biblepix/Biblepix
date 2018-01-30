@@ -152,7 +152,6 @@ global Flags
 
 
 # C A N V A S   M O V E   P R O C S
-
 proc createMovingTextBox {textposCanv} {
 global marginleft margintop textPosFactor fontsize setupTwdText
 
@@ -182,7 +181,9 @@ proc movestart {w x y} {
     }
 }
 
-proc move {w x y} {
+proc move {w x y maxX maxY} {
+  global canvPicMargin
+  
   proc + {a b} {expr {$a + $b}}
   proc - {a b} {expr {$a - $b}}
 
@@ -195,23 +196,18 @@ proc move {w x y} {
     if {$dy < -2} {set dy -2}
     if {$dy > 2} {set dy 2}
 
-  lassign [$w coords mv] subX subY - -
+  lassign [$w coords mv] subX1 subY1 subX2 subY2
 
-  if {[+ $subX $dx] < 0 } {set dx $subX}
-  if {[+ $subY $dy] < 0 } {set dy $subY}
+  if {[+ $subX1 $dx] < [expr $canvPicMargin / 2] } {set dx [expr $subX1 - ($canvPicMargin / 2)]}
+  if {[+ $subY1 $dy] < [expr $canvPicMargin / 2] } {set dy [expr $subY1 - ($canvPicMargin / 2)]}
+  if {[+ $subX2 $dx] > [expr $maxX + (1.5 * $canvPicMargin)] } {set dx [expr $maxX + (1.5 * $canvPicMargin) - $subX2]}
+  if {[+ $subY2 $dy] > [expr $maxY + (1.5 * $canvPicMargin)] } {set dy [expr $maxY + (1.5 * $canvPicMargin) - $subY2]}
 
-  #move only in one direction if x or y missing (= 0)
-  #necessary for areaChooser
-  if {$x==0} {
-    $w move current 0 $dy
-  } elseif {$y==0} {
-    $w move current $dx 0
-  } else {
-    #Normalfall
-    $w move current $dx $dy
-  }
-    set ::X [+ $::X $dx]
-    set ::Y [+ $::Y $dy]
+  #Normalfall
+  $w move current $dx $dy
+  
+  set ::X [+ $::X $dx]
+  set ::Y [+ $::Y $dy]
 }
 
 #called by addPic
@@ -222,13 +218,13 @@ proc createPhotoAreaChooser {canv x2 y2} {
 }
 
 #Get current coordinates from PhotoAreaChooser
-proc getAreaChooserCoords {} {
-  set imgCoords [.imgCanvas bbox areaChooser]
+proc getAreaChooserCoords {c} {
+  set imgCoords [$c bbox areaChooser]
   return $imgCoords
 }
 
 ##### S E T U P P H O T O S   P R O C S ####################################################
-proc openResizeWindow {} {
+proc openResizeWindow {c} {
   .n hide .n.f6
   catch {frame .n.resizeF}
   .n add .n.resizeF -text "Resize Photo"
@@ -240,11 +236,11 @@ proc openResizeWindow {} {
   catch {button .resizeConfirmBtn}
   catch {button .resizeCancelBtn}
 
-  .resizeConfirmBtn configure -text Ok -command "doResize" -bg green
-  .resizeCancelBtn configure -textvar ::cancel -command "restorePhotosTab" -bg red
+  .resizeConfirmBtn configure -text Ok -command "doResize $c" -bg green
+  .resizeCancelBtn configure -textvar ::cancel -command "restorePhotosTab $c" -bg red
 
   pack .resizeLbl -in .n.resizeF
-  pack .imgCanvas -in .n.resizeF
+  pack $c -in .n.resizeF
   pack .resizeCancelBtn .resizeConfirmBtn -in .n.resizeF -side right
   
   set screenX [winfo screenwidth .]
@@ -255,16 +251,8 @@ proc openResizeWindow {} {
 
   set factor [expr $imgX. / $screenX]
 
-  #limit move capability to y
-  set x 0
-  set y "%y"
-
   if {[expr $imgY. / $factor] < $screenY} {
     set factor [expr $imgY. / $screenY]
-
-    #limit move capability to x
-    set y 0
-    set x "%x"
   }
 
   ##set cutting coordinates for cutFrame
@@ -272,49 +260,19 @@ proc openResizeWindow {} {
   set canvCutY2 [expr $screenY * $factor]
 
   # 2. Create AreaChooser with cutting coordinates
-  createPhotoAreaChooser .imgCanvas $canvCutX2 $canvCutY2
+  createPhotoAreaChooser $c $canvCutX2 $canvCutY2
 
-  #TODO: Rahmen kann über Bild hinausgehen !!!
-
-  .imgCanvas bind mv <1> {movestart %W %x %y}
-  .imgCanvas bind mv <B1-Motion> "move %W $x $y"
+  $c bind mv <1> {movestart %W %x %y}
+  $c bind mv <B1-Motion> "move %W %x %y $imgX $imgY"
 }
 
-proc restorePhotosTab {} {
+proc restorePhotosTab {c} {
   .n forget .n.resizeF
   .n add .n.f6
   .n select 3
-  pack .imgCanvas -in .n.f6.mainf.right.bild -side left
-  .imgCanvas delete areaChooser
+  pack $c -in .n.f6.mainf.right.bild -side left
+  $c delete areaChooser
 }
-
-proc getPngFileName {fileName} {
-  if {![regexp png|PNG $fileName]} {
-    set fileName "[file rootname $fileName].png"
-  }
-  return $fileName
-}
-
-# addPic - called by SetupPhoto
-# adds new Picture to BiblePix Photo collection
-# setzt Funktion 'photosCurrOrigPic' voraus und leitet Subprozesse ein
-proc addPic {} {
-  global picPath jpegDir picSchonDa
-  
-  set targetPicPath [file join $jpegDir [getPngFileName [file tail $picPath]]]
-  
-  if { [file exists $targetPicPath] } {
-    NewsHandler::QueryNews $picSchonDa lightblue
-    return
-  }
-  
-  if {[needsResize]} {
-    openResizeWindow
-  } else {
-    photosCurrOrigPic write -file targetPicPath -formate PNG
-    NewsHandler::QueryNews [copiedPic $picPath] lightblue
-  }
-} ;#END addPic
 
 proc needsResize {} {
   set screenX [winfo screenwidth .]
@@ -331,13 +289,32 @@ proc needsResize {} {
   }
 }
 
+# addPic - called by SetupPhoto
+# adds new Picture to BiblePix Photo collection
+# setzt Funktion 'photosCurrOrigPic' voraus und leitet Subprozesse ein
+proc addPic {c} {
+  global picPath jpegDir picSchonDa
+  
+  set targetPicPath [file join $jpegDir [getPngFileName [file tail $picPath]]]
+  
+  if { [file exists $targetPicPath] } {
+    NewsHandler::QueryNews $picSchonDa lightblue
+    return
+  }
+  
+  if {[needsResize]} {
+    openResizeWindow $c
+  } else {
+    photosCurrOrigPic write $targetPicPath -format PNG
+    NewsHandler::QueryNews "[copiedPic $picPath]" lightblue
+  }
+} ;#END addPic
 
-# delPic called by SetupPhoto - TODO: Vars anpassen!!!
-proc delPic {picPath} {
-  global fileJList jpegDir lang SetupLang
+proc delPic {c} {
+  global fileJList picPath
   file delete $picPath
-  set fileJList [deleteImg $fileJList .imgCanvas]
-  NewsHandler::QueryNews "$picDeleted" red
+  set fileJList [deleteImg $fileJList $c]
+  NewsHandler::QueryNews "[deletedPic $picPath]" red
 }
 
 proc doOpen {bildordner c} {
