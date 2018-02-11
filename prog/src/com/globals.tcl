@@ -5,7 +5,7 @@
 # Updated: 29jan18
 
 # This variable enables Debugging Mode in the whole application if set to 1.
-set Debug 1
+set Debug 0
 set Mocking 1
 
 set version "2.4"

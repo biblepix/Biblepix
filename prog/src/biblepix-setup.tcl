@@ -5,7 +5,7 @@
 ################################################################################
 # Version: 2.4
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26Sep17
+# Updated: 11feb18
 
 package require Tk
 
@@ -50,7 +50,7 @@ if {[catch {source $Globals}]} {
     if { [info exists InitialJustDone] } {
       set pbTitle "Resizing image ..."
       source $Imgtools
-      copyAndResizeExamplePhotos
+      copyAndResizeSamplePhotos
       
       set pbTitle $uptodateHttp
     } elseif { [info exists UpdateJustDone] } {      
@@ -64,7 +64,7 @@ if {[catch {source $Globals}]} {
         set pbTitle "Resizing image ..."
 
         source $Imgtools
-        copyAndResizeExamplePhotos
+        copyAndResizeSamplePhotos
       }
     }
     

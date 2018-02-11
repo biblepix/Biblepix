@@ -153,6 +153,77 @@ global Flags
 
 # C A N V A S   M O V E   P R O C S
 
+proc checkItemInside {w item xDiff yDiff} {
+#THANKS TO ...
+#canvas extents
+  set imgX [image width photosCanvPic]
+  set imgY [image height photosCanvPic]
+  set canvX [winfo width .dlg.dlgCanv]
+  set canvY [winfo height .dlg.dlgCanv]
+  
+  set can(miny) 0
+  set can(minx) 0
+  set can(maxy) [image height photosCanvPic]
+  set can(maxx) [image width photosCanvPic]
+
+  if {$imgX > $canvX} {
+    set can(minx) [expr $canvX - $imgX]
+    set can(maxy) 0
+    set can(maxx) 0
+    
+  } elseif {$imgY > $canvY} {
+      
+    set can(miny) [expr $canvY - $imgY]
+   # set can(maxy) [expr $can(miny) + (2 * $can(miny))]
+  #  set can(maxy) [string range $can(miny) 1 end]
+    set can(maxy) 0
+    set can(maxx) 0
+  }
+
+#puts "minx $can(minx)"
+#puts "maxx $can(maxx)"
+#puts "maxY $can(maxy)"
+#puts "minY $can(miny)"
+
+#	set can(maxx) [winfo width $w ]
+#	set can(maxy) [winfo height $w ]
+
+#item coords
+	set item [$w coords $item]
+	#check min values
+	foreach {x y} $item {
+		set x [expr $x + $xDiff]
+		set y [expr $y + $yDiff]
+		if {$x < $can(minx)} {
+			 return 0
+		}
+		if {$y < $can(miny)} {
+			 return 0
+		}
+		if {$x > $can(maxx)} {
+			 return 0
+		}
+		if {$y > $can(maxy)} {
+			 return 0
+		}
+	}
+	#puts $item
+	return 1
+}
+
+proc dragCanvasItem {canWin item newX newY} {
+#THANKS TO  ...
+	set xDiff [expr {$newX - $::x}]
+	set yDiff [expr {$newY - $::y}]
+  
+	#test before moving
+	if {[checkItemInside $canWin $item $xDiff $yDiff]} {
+		 #puts inside
+		 $canWin move $item $xDiff $yDiff
+	}
+	set ::x $newX
+	set ::y $newY
+}
 
 proc createMovingTextBox {textposCanv} {
 global marginleft margintop textPosFactor fontsize setupTwdText
@@ -172,6 +243,7 @@ global marginleft margintop textPosFactor fontsize setupTwdText
   $textposCanv itemconfigure mv -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill orange  -activefill red
 }
 
+#TO BE REPLACED BY canvasDragItem
 proc movestart {w x y} {
     global X Y wt
     set X [$w canvasx $x]
@@ -183,6 +255,7 @@ proc movestart {w x y} {
     }
 }
 
+#TO BE REPLACED BY canvasDragItem
 proc move {w x y maxX maxY} {
   #lobal photosCanvMargin
 #set maxX 1

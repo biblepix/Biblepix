@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9feb18
+# Updated: 11feb18
 
 #Check for Img package
 if { [catch {package require Img} ] } {
@@ -107,7 +107,7 @@ proc doResize {c} {
   
   set screenFactor [expr $screenX. / $screenY]
   set enlargementFactor [expr $origX. / $canvX]
-puts "Vergrösserung: $enlargementFactor"
+#puts "Vergrösserung: $enlargementFactor"
  
  #2.CUT PIC TO CORRECT RATIO
   
@@ -175,27 +175,26 @@ puts "Vergrösserung: $enlargementFactor"
     }
   }
   
-puts "ReqX: $reqX"
-puts "Cuts: $cutX1 $cutY1 $cutX2 $cutY2"
+#puts "ReqX: $reqX"
+#puts "Cuts: $cutX1 $cutY1 $cutX2 $cutY2"
 
  
   
-#TEST1: UNVERGRÖSSERT
+#T E S T 1 : UNVERGRÖSSERT
 #  set cutImg [trimPic photosCanvPic $X1 $Y1 $X2 $Y2]
   
-#TEST2: VERGRÖSSERT
-  set cutImg [trimPic photosOrigPic $cutX1 $cutY1 $cutX2 $cutY2]
+#T E S T 2 : VERGRÖSSERT
+#  set cutImg [trimPic photosOrigPic $cutX1 $cutY1 $cutX2 $cutY2]
   
-  $cutImg write /tmp/trimmed.bmp -format BMP
-  return
+#  $cutImg write /tmp/trimmed.bmp -format BMP
+#  return
 
 #END TEST
 
+
+set cutImg [trimPic photosOrigPic $cutX1 $cutY1 $cutX2 $cutY2]
+
 #3. RESIZE PIC TO SCREEN SIZE
- set screenX [winfo screenwidth .]
-  set screenY [winfo screenheight .]
-  
-  #2.resize pic to screen dimensions
   set finalImage [resize $cutImg $screenX $screenY]
   image delete $cutImg
 

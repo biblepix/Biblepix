@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10feb18 pv
+# Updated: 11feb18 pv
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -263,12 +263,12 @@ set resizeF_tit(en) "Resizing Photo"
 set resizeF_tit(de) "Bildgrösse ändern"
 set ::resizeF_tit $resizeF_tit($lang)
 
-set resizeF_txt(de) "Ihr Foto passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. Verschieben Sie den Bildausschnitt nach Belieben und drücken Sie Ok zum Speichern."
+set resizeF_txt(de) "Ihr Foto passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. Verschieben Sie den Bildausschnitt nach Wunsch und drücken Sie Ok zum Speichern."
 set resizeF_txt(en) "The size of your photo does not correspond to the screen size and has to be trimmed. Move to select the desired section and press Ok to save."
 set ::resizeF_txt $resizeF_txt($lang)
 
 set movePicToResize(en) "Move picure to desired section and press Ok to resize."
-set movePicToResize(de) "Verschieben Sie das Bild nach Belieben und bestätigen Sie mit Ok."
+set movePicToResize(de) "Verschieben Sie das Bild nach Wunsch und bestätigen Sie mit Ok."
 set ::movePicToResize $movePicToResize($lang)
 
 set resizingPic(en) "Resizing photo to fit screen \u2014 please wait a moment..."
