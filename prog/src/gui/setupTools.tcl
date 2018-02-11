@@ -152,6 +152,8 @@ global Flags
 
 
 # C A N V A S   M O V E   P R O C S
+
+
 proc createMovingTextBox {textposCanv} {
 global marginleft margintop textPosFactor fontsize setupTwdText
 
@@ -182,29 +184,66 @@ proc movestart {w x y} {
 }
 
 proc move {w x y maxX maxY} {
-  global photosCanvMargin
+  #lobal photosCanvMargin
+#set maxX 1
+#set maxY 1000
+set photosCanvMargin 1
 
   proc + {a b} {expr {$a + $b}}
   proc - {a b} {expr {$a - $b}}
 
-    set dx [- [$w canvasx $x] $::X]
-    set dy [- [$w canvasx $y] $::Y]
+	set dx [- [$w canvasx $x] $::X]
+	set dy [- [$w canvasx $y] $::Y]
 
-    if {$dx < -2} {set dx -2}
-    if {$dx > 2} {set dx 2}
+	if {$dx < -2} {set dx -2}
+	if {$dx > 2} {set dx 2}
 
-    if {$dy < -2} {set dy -2}
-    if {$dy > 2} {set dy 2}
+	if {$dy < -2} {set dy -2}
+	if {$dy > 2} {set dy 2}
 
-  lassign [$w coords mv] subX1 subY1 subX2 subY2
+	lassign [$w bbox mv] x1 y1 x2 y2
+#	puts "$x2"
+#	puts $maxX
+#	puts "$y2"
+#	puts $maxY
+	
+	#if {$x2 > $maxX} {return}
+#	if {$y2 > $maxY} {set dy $dy}
+	
+	lassign [$w coords mv] subX subY - -
 
-  if {[+ $subX1 $dx] < [expr $photosCanvMargin / 2] } {set dx [expr $subX1 - ($photosCanvMargin / 2)]}
-  if {[+ $subY1 $dy] < [expr $photosCanvMargin / 2] } {set dy [expr $subY1 - ($photosCanvMargin / 2)]}
-  if {[+ $subX2 $dx] > [expr $maxX + (1.5 * $photosCanvMargin)] } {set dx [expr $maxX + (1.5 * $photosCanvMargin) - $subX2]}
-  if {[+ $subY2 $dy] > [expr $maxY + (1.5 * $photosCanvMargin)] } {set dy [expr $maxY + (1.5 * $photosCanvMargin) - $subY2]}
+#if {$y2 > $maxY} {set dy $subY}
+
+#Disallows moves beyond 0.0
+  #if {[+ $subX $dx] < 0 } {set dx $subX}
+  #if {[+ $subY $dy] < 0 } {set dy $subY}
+	
+	puts [+ $subY $dy]
+	
+	#nöie versuech...
+	set canvX [.dlg.dlgCanvas conf -width]
+	set canvY [.dlg.dlgCanvas conf -height]
+	lassign [.dlg.dlgCanvas bbox mv] - - coordX coordY
+	
+	puts "canvX $canvX"
+	puts "canvY $canvY"
+	puts "coordX $coordX"
+	puts "coordY $coordY"
+	
+	if {$coordX > $canvX} {set dx $subX}
+	if {$coordY > $canvY} {set dy $subY}
+	
+#	lassign [$w coords mv] subX1 subY1 subX2 subY2
+#puts "$subX1 $subX2 $subX3 $subX4"
+
+	#if {[+ $subX1 $dx] < [expr $photosCanvMargin / 2] } {set dx [expr $subX1 - ($photosCanvMargin / 2)]}
+  #if {[+ $subY1 $dy] < [expr $photosCanvMargin / 2] } {set dy [expr $subY1 - ($photosCanvMargin / 2)]}
+  #if {[+ $subX2 $dx] > [expr $maxX + (1.5 * $photosCanvMargin)] } {set dx [expr $maxX + (1.5 * $photosCanvMargin) - $subX2]}
+  #if {[+ $subY2 $dy] > [expr $maxY + (1.5 * $photosCanvMargin)] } {set dy [expr $maxY + (1.5 * $photosCanvMargin) - $subY2]}
+
+
 
   $w move current $dx $dy
-  
   set ::X [+ $::X $dx]
   set ::Y [+ $::Y $dy]
 }
@@ -214,8 +253,8 @@ proc needsResize {} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
 
-  set imgX [image width photosCurrOrigPic]
-  set imgY [image height photosCurrOrigPic]
+  set imgX [image width photosOrigPic]
+  set imgY [image height photosOrigPic]
   
   #Compare img dimensions with screen dimensions
   if {$screenX == $imgX && $screenY == $imgY} {
@@ -227,7 +266,7 @@ proc needsResize {} {
 
 # addPic - called by SetupPhoto
 # adds new Picture to BiblePix Photo collection
-# setzt Funktion 'photosCurrOrigPic' voraus und leitet Subprozesse ein
+# setzt Funktion 'photosOrigPic' voraus und leitet Subprozesse ein
 proc addPic {} {
   global picPath jpegDir picSchonDa
   
@@ -241,7 +280,7 @@ proc addPic {} {
   if {[needsResize]} {
     openResizeWindow
   } else {
-    photosCurrOrigPic write $targetPicPath -format PNG
+    photosOrigPic write $targetPicPath -format PNG
     NewsHandler::QueryNews "[copiedPic $picPath]" lightblue
   }
 } ;#END addPic
@@ -377,25 +416,27 @@ proc refreshImg {localJList c} {
 }
 
 # openImg - called by refreshImg
-#Creates functions 'photosCurrOrigPic' and 'photosCanvPic'
+#Creates functions 'photosOrigPic' and 'photosCanvPic'
 ##to be processed by all other progs (no vars!)
 proc openImg {imgFilePath imgCanvas} {
   global photosCanvMargin photosCanvX photosCanvY
-  image create photo photosCurrOrigPic -file $imgFilePath
+  image create photo photosOrigPic -file $imgFilePath
 
-  #scale photosCurrOrigPic to photosCanvPic
-  set imgX [image width photosCurrOrigPic]
-  set imgY [image height photosCurrOrigPic]
+  #scale photosOrigPic to photosCanvPic
+  set imgX [image width photosOrigPic]
+  set imgY [image height photosOrigPic]
   set factor [expr round(($imgX / $photosCanvX)+0.999999)]
 
   if {[expr $imgY / $factor] > $photosCanvY} {
     set factor [expr round(($imgY / $photosCanvY)+0.999999)]
   }
 
+set ::OrigFactor $factor
+
   catch {image delete photosCanvPic}
   image create photo photosCanvPic
 
-  photosCanvPic copy photosCurrOrigPic -subsample $factor -shrink
+  photosCanvPic copy photosOrigPic -subsample $factor -shrink
   $imgCanvas create image $photosCanvMargin $photosCanvMargin -image photosCanvPic -anchor nw -tag img
 }
 

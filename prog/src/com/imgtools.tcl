@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30jan18
+# Updated: 9feb18
 
 #Check for Img package
 if { [catch {package require Img} ] } {
@@ -72,13 +72,13 @@ proc copyAndResizeSamplePhotos {} {
       file copy $fileName [join $jpegdir $fileName]
 
       } else {
-
+    #else [resize] (no cutting intended)
       set newPic [resize $screenX $screenY origJpeg]
       set pngFileName [getPngFileName $fileName]
       $newPic write [join $jpegdir $pngFileName] -format PNG
     }
   }
-} ;#END checkSamplePhotos
+} ;#END copyAndResizeSamplePhotos
 
 proc getPngFileName {fileName} {
   if {![regexp png|PNG $fileName]} {
@@ -87,50 +87,130 @@ proc getPngFileName {fileName} {
   return $fileName
 }
 
-# Syntax: oberen Punkt einer Diagonale: x1+y1
-# mit unterem Punkt: x2+y2 verbinden
-#  0/0 ######
-#  #######
-#  ####### 7/3
 
 # doResize
-## called by addPic + **copyAndResizeSamplePics**???
+## called by addPic
 ## organises all resizing processes
 proc doResize {c} {
-  global jpegDir picPath photosCanvMargin
+  global jpegDir picPath screenFactor
 
   set targetPicPath [file join $jpegDir [getPngFileName [file tail $picPath]]]
-
-  set origX [image width photosCurrOrigPic]
-  set imgX [image width photosCanvPic]
-
-  set factor [expr $origX / $imgX]
-
-  #Get coordinates of Area Chooser
-  lassign [getAreaChooserCoords $c] x1 y1 x2 y2
-
-  set x1 [expr round($x1 * $factor)]
-  set y1 [expr round($y1 * $factor)]
-  set x2 [expr round($x2 - (2 * $photosCanvMargin)) * $factor]
-  set y2 [expr round($y2 - (2 * $photosCanvMargin)) * $factor]
-
-  set cutImg [trimPic $x1 $y1 $x2 $y2]
+  
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
+  set origX [image width photosOrigPic]
+  set origY [image height photosOrigPic]
+  set imgX [image width photosCanvPic]
+  set imgY [image height photosCanvPic]
+  set canvX [lindex [$c conf -width] end]
+  set canvY [lindex [$c conf -height] end]
+  
+  set screenFactor [expr $screenX. / $screenY]
+  set enlargementFactor [expr $origX. / $canvX]
+puts "Vergrösserung: $enlargementFactor"
+ 
+ #2.CUT PIC TO CORRECT RATIO
+  
+  lassign [$c bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
+  
+  #1. check which edge shouldn't be touched
+  
+  ##a) pic too high: set fix X values
+  if {$imgX == $canvX} {
+  puts "imgX = canvX"
+    set cutX1 0
+    set cutX2 $origX
+    
+    #set pic specific required Y
+    set reqY [expr round($origX / $screenFactor)]
+    
+    #Adapt Y values:
+    #a)Pos oberer Rand
+    if {$canvPicY1 == 0} {
+    puts a
+      set cutY1 0
+      set cutY2 $reqY
+      
+    #b)Pos unterer Rand
+      } elseif {[expr $imgY + $canvPicY1] == $imgY} {
+      puts b
+      set cutY1 [expr $origY - $reqY] 
+      set cutY2 [expr $reqY + $cutY1]
+    
+    #c)Pos dazwischen       
+      } else {
+      puts c
+      set Ydiff [expr 0 - $canvPicY1]
+      set cutY1 [expr round($Ydiff * $enlargementFactor) ]
+      set cutY2 [expr round($reqY - ($canvPicY1 * $enlargementFactor))]
+      }
+    #Adapt X alues:
+    } elseif {$imgY == $canvY} {
+  puts "imgY = canvY"
+    set cutY1 0
+    set cutY2 $origY
+    
+    #set pic specific required Y
+    set reqX [expr round($origY * $screenFactor)]
+    
+   
+    #a)Pos linker Rand
+    if {$canvPicX1 == 0} {
+    puts a
+      set cutX1 0
+      set cutX2 $reqX
+      
+    #b)Pos rechter Rand - TODO: GEHT NICHT EINWANDFREI
+      } elseif {[expr $imgX + $canvPicX1] == $imgX} {
+      puts b
+      set cutX1 [expr $origX - $reqX] 
+      set cutX2 [expr $reqX + $cutX1]
+    
+    #c)Pos dazwischen       
+      } else {
+      puts c
+      set Xdiff [expr 0 - $canvPicX1]
+      set cutX1 [expr round($Xdiff * $enlargementFactor) ]
+      set cutX2 [expr round($reqX - ($canvPicX1 * $enlargementFactor))]
+    }
+  }
+  
+puts "ReqX: $reqX"
+puts "Cuts: $cutX1 $cutY1 $cutX2 $cutY2"
+
+ 
+  
+#TEST1: UNVERGRÖSSERT
+#  set cutImg [trimPic photosCanvPic $X1 $Y1 $X2 $Y2]
+  
+#TEST2: VERGRÖSSERT
+  set cutImg [trimPic photosOrigPic $cutX1 $cutY1 $cutX2 $cutY2]
+  
+  $cutImg write /tmp/trimmed.bmp -format BMP
+  return
+
+#END TEST
+
+#3. RESIZE PIC TO SCREEN SIZE
+ set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+  
+  #2.resize pic to screen dimensions
   set finalImage [resize $cutImg $screenX $screenY]
   image delete $cutImg
 
-  #Save new image to Photos directory
+  #3.Save new image to Photos directory
   $finalImage write $targetPicPath -format PNG
   image delete $finalImage
 
   NewsHandler::QueryNews "[copiedPic $picPath]" lightblue
 } ;#END doResize
 
-# trimPic - resizes photosCurrOrigPic - ERSETZT cutX und cutY
-proc trimPic {x1 y1 x2 y2} {
+# trimPic - reduces $pic size by cutting 1 or 2 edges
+## $pic must be a function or a variable
+proc trimPic {pic x1 y1 x2 y2} {
   set cutPic [image create photo]
-  $cutPic copy photosCurrOrigPic -from $x1 $y1 $x2 $y2 -shrink
+  $cutPic copy $pic -from $x1 $y1 $x2 $y2 -shrink
   return $cutPic
 }
 

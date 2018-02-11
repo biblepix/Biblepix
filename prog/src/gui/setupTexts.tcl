@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30jan18 pv
+# Updated: 10feb18 pv
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -9,7 +9,7 @@ global readmetext
   set BEG [string first "\<$lang" $readmetext]
   set END [string first "\<\/$lang" $readmetext]
   set readmeLang [string range $readmetext $BEG $END]   
-  .nb.manual.man replace 1.1 end $readmeLang 
+  .manualF.man replace 1.1 end $readmeLang 
   return $readmeLang
 }
 
@@ -69,8 +69,8 @@ set gettingTwd(en) "Fetching current list of Bible text files from bible2.net...
 set gettingTwd(de) "Hole aktuelle Bibeltext-Liste von bible2.net..."
 set ::gettingTwd $gettingTwd($lang)
 
-set noTwdFilesFound(en) "Es sind keine aktuellen Bibeltextdateien installiert. Bitte wählen Sie im BibelPix-Setup mindestens 1 Sprachdatei aus der Rubrik 'International'."
-set noTwdFilesFound(de) "No current Bible text files are installed. In BiblePix Setup choose at least one language text file from the 'International' section."
+set noTwdFilesFound(en) "Es sind keine aktuellen Bibeltextdateien installiert.\nBitte wählen Sie im BibelPix-Setup mindestens \n1 Sprachdatei aus der Rubrik 'International'."
+set noTwdFilesFound(de) "No current Bible text files are installed.\nIn the BiblePix Setup, choose at least \n one language text file from the 'International' section."
 set ::noTWDFilesFound $noTwdFilesFound($lang)
 
 set connTwd(en) "Connection to bible2.net established."
@@ -263,18 +263,21 @@ set resizeF_tit(en) "Resizing Photo"
 set resizeF_tit(de) "Bildgrösse ändern"
 set ::resizeF_tit $resizeF_tit($lang)
 
-set resizeF_txt(de) "Ihr Photo passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. Verschieben Sie das Bild im Rahmen nach Belieben und drücken Sie Ok zum Speichern."
-set resizeF_txt(en) "The size of your photo does not correspond to the screen size. Move the picture in the frame as desired and press Ok to save."
+set resizeF_txt(de) "Ihr Foto passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. Verschieben Sie den Bildausschnitt nach Belieben und drücken Sie Ok zum Speichern."
+set resizeF_txt(en) "The size of your photo does not correspond to the screen size and has to be trimmed. Move to select the desired section and press Ok to save."
 set ::resizeF_txt $resizeF_txt($lang)
 
-set moveFrameToResize(en) "Move frame to select desired image section and press Ok to resize."
-set moveFrameToResize(de) "Verschieben Sie den Auswahlrahmen nach Belieben und drücken Sie Ok, um die Bildgrösse anzupassen."
-set ::moveFrameToResize $moveFrameToResize($lang)
+set movePicToResize(en) "Move picure to desired section and press Ok to resize."
+set movePicToResize(de) "Verschieben Sie das Bild nach Belieben und bestätigen Sie mit Ok."
+set ::movePicToResize $movePicToResize($lang)
 
 set resizingPic(en) "Resizing photo to fit screen \u2014 please wait a moment..."
 set resizingPic(de) "Passe Bildgrösse dem Bildschirm an \u2014 bitte haben Sie einen Augenblick Geduld..."
 set ::resizingPic $resizingPic($lang) 
 
+set movePic(de) "Bildausschnitt verschieben \u21CA"
+set movePic(en) "Move picture section \u21CA"
+set ::movePic $movePic($lang)
 
 proc ::copiedPic {picPath} {
   global jpegDir lang
