@@ -1,3 +1,4 @@
+# Updated: 12feb18
 package require http
 
 proc setProxy {} {
@@ -40,7 +41,7 @@ global twdUrl
   #tDom is standard in ActiveTcl, Linux distros vary
   if {[catch {package require tdom}]} {
     package require Tk
-    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $packageRequireTDom
+    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $::packageRequireTDom
      exit
   }
 
@@ -89,11 +90,11 @@ proc listAllRemoteTWDFiles {lBox} {
 proc getRemoteTWDFileList {} {
   global lang connTwd noConnTwd
   
-  if {![catch {listAllRemoteTWDFiles .nb.international.twdremoteframe.lb}]} {
-    .nb.international.status conf -bg green
+  if {![catch {listAllRemoteTWDFiles .internationalF.twdremoteframe.lb}]} {
+    .internationalF.status conf -bg green
     set status $connTwd
   } else {
-    .nb.international.status conf -bg red
+    .internationalF.status conf -bg red
     set status $noConnTwd
   }
   return $status
@@ -116,7 +117,7 @@ proc downloadTWDFiles {} {
 
   foreach url $urllist {lappend hrefs [$url @href]}
   set urllist [lsort $hrefs]
-  set selectedindices [.nb.international.twdremoteframe.lb curselection] 
+  set selectedindices [.internationalF.twdremoteframe.lb curselection] 
       
   foreach item $selectedindices {
     set url [lindex $urllist $item]
@@ -130,9 +131,9 @@ proc downloadTWDFiles {} {
     http::geturl $url -channel $chan
     close $chan
     
-    after 5000 .nb.international.f1.twdlocal insert end $filename
+    after 5000 .internationalF.f1.twdlocal insert end $filename
   }
     #deselect all downloaded files
-    .nb.international.twdremoteframe.lb selection clear 0 end
+    .internationalF.twdremoteframe.lb selection clear 0 end
 
 }

@@ -2,7 +2,7 @@
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29jan18
+# Updated: 12feb18
 
 package require http
 
@@ -83,12 +83,12 @@ proc downloadFile {filePath fileName token} {
 }
 
 proc runHTTP isInitial {
-  global filepaths bpxReleaseUrl uptodateHttp noConnHttp
+  global filepaths bpxReleaseUrl
   
   #Test connexion & start download 
   if { [catch testHttpCon Error] } {    
-    set ::ftpStatus $noConnHttp
-    catch {NewsHandler::QueryNews "$noConnHttp" red}    
+    set ::ftpStatus $::noConnHttp
+    catch {NewsHandler::QueryNews $::noConnHttp red}    
     
     puts "ERROR: http.tcl -> runHTTP($args): $Error"
     error $Error
@@ -112,7 +112,7 @@ proc runHTTP isInitial {
         catch {clock scan $newtime} newsecs
         catch {file mtime $filepath} oldsecs
 
-        puts "New Time: $newsecs\nOld Time: $oldsecs\n"
+#        puts "New Time: $newsecs\nOld Time: $oldsecs\n"
         
         #download if times incorrect OR if oldfile is older/non-existent
         if { ! [string is digit $newsecs] || 
@@ -125,8 +125,8 @@ proc runHTTP isInitial {
       
     #Success message (source Texts again for Initial)
     catch {.if.initialMsg configure -bg green}
-    catch {NewsHandler::QueryNews "$uptodateHttp" green}
-    catch {set ::ftpStatus $uptodateHttp}
+    catch {NewsHandler::QueryNews $::uptodateHttp green}
+    catch {set ::ftpStatus $::uptodateHttp}
   
   } ;#end main condition
 } ;#end runHTTP
@@ -140,7 +140,7 @@ global twdUrl
   #tDom is standard in ActiveTcl, Linux distros vary
   if {[catch {package require tdom}]} {
     package require Tk
-    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $packageRequireTDom
+    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $::packageRequireTDom
      exit
   }
 
@@ -187,14 +187,13 @@ proc listAllRemoteTWDFiles {lBox} {
 }
 
 proc getRemoteTWDFileList {} {
-  global lang connTwd noConnTwd
   
-  if {![catch {listAllRemoteTWDFiles .nb.international.twdremoteframe.lb}]} {
-    .nb.international.status conf -bg green
-    set status $connTwd
+  if {![catch {listAllRemoteTWDFiles .internationalF.twdremoteframe.lb}]} {
+    .internationalF.status conf -bg green
+    set status $::connTwd
   } else {
-    .nb.international.status conf -bg red
-    set status $noConnTwd
+    ..international.status conf -bg red
+    set status $::noConnTwd
   }
   return $status
 }
@@ -203,7 +202,7 @@ proc downloadTWDFiles {} {
   global twdDir noConnTwd gettingTwd
 
   if { [catch {set root [getRemoteRoot]}] } {
-    NewsHandler::QueryNews "$noConnTwd" red
+    NewsHandler::QueryNews $::noConnTwd red
     return 1
   }
 
@@ -216,7 +215,7 @@ proc downloadTWDFiles {} {
 
   foreach url $urllist {lappend hrefs [$url @href]}
   set urllist [lsort $hrefs]
-  set selectedindices [.nb.international.twdremoteframe.lb curselection] 
+  set selectedindices [.internationalF.twdremoteframe.lb curselection] 
       
   foreach item $selectedindices {
     set url [lindex $urllist $item]
@@ -235,9 +234,9 @@ proc downloadTWDFiles {} {
     http::geturl $url -channel $chan
     close $chan
     
-    after 5000 .nb.international.f1.twdlocal insert end $filename
+    after 5000 .internationalF.f1.twdlocal insert end $filename
   }
     #deselect all downloaded files
-    .nb.international.twdremoteframe.lb selection clear 0 end
+    .internationalF.twdremoteframe.lb selection clear 0 end
 
 }

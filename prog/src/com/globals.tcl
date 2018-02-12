@@ -2,13 +2,13 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 29jan18
+# Updated: 12feb18
 
 # This variable enables Debugging Mode in the whole application if set to 1.
-set Debug 0
+set Debug 1
 set Mocking 1
 
-set version "2.4"
+set version "2.4.1"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
 
@@ -33,6 +33,8 @@ if { [info exists srcdir] } {
 set sigDir [file join $rootdir Email]
 set sampleJpgDir [file join $rootdir SamplePhotos]
 set imgDir [file join $rootdir Image]
+
+#TODO: jpegDir > photosDir
 set jpegDir [file join $rootdir Photos]
 set progDir [file join $rootdir prog]
 set twdDir [file join $rootdir Texts]

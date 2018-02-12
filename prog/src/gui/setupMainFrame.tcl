@@ -2,13 +2,11 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28Sep17
+# Updated: 28jan18
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
-
 source $Setuptools
-
 source $Twdtools
 
 #Set general X vars
@@ -30,12 +28,10 @@ set fg blue
 font create bpfont4 -family TkCaptionFont -size 30 -weight bold
 
 #Create bottom frame
-frame .fbottom
-pack .fbottom -fill x -side bottom
+pack [frame .fbottom] -fill x -side bottom
 
 #Create top frame
-frame .ftop
-pack .ftop -fill x
+pack [frame .ftop] -fill x
 
 #Create notebook
 ttk::notebook .nb -width [expr $wWidth - 50] -height [expr $wHeight - 200]
@@ -46,17 +42,17 @@ ttk::label .ftop.titelmitlogo -textvar bpsetup -font bpfont4
 pack .ftop.titelmitlogo -side left
 
 #Create notebook Tabs
-.nb add [frame .nb.welcome -padx $px] -text Welcome
-.nb add [frame .nb.international -padx $px] -text International
-.nb add [frame .nb.desktop -padx $px] -text Desktop
-.nb add [frame .nb.photos -padx $px] -text Photos
-.nb add [frame .nb.email -padx $px] -text E-Mail
+.nb add [frame .welcomeF -padx $px] -text Welcome
+.nb add [frame .internationalF -padx $px] -text International
+.nb add [frame .desktopF -padx $px] -text Desktop
+.nb add [frame .photosF -padx $px] -text Photos
+.nb add [frame .emailF -padx $px] -text E-Mail
 
 if {$platform=="unix"} {
-  .nb add [frame .nb.terminal -padx $px] -text Terminal
+  .nb add [frame .terminalF -padx $px] -text Terminal
 }
 
-.nb add [frame .nb.manual -padx $px] -text Manual
+.nb add [frame .manualF -padx $px] -text Manual
 
 #Reposition window to screen top
 if { [winfo y .] > 20 } {
@@ -64,8 +60,8 @@ if { [winfo y .] > 20 } {
 }
 
 #Fill .fbottom
-button .b4 -text OK -width 10 -command {source $SetupSave}
-button .b5 -text Cancel -width 10 -command exit
+button .b4 -text Ok -width 10 -command {source $SetupSave}
+button .b5 -textvariable ::cancel -width 10 -command exit
 pack .b5 .b4 -in .fbottom -side right
 
 if {![info exists version]} {set version ""}

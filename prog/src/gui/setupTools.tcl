@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30jan18
+# Updated: 12feb18
 
 source $JList
 
@@ -131,9 +131,9 @@ global Flags
   bind .en <ButtonPress-1> {
     set lang en
     setTexts en
-    .nb.manual.man configure -state normal
-    .nb.manual.man replace 1.1 end [setReadmeText en]
-    .nb.manual.man configure -state disabled
+    .manualF.man configure -state normal
+    .manualF.man replace 1.1 end [setReadmeText en]
+    .manualF.man configure -state disabled
     .en configure -relief flat
   }
   bind .en <ButtonRelease> { .en configure -relief raised}
@@ -142,9 +142,9 @@ global Flags
   bind .de <ButtonPress-1> {
     set lang de
     setTexts de
-    .nb.manual.man configure -state normal
-    .nb.manual.man replace 1.1 end [setReadmeText de]
-    .nb.manual.man configure -state disabled
+    .manualF.man configure -state normal
+    .manualF.man replace 1.1 end [setReadmeText de]
+    .manualF.man configure -state disabled
     .de configure -relief flat
   }
   bind .de <ButtonRelease> { .de configure -relief raised}
@@ -153,18 +153,36 @@ global Flags
 
 # C A N V A S   M O V E   P R O C S
 
-proc checkItemInside {w item xDiff yDiff} {
-#THANKS TO ...
-#canvas extents
+# dragCanvasItem
+##called by movingTextBox & dlgCanvas
+proc dragCanvasItem {c item newX newY} {
+  ###adapted from a proc by ...THANKS TO  ...
+  set xDiff [expr {$newX - $::x}]
+  set yDiff [expr {$newY - $::y}]
+
+  #test before moving
+  if {[checkItemInside $c $item $xDiff $yDiff]} {
+    $c move $item $xDiff $yDiff
+  }
+  set ::x $newX
+  set ::y $newY
+}
+
+#TODO: VARIABELN FÜR movingTextBox anpassen
+proc checkItemInside {c item xDiff yDiff} {
+##called by dragCanvasItem
+
+  lassign [$c bbox $item] - - can(maxx) can(maxy)
+ 
   set imgX [image width photosCanvPic]
   set imgY [image height photosCanvPic]
-  set canvX [winfo width .dlg.dlgCanv]
-  set canvY [winfo height .dlg.dlgCanv]
+  set canvX [winfo width $c]
+  set canvY [winfo height $c]
   
   set can(miny) 0
   set can(minx) 0
-  set can(maxy) [image height photosCanvPic]
-  set can(maxx) [image width photosCanvPic]
+#  set can(maxy) [$c itemcget $item -height]
+#  set can(maxx) [$c itemcget $item -width]
 
   if {$imgX > $canvX} {
     set can(minx) [expr $canvX - $imgX]
@@ -174,56 +192,31 @@ proc checkItemInside {w item xDiff yDiff} {
   } elseif {$imgY > $canvY} {
       
     set can(miny) [expr $canvY - $imgY]
-   # set can(maxy) [expr $can(miny) + (2 * $can(miny))]
-  #  set can(maxy) [string range $can(miny) 1 end]
     set can(maxy) 0
     set can(maxx) 0
   }
 
-#puts "minx $can(minx)"
-#puts "maxx $can(maxx)"
-#puts "maxY $can(maxy)"
-#puts "minY $can(miny)"
-
-#	set can(maxx) [winfo width $w ]
-#	set can(maxy) [winfo height $w ]
-
 #item coords
-	set item [$w coords $item]
-	#check min values
-	foreach {x y} $item {
-		set x [expr $x + $xDiff]
-		set y [expr $y + $yDiff]
-		if {$x < $can(minx)} {
-			 return 0
-		}
-		if {$y < $can(miny)} {
-			 return 0
-		}
-		if {$x > $can(maxx)} {
-			 return 0
-		}
-		if {$y > $can(maxy)} {
-			 return 0
-		}
-	}
-	#puts $item
-	return 1
-}
-
-proc dragCanvasItem {canWin item newX newY} {
-#THANKS TO  ...
-	set xDiff [expr {$newX - $::x}]
-	set yDiff [expr {$newY - $::y}]
-  
-	#test before moving
-	if {[checkItemInside $canWin $item $xDiff $yDiff]} {
-		 #puts inside
-		 $canWin move $item $xDiff $yDiff
-	}
-	set ::x $newX
-	set ::y $newY
-}
+  set item [$c coords $item]
+  #check min values
+  foreach {x y} $item {
+    set x [expr $x + $xDiff]
+    set y [expr $y + $yDiff]
+    if {$x < $can(minx)} {
+      return 0
+    }
+    if {$y < $can(miny)} {
+      return 0
+    }
+    if {$x > $can(maxx)} {
+      return 0
+    }
+    if {$y > $can(maxy)} {
+      return 0
+    }
+  }
+  return 1
+  }
 
 proc createMovingTextBox {textposCanv} {
 global marginleft margintop textPosFactor fontsize setupTwdText
@@ -238,90 +231,15 @@ global marginleft margintop textPosFactor fontsize setupTwdText
   set x2 [expr ($marginleft/$textPosFactor)+$textPosSubwinX]
   set y2 [expr ($margintop/$textPosFactor)+$textPosSubwinY]
 
-  $textposCanv create text [expr $marginleft/$textPosFactor] [expr $margintop/$textPosFactor] -anchor nw -justify left -tags mv
-  $textposCanv itemconfigure mv -text $setupTwdText
-  $textposCanv itemconfigure mv -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill orange  -activefill red
-}
-
-#TO BE REPLACED BY canvasDragItem
-proc movestart {w x y} {
-    global X Y wt
-    set X [$w canvasx $x]
-    set Y [$w canvasy $y]
-    set item [$w find withtag current]
-    if [info exists wt(@$item)] {
-        incr wt($wt(@$item)) -$wt($item)
-        unset wt(@$item)
-    }
-}
-
-#TO BE REPLACED BY canvasDragItem
-proc move {w x y maxX maxY} {
-  #lobal photosCanvMargin
-#set maxX 1
-#set maxY 1000
-set photosCanvMargin 1
-
-  proc + {a b} {expr {$a + $b}}
-  proc - {a b} {expr {$a - $b}}
-
-	set dx [- [$w canvasx $x] $::X]
-	set dy [- [$w canvasx $y] $::Y]
-
-	if {$dx < -2} {set dx -2}
-	if {$dx > 2} {set dx 2}
-
-	if {$dy < -2} {set dy -2}
-	if {$dy > 2} {set dy 2}
-
-	lassign [$w bbox mv] x1 y1 x2 y2
-#	puts "$x2"
-#	puts $maxX
-#	puts "$y2"
-#	puts $maxY
-	
-	#if {$x2 > $maxX} {return}
-#	if {$y2 > $maxY} {set dy $dy}
-	
-	lassign [$w coords mv] subX subY - -
-
-#if {$y2 > $maxY} {set dy $subY}
-
-#Disallows moves beyond 0.0
-  #if {[+ $subX $dx] < 0 } {set dx $subX}
-  #if {[+ $subY $dy] < 0 } {set dy $subY}
-	
-	puts [+ $subY $dy]
-	
-	#nöie versuech...
-	set canvX [.dlg.dlgCanvas conf -width]
-	set canvY [.dlg.dlgCanvas conf -height]
-	lassign [.dlg.dlgCanvas bbox mv] - - coordX coordY
-	
-	puts "canvX $canvX"
-	puts "canvY $canvY"
-	puts "coordX $coordX"
-	puts "coordY $coordY"
-	
-	if {$coordX > $canvX} {set dx $subX}
-	if {$coordY > $canvY} {set dy $subY}
-	
-#	lassign [$w coords mv] subX1 subY1 subX2 subY2
-#puts "$subX1 $subX2 $subX3 $subX4"
-
-	#if {[+ $subX1 $dx] < [expr $photosCanvMargin / 2] } {set dx [expr $subX1 - ($photosCanvMargin / 2)]}
-  #if {[+ $subY1 $dy] < [expr $photosCanvMargin / 2] } {set dy [expr $subY1 - ($photosCanvMargin / 2)]}
-  #if {[+ $subX2 $dx] > [expr $maxX + (1.5 * $photosCanvMargin)] } {set dx [expr $maxX + (1.5 * $photosCanvMargin) - $subX2]}
-  #if {[+ $subY2 $dy] > [expr $maxY + (1.5 * $photosCanvMargin)] } {set dy [expr $maxY + (1.5 * $photosCanvMargin) - $subY2]}
-
-
-
-  $w move current $dx $dy
-  set ::X [+ $::X $dx]
-  set ::Y [+ $::Y $dy]
+  $textposCanv create text [expr $marginleft/$textPosFactor] [expr $margintop/$textPosFactor] -anchor nw -justify left -tags {canvTxt mv}
+  $textposCanv itemconfigure canvTxt -text $setupTwdText
+  $textposCanv itemconfigure canvTxt -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill orange  -activefill red
+  
+  $textposCanv itemconfigure canvTxt -width 
 }
 
 ##### S E T U P P H O T O S   P R O C S ####################################################
+
 proc needsResize {} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
@@ -341,16 +259,17 @@ proc needsResize {} {
 # adds new Picture to BiblePix Photo collection
 # setzt Funktion 'photosOrigPic' voraus und leitet Subprozesse ein
 proc addPic {} {
-  global picPath jpegDir picSchonDa
+  global picPath jpegDir
   
   set targetPicPath [file join $jpegDir [getPngFileName [file tail $picPath]]]
   
   if { [file exists $targetPicPath] } {
-    NewsHandler::QueryNews $picSchonDa lightblue
+    NewsHandler::QueryNews $::picSchonDa lightblue
     return
   }
   
-  if {[needsResize]} {
+  if [needsResize] {
+    source $::SetupResizePhoto
     openResizeWindow
   } else {
     photosOrigPic write $targetPicPath -format PNG
@@ -370,10 +289,10 @@ proc doOpen {bildordner c} {
   refreshImg $localJList $c
 
   if {$localJList != ""} {
-    pack .addBtn -in .nb.photos.mainf.right.unten -side left -fill x
+    pack .addBtn -in .photosF.mainf.right.unten -side left -fill x
   }
-  pack .picPath -in .nb.photos.mainf.right.unten -side left -fill x
-  pack .nb.photos.mainf.right.bar.collect -side left
+  pack .picPath -in .photosF.mainf.right.unten -side left -fill x
+  pack .photosF.mainf.right.bar.collect -side right -fill x
   pack forget .delBtn
 
   return $localJList
@@ -383,8 +302,8 @@ proc doCollect {c} {
   set localJList [refreshFileList]
   refreshImg $localJList $c
 
-  pack .delBtn .picPath -in .nb.photos.mainf.right.unten -side left -fill x
-  pack forget .addBtn .nb.photos.mainf.right.bar.collect
+  pack .delBtn .picPath -in .photosF.mainf.right.unten -side left -fill x
+  pack forget .addBtn .photosF.mainf.right.bar.collect
 
   return $localJList
 }
@@ -534,7 +453,7 @@ proc deleteImg {localJList c} {
 ##### Procs for SetupWelcome ####################################################
 
 proc fillWidgetWithTodaysTwd {twdWidget} {
-  global Twdtools noTWDFilesFound
+  global Twdtools
 
   if {[info procs getRandomTwdFile] == ""} {
     source $Twdtools
@@ -545,7 +464,7 @@ proc fillWidgetWithTodaysTwd {twdWidget} {
   if {$twdFileName == ""} {
     $twdWidget conf -fg black -bg red
     $twdWidget conf -activeforeground black -activebackground orange
-    set twdText $noTWDFilesFound
+    set twdText $::noTwdFilesFound
   } else {
     if {[isRtL [getTwdLanguage $twdFileName]]} {
       $twdWidget conf -justify right

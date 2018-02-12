@@ -71,7 +71,7 @@ set ::gettingTwd $gettingTwd($lang)
 
 set noTwdFilesFound(en) "Es sind keine aktuellen Bibeltextdateien installiert.\nBitte wählen Sie im BibelPix-Setup mindestens \n1 Sprachdatei aus der Rubrik 'International'."
 set noTwdFilesFound(de) "No current Bible text files are installed.\nIn the BiblePix Setup, choose at least \n one language text file from the 'International' section."
-set ::noTWDFilesFound $noTwdFilesFound($lang)
+set ::noTwdFilesFound $noTwdFilesFound($lang)
 
 set connTwd(en) "Connection to bible2.net established."
 set connTwd(de) "Verbindung zu bible2.net hergestellt."

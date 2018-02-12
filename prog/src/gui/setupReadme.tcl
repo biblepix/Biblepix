@@ -12,14 +12,14 @@ close $chan
 set ::readmetext $readmetext
 
 #set scrollbar
-scrollbar .nb.manual.scroll -orient vertical -command {.nb.manual.man yview}
-text .nb.manual.man -bg $bg -fg $fg -yscrollcommand {.nb.manual.scroll set}
-pack configure .nb.manual.man -side left -fill both -expand yes
-pack .nb.manual.scroll -side right -fill y
+scrollbar .manualF.scroll -orient vertical -command {.manualF.man yview}
+text .manualF.man -bg $bg -fg $fg -yscrollcommand {.manualF.scroll set}
+pack configure .manualF.man -side left -fill both -expand yes
+pack .manualF.scroll -side right -fill y
 
 #set text by $lang (sourcing $Texts)
 set readmeLang [setReadmeText $lang]
-.nb.manual.man replace 1.1 end $readmeLang
-.nb.manual.man configure -state disabled
+.manualF.man replace 1.1 end $readmeLang
+.manualF.man configure -state disabled
 
 

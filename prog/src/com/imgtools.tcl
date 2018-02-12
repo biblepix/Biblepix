@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 11feb18
+# Updated: 12feb18
 
 #Check for Img package
 if { [catch {package require Img} ] } {
@@ -56,6 +56,10 @@ proc setSun {rgb} {
   return $sun
 }
 
+# copyAndResizeSamplePhotos
+## copies sample Jpegs to PhotosDir unchanged if size OK
+## else calls [resize] 
+## no cutting intended because these pics can be stretched
 proc copyAndResizeSamplePhotos {} {
   global exaJpgArray
   set screenX [winfo screenwidth .]
@@ -67,18 +71,17 @@ proc copyAndResizeSamplePhotos {} {
     set imgX [image width origJpeg]
     set imgY [image height origJpeg]
 
-    #copy over as JPEG if size OK
-    if {$screenX == $imgX && $screeny == $imgy} {
+    
+    if {$screenX == $imgX && $screenY == $imgY} {
       file copy $fileName [join $jpegdir $fileName]
-
+    
       } else {
-    #else [resize] (no cutting intended)
       set newPic [resize $screenX $screenY origJpeg]
       set pngFileName [getPngFileName $fileName]
       $newPic write [join $jpegdir $pngFileName] -format PNG
     }
   }
-} ;#END copyAndResizeSamplePhotos
+}
 
 proc getPngFileName {fileName} {
   if {![regexp png|PNG $fileName]} {
@@ -89,10 +92,10 @@ proc getPngFileName {fileName} {
 
 
 # doResize
-## called by addPic
 ## organises all resizing processes
+## called by addPic
 proc doResize {c} {
-  global jpegDir picPath screenFactor
+  global jpegDir picPath
 
   set targetPicPath [file join $jpegDir [getPngFileName [file tail $picPath]]]
   
@@ -107,27 +110,23 @@ proc doResize {c} {
   
   set screenFactor [expr $screenX. / $screenY]
   set enlargementFactor [expr $origX. / $canvX]
-#puts "Vergrösserung: $enlargementFactor"
  
- #2.CUT PIC TO CORRECT RATIO
-  
+  #1. C U T   P I C   T O   C O R R E C T   R A T I O 
+  ##Wegen ungenauer Ergebisse mit Vergrösserungsfaktor wird er nur auf 1 Seite angewendet
   lassign [$c bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
   
-  #1. check which edge shouldn't be touched
+  #Check which edge shouldn't be touched
   
-  ##a) pic too high: set fix X values
+  ##A) pic too high: set fix X values, adapt Y values
   if {$imgX == $canvX} {
   puts "imgX = canvX"
     set cutX1 0
     set cutX2 $origX
-    
-    #set pic specific required Y
     set reqY [expr round($origX / $screenFactor)]
     
-    #Adapt Y values:
     #a)Pos oberer Rand
     if {$canvPicY1 == 0} {
-    puts a
+      puts a
       set cutY1 0
       set cutY2 $reqY
       
@@ -144,16 +143,15 @@ proc doResize {c} {
       set cutY1 [expr round($Ydiff * $enlargementFactor) ]
       set cutY2 [expr round($reqY - ($canvPicY1 * $enlargementFactor))]
       }
-    #Adapt X alues:
+    
+  ##B) Pic too wide: set fix Y values, adapt X values
     } elseif {$imgY == $canvY} {
-  puts "imgY = canvY"
+  
+    puts "imgY = canvY"
     set cutY1 0
     set cutY2 $origY
-    
-    #set pic specific required Y
     set reqX [expr round($origY * $screenFactor)]
-    
-   
+       
     #a)Pos linker Rand
     if {$canvPicX1 == 0} {
     puts a
@@ -175,44 +173,30 @@ proc doResize {c} {
     }
   }
   
-#puts "ReqX: $reqX"
-#puts "Cuts: $cutX1 $cutY1 $cutX2 $cutY2"
-
- 
+  #2. R E S I Z E   P I C   T O   S C R E E N   &  S A V E
   
-#T E S T 1 : UNVERGRÖSSERT
-#  set cutImg [trimPic photosCanvPic $X1 $Y1 $X2 $Y2]
-  
-#T E S T 2 : VERGRÖSSERT
-#  set cutImg [trimPic photosOrigPic $cutX1 $cutY1 $cutX2 $cutY2]
-  
-#  $cutImg write /tmp/trimmed.bmp -format BMP
-#  return
-
-#END TEST
-
-
-set cutImg [trimPic photosOrigPic $cutX1 $cutY1 $cutX2 $cutY2]
-
-#3. RESIZE PIC TO SCREEN SIZE
+  set cutImg [trimPic photosOrigPic $cutX1 $cutY1 $cutX2 $cutY2]
   set finalImage [resize $cutImg $screenX $screenY]
   image delete $cutImg
-
-  #3.Save new image to Photos directory
   $finalImage write $targetPicPath -format PNG
   image delete $finalImage
 
   NewsHandler::QueryNews "[copiedPic $picPath]" lightblue
 } ;#END doResize
 
-# trimPic - reduces $pic size by cutting 1 or 2 edges
-## $pic must be a function or a variable
+
+# trimPic
+## Reduces pic size by cutting 1 or more edges
+## pic must be a function or a variable
+## called by doResize
 proc trimPic {pic x1 y1 x2 y2} {
   set cutPic [image create photo]
   $cutPic copy $pic -from $x1 $y1 $x2 $y2 -shrink
   return $cutPic
 }
 
+# resize
+## TODOS: CHANGE NAME? MOVE TO BACKGROUND!!!!
 proc resize {src newx newy {dest ""} } { 
 #Proc called for even-sided resizing, after cutting
  #  Decsription:  Copies a source image to a destination
