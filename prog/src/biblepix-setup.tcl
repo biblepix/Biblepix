@@ -3,9 +3,9 @@
 # Called by User via Windows/Unix Desktop entry
 # If called by BiblePix-Installer, this is the first file downloaded + executed
 ################################################################################
-# Version: 2.4
+# Version: 2.4.1
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 11feb18
+# Updated: 22feb18
 
 package require Tk
 
@@ -47,8 +47,10 @@ if {[catch {source $Globals}]} {
 
     .updateFrame.progbar start
 
-    if { [info exists InitialJustDone] } {
-      set pbTitle "Resizing image ..."
+    if { [info exists InitialJustDone] ||
+      #if samplePhotos havent been moved due to Git download
+         [catch {glob $jpegdir/*.jpg}] } { 
+      set pbTitle ::resizingPic
       source $Imgtools
       copyAndResizeSamplePhotos
       
@@ -61,7 +63,7 @@ if {[catch {source $Globals}]} {
       catch {runHTTP 0}
       
       if { ![file exists $Config] } {      
-        set pbTitle "Resizing image ..."
+        set pbTitle ::resizingPic
 
         source $Imgtools
         copyAndResizeSamplePhotos
