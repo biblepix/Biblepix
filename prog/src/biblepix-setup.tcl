@@ -48,9 +48,8 @@ if {[catch {source $Globals}]} {
     .updateFrame.progbar start
 
     if { [info exists InitialJustDone] ||
-      #if samplePhotos havent been moved due to Git download
-         [catch {glob $jpegdir/*.jpg}] } { 
-      set pbTitle ::resizingPic
+      [catch {glob $jpegdir/*}] } { 
+      set pbTitle $::resizingPic
       source $Imgtools
       copyAndResizeSamplePhotos
       
@@ -63,7 +62,7 @@ if {[catch {source $Globals}]} {
       catch {runHTTP 0}
       
       if { ![file exists $Config] } {      
-        set pbTitle ::resizingPic
+        set pbTitle $::resizingPic
 
         source $Imgtools
         copyAndResizeSamplePhotos
