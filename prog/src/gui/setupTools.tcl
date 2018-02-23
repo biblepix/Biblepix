@@ -277,10 +277,10 @@ proc addPic {} {
   }
 } ;#END addPic
 
-proc delPic {c} {
+proc delPic {} {
   global fileJList picPath
   file delete $picPath
-  set fileJList [deleteImg $fileJList $c]
+  set fileJList [deleteImg $fileJList .imgCanvas]
   NewsHandler::QueryNews "[deletedPic $picPath]" red
 }
 
