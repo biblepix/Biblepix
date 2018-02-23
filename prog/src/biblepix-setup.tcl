@@ -60,8 +60,8 @@ if {[catch {source $Globals}]} {
       catch {runHTTP 0}
       
       if { ![file exists $Config] ||
-      [catch {glob -directory $jpegdir *.png} &&
-      [catch {glob -directory $jpegdir *.jpg}
+      [catch {glob -directory $jpegdir *.png}] &&
+      [catch {glob -directory $jpegdir *.jpg}]
         } {      
         set pbTitle $::resizingPic
         source $Imgtools
