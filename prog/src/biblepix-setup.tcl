@@ -5,7 +5,7 @@
 ################################################################################
 # Version: 2.4.1
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22feb18
+# Updated: 23feb18
 
 package require Tk
 
@@ -47,12 +47,10 @@ if {[catch {source $Globals}]} {
 
     .updateFrame.progbar start
 
-    if { [info exists InitialJustDone] ||
-      [catch {glob $jpegdir/*}] } { 
+    if { [info exists InitialJustDone] } { 
       set pbTitle $::resizingPic
       source $Imgtools
       copyAndResizeSamplePhotos
-      
       set pbTitle $uptodateHttp
     } elseif { [info exists UpdateJustDone] } {      
       set pbTitle $uptodateHttp
@@ -61,9 +59,11 @@ if {[catch {source $Globals}]} {
         
       catch {runHTTP 0}
       
-      if { ![file exists $Config] } {      
+      if { ![file exists $Config] ||
+      [catch {glob -directory $jpegdir *.png} &&
+      [catch {glob -directory $jpegdir *.jpg}
+        } {      
         set pbTitle $::resizingPic
-
         source $Imgtools
         copyAndResizeSamplePhotos
       }
