@@ -2,17 +2,17 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 27sep17 
+# Updated : 27feb18 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $twdDir/*$jahr.twd}] } {
-  .n select .n.f1
+  .nb select .internationalF
   NewsHandler::QueryNews "$noTWDFilesFound" red
   return
 
 # Return to PHOTOS section if $picsdir empty
 } elseif { [catch {glob $jpegDir/*}] } {
- .n select .n.f6
+ .nb select .photosF
   NewsHandler::QueryNews "$noPhotosFound" red
   return
 }
@@ -40,7 +40,7 @@ set rgb [hex2rgb $fontcolor]
 set slidestatus [$slideSpin get]
 
 ##textpos coordinates
-lassign [$textposCanv coords mv] x y - -
+lassign [.textposCanv coords mv] x y - -
 set marginleftstatus [expr int($x*$textPosFactor)]
 set margintopstatus [expr int($y*$textPosFactor)]
 
