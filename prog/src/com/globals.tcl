@@ -35,7 +35,9 @@ set sampleJpgDir [file join $rootdir SamplePhotos]
 set imgDir [file join $rootdir Image]
 
 #TODO: jpegDir > photosDir
-set jpegDir [file join $rootdir Photos]
+set photosDir [file join $rootdir Photos]
+set jpegDir $photosDir
+
 set progDir [file join $rootdir prog]
 set twdDir [file join $rootdir Texts]
 
@@ -119,7 +121,7 @@ if { $Debug && $Mocking} {
 
 #Set JPEGs array
 set bpxJpegUrl "http://vollmar.ch/biblepix/jpeg"
-array set sampleJpgArray "
+array set sampleJpegArray "
   utah.jpg [file join $sampleJpgDir utah.jpg]
   eire.jpg [file join $sampleJpgDir eire.jpg]
   lake.jpg [file join $sampleJpgDir lake.jpg]

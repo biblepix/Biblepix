@@ -61,24 +61,25 @@ proc setSun {rgb} {
 ## else calls [resize] 
 ## no cutting intended because these pics can be stretched
 proc copyAndResizeSamplePhotos {} {
-  global sampleJpgArray
+  global sampleJpegArray photosDir
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
     
-  foreach fileName [array names exaJpgArray] {
-    set filePath [lindex [array get exaJpgArray $fileName] 1]
+  foreach fileName [array names sampleJpegArray] {
+    set filePath [lindex [array get sampleJpegArray $fileName] 1]
     image create photo origJpeg -file $filePath 
     set imgX [image width origJpeg]
     set imgY [image height origJpeg]
-
     
     if {$screenX == $imgX && $screenY == $imgY} {
-      file copy $fileName [join $jpegdir $fileName]
+      file copy $fileName [file join $photosDir $fileName]
     
       } else {
-      set newPic [resize $screenX $screenY origJpeg]
+  
+      puts "Resizing $fileName"   
+      set newPic [resize origJpeg $screenX $screenY]
       set pngFileName [getPngFileName $fileName]
-      $newPic write [join $jpegdir $pngFileName] -format PNG
+      $newPic write [file join $photosDir $pngFileName] -format PNG
     }
   }
 }
