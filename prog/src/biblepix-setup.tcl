@@ -43,11 +43,13 @@ if {[catch {source $Globals}]} {
   if {[catch {source $Http}]} {
     set pbTitle "Update not possible.\nYou must download and rerun the BiblePix Installer from bible2.net."
     after 7000 {exit}
+    
   } else {
 
     .updateFrame.progbar start
-
-    if { [info exists InitialJustDone] } { 
+    
+    if { [info exists InitialJustDone] ||
+      [catch {glob -directory $jpegdir {[pngjpg]} }] } { 
       set pbTitle $::resizingPic
       source $Imgtools
       copyAndResizeSamplePhotos
@@ -59,10 +61,7 @@ if {[catch {source $Globals}]} {
         
       catch {runHTTP 0}
       
-      if { ![file exists $Config] ||
-      [catch {glob -directory $jpegdir *.png}] &&
-      [catch {glob -directory $jpegdir *.jpg}]
-        } {      
+      if { ![file exists $Config] } {      
         set pbTitle $::resizingPic
         source $Imgtools
         copyAndResizeSamplePhotos

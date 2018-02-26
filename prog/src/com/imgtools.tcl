@@ -61,7 +61,7 @@ proc setSun {rgb} {
 ## else calls [resize] 
 ## no cutting intended because these pics can be stretched
 proc copyAndResizeSamplePhotos {} {
-  global exaJpgArray
+  global sampleJpgArray
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
     
