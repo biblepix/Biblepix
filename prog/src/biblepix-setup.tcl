@@ -29,9 +29,9 @@ if {[catch {source $Globals}]} {
   after 7000 {exit}
 } else {
   
-  #Make empty dirs in case of GIT download
-  makeDirs  
-
+  #In case of GIT download: makeDirs
+  makeDirs
+  
   #Set initial texts if missing
   if {[catch {source -encoding utf-8 $SetupTexts ; setTexts $lang}]} {
     set updatingHttp "Updating BiblePix program files..."
@@ -48,21 +48,22 @@ if {[catch {source $Globals}]} {
 
     .updateFrame.progbar start
     
-    if { [info exists InitialJustDone] ||
-      [catch {glob -directory $jpegdir {[pngjpg]} }] } { 
-      set pbTitle $::resizingPic
+    if { [info exists InitialJustDone] } {
+      set pbTitle "Copying sample photos..."
       source $Imgtools
       copyAndResizeSamplePhotos
       set pbTitle $uptodateHttp
+            
     } elseif { [info exists UpdateJustDone] } {      
       set pbTitle $uptodateHttp
+  
     } else {
       set pbTitle $updatingHttp
         
       catch {runHTTP 0}
       
       if { ![file exists $Config] } {      
-        set pbTitle $::resizingPic
+        set pbTitle "Copying sample photos..."
         source $Imgtools
         copyAndResizeSamplePhotos
       }

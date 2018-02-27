@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12feb18
+# Updated: 27feb18
 
 source $JList
 
@@ -411,7 +411,14 @@ proc refreshImg {localJList c} {
 #Creates functions 'photosOrigPic' and 'photosCanvPic'
 ##to be processed by all other progs (no vars!)
 proc openImg {imgFilePath imgCanvas} {
-  global photosCanvMargin photosCanvX photosCanvY
+
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+  set factor [expr $screenX./$screenY]
+  set photosCanvMargin 6
+  set photosCanvX 650
+  set photosCanvY [expr round($photosCanvX/$factor)]
+  
   image create photo photosOrigPic -file $imgFilePath
 
   #scale photosOrigPic to photosCanvPic
@@ -422,8 +429,6 @@ proc openImg {imgFilePath imgCanvas} {
   if {[expr $imgY / $factor] > $photosCanvY} {
     set factor [expr round(($imgY / $photosCanvY)+0.999999)]
   }
-
-set ::OrigFactor $factor
 
   catch {image delete photosCanvPic}
   image create photo photosCanvPic

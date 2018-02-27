@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 12feb18
+# Updated: 28feb18
 
 # This variable enables Debugging Mode in the whole application if set to 1.
 set Debug 0
@@ -152,13 +152,13 @@ set heute [clock format [clock seconds] -format %d]
 set tab "                              "
 set ind "     "
 
-#Global Settings
-set screenX [winfo screenwidth .]
-set screenY [winfo screenheight .]
-set factor [expr $screenX./$screenY]
-set photosCanvX 650
-set photosCanvY [expr round($photosCanvX/$factor)]
-set photosCanvMargin 6
+#TODO: These Tk VARS don-t belong HERE, biblepix.tcl must run outside of Tk, these are Setup vars that must reside somewhere else!
+#set screenX [winfo screenwidth .]
+#set screenY [winfo screenheight .]
+#set factor [expr $screenX./$screenY]
+#set photosCanvX 650
+#set photosCanvY [expr round($photosCanvX/$factor)]
+#set photosCanvMargin 6
 
 #Global functions
 proc uniqkey {} {
@@ -198,19 +198,25 @@ if {$platform == "unix"} {
   set types {
     { {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
   }
-  #en 
-  if { [file exists $HOME/Pictures] } {
-    set DesktopPicturesDir $HOME/Pictures
-  #de
-  } elseif { [file exists $HOME/Bilder] } {
-    set DesktopPicturesDir $HOME/Bilder 
-  #fr
-  } elseif { [file exists $HOME/Images] } {
-    set DesktopPicturesDir $HOME/Images
-  #es
-  } elseif { [file exists $HOME/Imágenes] } {
-    set DesktopPicturesDir $HOME/Imágenes
-  #all else
+  #General Im(age) | Bil(der) etc.
+  if {![catch {glob Im*} res] || ![catch {glob Bil*} res]} {
+    set DesktopPicturesDir $HOME/$res  
+  #ru
+  } elseif { [file exists $HOME/Снимки] } {
+    set DesktopPicturesDir $HOME/Снимки
+  #hu
+  } elseif { [file exists $HOME/Képek] } {
+    set DesktopPicturesDir $HOME/Képek
+  #tr
+  } elseif { [file exists $HOME/Resimler] } {
+    set DesktopPicturesDir $HOME/Resimler
+  #ar صور 
+  } elseif { [file exists [file join $HOME صور ]] } {
+    set DesktopPicturesDir "[file join $HOME صور ]"
+  #zh 图片
+  } elseif { [file exists [file join $HOME 图片 ]] } {
+    set DesktopPicturesDir "[file join $HOME 图片 ]"
+  #all else: set to $HOME
   } else {  
     set DesktopPicturesDir $HOME
   }
