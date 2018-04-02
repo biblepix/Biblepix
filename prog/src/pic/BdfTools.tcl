@@ -15,12 +15,11 @@
 proc scanBdf {BdfFile} {
 
   #source ~/Biblepix/prog/src/com/globals.tcl
-  set tmpdir /tmp
   set heute {}
-  set fontdir /tmp
+  set fontdir ../../font
   
   #Set up files and channels  
-  set BdfFontChan [open $tmpdir/$BdfFile]
+  set BdfFontChan [open $fontdir/$BdfFile]
   set BdfText [read $BdfFontChan]
   close $BdfFontChan
 
@@ -207,9 +206,9 @@ proc colourBinlist {binList BBXList} {
   return $colourList
 } 
 
-scanBdf 24.iso8859.bdf
-scanBdf etl24-latin2.bdf
-scanBdf heb24-etl.bdf
+scanBdf timR24.bdf
+scanBdf timB24.bdf
+scanBdf timBI24.bdf
 
 
 #### R E S E R V E #############################################################

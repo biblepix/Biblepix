@@ -20,6 +20,7 @@ proc printLetterToImage {letterName img x y} {
           1 { set pxColor $color }
           2 { set pxColor $sun }
           3 { set pxColor $shade }
+          #testzeile (ROT!)
           default { set pxColor $mark }
         }
         
@@ -40,6 +41,7 @@ proc writeTextLine {textLine x y img} {
   set xBase $x
   set yBase [expr $y + $fontAsc]
   
+  #setzt Kodierung nach Systemkodierung? -finger weg!
   set textLine [encoding convertfrom utf-8 $textLine]
 
   set letterList [split $textLine {}]
@@ -52,6 +54,7 @@ proc writeTextLine {textLine x y img} {
     if {[info exists "print_$encLetter"]} {
       array set curLetter [array get "print_$encLetter"]
     } else {
+    #sonst Abstand
       array set curLetter [array get "print_32"]
     }
 
@@ -59,13 +62,11 @@ proc writeTextLine {textLine x y img} {
 
     set xBase [expr $xBase + $curLetter(DWx)]
   }
-
-  $img put $mark -to $x $y
-  $img put $mark -to $xBase $yBase
   
   return [expr $y + $FBBy]
 }
 
+#Ruft writeTextLine pro Textzeile auf
 proc writeText {text x y img} {
   set textLines [split $text \n]
   
@@ -91,16 +92,16 @@ mit newLine und laaaaangem text.
 titel: \"RANDOM123!!\"
 läuft bei dir?"
 
-source "E:/Projekte/BiblePix/prog/fonts/24.iso8859.tcl"
+source "../../font/timR24.tcl"
 set y [writeText $text $x $y $finalImg]
 
-source "E:/Projekte/BiblePix/prog/fonts/etl24-latin2.tcl"
+source "../../font/timB24.tcl"
 set y [writeText $text $x $y $finalImg]
 
-source "E:/Projekte/BiblePix/prog/fonts/heb24-etl.tcl"
+source "../../font/timBI24.tcl"
 set y [writeText $text $x $y $finalImg]
 
-$finalImg write E:/Projekte/BiblePix/prog/src/pic/test.tiff -format TIFF
+$finalImg write ./test.tiff -format TIFF
 
 image delete $finalImg
 
