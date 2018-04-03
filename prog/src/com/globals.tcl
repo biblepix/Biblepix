@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 28feb18
+# Updated: 3apr18
 
 # This variable enables Debugging Mode in the whole application if set to 1.
 set Debug 0
@@ -198,11 +198,9 @@ if {$platform == "unix"} {
   set types {
     { {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
   }
-  #General Im(age) | Bil(der) etc.
-  if {![catch {glob Im*} res] || ![catch {glob Bil*} res]} {
-    set DesktopPicturesDir $HOME/$res  
+    
   #ru
-  } elseif { [file exists $HOME/Снимки] } {
+  if { [file exists $HOME/Снимки] } {
     set DesktopPicturesDir $HOME/Снимки
   #hu
   } elseif { [file exists $HOME/Képek] } {
@@ -210,13 +208,25 @@ if {$platform == "unix"} {
   #tr
   } elseif { [file exists $HOME/Resimler] } {
     set DesktopPicturesDir $HOME/Resimler
+  #uz
+  } elseif { [file exists $HOME/Suratlar] } {
+    set DesktopPicturesDir $HOME/Suratlar
   #ar صور 
   } elseif { [file exists [file join $HOME صور ]] } {
     set DesktopPicturesDir "[file join $HOME صور ]"
   #zh 图片
   } elseif { [file exists [file join $HOME 图片 ]] } {
     set DesktopPicturesDir "[file join $HOME 图片 ]"
-  #all else: set to $HOME
+  
+  #General Ima(ge) | Bil(der) etc.
+  } elseif {
+      ![catch {glob Imag*} result] ||
+      ![catch {glob Immag*} result] ||
+      ![catch {glob Imág*} result] ||
+      ![catch {glob Pict*} result] ||
+      ![catch {glob Bil*} result] } {
+    set DesktopPicturesDir $HOME/$result
+  #All else: set to $HOME
   } else {  
     set DesktopPicturesDir $HOME
   }
