@@ -1,6 +1,6 @@
 # ~/Biblepix/prog/src/pic/BdfTools.tcl
 #T E S T P H A S E 
-#Updated 2.12.17
+#Updated 5apr18
 
 #####################################################################
 # FONTBOUNDINGBOX = Gesamtgrösse/Maximalgrösse eines Zeichens 
@@ -11,37 +11,41 @@
 
 #####################################################################
 
+# BDF file with path
+proc scanBdf {BdfFilePath} {
+  global heute fontdir
 
-proc scanBdf {BdfFile} {
-
-  #source ~/Biblepix/prog/src/com/globals.tcl
-  set heute {}
-  set fontdir ../../font
+  set BdfFile [file tail $BdfFilePath]
   
   #Set up files and channels  
-  set BdfFontChan [open $fontdir/$BdfFile]
+  set BdfFontChan [open $BdfFilePath]
   set BdfText [read $BdfFontChan]
   close $BdfFontChan
 
   # A) SCAN BDF FOR GENERAL INFORMATION 
   
-  ##get font name + size
   if {[regexp -line {(^FONT )(.*$)} $BdfText -> name value]} {
     set FontSpec $value
   } else {
-    set FontSpec "Not defined"
+    set FontSpec "Undefined"
   }
   
   if {[regexp -line {(^SIZE )(.*$)} $BdfText -> name value]} {
     set FontSize $value
   } else {
-    set FontSize "Not defined"
+    set FontSize "Undefined"
   }
   
-  if {[regexp -line {(^FULL_NAME )(.*$)} $BdfText -> name value]} {
+  if {[regexp -line {(^FAMILY_NAME )(.*$)} $BdfText -> name value]} {
     set FontName $value
   } else {
-    set FontName "Not defined"
+    set FontName "Undefined"
+  }
+  
+  if {[regexp -line {(^WEIGHT_NAME )(.*$)} $BdfText -> name value]} {
+    set FontWeight $value
+  } else {
+    set FontWeight "Undefined"
   }
 
   ##get character width, height and offsets
@@ -49,17 +53,33 @@ proc scanBdf {BdfFile} {
   if {[regexp -line {(^FONT_ASCENT )(.*$)} $BdfText -> name value]} {
     set FontAsc $value
   } else {
-    set FontAsc "Not defined"
+    set FontAsc "Undefined"
   }
   
-  ##get number of characters  
+  ##get number of characters  - JOEL WOZU DAS?
   if {[regexp -line {(^CHARS )(.*$)} $BdfText -> name value]} {
     set numChars $value
   } else {
-    set numChars "Not defined"
+    set numChars "Undefined"
+  }
+  
+  #copyright info
+  if {[regexp -line {(^COPYRIGHT )(.*$)} $BdfText -> name value]} {
+    set copyright $value
+  } else {
+    set copyright "Undefined"
+  }
+  
+  #Slant (R/B/I/BI)
+  if {[regexp -line {(^SLANT )(.*$)} $BdfText -> name value]} {
+    set slant $value
+  } else {
+    set slant "Undefined"
   }
 
-  set TclFontFile [string map {.bdf .tcl} $BdfFile]
+  #Trying to get sensible name for font file
+  foreach i $FontName {append noSpaceFontName $i} 
+  append TclFontFile $noSpaceFontName _ $FontWeight _ $slant _ [string range $FontSize 0 1] .tcl
   set TclFontChan [open $fontdir/$TclFontFile w]
   
   # Save general information to TclFontFile
@@ -68,8 +88,9 @@ proc scanBdf {BdfFile} {
 \# Font Name: $FontName
 \# Font size: $FontSize
 \# Font Specification: $FontSpec
-\# Created $heute
-  
+\# Copyright: $copyright
+\# Created: [clock format [clock seconds] -format "%d-%m-%Y"]
+
 \# FONTBOUNDINGBOX INFO
 set FBBx [lindex $FBBList 1]
 set FBBy [lindex $FBBList 2]
@@ -132,9 +153,9 @@ set numChars $numChars
   } ;#END LOOP
 
   close $TclFontChan
-  
-#close $logfile
-} ;#END PROC scanBdf  
+  puts "Font successfully parsed to $fontdir/$TclFontFile"
+
+} ;#END scanBdf  
 
 proc hex2bin {hex} {
   binary scan [binary format H* $hex] B* bin
@@ -206,9 +227,10 @@ proc colourBinlist {binList BBXList} {
   return $colourList
 } 
 
-scanBdf timR24.bdf
-scanBdf timB24.bdf
-scanBdf timBI24.bdf
+## test ##
+#scanBdf timR24.bdf
+#scanBdf timB24.bdf
+#scanBdf timBI24.bdf
 
 
 #### R E S E R V E #############################################################
@@ -299,5 +321,3 @@ proc printChar {bitmap image} {
 
   
 } ;#END PROC
-
-exit
