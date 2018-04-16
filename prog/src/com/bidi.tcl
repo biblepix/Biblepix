@@ -2,19 +2,12 @@
 # Fixes missing bidi algorithm for Unix and Win Tk Hebrew/Arabic
 # called by textbild.tcl and biblepix-setup.tcl
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 1jun16 - fixArabUnix in testing phase!!
+# Updated: 16apr18 - fixArabUnix in testing phase!!
+
 #TODO: THIS PROC IS TO REPLACE ALL "fixHebWin/fixArabWin" procs for BDF
 proc bidiBdf {dw TwdLang} {
-puts $TwdLang
-  
-  #Format letters for Arabic/Urdu/Farsi
-  if {$TwdLang == "ar" ||
-      $TwdLang == "ur" ||
-      $TwdLang == "fa"
-    } {
-#    set dw [fixArabUnix $dw]
-  }
-  
+  global BDF
+
   #All languages: revert digits
   set digits [regexp -all -inline {[0-9]+} $dw]
   foreach zahl $digits {
@@ -36,19 +29,21 @@ puts $TwdLang
     regsub -all {[\u0591-\u05C7]} $dw {} dw
   }
   
+  #Arabic
   if {$TwdLang=="ar"} {
     #Ar: eliminate all vowels
     regsub -all {[\u064B-\u065F]} $dw {} dw
-        set dw [fixArabUnix $dw]
-        
-        #set all characters right-to-left
-  set dwsplit [split $dw \n]
-  foreach line $dwsplit {
-    append dwneu [string reverse $line]\n
-    set dw $dwneu
+    set dw [fixArabUnix $dw]
   }
+
+  #Urdu & Farsi
+  if {
+      $TwdLang == "ur" ||
+      $TwdLang == "fa"
+    } {
+    set dw [fixArabUnix $dw]
   }
-  
+      
   return $dw
   
 } ;#END BdfBidi
@@ -155,8 +150,10 @@ proc fixHebUnix {dw args} {
 proc fixArabUnix {dw args} {
 #Sets Arabic text right-to-left and in correct letter form
 #added Persion & Urdu 5/16
+global BDF
 
-#eliminate all vowel signs if $args not empty
+
+#eliminate all vowel signs if $args not empty - TODO: this is done somewhere further down !!!!
 if {$args != ""} {
   regsub -all {[\u064B-\u065F]} $dw {} dw
 }
@@ -356,16 +353,16 @@ proc formatWord {word} {
 
 set wordlength [string length $word]
 
-#Skip if short
+  #Skip if short
   if {$wordlength<2} { 
-#puts "SHORT: $word"
+    return $word
+  
+  #Skip if ascii & revert
+  } elseif [string is ascii $word] {
 
-#Skip if ascii & revert
-  } elseif { [string is ascii $word] } {
-
-  set word [string reverse $word]
-
-#puts "ASCII: $word"
+  #This is now in BdfBidi
+  #set word [string reverse $word]
+    return $word
 
 # M A I N
   } else {
@@ -424,12 +421,8 @@ set wordlength [string length $word]
 
   } ;#end for
 
-#puts "word w/middle: $word"
-
-
-
 #3. Set last letter to final form if previous is linking
-
+#TODO: GEHT NICHT IMMER !!!
     if {$linkinfo==1} {
       set last_letter_full [formatLetter $last_char 3]
       set last_letter [lindex $last_letter_full 0]
@@ -439,6 +432,7 @@ set wordlength [string length $word]
       #Pos stimmt nicht, regsub + string match auch nicht gut...
       #set word [string replace $word $pos $pos $last_letter]
       #
+      
       regsub $last_char $word $last_letter word
 
 #puts "lastchar: $last_char"
@@ -472,9 +466,16 @@ set linkinfo 0
 
     } ;#end foreach word
 
+#TODO: make proc available without Bdf!
+  if {$BDF} {
+    #leave string as it is
+    set line $newline\n
+    } else {
+    #revert string
     set line [string reverse $newline]\n
-    append dwneu $line
-    unset newline
+  }
+  append dwneu $line
+  unset newline
 
   } ;#end foreach line
 
@@ -482,4 +483,3 @@ regsub -all {~} $dwneu {~                       } dwneu
 return $dwneu
 
 } ;#end fixArabUnix
-

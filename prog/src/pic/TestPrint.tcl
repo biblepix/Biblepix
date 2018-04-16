@@ -4,11 +4,14 @@
 source $BdfTools
 
 #T E S T I N G  FONTS
-source $fontdir/Times_24.tcl
+#source $fontdir/Times_24.tcl
 
 
 #1. get TWD filename? - get full TwdText
-set TwdText [getTodaysTwdText $TwdFileName]
+set TwdText [getTodaysTwdText $::TwdFileName]
+set TwdLang [getTwdLang $::TwdFileName]
+set RtL [isRtL $TwdLang]
+if {$RtL} {source $Bidi}
 
 #2. TODO: check text for "italic" for <em> and Intro
 set emText 0
@@ -23,44 +26,37 @@ if {$intro} {
 }
 
 #3. source font(s) 
-set TwdLanguage [getTwdLanguage $TwdFileName]
-puts $twdFileName
-puts $TwdLanguage
+#set TwdLang [getTwdLang $::TwdFileName]
+puts $TwdFileName
+puts $TwdLang
 
 ##Chinese
-if {$TwdLanguage == "zh"} {
+if {$TwdLang == "zh"} {
   source $fontdir/asian/WenQuanYi_ZenHei_24.tcl
   ##Thai
-  } elseif {$TwdLanguage == "th"} {
+  } elseif {$TwdLang == "th"} {
   source $fontdir/asian/Kinnari_Bold_20.tcl
   ##all else
   } else {
     
   # T O D O : GET FONT FROM config
-  #source $fontfamily
+  source [file join $fontdir $fontfamily.tcl]
   
 }
 
-
+#called by?
 proc printLetterToImage {letterName img x y} {
-  global sun shade color mark TwdLanguage FBBx
+  global sun shade color mark FBBx RtL
   upvar $letterName curLetter
 
-puts "FBBx $FBBx"
-puts "CurLetBBx $curLetter(BBx)"
-puts "x $x"
-
-#if {[array names curLetter] == ""} {return}
   set BBxoff $curLetter(BBxoff)
   set BBx $curLetter(BBx)
   
-  if {$TwdLanguage=="he"} {
+  if {$RtL} {
      set BBxoff [expr $FBBx - $BBx - $BBxoff]
-    
   }   
 
   set xLetter [expr $x + $BBxoff]
-      
   set yLetter [expr $y - $curLetter(BByoff) - $curLetter(BBy)]
 
   set yCur $yLetter
@@ -78,8 +74,10 @@ puts "x $x"
           #testzeile (ROT!)
           default { set pxColor $mark }
         }
-        
+#puts "$xCur $yCur"
+if { $xCur <0 } {set xCur 1 } 
         $img put $pxColor -to $xCur $yCur
+
       }
       incr xCur
     }
@@ -88,27 +86,24 @@ puts "x $x"
   
 } ;#END printLetterToImage
 
+#Called by writeText
 proc writeTextLine {textLine x y img} {
-  global mark print_32 TwdLanguage marginleft
+  global mark print_32 TwdLang marginleft Bidi RtL
   
   upvar 2 FontAsc fontAsc
   upvar 2 FBBy FBBy
-  
-  if {$TwdLanguage == "he"} {
-  #set right margin + eliminate Nikud
-    regsub -all {[\u0591-\u05C7]} $textLine {} textLine
-    set screenW [winfo screenwidth .]
-    
-    #Todo: iRGENDWAS STIMMT HIER NOCH NICHT ...
-    set xBase [expr $screenW - $marginleft - $marginleft - $marginleft]
-  
-  } else {
-    set xBase $x
+  set xBase $x
+  set yBase [expr $y + $fontAsc]
+      
+  if {$RtL} {
+    set imgW [image width $img]
+    #set textLine [bidiBdf $textLine $TwdLang]
+    set xBase [expr $imgW - ($marginleft*2) - $x]
   }
   
-  set yBase [expr $y + $fontAsc]
-  
-#setzt Kodierung nach Systemkodierung? -finger weg! -TODO: GEHT NICHT AUF LINUX!!!
+#puts $xBase
+    
+# TODO: setzt Kodierung nach Systemkodierung? -finger weg! -TODO: GEHT NICHT AUF LINUX!!!- TODO
 #  set textLine [encoding convertfrom utf-8 $textLine]
 
   set letterList [split $textLine {}]
@@ -122,30 +117,42 @@ proc writeTextLine {textLine x y img} {
       array set curLetter [array get "print_$encLetter"]
       
     } else {
-    
-    #sonst Abstandzeichen
+        
       array set curLetter [array get "print_32"]
     }
 
     printLetterToImage curLetter $img $xBase $yBase
     
     #sort out Bidi languages
-    if {$TwdLanguage == "he"} {
+    if {$RtL} {
       set xBase [expr $xBase - $curLetter(DWx)]
       } else {
       set xBase [expr $xBase + $curLetter(DWx)]
     }
-  }
+    lappend lineLengthsList $xBase  
+  
+  } ;#END foreach
   
   return [expr $y + $FBBy]
 
 } ;#END writeTextLine
 
 #Ruft writeTextLine pro Textzeile auf
-proc writeText {text x y img} {
+proc writeText {text x y img } {
+#puts "text0 $text"
+
+  global RtL Bidi TwdLang
+  if {$RtL} {
+    source $Bidi
+    set text [bidiBdf $text $TwdLang]
+  }
+#puts "text1 $text"
+
   set textLines [split $text \n]
   
-  foreach line $textLines {
+#if {$RtL} {set x 1650}
+
+foreach line $textLines {
     set y [writeTextLine $line $x $y $img]
   }
   
@@ -155,24 +162,28 @@ proc writeText {text x y img} {
 
 set mark #ff0000
 set x $marginleft
+#if {$RtL} {
+#  set imgW [image width $img]
+#  set x [expr $imgW - $marginleft]
+#}
 set y $margintop
 set color [set fontcolortext]
 
-#TEST : below not necessary if twdText available
+#TEST : below proc not necessary if twdText available
 proc TestParseTwd {} { 
-  set intro [getParolIntro $parolNode $TwdLanguage 1]
+  set intro [getParolIntro $parolNode $TwdLang 1]
   if {$intro != ""} {
     addTextLineToTextImg $intro $textImg $RtL $indent
   }
   
-  set text [getParolText $parolNode $TwdLanguage 1]
+  set text [getParolText $parolNode $TwdLang 1]
   set textLines [split $text \n]
   
   foreach line $textLines {
     addTextLineToTextImg $line $textImg $RtL $indent
   }
   
-  set ref [getParolRef $parolNode $TwdLanguage 1]
+  set ref [getParolRef $parolNode $TwdLang 1]
   addTextLineToTextImg $ref $textImg $RtL [font measure BiblepixFont $tab]
 }
 
