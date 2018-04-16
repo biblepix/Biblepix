@@ -3,6 +3,55 @@
 # called by textbild.tcl and biblepix-setup.tcl
 # Author: Peter Vollmar, biblepix.vollmar.ch
 # Updated: 1jun16 - fixArabUnix in testing phase!!
+#TODO: THIS PROC IS TO REPLACE ALL "fixHebWin/fixArabWin" procs for BDF
+proc bidiBdf {dw TwdLang} {
+puts $TwdLang
+  
+  #Format letters for Arabic/Urdu/Farsi
+  if {$TwdLang == "ar" ||
+      $TwdLang == "ur" ||
+      $TwdLang == "fa"
+    } {
+#    set dw [fixArabUnix $dw]
+  }
+  
+  #All languages: revert digits
+  set digits [regexp -all -inline {[0-9]+} $dw]
+  foreach zahl $digits {
+     regsub $zahl $dw [string reverse $zahl] dw
+  }
+  
+  #Hebrew
+  if {$TwdLang=="he"} {
+    
+    #change chirik to yod for Pi'el
+    regsub -all {\U05B4.\U05BC} $dw \U05D9& dw
+    
+    #change all waw+cholam to waw
+    regsub -all {\u05D5\U05B9} $dw \U05D5 dw
+    #change all cholam/kubutz to waw
+    regsub -all {[\U05B9\U05BB]} $dw \U05D5 dw
+    
+    #eliminate remaining vowels
+    regsub -all {[\u0591-\u05C7]} $dw {} dw
+  }
+  
+  if {$TwdLang=="ar"} {
+    #Ar: eliminate all vowels
+    regsub -all {[\u064B-\u065F]} $dw {} dw
+        set dw [fixArabUnix $dw]
+        
+        #set all characters right-to-left
+  set dwsplit [split $dw \n]
+  foreach line $dwsplit {
+    append dwneu [string reverse $line]\n
+    set dw $dwneu
+  }
+  }
+  
+  return $dw
+  
+} ;#END BdfBidi
 
 
 
@@ -63,18 +112,25 @@ proc fixArabWin {dw} {
   return $dw
 }
 
-proc fixHebUnix {dw} {
+
+#ARGS is used for no-vowel-signs in BDF method
+proc fixHebUnix {dw args} {
 #Fixes Hebrew for Unix canvas
+  
+  #eliminate all vowel signs if args not empty
+  if {$args != ""} {
+    regsub -all {[\u0591-\u05C7]} $dw {} dw
+  } else {
+    #delete all Dagesh's because of wrong positioning
+    regsub -all {\u05BC} $dw {} dw
+  }
+  
   #set all characters right-to-left
   set dwsplit [split $dw \n]
   foreach line $dwsplit {
     append dwneu [string reverse $line]\n
   }
   set dw $dwneu
-
-  #delete all Dagesh's because of wrong positioning
-  regsub -all {\u05BC} $dw {} dw
-#regsub -all {ּ} $dw {} dw 
 
   #revert digits back
   set zahlen [regexp -all -inline {[0-9]+} $dw]
@@ -94,9 +150,16 @@ proc fixHebUnix {dw} {
 ###############################################################################
 
 #############################################################################
-proc fixArabUnix {dw} {
+
+
+proc fixArabUnix {dw args} {
 #Sets Arabic text right-to-left and in correct letter form
 #added Persion & Urdu 5/16
+
+#eliminate all vowel signs if $args not empty
+if {$args != ""} {
+  regsub -all {[\u064B-\u065F]} $dw {} dw
+}
 
 #Assign UTF letter codes & forms
 #1.Initial / 2.Middle / 3.Final-linked
