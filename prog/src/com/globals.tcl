@@ -2,11 +2,12 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 3apr18
+# Updated: 17apr18
 
 # This variable enables Debugging Mode in the whole application if set to 1.
 set Debug 0
 set Mocking 0
+set BDF 1
 
 set version "2.4.1"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
@@ -52,14 +53,14 @@ set windir [file join $progDir win]
 set sharedir [file join $srcdir com]
 set guidir [file join $srcdir gui]
 set maildir [file join $srcdir sig]
-set maindir [file join $srcdir pic]
+set picdir [file join $srcdir pic]
 set savedir [file join $srcdir save]
 
 proc makeDirs {} {
-  global sigDir sampleJpgDir imgDir jpegDir progDir twdDir bmpdir confdir piddir srcdir unixdir windir sharedir guidir maildir maindir savedir
+  global picdir sigDir sampleJpgDir imgDir jpegDir progDir twdDir bmpdir confdir piddir srcdir unixdir windir sharedir guidir maildir maindir savedir
   file mkdir $sigDir $imgDir $jpegDir $sampleJpgDir $progDir $twdDir
   file mkdir $bmpdir $confdir $piddir $srcdir $unixdir $windir
-  file mkdir $sharedir $guidir $maildir $maindir $savedir
+  file mkdir $sharedir $guidir $maildir $picdir $savedir
 }
 
 #SET ARRAYS FOR DOWNLOAD
@@ -70,9 +71,11 @@ array set filepaths "
   UpdateInjection [file join $srcdir updateInjection.tcl]
   Biblepix [file join $srcdir biblepix.tcl]
   Setup [file join $srcdir biblepix-setup.tcl]
-  Image [file join $maindir image.tcl]
-  Hgbild [file join $maindir hgbild.tcl]
-  Textbild [file join $maindir textbild.tcl]
+  BdfTools [file join $picdir BdfTools.tcl]
+  BdfPrint [file join $picdir BdfPrint.tcl]
+  Image [file join $picdir image.tcl]
+  Hgbild [file join $picdir hgbild.tcl]
+  Textbild [file join $picdir textbild.tcl]
   SetupMainFrame [file join $guidir setupMainFrame.tcl]
   SetupBuild [file join $guidir setupBuildGUI.tcl]
   SetupDesktop [file join $guidir setupDesktop.tcl]
@@ -83,7 +86,7 @@ array set filepaths "
   SetupResizePhoto [file join $guidir setupResizePhoto.tcl]
   SetupTerminal [file join $guidir setupTerminal.tcl]
   SetupWelcome [file join $guidir setupWelcome.tcl]
-  Setuptools [file join $guidir setupTools.tcl]
+  SetupTools [file join $guidir setupTools.tcl]
   SetupTexts [file join $guidir setupTexts.tcl]
   TestBildGUI [file join $guidir testbild.png]
   SetupSave [file join $savedir setupSave.tcl]
@@ -98,7 +101,7 @@ array set filepaths "
   Globals [file join $sharedir globals.tcl]
   Imgtools [file join $sharedir imgtools.tcl]
   LoadConfig [file join $sharedir LoadConfig.tcl]
-  Twdtools [file join $sharedir twdtools.tcl]
+  TwdTools [file join $sharedir TwdTools.tcl]
   Uninstall [file join $savedir uninstall.tcl]
   Signature [file join $maildir signature.tcl]
   Config [file join $confdir biblepix.conf]
@@ -145,20 +148,12 @@ set TwdBMP [file join $imgDir theword.bmp]
 set TwdTIF [file join $imgDir theword.tif]
 set TwdPNG [file join $imgDir theword.png]
 
-#Set miscellaneous vars (sourced by various progs)
+#Miscellaneous vars (sourced by various progs)
 set datum [clock format [clock seconds] -format %Y-%m-%d]
 set jahr [clock format [clock seconds] -format %Y]
 set heute [clock format [clock seconds] -format %d]
 set tab "                              "
 set ind "     "
-
-#TODO: These Tk VARS don-t belong HERE, biblepix.tcl must run outside of Tk, these are Setup vars that must reside somewhere else!
-#set screenX [winfo screenwidth .]
-#set screenY [winfo screenheight .]
-#set factor [expr $screenX./$screenY]
-#set photosCanvX 650
-#set photosCanvY [expr round($photosCanvX/$factor)]
-#set photosCanvMargin 6
 
 #Global functions
 proc uniqkey {} {
