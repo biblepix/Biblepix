@@ -2,12 +2,12 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28jan18
+# Updated: 18apr18
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
-source $Setuptools
-source $Twdtools
+source $SetupTools
+source $TwdTools
 
 #Set general X vars
 set screenX [winfo screenwidth .]

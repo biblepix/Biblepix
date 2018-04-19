@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 12feb18
+# Updated 15apr18
 
 #Create left & right main frames
 pack [frame .desktopF.fleft] -expand 0 -fill y -side left
@@ -87,6 +87,9 @@ createMovingTextBox .textposCanv
 .textposCanv bind mv <B1-Motion> [list dragCanvasItem %W mv %X %Y]
 
 
+
+
+
 #2. Create InternationalText Canvas
 if {! [regexp displayfont [font names] ] } {
   font create displayfont -family $fontfamily -size -$fontsize -weight bold
@@ -120,6 +123,9 @@ $inttextCanv create text 11 21 -fill $shade -tags {textitem shade}
 $inttextCanv create text 10 20 -fill $fontcolor -tags {textitem main}
 $inttextCanv itemconfigure textitem -text $internationaltext -anchor nw -width 680 -font displayfont
 
+
+
+#proc obsolete {} {
 #1. Fontcolour spinbox
 message .desktopF.fright.fbot1.fontcolorTxt -width 200 -textvar f2.farbe
 spinbox .desktopF.fright.fbot1.fontcolorSpin -width 10 -values {blue green gold silver} 
@@ -163,6 +169,9 @@ if {$fontweight=="bold"} {
   set fontweightState 0
   font configure displayfont -weight normal
 }
+#} ;#END obsolete
+
+
 
 #4. Fontfamily dropdown Menu
 message .desktopF.fright.fbot1.fontfamilyTxt -width 250 -textvar f2.fontfamilytext
@@ -171,9 +180,14 @@ set fontfamilyTxt .desktopF.fright.fbot1.fontfamilyTxt
 set fontfamilySpin .desktopF.fright.fbot1.fontfamilyDrop
 
 ##get System font list + add TkTextFont
-set Fontlist [lsort [font families]]
-lappend Fontlist TkTextFont
-$fontfamilySpin configure -values $Fontlist -validate focusin -validatecommand {
+foreach i [glob -directory $fontdir -tails *.tcl] {
+  lappend Fontlist [file root $i]
+}
+
+#set Fontlist [lsort [font families]]
+#lappend Fontlist TkTextFont
+
+$fontfamilySpin configure -values [lsort $Fontlist] -validate focusin -validatecommand {
   font configure displayfont -family [$fontfamilySpin get]
   return 0
 }
@@ -192,7 +206,12 @@ pack $textposTxt -pady 5
 pack .textposCanv -in .desktopF.fright.fbot
 
 pack $fontcolorTxt $fontcolorSpin $fontfamilyTxt $fontfamilySpin -side left -fill x
+
 pack $fontweightBtn $fontsizeSpin $fontsizeTxt -side right -fill x
+
+#TODO: delete functions por completo!
+$fontweightBtn configure -state disabled
+$fontsizeSpin configure -state disabled
 
 pack $inttextCanv -fill x
 pack $inttextHeader -pady 7

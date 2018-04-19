@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27feb18
+# Updated: 14apr18
 
 source $JList
 
@@ -261,7 +261,7 @@ proc needsResize {} {
 proc addPic {} {
   global picPath jpegDir
   
-  set targetPicPath [file join $jpegDir [getPngFileName [file tail $picPath]]]
+  set targetPicPath [file join $jpegDir [setPngFileName [file tail $picPath]]]
   
   if { [file exists $targetPicPath] } {
     NewsHandler::QueryNews $::picSchonDa lightblue
@@ -458,10 +458,10 @@ proc deleteImg {localJList c} {
 ##### Procs for SetupWelcome ####################################################
 
 proc fillWidgetWithTodaysTwd {twdWidget} {
-  global Twdtools
+  global TwdTools
 
   if {[info procs getRandomTwdFile] == ""} {
-    source $Twdtools
+    source $TwdTools
   }
 
   set twdFileName [getRandomTwdFile]

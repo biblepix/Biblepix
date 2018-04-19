@@ -1,6 +1,6 @@
 # ~/Biblepix/prog/src/pic/BdfTools.tcl
 #T E S T P H A S E 
-#Updated 5apr18
+#Updated 19apr18
 
 #####################################################################
 # FONTBOUNDINGBOX = Gesamtgrösse/Maximalgrösse eines Zeichens 
@@ -10,6 +10,262 @@
 # Breite | Höhe | Abstand von links | Abstand von unten
 
 #####################################################################
+
+
+#TODO: write proc that comprises the below procs & finishes the actual image
+#already have it - it's printText!!!
+proc printTwdToImg {?TwdFileName ?img} {
+    
+  extractTwdTextParts
+  processTwdTextParts
+  
+  return $img
+}
+
+
+#extractTwdTextParts
+## prepares Twd nodes for processing
+## calls processTwdTextParts
+## TODO: compare command with processTwdTextParts & FINALILIZE !!!
+proc extractTwdTextParts {} { 
+  set intro1 [getParolIntro $parolNode $TwdLang 1]
+  set intro2 [getParolIntro $parolNode $TwdLang 2]
+  if {$intro != ""} {
+    addTextLineToTextImg $intro $textImg $RtL $indent
+  }
+  
+  set text1 [getParolText $parolNode $TwdLang 1]
+  set text2 [getParolText $parolNode $TwdLang 2]
+  set textLines [split $text \n]
+  
+  foreach line $textLines {
+    addTextLineToTextImg $line $textImg $RtL $indent
+  }
+  
+  set ref1 [getParolRef $parolNode $TwdLang 1]
+  set ref2 [getParolRef $parolNode $TwdLang 2]
+  addTextLineToTextImg $ref $textImg $RtL [font measure BiblepixFont $tab]
+}
+
+# processTwdTextParts
+## called by BdfPrint main process
+## calls printTextLine per line
+proc processTwdTextParts {text x y img } {
+
+  global RtL Bidi TwdFileName TwdLang sharedir
+  
+  # 1. P r e p a r e   t e x t   p a r t s
+
+#move to TwdTools? -aready in setTodaysTwdNodes!!!
+  set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
+  set twdTodayNode [getDomNodeForToday $twdDomDoc]
+  
+  #set Title
+  if {$twdTodayNode == ""} {
+    set text1 "No Bible text found for today."
+    
+  } else {
+    if {$enabletitle} {
+      set twdTitle [getTwdTitle $twdTodayNode $TwdLang]
+  }
+
+
+#SEE SEparate proc above!!!    
+  set parolNode1 [getTwdParolNode 1 $twdTodayNode]
+  set parolNode2 [getTwdParolNode 2 $twdTodayNode]
+
+  #set Introlines
+  set intro1 [getParolIntro $parolNode $TwdLang 1]
+  set intro2 [getParolIntro $parolNode $TwdLang 2]
+  
+  #set Texts
+  set textNode1 [$TheWordNode selectNodes parolNode1/text]
+  set textNode2 [$TheWordNode selectNodes parolNode2/text]
+
+  #Search for <em> tags in text & mark text with _..._
+  set emNodes [$textNode selectNodes em/text() ]
+  if {$emNodes != ""} {
+    foreach i $emNodes {
+      set nodeText [$i nodeValue]
+      $i nodeValue [join "< $nodeText >" {}]
+    }
+  }
+
+  #Give out entire text
+  ##must be called with '$textNode asText' to include <em>'s
+  set text1 [$textNode1 asText]
+  set text2 [$textNode2 asText]
+  
+  set text1 [getParolText $parolNode $TwdLang 1]
+  set text2 [getParolText $parolNode $TwdLang 2]
+  
+  #set Refs
+  set ref1 [getParolRef $parolNode $TwdLang 1]
+  set ref2 [getParolRef $parolNode $TwdLang 2]
+  
+    
+
+  #2. S t a r t   S e l e c t i v e   P r i n t i n g   
+  
+  set textLines [split $text \n]
+
+  foreach line $textLines {
+    set y [printTextline $line $x $y $img]
+  }
+
+  set y [printTextline $title ...]
+  
+  #set Intros + Refs to Italic <>
+  if {$intro1 != ""} {
+    set y [printTextline "$ind <$intro1>" $x $y $img]
+  }
+
+printTextline "$ind $text1" $x $y $img
+
+  #MAKE tab available as arg for RtL!!!
+  set Ref1 "$tab <$ref1>"
+	set Tab ""
+  if {$RtL} {
+		set Ref1 <$ref1>
+		set Tab "RightTab"
+	}
+  
+  set y [printTextline $Ref1 $x $y $img $Tab]
+
+  if {$intro2 != ""} {
+    printTextline "$ind <$intro2>" $x $y $img
+  }
+
+  printTextline "$ind $text2" $x $y $img
+  printTextline "$tab <$ref2>" $x $y $img
+  
+  return $y
+  
+} ;#END processTwdTextParts
+
+
+# printLetter - prints single letter to $img
+## called by printTexTLine
+proc printLetter {letterName img x y} {
+  global sun shade color mark FBBx RtL
+  upvar $letterName curLetter
+
+  set BBxoff $curLetter(BBxoff)
+  set BBx $curLetter(BBx)
+  
+  if {$RtL} {
+     set BBxoff [expr $FBBx - $BBx - $BBxoff]
+  }   
+
+  set xLetter [expr $x + $BBxoff]
+  set yLetter [expr $y - $curLetter(BByoff) - $curLetter(BBy)]
+
+  set yCur $yLetter
+  set pixelLines $curLetter(BITMAP)
+  foreach pxLine $pixelLines {
+    set xCur $xLetter
+    for {set i 0} {$i < $curLetter(BBx)} {incr i} {
+      set pxValue [string index $pxLine $i]
+      
+      if {$pxValue != 0} {
+        switch $pxValue {
+          1 { set pxColor $color }
+          2 { set pxColor $sun }
+          3 { set pxColor $shade }
+          #testzeile (ROT!)
+          default { set pxColor $mark }
+        }
+#puts "$xCur $yCur"
+if { $xCur <0 } {set xCur 1 } 
+        $img put $pxColor -to $xCur $yCur
+
+      }
+      incr xCur
+    }
+    incr yCur
+  }
+  
+} ;#END printLetter
+
+
+# printTextLine - prints 1 line of text to $img
+## Called by writeText
+## use args for right tab in ref line if RtL
+proc printTextLine {textLine x y img args} {
+	
+  global mark print_32??? TwdLang marginleft Bidi RtL tab
+  
+  upvar 2 FontAsc fontAsc
+  upvar 2 FBBy FBBy
+  set xBase $x
+  set yBase [expr $y + $fontAsc]
+      
+  if {$RtL} {
+    set imgW [image width $img]
+    set textLine [bidiBdf $textLine $TwdLang]
+    set xBase [expr $imgW - ($marginleft*2) - $x]
+		if {$args=="RightTab"} {
+			set xBase [expr $xBase - $tab]
+		}
+  }
+  
+  
+# T O D O: setzt Kodierung nach Systemkodierung? -finger weg! -TODO: GEHT NICHT AUF LINUX!!!- TODO
+#  set textLine [encoding convertfrom utf-8 $textLine]
+
+  set letterList [split $textLine {}]
+
+  foreach letter $letterList {
+
+    #set fontweight: < for I / > for R
+    if {$letter == "<"} {
+      set weight I
+      continue
+      } elseif {$letter == ">"} {
+      set weight R
+      continue
+    }
+
+    set encLetter [scan $letter %c]
+    
+    
+    
+    upvar 2 $weight::print_$encLetter print_$encLetter
+    
+    
+    
+    if {[info exists "$weight::print_$encLetter"]} {
+      array set curLetter [array get "$weight::print_$encLetter"]
+      
+    } else {
+        
+      array set curLetter [array get "R::print_32"]
+    }
+
+    printLetter curLetter $img $xBase $yBase
+    
+    
+    
+       
+    #sort out Bidi languages
+    if {$RtL} {
+      set xBase [expr $xBase - $curLetter(DWx)]
+      } else {
+      set xBase [expr $xBase + $curLetter(DWx)]
+    }
+    
+  } ;#END foreach
+  
+  #gibt letzte Y-Position an aufrufendes Programm ab
+  return [expr $y + $FBBy]
+
+} ;#END printTextLine
+
+
+
+#############################################################################
+################### extra procs for rare use ################################
+
 
 # BDF file with path
 proc scanBdf {BdfFilePath} {
@@ -227,97 +483,3 @@ proc colourBinlist {binList BBXList} {
   return $colourList
 } 
 
-## test ##
-#scanBdf timR24.bdf
-#scanBdf timB24.bdf
-#scanBdf timBI24.bdf
-
-
-#### R E S E R V E #############################################################
-
-#Zeichengrösse multiplizieren oder verkleinern - NOT NEEDED :-)
-proc resizeBdfChar {binlist} {
-  #1. in Breite: jedes Zeichen verdoppeln
-  foreach pix [split $binlist {}] {
-    append doubleSpaceBinlist [string repeat $pix 2]
-  }
-
-  #2. Add sun and shade pixels here
-  set doubleSpaceBinlist [addSunAndShade]
-  
-  
-#### bis hier gehts - $doubleSpaceBinlist is proper list!
-
-
-  #3. in Höhe: jede Zeile verdoppeln
-  foreach line $doubleSpaceBinlist {
-    lappend doubledBinlist $line
-    lappend doubledBinlist $line
-  }
-
-#TODO - keine Liste mehr!
-puts $doubledBinlist
-return
-
-  #c) Add sun line before first sunny line (symbol=2) -TODO: eliminate 0000 lines!
-  ##find first line with 2
-  for {set index 0} {$index<=[llength $doubleSpaceBinlist]} {incr index} {
-    if {[regexp 2 [lindex $doubleSpaceBinlist $index]]} {
-      return $index}
-    }
-  ##insert new line (hardly first!) - TODO don't add line (s.u.)
-  #set newList [linsert $double??List $index $sunline]
-  
-  set sunLine [lindex $doubledBinlist $index]
-  ##1 nach links versetzen
-  set sunLine [string replace $firstLine 0 0 {}]
-  set sunLine [string replace $firstLine end end {00}]
-  set newSunline [string map {1 2} $firstLine]  
-  
-  ##add line at top - TODO NO!
-  set doubledBinlist [lappend doubledBinlist $newFirstline $doubledBinlist]
-##### TODO: REPLACE SUN-LINE WITH 1 LINE PREVIOUS TO INDEXED LINE !!!
-
-
-
-
-  #d) Add shade line at bottom - TODO : no! S.O.
-  set lastLine [lindex $doubledBinlist end]
-  set newLastline [string map {1 3} $lastLine]
-  ##1 nach rechts versetzen
-  string replace $newLastline 0 0 {00}
-  string replace $newLastline end end {}
-  ##add line at end
-  lappend doubledBinlist $newLastline
-
-}; #END double
-
-
-
-# P r e p a r e   p r i n t   p r o c
-
-proc printChar {bitmap image} {
-#Zeilenweise Pixelpositionen in Listen speichern
-  set 1 black
-  set 2 yellow
-  set 3 grey
-  
-  set zeilenmenge [llength $bitmap]
-  set linelength [llength $pixlist]
-  set linelength [llength [split 
-  
-  #TODO: Joel das funktioniert nicht, weiss nicht warum
-  #wichtig für dich: du kannst mit [set 1] z.B. einen Variablentausch vornehmen
-  for {set x 0} {$x<[llength [lindex  $bitmap} {incr x} {
-  
-    for {set y 0} {$y<$zeilenmenge} {incr y} {
-      set zeile 
-      set pixlist [split $zeile {}]      
-      if {[set pix]!=0} {
-        $image put [set $pix] -to $x $y
-      }
-    }
-  }
-
-  
-} ;#END PROC

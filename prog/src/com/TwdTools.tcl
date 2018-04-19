@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/twdtools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16apr18
+# Updated 18apr18
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if {[catch {package require tdom}]} {
@@ -10,7 +10,10 @@ if {[catch {package require tdom}]} {
    exit
 }
 
-#Listen ohne Pfad
+
+# G E N E R A L   T O O L S  ###########################################
+
+#L i s t e n   o h n e   P f a d
 proc getTWDlist {} {
   global twdDir jahr
   set twdlist [glob -nocomplain -tails -directory $twdDir *_$jahr.twd]
@@ -23,7 +26,7 @@ proc getBMPlist {} {
   return $bmplist
 }
 
-#Randomizers
+#R a n d o m i z e r s
 proc getRandomTwdFile {} {
   #Ausgabe ohne Pfad
   set twdlist [getTWDlist]
@@ -51,6 +54,9 @@ proc getRandomPhoto {} {
   return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ] 
 }
 
+
+### T W D   P A R S I N G   T O O L S   ###############################
+  
 proc getTWDFileRoot {twdFile} {
 global twdDir
   set path [file join $twdDir $twdFile]
@@ -133,6 +139,8 @@ proc parseToText {node TwdLang {withTags 0}} {
   
   return $text
 }
+
+
 
 proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
   global tab
@@ -227,6 +235,15 @@ proc getParolRef {parolNode {TwdLang "de"} {withTags 0}} {
   return [string cat "~ " [parseToText [$parolNode selectNodes ref] $TwdLang $withTags]]
 }
 
+
+# getTodaysTwdNodes
+##used in BdfPrint
+proc setTodaysTwdNodes {TwdFileName} {
+  set TwdLang [getTwdLang $TwdFileName]
+  set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
+  set twdTodayNode [getDomNodeForToday $twdDomDoc]
+}
+
 #getTodaysTwdText
 ##used in Setup
 proc getTodaysTwdText {TwdFileName} {
@@ -242,8 +259,10 @@ proc getTodaysTwdText {TwdFileName} {
   
   if {$twdTodayNode == ""} {
     set TwdText "No Bible text found for today."
+    return 
     
   } else {
+  
     if {$enabletitle} {
       set twdTitle [getTwdTitle $twdTodayNode $TwdLang]
       append TwdText $twdTitle\n
