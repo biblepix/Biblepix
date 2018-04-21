@@ -3,7 +3,7 @@
 
 source $BdfTools
 
-#1. Get today's TWD nodes
+#1. Get today's TWD nodes - todo , THIS IS SOMEWHERE ELSE!!!!!!
 setTodaysTwdNodes $::TwdFileName
 set TwdLang [getTwdLang $::TwdFileName]
 
@@ -26,19 +26,12 @@ if {$TwdLang == "zh"} {
   source [file join $fontdir italic ${fontfamily}I.tcl]
 }
 
-#move?
-set mark #ff0000
-set x $marginleft
-#if {$RtL} {
-#  set imgW [image width $img]
-#  set x [expr $imgW - $marginleft]
-#}
-set y $margintop
+
 set color [set fontcolortext]
 
-#3. Print Twd to image - who has which image?!!! - hgbild provided by..?
+#3. Print Twd to image
 set img hgbild
-set finalImg [printTwdToImg $img]
+set finalImg [printTwd $TwdFileName $img]
 
 if {$platform=="windows"} {  
     $finalImg write $TwdTIF -format TIFF

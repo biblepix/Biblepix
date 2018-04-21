@@ -14,10 +14,14 @@
 
 #TODO: write proc that comprises the below procs & finishes the actual image
 #already have it - it's printText!!!
-proc printTwdToImg {?TwdFileName ?img} {
-    
-  extractTwdTextParts
-  processTwdTextParts
+proc printTwd {TwdFileName img} {
+  global leftmargin topmargin
+  set x $leftmargin
+  set y $topmargin
+  
+  parseTwdTextParts $TwdFileName
+  #extractTwdTextParts $parolNode $TwdLang
+  printTwdTextParts $x $y $img
   
   return $img
 }
@@ -27,63 +31,56 @@ proc printTwdToImg {?TwdFileName ?img} {
 ## prepares Twd nodes for processing
 ## calls processTwdTextParts
 ## TODO: compare command with processTwdTextParts & FINALILIZE !!!
-proc extractTwdTextParts {} { 
-  set intro1 [getParolIntro $parolNode $TwdLang 1]
-  set intro2 [getParolIntro $parolNode $TwdLang 2]
-  if {$intro != ""} {
-    addTextLineToTextImg $intro $textImg $RtL $indent
-  }
+proc parseTwdTextParts {TwdFileName} {
+  global RtL Bidi TwdFileName TwdLang sharedir enabletitle
   
-  set text1 [getParolText $parolNode $TwdLang 1]
-  set text2 [getParolText $parolNode $TwdLang 2]
-  set textLines [split $text \n]
-  
-  foreach line $textLines {
-    addTextLineToTextImg $line $textImg $RtL $indent
-  }
-  
-  set ref1 [getParolRef $parolNode $TwdLang 1]
-  set ref2 [getParolRef $parolNode $TwdLang 2]
-  addTextLineToTextImg $ref $textImg $RtL [font measure BiblepixFont $tab]
-}
+  set TwdLang [getTwdLang $TwdFileName]
 
-# processTwdTextParts
-## called by BdfPrint main process
-## calls printTextLine per line
-proc processTwdTextParts {text x y img } {
-
-  global RtL Bidi TwdFileName TwdLang sharedir
+  #set parolNode1 [getTwdParolNode 1 $twdTodayNode]
+  #set parolNode2 [getTwdParolNode 2 $twdTodayNode]
   
-  # 1. P r e p a r e   t e x t   p a r t s
-
-#move to TwdTools? -aready in setTodaysTwdNodes!!!
-  set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
-  set twdTodayNode [getDomNodeForToday $twdDomDoc]
+  set domDoc [parseTwdFileDomDoc $TwdFileName]
+  set todaysTwdNode [getDomNodeForToday $domDoc]
+  set parolNode1 [$todaysTwdNode firstChild]
+  set parolNode2 [$todaysTwdNode lastChild]
   
-  #set Title
-  if {$twdTodayNode == ""} {
-    set text1 "No Bible text found for today."
+  #A: Set Twd Node names
+  
+  if {$todaysTwdNode == ""} {
+    source $SetupTexts
+    set text1 $noTwdFilesFound
     
   } else {
-    if {$enabletitle} {
-      set twdTitle [getTwdTitle $twdTodayNode $TwdLang]
+    
+      set titleNode [$todaysTwdNode selectNodes title]
+    
   }
-
-
-#SEE SEparate proc above!!!    
-  set parolNode1 [getTwdParolNode 1 $twdTodayNode]
-  set parolNode2 [getTwdParolNode 2 $twdTodayNode]
-
-  #set Introlines
-  set intro1 [getParolIntro $parolNode $TwdLang 1]
-  set intro2 [getParolIntro $parolNode $TwdLang 2]
   
-  #set Texts
-  set textNode1 [$TheWordNode selectNodes parolNode1/text]
-  set textNode2 [$TheWordNode selectNodes parolNode2/text]
+  set introNode1 [$parolNode1 selectNodes intro]
+  set introNode2 [$parolNode2 selectNodes intro]
+  
+  set refNode1 [$parolNode1 selectNodes ref]
+  set refNode2 [$parolNode2 selectNodes ref]
+    
+  set textNode1 [$parolNode1 selectNodes text]
+  set textNode2 [$parolNode2 selectNodes text]
 
-  #Search for <em> tags in text & mark text with _..._
-  set emNodes [$textNode selectNodes em/text() ]
+
+  #B: Extract Text Parts
+
+  set title [$titleNode text]
+  
+  set intro1 [$introNode1 text]
+  set intro2 [$introNode2 text]
+  
+  set ref1 [$refNode1 text]
+  set ref2 [$refNode2 text]
+
+  #Set texts with any <em> info
+  ##Search for <em> tags in text & mark as <...>
+  lappend emNodes [$textNode1 selectNodes em/text() ]
+  lappend emNodes [$textNode2 selectNodes em/text() ]
+  
   if {$emNodes != ""} {
     foreach i $emNodes {
       set nodeText [$i nodeValue]
@@ -91,31 +88,56 @@ proc processTwdTextParts {text x y img } {
     }
   }
 
-  #Give out entire text
   ##must be called with '$textNode asText' to include <em>'s
   set text1 [$textNode1 asText]
   set text2 [$textNode2 asText]
   
-  set text1 [getParolText $parolNode $TwdLang 1]
-  set text2 [getParolText $parolNode $TwdLang 2]
+  #set vars for calling proc
+  upvar title title
+  upvar text1 text1 text2 text2
+  upvar ref1 ref1 ref2 ref2
+  upvar intro1 intro2
   
-  #set Refs
-  set ref1 [getParolRef $parolNode $TwdLang 1]
-  set ref2 [getParolRef $parolNode $TwdLang 2]
+} ;#END proc extractTwdTextParts
   
-    
-
-  #2. S t a r t   S e l e c t i v e   P r i n t i n g   
   
-  set textLines [split $text \n]
-
+  
+proc printTwdTextParts {x y img} {
+  global enabletitle title intro1 intro2 text1 text2 ref1 ref2 ind
+  
+  # 1. Print Title
+  if {$enabletitle} {
+    set y [printTextline $title $x $y $img]
+  }
+  
+  # Print intro1 in Italics TODO: how is this information passed on to printLetter??????????????????????????
+  if {$intro1 != ""} {
+    set y [printTextline $ind \<$intro1\> $x $y $img]
+  }
+  
+  # 2. Print text1
+  set textLines [split $text1 \n]
+  foreach line $textLines {
+    set y [printTextline $ind $line $x $y $img]
+  }
+  
+  # Print ref1
+  
+  
+  
+  #Print intro2
+  #Print text2
+  #Print ref2
+  
+  # Print text2
+  set textLines [split $text2 \n]
   foreach line $textLines {
     set y [printTextline $line $x $y $img]
   }
 
   set y [printTextline $title ...]
   
-  #set Intros + Refs to Italic <>
+  #set Intros + Refs to Italic <> - todo move this up!!!!!!!!!!!
   if {$intro1 != ""} {
     set y [printTextline "$ind <$intro1>" $x $y $img]
   }
@@ -139,9 +161,10 @@ printTextline "$ind $text1" $x $y $img
   printTextline "$ind $text2" $x $y $img
   printTextline "$tab <$ref2>" $x $y $img
   
-  return $y
+#  return $y
+  return $img
   
-} ;#END processTwdTextParts
+} ;#END printTwdTextParts
 
 
 # printLetter - prints single letter to $img
