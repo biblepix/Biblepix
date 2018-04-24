@@ -11,22 +11,45 @@ set TwdLang [getTwdLang $::TwdFileName]
 set RtL [isRtL $TwdLang]
 if {$RtL} {source $Bidi}
 
-#2. Source font(s) 
-
-##Chinese: regular
+#2. Preset font names
+  ##Chinese: (regular_24)
 if {$TwdLang == "zh"} {
-  source $fontdir/asian/WenQuanYi_ZenHei_24.tcl
-  ##Thai: regular
+  set fontFile $BdfFontsArray(ChinaFont)
+  
+  ##Thai: (regular_20)
   } elseif {$TwdLang == "th"} {
-  source $fontdir/asian/Kinnari_Bold_20.tcl
+  set fontFile $BdfFontsArray(ThaiFont)
+  
   ##all else: regular & italic
   } else {
+  
+  #get from Config
+  set fontFile $BdfFontsArray($fontfamily)
     
-  source [file join $fontdir $fontfamily.tcl]
-  source [file join $fontdir italic ${fontfamily}I.tcl]
 }
 
+#Source Regular Font for all languages
+namespace eval R {
+  source $fontFile
+  #puts $FontAsc
+  #namespace export FontAsc
+}
 
+#Source Italic font for European languages, set to Regular for others
+namespace eval I {
+  set fontfamilyI ${fontfamily}I
+  set fontFileI $BdfFontsArray($fontfamilyI)
+  if [catch {source $fontFileI}] {
+    source $fontFile
+  }
+}
+
+#Export global font vars
+set ::FontAsc $R::FontAsc
+set ::FBBy $R::FBBy
+set ::FBBx $R::FBBx
+
+#move?
 set color [set fontcolortext]
 
 #3. Print Twd to image

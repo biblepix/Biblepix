@@ -12,39 +12,34 @@
 #####################################################################
 
 
-#TODO: write proc that comprises the below procs & finishes the actual image
-#already have it - it's printText!!!
+# printTwd
+##toplevel printing proc
 proc printTwd {TwdFileName img} {
-  global leftmargin topmargin
-  set x $leftmargin
-  set y $topmargin
-  
+  global marginleft margintop
+
   parseTwdTextParts $TwdFileName
-  #extractTwdTextParts $parolNode $TwdLang
-  printTwdTextParts $x $y $img
+  set finalImg [printTwdTextParts $marginleft $margintop $img]
   
-  return $img
+  return $finalImg
 }
 
 
-#extractTwdTextParts
+# parseTwdTextParts
 ## prepares Twd nodes for processing
-## calls processTwdTextParts
-## TODO: compare command with processTwdTextParts & FINALILIZE !!!
+##called by printTwd
 proc parseTwdTextParts {TwdFileName} {
-  global RtL Bidi TwdFileName TwdLang sharedir enabletitle
+
+  global RtL TwdLang sharedir enabletitle
+  puts $TwdFileName
   
   set TwdLang [getTwdLang $TwdFileName]
 
-  #set parolNode1 [getTwdParolNode 1 $twdTodayNode]
-  #set parolNode2 [getTwdParolNode 2 $twdTodayNode]
+  #A: Set Twd Node names
   
   set domDoc [parseTwdFileDomDoc $TwdFileName]
   set todaysTwdNode [getDomNodeForToday $domDoc]
-  set parolNode1 [$todaysTwdNode firstChild]
+  set parolNode1 [$todaysTwdNode child 2]
   set parolNode2 [$todaysTwdNode lastChild]
-  
-  #A: Set Twd Node names
   
   if {$todaysTwdNode == ""} {
     source $SetupTexts
@@ -52,7 +47,7 @@ proc parseTwdTextParts {TwdFileName} {
     
   } else {
     
-      set titleNode [$todaysTwdNode selectNodes title]
+    set titleNode [$todaysTwdNode selectNodes title]
     
   }
   
@@ -60,122 +55,118 @@ proc parseTwdTextParts {TwdFileName} {
   set introNode2 [$parolNode2 selectNodes intro]
   
   set refNode1 [$parolNode1 selectNodes ref]
+#puts $refNode1
+
   set refNode2 [$parolNode2 selectNodes ref]
-    
+#puts $refNode2    
+
   set textNode1 [$parolNode1 selectNodes text]
   set textNode2 [$parolNode2 selectNodes text]
 
-
   #B: Extract Text Parts
 
-  set title [$titleNode text]
-  
-  set intro1 [$introNode1 text]
-  set intro2 [$introNode2 text]
-  
-  set ref1 [$refNode1 text]
-  set ref2 [$refNode2 text]
+  ##title
+  set ::title [$titleNode text]
+  ##intros
+  if ![catch {$introNode1 text} res] {
+    set ::intro1 $res
+  }
+  if ![catch {$introNode2 text} res] {
+    set ::intro2 $res
+  }
+  ##refs
+  set ::ref1 [$refNode1 text]
+  set ::ref2 [$refNode2 text]
 
-  #Set texts with any <em> info
-  ##Search for <em> tags in text & mark as <...>
-  lappend emNodes [$textNode1 selectNodes em/text() ]
-  lappend emNodes [$textNode2 selectNodes em/text() ]
+  ##texts with any <em> tags
+  lappend emNodes "[$textNode1 selectNodes em/text()]" "[$textNode2 selectNodes em/text()]"
   
-  if {$emNodes != ""} {
+puts $emNodes
+  
+  if [regexp {[:graph:]} $emNodes] {
     foreach i $emNodes {
       set nodeText [$i nodeValue]
-      $i nodeValue [join "< $nodeText >" {}]
+#      catch {$i nodeValue [join "< $nodeText >" {}]}
+      catch {$i nodeValue \<$nodeText\> {} }
     }
   }
 
-  ##must be called with '$textNode asText' to include <em>'s
-  set text1 [$textNode1 asText]
-  set text2 [$textNode2 asText]
+  ##extract including any tagged texts
+  set ::text1 [$textNode1 asText]
+  set ::text2 [$textNode2 asText]
   
-  #set vars for calling proc
-  upvar title title
-  upvar text1 text1 text2 text2
-  upvar ref1 ref1 ref2 ref2
-  upvar intro1 intro2
-  
+    
 } ;#END proc extractTwdTextParts
   
   
-  
+# printTwdTextParts  
+##called by printTwd
 proc printTwdTextParts {x y img} {
-  global enabletitle title intro1 intro2 text1 text2 ref1 ref2 ind
+  global enabletitle 
+  global title intro1 intro2 text1 text2 ref1 ref2 ind tab RtL
+  
+  #Set indentation - TODO. IS THERE A BETTER WAY OF PASSING THIS ON TO printLetter????? (change offset rather than printing spaces!)
+  if {$RtL} {
+    set ind ""
+    set tab ""
+  }
+  
+  ############## begin PRINTING ###############################
+  ## supply "tab" or "ind" as supplementary last argument for printTextLine
   
   # 1. Print Title
   if {$enabletitle} {
-    set y [printTextline $title $x $y $img]
+    set y [printTextLine $title $x $y $img]
   }
   
-  # Print intro1 in Italics TODO: how is this information passed on to printLetter??????????????????????????
-  if {$intro1 != ""} {
-    set y [printTextline $ind \<$intro1\> $x $y $img]
+  #Print intro1 in Italics
+  if [info exists intro1] {
+    set y [printTextLine \<$intro1\> $x $y $img $ind]
   }
   
-  # 2. Print text1
+  #Print text1
   set textLines [split $text1 \n]
   foreach line $textLines {
-    set y [printTextline $ind $line $x $y $img]
+    set y [printTextLine $line $x $y $img $ind]
   }
   
-  # Print ref1
+  #Print ref1
+  set y [printTextLine <$ref1> $x $y $img $tab]
+
+  #Print intro2 in Italics
+  if [info exists intro2] {
+    set y [printTextLine \<$intro2\> $x $y $img $ind]
+  }
   
-  
-  
-  #Print intro2
   #Print text2
-  #Print ref2
-  
-  # Print text2
   set textLines [split $text2 \n]
   foreach line $textLines {
-    set y [printTextline $line $x $y $img]
+    set y [printTextLine $line $x $y $img $ind]
   }
 
-  set y [printTextline $title ...]
-  
-  #set Intros + Refs to Italic <> - todo move this up!!!!!!!!!!!
-  if {$intro1 != ""} {
-    set y [printTextline "$ind <$intro1>" $x $y $img]
-  }
+  #Print ref2
+  set y [printTextLine \<$ref2\> $x $y $img $tab]
 
-printTextline "$ind $text1" $x $y $img
+  ########## END printing #################################
 
-  #MAKE tab available as arg for RtL!!!
-  set Ref1 "$tab <$ref1>"
-	set Tab ""
-  if {$RtL} {
-		set Ref1 <$ref1>
-		set Tab "RightTab"
-	}
-  
-  set y [printTextline $Ref1 $x $y $img $Tab]
-
-  if {$intro2 != ""} {
-    printTextline "$ind <$intro2>" $x $y $img
-  }
-
-  printTextline "$ind $text2" $x $y $img
-  printTextline "$tab <$ref2>" $x $y $img
-  
-#  return $y
+  #TODO: old image is returned!!!!!!!!!!¨¨¨
   return $img
   
 } ;#END printTwdTextParts
 
 
-# printLetter - prints single letter to $img
-## called by printTexTLine
+# printLetter
+##prints single letter to $img
+##called by printTextLine
 proc printLetter {letterName img x y} {
   global sun shade color mark FBBx RtL
-  upvar $letterName curLetter
 
+  upvar $letterName curLetter
+      
   set BBxoff $curLetter(BBxoff)
   set BBx $curLetter(BBx)
   
+  #TODO: this dosn't work for Italic font!
   if {$RtL} {
      set BBxoff [expr $FBBx - $BBx - $BBxoff]
   }   
@@ -212,53 +203,70 @@ if { $xCur <0 } {set xCur 1 }
 
 
 # printTextLine - prints 1 line of text to $img
-## Called by writeText
+## Called by printTwd
+# calls printLetter
 ## use args for right tab in ref line if RtL
 proc printTextLine {textLine x y img args} {
-	
-  global mark print_32??? TwdLang marginleft Bidi RtL tab
+  global mark TwdLang marginleft RtL tab ind BdfBidi FontAsc FBBy
   
-  upvar 2 FontAsc fontAsc
-  upvar 2 FBBy FBBy
   set xBase $x
-  set yBase [expr $y + $fontAsc]
-      
+  set yBase [expr $y + $FontAsc]
+  
+  #Compute xBase for RtL    
   if {$RtL} {
+    source $BdfBidi
     set imgW [image width $img]
-    set textLine [bidiBdf $textLine $TwdLang]
+    set textLine [bidi $textLine $TwdLang]
+    set operand +
+    
+#TODO: THIS IS NOT CLEAR BUT WORKS....
     set xBase [expr $imgW - ($marginleft*2) - $x]
-		if {$args=="RightTab"} {
-			set xBase [expr $xBase - $tab]
-		}
+    
+  } else {
+    set operand -
+  }
+  
+  #Compute indentations
+  if {$args=="ind"} {
+      set x [expr $x $operand $ind]
+    } elseif {$args=="tab"} {
+      set x [expr $x $operand $tab]
   }
   
   
 # T O D O: setzt Kodierung nach Systemkodierung? -finger weg! -TODO: GEHT NICHT AUF LINUX!!!- TODO
-#  set textLine [encoding convertfrom utf-8 $textLine]
+#  set textLine [encoding convertfrom utf-8 $textLine] - sollte man "source fontFile -encoding utf8" versuchen?
 
   set letterList [split $textLine {}]
-
+  set weight R
+  
   foreach letter $letterList {
 
     #set fontweight: < for I / > for R
+    #set weight R
+    
     if {$letter == "<"} {
       set weight I
+  puts $weight
       continue
       } elseif {$letter == ">"} {
       set weight R
+  puts $weight
       continue
     }
 
     set encLetter [scan $letter %c]
     
     
+    #global weight
+#    upvar 3 $weight::print_$encLetter print_$encLetter
+
+    set print_${encLetter} ${weight}::print_${encLetter} 
     
-    upvar 2 $weight::print_$encLetter print_$encLetter
+puts ${weight}::print_${encLetter} 
     
-    
-    
-    if {[info exists "$weight::print_$encLetter"]} {
-      array set curLetter [array get "$weight::print_$encLetter"]
+    if {[info exists ${weight}::print_${encLetter}]} {
+      array set curLetter [array get ${weight}::print_${encLetter}]
       
     } else {
         
