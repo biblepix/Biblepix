@@ -104,7 +104,8 @@ proc parseToText {node TwdLang {withTags 0}} {
   
   #Fix Hebrew
   #ignore if $BDF
-  if {!$BDF} {
+  set notUsed 1
+  if {$notUsed} {
   
   if {$TwdLang == "he"} {
     puts "Computing Hebrew text..."
@@ -135,7 +136,7 @@ proc parseToText {node TwdLang {withTags 0}} {
     }
   }
   
-  } ;#END IF BDF
+  } ;#END notUsed
   
   return $text
 }

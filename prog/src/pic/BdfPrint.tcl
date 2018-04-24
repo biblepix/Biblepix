@@ -44,7 +44,20 @@ namespace eval I {
   }
 }
 
+#Source Bold font for title in European languages, set to Regular for others
+if {$enabletitle} { 
+  namespace eval B {
+    set fontfamilyB ${fontfamily}B
+    set fontFileB $BdfFontsArray($fontfamilyB)
+    if [catch {source $fontFileB}] {
+      source $fontFile
+    }
+  }
+}
+
 #Export global font vars
+
+
 set ::FontAsc $R::FontAsc
 set ::FBBy $R::FBBy
 set ::FBBx $R::FBBx
