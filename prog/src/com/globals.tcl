@@ -2,14 +2,15 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 17apr18
+# Updated: 20apr18
 
 # This variable enables Debugging Mode in the whole application if set to 1.
 set Debug 0
-set Mocking 0
+
+#to be removed:
 set BDF 1
 
-set version "2.4.1"
+set version "2.5"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
 
@@ -73,6 +74,7 @@ array set filepaths "
   Setup [file join $srcdir biblepix-setup.tcl]
   BdfTools [file join $picdir BdfTools.tcl]
   BdfPrint [file join $picdir BdfPrint.tcl]
+  BdfBidi [file join $sharedir BdfBidi.tcl]
   Image [file join $picdir image.tcl]
   Hgbild [file join $picdir hgbild.tcl]
   Textbild [file join $picdir textbild.tcl]
@@ -140,6 +142,29 @@ array set iconArray "
   biblepix.ico [file join $windir biblepix.ico]
 "
 
+#Set Bdf Fonts array
+array set BdfFontsArray "
+Arial20 [file join $fontdir Arial20.tcl]
+Arial24 [file join $fontdir Arial24.tcl]
+Arial30 [file join $fontdir Arial30.tcl]
+Times20 [file join $fontdir Times20.tcl]
+Times24 [file join $fontdir Times24.tcl]
+Times30 [file join $fontdir Times30.tcl]
+Arial20B [file join $fontdir Arial20B.tcl]
+Arial24B [file join $fontdir Arial24B.tcl]
+Arial30B [file join $fontdir Arial30B.tcl]
+Times20B [file join $fontdir Times20B.tcl]
+Times24B [file join $fontdir Times24B.tcl]
+Times30B [file join $fontdir Times30B.tcl]
+Arial20I [file join $fontdir italic Arial20I.tcl]
+Arial24I [file join $fontdir italic Arial24I.tcl]
+Arial30I [file join $fontdir italic Arial30I.tcl]
+Times20I [file join $fontdir italic Times20I.tcl]
+Times24I [file join $fontdir italic Times24I.tcl]
+Times30I [file join $fontdir italic Times30I.tcl]
+ChinaFont [file join $fontdir asian WenQuanYi_ZenHei_24.tcl]
+ThaiFont [file join $fontdir asian Kinnari_Bold_20.tcl]
+"
 set WinIcon [lindex [array get iconArray biblepix.ico] 1]
 set LinIcon [lindex [array get iconArray biblepix.png] 1]
 
