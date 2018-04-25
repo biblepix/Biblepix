@@ -1,6 +1,6 @@
 # ~/Biblepix/prog/src/pic/BdfTools.tcl
 #T E S T P H A S E 
-#Updated 19apr18
+#Updated 25apr18
 
 #####################################################################
 # FONTBOUNDINGBOX = Gesamtgrösse/Maximalgrösse eines Zeichens 
@@ -29,12 +29,9 @@ proc printTwd {TwdFileName img} {
 ##called by printTwd
 proc parseTwdTextParts {TwdFileName} {
 
-  global RtL TwdLang sharedir enabletitle
-  puts $TwdFileName
-  
   set TwdLang [getTwdLang $TwdFileName]
 
-  #A: Set Twd Node names
+  #A: SET TWD NODE NAMES
   
   set domDoc [parseTwdFileDomDoc $TwdFileName]
   set todaysTwdNode [getDomNodeForToday $domDoc]
@@ -63,7 +60,7 @@ proc parseTwdTextParts {TwdFileName} {
   set textNode1 [$parolNode1 selectNodes text]
   set textNode2 [$parolNode2 selectNodes text]
 
-  #B: Extract Text Parts
+  # B: EXTRACT TWD TEXT PARTS
 
   ##title
   set ::title [$titleNode text]
@@ -94,8 +91,7 @@ puts $emNodes
   ##extract including any tagged texts
   set ::text1 [$textNode1 asText]
   set ::text2 [$textNode2 asText]
-  
-    
+
 } ;#END proc extractTwdTextParts
   
   
@@ -103,53 +99,52 @@ puts $emNodes
 ##called by printTwd
 proc printTwdTextParts {x y img} {
   global enabletitle 
-  global title intro1 intro2 text1 text2 ref1 ref2 ind tab RtL
+  global title intro1 intro2 text1 text2 ref1 ref2 
   
   #Set indentation - TODO. IS THERE A BETTER WAY OF PASSING THIS ON TO printLetter????? (change offset rather than printing spaces!)
-  if {$RtL} {
-    set ind ""
-    set tab ""
-  }
+  #if {$RtL} {
+  #  set ind ""
+  #  set tab ""
+  #}
   
   ############## begin PRINTING ###############################
   ## supply "tab" or "ind" as supplementary last argument for printTextLine
   
-  # 1. Print Title
+  # 1. Print Title in Bold £...
   if {$enabletitle} {
-    set y [printTextLine $title $x $y $img]
+    set y [printTextLine £$title> $x $y $img]
   }
   
-  #Print intro1 in Italics
+  #Print intro1 in Italics <...>
   if [info exists intro1] {
-    set y [printTextLine \<$intro1\> $x $y $img $ind]
+    set y [printTextLine <$intro1> $x $y $img IND]
   }
   
   #Print text1
   set textLines [split $text1 \n]
   foreach line $textLines {
-    set y [printTextLine $line $x $y $img $ind]
+    set y [printTextLine $line $x $y $img IND]
   }
   
   #Print ref1
-  set y [printTextLine <$ref1> $x $y $img $tab]
+  set y [printTextLine <$ref1> $x $y $img TAB]
 
   #Print intro2 in Italics
   if [info exists intro2] {
-    set y [printTextLine \<$intro2\> $x $y $img $ind]
+    set y [printTextLine <$intro2> $x $y $img IND]
   }
   
   #Print text2
   set textLines [split $text2 \n]
   foreach line $textLines {
-    set y [printTextLine $line $x $y $img $ind]
+    set y [printTextLine $line $x $y $img IND]
   }
 
   #Print ref2
-  set y [printTextLine \<$ref2\> $x $y $img $tab]
+  set y [printTextLine \<$ref2\> $x $y $img TAB]
 
   ########## END printing #################################
 
-  #TODO: old image is returned!!!!!!!!!!¨¨¨
   return $img
   
 } ;#END printTwdTextParts
@@ -159,7 +154,7 @@ proc printTwdTextParts {x y img} {
 ##prints single letter to $img
 ##called by printTextLine
 proc printLetter {letterName img x y} {
-  global sun shade color mark FBBx RtL
+  global sun shade color mark RtL weight
 
   upvar $letterName curLetter
       
@@ -168,7 +163,8 @@ proc printLetter {letterName img x y} {
   
   #TODO: this dosn't work for Italic font!
   if {$RtL} {
-     set BBxoff [expr $FBBx - $BBx - $BBxoff]
+    set FBBx $I::FBBx
+    set BBxoff [expr $FBBx - $BBx - $BBxoff]
   }   
 
   set xLetter [expr $x + $BBxoff]
@@ -189,10 +185,9 @@ proc printLetter {letterName img x y} {
           #testzeile (ROT!)
           default { set pxColor $mark }
         }
-#puts "$xCur $yCur"
-if { $xCur <0 } {set xCur 1 } 
+        
+      if { $xCur <0 } {set xCur 1 } 
         $img put $pxColor -to $xCur $yCur
-
       }
       incr xCur
     }
@@ -205,9 +200,14 @@ if { $xCur <0 } {set xCur 1 }
 # printTextLine - prints 1 line of text to $img
 ## Called by printTwd
 # calls printLetter
-## use args for right tab in ref line if RtL
+## use args for TAB or IND
 proc printTextLine {textLine x y img args} {
-  global mark TwdLang marginleft RtL tab ind BdfBidi FontAsc FBBy
+  global mark TwdLang marginleft enabletitle RtL BdfBidi FontAsc FBBy
+  
+  #Set tab & ind in pixels - TODO: move to Globals?
+  set tab 400
+  set ind 0
+  if {$enabletitle} {set ind 20}
   
   set xBase $x
   set yBase [expr $y + $FontAsc]
@@ -217,34 +217,33 @@ proc printTextLine {textLine x y img args} {
     source $BdfBidi
     set imgW [image width $img]
     set textLine [bidi $textLine $TwdLang]
-    set operand +
+    set operator -
     
-#TODO: THIS IS NOT CLEAR BUT WORKS....
+#TODO: THIS IS NOT CLEAR BUT WORKS....(why marginleft*2 ???)
     set xBase [expr $imgW - ($marginleft*2) - $x]
     
   } else {
-    set operand -
+    set operator +
   }
   
   #Compute indentations
-  if {$args=="ind"} {
-      set x [expr $x $operand $ind]
-    } elseif {$args=="tab"} {
-      set x [expr $x $operand $tab]
+  if {$args=="IND"} {
+      #set x [expr $x $operator $ind]
+      set xBase [expr $xBase $operator $ind]
+    } elseif {$args=="TAB"} {
+      set xBase [expr $xBase $operator $tab]
   }
   
   
-# T O D O: setzt Kodierung nach Systemkodierung? -finger weg! -TODO: GEHT NICHT AUF LINUX!!!- TODO
-#  set textLine [encoding convertfrom utf-8 $textLine] - sollte man "source fontFile -encoding utf8" versuchen?
+# T O D O: setzt Kodierung nach Systemkodierung? -finger weg! -TODO: GEHT NICHT AUF LINUX!!!- 
+# jetzt durch "source -encoding utf8" ersetzt in BdfPrint - JOEL BITTE UM FEEDBACK!
 
   set letterList [split $textLine {}]
   set weight R
   
   foreach letter $letterList {
 
-    #set fontweight: < for I / > for R
-    #set weight R
-    
+    #Reset fontweight of next letters: < for I / > for R
     if {$letter == "<"} {
       set weight I
   puts $weight
@@ -253,14 +252,12 @@ proc printTextLine {textLine x y img args} {
       set weight R
   puts $weight
       continue
+    } elseif {$letter == "£"} {
+      set weight B
+      continue
     }
 
     set encLetter [scan $letter %c]
-    
-    
-    #global weight
-#    upvar 3 $weight::print_$encLetter print_$encLetter
-
     set print_${encLetter} ${weight}::print_${encLetter} 
     
 puts ${weight}::print_${encLetter} 
@@ -274,10 +271,10 @@ puts ${weight}::print_${encLetter}
     }
 
     printLetter curLetter $img $xBase $yBase
-    
-    
-    
-       
+   
+   set ::weight $weight 
+#    upvar 2 weight $weight
+           
     #sort out Bidi languages
     if {$RtL} {
       set xBase [expr $xBase - $curLetter(DWx)]
@@ -288,6 +285,8 @@ puts ${weight}::print_${encLetter}
   } ;#END foreach
   
   #gibt letzte Y-Position an aufrufendes Programm ab
+  #upvar weight $weight
+  set FBBy $R::FBBy
   return [expr $y + $FBBy]
 
 } ;#END printTextLine

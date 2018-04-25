@@ -2,12 +2,13 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 20apr18
+# Updated: 25apr18
 
 # This variable enables Debugging Mode in the whole application if set to 1.
 set Debug 0
+set Mocking 0
 
-#to be removed:
+#to be removed !!
 set BDF 1
 
 set version "2.5"
@@ -150,12 +151,12 @@ Arial30 [file join $fontdir Arial30.tcl]
 Times20 [file join $fontdir Times20.tcl]
 Times24 [file join $fontdir Times24.tcl]
 Times30 [file join $fontdir Times30.tcl]
-Arial20B [file join $fontdir Arial20B.tcl]
-Arial24B [file join $fontdir Arial24B.tcl]
-Arial30B [file join $fontdir Arial30B.tcl]
-Times20B [file join $fontdir Times20B.tcl]
-Times24B [file join $fontdir Times24B.tcl]
-Times30B [file join $fontdir Times30B.tcl]
+Arial20B [file join $fontdir bold Arial20B.tcl]
+Arial24B [file join $fontdir bold Arial24B.tcl]
+Arial30B [file join $fontdir bold Arial30B.tcl]
+Times20B [file join $fontdir bold Times20B.tcl]
+Times24B [file join $fontdir bold Times24B.tcl]
+Times30B [file join $fontdir bold Times30B.tcl]
 Arial20I [file join $fontdir italic Arial20I.tcl]
 Arial24I [file join $fontdir italic Arial24I.tcl]
 Arial30I [file join $fontdir italic Arial30I.tcl]

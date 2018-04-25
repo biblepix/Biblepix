@@ -1,5 +1,5 @@
-# Biblepix/prog/src/pic/BdfPrint.tcl
-# Updated: 19apr18
+# ~/Biblepix/prog/src/pic/BdfPrint.tcl
+# Updated: 25apr18
 
 source $BdfTools
 
@@ -15,57 +15,57 @@ if {$RtL} {source $Bidi}
   ##Chinese: (regular_24)
 if {$TwdLang == "zh"} {
   set fontFile $BdfFontsArray(ChinaFont)
-  
-  ##Thai: (regular_20)
-  } elseif {$TwdLang == "th"} {
-  set fontFile $BdfFontsArray(ThaiFont)
-  
-  ##all else: regular & italic
-  } else {
-  
-  #get from Config
-  set fontFile $BdfFontsArray($fontfamily)
-    
-}
-
-#Source Regular Font for all languages
-namespace eval R {
-  source $fontFile
-  #puts $FontAsc
-  #namespace export FontAsc
-}
-
-#Source Italic font for European languages, set to Regular for others
-namespace eval I {
-  set fontfamilyI ${fontfamily}I
-  set fontFileI $BdfFontsArray($fontfamilyI)
-  if [catch {source $fontFileI}] {
-    source $fontFile
+  namespace eval R {
+    source -encoding utf-8 $fontFile
   }
-}
+  ##Thai: (regular_20)
+} elseif {$TwdLang == "th"} {
+  set fontFile $BdfFontsArray(ThaiFont)
+  namespace eval R {
+    source -encoding utf-8 $fontFile
+  }
+  
+  
+## ALL ELSE: REGULAR / BOLD / ITALIC
+} else {
 
-#Source Bold font for title in European languages, set to Regular for others
-if {$enabletitle} { 
-  namespace eval B {
-    set fontfamilyB ${fontfamily}B
-    set fontFileB $BdfFontsArray($fontfamilyB)
-    if [catch {source $fontFileB}] {
-      source $fontFile
+  #Get $fontfamily from Config
+  set fontFile $BdfFontsArray($fontfamily)
+
+  # Source Regular if fontweight==normal
+  if {$fontweight == "normal"} {
+    namespace eval R {
+      source -encoding utf-8 $fontFile
     }
   }
-}
+  
+  #Source Italic for all
+  namespace eval I {
+    set fontfamilyI ${fontfamily}I
+    set fontFileI $BdfFontsArray($fontfamilyI)
+    source -encoding utf-8 $fontFileI
+  }
 
-#Export global font vars
+  #Source Bold if $enabletitle OR $fontweight==bold
+  if {$enabletitle || $fontweight == "bold"} { 
+    namespace eval B {
+      set fontfamilyB ${fontfamily}B
+      set fontFileB $BdfFontsArray($fontfamilyB)
+      source -encoding utf-8 $fontFileB
+    }
+  }
+} ;#END main condition
 
+#Export global font vars - TODO: Joel ich hoffte hierdurch das Problem mit Italic zu beheben, aber nein!
 
-set ::FontAsc $R::FontAsc
-set ::FBBy $R::FBBy
-set ::FBBx $R::FBBx
+set ::FontAsc $I::FontAsc
+#set ::FBBy $R::FBBy
+#set ::FBBx $R::FBBx
 
 #move?
 set color [set fontcolortext]
 
-#3. Print Twd to image
+#3. LAUNCH PRINTING & SAVE IMAGE
 set img hgbild
 set finalImg [printTwd $TwdFileName $img]
 
