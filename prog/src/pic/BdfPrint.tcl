@@ -1,24 +1,24 @@
 # ~/Biblepix/prog/src/pic/BdfPrint.tcl
-# Updated: 25apr18
+# Top level BDF printing prog
+# sourced by Image
+# Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
+# Updated: 26apr18
 
+#1. SET BASIC VARS
 source $BdfTools
-
-#1. Get today's TWD nodes - todo , THIS IS SOMEWHERE ELSE!!!!!!
-setTodaysTwdNodes $::TwdFileName
 set TwdLang [getTwdLang $::TwdFileName]
+set ::RtL [isRtL $TwdLang]
 
-#move?
-set RtL [isRtL $TwdLang]
-if {$RtL} {source $Bidi}
+#2. SOURCE FONTS INTO NAMESPACES
 
-#2. Preset font names
-  ##Chinese: (regular_24)
+##Chinese: (regular_24)
 if {$TwdLang == "zh"} {
   set fontFile $BdfFontsArray(ChinaFont)
   namespace eval R {
     source -encoding utf-8 $fontFile
   }
-  ##Thai: (regular_20)
+
+##Thai: (regular_20)
 } elseif {$TwdLang == "th"} {
   set fontFile $BdfFontsArray(ThaiFont)
   namespace eval R {
@@ -26,7 +26,7 @@ if {$TwdLang == "zh"} {
   }
   
   
-## ALL ELSE: REGULAR / BOLD / ITALIC
+## All else: Regular / Bold / Italic
 } else {
 
   #Get $fontfamily from Config
@@ -54,18 +54,20 @@ if {$TwdLang == "zh"} {
       source -encoding utf-8 $fontFileB
     }
   }
-} ;#END main condition
+} ;#END source fonts
 
-#Export global font vars - TODO: Joel ich hoffte hierdurch das Problem mit Italic zu beheben, aber nein!
-
-set ::FontAsc $I::FontAsc
-#set ::FBBy $R::FBBy
-#set ::FBBx $R::FBBx
+#Export global font vars (sind gleich in R/B/I)
+if [namespace exists R] {set prefix R}
+if [namespace exists B] {set prefix B}
+if [namespace exists I] {set prefix I}
+set ::FontAsc $${prefix}::FontAsc
+set ::FBBy $${prefix}::FBBy
+set ::FBBx $${prefix}::FBBx
 
 #move?
 set color [set fontcolortext]
 
-#3. LAUNCH PRINTING & SAVE IMAGE
+# 3. LAUNCH PRINTING & SAVE IMAGE
 set img hgbild
 set finalImg [printTwd $TwdFileName $img]
 

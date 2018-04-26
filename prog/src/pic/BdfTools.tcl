@@ -1,15 +1,8 @@
-# ~/Biblepix/prog/src/pic/BdfTools.tcl
-#T E S T P H A S E 
-#Updated 25apr18
-
-#####################################################################
-# FONTBOUNDINGBOX = Gesamtgrösse/Maximalgrösse eines Zeichens 
-# Breite | Höhe | Abstand von links | Abstand von unten (Nulllinie)
-
-# BBOX = Position des Zeichens in der Font Boundingbox
-# Breite | Höhe | Abstand von links | Abstand von unten
-
-#####################################################################
+# ~/Biblepix/prog/src/com/BdfToolss.tcl
+# BDF scanning and printing tools
+# sourced by BdfPrint
+# Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
+# Updated: 26apr18
 
 
 # printTwd
@@ -26,7 +19,7 @@ proc printTwd {TwdFileName img} {
 
 # parseTwdTextParts
 ## prepares Twd nodes for processing
-##called by printTwd
+## called by printTwd
 proc parseTwdTextParts {TwdFileName} {
 
   set TwdLang [getTwdLang $TwdFileName]
@@ -52,10 +45,7 @@ proc parseTwdTextParts {TwdFileName} {
   set introNode2 [$parolNode2 selectNodes intro]
   
   set refNode1 [$parolNode1 selectNodes ref]
-#puts $refNode1
-
   set refNode2 [$parolNode2 selectNodes ref]
-#puts $refNode2    
 
   set textNode1 [$parolNode1 selectNodes text]
   set textNode2 [$parolNode2 selectNodes text]
@@ -75,20 +65,14 @@ proc parseTwdTextParts {TwdFileName} {
   set ::ref1 [$refNode1 text]
   set ::ref2 [$refNode2 text]
 
-  ##texts with any <em> tags
-  lappend emNodes "[$textNode1 selectNodes em/text()]" "[$textNode2 selectNodes em/text()]"
-  
-puts $emNodes
-  
-  if [regexp {[:graph:]} $emNodes] {
-    foreach i $emNodes {
-      set nodeText [$i nodeValue]
-#      catch {$i nodeValue [join "< $nodeText >" {}]}
-      catch {$i nodeValue \<$nodeText\> {} }
+  # Detect texts with <em> tags & mark as Italic
+  foreach node "[split [$textNode1 selectNodes em/text()]] [split [$textNode2 selectNodes em/text()]]" {
+    set nodeText [$node nodeValue]
+    if {$nodeText != ""} {
+      $node nodeValue \<$nodeText\>
     }
   }
-
-  ##extract including any tagged texts
+  ##extract text including any tagged
   set ::text1 [$textNode1 asText]
   set ::text2 [$textNode2 asText]
 
@@ -96,21 +80,11 @@ puts $emNodes
   
   
 # printTwdTextParts  
-##called by printTwd
+## called by printTwd
 proc printTwdTextParts {x y img} {
-  global enabletitle 
-  global title intro1 intro2 text1 text2 ref1 ref2 
-  
-  #Set indentation - TODO. IS THERE A BETTER WAY OF PASSING THIS ON TO printLetter????? (change offset rather than printing spaces!)
-  #if {$RtL} {
-  #  set ind ""
-  #  set tab ""
-  #}
-  
-  ############## begin PRINTING ###############################
-  ## supply "tab" or "ind" as supplementary last argument for printTextLine
-  
-  # 1. Print Title in Bold £...
+  global enabletitle title intro1 intro2 text1 text2 ref1 ref2 
+
+  # 1. Print Title in Bold £...>
   if {$enabletitle} {
     set y [printTextLine £$title> $x $y $img]
   }
@@ -143,29 +117,25 @@ proc printTwdTextParts {x y img} {
   #Print ref2
   set y [printTextLine \<$ref2\> $x $y $img TAB]
 
-  ########## END printing #################################
-
   return $img
   
 } ;#END printTwdTextParts
 
 
 # printLetter
-##prints single letter to $img
-##called by printTextLine
+## prints single letter to $img
+## called by printTextLine
 proc printLetter {letterName img x y} {
-  global sun shade color mark RtL weight
-
+  global sun shade color mark RtL weight FBBx
   upvar $letterName curLetter
       
   set BBxoff $curLetter(BBxoff)
   set BBx $curLetter(BBx)
   
-  #TODO: this dosn't work for Italic font!
+  #TODO: JOEL, this dosn't work for Italic font!
   if {$RtL} {
-    set FBBx $I::FBBx
     set BBxoff [expr $FBBx - $BBx - $BBxoff]
-  }   
+  }
 
   set xLetter [expr $x + $BBxoff]
   set yLetter [expr $y - $curLetter(BByoff) - $curLetter(BBy)]
@@ -199,11 +169,11 @@ proc printLetter {letterName img x y} {
 
 # printTextLine - prints 1 line of text to $img
 ## Called by printTwd
-# calls printLetter
-## use args for TAB or IND
+# #alls printLetter
+## use 'args' for TAB or IND
 proc printTextLine {textLine x y img args} {
   global mark TwdLang marginleft enabletitle RtL BdfBidi FontAsc FBBy
-  
+ 
   #Set tab & ind in pixels - TODO: move to Globals?
   set tab 400
   set ind 0
@@ -235,8 +205,8 @@ proc printTextLine {textLine x y img args} {
   }
   
   
-# T O D O: setzt Kodierung nach Systemkodierung? -finger weg! -TODO: GEHT NICHT AUF LINUX!!!- 
-# jetzt durch "source -encoding utf8" ersetzt in BdfPrint - JOEL BITTE UM FEEDBACK!
+# T O D O: setzt Kodierung nach Systemkodierung? - GEHT NICHT AUF LINUX!!!- 
+# jetzt durch "source -encoding utf8" ersetzt in BdfPrint - JOEL BITTE TESTEN!
 
   set letterList [split $textLine {}]
   set weight R
@@ -260,14 +230,20 @@ proc printTextLine {textLine x y img args} {
     set encLetter [scan $letter %c]
     set print_${encLetter} ${weight}::print_${encLetter} 
     
-puts ${weight}::print_${encLetter} 
+#puts ${weight}::print_${encLetter} 
     
     if {[info exists ${weight}::print_${encLetter}]} {
       array set curLetter [array get ${weight}::print_${encLetter}]
-      
+
     } else {
-        
-      array set curLetter [array get "R::print_32"]
+      #Print empty space if letter not found in R:: or B:: 
+      catch {array get R::print_${encLetter}} res
+      catch {array get B::print_${encLetter}} res
+      if {$res != ""} {
+        array set curLetter $res
+        } else {
+        array set curLetter [array get "R::print_32"]
+      }
     }
 
     printLetter curLetter $img $xBase $yBase
@@ -285,8 +261,6 @@ puts ${weight}::print_${encLetter}
   } ;#END foreach
   
   #gibt letzte Y-Position an aufrufendes Programm ab
-  #upvar weight $weight
-  set FBBy $R::FBBy
   return [expr $y + $FBBy]
 
 } ;#END printTextLine
@@ -387,7 +361,6 @@ set numChars $numChars
 "
     
   # B) SCAN BDF FOR SINGLE CHARACTERS
-#set logfile [open /tmp/logfile.tcl w]
 
   set indexEndChar 0
 
@@ -511,5 +484,4 @@ proc colourBinlist {binList BBXList} {
   }
   
   return $colourList
-} 
-
+}

@@ -1,10 +1,9 @@
-# ~/Biblepix/prog/tcl/bidi.tcl
+# ~/Biblepix/prog/src/com/BdfBidi.tcl
 # Fixes missing bidi algorithm for Unix and Win Tk Hebrew/Arabic
-# called by textbild.tcl and biblepix-setup.tcl
+# called by BdfPrint
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 16apr18 - fixArabUnix in testing phase!!
+# Updated: 26apr18
 
-#TODO: THIS PROC IS TO REPLACE ALL "fixHebWin/fixArabWin" procs for BDF
 proc bidi {dw TwdLang} {
   global BDF
 
@@ -29,134 +28,26 @@ proc bidi {dw TwdLang} {
     regsub -all {[\u0591-\u05C7]} $dw {} dw
   }
   
-  #Arabic
-  if {$TwdLang=="ar"} {
+  #Arabic, Urdu, Farsi
+  if {$TwdLang=="ar" ||
+      $TwdLang == "ur" ||
+      $TwdLang == "fa"} {
     #Ar: eliminate all vowels
     regsub -all {[\u064B-\u065F]} $dw {} dw
     set dw [fixArabUnix $dw]
   }
 
-  #Urdu & Farsi
-  if {
-      $TwdLang == "ur" ||
-      $TwdLang == "fa"
-    } {
-    set dw [fixArabUnix $dw]
-  }
-      
   return $dw
   
 } ;#END bidi
 
 
-
-proc fixHebWin {dw} {
-#Fixes Hebrew word order for Setup Text Window
-
-  global tab ind
-
-  #move tilde to right
-  regsub -all -line {(~ )(.*)} $dw {\2 ~} dw
-
-  #Move punctuation marks to left of words
-  regsub -all -line {(.*)([.,:;?!])$} $dw {\2\1} dw
-
-  #Move TABs and INDs to right of line
-  regsub -all "$tab" $dw {TTT} dw
-  regsub -all "$ind" $dw {BBB} dw
-  regsub -all -line {(TTT)(.*)} $dw {\2\1} dw
-  regsub -all -line {(BBB)(.*)} $dw {\2\1} dw
-  regsub -all {TTT} $dw "$tab" dw
-  regsub -all {BBB} $dw "$ind" dw
-
-  #Move digits from end of line to beg
-  regsub -all -line {(^[0-9]+)(.*)} $dw {\2\1} dw
-
-  return $dw
-}
-
-proc fixArabWin {dw} {
-#Fixes Arabic punctuation marks for Canvas & Setup Text Window
-
-  global tab ind
-
-  #move tilde to right
-  regsub -all -line {(~ )(.*)} $dw {\2 ~} dw
-
-  regsub -all "$tab" $dw {TTT} dw
-  regsub -all "$ind" $dw {III} dw
-
-  #move quotes if they are on edge of line
-  regsub -all -line {^(III|TTT)([«])(.*)$} $dw {\1\3PLP} dw
-  regsub -all -line {^(III|TTT)(.*)([»])([.,:;?!\u060c\u060d\u066b\u066c]?)$} $dw {\1\4PRP\2} dw
-  regsub -all  {PLP} $dw "\u00bb" dw
-  regsub -all  {PRP} $dw "\u00ab" dw
-
-  #Move punctuation marks to left of words
-  regsub -all -line {(.*)([.,:;?!\u060c\u060d\u066b\u066c])([\u00bb]?)$} $dw {\2\1\3} dw
-
-  #Move TABs and INDs to right of line
-  regsub -all -line {(TTT)(.*)} $dw {\2\1} dw
-  regsub -all -line {(III)(.*)} $dw {\2\1} dw
-  regsub -all {TTT} $dw "$tab" dw
-  regsub -all {III} $dw "$ind" dw
-
-  #reorder chapter and verse
-  regsub -all {([0-9]+):([0-9]+)} $dw {\2:\1} dw
-
-  return $dw
-}
-
-
-#ARGS is used for no-vowel-signs in BDF method
-proc fixHebUnix {dw args} {
-#Fixes Hebrew for Unix canvas
-  
-  #eliminate all vowel signs if args not empty
-  if {$args != ""} {
-    regsub -all {[\u0591-\u05C7]} $dw {} dw
-  } else {
-    #delete all Dagesh's because of wrong positioning
-    regsub -all {\u05BC} $dw {} dw
-  }
-  
-  #set all characters right-to-left
-  set dwsplit [split $dw \n]
-  foreach line $dwsplit {
-    append dwneu [string reverse $line]\n
-  }
-  set dw $dwneu
-
-  #revert digits back
-  set zahlen [regexp -all -inline {[0-9]+} $dw]
-  foreach zahl $zahlen {
-     regsub $zahl $dw [string reverse $zahl] dw
-  }
-  #Reposition punctuation marks
-  regsub -all {([.,:;?!])( )} $dw {\1} dw
-  #Delete last \n
-  set dw [string range $dw 0 end-1]
-  return $dw
-}
-
-
-
-
-###############################################################################
-
-#############################################################################
-
-
-proc fixArabUnix {dw args} {
-#Sets Arabic text right-to-left and in correct letter form
+proc fixArabic {dw args} {
+#Sets correct letter forms
 #added Persion & Urdu 5/16
-global BDF
 
-
-#eliminate all vowel signs if $args not empty - TODO: this is done somewhere further down !!!!
-if {$args != ""} {
-  regsub -all {[\u064B-\u065F]} $dw {} dw
-}
+  #Eliminate all vowel signs - this is done in main proc 'bidi' (see above)
+#  regsub -all {[\u064B-\u065F]} $dw {} dw
 
 #Assign UTF letter codes & forms
 #1.Initial / 2.Middle / 3.Final-linked
@@ -466,20 +357,12 @@ set linkinfo 0
 
     } ;#end foreach word
 
-#TODO: make proc available without Bdf!
-  if {$BDF} {
-    #leave string as it is
-    set line $newline\n
-    } else {
-    #revert string
-    set line [string reverse $newline]\n
-  }
+  set line $newline\n
   append dwneu $line
   unset newline
 
   } ;#end foreach line
 
-regsub -all {~} $dwneu {~                       } dwneu
 return $dwneu
 
-} ;#end fixArabUnix
+} ;#end fixArabic
