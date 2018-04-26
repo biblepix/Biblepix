@@ -88,7 +88,8 @@ createMovingTextBox .textposCanv
 
 
 
-
+# TODO for BDF: leave all below as it is, only adjust font sizes a bit, 
+# and add a Serif font for "Times" !
 
 #2. Create InternationalText Canvas
 if {! [regexp displayfont [font names] ] } {
@@ -125,7 +126,7 @@ $inttextCanv itemconfigure textitem -text $internationaltext -anchor nw -width 6
 
 
 
-#proc obsolete {} {
+
 #1. Fontcolour spinbox
 message .desktopF.fright.fbot1.fontcolorTxt -width 200 -textvar f2.farbe
 spinbox .desktopF.fright.fbot1.fontcolorSpin -width 10 -values {blue green gold silver} 
@@ -138,7 +139,7 @@ $fontcolorSpin configure -command {
 
 $fontcolorSpin set $fontcolortext
 
-#2. Fontsize spinbox
+#2. Fontsize spinbox - TODO: this needs reworking to be in line with FontNames
 if {!$fontsize} {
   #set initial font size if no $config found
   set screeny [winfo screenheight .]
@@ -146,12 +147,12 @@ if {!$fontsize} {
 }
 
 message .desktopF.fright.fbot1.fontsizeTxt -width 200 -textvar f2.fontsizetext
-spinbox .desktopF.fright.fbot1.fontsizeSpin -width 2 -from 20 -to 40 -command {font configure displayfont -size -%s}
+spinbox .desktopF.fright.fbot1.fontsizeSpin -width 2 -values {20 24 30} -command {font configure displayfont -size %s}
 set fontsizeTxt .desktopF.fright.fbot1.fontsizeTxt
 set fontsizeSpin .desktopF.fright.fbot1.fontsizeSpin
 $fontsizeSpin set $fontsize
 
-#3. Fontweight checkbutton
+#3. Fontweight checkbutton - TODO: needs reworking to be in line with FontNames
 checkbutton .desktopF.fright.fbot1.fontweightBtn -width 5 -variable fontweightState -textvar f2.fontweight 
 set fontweightBtn .desktopF.fright.fbot1.fontweightBtn
 $fontweightBtn configure -command {
@@ -169,20 +170,22 @@ if {$fontweight=="bold"} {
   set fontweightState 0
   font configure displayfont -weight normal
 }
-#} ;#END obsolete
 
 
 
-#4. Fontfamily dropdown Menu
+
+#4. Fontfamily dropdown Menu - TODO: needs reworking to display only plain names like "Arial" and "Times"
 message .desktopF.fright.fbot1.fontfamilyTxt -width 250 -textvar f2.fontfamilytext
 ttk::combobox .desktopF.fright.fbot1.fontfamilyDrop -width 20 -height 30
 set fontfamilyTxt .desktopF.fright.fbot1.fontfamilyTxt
 set fontfamilySpin .desktopF.fright.fbot1.fontfamilyDrop
 
-##get System font list + add TkTextFont
-foreach i [glob -directory $fontdir -tails *.tcl] {
-  lappend Fontlist [file root $i]
-}
+##get BDF font list
+#foreach i [glob -directory $fontdir -tails *.tcl] {
+#  lappend Fontlist [file root $i]
+#}
+
+lappend Fontlist Arial Times
 
 #set Fontlist [lsort [font families]]
 #lappend Fontlist TkTextFont
@@ -209,9 +212,9 @@ pack $fontcolorTxt $fontcolorSpin $fontfamilyTxt $fontfamilySpin -side left -fil
 
 pack $fontweightBtn $fontsizeSpin $fontsizeTxt -side right -fill x
 
-#TODO: delete functions por completo!
-$fontweightBtn configure -state disabled
-$fontsizeSpin configure -state disabled
+#TODO: delete functions por completo! - NO!
+#$fontweightBtn configure -state disabled
+#$fontsizeSpin configure -state disabled
 
 pack $inttextCanv -fill x
 pack $inttextHeader -pady 7

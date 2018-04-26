@@ -213,9 +213,9 @@ set f2Fontexpl(en) "Font example"
 set f2Fontexpl(de) "Schriftbeispiel"
 set ::f2.fontexpl $f2Fontexpl($lang)
 
-#set ::f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94"
-set ::f2ar_txt "كَلاَمَك"
-set ::f2he_txt "הַדָּבָר"
+set ::f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94"
+#set ::f2ar_txt "كَلاَمك"
+set ::f2he_txt "הדבר"
 set ::f2ltr_txt "The Word 每日金句 Калом"
 set ::f2thai_txt "พระคำสำหรับวันศุกร์"
 

@@ -471,7 +471,7 @@ proc fillWidgetWithTodaysTwd {twdWidget} {
     $twdWidget conf -activeforeground black -activebackground orange
     set twdText $::noTwdFilesFound
   } else {
-    if {[isRtL [getTwdLanguage $twdFileName]]} {
+    if {[isRtL [getTwdLang $twdFileName]]} {
       $twdWidget conf -justify right
     } else {
       $twdWidget conf -justify left
