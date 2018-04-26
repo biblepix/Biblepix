@@ -34,7 +34,7 @@ proc bidi {dw TwdLang} {
       $TwdLang == "fa"} {
     #Ar: eliminate all vowels
     regsub -all {[\u064B-\u065F]} $dw {} dw
-    set dw [fixArabUnix $dw]
+    set dw [fixArabic $dw]
   }
 
   return $dw

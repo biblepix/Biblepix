@@ -39,7 +39,7 @@ if {$TwdLang == "zh"} {
     }
   }
   
-  #Source Italic for all
+  #Source Italic for all (asian filtered out later)  
   namespace eval I {
     set fontfamilyI ${fontfamily}I
     set fontFileI $BdfFontsArray($fontfamilyI)

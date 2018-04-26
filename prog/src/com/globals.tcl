@@ -2,14 +2,11 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 25apr18
+# Updated: 26apr18
 
 # This variable enables Debugging Mode in the whole application if set to 1.
 set Debug 0
 set Mocking 0
-
-#to be removed !!
-set BDF 1
 
 set version "2.5"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"

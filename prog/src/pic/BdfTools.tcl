@@ -82,11 +82,22 @@ proc parseTwdTextParts {TwdFileName} {
 # printTwdTextParts  
 ## called by printTwd
 proc printTwdTextParts {x y img} {
-  global enabletitle title intro1 intro2 text1 text2 ref1 ref2 
+  global enabletitle title intro1 intro2 text1 text2 ref1 ref2 TwdLang
+  
+  #Sort out markings for Italic & Bold
+  if {$TwdLang == "th" || $TwdLang == "zh" } {
+    set mark1 ""
+    set mark2 ""
+    set mark3 ""
+    } else {
+    set mark1 £
+    set mark2 <
+    set mark3 >
+    }
 
   # 1. Print Title in Bold £...>
   if {$enabletitle} {
-    set y [printTextLine £$title> $x $y $img]
+    set y [printTextLine $mark1$title$mark3 $x $y $img]
   }
   
   #Print intro1 in Italics <...>
@@ -100,12 +111,12 @@ proc printTwdTextParts {x y img} {
     set y [printTextLine $line $x $y $img IND]
   }
   
-  #Print ref1
-  set y [printTextLine <$ref1> $x $y $img TAB]
+  #Print ref1 in Italics
+  set y [printTextLine $mark2$ref1$mark3 $x $y $img TAB]
 
   #Print intro2 in Italics
   if [info exists intro2] {
-    set y [printTextLine <$intro2> $x $y $img IND]
+    set y [printTextLine $mark2$intro2$mark3 $x $y $img IND]
   }
   
   #Print text2
@@ -115,7 +126,7 @@ proc printTwdTextParts {x y img} {
   }
 
   #Print ref2
-  set y [printTextLine \<$ref2\> $x $y $img TAB]
+  set y [printTextLine $mark2$ref2$mark3 $x $y $img TAB]
 
   return $img
   
@@ -191,6 +202,7 @@ proc printTextLine {textLine x y img args} {
     
 #TODO: THIS IS NOT CLEAR BUT WORKS....(why marginleft*2 ???)
     set xBase [expr $imgW - ($marginleft*2) - $x]
+    
     
   } else {
     set operator +
