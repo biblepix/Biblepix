@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 12feb18
+# Updated 12may18
 
 label .emailF.t1 -textvar f3.tit -font bpfont3
 pack .emailF.t1 -anchor w
@@ -35,7 +35,7 @@ if { [catch {set dwsig [getTodaysTwdSig $setupTwdFileName]}] } {
 }
 
 #Justify right for Hebrew & Arabic
-if { [isRtL [getTwdLanguage $setupTwdFileName]] } {
+if { [isRtL [getTwdLang $setupTwdFileName]] } {
   $sigLabel2 configure -justify right
 }
 

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 15apr18
+# Updated 8may18
 
 #Create left & right main frames
 pack [frame .desktopF.fleft] -expand 0 -fill y -side left
@@ -86,33 +86,36 @@ createMovingTextBox .textposCanv
  }
 .textposCanv bind mv <B1-Motion> [list dragCanvasItem %W mv %X %Y]
 
+#2. Create InternationalText Canvas - Fonts based on System fonts, not Bdf!!!!
+## Tcl picks any available Sans or Serif font from the system
 
-
-# TODO for BDF: leave all below as it is, only adjust font sizes a bit, 
-# and add a Serif font for "Times" !
-
-#2. Create InternationalText Canvas
-if {! [regexp displayfont [font names] ] } {
-  font create displayfont -family $fontfamily -size -$fontsize -weight bold
-}
+##Create generic Serif or Sans font
+font create displayfont -family $fontfamily -size $fontsize -weight $fontweight 
+puts bisher4
 
 canvas .desktopF.fright.fbot2.inttextcanv -width 700 -height 150 -borderwidth 2 -relief raised
 set inttextCanv .desktopF.fright.fbot2.inttextcanv
 
-#create background image
+##create background image
 image create photo intTextBG -file $guidir/testbild.png
 $inttextCanv create image 0 0 -image intTextBG -anchor nw 
 
-# set international text
+# Set international text
 set inttextHeader [label .desktopF.fright.fbot2.inttexttxt -textvar f2.fontexpl]
-if {$platform=="unix"} {
-  source $Bidi
-  set ar_txt [fixArabUnix $f2ar_txt]
-  set he_txt [fixHebUnix $f2he_txt]  
-  set internationaltext "$f2ltr_txt $ar_txt $he_txt $f2thai_txt"
-} else {
-  set internationaltext "$f2ltr_txt $f2ar_txt $f2he_txt $f2thai_txt"
-}
+
+if {$os=="Linux"} {
+  #Unix needs a lot of formatting for Arabic & Hebrew
+  puts "Computing Arabic"
+  source $BdfBidi
+  
+  #TODO pv: ARABISCH BLOCKIERT ALLES!!!! - vorläufig lassen
+  #set f2ar_txt [bidi $f2ar_txt ar revert]
+  set f2ar_txt [string reverse $f2ar_txt]
+  set f2he_txt [bidi $f2he_txt he revert]
+} 
+
+set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt $f2thai_txt"
+
 #create sun / shade /main text
 source $Imgtools
 set rgblist [hex2rgb $fontcolor]
@@ -122,9 +125,9 @@ set sun [setSun $rgblist]
 $inttextCanv create text 09 19 -fill $sun -tags {textitem sun}
 $inttextCanv create text 11 21 -fill $shade -tags {textitem shade}
 $inttextCanv create text 10 20 -fill $fontcolor -tags {textitem main}
-$inttextCanv itemconfigure textitem -text $internationaltext -anchor nw -width 680 -font displayfont
+$inttextCanv itemconfigure textitem -text $internationalText -anchor nw -width 680 -font displayfont
 
-
+#return
 
 
 #1. Fontcolour spinbox
@@ -134,17 +137,21 @@ set fontcolorTxt .desktopF.fright.fbot1.fontcolorTxt
 set fontcolorSpin .desktopF.fright.fbot1.fontcolorSpin
 $fontcolorSpin configure -command {
   setCanvasText [set %s]
-     #   .textposCanv itemconfigure mv -fill %s
-        }
+  .textposCanv itemconfigure mv -fill %s
+  }
 
 $fontcolorSpin set $fontcolortext
 
-#2. Fontsize spinbox - TODO: this needs reworking to be in line with FontNames
+puts Geldik1
+
+#2. Fontsize spinbox - TODO: IS THIS NEEDED????
 if {!$fontsize} {
   #set initial font size if no $config found
   set screeny [winfo screenheight .]
   set fontsize [ expr round($screeny/40) ] 
 }
+
+puts Geldik2
 
 message .desktopF.fright.fbot1.fontsizeTxt -width 200 -textvar f2.fontsizetext
 spinbox .desktopF.fright.fbot1.fontsizeSpin -width 2 -values {20 24 30} -command {font configure displayfont -size %s}
@@ -152,20 +159,26 @@ set fontsizeTxt .desktopF.fright.fbot1.fontsizeTxt
 set fontsizeSpin .desktopF.fright.fbot1.fontsizeSpin
 $fontsizeSpin set $fontsize
 
+puts Geldik3
+
+
+
+
 #3. Fontweight checkbutton - TODO: needs reworking to be in line with FontNames
 checkbutton .desktopF.fright.fbot1.fontweightBtn -width 5 -variable fontweightState -textvar f2.fontweight 
 set fontweightBtn .desktopF.fright.fbot1.fontweightBtn
+
 $fontweightBtn configure -command {
   if {$fontweightState==1} {
     font configure displayfont -weight bold
   } else {
     font configure displayfont -weight normal
-     }
+  }
 }
 
 if {$fontweight=="bold"} {
   set fontweightState 1
-        font configure displayfont -weight bold
+  font configure displayfont -weight bold
 } else {
   set fontweightState 0
   font configure displayfont -weight normal
@@ -173,24 +186,14 @@ if {$fontweight=="bold"} {
 
 
 
-
-#4. Fontfamily dropdown Menu - TODO: needs reworking to display only plain names like "Arial" and "Times"
+#4. Fontfamily dropdown Menu - ACHTUNG : in config darf nur Serif oder Sans stehen!!!!
 message .desktopF.fright.fbot1.fontfamilyTxt -width 250 -textvar f2.fontfamilytext
 ttk::combobox .desktopF.fright.fbot1.fontfamilyDrop -width 20 -height 30
 set fontfamilyTxt .desktopF.fright.fbot1.fontfamilyTxt
 set fontfamilySpin .desktopF.fright.fbot1.fontfamilyDrop
+lappend Fontlist Serif Sans
 
-##get BDF font list
-#foreach i [glob -directory $fontdir -tails *.tcl] {
-#  lappend Fontlist [file root $i]
-#}
-
-lappend Fontlist Arial Times
-
-#set Fontlist [lsort [font families]]
-#lappend Fontlist TkTextFont
-
-$fontfamilySpin configure -values [lsort $Fontlist] -validate focusin -validatecommand {
+$fontfamilySpin configure -values $Fontlist -validate focusin -validatecommand {
   font configure displayfont -family [$fontfamilySpin get]
   return 0
 }
@@ -198,23 +201,13 @@ $fontfamilySpin configure -values [lsort $Fontlist] -validate focusin -validatec
 $fontfamilySpin set $fontfamily
 
 #P A C K   R I G H T
-
-#pack [frame .desktopF.fright.f1]
+puts packing...
 pack $showdateBtn -anchor w
-
 pack $slideBtn -anchor w -side left
 pack $slideSec $slideSpin $slideTxt -anchor nw -side right
-
 pack $textposTxt -pady 5
 pack .textposCanv -in .desktopF.fright.fbot
-
 pack $fontcolorTxt $fontcolorSpin $fontfamilyTxt $fontfamilySpin -side left -fill x
-
 pack $fontweightBtn $fontsizeSpin $fontsizeTxt -side right -fill x
-
-#TODO: delete functions por completo! - NO!
-#$fontweightBtn configure -state disabled
-#$fontsizeSpin configure -state disabled
-
 pack $inttextCanv -fill x
 pack $inttextHeader -pady 7

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/twdtools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 18apr18
+# Updated 10may18
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if {[catch {package require tdom}]} {
@@ -85,7 +85,7 @@ proc getDomNodeForToday {domDoc} {
 }
 
 proc parseToText {node TwdLang {withTags 0}} {
-  global Bidi os BDF
+  global BdfBidi os
   
   if {$node == ""} {
     return ""
@@ -102,41 +102,44 @@ proc parseToText {node TwdLang {withTags 0}} {
   
   set text [$node asText]
   
-  #Fix Hebrew
-  #ignore if $BDF
-  set notUsed 1
-  if {$notUsed} {
   
-  if {$TwdLang == "he"} {
-    puts "Computing Hebrew text..."
-    if {[info procs fixHebWin] == ""} {
-      source $Bidi
+  #Fix Bidi languages
+  set isRtL [isRtL $TwdLang]
+  puts "Computing $TwdLang text..."
+  
+    if {[info procs bidi] == ""} {
+      source $BdfBidi
     }
 
     if {$os == "Windows NT"} {
-      set text [fixHebWin $text NOVOWELS]
+      set text [bidi $text $TwdLang]
     } else {
-      set text [fixHebUnix $text NOVOWELS]
+      set text [bidi $text $TwdLang revert]
     }
-  }
+  
     
+    
+    #notneeded now
   #Fix Arabic
+  proc mejutar {} {
   if {$TwdLang == "ar" ||
   $TwdLang == "ur" ||
   $TwdLang == "fa"} {
     puts "Computing Arabic text..."
-    if {[info procs fixArabWin] == ""} {
-      source $Bidi
+    if {[info procs fixArabic] == ""} {
+      source $BdfBidi
     }
     
     if {$os == "Windows NT"} {
-      set text [fixArabWin $text nowovels]
+      set text [fixArabicWin $text nowovels]
     } else {
       set text [fixArabUnix $text nowovels]
     }
   }
   
-  } ;#END notUsed
+  }   ;#end PROC MEJUTAR
+  
+  
   
   return $text
 }
@@ -246,7 +249,7 @@ proc setTodaysTwdNodes {TwdFileName} {
 }
 
 #getTodaysTwdText
-##used in Setup
+## used in Setup
 proc getTodaysTwdText {TwdFileName} {
   global enabletitle ind
   

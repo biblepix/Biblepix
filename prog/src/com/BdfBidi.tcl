@@ -1,11 +1,11 @@
 # ~/Biblepix/prog/src/com/BdfBidi.tcl
 # Fixes missing bidi algorithm for Unix and Win Tk Hebrew/Arabic
 # called by BdfPrint
+# optional 'args' reverts string for Setup apps
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 26apr18
+# Updated: 10may18
 
-proc bidi {dw TwdLang} {
-  global BDF
+proc bidi {dw TwdLang args} {
 
   #All languages: revert digits
   set digits [regexp -all -inline {[0-9]+} $dw]
@@ -36,13 +36,18 @@ proc bidi {dw TwdLang} {
     regsub -all {[\u064B-\u065F]} $dw {} dw
     set dw [fixArabic $dw]
   }
-
+  
+  #Provide reverse text for Setup apps
+  if {$args=="revert"} {
+    set dw [string reverse $dw]
+  }
+   
   return $dw
   
 } ;#END bidi
 
 
-proc fixArabic {dw args} {
+proc fixArabic {dw} {
 #Sets correct letter forms
 #added Persion & Urdu 5/16
 

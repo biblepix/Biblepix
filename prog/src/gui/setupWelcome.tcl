@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupWelcome.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated:29jan18
+# Updated:10may18
 
 #Pack flags defined elsewhere
 pack .en .de -in .ftop -side right

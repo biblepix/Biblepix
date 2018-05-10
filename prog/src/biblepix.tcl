@@ -3,25 +3,28 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4jan18
+# Updated: 8may18
 ######################################################################
 
 #Verify location & source Globals
 set srcdir [file dirname [info script]]
 set Globals "[file join $srcdir com globals.tcl]"
 source $Globals
-source $Twdtools
+source $TwdTools
 
-#Run Setup if TWD file not found
-if {[catch "set twdfile [getRandomTwdFile]"]} {
+#Set TwdFileName for the 1st time, else run Setup
+if [catch {set twdfile [getRandomTwdFile]}] {
   source -encoding utf-8 $SetupTexts
   setTexts $lang
-	package require Tk
+  package require Tk
   tk_messageBox -title BiblePix -type ok -icon error -message $noTWDFilesFound
   #catch if run by running Setup
-  catch {source $Setup} 
+  catch {source $Setup}
   return
 }
+
+#Export TwdFilename to global space
+set ::TwdFileName $twdfile
 
 #1. U p d a t e   s i g n a t u r e s  if $enablesig
 if {$enablesig} {
@@ -46,6 +49,8 @@ if {[info exists enableterm] && $enableterm} {
 }
 
 #3. P r e p a r e   c h a n g i n g   W i n   d e s k t o p
+
+#TODO: move to ?tools
 proc setWinBG {} {
   global TwdTIF regpath platform
   if {$platform=="windows"} {
@@ -57,7 +62,20 @@ proc setWinBG {} {
 if {$platform=="windows"} {
   package require registry
   set regpath [join {HKEY_CURRENT_USER {Control Panel} Desktop} \\]
+  
+} elseif {$os=="Linux"} {
+
+  #procs found in ?tools 
+  catch setLinuxBg ;#run always
+#  catch setSwayBg
+#  catch setXfceBg
+
+#- combine all in 1 proc:
+#  set setBg [setBackground]
+
 }
+
+#TODO: set setBg {get info from above!!!}
 
 #Stop any running biblepix.tcl
 foreach file [glob -nocomplain -directory $piddir *] {
@@ -69,9 +87,10 @@ close $pidfile
 #4. C r e a t e   i m a g e   & start slideshow
 if {$enablepic } {
 
-  #run once
+  #run once with above TwdFileName
   source $Image
   setWinBG
+  #TODO: exec $setBg
   
   #exit if $crontab exists
   if {[info exists crontab]} {
@@ -88,8 +107,12 @@ if {$enablepic } {
       if {$pidfiledatum==$heute} {
         sleep [expr $slideshow*1000]
         
+        #export new TwdFile
+        set ::TwdFileName [getRandomTwdFile]
+        
         source $Image
         setWinBG
+    
       } else {
       
         #Calling new instance of myself

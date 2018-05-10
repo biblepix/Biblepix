@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/twdtools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 26Sep17
+# Updated 16apr18
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if {[catch {package require tdom}]} {
@@ -78,8 +78,8 @@ proc getDomNodeForToday {domDoc} {
   return [$rootDomNode selectNodes /thewordfile/theword\[@date='$datum'\]]
 }
 
-proc parseToText {node twdLanguage {withTags 0}} {
-  global Bidi os
+proc parseToText {node TwdLang {withTags 0}} {
+  global Bidi os BDF
   
   if {$node == ""} {
     return ""
@@ -97,188 +97,204 @@ proc parseToText {node twdLanguage {withTags 0}} {
   set text [$node asText]
   
   #Fix Hebrew
-  if {$twdLanguage == "he"} {
+  #ignore if $BDF
+  if {!$BDF} {
+  
+  if {$TwdLang == "he"} {
     puts "Computing Hebrew text..."
     if {[info procs fixHebWin] == ""} {
       source $Bidi
     }
 
     if {$os == "Windows NT"} {
-      set text [fixHebWin $text]
+      set text [fixHebWin $text NOVOWELS]
     } else {
-      set text [fixHebUnix $text]
+      set text [fixHebUnix $text NOVOWELS]
     }
   }
-
+    
   #Fix Arabic
-  if {$twdLanguage == "ar" || $twdLanguage == "ur" || $twdLanguage == "fa"} {
+  if {$TwdLang == "ar" ||
+  $TwdLang == "ur" ||
+  $TwdLang == "fa"} {
     puts "Computing Arabic text..."
     if {[info procs fixArabWin] == ""} {
       source $Bidi
     }
     
     if {$os == "Windows NT"} {
-      set text [fixArabWin $text]
+      set text [fixArabWin $text nowovels]
     } else {
-      set text [fixArabUnix $text]
+      set text [fixArabUnix $text nowovels]
     }
   }
+  
+  } ;#END IF BDF
   
   return $text
 }
 
-proc appendParolToText {parolNode twdText indent {twdLanguage "de"} {RtL 0}} {
+proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
   global tab
   
-  set intro [getParolIntro $parolNode $twdLanguage]
+  set intro [getParolIntro $parolNode $TwdLang]
   if {$intro != ""} {
     if {$RtL} {
-      append twdText $intro $indent\n
+      append TwdText $intro $indent\n
     } else {
-      append twdText $indent $intro\n
+      append TwdText $indent $intro\n
     }
   }
   
-  set text [getParolText $parolNode $twdLanguage]
+  set text [getParolText $parolNode $TwdLang]
   set textLines [split $text \n]
    
   foreach line $textLines {
     if {$RtL} {
-      append twdText $line $indent\n
+      append TwdText $line $indent\n
     } else {
-      append twdText $indent $line\n
+      append TwdText $indent $line\n
     }
   }
   
-  set ref [getParolRef $parolNode $twdLanguage]
+  set ref [getParolRef $parolNode $TwdLang]
   if {$RtL} {
-    append twdText $ref $tab
+    append TwdText $ref $tab
   } else {
-    append twdText $tab $ref
+    append TwdText $tab $ref
   }
   
-  return $twdText
+  return $TwdText
 }
 
-proc appendParolToTermText {parolNode twdText indent} {
+proc appendParolToTermText {parolNode TwdText indent} {
   global tab
   
   set intro [getParolIntro $parolNode]
   if {$intro != ""} {
-    append twdText "echo -e \$\{txtrst\}\$\{int\}\"$indent$intro\"\n"
+    append TwdText "echo -e \$\{txtrst\}\$\{int\}\"$indent$intro\"\n"
   }
   
   set text [getParolText $parolNode]
   set textLines [split $text \n]
    
   foreach line $textLines {
-    append twdText "echo -e \$\{txt\}\"$indent$line\"\n"
+    append TwdText "echo -e \$\{txt\}\"$indent$line\"\n"
   }
   
   set ref [getParolRef $parolNode]
-  append twdText "echo -e \$\{ref\}\$\{tab\}\"$ref\""
+  append TwdText "echo -e \$\{ref\}\$\{tab\}\"$ref\""
   
-  return $twdText
+  return $TwdText
 }
 
 ## O U T P U T
 
-proc getTwdLanguage {twdFileName} {
-  return [string range $twdFileName 0 1]
+proc getTwdLang {TwdFileName} {
+  return [string range $TwdFileName 0 1]
 }
 
-proc isRtL {twdLanguage} {
-  if {$twdLanguage == "he" || $twdLanguage == "ar" || $twdLanguage == "ur" || $twdLanguage == "fa"} {
+proc isRtL {TwdLang} {
+  if {
+  $TwdLang == "he" ||
+  $TwdLang == "ar" || 
+  $TwdLang == "ur" || 
+  $TwdLang == "fa"
+  } {
     return 1
   } else {
     return 0
   }
 }
 
-proc getTwdTitle {twdNode {twdLanguage "de"} {withTags 0}} {
-  return [parseToText [$twdNode selectNodes title] $twdLanguage $withTags]
+proc getTwdTitle {twdNode {TwdLang "de"} {withTags 0}} {
+  return [parseToText [$twdNode selectNodes title] $TwdLang $withTags]
 }
 
 proc getTwdParolNode {no twdNode} {
   return [$twdNode selectNodes parol\[$no\]]
 }
 
-proc getParolIntro {parolNode {twdLanguage "de"} {withTags 0}} {
-  return [parseToText [$parolNode selectNodes intro] $twdLanguage $withTags]
+proc getParolIntro {parolNode {TwdLang "de"} {withTags 0}} {
+  return [parseToText [$parolNode selectNodes intro] $TwdLang $withTags]
 }
 
-proc getParolText {parolNode {twdLanguage "de"} {withTags 0}} {
-  return [parseToText [$parolNode selectNodes text] $twdLanguage $withTags]
+proc getParolText {parolNode {TwdLang "de"} {withTags 0}} {
+  return [parseToText [$parolNode selectNodes text] $TwdLang $withTags]
 }
 
-proc getParolRef {parolNode {twdLanguage "de"} {withTags 0}} {
-  return [string cat "~ " [parseToText [$parolNode selectNodes ref] $twdLanguage $withTags]]
+proc getParolRef {parolNode {TwdLang "de"} {withTags 0}} {
+  return [string cat "~ " [parseToText [$parolNode selectNodes ref] $TwdLang $withTags]]
 }
 
-proc getTodaysTwdText {twdFileName} {
+#getTodaysTwdText
+##used in Setup
+proc getTodaysTwdText {TwdFileName} {
   global enabletitle ind
   
-  set twdLanguage [getTwdLanguage $twdFileName]
+  set TwdLang [getTwdLang $TwdFileName]
   set indent ""
-  set RtL [isRtL $twdLanguage]
-  set twdText ""
+  set RtL [isRtL $TwdLang]
+  set TwdText ""
   
-  set twdDomDoc [parseTwdFileDomDoc $twdFileName]
+  set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   
   if {$twdTodayNode == ""} {
-    set twdText "No Bible text found for today."
+    set TwdText "No Bible text found for today."
+    
   } else {
     if {$enabletitle} {
-      set twdTitle [getTwdTitle $twdTodayNode $twdLanguage]
-      append twdText $twdTitle\n
+      set twdTitle [getTwdTitle $twdTodayNode $TwdLang]
+      append TwdText $twdTitle\n
       set indent $ind
     }
     
     set parolNode [getTwdParolNode 1 $twdTodayNode]
-    set twdText [appendParolToText $parolNode $twdText $indent $twdLanguage $RtL]
+    set TwdText [appendParolToText $parolNode $TwdText $indent $TwdLang $RtL]
     
-    append twdText \n
+    append TwdText \n
     
     set parolNode [getTwdParolNode 2 $twdTodayNode]
-    set twdText [appendParolToText $parolNode $twdText $indent $twdLanguage $RtL]
+    set TwdText [appendParolToText $parolNode $TwdText $indent $TwdLang $RtL]
   }
   
   $twdDomDoc delete
   
-  return $twdText
-}
+  return $TwdText
 
-proc getTodaysTwdSig {twdFileName} {
+} ;#END getTwdText
+
+proc getTodaysTwdSig {TwdFileName} {
   global ind
   
-  set twdDomDoc [parseTwdFileDomDoc $twdFileName]
+  set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   
   if {$twdTodayNode == ""} {
-    set twdText "No Bible text found for today."
+    set TwdText "No Bible text found for today."
   } else {
     set twdTitle [getTwdTitle $twdTodayNode]
-    set twdText "===== $twdTitle =====\n"
+    set TwdText "===== $twdTitle =====\n"
     
     set parolNode [getTwdParolNode 1 $twdTodayNode]
-    set twdText [appendParolToText $parolNode $twdText $ind]
+    set TwdText [appendParolToText $parolNode $TwdText $ind]
     
-    append twdText \n
+    append TwdText \n
     
     set parolNode [getTwdParolNode 2 $twdTodayNode]
-    set twdText [appendParolToText $parolNode $twdText $ind]
+    set TwdText [appendParolToText $parolNode $TwdText $ind]
   }
   
   $twdDomDoc delete
   
-  return $twdText
+  return $TwdText
 }
 
-proc getTodaysTwdTerm {twdFileName} {
+proc getTodaysTwdTerm {TwdFileName} {
   global ind
   
-  set twdDomDoc [parseTwdFileDomDoc $twdFileName]
+  set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   
   if {$twdTodayNode == ""} {
@@ -298,5 +314,5 @@ proc getTodaysTwdTerm {twdFileName} {
   
   $twdDomDoc delete
   
-  return $twdText
+  return $TwdText
 }
