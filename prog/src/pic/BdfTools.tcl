@@ -2,11 +2,11 @@
 # BDF scanning and printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 26apr18
+# Updated: 11may18
 
 
 # printTwd
-##toplevel printing proc
+## Toplevel printing proc
 proc printTwd {TwdFileName img} {
   global marginleft margintop
 

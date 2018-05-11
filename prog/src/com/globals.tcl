@@ -2,10 +2,10 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 26apr18
+# Updated: 11may18
 
 # This variable enables Debugging Mode in the whole application if set to 1.
-set Debug 0
+set Debug 1
 set Mocking 0
 
 set version "2.5"
@@ -163,6 +163,7 @@ Times30I [file join $fontdir italic Times30I.tcl]
 ChinaFont [file join $fontdir asian WenQuanYi_ZenHei_24.tcl]
 ThaiFont [file join $fontdir asian Kinnari_Bold_20.tcl]
 "
+
 set WinIcon [lindex [array get iconArray biblepix.ico] 1]
 set LinIcon [lindex [array get iconArray biblepix.png] 1]
 
@@ -275,3 +276,19 @@ proc Show.Modal {win args} {
 }
 
 catch {source $LoadConfig}
+
+#Define current font name from Config
+if {$fontfamily=="Sans"} {
+  set fontFamilyTag "Arial"
+  } elseif {$fontfamily=="Serif"} {
+  set fontFamilyTag "Times"
+}
+if {$fontweight=="bold"} {set fontWeightTag B} else {set fontWeightTag ""}
+
+set fontName "${fontFamilyTag}${fontsize}${fontWeightTag}"
+set fontNameBold "${fontFamilyTag}${fontsize}B"
+puts $fontNameBold
+
+#for Italic: reset fontname to normal if Bold
+set fontWeightTag I
+set fontNameItalic "${fontFamilyTag}${fontsize}${fontWeightTag}"

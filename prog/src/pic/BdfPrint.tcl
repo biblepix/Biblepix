@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 26apr18
+# Updated: 11may18
 
 #1. SET BASIC VARS
 source $BdfTools
@@ -30,36 +30,36 @@ if {$TwdLang == "zh"} {
 } else {
 
   #Get $fontfamily from Config
-  set fontFile $BdfFontsArray($fontfamily)
 
+puts $BdfFontsArray($fontName)
   # Source Regular if fontweight==normal
   if {$fontweight == "normal"} {
     namespace eval R {
-      source -encoding utf-8 $fontFile
+      source -encoding utf-8 $BdfFontsArray($fontName)
     }
   }
   
   #Source Italic for all (asian filtered out later)  
   namespace eval I {
-    set fontfamilyI ${fontfamily}I
-    set fontFileI $BdfFontsArray($fontfamilyI)
-    source -encoding utf-8 $fontFileI
+    source -encoding utf-8 $BdfFontsArray($fontNameItalic)
   }
 
   #Source Bold if $enabletitle OR $fontweight==bold
   if {$enabletitle || $fontweight == "bold"} { 
     namespace eval B {
-      set fontfamilyB ${fontfamily}B
-      set fontFileB $BdfFontsArray($fontfamilyB)
-      source -encoding utf-8 $fontFileB
+      source -encoding utf-8 $BdfFontsArray($fontNameBold)
     }
   }
 } ;#END source fonts
 
-#Export global font vars (sind gleich in R/B/I)
-if [namespace exists R] {set prefix R}
-if [namespace exists B] {set prefix B}
-if [namespace exists I] {set prefix I}
+#Export global font vars (fontweight doesn't matter!)
+if [namespace exists R] { 
+  set prefix R
+  } elseif [namespace exists B] {
+  set prefix B
+  } elseif [namespace exists I] {
+  set prefix I
+}
 set ::FontAsc $${prefix}::FontAsc
 set ::FBBy $${prefix}::FBBy
 set ::FBBx $${prefix}::FBBx

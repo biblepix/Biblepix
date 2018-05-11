@@ -1,9 +1,10 @@
+#!/bin/env tclsh
 # ~/Biblepix/prog/src/biblepix.tcl
 # Main program, called by System Autostart
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8may18
+# Updated: 11may18
 ######################################################################
 
 #Verify location & source Globals
@@ -67,7 +68,11 @@ if {$platform=="windows"} {
 
   #procs found in ?tools 
   catch setLinuxBg ;#run always
+  
+  #TEST FOR NOW:
+  exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
 #  catch setSwayBg
+
 #  catch setXfceBg
 
 #- combine all in 1 proc:
@@ -90,6 +95,8 @@ if {$enablepic } {
   #run once with above TwdFileName
   source $Image
   setWinBG
+  ##FOR TESTING:
+  exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
   #TODO: exec $setBg
   
   #exit if $crontab exists
@@ -112,7 +119,8 @@ if {$enablepic } {
         
         source $Image
         setWinBG
-    
+      ##FOR TESTING:
+  exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
       } else {
       
         #Calling new instance of myself

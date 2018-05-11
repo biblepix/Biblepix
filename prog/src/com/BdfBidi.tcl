@@ -3,7 +3,7 @@
 # called by BdfPrint
 # optional 'args' reverts string for Setup apps
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 10may18
+# Updated: 11may18
 
 proc bidi {dw TwdLang args} {
 
@@ -21,7 +21,8 @@ proc bidi {dw TwdLang args} {
     
     #change all waw+cholam to waw
     regsub -all {\u05D5\U05B9} $dw \U05D5 dw
-    #change all cholam/kubutz to waw
+    #change all cholam/kubutz to waw, excluding לא +TODO: Mosche..
+    regsub -all {\u05DC\U05B9\u05D0} $dw [puts \u05DC\u05D0] dw
     regsub -all {[\U05B9\U05BB]} $dw \U05D5 dw
     
     #eliminate remaining vowels

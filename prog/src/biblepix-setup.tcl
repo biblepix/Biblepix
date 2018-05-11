@@ -1,11 +1,12 @@
+#! /bin/env tclsh
 # ~/Biblepix/prog/src/biblepix-setup.tcl
 # Main Setup program for BiblePix, starts Setup dialogue
 # Called by User via Windows/Unix Desktop entry
 # If called by BiblePix-Installer, this is the first file downloaded + executed
 ################################################################################
-# Version: 2.4.1
+# Version: 2.5
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 23feb18
+# Updated: 11may18
 
 package require Tk
 

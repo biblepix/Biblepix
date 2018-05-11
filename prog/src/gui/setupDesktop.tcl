@@ -90,9 +90,7 @@ createMovingTextBox .textposCanv
 ## Tcl picks any available Sans or Serif font from the system
 
 ##Create generic Serif or Sans font
-font create displayfont -family $fontfamily -size $fontsize -weight $fontweight 
-puts bisher4
-
+font create displayfont -family $fontfamily -size $fontsize -weight $fontweight
 canvas .desktopF.fright.fbot2.inttextcanv -width 700 -height 150 -borderwidth 2 -relief raised
 set inttextCanv .desktopF.fright.fbot2.inttextcanv
 
@@ -118,25 +116,28 @@ set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt $f2thai_txt"
 
 #create sun / shade /main text
 source $Imgtools
-set rgblist [hex2rgb $fontcolor]
-set shade [setShade $rgblist]
-set sun [setSun $rgblist]
 
-$inttextCanv create text 09 19 -fill $sun -tags {textitem sun}
-$inttextCanv create text 11 21 -fill $shade -tags {textitem shade}
-$inttextCanv create text 10 20 -fill $fontcolor -tags {textitem main}
-$inttextCanv itemconfigure textitem -text $internationalText -anchor nw -width 680 -font displayfont
+proc setIntCanvText {fontcolor} {
+  global rgblist inttextCanv internationalText
+  set rgblist [hex2rgb $fontcolor]
+  set shade [setShade $rgblist]
+  set sun [setSun $rgblist]
 
-#return
+  $inttextCanv create text 09 19 -fill $sun -tags {textitem sun}
+  $inttextCanv create text 11 21 -fill $shade -tags {textitem shade}
+  $inttextCanv create text 10 20 -fill $fontcolor -tags {textitem main}
+  $inttextCanv itemconfigure textitem -text $internationalText -anchor nw -width 680 -font displayfont
+}
 
+setIntCanvText $fontcolor
 
-#1. Fontcolour spinbox
+#1. Fontcolour spinbox - TODO: GEHT NOCH NICHT !!!!!!!!!!!!!!!!!!!!!! command not found
 message .desktopF.fright.fbot1.fontcolorTxt -width 200 -textvar f2.farbe
 spinbox .desktopF.fright.fbot1.fontcolorSpin -width 10 -values {blue green gold silver} 
 set fontcolorTxt .desktopF.fright.fbot1.fontcolorTxt
 set fontcolorSpin .desktopF.fright.fbot1.fontcolorSpin
 $fontcolorSpin configure -command {
-  setCanvasText [set %s]
+  setIntCanvText [set %s]
   .textposCanv itemconfigure mv -fill %s
   }
 
@@ -186,7 +187,7 @@ if {$fontweight=="bold"} {
 
 
 
-#4. Fontfamily dropdown Menu - ACHTUNG : in config darf nur Serif oder Sans stehen!!!!
+#4. Fontfamily dropdown Menu
 message .desktopF.fright.fbot1.fontfamilyTxt -width 250 -textvar f2.fontfamilytext
 ttk::combobox .desktopF.fright.fbot1.fontfamilyDrop -width 20 -height 30
 set fontfamilyTxt .desktopF.fright.fbot1.fontfamilyTxt

@@ -13,13 +13,13 @@ if { [catch {package require Img}] } {
 }
 
 #Hide Tk window as not needed -todo: MOVE TO Bdfprint?
-#wm overrideredirect . 1
-#wm geometry . +0-30
-#if {$platform=="unix"} {
-#    wm withdraw .
-#  } else {
-#    wm iconify .
-#}
+wm overrideredirect . 1
+wm geometry . +0-30
+if {$platform=="unix"} {
+    wm withdraw .
+  } else {
+    wm iconify .
+}
 
 
 
