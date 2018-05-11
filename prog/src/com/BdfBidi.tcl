@@ -8,7 +8,8 @@
 proc bidi {dw TwdLang args} {
 
   #All languages: revert digits
-  set digits [regexp -all -inline {[0-9]+} $dw]
+  #set digits [regexp -all -inline {[0-9]+} $dw]
+  set digits [regexp -all -inline {[[:digit:]]+} $dw]
   foreach zahl $digits {
      regsub $zahl $dw [string reverse $zahl] dw
   }
@@ -22,7 +23,7 @@ proc bidi {dw TwdLang args} {
     #change all waw+cholam to waw
     regsub -all {\u05D5\U05B9} $dw \U05D5 dw
     #change all cholam/kubutz to waw, excluding לא +TODO: Mosche..
-    regsub -all {\u05DC\U05B9\u05D0} $dw [puts \u05DC\u05D0] dw
+    regsub -all {\u05DC\U05B9\u05D0} $dw \u05DC\u05D0 dw
     regsub -all {[\U05B9\U05BB]} $dw \U05D5 dw
     
     #eliminate remaining vowels
