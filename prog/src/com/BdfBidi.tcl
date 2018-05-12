@@ -22,7 +22,7 @@ proc bidi {dw TwdLang args} {
     
     #change all waw+cholam to waw
     regsub -all {\u05D5\U05B9} $dw \U05D5 dw
-    #change all cholam/kubutz to waw, excluding לא +TODO: Mosche..
+    #change all cholam/kubutz to waw, excluding לא +TODO: Mosche/Schlomo/(kol)
     regsub -all {\u05DC\U05B9\u05D0} $dw \u05DC\u05D0 dw
     regsub -all {[\U05B9\U05BB]} $dw \U05D5 dw
     

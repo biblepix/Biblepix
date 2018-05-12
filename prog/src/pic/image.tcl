@@ -30,7 +30,8 @@ image create photo hgbild -file $hgfile
 
 #printing   B D F 
 
-puts "Creating BDF picture..."
+puts "Creating BDF picture...
+"
 
 source $TwdTools
 source $BdfTools

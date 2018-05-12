@@ -2,9 +2,9 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15nov15
+# Updated: 15apr18
 
-source $Twdtools
+source $TwdTools
 
 puts "Updating signatures..."
 

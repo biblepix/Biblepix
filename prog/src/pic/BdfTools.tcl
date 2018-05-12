@@ -2,7 +2,7 @@
 # BDF scanning and printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 11may18
+# Updated: 12may18
 
 
 # printTwd
@@ -137,14 +137,17 @@ proc printTwdTextParts {x y img} {
 ## prints single letter to $img
 ## called by printTextLine
 proc printLetter {letterName img x y} {
-  global sun shade color mark RtL weight FBBx
+  global sun shade fontcolortext mark RtL weight prefix BBxoff
   upvar $letterName curLetter
-      
+  
+  set color [set fontcolortext]
   set BBxoff $curLetter(BBxoff)
   set BBx $curLetter(BBx)
   
   #TODO: JOEL, this dosn't work for Italic font!
   if {$RtL} {
+    set FBBx "$${prefix}::FBBx"
+    #puts $FBBx
     set BBxoff [expr $FBBx - $BBx - $BBxoff]
   }
 
@@ -183,8 +186,10 @@ proc printLetter {letterName img x y} {
 # #alls printLetter
 ## use 'args' for TAB or IND
 proc printTextLine {textLine x y img args} {
-  global mark TwdLang marginleft enabletitle RtL BdfBidi FontAsc FBBy
- 
+  global mark TwdLang marginleft enabletitle RtL BdfBidi prefix
+   
+  set FontAsc "$${prefix}::FontAsc"
+  
   #Set tab & ind in pixels - TODO: move to Globals?
   set tab 400
   set ind 0
@@ -273,6 +278,7 @@ proc printTextLine {textLine x y img args} {
   } ;#END foreach
   
   #gibt letzte Y-Position an aufrufendes Programm ab
+  set FBBy "$${prefix}::FBBy"
   return [expr $y + $FBBy]
 
 } ;#END printTextLine

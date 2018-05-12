@@ -2,70 +2,74 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 11may18
+# Updated: 12may18
 
 #1. SET BASIC VARS
 source $BdfTools
 set TwdLang [getTwdLang $::TwdFileName]
 set ::RtL [isRtL $TwdLang]
+puts $TwdLang
 
 #2. SOURCE FONTS INTO NAMESPACES
 
 ##Chinese: (regular_24)
 if {$TwdLang == "zh"} {
-  set fontFile $BdfFontsArray(ChinaFont)
-  namespace eval R {
-    source -encoding utf-8 $fontFile
+  set ::prefix Z
+  if {! [namespace exists Z]} {
+    namespace eval Z {
+      source -encoding utf-8 $BdfFontsArray(ChinaFont)
+    }
   }
 
-##Thai: (regular_20)
-} elseif {$TwdLang == "th"} {
-  set fontFile $BdfFontsArray(ThaiFont)
-  namespace eval R {
-    source -encoding utf-8 $fontFile
-  }
+  ##Thai: (regular_20)
+  } elseif {$TwdLang == "th"} {
+  set ::prefix T
+    if {! [namespace exists T]} {
+      namespace eval T {
+        source -encoding utf-8 $BdfFontsArray(ThaiFont)
+      }
+    }
   
-  
-## All else: Regular / Bold / Italic
-} else {
+  ## All else: Regular / Bold / Italic
+  } else {
 
-  #Get $fontfamily from Config
-
-puts $BdfFontsArray($fontName)
   # Source Regular if fontweight==normal
   if {$fontweight == "normal"} {
-    namespace eval R {
-      source -encoding utf-8 $BdfFontsArray($fontName)
+    if {! [namespace exists R]} {
+      namespace eval R {
+        source -encoding utf-8 $BdfFontsArray($fontName)
+        puts $FontAsc
+      }
     }
   }
   
-  #Source Italic for all (asian filtered out later)  
-  namespace eval I {
-    source -encoding utf-8 $BdfFontsArray($fontNameItalic)
+  #Source Italic for all except Asian
+  if {! [namespace exists I]} {
+    set ::prefix I
+    namespace eval I {
+      source -encoding utf-8 $BdfFontsArray($fontNameItalic)
+      puts $FontAsc
+    }
   }
-
+  
   #Source Bold if $enabletitle OR $fontweight==bold
   if {$enabletitle || $fontweight == "bold"} { 
-    namespace eval B {
-      source -encoding utf-8 $BdfFontsArray($fontNameBold)
+    if {! [namespace exists B]} {
+      namespace eval B {
+        source -encoding utf-8 $BdfFontsArray($fontNameBold)
+        puts $FontAsc
+      }
     }
   }
 } ;#END source fonts
 
 #Export global font vars (fontweight doesn't matter!)
-if [namespace exists R] { 
-  set prefix R
-  } elseif [namespace exists B] {
-  set prefix B
-  } elseif [namespace exists I] {
-  set prefix I
-}
-set ::FontAsc $${prefix}::FontAsc
-set ::FBBy $${prefix}::FBBy
-set ::FBBx $${prefix}::FBBx
 
-#move?
-set color [set fontcolortext]
+#set ::FontAsc "$${prefix}::FontAsc"
+#set ::FBBy "$${prefix}::FBBy"
+#set ::FBBx "$${prefix}::FBBx"
+
+#puts "FontAsc $FontAsc"
 
 # 3. LAUNCH PRINTING & SAVE IMAGE
 set img hgbild
@@ -78,7 +82,9 @@ if {$platform=="windows"} {
     $finalImg write $TwdBMP -format BMP
     $finalImg write $TwdPNG -format PNG
   }
-  
-image delete $finalImg
 
-#exit
+#Cleanup
+image delete $finalImg
+#catch {namespace delete R}
+#catch {namespace delete B}
+#catch {namespace delete I}

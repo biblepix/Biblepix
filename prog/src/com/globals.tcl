@@ -196,7 +196,8 @@ proc sleep { ms } {
 }
 
 #Define font colours & sun/shade factors
-set gold #daa520
+#set gold #daa520
+set gold #eb9b09
 set silver #707585
 set blue #4682b4
 set green #2e8b57
