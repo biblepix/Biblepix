@@ -276,7 +276,8 @@ proc Show.Modal {win args} {
   return ${::Modal.Result}
 }
 
-catch {source $LoadConfig}
+catch {source $LoadConfig} res
+puts $res
 
 #Define current font name from Config
 if {$fontfamily=="Sans"} {
@@ -284,11 +285,15 @@ if {$fontfamily=="Sans"} {
   } elseif {$fontfamily=="Serif"} {
   set fontFamilyTag "Times"
 }
-if {$fontweight=="bold"} {set fontWeightTag B} else {set fontWeightTag ""}
+if {$fontweight=="bold"} {
+  set fontWeightTag B
+  } else {
+  set fontWeightTag ""
+}
 
 set fontName "${fontFamilyTag}${fontsize}${fontWeightTag}"
 set fontNameBold "${fontFamilyTag}${fontsize}B"
-puts $fontNameBold
+#puts $fontNameBold
 
 #for Italic: reset fontname to normal if Bold
 set fontWeightTag I

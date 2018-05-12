@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 8may18
+# Updated 12may18
 
 #Create left & right main frames
 pack [frame .desktopF.fleft] -expand 0 -fill y -side left
@@ -143,8 +143,6 @@ $fontcolorSpin configure -command {
 
 $fontcolorSpin set $fontcolortext
 
-puts Geldik1
-
 #2. Fontsize spinbox - TODO: IS THIS NEEDED????
 if {!$fontsize} {
   #set initial font size if no $config found
@@ -152,18 +150,11 @@ if {!$fontsize} {
   set fontsize [ expr round($screeny/40) ] 
 }
 
-puts Geldik2
-
 message .desktopF.fright.fbot1.fontsizeTxt -width 200 -textvar f2.fontsizetext
 spinbox .desktopF.fright.fbot1.fontsizeSpin -width 2 -values {20 24 30} -command {font configure displayfont -size %s}
 set fontsizeTxt .desktopF.fright.fbot1.fontsizeTxt
 set fontsizeSpin .desktopF.fright.fbot1.fontsizeSpin
 $fontsizeSpin set $fontsize
-
-puts Geldik3
-
-
-
 
 #3. Fontweight checkbutton - TODO: needs reworking to be in line with FontNames
 checkbutton .desktopF.fright.fbot1.fontweightBtn -width 5 -variable fontweightState -textvar f2.fontweight 
@@ -202,7 +193,6 @@ $fontfamilySpin configure -values $Fontlist -validate focusin -validatecommand {
 $fontfamilySpin set $fontfamily
 
 #P A C K   R I G H T
-puts packing...
 pack $showdateBtn -anchor w
 pack $slideBtn -anchor w -side left
 pack $slideSec $slideSpin $slideTxt -anchor nw -side right
