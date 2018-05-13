@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12feb18
+# Updated: 12may18
 
 setFlags
 
@@ -52,7 +52,8 @@ if { [info exists Debug] && $Debug } {
 } else {
   catch {source $SetupInternational}
 }
-set status [getRemoteTWDFileList]
+set status "No Internet connexion"
+catch {set status [getRemoteTWDFileList]}
 
 # 3. Desktop
 if { [info exists Debug] && $Debug } {

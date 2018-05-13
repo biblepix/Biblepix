@@ -186,7 +186,7 @@ proc printLetter {letterName img x y} {
 ## calls printLetter
 ## use 'args' for TAB or IND
 proc printTextLine {textLine x y img args} {
-  global TwdLang marginleft enabletitle RtL BdfBidi prefix
+  global TwdLang fontName marginleft margintop enabletitle RtL BdfBidi prefix
    
   set FontAsc "$${prefix}::FontAsc"
   
@@ -196,7 +196,9 @@ proc printTextLine {textLine x y img args} {
   if {$enabletitle} {set ind 20}
   
   set xBase $x
-  set yBase [expr $y + $FontAsc]
+  if [catch {set yBase [expr $y + $FontAsc]}] {
+    set yBase $y
+  }
   
   #Compute xBase for RtL    
   if {$RtL} {
@@ -248,28 +250,36 @@ puts "prefix: $prefix"
  
     set encLetter [scan $letter %c]
 
-    #set print_${encLetter} "${prefix}::print_${encLetter}"
-    upvar 2 ${prefix}::print_$encLetter print_$encLetter
-
-    #Print letter or space if not found
-    if {[info exists print_$encLetter]} {
+    if [catch {upvar 2 ${prefix}::print_$encLetter print_$encLetter}] {
+      
+      continue
+      
+      } else {
+      
       array set curLetter [array get print_$encLetter]
-      } else {
-      array set curLetter [array get ${prefix}::print_32]
-    }
-    printLetter curLetter $img $xBase $yBase
-
-    #sort out Bidi languages
-    if {$RtL} {
-      set xBase [expr $xBase - $curLetter(DWx)]
-      } else {
-      set xBase [expr $xBase + $curLetter(DWx)]
-    }
+      catch {printLetter curLetter $img $xBase $yBase}
+      
+#      set printSpace [namespace which print_32]
+#      array set curLetter [array get printSpace]
+      #[array get ${prefix}::print_32]
     
+      #sort out Bidi languages
+      if {$RtL} {
+        set xBase [expr $xBase - $curLetter(DWx)]
+        } else {
+        set xBase [expr $xBase + $curLetter(DWx)]
+      }
+    }
   } ;#END foreach
   
   #gibt letzte Y-Position an aufrufendes Programm ab
-  set FBBy "$${prefix}::FBBy"
+  # 0 beim ersten Mal#TODO: var ist manchmal nach 1. Aufruf leer!!!
+  if [info exists ${prefix}::FBBy ] {
+    set FBBy "$${prefix}::FBBy"
+  } else {
+    set FBBy $marginleft
+  }
+  
   return [expr $y + $FBBy]
 
 } ;#END printTextLine

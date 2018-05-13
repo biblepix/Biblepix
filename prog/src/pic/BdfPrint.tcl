@@ -33,22 +33,23 @@ if {$TwdLang == "zh"} {
   ## All else: Regular / Bold / Italic
   } else {
 
-  # Source Regular if fontweight==normal
-  if {$fontweight == "normal"} {
+  # Source Regular ???if fontweight==normal - gab einige Störungen, weiss nicht warum...
+  # vorläufig wirds immer geladen, auch wenn bei "fontweight==bold" kein R:: nötig wäre
+  #if {$fontweight == "normal"} {
     if {! [namespace exists R]} {
       namespace eval R {
         source -encoding utf-8 $BdfFontsArray($fontName)
-        puts $FontAsc
+#        puts $FontAsc
       }
     }
-  }
+#  }
   
   #Source Italic for all except Asian
   if {! [namespace exists I]} {
     set ::prefix I
     namespace eval I {
       source -encoding utf-8 $BdfFontsArray($fontNameItalic)
-      puts $FontAsc
+#      puts $FontAsc
     }
   }
   
@@ -57,19 +58,11 @@ if {$TwdLang == "zh"} {
     if {! [namespace exists B]} {
       namespace eval B {
         source -encoding utf-8 $BdfFontsArray($fontNameBold)
-        puts $FontAsc
+#        puts $FontAsc
       }
     }
   }
 } ;#END source fonts
-
-#Export global font vars (fontweight doesn't matter!)
-
-#set ::FontAsc "$${prefix}::FontAsc"
-#set ::FBBy "$${prefix}::FBBy"
-#set ::FBBx "$${prefix}::FBBx"
-
-#puts "FontAsc $FontAsc"
 
 # 3. LAUNCH PRINTING & SAVE IMAGE
 set img hgbild
@@ -85,6 +78,3 @@ if {$platform=="windows"} {
 
 #Cleanup
 image delete $finalImg
-#catch {namespace delete R}
-#catch {namespace delete B}
-#catch {namespace delete I}
