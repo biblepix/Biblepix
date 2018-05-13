@@ -1,8 +1,8 @@
-# ~/Biblepix/prog/src/com/BdfToolss.tcl
+# ~/Biblepix/prog/src/com/BdfTools.tcl
 # BDF scanning and printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 12may18
+# Updated: 13may18
 
 
 # printTwd
@@ -97,7 +97,7 @@ proc printTwdTextParts {x y img} {
 
   # 1. Print Title in Bold £...>
   if {$enabletitle} {
-    set y [printTextLine $mark1$title$mark3 $x $y $img]
+    set y [printTextLine ${mark1}${title}${mark3} $x $y $img]
   }
   
   #Print intro1 in Italics <...>
@@ -112,11 +112,11 @@ proc printTwdTextParts {x y img} {
   }
   
   #Print ref1 in Italics
-  set y [printTextLine $mark2$ref1$mark3 $x $y $img TAB]
+  set y [printTextLine ${mark2}${ref1}${mark3} $x $y $img TAB]
 
   #Print intro2 in Italics
   if [info exists intro2] {
-    set y [printTextLine $mark2$intro2$mark3 $x $y $img IND]
+    set y [printTextLine ${mark2}${intro2}${mark3} $x $y $img IND]
   }
   
   #Print text2
@@ -126,7 +126,7 @@ proc printTwdTextParts {x y img} {
   }
 
   #Print ref2
-  set y [printTextLine $mark2$ref2$mark3 $x $y $img TAB]
+  set y [printTextLine ${mark2}${ref2}${mark3} $x $y $img TAB]
 
   return $img
   
@@ -137,14 +137,14 @@ proc printTwdTextParts {x y img} {
 ## prints single letter to $img
 ## called by printTextLine
 proc printLetter {letterName img x y} {
-  global sun shade fontcolortext mark RtL weight prefix BBxoff
+  global sun shade fontcolortext RtL weight prefix BBxoff
   upvar $letterName curLetter
   
   set color [set fontcolortext]
   set BBxoff $curLetter(BBxoff)
   set BBx $curLetter(BBx)
   
-  #TODO: JOEL, this dosn't work for Italic font!
+  # T O D O : JOEL, this dosn't work for Italic Hebrew!!!
   if {$RtL} {
     set FBBx "$${prefix}::FBBx"
     #puts $FBBx
@@ -167,7 +167,7 @@ proc printLetter {letterName img x y} {
           2 { set pxColor $sun }
           3 { set pxColor $shade }
           #testzeile (ROT!)
-          default { set pxColor $mark }
+          #default { set pxColor $mark }
         }
         
       if { $xCur <0 } {set xCur 1 } 
@@ -183,10 +183,10 @@ proc printLetter {letterName img x y} {
 
 # printTextLine - prints 1 line of text to $img
 ## Called by printTwd
-# #alls printLetter
+## calls printLetter
 ## use 'args' for TAB or IND
 proc printTextLine {textLine x y img args} {
-  global mark TwdLang marginleft enabletitle RtL BdfBidi prefix
+  global TwdLang marginleft enabletitle RtL BdfBidi prefix
    
   set FontAsc "$${prefix}::FontAsc"
   
@@ -205,9 +205,9 @@ proc printTextLine {textLine x y img args} {
     set textLine [bidi $textLine $TwdLang]
     set operator -
     
-#TODO: THIS IS NOT CLEAR BUT WORKS....(why marginleft*2 ???)
+# T O D O : THIS IS NOT CLEAR BUT WORKS....(why marginleft*2 ???) 
+# JOEL, das geht nur wenn der Rand klein ist, sonst wird der Text doppelt verschoben!!!
     set xBase [expr $imgW - ($marginleft*2) - $x]
-    
     
   } else {
     set operator +
@@ -222,7 +222,7 @@ proc printTextLine {textLine x y img args} {
   }
   
   
-# T O D O: setzt Kodierung nach Systemkodierung? - GEHT NICHT AUF LINUX!!!- 
+# T O D O ???: setzt Kodierung nach Systemkodierung? - GEHT NICHT AUF LINUX!!!- 
 # jetzt durch "source -encoding utf8" ersetzt in BdfPrint - JOEL BITTE TESTEN!
 
   set letterList [split $textLine {}]
@@ -230,44 +230,35 @@ proc printTextLine {textLine x y img args} {
   
   foreach letter $letterList {
 
-    #Reset fontweight of next letters: < for I / > for R
-    if {$letter == "<"} {
-      set weight I
-  puts $weight
-      continue
-      } elseif {$letter == ">"} {
-      set weight R
-  puts $weight
-      continue
-    } elseif {$letter == "£"} {
-      set weight B
-      continue
-    }
-
-    set encLetter [scan $letter %c]
-    set print_${encLetter} ${weight}::print_${encLetter} 
-    
-#puts ${weight}::print_${encLetter} 
-    
-    if {[info exists ${weight}::print_${encLetter}]} {
-      array set curLetter [array get ${weight}::print_${encLetter}]
-
-    } else {
-      #Print empty space if letter not found in R:: or B:: 
-      catch {array get R::print_${encLetter}} res
-      catch {array get B::print_${encLetter}} res
-      if {$res != ""} {
-        array set curLetter $res
-        } else {
-        array set curLetter [array get "R::print_32"]
+    #Reset fontweight of next letters: < for I / > for R - excluding Thai and Chin.
+    if {$TwdLang != "zh" && $TwdLang != "th"} {
+      if {$letter == "<"} {
+        set prefix I
+        continue
+        } elseif {$letter == ">"} {
+        set prefix R
+        continue
+      } elseif {$letter == "£"} {
+        set prefix B
+        continue
       }
     }
 
+puts "prefix: $prefix"
+ 
+    set encLetter [scan $letter %c]
+
+    #set print_${encLetter} "${prefix}::print_${encLetter}"
+    upvar 2 ${prefix}::print_$encLetter print_$encLetter
+
+    #Print letter or space if not found
+    if {[info exists print_$encLetter]} {
+      array set curLetter [array get print_$encLetter]
+      } else {
+      array set curLetter [array get ${prefix}::print_32]
+    }
     printLetter curLetter $img $xBase $yBase
-   
-   set ::weight $weight 
-#    upvar 2 weight $weight
-           
+
     #sort out Bidi languages
     if {$RtL} {
       set xBase [expr $xBase - $curLetter(DWx)]
@@ -288,6 +279,7 @@ proc printTextLine {textLine x y img args} {
 #############################################################################
 ################### extra procs for rare use ################################
 
+### T O D O : joel, sollen wir das immer mitladen???? ###
 
 # BDF file with path
 proc scanBdf {BdfFilePath} {

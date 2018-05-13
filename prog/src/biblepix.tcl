@@ -117,10 +117,12 @@ if {$enablepic } {
         #export new TwdFile
         set ::TwdFileName [getRandomTwdFile]
         
-        source $Image
+        catch {source $Image}
         setWinBG
-      ##FOR TESTING:
-  exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
+        
+        ##FOR TESTING Wayland/Sway:
+        exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
+      
       } else {
       
         #Calling new instance of myself
