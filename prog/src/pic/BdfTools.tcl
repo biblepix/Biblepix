@@ -246,7 +246,7 @@ proc printTextLine {textLine x y img args} {
       }
     }
 
-puts "prefix: $prefix"
+#puts "prefix: $prefix"
  
     set encLetter [scan $letter %c]
 

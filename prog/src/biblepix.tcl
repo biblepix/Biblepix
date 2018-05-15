@@ -49,38 +49,12 @@ if {[info exists enableterm] && $enableterm} {
   }
 }
 
-#3. P r e p a r e   c h a n g i n g   W i n   d e s k t o p
 
-#TODO: move to ?tools
-proc setWinBG {} {
-  global TwdTIF regpath platform
-  if {$platform=="windows"} {
-    registry set $regpath Wallpaper [file nativename $TwdTIF]
-    exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
-  }
-}
+#3. P r e p a r e   c h a n g i n g    d e s k t o p
 
-if {$platform=="windows"} {
-  package require registry
-  set regpath [join {HKEY_CURRENT_USER {Control Panel} Desktop} \\]
-  
-} elseif {$os=="Linux"} {
-
-  #procs found in ?tools 
-  catch setLinuxBg ;#run always
-  
-  #TEST FOR NOW:
-  exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
-#  catch setSwayBg
-
-#  catch setXfceBg
-
-#- combine all in 1 proc:
-#  set setBg [setBackground]
-
-}
-
-#TODO: set setBg {get info from above!!!}
+#Get appropriate background changer command (setBg)
+source $ChangeBackground
+namespace import Background::setBg
 
 #Stop any running biblepix.tcl
 foreach file [glob -nocomplain -directory $piddir *] {
@@ -90,20 +64,14 @@ set pidfile [open $piddir/[pid] w]
 close $pidfile
 
 #4. C r e a t e   i m a g e   & start slideshow
-if {$enablepic } {
+if {$enablepic} {
 
   #run once with above TwdFileName
-  source $Image
-  setWinBG
+  catch {source $Image}
+  catch setBg
   ##FOR TESTING:
   exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
-  #TODO: exec $setBg
   
-  #exit if $crontab exists
-  if {[info exists crontab]} {
-    exit
-  }
-
   #if Slideshow == 1
   if {$slideshow > 0} {
   
@@ -116,9 +84,8 @@ if {$enablepic } {
         
         #export new TwdFile
         set ::TwdFileName [getRandomTwdFile]
-        
         catch {source $Image}
-        setWinBG
+        catch setBG
         
         ##FOR TESTING Wayland/Sway:
         exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
@@ -139,7 +106,7 @@ if {$enablepic } {
       
       while {$limit<9} {
         sleep 10000
-        setWinBG
+        catch setBG
         incr limit
       }
     }

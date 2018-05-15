@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 11may18
+# Updated: 14may18
 
 # This variable enables Debugging Mode in the whole application if set to 1.
 set Debug 1
@@ -74,8 +74,7 @@ array set filepaths "
   BdfPrint [file join $picdir BdfPrint.tcl]
   BdfBidi [file join $sharedir BdfBidi.tcl]
   Image [file join $picdir image.tcl]
-  Hgbild [file join $picdir hgbild.tcl]
-  Textbild [file join $picdir textbild.tcl]
+  ChangeBackground [file join $picdir changeBackground.tcl]
   SetupMainFrame [file join $guidir setupMainFrame.tcl]
   SetupBuild [file join $guidir setupBuildGUI.tcl]
   SetupDesktop [file join $guidir setupDesktop.tcl]
@@ -88,13 +87,12 @@ array set filepaths "
   SetupWelcome [file join $guidir setupWelcome.tcl]
   SetupTools [file join $guidir setupTools.tcl]
   SetupTexts [file join $guidir setupTexts.tcl]
-  TestBildGUI [file join $guidir testbild.png]
   SetupSave [file join $savedir setupSave.tcl]
   SetupSaveLin [file join $savedir setupSaveLin.tcl]
   SetupSaveLinHelpers [file join $savedir setupSaveLinHelpers.tcl]
   SetupSaveWin [file join $savedir setupSaveWin.tcl]
   SetupSaveWinHelpers [file join $savedir setupSaveWinHelpers.tcl]
-  Bidi [file join $sharedir bidi.tcl]
+  BdfBidi [file join $sharedir BdfBidi.tcl]
   Flags [file join $sharedir flags.tcl]
   Http [file join $sharedir http.tcl]
   JList [file join $sharedir JList.tcl]

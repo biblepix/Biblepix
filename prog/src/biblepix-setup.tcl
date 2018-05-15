@@ -1,4 +1,4 @@
-#! /bin/env tclsh
+#!/bin/env tclsh
 # ~/Biblepix/prog/src/biblepix-setup.tcl
 # Main Setup program for BiblePix, starts Setup dialogue
 # Called by User via Windows/Unix Desktop entry

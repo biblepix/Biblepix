@@ -1,4 +1,4 @@
-# ~/Biblepix/prog/src/com/twdtools.tcl
+# ~/Biblepix/prog/src/com/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated 10may18
