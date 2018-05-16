@@ -10,6 +10,8 @@
 ## produces List of all installed Desktop managers
 proc getDesktopList {} {
   global platform
+  
+  set desktopList {}
 
   if {$platform=="windows"} {
     lappend desktopList "Win"
@@ -43,8 +45,10 @@ proc getDesktopList {} {
 set desktopList [getDesktopList]
 
 #Create list of corresponding procs
+set procList {}
 foreach desktop $desktopList {
   switch $desktop {
+    Win {lappend procList setWinBG}
     Gnome2 {lappend procList setGnomeBg}
     Gnome3 {lappend procList setGnomeBg}
     Xloadimage {lappend procList setXloadimageBg}
@@ -112,7 +116,9 @@ namespace eval Background {
 }
 
 #Create list of commands for Biblepix
+set Background::comList {}
 foreach proc $procList {
-    lappend Background::comList [$proc]
+  lappend Background::comList [$proc]
 }
+
 puts $Background::comList

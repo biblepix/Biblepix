@@ -67,10 +67,15 @@ close $pidfile
 if {$enablepic} {
 
   #run once with above TwdFileName
-  catch {source $Image}
+  if { $Debug } {
+    source $Image
+  } else {
+    catch {source $Image}
+  }
+  
   catch setBg
   ##FOR TESTING:
-  exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
+  #exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
   
   #if Slideshow == 1
   if {$slideshow > 0} {
@@ -84,11 +89,17 @@ if {$enablepic} {
         
         #export new TwdFile
         set ::TwdFileName [getRandomTwdFile]
-        catch {source $Image}
+        
+        if { $Debug } {
+          source $Image
+        } else {
+          catch {source $Image}
+        }
+        
         catch setBG
         
         ##FOR TESTING Wayland/Sway:
-        exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
+        #exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
       
       } else {
       

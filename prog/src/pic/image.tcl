@@ -16,11 +16,10 @@ if { [catch {package require Img}] } {
 wm overrideredirect . 1
 wm geometry . +0-30
 if {$platform=="unix"} {
-    wm withdraw .
-  } else {
-    wm iconify .
+  wm withdraw .
+} else {
+  wm withdraw .
 }
-
 
 
 #Select & create random background JPEG/PNG
@@ -33,8 +32,6 @@ image create photo hgbild -file $hgfile
 puts "Creating BDF picture...
 "
 
-source $TwdTools
-source $BdfTools
 source $BdfPrint
 
 return

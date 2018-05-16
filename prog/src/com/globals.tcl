@@ -6,7 +6,7 @@
 
 # This variable enables Debugging Mode in the whole application if set to 1.
 set Debug 1
-set Mocking 0
+set Mocking 1
 
 set version "2.5"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
@@ -280,9 +280,13 @@ puts $res
 #Define current font name from Config
 if {$fontfamily=="Sans"} {
   set fontFamilyTag "Arial"
-  } elseif {$fontfamily=="Serif"} {
+} elseif {$fontfamily=="Serif"} {
   set fontFamilyTag "Times"
+} else {
+  set fontfamily "Sans"
+  set fontFamilyTag "Arial"
 }
+
 if {$fontweight=="bold"} {
   set fontWeightTag B
   } else {
