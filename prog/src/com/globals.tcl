@@ -4,10 +4,6 @@
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
 # Updated: 14may18
 
-# This variable enables Debugging Mode in the whole application if set to 1.
-set Debug 1
-set Mocking 0
-
 set version "2.5"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"

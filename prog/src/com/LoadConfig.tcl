@@ -48,7 +48,7 @@ if {![info exists slideshow]} {
 }
 
 #Set fontfamily
-if {![info exists fontfamily]} {
+if {![info exists fontfamily] || ($fontfamily != "Sans" && $fontfamily != "Serif")} {
   set fontfamily "Sans"
 }
 
@@ -62,7 +62,6 @@ if {![info exists fontweight]} {
   set fontweight normal
 }
 
-
 #Set fontcolortext
 if {![info exists fontcolortext]} {
   set fontcolortext blue
@@ -73,9 +72,14 @@ if {![info exists marginleft]} {
   set marginleft 30
 }
 
-#Set margintop
-if {![info exists margintop]} {
-  set margintop 30
+#Set Debug
+if {![info exists Debug]} {
+  set Debug 0
+}
+
+#Set Mock
+if {![info exists Mock]} {
+  set Mock 0
 }
 
 #Set current font colour

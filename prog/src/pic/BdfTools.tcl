@@ -2,7 +2,7 @@
 # BDF scanning and printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 13may18
+# Updated: 19may18
 
 
 # printTwd
@@ -86,22 +86,23 @@ proc printTwdTextParts {x y img} {
   
   #Sort out markings for Italic & Bold
   if {$TwdLang == "th" || $TwdLang == "zh" } {
-    set mark1 ""
-    set mark2 ""
-    set mark3 ""
+    set markB ""
+    set markI ""
+    set markR ""
     } else {
-    set mark2 "<"
-    set mark3 ">"
+    set markB +
+    set markI <
+    set markR ~
     }
 
-  # 1. Print Title in Bold £...>
+  # 1. Print Title in Bold +...~
   if {$enabletitle} {
-    set y [printTextLine ${title} $x $y $img]
+    set y [printTextLine ${markB}${title}${markR} $x $y $img]
   }
   
-  #Print intro1 in Italics <...>
+  #Print intro1 in Italics <...~
   if [info exists intro1] {
-    set y [printTextLine <$intro1> $x $y $img IND]
+    set y [printTextLine ${markI}${intro1}${markR} $x $y $img IND]
   }
   
   #Print text1
@@ -111,11 +112,11 @@ proc printTwdTextParts {x y img} {
   }
   
   #Print ref1 in Italics
-  set y [printTextLine ${mark2}${ref1}${mark3} $x $y $img TAB]
+  set y [printTextLine ${markI}${ref1}${markR} $x $y $img TAB]
 
   #Print intro2 in Italics
   if [info exists intro2] {
-    set y [printTextLine ${mark2}${intro2}${mark3} $x $y $img IND]
+    set y [printTextLine ${markI}${intro2}${markR} $x $y $img IND]
   }
   
   #Print text2
@@ -125,7 +126,7 @@ proc printTwdTextParts {x y img} {
   }
 
   #Print ref2
-  set y [printTextLine ${mark2}${ref2}${mark3} $x $y $img TAB]
+  set y [printTextLine ${markI}${ref2}${markR} $x $y $img TAB]
 
   return $img
   
@@ -136,7 +137,7 @@ proc printTwdTextParts {x y img} {
 ## prints single letter to $img
 ## called by printTextLine
 proc printLetter {letterName img x y} {
-  global sun shade fontcolortext RtL weight prefix
+  global sun shade fontcolortext RtL weight prefix BBxoff
   upvar $letterName curLetter
   
   set color [set fontcolortext]
@@ -183,7 +184,7 @@ proc printLetter {letterName img x y} {
 ## calls printLetter
 ## use 'args' for TAB or IND
 proc printTextLine {textLine x y img args} {
-  global TwdLang fontName marginleft margintop enabletitle RtL BdfBidi prefix Debug
+  global TwdLang fontName marginleft margintop enabletitle RtL BdfBidi prefix
    
   set FontAsc "$${prefix}::FontAsc"
   
@@ -214,285 +215,49 @@ proc printTextLine {textLine x y img args} {
   
   #Compute indentations
   if {$args=="IND"} {
-      #set x [expr $x $operator $ind]
-      set xBase [expr $xBase $operator $ind]
-    } elseif {$args=="TAB"} {
-      set xBase [expr $xBase $operator $tab]
+    set xBase [expr $xBase $operator $ind]
+  } elseif {$args=="TAB"} {
+    set xBase [expr $xBase $operator $tab]
   }
   
   
 # T O D O ???: setzt Kodierung nach Systemkodierung? - GEHT NICHT AUF LINUX!!!- 
-# jetzt durch "source -encoding utf8" ersetzt in BdfPrint - JOEL BITTE TESTEN!
+# jetzt durch "source -encoding utf-8" ersetzt in BdfPrint - JOEL BITTE TESTEN!
 
   set letterList [split $textLine {}]
   set weight R
   
   foreach letter $letterList {
 
-    #Reset fontweight of next letters: < for I / > for R - excluding Thai and Chin.
-    if {$TwdLang != "zh" && $TwdLang != "th"} {
-      if {$letter == "<"} {
-        set prefix I
-        continue
-        } elseif {$letter == ">"} {
-        set prefix R
-        continue
-      }
+    #Set new fontstyle if marked
+    if {$letter == "<"} {
+      set prefix I
+      continue
+    } elseif {$letter == "~"} {
+      set prefix R
+      continue
+    } elseif {$letter == "+"} {
+      set prefix B
+      continue
     }
 
-    puts "prefix: $prefix"
     set encLetter [scan $letter %c]
 
-    if {[catch {upvar 3 ${prefix}::print_$encLetter print_$encLetter} error]} {
+    if { [catch {upvar 3 ${prefix}::print_$encLetter print_$encLetter} error] } {
       puts $error
       continue
+      
     } else {
+      
       array set curLetter [array get print_$encLetter]
-      
-      if { $Debug } {
-        printLetter curLetter $img $xBase $yBase
-      } else {
-        catch {printLetter curLetter $img $xBase $yBase}
-      }
-      
-#      set printSpace [namespace which print_32]
-#      array set curLetter [array get printSpace]
-      #[array get ${prefix}::print_32]
+      catch {printLetter curLetter $img $xBase $yBase} error
+      puts $error
     
       set xBase [expr $xBase $operator $curLetter(DWx)]
     }
   } ;#END foreach
   
-  #gibt letzte Y-Position an aufrufendes Programm ab
-  # 0 beim ersten Mal#TODO: var ist manchmal nach 1. Aufruf leer!!!
-  if [info exists ${prefix}::FBBy ] {
-    set FBBy "$${prefix}::FBBy"
-  } else {
-    set FBBy $marginleft
-  }
-  
-  return [expr $y + $FBBy]
+  #gibt neue Y-Position für nächste Zeile zurück  
+  return [expr $y + $${prefix}::FBBy]
 
 } ;#END printTextLine
-
-
-
-#############################################################################
-################### extra procs for rare use ################################
-
-### T O D O : joel, sollen wir das immer mitladen???? ###
-
-# BDF file with path
-proc scanBdf {BdfFilePath} {
-  global heute fontdir
-
-  set BdfFile [file tail $BdfFilePath]
-  
-  #Set up files and channels  
-  set BdfFontChan [open $BdfFilePath]
-  set BdfText [read $BdfFontChan]
-  close $BdfFontChan
-
-  # A) SCAN BDF FOR GENERAL INFORMATION 
-  
-  if {[regexp -line {(^FONT )(.*$)} $BdfText -> name value]} {
-    set FontSpec $value
-  } else {
-    set FontSpec "Undefined"
-  }
-  
-  if {[regexp -line {(^SIZE )(.*$)} $BdfText -> name value]} {
-    set FontSize $value
-  } else {
-    set FontSize "Undefined"
-  }
-  
-  if {[regexp -line {(^FAMILY_NAME )(.*$)} $BdfText -> name value]} {
-    set FontName $value
-  } else {
-    set FontName "Undefined"
-  }
-  
-  if {[regexp -line {(^WEIGHT_NAME )(.*$)} $BdfText -> name value]} {
-    set FontWeight $value
-  } else {
-    set FontWeight "Undefined"
-  }
-
-  ##get character width, height and offsets
-  regexp -line {^FONTBOUNDINGBOX .*$} $BdfText FBBList
-  if {[regexp -line {(^FONT_ASCENT )(.*$)} $BdfText -> name value]} {
-    set FontAsc $value
-  } else {
-    set FontAsc "Undefined"
-  }
-  
-  ##get number of characters  - JOEL WOZU DAS?
-  if {[regexp -line {(^CHARS )(.*$)} $BdfText -> name value]} {
-    set numChars $value
-  } else {
-    set numChars "Undefined"
-  }
-  
-  #copyright info
-  if {[regexp -line {(^COPYRIGHT )(.*$)} $BdfText -> name value]} {
-    set copyright $value
-  } else {
-    set copyright "Undefined"
-  }
-  
-  #Slant (R/B/I/BI)
-  if {[regexp -line {(^SLANT )(.*$)} $BdfText -> name value]} {
-    set slant $value
-  } else {
-    set slant "Undefined"
-  }
-
-  #Trying to get sensible name for font file
-  foreach i $FontName {append noSpaceFontName $i} 
-  append TclFontFile $noSpaceFontName _ $FontWeight _ $slant _ [string range $FontSize 0 1] .tcl
-  set TclFontChan [open $fontdir/$TclFontFile w]
-  
-  # Save general information to TclFontFile
-  puts $TclFontChan "\# $fontdir\/$TclFontFile
-\# BiblePix font extracted from $BdfFile
-\# Font Name: $FontName
-\# Font size: $FontSize
-\# Font Specification: $FontSpec
-\# Copyright: $copyright
-\# Created: [clock format [clock seconds] -format "%d-%m-%Y"]
-
-\# FONTBOUNDINGBOX INFO
-set FBBx [lindex $FBBList 1]
-set FBBy [lindex $FBBList 2]
-set FBBxoff [lindex $FBBList 3]
-set FBByoff [lindex $FBBList 4]
-set FontAsc $FontAsc
-set numChars $numChars
-"
-    
-  # B) SCAN BDF FOR SINGLE CHARACTERS
-
-  set indexEndChar 0
-
-  for {set charNo 0} {$charNo < $numChars} {incr charNo} {
-    
-    #Set next character indices
-    set indexBegChar [string first {STARTCHAR} $BdfText $indexEndChar]
-    set indexEndChar [expr [string first ENDCHAR $BdfText $indexBegChar] +7]
-    
-    set charText [string range $BdfText $indexBegChar $indexEndChar]
-
-    # 1. Extract necessary information
-    
-    ##set Codename (to be used for character name)
-    regexp -line {^ENCODING .*$} $charText encList
-    set enc [lindex $encList 1]
-        
-    ##set BBX (for typesetting proc)
-    regexp -line {^BBX .*$} $charText BBXList
-    
-    ##set DW
-    regexp -line {^DWIDTH .*$} $charText DWList
-        
-    ##create BITMAP list 
-    set indexBegBMP [expr [string first BITMAP $charText] +6]
-    set indexEndBMP [expr [string first ENDCHAR $charText] -1]
-    set BMPList [string range $charText $indexBegBMP $indexEndBMP]
-    
-    #Convert bitmap list to binary
-    set binList ""
-    foreach line $BMPList {
-      lappend binList [hex2bin $line]
-    }
-    
-    #Colour + format binary bitmap list
-    set binList [colourBinlist $binList $BBXList]
-    
-    # 2. Create character array & append to TclFontFile
-    puts $TclFontChan "array set print_$enc \{ 
-  BBx [expr [lindex $BBXList 1] + 2]
-  BBy [expr [lindex $BBXList 2] + 2]
-  BBxoff [expr [lindex $BBXList 3] - 1]
-  BByoff [expr [lindex $BBXList 4] - 1]
-  DWx [expr [lindex $DWList 1] + 2]
-  DWy [lindex $DWList 2]
-  BITMAP \{ $binList \}
-\}
-"
-  } ;#END LOOP
-
-  close $TclFontChan
-  puts "Font successfully parsed to $fontdir/$TclFontFile"
-
-} ;#END scanBdf  
-
-proc hex2bin {hex} {
-  binary scan [binary format H* $hex] B* bin
-  return $bin
-}
-
-proc calcColorLine {sunLine charLine shadeLine BBx} {
-  set sunLine1 [string cat $sunLine "00"]
-  set sunLine2 [string cat "0" $sunLine "0"]
-  set charLine [string cat "0" $charLine "0"]
-  set shadeLine1 [string cat "00" $shadeLine]
-  set shadeLine2 [string cat "0" $shadeLine "0"]
-  
-  set colourLine ""
-  
-  for {set index 0} {$index < [expr $BBx + 2]} {incr index} {
-    if {[string index $charLine $index] == "1"} {
-      set colourLine [string cat $colourLine "1"]
-    } elseif {[string index $sunLine1 $index] == "1"} {
-      set colourLine [string cat $colourLine "2"]
-    } elseif {[string index $shadeLine1 $index] == "1"} {
-      set colourLine [string cat $colourLine "3"]
-    } elseif {[string index $sunLine2 $index] == "1"} {
-      set colourLine [string cat $colourLine "2"]
-    } elseif {[string index $shadeLine2 $index] == "1"} {
-      set colourLine [string cat $colourLine "3"]
-    } else {
-      set colourLine [string cat $colourLine "0"]
-    }
-  }
-  
-  return $colourLine
-}
-
-# S c h e m a   bei Sonne von links oben:
-#   S
-#  SS#
-# SS###
-#  #####
-#   ###ss
-#    #ss
-#     s
-       
-# Colour a single bitmap character
-proc colourBinlist {binList BBXList} {
-  set colourList ""
-  
-  set BBx [lindex $BBXList 1]
-  
-  set sunLine [string repeat "0" $BBx]
-  set charLine [string repeat "0" $BBx]
-  
-  foreach line $binList {
-    set shadeLine $charLine
-    set charLine $sunLine
-    set sunLine $line
-    
-    lappend colourList [calcColorLine $sunLine $charLine $shadeLine $BBx]
-  }
-  
-  for {set i 0} {$i < 2} {incr i} {
-    set shadeLine $charLine
-    set charLine $sunLine
-    set sunLine [string repeat "0" $BBx]
-    
-    lappend colourList [calcColorLine $sunLine $charLine $shadeLine $BBx]
-  }
-  
-  return $colourList
-}

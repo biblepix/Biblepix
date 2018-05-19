@@ -63,6 +63,13 @@ puts $chan "set shade [setShade $rgb]"
 puts $chan "set marginleft $marginleftstatus"
 puts $chan "set margintop $margintopstatus"
 
+if {$Debug || $Mock} {
+  puts $chan "
+  # These variables enable Debugging Mode resp. Mocking Http for testing.
+  set Debug $Debug
+  set Mock $Mock"
+}
+
 #3.Write Linux vars to $Config
 if {$os == "Linux"} {
   if {[info exists crontab]} {

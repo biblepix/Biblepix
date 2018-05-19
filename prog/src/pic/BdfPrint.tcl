@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 12may18
+# Updated: 19may18
 
 #1. SET BASIC VARS
 source $TwdTools
@@ -38,7 +38,6 @@ if {$TwdLang == "zh"} {
   # vorläufig wirds immer geladen, auch wenn bei "fontweight==bold" kein R:: nötig wäre
   #if {$fontweight == "normal"} {
     if {! [namespace exists R]} {
-    set ::prefix R
       namespace eval R {
         source -encoding utf-8 $BdfFontsArray($fontName)
 #        puts $FontAsc
@@ -48,6 +47,7 @@ if {$TwdLang == "zh"} {
   
   #Source Italic for all except Asian
   if {! [namespace exists I]} {
+    set ::prefix I
     namespace eval I {
       source -encoding utf-8 $BdfFontsArray($fontNameItalic)
 #      puts $FontAsc
