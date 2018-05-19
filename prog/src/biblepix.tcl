@@ -4,7 +4,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18may18
+# Updated: 19may18
 ######################################################################
 
 #Verify location & source Globals
@@ -54,7 +54,7 @@ if {[info exists enableterm] && $enableterm} {
 
 #Get appropriate background changer command (setBg)
 ##setBg is executed for Desktops that can accept a command
-##if setBg is empty/non-existent it ist 'catched'
+##if setBg is empty/non-existent it is 'catched'
 source $ChangeBackground
 if [namespace exists Background] {
   namespace import Background::setBg
@@ -70,13 +70,11 @@ close $pidfile
 #4. C r e a t e   i m a g e   & start slideshow
 if {$enablepic} {
 
-  #run once with above TwdFileName
+  #Run once for all Desktops
   catch {source $Image}
   catch setBg
-  ##FOR TESTING:
-  exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
   
-  #if Slideshow == 1
+  #Run multiple times if $slideshow
   if {$slideshow > 0} {
   
     #rerun until pidfile renamed by new instance
@@ -90,9 +88,6 @@ if {$enablepic} {
         set ::TwdFileName [getRandomTwdFile]
         catch {source $Image}
         catch setBG
-        
-        ##FOR TESTING Wayland/Sway:
-        exec swaymsg output DVI-I-2 bg $imgDir/theword.bmp stretch
       
       } else {
       
@@ -103,6 +98,7 @@ if {$enablepic} {
   
   #if Slideshow == 0    
   } else {
+
     if {$platform=="windows"} {
       
       #run every 10s up to 10x so Windows has time to update

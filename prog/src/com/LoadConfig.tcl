@@ -53,7 +53,7 @@ if {![info exists fontfamily]} {
 }
 
 #Set fontsize (must exist and be digits)
-if {![info exists fontsize] || ![regexp {[[:digit:]]} $fontsize] } {
+if {![info exists fontsize] || ![regexp {[[:digit:]]} $fontsize] || ($fontsize != 20 && $fontsize != 24 && $fontsize != 30)} {
   set fontsize 24
 }
 

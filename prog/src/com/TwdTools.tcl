@@ -105,7 +105,7 @@ proc parseToText {node TwdLang {withTags 0}} {
   
   #Fix Bidi languages
   set isRtL [isRtL $TwdLang]
-  puts "Computing $TwdLang text..."
+  puts "Computing -$TwdLang- text..."
   
     if {[info procs bidi] == ""} {
       source $BdfBidi
@@ -125,7 +125,6 @@ proc parseToText {node TwdLang {withTags 0}} {
   if {$TwdLang == "ar" ||
   $TwdLang == "ur" ||
   $TwdLang == "fa"} {
-    puts "Computing Arabic text..."
     if {[info procs fixArabic] == ""} {
       source $BdfBidi
     }
@@ -138,8 +137,6 @@ proc parseToText {node TwdLang {withTags 0}} {
   }
   
   }   ;#end PROC MEJUTAR
-  
-  
   
   return $text
 }

@@ -90,14 +90,13 @@ proc printTwdTextParts {x y img} {
     set mark2 ""
     set mark3 ""
     } else {
-    set mark1 £
-    set mark2 <
-    set mark3 >
+    set mark2 "<"
+    set mark3 ">"
     }
 
   # 1. Print Title in Bold £...>
   if {$enabletitle} {
-    set y [printTextLine ${mark1}${title}${mark3} $x $y $img]
+    set y [printTextLine ${title} $x $y $img]
   }
   
   #Print intro1 in Italics <...>
@@ -137,14 +136,14 @@ proc printTwdTextParts {x y img} {
 ## prints single letter to $img
 ## called by printTextLine
 proc printLetter {letterName img x y} {
-  global sun shade fontcolortext RtL weight prefix BBxoff
+  global sun shade fontcolortext RtL weight prefix
   upvar $letterName curLetter
   
   set color [set fontcolortext]
   set BBxoff $curLetter(BBxoff)
   set BBx $curLetter(BBx)
   
-  # T O D O : JOEL, this dosn't work for Italic Hebrew!!!
+  # T O D O : JOEL, this doesn't work for Italic Hebrew!!!
   if {$RtL} {
     set FBBx "$${prefix}::FBBx"
     #puts $FBBx
@@ -166,8 +165,6 @@ proc printLetter {letterName img x y} {
           1 { set pxColor $color }
           2 { set pxColor $sun }
           3 { set pxColor $shade }
-          #testzeile (ROT!)
-          #default { set pxColor $mark }
         }
         
       if { $xCur <0 } {set xCur 1 } 
@@ -186,7 +183,7 @@ proc printLetter {letterName img x y} {
 ## calls printLetter
 ## use 'args' for TAB or IND
 proc printTextLine {textLine x y img args} {
-  global TwdLang fontName marginleft margintop enabletitle RtL BdfBidi prefix
+  global TwdLang fontName marginleft margintop enabletitle RtL BdfBidi prefix Debug
    
   set FontAsc "$${prefix}::FontAsc"
   
@@ -240,35 +237,29 @@ proc printTextLine {textLine x y img args} {
         } elseif {$letter == ">"} {
         set prefix R
         continue
-      } elseif {$letter == "£"} {
-        set prefix B
-        continue
       }
     }
 
-#puts "prefix: $prefix"
- 
+    puts "prefix: $prefix"
     set encLetter [scan $letter %c]
 
-    if [catch {upvar 2 ${prefix}::print_$encLetter print_$encLetter}] {
-      
+    if {[catch {upvar 3 ${prefix}::print_$encLetter print_$encLetter} error]} {
+      puts $error
       continue
-      
-      } else {
-      
+    } else {
       array set curLetter [array get print_$encLetter]
-      catch {printLetter curLetter $img $xBase $yBase}
+      
+      if { $Debug } {
+        printLetter curLetter $img $xBase $yBase
+      } else {
+        catch {printLetter curLetter $img $xBase $yBase}
+      }
       
 #      set printSpace [namespace which print_32]
 #      array set curLetter [array get printSpace]
       #[array get ${prefix}::print_32]
     
-      #sort out Bidi languages
-      if {$RtL} {
-        set xBase [expr $xBase - $curLetter(DWx)]
-        } else {
-        set xBase [expr $xBase + $curLetter(DWx)]
-      }
+      set xBase [expr $xBase $operator $curLetter(DWx)]
     }
   } ;#END foreach
   
