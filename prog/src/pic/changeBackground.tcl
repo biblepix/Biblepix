@@ -2,59 +2,75 @@
 # Searches system for current Desktop manager, gives out appropriate BG changing command
 # Called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15may18
+# Updated: 18may18
 
-# TODO: try XDG_CURRENT_DESKTOP
+# GNOME: needs no image changer, detects image change (just provide imgPath at setupSave)
+# KDE: needs to be configured (in setupSave)
+# XFCE4: needs to be configured (in setupSave)
+## KDE & XFCE4 can't accept easy script input
 
-# getDesktopList
-## produces List of all installed Desktop managers
-proc getDesktopList {} {
-  global platform
+proc getCurrentDesktop {} {
 
-  if {$platform=="windows"} {
-    lappend desktopList "Win"
-    
-  } else {
-    
-    #check xloadimage / display (ImageMagick)
-    if {[auto_execok xloadimage] != ""} {
-      lappend desktopList Xloadimage
+  # W i n d o w s
+  
+  if {$::platform=="windows"} {
+    return Win
+  }
+
+  #L i n u x e s :
+
+  ##rule out Gnome and KDE
+  if {! [info exists env(GNOME_KEYRING_CONTROL)] &&
+      ! [info exists env(GNOME_DESKTOP_SESSION_ID)] } {
+    return ""
+  }
+      
+  if { [info exists env(XDG_CURRENT_DESKTOP)] &&
+      $env(XDG_CURRENT_DESKTOP) != "KDE" } {
+    return ""
+  }
+
+  #check Wayland/Sway
+  if { [info exists env(SWAYSOCK) || 
+      [info exists env(WAYLAND_DISPLAY)] } {
+    return Sway
+  }
+
+  #check 'xloadimage' / 'display' (ImageMagick)
+  if {[auto_execok xloadimage] != ""} {
+    lappend desktopList Xloadimage
+    return Xloadimage
     } elseif {[auto_execok display] != ""} {
-      lappend desktopList ImageMagick
-    }
-
-    #check Wayland/Sway
-    if {[auto_execok swaymsg] != ""} {
-      lappend desktopList Sway
-    }
-    
-    #check GNOME
-    if {[auto_execok gsettings] != ""} {
-      lappend desktopList Gnome3
-    }
-    if {[auto_execok gconftool-2] != ""} {
-      lappend desktopList Gnome2
-    }
+    return ImageMagick
   }
-  return $desktopList
 }
 
-#Create list of desktops
-set desktopList [getDesktopList]
+set curDesktop [getCurrentDesktop]
 
-#Create list of corresponding procs
-foreach desktop $desktopList {
-  switch $desktop {
-    Gnome2 {lappend procList setGnomeBg}
-    Gnome3 {lappend procList setGnomeBg}
-    Xloadimage {lappend procList setXloadimageBg}
-    ImageMagick {lappend procList setImageMagickBg}
-    Sway {lappend procList setSwayBg}
+#Define command for setBg
+if {! [info exists curDesktop]} {
+  return ""
+}
+
+switch $curDesktop {
+  Win {set command setWinBg}
+  Sway {set command setSwayBg}
+  Xloadimage {set command setXloadimageBg}
+  ImageMagick {set command setImageMagickBg}
+}
+
+#Produce final setBg command for Biblepix
+namespace eval Background {
+  proc setBg {} {
+    catch {exec $::command}
+    namespace export setBg
   }
 }
 
 
-############## Change Background commands ##################3
+
+############## Change Background Procs ###########
+##################################################
 
 proc setWinBG {} {
   package require registry
@@ -63,7 +79,6 @@ proc setWinBG {} {
   return "RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True"
 }
 
-#setSwayBg + getSwayOutputs
 proc setSwayBg {} {
   set outputs [exec swaymsg -t get_outputs]
   #find lines with 'Output' and copy last/next word - 2 diff. formats found!
@@ -86,33 +101,3 @@ proc setImageMagickBg {} {
   #General Linux desktops (does not work with modern desktop managers)
   return "display -window root $::TwdPNG"
 }
-
-proc setGnomeBg {} {
-  #Gnome2
-  if {[auto_execok gconftool-2] != ""} {
-    return "gconftool-2 --type=string --set /desktop/gnome/background/picture_filename $::TwdPNG"
-  #Gnome3
-  } elseif {[auto_execok gsettings] != ""} {
-    return "gsettings set org.gnome.desktop.background picture-uri file:///$::TwdPNG"
-  }
-}
-
-
-#### Produce final setBg proc, to be imported by Biblepix #####
-
-namespace eval Background {
-  
-  proc setBg {} {
-    global comList
-    foreach command $comList {
-      catch {exec $command}
-    }
-  }
-  namespace export setBg
-}
-
-#Create list of commands for Biblepix
-foreach proc $procList {
-    lappend Background::comList [$proc]
-}
-puts $Background::comList

@@ -4,7 +4,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 11may18
+# Updated: 18may18
 ######################################################################
 
 #Verify location & source Globals
@@ -53,8 +53,12 @@ if {[info exists enableterm] && $enableterm} {
 #3. P r e p a r e   c h a n g i n g    d e s k t o p
 
 #Get appropriate background changer command (setBg)
+##setBg is executed for Desktops that can accept a command
+##if setBg is empty/non-existent it ist 'catched'
 source $ChangeBackground
-namespace import Background::setBg
+if [namespace exists Background] {
+  namespace import Background::setBg
+}
 
 #Stop any running biblepix.tcl
 foreach file [glob -nocomplain -directory $piddir *] {
