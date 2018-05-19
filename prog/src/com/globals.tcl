@@ -2,9 +2,9 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 14may18
+# Updated: 19may18
 
-set version "2.5"
+set version "3.0"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
 
