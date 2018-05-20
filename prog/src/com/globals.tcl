@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 19may18
+# Updated: 20may18
 
 set version "3.0"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
@@ -70,7 +70,7 @@ array set filepaths "
   BdfPrint [file join $picdir BdfPrint.tcl]
   BdfBidi [file join $sharedir BdfBidi.tcl]
   Image [file join $picdir image.tcl]
-  ChangeBackground [file join $picdir changeBackground.tcl]
+  SetBackgroundChanger [file join $picdir setBackgroundChanger.tcl]
   SetupMainFrame [file join $guidir setupMainFrame.tcl]
   SetupBuild [file join $guidir setupBuildGUI.tcl]
   SetupDesktop [file join $guidir setupDesktop.tcl]
@@ -108,12 +108,6 @@ foreach i [array names filepaths] {
   set name [lindex $ivalues 0]
   set path [lindex $ivalues 1]
   set $name $path
-}
-
-if { $Debug && $Mocking} {
-  set Http [file join $sharedir httpMock.tcl]
-} else {
-  set Http [file join $sharedir http.tcl]
 }
 
 #Set JPEGs array
@@ -273,6 +267,7 @@ proc Show.Modal {win args} {
 catch {source $LoadConfig} res
 puts $res
 
+
 #Define current font name from Config
 if {$fontfamily=="Sans"} {
   set fontFamilyTag "Arial"
@@ -292,3 +287,9 @@ set fontNameBold "${fontFamilyTag}${fontsize}B"
 #for Italic: reset fontname to normal if Bold
 set fontWeightTag I
 set fontNameItalic "${fontFamilyTag}${fontsize}${fontWeightTag}"
+
+if { $Debug && $Mock} {
+  set Http [file join $sharedir httpMock.tcl]
+} else {
+  set Http [file join $sharedir http.tcl]
+}

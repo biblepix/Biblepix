@@ -55,12 +55,15 @@ proc parseTwdTextParts {TwdFileName} {
   ##title
   set ::title [$titleNode text]
   ##intros
-  if ![catch {$introNode1 text} res] {
+  if {![catch {$introNode1 text} res]} {
     set ::intro1 $res
   }
-  if ![catch {$introNode2 text} res] {
+  if {![catch {$introNode2 text} res]} {
     set ::intro2 $res
   }
+  #$introNode1 delete
+  #$introNode2 delete
+  
   ##refs
   set ::ref1 [$refNode1 text]
   set ::ref2 [$refNode2 text]
@@ -76,6 +79,8 @@ proc parseTwdTextParts {TwdFileName} {
   set ::text1 [$textNode1 asText]
   set ::text2 [$textNode2 asText]
 
+  #Clean up all nodes
+ # $domDoc delete
 } ;#END proc extractTwdTextParts
   
   
@@ -244,14 +249,14 @@ proc printTextLine {textLine x y img args} {
     set encLetter [scan $letter %c]
 
     if { [catch {upvar 3 ${prefix}::print_$encLetter print_$encLetter} error] } {
-      puts $error
+ #     puts $error
       continue
       
     } else {
       
       array set curLetter [array get print_$encLetter]
       catch {printLetter curLetter $img $xBase $yBase} error
-      puts $error
+ #     puts $error
     
       set xBase [expr $xBase $operator $curLetter(DWx)]
     }
