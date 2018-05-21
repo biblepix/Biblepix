@@ -61,8 +61,6 @@ proc parseTwdTextParts {TwdFileName} {
   if {![catch {$introNode2 text} res]} {
     set ::intro2 $res
   }
-  #$introNode1 delete
-  #$introNode2 delete
   
   ##refs
   set ::ref1 [$refNode1 text]
@@ -80,7 +78,8 @@ proc parseTwdTextParts {TwdFileName} {
   set ::text2 [$textNode2 asText]
 
   #Clean up all nodes
- # $domDoc delete
+  $domDoc delete
+  
 } ;#END proc extractTwdTextParts
   
   
