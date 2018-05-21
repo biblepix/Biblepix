@@ -2,7 +2,7 @@
 # BDF scanning and printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 19may18
+# Updated: 21may18
 
 
 # printTwd
@@ -23,7 +23,8 @@ proc printTwd {TwdFileName img} {
 proc parseTwdTextParts {TwdFileName} {
 
   set TwdLang [getTwdLang $TwdFileName]
-
+  catch {unset ::intro1 ::intro2}
+  
   #A: SET TWD NODE NAMES
   
   set domDoc [parseTwdFileDomDoc $TwdFileName]
