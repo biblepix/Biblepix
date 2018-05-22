@@ -84,8 +84,9 @@ if {$enablepic} {
         #export new TwdFile
         set ::TwdFileName [getRandomTwdFile]
         catch {source $Image}
-        catch setBG
-      
+        catch setBg
+#        swaymsg output "*" bg /home/pv/Biblepix/Image/theword.png stretch
+        
       } else {
       
         #Calling new instance of myself
