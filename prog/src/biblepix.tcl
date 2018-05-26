@@ -94,7 +94,7 @@ setBg
       }
     }
   
-  #if Slideshow == 0    
+  #if Slideshow == 0
   } else {
 
     if {$platform=="windows"} {
@@ -104,7 +104,7 @@ setBg
       
       while {$limit<9} {
         sleep 10000
-        catch setBG
+        catch setBg
         incr limit
       }
     }

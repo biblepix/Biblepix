@@ -11,7 +11,7 @@
 # XFCE4: needs to be configured (in setupSave)
 
 # B a c k g r o u n d  c h a n g e r s
-proc setWinBG {} {
+proc setWinBg {} {
   package require registry
   set regpath [join {HKEY_CURRENT_USER {Control Panel} Desktop} \\]
   registry set $regpath Wallpaper [file nativename $::TwdTIF]
