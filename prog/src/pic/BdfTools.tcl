@@ -111,7 +111,7 @@ proc printTwdTextParts {x y img} {
   }
   
   #Print intro1 in Italics <...~
-  if [info exists intro1] {
+  if [info exists twd::intro1] {
     set y [printTextLine ${markI}${twd::intro1}${markR} $x $y $img IND]
   }
   
@@ -125,7 +125,7 @@ proc printTwdTextParts {x y img} {
   set y [printTextLine ${markI}${twd::ref1}${markR} $x $y $img TAB]
 
   #Print intro2 in Italics
-  if [info exists intro2] {
+  if [info exists twd::intro2] {
     set y [printTextLine ${markI}${twd::intro2}${markR} $x $y $img IND]
   }
   
