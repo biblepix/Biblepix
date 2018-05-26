@@ -69,8 +69,9 @@ if {$enablepic} {
 
   #Run once for all Desktops
   catch {source $Image}
-  catch setBg
-  
+  #catch setBg
+source $Image
+setBg 
   #Run multiple times if $slideshow
   if {$slideshow > 0} {
   
@@ -85,8 +86,7 @@ if {$enablepic} {
         set ::TwdFileName [getRandomTwdFile]
         catch {source $Image}
         catch setBg
-#        swaymsg output "*" bg /home/pv/Biblepix/Image/theword.png stretch
-        
+      
       } else {
       
         #Calling new instance of myself

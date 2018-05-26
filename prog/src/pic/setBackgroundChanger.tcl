@@ -18,14 +18,11 @@ proc setWinBG {} {
 }
 
 proc setSwayBg {} {
-  set outputs [exec swaymsg -t get_outputs]
-  #find lines with 'Output' and copy last/next word - 2 different formats found!
+  #Get output(s) in raw (JSON) format
+  set outputs [exec swaymsg --raw --type get_outputs]
+  #Extract first output name string - TODO: allow for several output names!!!
   foreach line [split $outputs \n] {
-    #Bash format (as in Bash shell)
-    if [regexp "Output" $line] {
-      return "swaymsg $line bg $::TwdBMP stretch"
-    #JSON format (as in tclsh/tkcon)
-    } elseif [regexp "name" $line] {
+    if [regexp "name" $line] {
       set s [regexp -line -inline -lineanchor {name.*$} $line]
       regsub -all {[name",: {}"]} $s {} outputName
     }
@@ -45,26 +42,27 @@ if {$platform=="windows"} {
 }
 
 #Skip Gnome
-if {! [info exists env(GNOME_KEYRING_CONTROL)] &&    
-  ! [info exists env(GNOME_DESKTOP_SESSION_ID)] } {
-  return ""
+if { [info exists env(GNOME_KEYRING_CONTROL)] ||    
+     [info exists env(GNOME_DESKTOP_SESSION_ID)] } {
+  return
 }
 
 #Skip KDE & XFCE4
-if { [info exists env(XDG_CURRENT_DESKTOP)] &&
+if { [info exists env(XDG_CURRENT_DESKTOP)] && {
      $env(XDG_CURRENT_DESKTOP) == "KDE" ||
-     $env(XDG_CURRENT_DESKTOP) == "XFCE" ||
-     [info exists env(DESKTOP_SESSION)] &&
-     $env(DESKTOP_SESSION == "kde-plasma" ||
-     $env(DESKTOP_SESSION == "xfce"
+     $env(XDG_CURRENT_DESKTOP) == "XFCE" } ||
+     [info exists env(DESKTOP_SESSION)] && {
+     $env(DESKTOP_SESSION) == "kde-plasma" ||
+     $env(DESKTOP_SESSION) == "xfce" }
      } {
-  return ""
+  return
 }
 
 #Create setBg for Wayland/Sway 
 if { [info exists env(SWAYSOCK)] ||
      [info exists env(WAYLAND_DISPLAY)] } {
   set outputName [setSwayBg]
+  puts "outputname2 $outputName"
 
   proc setBg {} {
     upvar 1 outputName outputName
@@ -74,7 +72,7 @@ if { [info exists env(SWAYSOCK)] ||
   return
 }
 
-#Create setBg for Xloadimage (general Linux)
+#Create setBg for Xloadimage (general Linux, no effect on modern Desktops!)
 if {[auto_execok xloadimage] != ""} {
   proc setBg {} {
     exec xloadimage -onroot $::TwdPNG
@@ -82,7 +80,7 @@ if {[auto_execok xloadimage] != ""} {
   return
 }
 
-#Create setBg for ImageMagick (general Linux)
+#Create setBg for ImageMagick (general Linux, no effect on modern Desktops!)
 if {[auto_execok display] != ""} {
   proc setBg {} {
     exec display -window root $::TwdPNG

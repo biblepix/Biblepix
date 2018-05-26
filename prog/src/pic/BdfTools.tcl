@@ -1,8 +1,8 @@
 # ~/Biblepix/prog/src/com/BdfTools.tcl
-# BDF scanning and printing tools
+# BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 21may18
+# Updated: 25may18
 
 
 # printTwd
@@ -13,81 +13,86 @@ proc printTwd {TwdFileName img} {
   parseTwdTextParts $TwdFileName
   set finalImg [printTwdTextParts $marginleft $margintop $img]
   
+  namespace delete twd
+  
   return $finalImg
 }
 
 
 # parseTwdTextParts
-## prepares Twd nodes for processing
+## prepares Twd nodes in a separate namespace for further processing
 ## called by printTwd
 proc parseTwdTextParts {TwdFileName} {
 
-  set TwdLang [getTwdLang $TwdFileName]
-  catch {unset ::intro1 ::intro2}
-  
-  #A: SET TWD NODE NAMES
-  
-  set domDoc [parseTwdFileDomDoc $TwdFileName]
-  set todaysTwdNode [getDomNodeForToday $domDoc]
-  set parolNode1 [$todaysTwdNode child 2]
-  set parolNode2 [$todaysTwdNode lastChild]
-  
-  if {$todaysTwdNode == ""} {
-    source $SetupTexts
-    set text1 $noTwdFilesFound
+  namespace eval twd {
     
-  } else {
+    global TwdFileName
+    set TwdLang [getTwdLang $TwdFileName]
+
+    #A: SET TWD NODE NAMES
     
-    set titleNode [$todaysTwdNode selectNodes title]
+    set domDoc [parseTwdFileDomDoc $TwdFileName]
+    set todaysTwdNode [getDomNodeForToday $domDoc]
     
-  }
-  
-  set introNode1 [$parolNode1 selectNodes intro]
-  set introNode2 [$parolNode2 selectNodes intro]
-  
-  set refNode1 [$parolNode1 selectNodes ref]
-  set refNode2 [$parolNode2 selectNodes ref]
-
-  set textNode1 [$parolNode1 selectNodes text]
-  set textNode2 [$parolNode2 selectNodes text]
-
-  # B: EXTRACT TWD TEXT PARTS
-
-  ##title
-  set ::title [$titleNode text]
-  ##intros
-  if {![catch {$introNode1 text} res]} {
-    set ::intro1 $res
-  }
-  if {![catch {$introNode2 text} res]} {
-    set ::intro2 $res
-  }
-  
-  ##refs
-  set ::ref1 [$refNode1 text]
-  set ::ref2 [$refNode2 text]
-
-  # Detect texts with <em> tags & mark as Italic
-  foreach node "[split [$textNode1 selectNodes em/text()]] [split [$textNode2 selectNodes em/text()]]" {
-    set nodeText [$node nodeValue]
-    if {$nodeText != ""} {
-      $node nodeValue \<$nodeText\>
+    set parolNode1 [$todaysTwdNode child 2]
+    set parolNode2 [$todaysTwdNode lastChild]
+    
+    if {$todaysTwdNode == ""} {
+      source $SetupTexts
+      set text1 $noTwdFilesFound
+    } else {
+      set titleNode [$todaysTwdNode selectNodes title]
     }
-  }
-  ##extract text including any tagged
-  set ::text1 [$textNode1 asText]
-  set ::text2 [$textNode2 asText]
+    
+    set introNode1 [$parolNode1 selectNodes intro]
+    set introNode2 [$parolNode2 selectNodes intro]
+    set refNode1 [$parolNode1 selectNodes ref]
+    set refNode2 [$parolNode2 selectNodes ref]
+    set textNode1 [$parolNode1 selectNodes text]
+    set textNode2 [$parolNode2 selectNodes text]
 
-  #Clean up all nodes
-  $domDoc delete
-  
+    # B: EXTRACT TWD TEXT PARTS
+     
+    ##Export text vars to twd:: namespace
+    
+    ##title
+    set title [$titleNode text]
+    ##intros
+    if {![catch {$introNode1 text} res]} {
+      set intro1 $res
+    }
+    if {![catch {$introNode2 text} res]} {
+      set intro2 $res
+    }
+    
+    ##refs
+    set ref1 [$refNode1 text]
+    set ref2 [$refNode2 text]
+
+    # Detect texts with <em> tags & mark as Italic
+    foreach node "[split [$textNode1 selectNodes em/text()]] [split [$textNode2 selectNodes em/text()]]" {
+      set nodeText [$node nodeValue]
+      if {$nodeText != ""} {
+        $node nodeValue \<$nodeText\>
+      }
+    }
+    ##extract text including any tagged
+    set text1 [$textNode1 asText]
+    set text2 [$textNode2 asText]
+
+    #Clean up all nodes
+    $domDoc delete
+    
+  } ;#END twd:: namespace
+
 } ;#END proc extractTwdTextParts
   
   
 # printTwdTextParts  
 ## called by printTwd
 proc printTwdTextParts {x y img} {
-  global enabletitle title intro1 intro2 text1 text2 ref1 ref2 TwdLang
+  global enabletitle TwdLang
+#  global title text1 text2 ref1 ref2 intro1 intro2
   
   #Sort out markings for Italic & Bold
   if {$TwdLang == "th" || $TwdLang == "zh" } {
@@ -102,36 +107,36 @@ proc printTwdTextParts {x y img} {
 
   # 1. Print Title in Bold +...~
   if {$enabletitle} {
-    set y [printTextLine ${markB}${title}${markR} $x $y $img]
+    set y [printTextLine ${markB}${twd::title}${markR} $x $y $img]
   }
   
   #Print intro1 in Italics <...~
   if [info exists intro1] {
-    set y [printTextLine ${markI}${intro1}${markR} $x $y $img IND]
+    set y [printTextLine ${markI}${twd::intro1}${markR} $x $y $img IND]
   }
   
   #Print text1
-  set textLines [split $text1 \n]
+  set textLines [split $twd::text1 \n]
   foreach line $textLines {
     set y [printTextLine $line $x $y $img IND]
   }
   
   #Print ref1 in Italics
-  set y [printTextLine ${markI}${ref1}${markR} $x $y $img TAB]
+  set y [printTextLine ${markI}${twd::ref1}${markR} $x $y $img TAB]
 
   #Print intro2 in Italics
   if [info exists intro2] {
-    set y [printTextLine ${markI}${intro2}${markR} $x $y $img IND]
+    set y [printTextLine ${markI}${twd::intro2}${markR} $x $y $img IND]
   }
   
   #Print text2
-  set textLines [split $text2 \n]
+  set textLines [split $twd::text2 \n]
   foreach line $textLines {
     set y [printTextLine $line $x $y $img IND]
   }
 
   #Print ref2
-  set y [printTextLine ${markI}${ref2}${markR} $x $y $img TAB]
+  set y [printTextLine ${markI}${twd::ref2}${markR} $x $y $img TAB]
 
   return $img
   

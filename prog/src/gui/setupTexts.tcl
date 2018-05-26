@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22feb18 pv
+# Updated: 24may18 pv
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -12,7 +12,6 @@ global readmetext
   .manualF.man replace 1.1 end $readmeLang 
   return $readmeLang
 }
-
 
 proc setTexts {lang} {
 #exports text variables for current language
@@ -346,13 +345,13 @@ Example:"
   
 
 ######## S E T U P S A V E   T E X T S  ################################
-set linChangeDesktop(de) "BiblePix versucht nun, Ihre Desktop-Einstellungen zu ändern."
-set linChangeDesktop(en) "BiblePix will now try to register with your Desktop Background."
-set ::linChangeDesktop $linChangeDesktop($lang)
+set linChangingDesktop(de) "BiblePix versucht nun, Ihre Desktop-Einstellungen zu ändern."
+set linChangingDesktop(en) "BiblePix will now try to register with your Desktop Background."
+set ::linChangingDesktop $linChangingDesktop($lang)
 
-set winChangeDesktop(de) "$linChangeDesktop($lang) \nKlicken Sie im Dialogfenster auf das BibelPix-Thema und schliessen Sie dann das Fenster."
-set winChangeDesktop(en) "$linChangeDesktop($lang)\nIn the Desktop dialogue box, choose the BiblePix theme and then close the window."
-set ::winChangeDesktop $winChangeDesktop($lang)
+set winChangingDesktop(de) "$linChangeDesktop($lang) \nKlicken Sie im Dialogfenster auf das BibelPix-Thema und schliessen Sie dann das Fenster."
+set winChangingDesktop(en) "$linChangeDesktop($lang)\nIn the Desktop dialogue box, choose the BiblePix theme and then close the window."
+set ::winChangingDesktop $winChangingDesktop($lang)
 
 set winChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung des Desktophintergrunds.\nBitte rechtsklicken Sie auf Ihrem Desktop und wählen Sie \"Anpassen\"', dort finden Sie das BibelPix-Thema.\nKlicken Sie darauf, um es zu aktivieren, dann schliessen Sie das Fenster."  
 set winChangeDesktopProb(en) "We are having a problem changing your Desktop background.\nPlease right-click on your Desktop and select \"Customize\".\nFind the BiblePix theme, click on it and then close the window."
@@ -361,6 +360,10 @@ set ::winChangeDesktopProb $winChangeDesktopProb($lang)
 set linChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung der Desktopeinstellungen.\nBitte rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog für 'Hintergrundbild'. Dort geben Sie $imgDir als Bildpfad an."
 set linChangeDesktopProb(en) "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgDir as new image path."
 set ::linChangeDesktopProb $linChangeDesktopProb($lang)
+
+set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Autostarts.\nDamit $bp beim Urstart ausgeführt wird, ist ein Eintrag im Autostart-Menü Ihres Desktops nötig. Rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog 'Automatisch ausgeführte Programme'. Dort geben Sie '$Biblepix' als neuen Programmpfad ein.\nWeitere Lösungen finden Sie im Manual."
+set linSetAutostartProb(en) "We had a problem configuring $bp Autostart.\n In order for $bp to run at computer boot time, you must make an entry in the Autostart menu of your Desktop manager. \nTry right-clicking on your Desktop and find the dialog 'Automatically executed programs'. There enter '$Biblepix' as the new program path.\nFor other solutions consult the Manual."
+set ::linSetAutostartProb $linSetAutostartProb($lang)
 
 set changeDesktopOk(en) "$bp has been configured successfully and will start shortly.\nYou can run BiblePix Setup anytime by right-clicking on your Desktop (or in your Computer's Start Menu) and selecting the \"BiblePix Setup\" icon."
 set changeDesktopOk(de) "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\nDas BibelPix-Setup können Sie jederzeit starten, indem Sie durch Recktsklick auf Ihrer Arbeitsfläche oder im Startmenü das Symbol \"BiblePix Setup\" wählen."

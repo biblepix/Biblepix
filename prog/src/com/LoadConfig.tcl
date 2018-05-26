@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 12may18
+# Updated: 23may18
 
 #Source Config and LoadConfig for defaults
 if { [catch {source $Config}] } {
@@ -70,6 +70,11 @@ if {![info exists fontcolortext]} {
 #Set marginleft
 if {![info exists marginleft]} {
   set marginleft 30
+}
+
+#Set margintop
+if {![info exists margintop]} {
+  set margintop 30
 }
 
 #Set Debug
