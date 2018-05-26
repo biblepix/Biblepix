@@ -2,7 +2,7 @@
 # Searches system for current Desktop manager, gives out appropriate BG changing command
 # Called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22may18
+# Updated: 26may18
 
 # WINDOWS: accepts command through RUNDLL32.EXE - a bit buggy still...
 # LINUX SWAY (WAYLAND): accepts command through 'swaymsg'
@@ -62,13 +62,10 @@ if { [info exists env(XDG_CURRENT_DESKTOP)] && {
 if { [info exists env(SWAYSOCK)] ||
      [info exists env(WAYLAND_DISPLAY)] } {
   set outputName [setSwayBg]
-  puts "outputname2 $outputName"
-
   proc setBg {} {
     upvar 1 outputName outputName
     exec swaymsg output $outputName bg $::TwdBMP stretch
   }
-
   return
 }
 

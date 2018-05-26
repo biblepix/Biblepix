@@ -80,7 +80,7 @@ proc parseTwdTextParts {TwdFileName} {
     set text1 [$textNode1 asText]
     set text2 [$textNode2 asText]
 
-    #Clean up all nodes
+    #Clean up all nodes - TODO: nicht nötig? namespace wird sowieso gelöscht!
     $domDoc delete
     
   } ;#END twd:: namespace
