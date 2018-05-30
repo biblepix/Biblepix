@@ -29,7 +29,7 @@ if {$enablepic} {
   
   # Fallback behavior if BackgroundType is missing or wrong.
   if {[catch {set BackgroundType [registry get $regpathExplorer BackgroundType]}] || $BackgroundType != 0} {
-    tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangeDesktop
+    tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangingDesktop
     
     if { [info exists Debug] && $Debug } {
       setWinTheme

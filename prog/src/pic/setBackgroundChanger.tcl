@@ -36,7 +36,10 @@ proc setSwayBg {} {
 if {$platform=="windows"} {
   setWinBg
   proc setBg {} {
-    exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
+    for {set i 0} {$i < 10} {incr i} {
+      sleep 100
+      exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
+    }
   }
   return
 }

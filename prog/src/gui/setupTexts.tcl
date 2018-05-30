@@ -349,11 +349,11 @@ set linChangingDesktop(de) "BiblePix versucht nun, Ihre Desktop-Einstellungen zu
 set linChangingDesktop(en) "BiblePix will now try to register with your Desktop Background."
 set ::linChangingDesktop $linChangingDesktop($lang)
 
-set winChangingDesktop(de) "$linChangeDesktop($lang) \nKlicken Sie im Dialogfenster auf das BibelPix-Thema und schliessen Sie dann das Fenster."
-set winChangingDesktop(en) "$linChangeDesktop($lang)\nIn the Desktop dialogue box, choose the BiblePix theme and then close the window."
+set winChangingDesktop(de) "$linChangingDesktop($lang) \nKlicken Sie im Dialogfenster auf das BibelPix-Thema und schliessen Sie dann das Fenster."
+set winChangingDesktop(en) "$linChangingDesktop($lang)\nIn the Desktop dialogue box, choose the BiblePix theme and then close the window."
 set ::winChangingDesktop $winChangingDesktop($lang)
 
-set winChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung des Desktophintergrunds.\nBitte rechtsklicken Sie auf Ihrem Desktop und wählen Sie \"Anpassen\"', dort finden Sie das BibelPix-Thema.\nKlicken Sie darauf, um es zu aktivieren, dann schliessen Sie das Fenster."  
+set winChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung des Desktophintergrunds.\nBitte rechtsklicken Sie auf Ihrem Desktop und wählen Sie \"Anpassen\"', dort finden Sie das BibelPix-Thema.\nKlicken Sie darauf, um es zu aktivieren, dann schliessen Sie das Fenster."
 set winChangeDesktopProb(en) "We are having a problem changing your Desktop background.\nPlease right-click on your Desktop and select \"Customize\".\nFind the BiblePix theme, click on it and then close the window."
 set ::winChangeDesktopProb $winChangeDesktopProb($lang)
 
@@ -361,8 +361,8 @@ set linChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung der Deskt
 set linChangeDesktopProb(en) "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgDir as new image path."
 set ::linChangeDesktopProb $linChangeDesktopProb($lang)
 
-set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Autostarts.\nDamit $bp beim Urstart ausgeführt wird, ist ein Eintrag im Autostart-Menü Ihres Desktops nötig. Rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog 'Automatisch ausgeführte Programme'. Dort geben Sie '$Biblepix' als neuen Programmpfad ein.\nWeitere Lösungen finden Sie im Manual."
-set linSetAutostartProb(en) "We had a problem configuring $bp Autostart.\n In order for $bp to run at computer boot time, you must make an entry in the Autostart menu of your Desktop manager. \nTry right-clicking on your Desktop and find the dialog 'Automatically executed programs'. There enter '$Biblepix' as the new program path.\nFor other solutions consult the Manual."
+set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Autostarts.\nDamit $bp beim Urstart ausgeführt wird, ist ein Eintrag im Autostart-Menü Ihres Desktops nötig. Rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog 'Automatisch ausgeführte Programme'. Dort geben Sie '$bp' als neuen Programmpfad ein.\nWeitere Lösungen finden Sie im Manual."
+set linSetAutostartProb(en) "We had a problem configuring $bp Autostart.\n In order for $bp to run at computer boot time, you must make an entry in the Autostart menu of your Desktop manager. \nTry right-clicking on your Desktop and find the dialog 'Automatically executed programs'. There enter '$bp' as the new program path.\nFor other solutions consult the Manual."
 set ::linSetAutostartProb $linSetAutostartProb($lang)
 
 set changeDesktopOk(en) "$bp has been configured successfully and will start shortly.\nYou can run BiblePix Setup anytime by right-clicking on your Desktop (or in your Computer's Start Menu) and selecting the \"BiblePix Setup\" icon."
