@@ -79,7 +79,7 @@ if {$enablepic} {
     set pidfiledatum [clock format [file mtime $pidfile] -format %d]
     while {[file exists $pidfile]} {
       if {$pidfiledatum==$heute} {
-        sleep [expr $slideshow*1000]
+        sleep [expr $slideshow * 1000]
         
         #export new TwdFile
         set ::TwdFileName [getRandomTwdFile]
@@ -98,13 +98,10 @@ if {$enablepic} {
 
     if {$platform=="windows"} {
       
-      #run every 10s up to 10x so Windows has time to update
-      set limit 0
-      
-      while {$limit<9} {
+      #run every 10s up to 15x so Windows has time to update      
+      for {set limit 0} {$limit < 15} {incr limit} {
         sleep 10000
         catch setBg
-        incr limit
       }
     }
   } ;#END if slideshow

@@ -25,7 +25,7 @@ if { [info exists Debug] && $Debug } {
 if {$enablepic} {
 
   #Detect running slideshow (entry reset by Windows when user sets bg)
-  set regpathExplorer [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
+  set regpathExplorer [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
   
   # Fallback behavior if BackgroundType is missing or wrong.
   if {[catch {set BackgroundType [registry get $regpathExplorer BackgroundType]}] || $BackgroundType != 0} {
