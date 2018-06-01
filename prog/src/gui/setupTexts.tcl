@@ -333,8 +333,8 @@ set f4Btn(en) "Create $dw for display in terminal"
 set f4Btn(de) "$dw zur Anzeige im Terminal erzeugen"
 set ::f4Btn $f4Btn($lang)
 
-set f4Txt(en) "If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nColours for display etc. may be changed in \n\n\t $confdir/term.conf \n\nNote that for Arabic or Hebrew display, 'mlterm' and 'Konsole' (KDE) are those terminals reported to work with bidirectional text.\n\nFor $dw to be displayed automatically in your terminals, the following entry in ~/.bashrc is required (paste and copy into a shell):"
-set f4Txt(de) "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDarstellung und Farben können in \n\n\t $confdir/term.conf \n\ngeändert werden.\n\nFür die Darstellung von Hebräisch oder Arabisch kommen nur Terminals wie 'mlterm' oder 'Konsole' (KDE) in Frage. \n\nDamit $dw automatisch im Terminal angezeigt wird, ist ein Eintrag in ~/.bashrc nötig. Geben Sie dazu den folgenden Befehl in einem Terminal ein:"
+set f4Txt(en) "If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nColours for display etc. may be changed in \n\n\t $confdir/term.conf \n\nNote that for Arabic or Hebrew display, 'mlterm' and 'Konsole' (KDE) are those terminals reported to work with bidirectional text.\n\nFor $dw to be displayed automatically in your terminals, $bp Setup makes an entry in ~/.bash_profile for your convenience."
+set f4Txt(de) "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDarstellung und Farben können in \n\n\t $confdir/term.conf \n\ngeändert werden.\n\nFür die Darstellung von Hebräisch oder Arabisch kommen nur Terminals wie 'mlterm' oder 'Konsole' (KDE) in Frage. \n\nDamit $dw automatisch im Terminal angezeigt wird, macht das $bp-Setup einen Eintrag in ~/.bash_profile."
 set ::f4.txt $f4Txt($lang)
 
 set ::f4.ex  "
@@ -365,7 +365,7 @@ set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Auto
 set linSetAutostartProb(en) "We had a problem configuring $bp Autostart.\n In order for $bp to run at computer boot time, you must make an entry in the Autostart menu of your Desktop manager. \nTry right-clicking on your Desktop and find the dialog 'Automatically executed programs'. There enter '$::Biblepix' as the new program path.\nFor other solutions consult the Manual."
 set ::linSetAutostartProb $linSetAutostartProb($lang)
 
-set linKdeXfceRrestart(en) "For the BiblePix settings to take effect now, you must log out quickly and then log in again."
+set linKdeXfceRestart(en) "For the BiblePix settings to take effect now, you must log out quickly and then log in again."
 set linKdeXfceRestart(de) "Damit die BibelPix-Einstellungen jetzt wirksam werden, müssen Sie sich kurz ab- und  wieder anmelden."
 set ::linKdeXfceRestart $linKdeXfceRestart($lang)
 
