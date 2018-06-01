@@ -334,5 +334,5 @@ proc getTodaysTwdTerm {TwdFileName} {
   
   $twdDomDoc delete
   
-  return $TwdText
+  return $twdTerm
 }

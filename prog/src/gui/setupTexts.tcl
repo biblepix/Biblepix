@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24may18 pv
+# Updated: 1jun18
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -361,9 +361,13 @@ set linChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung der Deskt
 set linChangeDesktopProb(en) "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgDir as new image path."
 set ::linChangeDesktopProb $linChangeDesktopProb($lang)
 
-set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Autostarts.\nDamit $bp beim Urstart ausgeführt wird, ist ein Eintrag im Autostart-Menü Ihres Desktops nötig. Rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog 'Automatisch ausgeführte Programme'. Dort geben Sie '$bp' als neuen Programmpfad ein.\nWeitere Lösungen finden Sie im Manual."
-set linSetAutostartProb(en) "We had a problem configuring $bp Autostart.\n In order for $bp to run at computer boot time, you must make an entry in the Autostart menu of your Desktop manager. \nTry right-clicking on your Desktop and find the dialog 'Automatically executed programs'. There enter '$bp' as the new program path.\nFor other solutions consult the Manual."
+set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Autostarts.\nDamit $bp beim Urstart ausgeführt wird, ist ein Eintrag im Autostart-Menü Ihres Desktops nötig. Rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog 'Automatisch ausgeführte Programme'. Dort geben Sie '$::Biblepix' als neuen Programmpfad ein.\nWeitere Lösungen finden Sie im Manual."
+set linSetAutostartProb(en) "We had a problem configuring $bp Autostart.\n In order for $bp to run at computer boot time, you must make an entry in the Autostart menu of your Desktop manager. \nTry right-clicking on your Desktop and find the dialog 'Automatically executed programs'. There enter '$::Biblepix' as the new program path.\nFor other solutions consult the Manual."
 set ::linSetAutostartProb $linSetAutostartProb($lang)
+
+set linKdeXfceRrestart(en) "For the BiblePix settings to take effect now, you must log out quickly and then log in again."
+set linKdeXfceRestart(de) "Damit die BibelPix-Einstellungen jetzt wirksam werden, müssen Sie sich kurz ab- und  wieder anmelden."
+set ::linKdeXfceRestart $linKdeXfceRestart($lang)
 
 set changeDesktopOk(en) "$bp has been configured successfully and will start shortly.\nYou can run BiblePix Setup anytime by right-clicking on your Desktop (or in your Computer's Start Menu) and selecting the \"BiblePix Setup\" icon."
 set changeDesktopOk(de) "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\nDas BibelPix-Setup können Sie jederzeit starten, indem Sie durch Recktsklick auf Ihrer Arbeitsfläche oder im Startmenü das Symbol \"BiblePix Setup\" wählen."
@@ -376,10 +380,6 @@ set ::winRegister $winRegister($lang)
 set winRegisterProb(en) "BiblePix has not been registered properly on your computer.\nPlease find the location $windir and execute $windir/install.reg by double-clicking on it, or restart Setup."
 set winRegisterProb(de) "BibelPix ist auf Ihrem Computer noch nicht korrekt installiert.\nBitte gehen Sie nach $windir und führen Sie die Datei $windir/install.reg durch Doppelklick aus, oder starten Sie das Setup nochmals."
 set ::winRegisterProb $winRegisterProb($lang)
-
-set KDErestart(en) "Any changes to the KDE desktop will take effect after restart. Shall we restart KDE now?"
-set KDErestart(de) "Änderungen am KDE-Desktop treten erst nach Neustart in Kraft. Möchten Sie jetzt KDE neustarten?"
-set ::KDErestart $KDErestart($lang)
 
 set noPhotosFound(de) "Im $bp-Fotoordner wurden keine Fotos gefunden. Kopieren Sie bitte einige Bilder in den Ordner."
 set noPhotosFound(en) "No photos were found in the $bp Photos folder. Please copy some pictures into the folder."

@@ -2,13 +2,16 @@
 # Searches system for current Desktop manager, gives out appropriate BG changing command
 # Called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26may18
+# Updated: 1jun18
 
 # WINDOWS: accepts command through RUNDLL32.EXE - a bit buggy still...
 # LINUX SWAY (WAYLAND): accepts command through 'swaymsg'
 # GNOME: needs no image changer, detects image change, so just provide imgPath (in setupSave)
 # KDE: needs to be configured (in setupSave)
 # XFCE4: needs to be configured (in setupSave)
+
+#TODO: Find a better place for "DetectRunningLInuxDesktop" !
+source $SetupSaveLinHelpers
 
 # B a c k g r o u n d  c h a n g e r s
 proc setWinBg {} {
@@ -44,31 +47,8 @@ if {$platform=="windows"} {
   return
 }
 
-#Skip Gnome
-if { [info exists env(GNOME_KEYRING_CONTROL)] ||    
-     [info exists env(GNOME_DESKTOP_SESSION_ID)] } {
-  return
-}
-
-#Skip KDE & XFCE4
-if { [info exists env(XDG_CURRENT_DESKTOP)] && {
-     $env(XDG_CURRENT_DESKTOP) == "KDE" ||
-     $env(XDG_CURRENT_DESKTOP) == "XFCE" } ||
-     [info exists env(DESKTOP_SESSION)] && {
-     $env(DESKTOP_SESSION) == "kde-plasma" ||
-     $env(DESKTOP_SESSION) == "xfce" }
-     } {
-  return
-}
-
-#Create setBg for Wayland/Sway 
-if { [info exists env(SWAYSOCK)] ||
-     [info exists env(WAYLAND_DISPLAY)] } {
-  set outputName [setSwayBg]
-  proc setBg {} {
-    upvar 1 outputName outputName
-    exec swaymsg output $outputName bg $::TwdBMP stretch
-  }
+#Skip Gnome / KDE / XFCE4 / Wayland-Sway
+if [detectRunningLinuxDesktop] {
   return
 }
 

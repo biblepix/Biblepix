@@ -1,12 +1,15 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29may18
+# Updated: 1jun18
 
+################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
 #   more exotic Desktops NEED CONFIGURING via CRONTAB (see below)
+#
 # B)  D E S K T O P   M E N U : (Rightclick for Setup) works with KDE / GNOME / XFCE4 
 #   other desktops can't be configured, hence information about Setup path is important >Manual
+################################################################################################
 
 set LinConfDir $HOME/.config
 set LinDesktopDir $HOME/.local/share/applications
@@ -17,6 +20,45 @@ set KdeAutostartDir $KdeDir/Autostart
 set GnomeAutostartDir $LinConfDir/autostart
 set Xfce4ConfigFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
 
+# detectRunningLinuxDesktop
+##returns 1 if GNOME or WAYLAND-SWAY detected
+##returns 2 if KDE or XFCE4 detected
+##returns 0 if no running desktop detected
+##called by SetupSaveLin & SetBackgroundChanger
+proc detectRunningLinuxDesktop {} {
+  global env
+  
+  #check GNOME
+  if { [info exists env(GNOME_KEYRING_CONTROL)] ||
+       [info exists env(GNOME_DESKTOP_SESSION_ID)] } {
+    puts GnomeDetected
+    return 1
+    
+  }
+  
+  #check KDE / XFCE
+  if { [info exists env(XDG_CURRENT_DESKTOP)] && {
+       $env(XDG_CURRENT_DESKTOP) == "KDE" ||
+       $env(XDG_CURRENT_DESKTOP) == "XFCE" } ||
+     [info exists env(DESKTOP_SESSION)] && {
+       $env(DESKTOP_SESSION) == "kde-plasma" ||
+       $env(DESKTOP_SESSION) == "xfce" }
+     } {
+     puts KDEdetected
+    return 2
+  }
+  
+  #detect Wayland/Sway
+  if { [info exists env(SWAYSOCK)] ||
+       [info exists env(WAYLAND_DISPLAY)] } {
+       puts SwayDetected
+    return 1
+  }
+
+  #nothing found
+  puts nothingDetected
+  return 0
+}
 
 ########################################################################
 # A U T O S T A R T   S E T T E R   F O R   L I N U X   D E S K T O P S
@@ -26,7 +68,7 @@ set Xfce4ConfigFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.x
 ##makes Autostart entries for Linux Desktops (GNOME, XFCE4? & KDE)
 ##args == delete
 proc setLinAutostart args {
-global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeAutostartDir
+global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeDir KdeAutostartDir
   
   #If args exists, delete any autostart files and exit
   if  {$args != ""} {
@@ -62,7 +104,7 @@ global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeAutostartDi
   close $chan
 
   #Delete any BP crontab entry
-  setLinCrontab del
+  catch {setLinAutostartCrontab del}
 
   return 0
 }
@@ -73,7 +115,6 @@ global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeAutostartDi
 ######################################################################################
 
 #T O D O : CHECK FOR XFCE4
-#T O D O : WHAT ABOUT DESKTOPS LIKE MINE THAT DON'T RESPECT ~/.config ENTRIES????
 
 # setLinDesktopMenu
 ## Makes Menu entries for GNOME & KDE
@@ -104,7 +145,7 @@ proc setLinMenu {} {
 
 # setKdeBackground
 ##configures KDE5 Plasma for single pic or slideshow
-# - TODO: > Anleitung in Manpage für andere KDEs/Desktops (Rechtsklick > Desktop-Einstellungen >Einzelbild/Diaschau)
+# - TODO: > Anleitung in Manpage für andere KDE-Versionen/andere Desktops (Rechtsklick > Desktop-Einstellungen >Einzelbild/Diaschau)
 proc setKdeBackground {} {
   global KdeConfFile TwdPNG slideshow imgDir
 
@@ -249,13 +290,15 @@ proc setGnomeBackground {} {
   }
 }
 
+
+
 # setLinCrontab
 ##Detects running cron(d) & installs new crontab
 ##returns 0 or 1 for calling prog
 ##called by SetupSaveLin & Uninstall
 ##    T O D O: USE CRONTAB ONLY FOR INITIAL START, NOT FOR SLIDESHOW 
 #    only FOR DESKTOPS OTHER THAN KDE/GNOME/XFCE4
-proc setLinCrontab args {
+proc setLinAutostartCrontab args {
 
   global Biblepix Setup slideshow tclpath unixdir env
   set cronfileOrig $unixdir/crontab.ORIG
@@ -444,181 +487,3 @@ proc copyLinTerminalConf {} {
     close $chan
   }
 } ;#END copyLinTerminalConf
-
-
-####################################################################
-#O b S o L e T E !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-####################################################################
-
-##sets background picture/slideshow for KDE / GNOME / XFCE4
-proc setLinBackground {} {
-  global env slideshow srcdir imgDir unixdir Config TwdPNG TwdBMP TwdTIF KDErestart KdeDir LinConfDir
-
-  #KDE3
-  if {[auto_execok dcop] != ""} {
-    dcop kdesktop KDesktopIface setWallpaper $TwdPNG 4
-    return ;# TODO: CHECK IF THIS WORKS
-  }
-
-  #KDE4-5 - needs min. 1 JPG or PNG for slideshow - T O D O :   W H Y   J P E G ? ? ?  we don'thave it!
-  if {$env(XDG_CURRENT_DESKTOP) == "KDE" || $env(DESKTOP_SESSION) == "kde"} {
-     
-    #if single pic make sure it is renewed at start, later same pic reloaded...
-    source $Config
-    if {!$slideshow} {set slideshow 120}
-                 
-    #KDE5
-    if [file exists $KdeConfDir/plasma-desktop-appletsrc] {
-      set rcfile $KdeConfDir/plasma-desktop-appletsrc
-      set oks "org.kde.slideshow"
-
-      for {set g 1} {$g<100} {incr g} {
-            
-        if {[exec kreadconfig --file $rcfile --group Containments --group $g --key activityId] != ""} {
-                
-          #1.Save current settings for uninstall (only 1 group)
-          set KDErestore $unixdir/KDErestore.sh
-
-          if {![file exists $KDErestore]} { 
-
-            set wallpaperplugin [exec kreadconfig --file $rcfile --group Containments --group $g --key wallpaperplugin]
-            set Image [exec kreadconfig --file $rcfile --group Containments --group $g --group Wallpaper --group General --key Image]
-            set SlidePaths [exec kreadconfig --file $rcfile --group Containments --group $g --group Wallpaper --group General -key SlidePaths]
-
-            set chan [open $KDErestore w]
-            puts $chan "\#\!bin\/bash"
-            puts $chan wallpaperplugin=$wallpaperplugin
-            puts $chan Image=$Image
-            puts $chan SlidePaths=$SlidePaths
-            puts $chan "kwriteconfig --file $rcfile --group Containments --group $g --key wallpaperplugin $wallpaperplugin"
-            puts $chan "kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group General --key Image $Image"
-            puts $chan "kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $SlidePaths"
-            puts $chan "kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group $wallpaperplugin --group General --key Image $Image"
-            puts $chan "kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group $wallpaperplugin --group General --key SlidePaths $SlidePaths"
-            close $chan
-          }
-
-          #2.Set up slideshow or single pic (no path vars wegen bash!)
-          ##1.[Containments][$g] >wallpaperplugin - must be slideshow, bec. single pic never renewed!
-          exec kwriteconfig --file $rcfile --group Containments --group $g --key wallpaperplugin $oks
-          ##2.[Containments][$g][Wallpaper][General] >Image+SlidePaths
-          exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group General --key Image file://$TwdPNG
-          exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $imgDir 
-          ##3.[Containments][7][Wallpaper][org.kde.slideshow][General] >SlideInterval+SlidePaths+height+width
-          exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlidePaths $imgDir
-          exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlideInterval $slideshow
-          exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key height [winfo screenheight .]
-          exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key width [winfo screenwidth .]
-          #FillMode 6=centered
-          exec kwriteconfig --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key FillMode 6
-        }
-      }
-            
-    #if KDE4
-    } elseif [file exists $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc] {
- 
-      #set rcfile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
-
-      if {$slideshow} {
-        set slidepaths $imgDir
-        set mode Slideshow
-      } else {
-        set slidepaths ""
-        set mode SingleImage
-      }
-
-      for {set g 1} {$g<200} {incr g} {
-        #paths ausgeschrieben!
-        if {[exec kreadconfig --file plasma-desktop-appletsrc --group Containments --group $g --key wallpaperplugin] != ""} {
-            exec kwriteconfig --file plasma-desktop-appletsrc --group Containments --group $g --key mode $mode
-            exec kwriteconfig --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key slideTimer $slideshow
-            exec kwriteconfig --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key slidepaths $slidepaths
-            exec kwriteconfig --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key userswallpapers ''
-            exec kwriteconfig --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpaper $TwdPNG
-            exec kwriteconfig --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpapercolor 0,0,0
-            exec kwriteconfig --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpaperposition 0
-        }
-      }
-    }
-            
-  } ;#END setup KDE4-5
-  
-  #Restart KDE4+5
-        
-     ##determine which version is running
-  if {! [catch {exec pidof plasmashell}] } {
-    set plasmaversion "plasmashell"
-  } elseif {! [catch {exec pidof plasma-desktop}] } {
-    set plasmaversion "plasma-desktop"
-  }
-    
-      if { [info exists plasmaversion] } {    
-    
-    set antwort [tk_messageBox -type yesno -message $KDErestart]
-
-    if {$antwort=="yes"} {
-
-      #determine kill prog
-      if {[auto_execok kquitapp5] != ""} {
-        set quitprog kquitapp5
-      } elseif {[auto_execok kquitapp] != ""} {
-        set quitprog kquitapp
-      } else {
-        set quitprog killall
-      }
-    
-      #kill any running KDE
-      wm withdraw .
-      exec $quitprog $plasmaversion
-      exec $plasmaversion
-    }
-      }
-  
-
-# T O D O : if this is true, scrap Gnome entry in changeBackground !
-  #GNOME3 -needs no slideshow, needs BMP
-  if {[auto_execok gsettings] != ""} {
-    exec gsettings set org.gnome.desktop.background picture-uri file://$TwdBMP
-
-
-  #GNOME2 -needs no slideshow, needs PNG
-  } elseif {[auto_execok gconftool-2] != ""} {
-  #The former way to change wallpaper in Gnome2 consists in gconftool-2, 
-  #but this tool has no effect in Gnome3
-    exec gconftool-2 --direct --type string --set /desktop/gnome/background/picture_options wallpaper
-    exec gconftool-2 --direct --type string --set /desktop/gnome/background/picture_filename $TwdPNG
-  } 
-  
-        
-# X F C E 4  - knows TIF/BMP/PNG !
-#detects pic change, so no slideshow necessary! ??????????????????
-  if {[auto_execok xfconf-query]!=""} {
-    for {set s 0} {$s<5} {incr s} {
-      for {set m 0} {$m<5} {incr m} {
-        catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-path -s $TwdBMP" err
-        catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-style -s 3" err
-        catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-show -s true" err
-#HALLO: if slideshow not necessary why this fuss????????????????????????
-          if {$slideshow} {
-            set backdropdir ~/.config/xfce4/desktop
-            file mkdir $backdropdir
-            set imglist $backdropdir/backdrop.list
-            set chan [open $imglist w]
-            puts $chan "$TwdBMP\n$TwdTIF"
-            close $chan
-            catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --create last-image-list -s $imglist" err
-            catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --create backdrop-cycle-enable -s true" err
-            catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --create backdrop-cycle-timer [expr $slideshow/60]" err  
-              if {$err!=""} {continue}
-            }
-        }
-      }
-    #reload XFCE4 desktop if running
-    if {! [catch "exec pidof xfdesktop"] }  {
-            wm withdraw .
-            exec xfdesktop --reload
-    }
-  }
-
-} ;#END setLinBackground
-
