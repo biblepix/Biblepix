@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1jun18
+# Updated: 2jun18
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -15,7 +15,7 @@ global readmetext
 
 proc setTexts {lang} {
 #exports text variables for current language
-global Bidi platform jahr TwdTIF TwdBMP TwdPNG confdir imgDir sigDir unixdir windir twdDir
+global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG confdir imgDir sigDir unixdir windir twdDir
 
 #### G E N E R A L ###############################
 set DW(de) {'Das Wort'}
@@ -28,12 +28,7 @@ set BP(de) BibelPix
 set bp $BP($lang)
 set ::bp $bp
 
-#Buttons
-set cancel(de) Abbruch
-set cancel(en) Cancel
-set ::cancel $cancel($lang)
-               
-#### M I S S I N G   P A C K A G E  ############                              
+# # # #  M I S S I N G   P A C K A G E  # # # # # # # # # # # #                               
 
 set packageRequireImg(all) "\n* apt-get install libtk-img (Debian/Ubuntu)\n* emerge tkimg (Gentoo)\n* zypper install tkimg (openSUSE)\n* yum install tkimg (Fedora)\n* urpmi tkimg (Mandriva)"
 set packageRequireTDom(all) "\n* apt-get install tdom (Debian/Ubuntu)\n* emerge tdom (Gentoo)\n* zypper install tdom (openSUSE)\n* yum install tdom (Fedora)\n* urpmi tdom (Mandriva)" 
@@ -104,7 +99,7 @@ if {[catch "glob $twdDir/ar_*"]} {
   set rtl "" } else {
   set rtl  "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
   if {$platform=="unix"} {
-    source $Bidi
+    source $BdfBidi
     set rtl [fixArabUnix $rtl]
   }
   append rtltext \n $rtl 

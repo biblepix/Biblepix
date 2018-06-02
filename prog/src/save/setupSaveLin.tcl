@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1jun18
+# Updated: 2jun18
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -58,7 +58,25 @@ if {$enableterm} {
   close $chan
 }
 
-
+# 5 Add "Sh-Bang" with 'env' path to executables
+set envPath [auto_execok env]
+set shBangLine \#!$envPath
+#edit Biblepix & Setup
+set chan1 [open $Biblepix w]
+set chan2 [open $Setup w]
+set text1 [read $chan1]
+set text2 [read $chan2]
+#reset texts
+append t1 $shBangLine \n $text1
+append t2 $shBangLine \n $text2
+puts $chan1 $t1
+puts $chan2 $t2
+close $chan1
+close $chan2
+#make files executable
+file attributes $Biblepix -permissions +x
+file attributes $Setup  -permissions +x
+ 
 ## B) E R R O R   H A N D L I N G
 
 # Create error messages if above fail
