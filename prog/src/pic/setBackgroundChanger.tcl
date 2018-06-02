@@ -14,8 +14,9 @@
 
 
 # detectRunningLinuxDesktop
-##returns 1 if GNOME or WAYLAND-SWAY detected
+##returns 1 if GNOME detected
 ##returns 2 if KDE or XFCE4 detected
+##returns 3 if Wayland/Sway detected
 ##returns 0 if no running desktop detected
 ##called by SetupSaveLin & .
 proc detectRunningLinuxDesktop {} {
@@ -26,7 +27,6 @@ proc detectRunningLinuxDesktop {} {
        [info exists env(GNOME_DESKTOP_SESSION_ID)] } {
     puts GnomeDetected
     return 1
-    
   }
   
   #check KDE / XFCE
@@ -49,7 +49,7 @@ proc detectRunningLinuxDesktop {} {
   if { [info exists env(SWAYSOCK)] ||
        [info exists env(WAYLAND_DISPLAY)] } {
        puts SwayDetected
-    return 1
+    return 3
   }
 
   #nothing found
@@ -75,6 +75,7 @@ proc setSwayBg {} {
       regsub -all {[name",: {}"]} $s {} outputName
     }
   }
+  
   return $outputName
 }
 
@@ -92,8 +93,19 @@ if {$platform=="windows"} {
   return
 }
 
-#Skip Gnome / KDE / XFCE4 / Wayland-Sway
-if [detectRunningLinuxDesktop] {
+#Set Sway Background
+set runningDesktop [detectRunningLinuxDesktop]
+if {$runningDesktop == 3} {
+  set swayOutput [setSwayBg]
+  proc setBg {} {
+    upvar swayOutput swayOutput
+    exec swaymsg output $swayOutput bg $::TwdBMP stretch 
+  }
+  return
+  
+#Skip Gnome / KDE + XFCE4
+} elseif {$runningDesktop == 1 || $runningDesktop == 2} {
+
   return
 }
 
