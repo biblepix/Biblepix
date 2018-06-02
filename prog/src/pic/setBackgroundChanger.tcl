@@ -17,7 +17,7 @@
 ##returns 1 if GNOME or WAYLAND-SWAY detected
 ##returns 2 if KDE or XFCE4 detected
 ##returns 0 if no running desktop detected
-##called by SetupSaveLin & SetBackgroundChanger
+##called by SetupSaveLin & .
 proc detectRunningLinuxDesktop {} {
   global env
   

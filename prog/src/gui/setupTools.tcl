@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24may18
+# Updated: 2jun18
 
 source $JList
 
@@ -481,32 +481,4 @@ proc fillWidgetWithTodaysTwd {twdWidget} {
   }
 
   $twdWidget conf -text $twdText
-}
-
-# detectRunningLinuxDesktop
-##returns 1 if running KDE/GNOME/XFCE4 detected, else returns 0
-##called by SetBackgroundChanger & SetupSaveLin
-proc detectRunningLinuxDesktop {} {
-  global env
-  
-  #Detect running Gnome
-  if { [info exists env(GNOME_KEYRING_CONTROL)] ||    
-       [info exists env(GNOME_DESKTOP_SESSION_ID)] } {
-    return 1
-  }
-
-  #Detect running KDE or XFCE4
-  if { [info exists env(XDG_CURRENT_DESKTOP)] && {
-       $env(XDG_CURRENT_DESKTOP) == "KDE" ||
-       $env(XDG_CURRENT_DESKTOP) == "XFCE" } ||
-       
-       [info exists env(DESKTOP_SESSION)] && {
-       $env(DESKTOP_SESSION) == "kde-plasma" ||
-       $env(DESKTOP_SESSION) == "xfce" }
-       } {
-    return 1
-  }
-
-  #No desktop detected
-  return 0
 }
