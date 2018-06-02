@@ -20,45 +20,6 @@ set KdeAutostartDir $KdeDir/Autostart
 set GnomeAutostartDir $LinConfDir/autostart
 set Xfce4ConfigFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
 
-# detectRunningLinuxDesktop
-##returns 1 if GNOME or WAYLAND-SWAY detected
-##returns 2 if KDE or XFCE4 detected
-##returns 0 if no running desktop detected
-##called by SetupSaveLin & SetBackgroundChanger
-proc detectRunningLinuxDesktop {} {
-  global env
-  
-  #check GNOME
-  if { [info exists env(GNOME_KEYRING_CONTROL)] ||
-       [info exists env(GNOME_DESKTOP_SESSION_ID)] } {
-    puts GnomeDetected
-    return 1
-    
-  }
-  
-  #check KDE / XFCE
-  if { [info exists env(XDG_CURRENT_DESKTOP)] && {
-       $env(XDG_CURRENT_DESKTOP) == "KDE" ||
-       $env(XDG_CURRENT_DESKTOP) == "XFCE" } ||
-     [info exists env(DESKTOP_SESSION)] && {
-       $env(DESKTOP_SESSION) == "kde-plasma" ||
-       $env(DESKTOP_SESSION) == "xfce" }
-     } {
-     puts KDEdetected
-    return 2
-  }
-  
-  #detect Wayland/Sway
-  if { [info exists env(SWAYSOCK)] ||
-       [info exists env(WAYLAND_DISPLAY)] } {
-       puts SwayDetected
-    return 1
-  }
-
-  #nothing found
-  puts nothingDetected
-  return 0
-}
 
 ########################################################################
 # A U T O S T A R T   S E T T E R   F O R   L I N U X   D E S K T O P S

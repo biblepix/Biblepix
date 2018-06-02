@@ -4,14 +4,59 @@
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 1jun18
 
+########################################################################
 # WINDOWS: accepts command through RUNDLL32.EXE - a bit buggy still...
 # LINUX SWAY (WAYLAND): accepts command through 'swaymsg'
 # GNOME: needs no image changer, detects image change, so just provide imgPath (in setupSave)
 # KDE: needs to be configured (in setupSave)
 # XFCE4: needs to be configured (in setupSave)
+##########################################################################
 
-#TODO: Find a better place for "DetectRunningLInuxDesktop" !
-source $SetupSaveLinHelpers
+
+# detectRunningLinuxDesktop
+##returns 1 if GNOME or WAYLAND-SWAY detected
+##returns 2 if KDE or XFCE4 detected
+##returns 0 if no running desktop detected
+##called by SetupSaveLin & SetBackgroundChanger
+proc detectRunningLinuxDesktop {} {
+  global env
+  
+  #check GNOME
+  if { [info exists env(GNOME_KEYRING_CONTROL)] ||
+       [info exists env(GNOME_DESKTOP_SESSION_ID)] } {
+    puts GnomeDetected
+    return 1
+    
+  }
+  
+  #check KDE / XFCE
+  if [info exists env(XDG_CURRENT_DESKTOP)] {
+  
+    if {$env(XDG_CURRENT_DESKTOP) == "KDE" ||
+        $env(XDG_CURRENT_DESKTOP) == "XFCE" } {
+      return 2
+    }
+    
+  } elseif [info exists env(DESKTOP_SESSION)] {
+    
+    if {$env(DESKTOP_SESSION) == "kde-plasma" ||
+        $env(DESKTOP_SESSION) == "xfce" } {
+      return 2
+    }
+  }
+  
+  #detect Wayland/Sway
+  if { [info exists env(SWAYSOCK)] ||
+       [info exists env(WAYLAND_DISPLAY)] } {
+       puts SwayDetected
+    return 1
+  }
+
+  #nothing found
+  puts nothingDetected
+  return 0
+}
+
 
 # B a c k g r o u n d  c h a n g e r s
 proc setWinBg {} {
