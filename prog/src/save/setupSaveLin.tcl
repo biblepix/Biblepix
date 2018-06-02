@@ -60,38 +60,39 @@ if {$enableterm} {
   close $chan
 }
 
-# 5 Add "Sh-Bang" with correct 'env' path to main executables
-set envPath [auto_execok env]
-set shBangLine "\#!$envPath tclsh"
+# 5 Check "Sh-Bang" with correct 'env' path in main executables
+##Standard env path as in Ubuntu/Debian/Gentoo:
+set standardEnvPath {/usr/bin/env}
+set curEnvPath [auto_execok env]
 
-##read out Biblepix & Setup texts
-set chan1 [open $Biblepix r]
-set chan2 [open $Setup r]
-set text1 [read $chan1]
-set text2 [read $chan2]
-close $chan1
-close $chan2
+if {$curEnvPath != $standardEnvPath} {
+  set shBangLine "\#!${curEnvPath} tclsh"
 
-##reset texts if no sh-bang found
-if {![regexp \#! $text1] } {
-  append t1 $shBangLine \n $text1
+  ##read out Biblepix & Setup texts
+  set chan1 [open $Biblepix r]
+  set chan2 [open $Setup r]
+  set text1 [read $chan1]
+  set text2 [read $chan2]
+  close $chan1
+  close $chan2
+
+  ##replace 1st line with current sh-bang
+  regsub -line {^#!.*$} $text1 $shBangLine text1
   set chan [open $Biblepix w]
-  puts $chan $t1
+  puts $chan $text1
   close $chan
-}
-if {![regexp \#! $text2] } {
-  append t2 $shBangLine \n $text2
+  regsub -line {^#!.*$} $text2 $shBangLine text2
   set chan [open $Setup w]
-  puts $chan $t2
+  puts $chan $text2
   close $chan
 }
-##cleanup
-catch {unset shBangLine text1 text2 t1 t2}
-
-##make files executable
+  
+##clean up & make files executable
+catch {unset shBangLine text1 text2}
 file attributes $Biblepix -permissions +x
 file attributes $Setup  -permissions +x
- 
+
+
 ## B)  E R R O R   H A N D L I N G
 
 # Create error messages if above fail

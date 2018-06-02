@@ -1,3 +1,4 @@
+#!/usr/bin/env tclsh
 # ~/Biblepix/prog/src/biblepix.tcl
 # Main program, called by System Autostart
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
