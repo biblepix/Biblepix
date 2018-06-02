@@ -58,7 +58,7 @@ if {$enableterm} {
   close $chan
 }
 
-# 5 Add "Sh-Bang" with 'env' path to executables
+# 5 Add "Sh-Bang" with 'env' path to main executables
 set envPath [auto_execok env]
 set shBangLine \#!$envPath
 #edit Biblepix & Setup
