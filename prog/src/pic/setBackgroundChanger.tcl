@@ -93,8 +93,9 @@ if {$platform=="windows"} {
   return
 }
 
-#Set Sway Background
 set runningDesktop [detectRunningLinuxDesktop]
+
+#Set Sway Background
 if {$runningDesktop == 3} {
   set swayOutput [setSwayBg]
   proc setBg {} {
@@ -120,7 +121,7 @@ if {[auto_execok xloadimage] != ""} {
 #Create setBg for ImageMagick (general Linux, no effect on modern Desktops!)
 if {[auto_execok display] != ""} {
   proc setBg {} {
-    exec display -window root $::TwdPNG
+    exec display -window root $::TwdBMP
   }
   return
 }

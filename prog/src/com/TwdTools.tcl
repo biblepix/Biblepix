@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 10may18
+# Updated 2jun18
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if {[catch {package require tdom}]} {
@@ -102,11 +102,10 @@ proc parseToText {node TwdLang {withTags 0}} {
   
   set text [$node asText]
   
-  
   #Fix Bidi languages
-  set isRtL [isRtL $TwdLang]
-  puts "Computing -$TwdLang- text..."
-  
+  set RtL [isRtL $TwdLang]
+
+  if {$RtL} {
     if {[info procs bidi] == ""} {
       source $BdfBidi
     }
@@ -116,28 +115,7 @@ proc parseToText {node TwdLang {withTags 0}} {
     } else {
       set text [bidi $text $TwdLang revert]
     }
-  
-    
-    
-    #notneeded now
-  #Fix Arabic
-  proc mejutar {} {
-  if {$TwdLang == "ar" ||
-  $TwdLang == "ur" ||
-  $TwdLang == "fa"} {
-    if {[info procs fixArabic] == ""} {
-      source $BdfBidi
-    }
-    
-    if {$os == "Windows NT"} {
-      set text [fixArabicWin $text nowovels]
-    } else {
-      set text [fixArabUnix $text nowovels]
-    }
   }
-  
-  }   ;#end PROC MEJUTAR
-  
   return $text
 }
 

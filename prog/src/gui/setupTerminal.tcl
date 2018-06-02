@@ -41,6 +41,6 @@ $t configure -foreground orange -background black -pady 5 -padx 5
 $t tag add intro 1.0 1.end
 $t tag conf intro -foreground yellow -background blue
 #add last line
-$t insert end "\n\.nb.iblepix@localhost ~ $" grün
+$t insert end "\nbiblepix@localhost ~ $" grün
 $t tag conf grün -foreground green
 pack $t
