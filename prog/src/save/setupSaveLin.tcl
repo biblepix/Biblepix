@@ -5,6 +5,8 @@
 
 source $SetupSaveLinHelpers
 source $SetupTools
+source $SetBackgroundChanger
+
 set hasError 0
 
 # A)   S E T   U P   L I N U X   A U T O S T A R T  & M E N U
