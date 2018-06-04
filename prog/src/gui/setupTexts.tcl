@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jun18
+# Updated: 4jun18
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -94,20 +94,21 @@ set ::delete $delete($lang)
 set RtlInfo ""
 ##Hebrew
 if {! [catch "glob $twdDir/he_*"]} {
-  set RtlInfo "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
+  set RtlHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
   if {$platform=="unix"} {
-    set RtlInfo [string reverse $RtlInfo]
+    set RtlHe [string reverse $RtlHe]
   }
-  append RtlInfo \n $RtlInfo 
+  append RtlInfo \n $RtlHe
 }
 ##Arabic
-if {![catch "glob $twdDir/ar_*"]} {
-  set RtlInfo  "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
+if {! [catch "glob $twdDir/ar_*"]} {
+  set RtlAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
   if {$platform=="unix"} {
     source $BdfBidi
-    set RtlInfo [fixArabic $RtlInfo]
+    set RtlAr [bidi $RtlAr ar revert]
+    #set RtlInfo [bidi $RtlInfo ar]
   }
-  append RtlInfo \n $RtlInfo
+  append RtlInfo \n $RtlAr
 }
 
 set textpos(en) "Text position"
@@ -345,6 +346,8 @@ Example:"
   
 
 ######## S E T U P S A V E   T E X T S  ################################
+
+#Changing Desktops Info
 set linChangingDesktop(de) "BiblePix versucht nun, Ihre Desktop-Einstellungen zu ändern."
 set linChangingDesktop(en) "BiblePix will now try to register with your Desktop Background."
 set ::linChangingDesktop $linChangingDesktop($lang)
@@ -361,7 +364,7 @@ set linChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung der Deskt
 set linChangeDesktopProb(en) "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgDir as new image path."
 set ::linChangeDesktopProb $linChangeDesktopProb($lang)
 
-set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Autostarts.\nDamit $bp beim Urstart ausgeführt wird, ist ein Eintrag im Autostart-Menü Ihres Desktops nötig. Rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog 'Automatisch ausgeführte Programme'. Dort geben Sie '$::Biblepix' als neuen Programmpfad ein.\nWeitere Lösungen finden Sie im Manual."
+set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Autostarts.\nDamit $bp beim PC-Start ausgeführt wird, ist ein Eintrag im Autostart-Menü Ihres Desktops nötig. Rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog 'Automatisch ausgeführte Programme'. Dort geben Sie '$::Biblepix' als neuen Programmpfad ein.\nWeitere Lösungen finden Sie im Manual."
 set linSetAutostartProb(en) "We had a problem configuring $bp Autostart.\n In order for $bp to run at computer boot time, you must make an entry in the Autostart menu of your Desktop manager. \nTry right-clicking on your Desktop and find the dialog 'Automatically executed programs'. There enter '$::Biblepix' as the new program path.\nFor other solutions consult the Manual."
 set ::linSetAutostartProb $linSetAutostartProb($lang)
 
@@ -381,6 +384,7 @@ set winRegisterProb(en) "BiblePix has not been registered properly on your compu
 set winRegisterProb(de) "BibelPix ist auf Ihrem Computer noch nicht korrekt installiert.\nBitte gehen Sie nach $windir und führen Sie die Datei $windir/install.reg durch Doppelklick aus, oder starten Sie das Setup nochmals."
 set ::winRegisterProb $winRegisterProb($lang)
 
+#PHOTOS
 set noPhotosFound(de) "Im $bp-Fotoordner wurden keine Fotos gefunden. Kopieren Sie bitte einige Bilder in den Ordner."
 set noPhotosFound(en) "No photos were found in the $bp Photos folder. Please copy some pictures into the folder."
 set ::noPhotosFound $noPhotosFound($lang)

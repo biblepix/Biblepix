@@ -1,22 +1,24 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jun18
+# Updated: 4jun18
 
 source $SetupSaveLinHelpers
 source $SetupTools
 source $SetBackgroundChanger
 
+set Error 0
 set hasError 0
 
 # A)   S E T   U P   L I N U X   A U T O S T A R T  & M E N U
 
-# 1 Set up Linux Autostart always, for all installed Desktops
+# 1 Set up Linux Autostart for all Desktops
 setLinAutostart
 
 # 2A Set up Linux Crontab if no running desktop detected
 if { ! [detectRunningLinuxDesktop] } {
-puts DesktopYokmush!
+
+  puts "No Running Desktop found"
   catch setLinAutostartCrontab Error
   
   if {$Error!=0} {
@@ -24,19 +26,24 @@ puts DesktopYokmush!
     set hasError 1
   }
   
-# 2B Create message if KDE or XFCE4
+# 2B Create Restart Desktop message if KDE or XFCE4 detected
 } elseif {[detectRunningLinuxDesktop] == 2} {
   tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linKdeXfceRestart
+
+# Make Autostart entry in sway config file
+} elseif {[detectRunningLinuxDesktop] == 3} { 
+  
+    setSwayAutostart
 }
 
 
-# 3 Set up Linux right-click menu
-catch setLinMenu Error
+# 3 Set up Menu entries and/or Right-click menu for all Desktops
+setLinMenu
 
-if {!$hasError && $Error!=""} {
-  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
-  set hasError 1
-}
+#if {!$hasError && $Error!=""} {
+#  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
+#  set hasError 1
+#}
 
 # 4 Set up Linux terminal if $enableterm==1
 if {$enableterm} {
@@ -100,7 +107,7 @@ if {$enablepic} {
   tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangingDesktop
   catch {setLinBackground} Error
 
-  if {!$hasError && $Error!=""} {
+  if {$Error==1} {
     tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
     set hasError 1
   }

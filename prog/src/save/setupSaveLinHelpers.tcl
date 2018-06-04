@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1jun18
+# Updated: 4jun18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -11,8 +11,12 @@
 #   other desktops can't be configured, hence information about Setup path is important >Manual
 ################################################################################################
 
+#Set & create general Linux Desktop dirs
 set LinConfDir $HOME/.config
+file mkdir $LinConfDir
 set LinDesktopDir $HOME/.local/share/applications
+file mkdir $LinDesktopDir
+#Set KDE / GNOME / XFCE4 dirs
 set KdeDir [glob -nocomplain $HOME/.kde*]
 set KdeConfDir $KdeDir/share/config
 set KdeConfFile $KdeConfDir/plasma-desktop-appletsrc
@@ -70,6 +74,13 @@ global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeDir KdeAuto
   return 0
 }
 
+proc setSwayAutostart {} {
+  global LinConfDir Biblepix
+  set swayConfFile $LinConfDir/sway/config
+  set chan [open $swayConfFile a]
+  puts $chan "\n exec $Biblepix"
+  close $chan
+}
 
 ######################################################################################
 # R I G H T C L I C K   M E N U   C R E A T E R   F O R   L I N U X   D E S K T O P S
@@ -77,8 +88,9 @@ global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeDir KdeAuto
 
 #T O D O : CHECK FOR XFCE4
 
-# setLinDesktopMenu
-## Makes Menu entries for GNOME & KDE
+# setLinMenu
+## Makes .desktop files for Linux Menu entries and/or right-click menu 
+## should work for KDE/GNOME/XFCE4
 proc setLinMenu {} {
   global LinIcon srcdir Setup wishpath tclpath bp LinDesktopDir
 
@@ -251,8 +263,6 @@ proc setGnomeBackground {} {
   }
 }
 
-
-
 # setLinCrontab
 ##Detects running cron(d) & installs new crontab
 ##returns 0 or 1 for calling prog
@@ -261,7 +271,7 @@ proc setGnomeBackground {} {
 #    only FOR DESKTOPS OTHER THAN KDE/GNOME/XFCE4
 proc setLinAutostartCrontab args {
 
-  global Biblepix Setup slideshow tclpath unixdir env
+  global Biblepix Setup slideshow tclpath unixdir env linConfDir
   set cronfileOrig $unixdir/crontab.ORIG
   
   #if ARGS: Delete any crontab entries & exit
@@ -276,7 +286,7 @@ proc setLinAutostartCrontab args {
   
   #Exit if [crontab] not found
   if { [auto_execok crontab] ==""} {
-    return
+    return 0
   }
 
   #Check for running cron/crond & exit if not running
@@ -285,7 +295,7 @@ proc setLinAutostartCrontab args {
 
   if {! [string is digit $cronpid] && 
       ! [string is digit $crondpid] } {
-    return
+    return 0
   }
 
 
@@ -332,12 +342,6 @@ proc setLinAutostartCrontab args {
   
   
 ##### 2. Prepare cronscript text ############################
-
-  #Cron doesn't work with non-X environment
-  if [info exists env(SWAYSOCK)] {
-#  TODO: make Autostart entry in .config/sway/config
-    return
-  }
 
   set cronScriptText "# ~/Biblepix/prog/unix/cron.sh\n# Bash script to add BiblePix to crontab
 count=0

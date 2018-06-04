@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12may18
+# Updated: 4jun18
 
 #Check for Img package
 if { [catch {package require Img} ] } {
@@ -60,12 +60,19 @@ proc setSun {rgb} {
 ## copies sample Jpegs to PhotosDir unchanged if size OK
 ## else calls [resize] 
 ## no cutting intended because these pics can be stretched
+## called by Setup - T O D O : MOVE TO SetupTools ?
 proc copyAndResizeSamplePhotos {} {
   global sampleJpegArray photosDir
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-    
+
   foreach fileName [array names sampleJpegArray] {
+  
+    #Skip if found in $photosDir
+    if [file exists $photosDir/$fileName] {
+      continue
+    }
+    
     set filePath [lindex [array get sampleJpegArray $fileName] 1]
     image create photo origJpeg -file $filePath 
     set imgX [image width origJpeg]
@@ -85,7 +92,8 @@ proc copyAndResizeSamplePhotos {} {
 }
 
 proc setPngFileName {fileName} {
-  if {![regexp png|PNG $fileName]} {
+  set fileExt [$file extension $fileName]
+  if {![regexp png|PNG $fileExt]} {
     set fileName "[file rootname $fileName].png"
   }
   return $fileName
@@ -211,7 +219,7 @@ proc resize {src newx newy {dest ""} } {
  #  Returns:      destination image
  #  Author: David Easton, wiki.tcl.tk, 2004 - God bless you David, you have saved us a lot of trouble!
 
- ######## IDEAL FOR EVEN SIDED ZOOMING ############# pv
+ ######## IDEAL FOR EVEN SIDED ZOOMING , else picture is distorted ##########
 
   global resizingPic
   catch {NewsHandler::QueryNews "$resizingPic" orange}

@@ -4,9 +4,9 @@
 # Called by User via Windows/Unix Desktop entry
 # If called by BiblePix-Installer, this is the first file downloaded + executed
 ################################################################################
-# Version: 2.5
+# Version: 3.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jun18
+# Updated: 4jun18
 
 package require Tk
 
@@ -50,7 +50,7 @@ if {[catch {source $Globals}]} {
     .updateFrame.progbar start
     
     if { [info exists InitialJustDone] } {
-      set pbTitle "Copying sample photos..."
+      set pbTitle "Copying & resizing sample photos..."
       source $Imgtools
       copyAndResizeSamplePhotos
       set pbTitle $uptodateHttp

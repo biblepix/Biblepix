@@ -211,7 +211,8 @@ proc getParolText {parolNode {TwdLang "de"} {withTags 0}} {
 }
 
 proc getParolRef {parolNode {TwdLang "de"} {withTags 0}} {
-  return [string cat "~ " [parseToText [$parolNode selectNodes ref] $TwdLang $withTags]]
+  #return [string cat "~ " [parseToText [$parolNode selectNodes ref] $TwdLang $withTags]]
+  return [parseToText [$parolNode selectNodes ref] $TwdLang $withTags]
 }
 
 

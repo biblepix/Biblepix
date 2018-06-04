@@ -40,7 +40,7 @@ proc bidi {dw TwdLang args} {
   }
   
   #Provide reverse text for Setup apps
-  if {$args=="revert"} {
+  if {$args != ""} {
     set dw [string reverse $dw]
   }
    
@@ -52,12 +52,14 @@ proc bidi {dw TwdLang args} {
 proc fixArabic {dw} {
 #Sets correct letter forms
 #added Persion & Urdu 5/16
-
-  #Eliminate all vowel signs - this is done in main proc 'bidi' (see above)
-#  regsub -all {[\u064B-\u065F]} $dw {} dw
-
 #Assign UTF letter codes & forms
 #1.Initial / 2.Middle / 3.Final-linked
+
+
+if {$dw == ""} {
+  return "No Text Found"
+}
+
 
 # Preliminary substitution of special letters:
 #lam-alif / lam-alif-hamza_elyon/tahton / lam-alif_madda / ltr marker / rtl marker
@@ -359,8 +361,8 @@ set linkinfo 0
 
     #Skip digits & pre-reverse if longer than ??????????????
 
-  set newword [formatWord $word]
-  append newline "$newword "
+    set newword [formatWord $word]
+    append newline "$newword "
 
     } ;#end foreach word
 
