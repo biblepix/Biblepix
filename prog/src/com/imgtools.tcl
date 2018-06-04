@@ -92,7 +92,7 @@ proc copyAndResizeSamplePhotos {} {
 }
 
 proc setPngFileName {fileName} {
-  set fileExt [$file extension $fileName]
+  set fileExt [file extension $fileName]
   if {![regexp png|PNG $fileExt]} {
     set fileName "[file rootname $fileName].png"
   }
