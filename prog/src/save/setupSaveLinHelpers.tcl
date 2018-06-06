@@ -24,6 +24,29 @@ set KdeAutostartDir $KdeDir/Autostart
 set GnomeAutostartDir $LinConfDir/autostart
 set Xfce4ConfigFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
 
+# reloadKdeDesktop
+##Rereads all .desktop and XML files
+##Called by SetupSaveLin after changing config files
+proc reloadKdeDesktop {} {
+  set k4 [auto_execok kbuildsycoca4]
+  set k5 [auto_execok kbuildsycoca5]
+  if {$k5 != ""} {
+    set command $k5
+  } elseif {$k4 != ""} {
+    set command $k4
+  }
+  catch {exec $command}
+}
+
+# reloadXfce4Desktop
+##Rereads XFCE4 Desktop configuration
+##Called by SetupSaveLin after changing config files
+proc reloadXfce4Desktop {} {
+  set command [auto_execok xfdesktop]
+  if {$command != ""} {
+    catch {exec $command --reload} 
+  }
+}
 
 ########################################################################
 # A U T O S T A R T   S E T T E R   F O R   L I N U X   D E S K T O P S
@@ -91,6 +114,7 @@ proc setSwayAutostart {} {
 # setLinMenu
 ## Makes .desktop files for Linux Menu entries and/or right-click menu 
 ## should work for KDE/GNOME/XFCE4
+### T O D O : KDE5 path changed to .local/share/kservices5/ServiceMenus
 proc setLinMenu {} {
   global LinIcon srcdir Setup wishpath tclpath bp LinDesktopDir
 
@@ -378,10 +402,46 @@ done
 ##################################################
 
 ## copyLinTerminalConf
-# Copies configuration file for Linux terminal to $confdir 
-# Called by SetupSaveLin if $enableterm==1
-proc copyLinTerminalConf {} {
-  global confdir
+# Copies configuration file for Linux terminal to $confdir
+#Makes entry in .bash_profile
+##use 'args' to delete - T O D O > Uninstall !!
+ # Called by SetupSaveLin if $enableterm==1
+proc copyLinTerminalConf {args} {
+  global confdir HOME
+  
+  #Read out .bash_profile
+  set bashProfile $HOME/.bash_profile
+  if [file exists $bashProfile] {
+    set chan [open $bashProfile w+]
+    set t [read $chan]
+    close $chan
+  }
+  
+  #If 'args' delete any previous entries 
+  if {$args != "" && $t != ""} {  
+    regsub -all -line {^.*iblepix.*$} $t {} t
+    puts $chan $t
+    close $chan
+    return
+  }
+  
+  #### 1. Make entry in .bash_profile ###
+
+  if { ![regexp {[Bb]iblepix} $t]} {
+  
+    #Ignore if previous entries found
+    puts "Already there"
+
+  } else {
+
+    #Open file for writing & add line
+    set chan [open $bashProfile w]
+    append t \n sh { } $Terminal
+    puts $chan $t
+    close $chan
+  }
+
+  #### 2. Create Terminal Config file always ###
   
   set configText {
   #!/bin/sh
@@ -451,4 +511,5 @@ proc copyLinTerminalConf {} {
     puts $chan $configText
     close $chan
   }
+
 } ;#END copyLinTerminalConf

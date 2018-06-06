@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 2jun18
+# Updated 4jun18
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if {[catch {package require tdom}]} {
@@ -79,7 +79,8 @@ global twdDir
 }
 
 proc getDomNodeForToday {domDoc} {
-  global datum
+#  global datum - can change any time!!!
+  set datum [clock format [clock seconds] -format %Y-%m-%d]
   set rootDomNode [$domDoc documentElement]
   return [$rootDomNode selectNodes /thewordfile/theword\[@date='$datum'\]]
 }

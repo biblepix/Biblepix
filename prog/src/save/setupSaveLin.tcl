@@ -16,7 +16,7 @@ set hasError 0
 setLinAutostart
 
 # 2A Set up Linux Crontab if no running desktop detected
-if { ! [detectRunningLinuxDesktop] } {
+if { ![detectRunningLinuxDesktop] } {
 
   puts "No Running Desktop found"
   catch setLinAutostartCrontab Error
@@ -48,23 +48,6 @@ setLinMenu
 # 4 Set up Linux terminal if $enableterm==1
 if {$enableterm} {
   catch copyLinTerminalConf
-  
-  #Make entry in ~/.bash_profile
-  set bashProfile $HOME/.bash_profile
-  if [file exists $bashProfile] {
-    set chan [open $bashProfile r]
-    set t [read $chan]
-    close $chan
-  }
-  ##delete any previous entries
-  if [regexp {[Bb]iblepix} $t] {
-    regsub -all -line {^.*iblepix.*$} $t {} t
-  }
-  ##add line for term.sh
-  set chan [open $bashProfile w]
-  append t \n sh { } $Terminal
-  puts $chan $t
-  close $chan
 }
 
 # 5 Check "Sh-Bang" with correct 'env' path in main executables
