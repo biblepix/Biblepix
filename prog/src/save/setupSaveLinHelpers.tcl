@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4jun18
+# Updated: 7jun18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -47,6 +47,50 @@ proc reloadXfce4Desktop {} {
     catch {exec $command --reload} 
   }
 }
+
+# checkExecutables
+## Check first line of Linux executables for correct 'env' path
+## Standard env path as in Ubuntu/Debian/Gentoois /usr/bin/env
+## Make files executable
+proc checkExecutables {} {
+  global Setup Biblepix
+  
+  set standardEnvPath {/usr/bin/env}
+  set curEnvPath [auto_execok env]
+
+  #1. Set permissions to executable
+  file attributes $Biblepix -permissions +x
+  file attributes $Setup -permissions +x
+  
+  #2. Reset 1st Line if not standard
+  if {$curEnvPath == $standardEnvPath} {
+    return 1
+  }
+  
+  set shBangLine "\#!${curEnvPath} tclsh"
+
+  ##read out Biblepix & Setup texts
+  set chan1 [open $Biblepix r]
+  set chan2 [open $Setup r]
+  set text1 [read $chan1]
+  set text2 [read $chan2]
+  close $chan1
+  close $chan2
+
+  ##replace 1st line with current sh-bang
+  regsub -line {^#!.*$} $text1 $shBangLine text1
+  set chan [open $Biblepix w]
+  puts $chan $text1
+  close $chan
+  regsub -line {^#!.*$} $text2 $shBangLine text2
+  set chan [open $Setup w]
+  puts $chan $text2
+  close $chan
+
+  ##clean up & make files executable
+  catch {unset shBangLine text1 text2}
+}
+
 
 ########################################################################
 # A U T O S T A R T   S E T T E R   F O R   L I N U X   D E S K T O P S
@@ -403,44 +447,67 @@ done
 
 ## copyLinTerminalConf
 # Copies configuration file for Linux terminal to $confdir
-#Makes entry in .bash_profile
+#Makes entry in .bashrc for 
+
+
 ##use 'args' to delete - T O D O > Uninstall !!
  # Called by SetupSaveLin if $enableterm==1
 proc copyLinTerminalConf {args} {
-  global confdir HOME
+  global confdir HOME Terminal
   
-  #Read out .bash_profile
-  set bashProfile $HOME/.bash_profile
-  if [file exists $bashProfile] {
-    set chan [open $bashProfile w+]
+  #Delete any previous/erroneous entries in .bash_profile
+  set f $HOME/.bash_profile
+  if [file exists $f] {
+    set chan [open $f r]
     set t [read $chan]
     close $chan
+    if [regexp {[Bb]iblepix} $t] {
+      regsub -all -line {^.*iblepix.*$} $t {} t
+      set chan [open $f w]
+      puts $chan $t
+      close $chan
+    }
   }
   
-  #If 'args' delete any previous entries 
-  if {$args != "" && $t != ""} {  
-    regsub -all -line {^.*iblepix.*$} $t {} t
-    puts $chan $t
+  #Read out .bashrc
+  set f $HOME/.bashrc
+  
+  if [file exists $f] {
+    set chan [open $f r]
+    set t [read $chan]
     close $chan
-    return
-  }
+
+    #If 'args' delete any previous entries 
+    if {$args != "" && $t != ""} {  
+      regsub -all -line {^.*iblepix.*$} $t {} t
+      set chan [open $f w]
+      puts $chan $t
+      close $chan
+      return
+    }
+
+    # Set entry text for .bashrc
+    append bashrcEntry {
+#Biblepix: This line shows The Word each terminal
+} {[ -f } $Terminal { ] && } $Terminal
+
+    if [regexp {[Bb]iblepix} $t] {
+    
+      #Ignore if previous entries found
+      puts "Nothing to do"
+
+    } else {
+
+      #Append line
+      append t $bashrcEntry
+      set chan [open $f w]
+      puts $chan $t
+      close $chan
+    }
+    
+  } ;#End if file exists
   
-  #### 1. Make entry in .bash_profile ###
-
-  if { ![regexp {[Bb]iblepix} $t]} {
   
-    #Ignore if previous entries found
-    puts "Already there"
-
-  } else {
-
-    #Open file for writing & add line
-    set chan [open $bashProfile w]
-    append t \n sh { } $Terminal
-    puts $chan $t
-    close $chan
-  }
-
   #### 2. Create Terminal Config file always ###
   
   set configText {

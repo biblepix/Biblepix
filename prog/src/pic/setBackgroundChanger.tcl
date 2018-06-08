@@ -2,7 +2,7 @@
 # Searches system for current Desktop manager, gives out appropriate BG changing command
 # Called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1jun18
+# Updated: 7jun18
 
 ########################################################################
 # WINDOWS: accepts command through RUNDLL32.EXE - a bit buggy still...
@@ -15,45 +15,47 @@
 
 # detectRunningLinuxDesktop
 ##returns 1 if GNOME detected
-##returns 2 if KDE or XFCE4 detected
-##returns 3 if Wayland/Sway detected
+##returns 2 if KDE detected
+##returns 3 if XFCE4 detected
+##returns 4 if Wayland/Sway detected
 ##returns 0 if no running desktop detected
 ##called by SetupSaveLin & .
 proc detectRunningLinuxDesktop {} {
   global env
   
-  #check GNOME
+  #check GNOME (return 1)
   if { [info exists env(GNOME_KEYRING_CONTROL)] ||
        [info exists env(GNOME_DESKTOP_SESSION_ID)] } {
-    puts GnomeDetected
     return 1
   }
   
-  #check KDE / XFCE
-  if [info exists env(XDG_CURRENT_DESKTOP)] {
-  
-    if {$env(XDG_CURRENT_DESKTOP) == "KDE" ||
-        $env(XDG_CURRENT_DESKTOP) == "XFCE" } {
+  #check KDE (return 2)
+  if { [info exists env(XDG_CURRENT_DESKTOP)] &&
+      $env(XDG_CURRENT_DESKTOP) == "KDE" } {
       return 2
-    }
-    
-  } elseif [info exists env(DESKTOP_SESSION)] {
-    
-    if {$env(DESKTOP_SESSION) == "kde-plasma" ||
-        $env(DESKTOP_SESSION) == "xfce" } {
+  } elseif { 
+      [info exists env(DESKTOP_SESSION)] &&
+      $env(DESKTOP_SESSION) == "kde-plasma" } {
       return 2
-    }
   }
   
-  #detect Wayland/Sway
-  if { [info exists env(SWAYSOCK)] ||
-       [info exists env(WAYLAND_DISPLAY)] } {
-       puts SwayDetected
+  #check XFCE4 (return 3)
+  if { [info exists env(XDG_CURRENT_DESKTOP)] &&
+    $env(XDG_CURRENT_DESKTOP) == "XFCE" } {
+    return 3
+  } elseif {
+    [info exists env(DESKTOP_SESSION)] &&
+    $env(DESKTOP_SESSION) == "xfce" } {
     return 3
   }
+  
+  #check Wayland/Sway
+  if { [info exists env(SWAYSOCK)] ||
+       [info exists env(WAYLAND_DISPLAY)] } {
+    return 4
+  }
 
-  #nothing found
-  puts nothingDetected
+  #no desktop detected
   return 0
 }
 
@@ -79,7 +81,7 @@ proc setSwayBg {} {
   return $outputName
 }
 
-# C r e a t e   'setBg'   p r o c   i f   a p p l i c a b l e
+# C r e a t e  ' s e t B g '   p r o c   i f   a p p l i c a b l e
 
 #Create setBg proc for Windows 
 if {$platform=="windows"} {
@@ -100,7 +102,7 @@ if {$runningDesktop == 3} {
   set swayOutput [setSwayBg]
   proc setBg {} {
     upvar swayOutput swayOutput
-    exec swaymsg output $swayOutput bg $::TwdBMP stretch 
+    exec swaymsg output $swayOutput bg $::TwdBMP center
   }
   return
   

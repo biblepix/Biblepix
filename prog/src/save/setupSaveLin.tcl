@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4jun18
+# Updated: 8jun18
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -10,13 +10,37 @@ source $SetBackgroundChanger
 set Error 0
 set hasError 0
 
-# A)   S E T   U P   L I N U X   A U T O S T A R T  & M E N U
+#Check / Amend Linux executables
+checkExecutables
 
+##################################################
 # 1 Set up Linux Autostart for all Desktops
+##################################################
 setLinAutostart
 
-# 2A Set up Linux Crontab if no running desktop detected
-if { ![detectRunningLinuxDesktop] } {
+# Check running desktop
+##returns 1 if GNOME
+##returns 2 if KDE
+##returns 3 if XFCE4
+##returns 4 if Wayland/Sway
+##returns 0 if no running desktop detected
+set runningDesktop [detectRunningLinuxDesktop]
+
+if {$runningDesktop==1} {
+  
+  #TODO: check if need to include Gnome!!!!!! - revise message
+  
+# 2B Create Restart Desktop message if KDE or XFCE4 detected
+} elseif {$runningDesktop == 2 || $runningDesktop == 3} {
+  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linKdeXfceRestart
+
+# Make Autostart entry in sway config file
+} elseif {$runningDesktop == 4} { 
+  
+    setSwayAutostart
+    
+#Install crontab if no Desktop found
+} else {
 
   puts "No Running Desktop found"
   catch setLinAutostartCrontab Error
@@ -25,19 +49,11 @@ if { ![detectRunningLinuxDesktop] } {
     tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linSetAutostartProb
     set hasError 1
   }
-  
-# 2B Create Restart Desktop message if KDE or XFCE4 detected
-} elseif {[detectRunningLinuxDesktop] == 2} {
-  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linKdeXfceRestart
-
-# Make Autostart entry in sway config file
-} elseif {[detectRunningLinuxDesktop] == 3} { 
-  
-    setSwayAutostart
 }
 
-
-# 3 Set up Menu entries and/or Right-click menu for all Desktops
+####################################################
+# 2 Set up Menu entries for all Desktops
+####################################################
 setLinMenu
 
 #if {!$hasError && $Error!=""} {
@@ -45,42 +61,25 @@ setLinMenu
 #  set hasError 1
 #}
 
-# 4 Set up Linux terminal if $enableterm==1
+
+#################################################
+# 3 Set up Linux terminal
+#################################################
 if {$enableterm} {
   catch copyLinTerminalConf
+  #TODO? message if failure ??
 }
 
-# 5 Check "Sh-Bang" with correct 'env' path in main executables
-##Standard env path as in Ubuntu/Debian/Gentoo:
-set standardEnvPath {/usr/bin/env}
-set curEnvPath [auto_execok env]
 
-if {$curEnvPath != $standardEnvPath} {
-  set shBangLine "\#!${curEnvPath} tclsh"
-
-  ##read out Biblepix & Setup texts
-  set chan1 [open $Biblepix r]
-  set chan2 [open $Setup r]
-  set text1 [read $chan1]
-  set text2 [read $chan2]
-  close $chan1
-  close $chan2
-
-  ##replace 1st line with current sh-bang
-  regsub -line {^#!.*$} $text1 $shBangLine text1
-  set chan [open $Biblepix w]
-  puts $chan $text1
-  close $chan
-  regsub -line {^#!.*$} $text2 $shBangLine text2
-  set chan [open $Setup w]
-  puts $chan $text2
-  close $chan
+########################################################
+# 4 Try reloading Desktop configuration & Create message - TODO: differentiate return codes !!!!
+#########################################################
+tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $TODO:CREATEMESSAGEtryingToReloadDesktop
+if {$runningDesktop == 2} {
+  reloadKdeDesktop
+  reloadXfce4Desktop
+  ?reloadGnomeDesktop??
 }
-  
-##clean up & make files executable
-catch {unset shBangLine text1 text2}
-file attributes $Biblepix -permissions +x
-file attributes $Setup  -permissions +x
 
 
 ## B)  E R R O R   H A N D L I N G
