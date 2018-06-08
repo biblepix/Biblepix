@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 20may18
+# Updated: 8jun18
 
 set version "3.0"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
@@ -37,7 +37,6 @@ set jpegDir $photosDir
 set progDir [file join $rootdir prog]
 set twdDir [file join $rootdir Texts]
 
-set bmpdir [file join $progDir bmp]
 set confdir [file join $progDir conf]
 set fontdir [file join $progDir font]
 set piddir [file join $progDir pid]
@@ -52,9 +51,9 @@ set picdir [file join $srcdir pic]
 set savedir [file join $srcdir save]
 
 proc makeDirs {} {
-  global picdir sigDir sampleJpgDir imgDir jpegDir progDir twdDir bmpdir confdir piddir srcdir unixdir windir sharedir guidir maildir maindir savedir
+  global picdir sigDir sampleJpgDir imgDir jpegDir progDir twdDir confdir piddir srcdir unixdir windir sharedir guidir maildir maindir savedir
   file mkdir $sigDir $imgDir $jpegDir $sampleJpgDir $progDir $twdDir
-  file mkdir $bmpdir $confdir $piddir $srcdir $unixdir $windir
+  file mkdir $confdir $piddir $srcdir $unixdir $windir
   file mkdir $sharedir $guidir $maildir $picdir $savedir
 }
 
