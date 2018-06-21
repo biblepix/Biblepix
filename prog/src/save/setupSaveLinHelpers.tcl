@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7jun18
+# Updated: 21jun18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -11,17 +11,127 @@
 #   other desktops can't be configured, hence information about Setup path is important >Manual
 ################################################################################################
 
+#T<O<D<O: - GEETNET!!!!!!!!
+proc copySetupToPath {} {
+  #prepare progtext
+  set path /usr/local/bin
+  set firstLine [setShebangLine]
+  append progtext $firstLine \n cd { } $srcdir \n $Setup
+  set filename $path/biblepix-setup
+  #open chan as root
+  exec su -c set chan [open $filename w]
+  puts $chan $progtext
+  close $chan
+  #make executable - NEEDS ROOT?
+  file $filename -attributes +x
+}
+
+#TODO: USE THIS TO FIND plasma-desktop-apletsrc recursively - NO NEED!!!!!
+# findFiles
+# basedir - the directory to start looking in
+# pattern - A pattern, as defined by the glob command, that the files must match
+proc findFiles {directory pattern} {
+
+    # Fix the directory name, this ensures the directory name is in the
+    # native format for the platform and contains a final directory seperator
+    set directory [string trimright [file join [file normalize $directory] { }]]
+
+    # Starting with the passed in directory, do a breadth first search for
+    # subdirectories. Avoid cycles by normalizing all file paths and checking
+    # for duplicates at each level.
+
+    set directories [list]
+    set parents $directory
+    while {[llength $parents] > 0} {
+
+        # Find all the children at the current level
+        set children [list]
+        foreach parent $parents {
+            set children [concat $children [glob -nocomplain -type {d r} -path $parent *]]
+        }
+
+        # Normalize the children
+        set length [llength $children]
+        for {set i 0} {$i < $length} {incr i} {
+            lset children $i [string trimright [file join [file normalize [lindex $children $i]] { }]]
+        }
+
+        # Make the list of children unique
+        set children [lsort -unique $children]
+
+        # Find the children that are not duplicates, use them for the next level
+        set parents [list]
+        foreach child $children {
+            if {[lsearch -sorted $directories $child] == -1} {
+                lappend parents $child
+            }
+        }
+
+        # Append the next level directories to the complete list
+        set directories [lsort -unique [concat $directories $parents]]
+    }
+
+    # Get all the files in the passed in directory and all its subdirectories
+    set result [list]
+    foreach directory $directories {
+        set result [concat $result [glob -nocomplain -type {f r} -path $directory -- $pattern]]
+    }
+
+    # Normalize the filenames
+    set length [llength $result]
+    for {set i 0} {$i < $length} {incr i} {
+        lset result $i [file normalize [lindex $result $i]]
+    }
+
+    # Return only unique filenames
+    return [lsort -unique $result]
+}
+
+
 #Set & create general Linux Desktop dirs
 set LinConfDir $HOME/.config
 file mkdir $LinConfDir
-set LinDesktopDir $HOME/.local/share/applications
-file mkdir $LinDesktopDir
-#Set KDE / GNOME / XFCE4 dirs
+set LinLocalShareDir $HOME/.local/share
+set LinDesktopFilesDir $LinLocalShareDir/applications
+file mkdir $LinDesktopFilesDir
 set KdeDir [glob -nocomplain $HOME/.kde*]
 set KdeConfDir $KdeDir/share/config
-set KdeConfFile $KdeConfDir/plasma-desktop-appletsrc
+
+#Set KDE dirs: 1. find location of plasmarc files - TODO: ??? use kwriteconfig instead???
+if {[file exists $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc]} {
+  set rcfile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
+} else {
+  set rcfile $KdeConfDir/plasma-desktop-appletsrc
+  file mkdir $KdeConfDir
+}
+set KdeConfFile $rcfile
+
+# 1 Menu entry/rightclick .desktop files
+set LinDesktopFile $LinDesktopFilesDir/biblepixSetup.desktop
+set Kde5DesktopFilesDir $LinLocalShareDir/kservices5/ServiceMenus
+#file mkdir $Kde5DesktopFilesdir - TODO : only for KDE5!
+set Kde5DesktopFile $Kde5DesktopFilesDir/biblepixSetup.desktop
+
+# 2 Kde background configuration files (not needed for Gnome)
+set Kde4Appletsrc $KdeConfDir/plasma-desktop-appletsrc
+set Kde5Appletsrc $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
+
+#Set vars for setKdeBackground
+#TODO: write 2 different progs with old/new syntax
+#TODO: write both files???
+if [file exists $Kde4Appletsrc] {
+  set KdeVersion 4
+}
+if [file exists $Kde5Appletsrc] {
+  set KdeVersion 5
+}
+
+# 3 Autostart files
 set KdeAutostartDir $KdeDir/Autostart
 set GnomeAutostartDir $LinConfDir/autostart
+set KdeAutostartFile nowInAppBelow
+set GnomeAutostartFile nowInAppBelow
+
 set Xfce4ConfigFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
 
 # reloadKdeDesktop
@@ -35,16 +145,16 @@ proc reloadKdeDesktop {} {
   } elseif {$k4 != ""} {
     set command $k4
   }
-  catch {exec $command}
+  exec $command
 }
 
-# reloadXfce4Desktop
+# reloadXfceDesktop
 ##Rereads XFCE4 Desktop configuration
 ##Called by SetupSaveLin after changing config files
-proc reloadXfce4Desktop {} {
+proc reloadXfceDesktop {} {
   set command [auto_execok xfdesktop]
   if {$command != ""} {
-    catch {exec $command --reload} 
+    exec $command --reload 
   }
 }
 
@@ -62,6 +172,7 @@ proc checkExecutables {} {
   file attributes $Biblepix -permissions +x
   file attributes $Setup -permissions +x
   
+  #TODO: export to separate proc setShebangLine
   #2. Reset 1st Line if not standard
   if {$curEnvPath == $standardEnvPath} {
     return 1
@@ -109,6 +220,8 @@ global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeDir KdeAuto
     return
   }
 
+
+
   #set Texts
   set desktopText "\[Desktop Entry\]
   Name=$bp Setup
@@ -117,9 +230,10 @@ global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeDir KdeAuto
   Path=$srcdir
   Categories=Settings
   Comment=Configures and runs BiblePix"
+  
   set execText "Exec=$tclpath $Biblepix"
 
-  #make .desktop file for KDE Autostart
+  #Make .desktop file for KDE Autostart
   if [file exists $KdeDir] {
     file mkdir $KdeAutostartDir
     set desktopfile [open $KdeAutostartDir/biblepix.desktop w]
@@ -128,39 +242,49 @@ global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeDir KdeAuto
     close $desktopfile
   }
 
-  #make .desktop file for GNOME Autostart
+  #Make .desktop file for GNOME Autostart
   file mkdir $GnomeAutostartDir
   set chan [open $GnomeAutostartDir/biblepix.desktop w]
   puts $chan "$desktopText"
   puts $chan "$execText"
   close $chan
 
-  #Delete any BP crontab entry
-  catch {setLinAutostartCrontab del}
+  #Delete any BP crontab entry - TODO ?????????????'
+  catch {setupLinCrontab delete}
 
   return 0
 }
 
 proc setSwayAutostart {} {
   global LinConfDir Biblepix
+  
+  #append or create config file
   set swayConfFile $LinConfDir/sway/config
-  set chan [open $swayConfFile a]
-  puts $chan "\n exec $Biblepix"
+  #read out text
+  set chan [open $swayConfFile r]
+  set t [read $chan]
   close $chan
+  #Skip if already there, else append entry
+  if {![regexp {[Bb]iblepix} $t]} {
+    append swayEntry \n # BiblePix: { this line runs BiblePix on your Sway desktop:} \n exec $Biblepix
+    set chan [open $swayConfFile w]
+    puts $chan $t
+    puts $chan $swayEntry
+    close $chan
+  }
 }
 
-######################################################################################
-# R I G H T C L I C K   M E N U   C R E A T E R   F O R   L I N U X   D E S K T O P S
-######################################################################################
 
-#T O D O : CHECK FOR XFCE4
+################################################################################
+#  M E N U  E N T R Y   C R E A T E R   F O R   L I N U X   D E S K T O P S
+################################################################################
 
 # setLinMenu
-## Makes .desktop files for Linux Menu entries and/or right-click menu 
-## should work for KDE/GNOME/XFCE4
+## Makes .desktop files for Linux Menu entries 
+## Works on KDE / GNOME / XFCE4
 ### T O D O : KDE5 path changed to .local/share/kservices5/ServiceMenus
 proc setLinMenu {} {
-  global LinIcon srcdir Setup wishpath tclpath bp LinDesktopDir
+  global LinIcon srcdir Setup wishpath tclpath bp LinDesktopFilesDir
 
   #set Texts
   set desktopText "\[Desktop Entry\]
@@ -173,7 +297,7 @@ proc setLinMenu {} {
   set execText "Exec=$wishpath $Setup"
 
   #make .desktop file for GNOME & KDE prog menu
-  set chan [open $LinDesktopDir/biblepixSetup.desktop w]
+  set chan [open $LinDesktopFilesDir/biblepixSetup.desktop w]
   puts $chan "$desktopText"
   puts $chan "$execText"
   close $chan
@@ -181,15 +305,49 @@ proc setLinMenu {} {
 }
 
 #########################################################################
-# BACKGROUND PIC SETTERS FOR LINUXES THAT NEED CONFIGURING AT SETUP TIME  
+# B A C K G R O U N D   P I C   S E T T E R S   FOR LINUXES THAT NEED CONFIGURING AT SETUP TIME  
 #########################################################################
 
 # setKdeBackground
 ##configures KDE5 Plasma for single pic or slideshow
 # - TODO: > Anleitung in Manpage für andere KDE-Versionen/andere Desktops (Rechtsklick > Desktop-Einstellungen >Einzelbild/Diaschau)
-proc setKdeBackground {} {
+#TODO: differentiate kde4/kde5 (s.o.)
+proc setKdeBackground {KdeVersion args} {
   global KdeConfFile TwdPNG slideshow imgDir
 
+  #set KDE version(s) & execute 1 or 2 progs
+  lappend KdeVersions $KdeVersion $args
+
+  #check kread/kwrite executables
+  if {[auto_execok kreadconfig5] != "" && 
+      [auto_execok kwriteconfig5] != ""} {
+    set kread kreadconfig5
+    set kwrite kwriteconfig5
+  } elseif { [auto_execok kreadconfig] != "" && 
+      [auto_execok kwriteconfig] != ""} {
+    set kread kreadconfig
+    set kwrite kwriteconfig
+  } else {
+    puts "Cannot configure KDE background - Please do a hand job!!!! - TODO"
+  }
+  
+  #Todo : write/rewrite progs!!!
+  foreach v $KdeVersions {
+    if {$v==4} {
+      doKde4Desktop
+    }
+    if {$v==5} {
+      doKde5Desktop
+    }
+  
+  }
+  
+  
+  #TODO: Below is crap, integrate old solution for 4
+  #create new script for 5 !!!!!!!!!!!!!!!!!!!!!!
+  
+  
+  
   set chan [open $KdeConfFile w]
   set s [read $chan]
   
@@ -206,11 +364,12 @@ proc setKdeBackground {} {
   }
   puts $chan $s
   close $chan
+
 }
 
-# setXfce4Background
+# setXfceBackground
 ##configures XFCE4 single pic or slideshow - TODO: >update MANPAGE!!!!!!!!!
-proc setXfce4Background {} {
+proc setXfceBackground {} {
   global slideshow Xfce4ConfigFile
   package require tdom
   
@@ -315,7 +474,7 @@ proc setXfce4Background {} {
   puts $confChan $confText
   close $confChan
   
-} ;#END setXfce4Background
+} ;#END setXfceBackground
 
 
 # setGnomeBackground
@@ -331,13 +490,13 @@ proc setGnomeBackground {} {
   }
 }
 
-# setLinCrontab
+# setupLinCrontab
 ##Detects running cron(d) & installs new crontab
 ##returns 0 or 1 for calling prog
 ##called by SetupSaveLin & Uninstall
 ##    T O D O: USE CRONTAB ONLY FOR INITIAL START, NOT FOR SLIDESHOW 
 #    only FOR DESKTOPS OTHER THAN KDE/GNOME/XFCE4
-proc setLinAutostartCrontab args {
+proc setupLinCrontab args {
 
   global Biblepix Setup slideshow tclpath unixdir env linConfDir
   set cronfileOrig $unixdir/crontab.ORIG
@@ -384,9 +543,7 @@ proc setLinAutostartCrontab args {
   #Prepare new crontab entry for running BiblePix at boot
   set cronScript $unixdir/cron.sh
   set cronfileTmp /tmp/crontab.TMP
-  set BPcrontext "
-@daily $cronScript
-@reboot $cronScript"
+  append BPcrontext \n @daily $cronScript \n @reboot $cronScript
 
   #Check presence of saved crontab
   if [file exists $cronfileOrig] {
@@ -433,26 +590,24 @@ done
 
 ### 3. Set ::crontab global var & delete any previous Autostart entries
   set ::crontab 1
-  setLinAutostart delete
+ # setLinAutostart delete
 
   #Return success
   return 1
     
-} ;#end setLinCrontab
+} ;#end setupLinCrontab
 
 
 ##################################################
 # L I N U X   T E R M I N A L   S E T T E R 
 ##################################################
 
-## copyLinTerminalConf
-# Copies configuration file for Linux terminal to $confdir
-#Makes entry in .bashrc for 
-
-
+# setupLinTerminal
+## Copies configuration file for Linux terminal to $confdir
+## Makes entry in .bashrc for 
 ##use 'args' to delete - T O D O > Uninstall !!
- # Called by SetupSaveLin if $enableterm==1
-proc copyLinTerminalConf {args} {
+# Called by SetupSaveLin if $enableterm==1
+proc setupLinTerminal {args} {
   global confdir HOME Terminal
   
   #Delete any previous/erroneous entries in .bash_profile
@@ -579,4 +734,4 @@ proc copyLinTerminalConf {args} {
     close $chan
   }
 
-} ;#END copyLinTerminalConf
+} ;#END setupLinTerminal

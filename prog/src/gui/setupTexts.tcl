@@ -368,6 +368,7 @@ set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Auto
 set linSetAutostartProb(en) "We had a problem configuring $bp Autostart.\n In order for $bp to run at computer boot time, you must make an entry in the Autostart menu of your Desktop manager. \nTry right-clicking on your Desktop and find the dialog 'Automatically executed programs'. There enter '$::Biblepix' as the new program path.\nFor other solutions consult the Manual."
 set ::linSetAutostartProb $linSetAutostartProb($lang)
 
+#TODO: revise this to include Gnome!!!!!!!!!!!!!
 set linKdeXfceRestart(en) "For the BiblePix settings to take effect now, you must log out quickly and then log in again."
 set linKdeXfceRestart(de) "Damit die BibelPix-Einstellungen jetzt wirksam werden, müssen Sie sich kurz ab- und  wieder anmelden."
 set ::linKdeXfceRestart $linKdeXfceRestart($lang)
