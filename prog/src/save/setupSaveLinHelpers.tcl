@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21jun18
+# Updated: 22jun18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -106,15 +106,27 @@ if {[file exists $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc]} {
 }
 set KdeConfFile $rcfile
 
-# 1 Menu entry/rightclick .desktop files
+# 1 MENU ENTRY/RIGHTCLICK .DESKTOP FILES
+
+## GNOME/XFCE + ???
 set LinDesktopFile $LinDesktopFilesDir/biblepixSetup.desktop
+
+## KDE5
 set Kde5DesktopFilesDir $LinLocalShareDir/kservices5/ServiceMenus
-#file mkdir $Kde5DesktopFilesdir - TODO : only for KDE5!
 set Kde5DesktopFile $Kde5DesktopFilesDir/biblepixSetup.desktop
 
-# 2 Kde background configuration files (not needed for Gnome)
+## KDE4
+set Kde4DesktopFilesDir $KdeConfdir/share/kde4/services
+set Kde4DesktopFile $Kde4DesktopFilesDir/biblepixSetup.desktop
+
+
+# 2 KDE BACKGROUND CONFIGURATION FILES (NOT NEEDED FOR GNOME)
 set Kde4Appletsrc $KdeConfDir/plasma-desktop-appletsrc
 set Kde5Appletsrc $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
+
+
+
+
 
 #Set vars for setKdeBackground
 #TODO: write 2 different progs with old/new syntax
@@ -308,6 +320,72 @@ proc setLinMenu {} {
 # B A C K G R O U N D   P I C   S E T T E R S   FOR LINUXES THAT NEED CONFIGURING AT SETUP TIME  
 #########################################################################
 
+# setKde4Bg
+# called by setKdeBackground if KDE4 rcfile found
+proc setKde4Bg {rcfile kread kwrite} {
+  global slideshow
+  
+  if {$slideshow} {
+    set slidepaths $imgDir
+    set mode Slideshow
+  } else {
+    set slidepaths ""
+    set mode SingleImage
+  }
+
+# rcfile ausschreiben? ohne path? - so übernommen.
+        
+  for {set g 1} {$g<200} {incr g} {
+
+    if {[exec $kread --file plasma-desktop-appletsrc --group Containments --group $g --key wallpaperplugin] != ""} {
+    
+      puts "Changing KDE $rcfile Containments $g ..."
+      
+      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --key mode $mode
+      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key slideTimer $slideshow
+      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key slidepaths $slidepaths
+      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key userswallpapers ''
+      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpaper $TwdPNG
+      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpapercolor 0,0,0
+      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpaperposition 0
+    }
+  }
+} ;#END setKde4Bg
+
+# setKde5Bg
+## called by setKdeBackground if KDE5 found
+## expects rcfile [file join $env(HOME) .config plasma-org.kde.plasma.desktop-appletsrc]
+## kr=kreadconfig(?5) kw=kwriteconfig(?5)
+## must be set to slideshow even if single picture, otherwise it is never renewed!
+proc setKde5Bg {rcfile kread kwrite} {
+  global slideshow
+  
+  if {!$slideshow} {set slideshow 120}
+  set oks "org.kde.slideshow"
+
+  for {set g 1} {$g<200} {incr g} {
+        
+    if {[exec $kread --file $rcfile --group Containments --group $g --key activityId] != ""} {
+    
+      puts "Changing KDE $rcfile Containments $g ..."
+      
+      ##1.[Containments][$g] >wallpaperplugin - must be slideshow, bec. single pic never renewed!
+      exec $kwrite --file $rcfile --group Containments --group $g --key wallpaperplugin $oks
+      ##2.[Containments][$g][Wallpaper][General] >Image+SlidePaths
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key Image file://$TwdPNG
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $imgDir 
+      ##3.[Containments][7][Wallpaper][org.kde.slideshow][General] >SlideInterval+SlidePaths+height+width
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlidePaths $imgDir
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlideInterval $slideshow
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key height [winfo screenheight .]
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key width [winfo screenwidth .]
+      #FillMode 6=centered
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key FillMode 6
+    }
+  }
+} ;#END setKde5BG
+
+
 # setKdeBackground
 ##configures KDE5 Plasma for single pic or slideshow
 # - TODO: > Anleitung in Manpage für andere KDE-Versionen/andere Desktops (Rechtsklick > Desktop-Einstellungen >Einzelbild/Diaschau)
@@ -334,10 +412,10 @@ proc setKdeBackground {KdeVersion args} {
   #Todo : write/rewrite progs!!!
   foreach v $KdeVersions {
     if {$v==4} {
-      doKde4Desktop
+      setKde4Background
     }
     if {$v==5} {
-      doKde5Desktop
+      setKde5Background
     }
   
   }

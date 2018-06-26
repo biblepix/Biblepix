@@ -2,14 +2,14 @@
 # Searches system for current Desktop manager, gives out appropriate BG changing command
 # Called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7jun18
+# Updated: 26jun18
 
 ########################################################################
 # WINDOWS: accepts command through RUNDLL32.EXE - a bit buggy still...
 # LINUX SWAY (WAYLAND): accepts command through 'swaymsg'
-# GNOME: needs no image changer, detects image change, so just provide imgPath (in setupSave)
-# KDE: needs to be configured (in setupSave)
-# XFCE4: needs to be configured (in setupSave)
+# GNOME: needs no image changer, detects image change
+# KDE: needs to be preconfigured (in setupSave)
+# XFCE4: needs to be preconfigured (in setupSave)
 ##########################################################################
 
 
@@ -49,7 +49,7 @@ proc detectRunningLinuxDesktop {} {
     return 3
   }
   
-  #check Wayland/Sway
+  #check Wayland/Sway (return 4)
   if { [info exists env(SWAYSOCK)] ||
        [info exists env(WAYLAND_DISPLAY)] } {
     return 4
@@ -98,7 +98,7 @@ if {$platform=="windows"} {
 set runningDesktop [detectRunningLinuxDesktop]
 
 #Set Sway Background
-if {$runningDesktop == 3} {
+if {$runningDesktop == 4} {
   set swayOutput [setSwayBg]
   proc setBg {} {
     upvar swayOutput swayOutput
@@ -107,8 +107,10 @@ if {$runningDesktop == 3} {
   return
   
 #Skip Gnome / KDE + XFCE4
-} elseif {$runningDesktop == 1 || $runningDesktop == 2} {
-
+} elseif {
+    $runningDesktop == 1 || 
+    $runningDesktop == 2 ||
+    $runningDesktop == 3 } {
   return
 }
 
