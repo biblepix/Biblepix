@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22jun18
+# Updated: 29jun18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -11,121 +11,43 @@
 #   other desktops can't be configured, hence information about Setup path is important >Manual
 ################################################################################################
 
-#T<O<D<O: - GEETNET!!!!!!!!
-proc copySetupToPath {} {
-  #prepare progtext
-  set path /usr/local/bin
-  set firstLine [setShebangLine]
-  append progtext $firstLine \n cd { } $srcdir \n $Setup
-  set filename $path/biblepix-setup
-  #open chan as root
-  exec su -c set chan [open $filename w]
-  puts $chan $progtext
-  close $chan
-  #make executable - NEEDS ROOT?
-  file $filename -attributes +x
-}
-
-#TODO: USE THIS TO FIND plasma-desktop-apletsrc recursively - NO NEED!!!!!
-# findFiles
-# basedir - the directory to start looking in
-# pattern - A pattern, as defined by the glob command, that the files must match
-proc findFiles {directory pattern} {
-
-    # Fix the directory name, this ensures the directory name is in the
-    # native format for the platform and contains a final directory seperator
-    set directory [string trimright [file join [file normalize $directory] { }]]
-
-    # Starting with the passed in directory, do a breadth first search for
-    # subdirectories. Avoid cycles by normalizing all file paths and checking
-    # for duplicates at each level.
-
-    set directories [list]
-    set parents $directory
-    while {[llength $parents] > 0} {
-
-        # Find all the children at the current level
-        set children [list]
-        foreach parent $parents {
-            set children [concat $children [glob -nocomplain -type {d r} -path $parent *]]
-        }
-
-        # Normalize the children
-        set length [llength $children]
-        for {set i 0} {$i < $length} {incr i} {
-            lset children $i [string trimright [file join [file normalize [lindex $children $i]] { }]]
-        }
-
-        # Make the list of children unique
-        set children [lsort -unique $children]
-
-        # Find the children that are not duplicates, use them for the next level
-        set parents [list]
-        foreach child $children {
-            if {[lsearch -sorted $directories $child] == -1} {
-                lappend parents $child
-            }
-        }
-
-        # Append the next level directories to the complete list
-        set directories [lsort -unique [concat $directories $parents]]
-    }
-
-    # Get all the files in the passed in directory and all its subdirectories
-    set result [list]
-    foreach directory $directories {
-        set result [concat $result [glob -nocomplain -type {f r} -path $directory -- $pattern]]
-    }
-
-    # Normalize the filenames
-    set length [llength $result]
-    for {set i 0} {$i < $length} {incr i} {
-        lset result $i [file normalize [lindex $result $i]]
-    }
-
-    # Return only unique filenames
-    return [lsort -unique $result]
-}
-
-
 #Set & create general Linux Desktop dirs
+##recognised by alle Desktops, including KDE5
 set LinConfDir $HOME/.config
-file mkdir $LinConfDir
 set LinLocalShareDir $HOME/.local/share
 set LinDesktopFilesDir $LinLocalShareDir/applications
-file mkdir $LinDesktopFilesDir
-set KdeDir [glob -nocomplain $HOME/.kde*]
-set KdeConfDir $KdeDir/share/config
 
-#Set KDE dirs: 1. find location of plasmarc files - TODO: ??? use kwriteconfig instead???
+#Create dirs ??
+file mkdir $LinConfDir $LinDesktopFilesDir
+
+#Set KDE dirs:
+set KdeConfDir [file join [glob -nocomplain $HOME/.kde*] share config]
+#KDE5
 if {[file exists $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc]} {
   set rcfile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
+#KDE4
 } else {
   set rcfile $KdeConfDir/plasma-desktop-appletsrc
   file mkdir $KdeConfDir
 }
 set KdeConfFile $rcfile
 
-# 1 MENU ENTRY/RIGHTCLICK .DESKTOP FILES
+# 1 MENU ENTRY .DESKTOP FILE
 
-## GNOME/XFCE + ???
+## GNOME/XFCE/KDE5
 set LinDesktopFile $LinDesktopFilesDir/biblepixSetup.desktop
-
-## KDE5
-set Kde5DesktopFilesDir $LinLocalShareDir/kservices5/ServiceMenus
-set Kde5DesktopFile $Kde5DesktopFilesDir/biblepixSetup.desktop
 
 ## KDE4
 set Kde4DesktopFilesDir $KdeConfdir/share/kde4/services
 set Kde4DesktopFile $Kde4DesktopFilesDir/biblepixSetup.desktop
 
+# 2 MENU ENTRY RIGHTCLICK FILE (works only for some Plasma 5 versions of Konqueror/Dolphin?)
+set Kde5DesktopActionFile $LinDesktopFilesDir/biblepixSetupAction.desktop
 
-# 2 KDE BACKGROUND CONFIGURATION FILES (NOT NEEDED FOR GNOME)
+
+# 3 KDE BACKGROUND CONFIGURATION FILES (NOT NEEDED FOR GNOME)
 set Kde4Appletsrc $KdeConfDir/plasma-desktop-appletsrc
 set Kde5Appletsrc $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
-
-
-
 
 
 #Set vars for setKdeBackground
@@ -146,7 +68,7 @@ set GnomeAutostartFile nowInAppBelow
 
 set Xfce4ConfigFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
 
-# reloadKdeDesktop
+# reloadKdeDesktop - TODO: DONT BOTZHER!!
 ##Rereads all .desktop and XML files
 ##Called by SetupSaveLin after changing config files
 proc reloadKdeDesktop {} {
@@ -300,12 +222,12 @@ proc setLinMenu {} {
 
   #set Texts
   set desktopText "\[Desktop Entry\]
-  Name=$bp Setup
-  Type=Application
-  Icon=$LinIcon
-  Path=$srcdir
-  Categories=Settings
-  Comment=Configures and runs BiblePix Setup"
+Name=$bp Setup
+Type=Application
+Icon=$LinIcon
+Path=$srcdir
+Categories=Settings;Utility;Graphics;Education;DesktopSettings;Core
+Comment=Runs BiblePix Setup"
   set execText "Exec=$wishpath $Setup"
 
   #make .desktop file for GNOME & KDE prog menu
@@ -313,6 +235,47 @@ proc setLinMenu {} {
   puts $chan "$desktopText"
   puts $chan "$execText"
   close $chan
+
+}
+
+proc setKdeActionMenu {} {
+  global LinIcon srcdir Setup wishpath tclpath bp LinDesktopFilesDir
+
+  #set Texts
+[Desktop Entry]
+Actions=BPSetup;
+MimeTypes=all/all;
+Icon=/home/pv/Biblepix/prog/unix/biblepix.png
+Type=Service
+X-KDE-ServiceTypes=KonqPopupMenu/Plugin
+#Exec=/home/pv/Biblepix/prog/src/biblepix-setup.tcl
+Comment=Right-click menu for BiblePix Setup
+
+[Desktop Action BPSetup]
+Exec=/home/pv/Biblepix/prog/src/biblepix-setup.tcl
+Icon=/home/pv/Biblepix/prog/unix/biblepix.png
+Name=localShareApp
+
+  set desktopText "\[Desktop Entry\]
+Actions=BPSetup;
+MimeTypes=x-tcl;
+Type=Service
+X-KDE-ServiceTypes=KonqPopupMenu/Plugin
+Comment=Right-click action menu for BiblePix Setup
+
+\[Desktop Action BPSetup\]
+Name=$bp Setup
+Icon=$LinIcon
+Exec"
+  
+  set execText "Exec=$wishpath $Setup"
+
+  #make .desktop file for GNOME & KDE prog menu
+  set chan [open $LinDesktopFilesDir/biblepixSetup.desktop w]
+  puts $chan "$desktopText"
+  puts $chan "$execText"
+  close $chan
+
 
 }
 
