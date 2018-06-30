@@ -11,7 +11,7 @@ set Error 0
 set hasError 0
 
 #Check / Amend Linux executables
-catch checkExecutables
+catch formatLinuxExecutables
 
 ##################################################
 # 1 Set up Linux Autostart for all Desktops
@@ -51,6 +51,7 @@ if {$runningDesktop == 2 || $runningDesktop == 3} {
 # 2 Set up Menu entries for all Desktops
 ####################################################
 catch setLinMenu
+catch setKdeActionMenu
 
 #if {!$hasError && $Error!=""} {
 #  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb

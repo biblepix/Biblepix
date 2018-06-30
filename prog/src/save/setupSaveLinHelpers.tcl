@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29jun18
+# Updated: 30jun18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -92,11 +92,12 @@ proc reloadXfceDesktop {} {
   }
 }
 
-# checkExecutables
-## Check first line of Linux executables for correct 'env' path
-## Standard env path as in Ubuntu/Debian/Gentoois /usr/bin/env
-## Make files executable
-proc checkExecutables {} {
+# formatLinuxExecutables
+## 1 Check first line of Linux executables for correct 'env' path
+#### Standard env path as in Ubuntu/Debian/Gentoois /usr/bin/env
+## 2 Make files executable
+## 3 Copy biblepix-setup to $HOME/bin
+proc formatLinuxExecutables {} {
   global Setup Biblepix
   
   set standardEnvPath {/usr/bin/env}
@@ -132,9 +133,47 @@ proc checkExecutables {} {
   puts $chan $text2
   close $chan
 
+  
+  
+  # 3. Link biblepix-setup file in ~/bin
+  # in case it can't be found in the menus
+  set homeBin $HOME/bin
+  set homeBinFile $homeBin/setup-biblepix
+  
+  if { ![file exists $homeBin] } {
+    file mkdir $homeBin
+    file attributes $homeBin +x
+  }
+  set chan [open $homeBinFile w]
+  puts $chan {#!/bin/sh}
+  puts $chan "\nexec $Setup"
+  close $chan
+  
+  # 4. Add ~/bin to $PATH in .bash_profile
+  set f "$HOME/.bash_profile"
+  set PATH $env(PATH)
+
+  if {![regexp $homeBin $PATH]} {
+  
+  set homeBinText "if \[ -d $HOME/bin \] ; then
+PATH=$HOME/bin:$PATH
+fi"
+  }
+  ##check if entry already there
+  set chan [open $f r]
+  set t [read $chan]
+  close $chan
+  if {![regexp $homeBin $t]} {
+    set chan [open $f a]
+    puts $chan $homeBinText
+    close $chan
+  }
+  
   ##clean up & make files executable
   catch {unset shBangLine text1 text2}
-}
+  file attributes $homeBinFile +x
+
+} ;#END formatLinuxExecutables
 
 
 ########################################################################
@@ -214,12 +253,26 @@ proc setSwayAutostart {} {
 ################################################################################
 
 # setLinMenu
-## Makes .desktop files for Linux Menu entries 
+## Makes .desktop files for Linux Program Menu entries 
 ## Works on KDE / GNOME / XFCE4
-### T O D O : KDE5 path changed to .local/share/kservices5/ServiceMenus
+## called by SetupSaveLin
+
+########################################################
+## Possible paths:
+#
+## General Linux & KDE5: 
+# ~/.local/share/applications
+#
+## KDE4 - deprecated, used for now:
+## ~/.kde/share/kde4/services
+## KDE5 - ignored (see general Linux):
+## ~/.local/share/applications/kservices5/ServiceMenus
+## ~/.local/share/kservices5/ServiceMenus
+########################################################
 proc setLinMenu {} {
   global LinIcon srcdir Setup wishpath tclpath bp LinDesktopFilesDir
-
+  set filename "biblepixSetup.desktop"
+  
   #set Texts
   set desktopText "\[Desktop Entry\]
 Name=$bp Setup
@@ -231,53 +284,55 @@ Comment=Runs BiblePix Setup"
   set execText "Exec=$wishpath $Setup"
 
   #make .desktop file for GNOME & KDE prog menu
-  set chan [open $LinDesktopFilesDir/biblepixSetup.desktop w]
+  set chan [open $LinDesktopFilesDir/$filename w]
   puts $chan "$desktopText"
   puts $chan "$execText"
   close $chan
-
 }
 
+# setKdeActionMenu
+## Produces right-click action menu in Konqueror (and possibly Dolphin?)
+## seen to work only in some versions of KDE5 - very buggy!
+## Called by SetupSaveLin ?if KDE detected?
 proc setKdeActionMenu {} {
-  global LinIcon srcdir Setup wishpath tclpath bp LinDesktopFilesDir
+ global LinIcon srcdir Setup wishpath tclpath bp LinDesktopFilesDir
+ set desktopFilename "biblepixSetupAction.desktop"
 
-  #set Texts
+  #Below proved to work sometimes:
+  set referenceText {
 [Desktop Entry]
-Actions=BPSetup;
-MimeTypes=all/all;
-Icon=/home/pv/Biblepix/prog/unix/biblepix.png
 Type=Service
-X-KDE-ServiceTypes=KonqPopupMenu/Plugin
-#Exec=/home/pv/Biblepix/prog/src/biblepix-setup.tcl
-Comment=Right-click menu for BiblePix Setup
+ServiceTypes=KonqPopupMenu/Plugin
+MimeType=all/all;
+Actions=countlines;
+X-KDE-Submenu=Count
+X-KDE-StartupNotify=false
+X-KDE-Priority=TopLevel
 
-[Desktop Action BPSetup]
-Exec=/home/pv/Biblepix/prog/src/biblepix-setup.tcl
-Icon=/home/pv/Biblepix/prog/unix/biblepix.png
-Name=localShareApp
+[Desktop Action countlines]
+Name=Count lines
+Exec=kdialog --msgbox "$(wc -l %F)"
+}
 
   set desktopText "\[Desktop Entry\]
-Actions=BPSetup;
-MimeTypes=x-tcl;
 Type=Service
+MimeType=all/all;
+Actions=BPSetup;
 X-KDE-ServiceTypes=KonqPopupMenu/Plugin
-Comment=Right-click action menu for BiblePix Setup
+X-KDE-StartupNotify=true
+X-KDE-Priority=TopLevel
 
 \[Desktop Action BPSetup\]
 Name=$bp Setup
 Icon=$LinIcon
-Exec"
-  
-  set execText "Exec=$wishpath $Setup"
+Exec=$Setup
+"
 
-  #make .desktop file for GNOME & KDE prog menu
-  set chan [open $LinDesktopFilesDir/biblepixSetup.desktop w]
+  set chan [open $LinDesktopFilesDir/$filename w]
   puts $chan "$desktopText"
-  puts $chan "$execText"
   close $chan
-
-
 }
+
 
 #########################################################################
 # B A C K G R O U N D   P I C   S E T T E R S   FOR LINUXES THAT NEED CONFIGURING AT SETUP TIME  
