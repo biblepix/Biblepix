@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30jun18
+# Updated: 2jul18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -17,56 +17,50 @@ set LinConfDir $HOME/.config
 set LinLocalShareDir $HOME/.local/share
 set LinDesktopFilesDir $LinLocalShareDir/applications
 
-#Create dirs ??
+#Create all dirs if missing / TODO> why? these are created with the files
 file mkdir $LinConfDir $LinDesktopFilesDir
 
-#Set KDE dirs:
+#Set KDE dirs & Create ~/.kde if missing
 set KdeConfDir [file join [glob -nocomplain $HOME/.kde*] share config]
-#KDE5
-if {[file exists $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc]} {
-  set rcfile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
-#KDE4
-} else {
-  set rcfile $KdeConfDir/plasma-desktop-appletsrc
+if {$KdeConfDir==""} {
+  #this accounts for both old and new path 
   file mkdir $KdeConfDir
 }
-set KdeConfFile $rcfile
 
-# 1 MENU ENTRY .DESKTOP FILE
-
-## GNOME/XFCE/KDE5
-set LinDesktopFile $LinDesktopFilesDir/biblepixSetup.desktop
-
-## KDE4
-set Kde4DesktopFilesDir $KdeConfdir/share/kde4/services
-set Kde4DesktopFile $Kde4DesktopFilesDir/biblepixSetup.desktop
-
-# 2 MENU ENTRY RIGHTCLICK FILE (works only for some Plasma 5 versions of Konqueror/Dolphin?)
-set Kde5DesktopActionFile $LinDesktopFilesDir/biblepixSetupAction.desktop
-
-
-# 3 KDE BACKGROUND CONFIGURATION FILES (NOT NEEDED FOR GNOME)
-set Kde4Appletsrc $KdeConfDir/plasma-desktop-appletsrc
-set Kde5Appletsrc $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
-
-
-#Set vars for setKdeBackground
-#TODO: write 2 different progs with old/new syntax
-#TODO: write both files???
-if [file exists $Kde4Appletsrc] {
+#Determine KDE config files
+##KDE4
+if [file exists $KdeConfDir/plasma-desktop-appletsrc] {
+  set KdeConfFile $KdeConfDir/plasma-desktop-appletsrc
   set KdeVersion 4
-}
-if [file exists $Kde5Appletsrc] {
+##KDE5
+} else {
+  set KdeConfFile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
   set KdeVersion 5
 }
 
-# 3 Autostart files
-set KdeAutostartDir $KdeDir/Autostart
+
+# 1  M E N U   E N T R Y   .DESKTOP   F I L E 
+
+## A) GNOME/XFCE/KDE5
+set LinDesktopFile $LinDesktopFilesDir/biblepixSetup.desktop
+
+## B) KDE4
+set Kde4DesktopFile $KdeConfDir/share/kde4/services/biblepixSetup.desktop
+
+## C) MENU ENTRY RIGHTCLICK FILE (works only for some Plasma 5 versions of Konqueror/Dolphin?)
+set Kde5DesktopActionFile $LinDesktopFilesDir/biblepixSetupAction.desktop
+
+
+
+# 3 Autostart files - TODO: cleanup
+set KdeAutostartDir $KdeConfDir/Autostart
 set GnomeAutostartDir $LinConfDir/autostart
 set KdeAutostartFile nowInAppBelow
 set GnomeAutostartFile nowInAppBelow
 
+#TODO: move to?
 set Xfce4ConfigFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
+
 
 # reloadKdeDesktop - TODO: DONT BOTZHER!!
 ##Rereads all .desktop and XML files
@@ -79,6 +73,7 @@ proc reloadKdeDesktop {} {
   } elseif {$k4 != ""} {
     set command $k4
   }
+  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:MUSTRELOADDESKTOP"
   exec $command
 }
 
@@ -88,6 +83,7 @@ proc reloadKdeDesktop {} {
 proc reloadXfceDesktop {} {
   set command [auto_execok xfdesktop]
   if {$command != ""} {
+    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:MUSTRELOADDESKTOP"
     exec $command --reload 
   }
 }
@@ -132,8 +128,6 @@ proc formatLinuxExecutables {} {
   set chan [open $Setup w]
   puts $chan $text2
   close $chan
-
-  
   
   # 3. Link biblepix-setup file in ~/bin
   # in case it can't be found in the menus
@@ -184,7 +178,7 @@ fi"
 ##makes Autostart entries for Linux Desktops (GNOME, XFCE4? & KDE)
 ##args == delete
 proc setLinAutostart args {
-global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeDir KdeAutostartDir
+global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeConfDir KdeAutostartDir
   
   #If args exists, delete any autostart files and exit
   if  {$args != ""} {
@@ -192,8 +186,6 @@ global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeDir KdeAuto
     file delete $KdeAutostartDir/biblepix.desktop
     return
   }
-
-
 
   #set Texts
   set desktopText "\[Desktop Entry\]
@@ -207,7 +199,7 @@ global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeDir KdeAuto
   set execText "Exec=$tclpath $Biblepix"
 
   #Make .desktop file for KDE Autostart
-  if [file exists $KdeDir] {
+  if [file exists $KdeConfDir] {
     file mkdir $KdeAutostartDir
     set desktopfile [open $KdeAutostartDir/biblepix.desktop w]
     puts $desktopfile "$desktopText"
@@ -272,7 +264,7 @@ proc setSwayAutostart {} {
 proc setLinMenu {} {
   global LinIcon srcdir Setup wishpath tclpath bp LinDesktopFilesDir
   set filename "biblepixSetup.desktop"
-  
+
   #set Texts
   set desktopText "\[Desktop Entry\]
 Name=$bp Setup
@@ -438,29 +430,6 @@ proc setKdeBackground {KdeVersion args} {
   
   }
   
-  
-  #TODO: Below is crap, integrate old solution for 4
-  #create new script for 5 !!!!!!!!!!!!!!!!!!!!!!
-  
-  
-  
-  set chan [open $KdeConfFile w]
-  set s [read $chan]
-  
-  #replace "wallpaper= ..." -line
-  regsub -lineanchor -line {^wallpaper=.*$} $s wallpaper=$TwdPNG s
-  #change all Containments , no matter if they are the current or not 
-  if {$slideshow} {
-    regsub -all -lineanchor -line {^slideTimer=.*$} $s slideTimer=[expr $slideshow * 60]
-    regsub -all -lineanchor -line {^slidepaths=.*$} $s slidepaths=$imgDir s
-    regsub -all -lineanchor -line {^wallpaperpluginmode=.*$} $s wallpaperpluginmode=Slideshow s
-    
-    } else {
-    regsub -all -lineanchor -line {^wallpaperpluginmode=.*$} $s wallpaperpluginmode=SingleImage s
-  }
-  puts $chan $s
-  close $chan
-
 }
 
 # setXfceBackground

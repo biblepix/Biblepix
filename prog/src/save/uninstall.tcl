@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/uninstall.tcl
 # sourced by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24may18
+# Updated: 2jul18
 
 set msg1 "Do you really want to remove BiblePix from your computer?"
 set msg1DE "Wollen Sie wirklich BibelPix von Ihrem Computer entfernen?"
@@ -25,17 +25,11 @@ if {$antwort=="yes"} {
     if {$os=="Linux"} {
     
       #remove Desktop files
-      set KDEdir [glob -nocomplain ~/.kde*]
+      set KDEdir [glob -nocomplain $HOME/.kde*]
       file delete -force ~/.local/share/applications/biblepixSetup.desktop
+      file delete -force $KDEdir/share/kde4/services/biblepixSetup.desktop
       file delete -force ~/.config/autostart/biblepix.desktop
-      file delete -force ~/$KDEdir/Autostart/biblepix.desktop
-     
-      #restore KDE5 settings
-      set KDErestore "$unixdir/KDErestore.sh"
-      if {[file exists $KDErestore]} {
-        file attributes $KDErestore -permissions +x
-        catch {exec bash $unixdir/KDErestore.sh}
-      }
+      file delete -force $KDEdir/Autostart/biblepix.desktop
 
       #Remove any cron entries
       if [info exists crontab] {
