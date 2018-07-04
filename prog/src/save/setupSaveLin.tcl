@@ -15,13 +15,13 @@ set hasError 0
 
 #Check / Amend Linux executables
 catch formatLinuxExecutables Error
-puts $Error
+puts "linExec $Error"
 
 ##################################################
 # 1 Set up Linux A u t o s t a r t for all Desktops
 ##################################################
 catch setLinAutostart Error
-puts $Error
+puts "autostart $Error"
 
 # Check running desktop
 ##returns 1 if GNOME
@@ -34,15 +34,16 @@ set runningDesktop [detectRunningLinuxDesktop]
 #Install crontab if no Desktop found
 if {$runningDesktop == 0} { 
   puts "No Running Desktop found"
-  catch setupLinCrontab Error
-  puts $Error
+  catch setupLinCrontab Error0
+  puts "Crontab $Error0"
 
 #Install Sway Autostart
 } elseif {$runningDesktop == 4} {
-  catch setSwayAutostart Error
-  puts $Error
+  catch setSwayAutostart Error4
+  puts "swayAutostart $Error4"
 }
 
+#TODO: organise
 if {$Error!=0} {
   tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linSetAutostartProb
   set hasError 1
@@ -53,9 +54,9 @@ if {$Error!=0} {
 # 2 Set up Menu entries for all Desktops
 ####################################################
 catch setLinMenu Error
-puts $Error
+puts "LinMenu $Error"
 catch setKdeActionMenu Error
-puts $Error
+puts "KdeAction $Error"
 
 if {!$hasError && $Error!=""} {
   tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
@@ -68,7 +69,7 @@ if {!$hasError && $Error!=""} {
 #################################################
 if {$enableterm} {
   catch setupLinTerminal Error
-  puts $Error
+  puts "Terminal $Error"
   #TODO? message if failure ??
 }
 
@@ -80,14 +81,28 @@ if {$enableterm} {
 
 if {$enablepic} {
   tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangingDesktop
-  catch {setLinBackground} Error
 
+  #Set main backgrounds irrespectively of existence
+  catch setKdeBackground Error2
+  catch setXfceBackground Error3
+  catch setGnomeBackground Error1
+
+  #Set Sway background if config file exists
+  if [file exists $swayConfFile] {
+    catch setSwayAutostartAndBackground Error4
+  }
+
+  
+
+#TODO: reorganise from here
   if {$Error==1} {
     tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
     set hasError 1
   }
-}
 
+} ;#£END if enablepic
+
+#TODO:
 if {!$hasError} {
   tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $changeDesktopOk
 }
@@ -99,13 +114,14 @@ if {!$hasError} {
 
 if {$enablepic} {
   tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:RELOADINGDesktop"
+
+  if {$runningDesktop == 2} {
+    catch reloadKdeDesktop Error
+    puts "reloadKde $Error"
+    
+  } elseif {$runningDesktop == 3} {
+    catch reloadXfceDesktop
+    puts "runningDesktop $Error"
+  }
 }
 
-if {$runningDesktop == 2} {
-  catch reloadKdeDesktop Error
-  puts $Error
-  
-} elseif {$runningDesktop == 3} {
-  catch reloadXfceDesktop
-  puts $Error
-}

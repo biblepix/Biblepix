@@ -2,7 +2,7 @@
 # Searches system for current Desktop manager, gives out appropriate BG changing command
 # Called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26jun18
+# Updated: 4jul18
 
 ########################################################################
 # WINDOWS: accepts command through RUNDLL32.EXE - a bit buggy still...
@@ -67,11 +67,10 @@ proc setWinBg {} {
   registry set $regpath Wallpaper [file nativename $::TwdTIF]
 }
 
-proc setSwayBg {} {
+proc getSwayOutputName {} {
   #Get output(s) in raw (JSON) format
   set outputs [exec swaymsg --raw --type get_outputs]
-  #Extract first output name string - TODO: allow for several output names!!!
-  foreach line [split $outputs \n] {
+  #Extract first output name string - TODO: allow for several output names?
     if [regexp "name" $line] {
       set s [regexp -line -inline -lineanchor {name.*$} $line]
       regsub -all {[name",: {}"]} $s {} outputName
@@ -99,7 +98,7 @@ set runningDesktop [detectRunningLinuxDesktop]
 
 #Set Sway Background
 if {$runningDesktop == 4} {
-  set swayOutput [setSwayBg]
+  set swayOutput [getSwayOutputName]
   proc setBg {} {
     upvar swayOutput swayOutput
     exec swaymsg output $swayOutput bg $::TwdBMP center

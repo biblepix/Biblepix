@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jul18
+# Updated: 4jul18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -18,7 +18,7 @@ set LinLocalShareDir $HOME/.local/share
 set LinDesktopFilesDir $LinLocalShareDir/applications
 
 #Create all dirs if missing / TODO> why? these are created with the files
-file mkdir $LinConfDir $LinDesktopFilesDir
+#file mkdir $LinConfDir $LinDesktopFilesDir
 
 #Set KDE dirs & Create ~/.kde if missing
 set KdeConfDir [file join [glob -nocomplain $HOME/.kde*] share config]
@@ -38,6 +38,9 @@ if [file exists $KdeConfDir/plasma-desktop-appletsrc] {
   set KdeVersion 5
 }
 
+#Wayland/Sway
+set swayConfFile $LinConfDir/sway/config
+
 
 # 1  M E N U   E N T R Y   .DESKTOP   F I L E 
 
@@ -49,7 +52,6 @@ set Kde4DesktopFile $KdeConfDir/share/kde4/services/biblepixSetup.desktop
 
 ## C) MENU ENTRY RIGHTCLICK FILE (works only for some Plasma 5 versions of Konqueror/Dolphin?)
 set Kde5DesktopActionFile $LinDesktopFilesDir/biblepixSetupAction.desktop
-
 
 
 # 3 Autostart files - TODO: cleanup
@@ -97,40 +99,18 @@ proc formatLinuxExecutables {} {
   global Setup Biblepix
   
   set standardEnvPath {/usr/bin/env}
-  set curEnvPath [auto_execok env]
+  set currentEnvPath [auto_execok env]
 
   #1. Set permissions to executable
   file attributes $Biblepix -permissions +x
   file attributes $Setup -permissions +x
   
-  #TODO: export to separate proc setShebangLine
   #2. Reset 1st Line if not standard
-  if {$curEnvPath == $standardEnvPath} {
-    return 1
+  if {$currentEnvPath != $standardEnvPath} {
+    setShebangLine $currentEnvPath
   }
-  
-  set shBangLine "\#!${curEnvPath} tclsh"
 
-  ##read out Biblepix & Setup texts
-  set chan1 [open $Biblepix r]
-  set chan2 [open $Setup r]
-  set text1 [read $chan1]
-  set text2 [read $chan2]
-  close $chan1
-  close $chan2
-
-  ##replace 1st line with current sh-bang
-  regsub -line {^#!.*$} $text1 $shBangLine text1
-  set chan [open $Biblepix w]
-  puts $chan $text1
-  close $chan
-  regsub -line {^#!.*$} $text2 $shBangLine text2
-  set chan [open $Setup w]
-  puts $chan $text2
-  close $chan
-  
-  # 3. Link biblepix-setup file in ~/bin
-  # in case it can't be found in the menus
+  # 3. Put Setup bash script in ~/bin (precaution in case it can't be found in menus)
   set homeBin $HOME/bin
   set homeBinFile $homeBin/setup-biblepix
   
@@ -138,9 +118,10 @@ proc formatLinuxExecutables {} {
     file mkdir $homeBin
     file attributes $homeBin +x
   }
+  #Create script text and save
   set chan [open $homeBinFile w]
-  puts $chan {#!/bin/sh}
-  puts $chan "\nexec $Setup"
+  append t #!/bin/sh \n exec { } $Setup
+  puts $chan $t
   close $chan
   
   # 4. Add ~/bin to $PATH in .bash_profile
@@ -148,26 +129,59 @@ proc formatLinuxExecutables {} {
   set PATH $env(PATH)
 
   if {![regexp $homeBin $PATH]} {
-  
-  set homeBinText "if \[ -d $HOME/bin \] ; then
+    
+    set homeBinText "
+if \[ -d $HOME/bin \] ; then
 PATH=$HOME/bin:$PATH
 fi"
-  }
-  ##check if entry already there
-  set chan [open $f r]
-  set t [read $chan]
-  close $chan
-  if {![regexp $homeBin $t]} {
-    set chan [open $f a]
-    puts $chan $homeBinText
+    #read out & check, append if missing
+    set chan [open $f r]
+    set t [read $chan]
     close $chan
+    
+    if {![regexp $homeBin $t]} {
+      set chan [open $f a]
+      puts $chan $homeBinText
+      close $chan
+    }
   }
-  
-  ##clean up & make files executable
-  catch {unset shBangLine text1 text2}
+
+  #Clean up & make file executable
+  catch {unset shBangLine $t}
   file attributes $homeBinFile +x
 
 } ;#END formatLinuxExecutables
+
+
+# setShebangLine
+## changes 1st line of executables (Biblepix+Setup) if wrong
+## called by formatLinuxExecutables
+proc setShebangLine {currentEnvPath} {
+    global Biblepix Setup
+    append shBangLine #! $currentEnvPath { } tclsh
+
+    ##read out Biblepix & Setup texts
+    set chan1 [open $Biblepix r]
+    set chan2 [open $Setup r]
+    set text1 [read $chan1]
+    set text2 [read $chan2]
+    close $chan1
+    close $chan2
+
+    ##replace 1st line with current sh-bang
+    regsub -line {^#!.*$} $text1 $shBangLine text1
+    set chan [open $Biblepix w]
+    puts $chan $text1
+    close $chan
+    regsub -line {^#!.*$} $text2 $shBangLine text2
+    set chan [open $Setup w]
+    puts $chan $text2
+    close $chan
+
+    #Cleanup
+    catch {unset $text1 $text2}
+
+} ;#END setShebangLine
 
 
 ########################################################################
@@ -220,23 +234,31 @@ global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeConfDir Kde
   return 0
 }
 
-proc setSwayAutostart {} {
+proc setSwayAutostartAndBackground {} {
   global LinConfDir Biblepix
   
   #append or create config file
-  set swayConfFile $LinConfDir/sway/config
+  
   #read out text
   set chan [open $swayConfFile r]
-  set t [read $chan]
+  set configText [read $chan]
   close $chan
-  #Skip if already there, else append entry
+  
+#Skip if already there, else append
   if {![regexp {[Bb]iblepix} $t]} {
-    append swayEntry \n # BiblePix: { this line runs BiblePix on your Sway desktop:} \n exec $Biblepix
-    set chan [open $swayConfFile w]
-    puts $chan $t
-    puts $chan $swayEntry
+    
+    set autostartLine "\n\n\#BiblePix: this runs BiblePix & sets initial background picture\nexec $Biblepix
+    set sleepLine "\nexec sleep 3"
+    set setBgLine "\nexec swaymsg output [getSwayOutputName] bg $::TwdBMP center"
+
+    #append lines at end of file
+    set chan [open $swayConfFile a]
+    puts $chan $autostartLine
+    puts $chan $sleepLine
+    puts $chan $setBgLine
     close $chan
   }
+
 }
 
 
@@ -286,11 +308,9 @@ Comment=Runs BiblePix Setup"
 ## Produces right-click action menu in Konqueror (and possibly Dolphin?)
 ## seen to work only in some versions of KDE5 - very buggy!
 ## Called by SetupSaveLin ?if KDE detected?
-proc setKdeActionMenu {} {
- global LinIcon srcdir Setup wishpath tclpath bp LinDesktopFilesDir
- set desktopFilename "biblepixSetupAction.desktop"
 
-  #Below proved to work sometimes:
+########################################################
+#Below proved to work sometimes:
   set referenceText {
 [Desktop Entry]
 Type=Service
@@ -306,6 +326,10 @@ Name=Count lines
 Exec=kdialog --msgbox "$(wc -l %F)"
 }
 
+######### startProc #########################################
+proc setKdeActionMenu {} {
+  global bp LinIcon Setup Kde5DesktopActionFile
+  set desktopFilename "biblepixSetupAction.desktop"
   set desktopText "\[Desktop Entry\]
 Type=Service
 MimeType=all/all;
@@ -319,9 +343,8 @@ Name=$bp Setup
 Icon=$LinIcon
 Exec=$Setup
 "
-
-  set chan [open $LinDesktopFilesDir/$filename w]
-  puts $chan "$desktopText"
+  set chan [open $Kde5DesktopActionFile w]
+  puts $chan $desktopText
   close $chan
 }
 
