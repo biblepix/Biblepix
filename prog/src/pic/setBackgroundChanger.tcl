@@ -70,14 +70,16 @@ proc setWinBg {} {
 proc getSwayOutputName {} {
   #Get output(s) in raw (JSON) format
   set outputs [exec swaymsg --raw --type get_outputs]
-  #Extract first output name string - TODO: allow for several output names?
-    if [regexp "name" $line] {
-      set s [regexp -line -inline -lineanchor {name.*$} $line]
-      regsub -all {[name",: {}"]} $s {} outputName
-    }
-  }
   
-  return $outputName
+  #Extract first output name string - TODO: allow for several output names?
+  if [regexp "name" $outputs] {
+    set line [regexp -line -inline -lineanchor {name.*$} $outputs]
+    regsub -all {[name",: {}"]} $line {} outputName
+    return $outputName
+    
+  } else {
+    return 1
+  }
 }
 
 # C r e a t e  ' s e t B g '   p r o c   i f   a p p l i c a b l e

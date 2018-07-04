@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jul18
+# Updated: 4jul18
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -39,7 +39,7 @@ if {$runningDesktop == 0} {
 
 #Install Sway Autostart
 } elseif {$runningDesktop == 4} {
-  catch setSwayAutostart Error4
+  catch setSwayAutostartAndBackground Error4
   puts "swayAutostart $Error4"
 }
 
@@ -82,17 +82,14 @@ if {$enableterm} {
 if {$enablepic} {
   tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangingDesktop
 
-  #Set main backgrounds irrespectively of existence
-  catch setKdeBackground Error2
-  catch setXfceBackground Error3
-  catch setGnomeBackground Error1
-
-  #Set Sway background if config file exists
-  if [file exists $swayConfFile] {
-    catch setSwayAutostartAndBackground Error4
-  }
-
-  
+  #Set main backgrounds - successful if config files found
+  ##returncodes : 1=success, 0=failure
+  lappend successList "1:[setGnomeBackground]"
+  lappend successList "2:[setKdeBackground]"
+  lappend successList "3:[setXfceBackground]"
+  #lappend successList "4:[setSwayAutostartAndBackground]"
+  puts $successList
+return
 
 #TODO: reorganise from here
   if {$Error==1} {

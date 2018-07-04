@@ -17,8 +17,8 @@ set LinConfDir $HOME/.config
 set LinLocalShareDir $HOME/.local/share
 set LinDesktopFilesDir $LinLocalShareDir/applications
 
-#Create all dirs if missing / TODO> why? these are created with the files
-#file mkdir $LinConfDir $LinDesktopFilesDir
+#Create dirs if missing (needed for [open] command)
+file mkdir $LinDesktopFilesDir
 
 #Set KDE dirs & Create ~/.kde if missing
 set KdeConfDir [file join [glob -nocomplain $HOME/.kde*] share config]
@@ -54,41 +54,16 @@ set Kde4DesktopFile $KdeConfDir/share/kde4/services/biblepixSetup.desktop
 set Kde5DesktopActionFile $LinDesktopFilesDir/biblepixSetupAction.desktop
 
 
-# 3 Autostart files - TODO: cleanup
+# 3 Autostart files
 set KdeAutostartDir $KdeConfDir/Autostart
-set GnomeAutostartDir $LinConfDir/autostart
-set KdeAutostartFile nowInAppBelow
-set GnomeAutostartFile nowInAppBelow
+set LinAutostartDir $LinConfDir/autostart
+file mkdir $LinAutostartDir $KdeAutostartDir
+set KdeAutostartFile $KdeAutostartDir/biblepix.desktop
+set LinAutostartFile $LinAutostartDir/biblepix.desktop
 
 #TODO: move to?
 set Xfce4ConfigFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
 
-
-# reloadKdeDesktop - TODO: DONT BOTZHER!!
-##Rereads all .desktop and XML files
-##Called by SetupSaveLin after changing config files
-proc reloadKdeDesktop {} {
-  set k4 [auto_execok kbuildsycoca4]
-  set k5 [auto_execok kbuildsycoca5]
-  if {$k5 != ""} {
-    set command $k5
-  } elseif {$k4 != ""} {
-    set command $k4
-  }
-  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:MUSTRELOADDESKTOP"
-  exec $command
-}
-
-# reloadXfceDesktop
-##Rereads XFCE4 Desktop configuration
-##Called by SetupSaveLin after changing config files
-proc reloadXfceDesktop {} {
-  set command [auto_execok xfdesktop]
-  if {$command != ""} {
-    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:MUSTRELOADDESKTOP"
-    exec $command --reload 
-  }
-}
 
 # formatLinuxExecutables
 ## 1 Check first line of Linux executables for correct 'env' path
@@ -96,7 +71,7 @@ proc reloadXfceDesktop {} {
 ## 2 Make files executable
 ## 3 Copy biblepix-setup to $HOME/bin
 proc formatLinuxExecutables {} {
-  global Setup Biblepix
+  global Setup Biblepix env
   
   set standardEnvPath {/usr/bin/env}
   set currentEnvPath [auto_execok env]
@@ -111,7 +86,7 @@ proc formatLinuxExecutables {} {
   }
 
   # 3. Put Setup bash script in ~/bin (precaution in case it can't be found in menus)
-  set homeBin $HOME/bin
+  set homeBin $env(HOME)/bin
   set homeBinFile $homeBin/setup-biblepix
   
   if { ![file exists $homeBin] } {
@@ -125,7 +100,7 @@ proc formatLinuxExecutables {} {
   close $chan
   
   # 4. Add ~/bin to $PATH in .bash_profile
-  set f "$HOME/.bash_profile"
+  set f "$env(HOME)/.bash_profile"
   set PATH $env(PATH)
 
   if {![regexp $homeBin $PATH]} {
@@ -192,13 +167,12 @@ proc setShebangLine {currentEnvPath} {
 ##makes Autostart entries for Linux Desktops (GNOME, XFCE4? & KDE)
 ##args == delete
 proc setLinAutostart args {
-global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeConfDir KdeAutostartDir
+  global Biblepix Setup LinIcon bp LinAutostartFile KdeAutostartFile
   
   #If args exists, delete any autostart files and exit
   if  {$args != ""} {
-    file delete $GnomeAutostartDir/biblepix.desktop
-    file delete $KdeAutostartDir/biblepix.desktop
-    return
+    file delete $LinAutostartFile $KdeAutostartFile
+    return 0
   }
 
   #set Texts
@@ -206,38 +180,32 @@ global Biblepix Setup LinIcon tclpath srcdir bp GnomeAutostartDir KdeConfDir Kde
   Name=$bp Setup
   Type=Application
   Icon=$LinIcon
-  Path=$srcdir
-  Categories=Settings
-  Comment=Configures and runs BiblePix"
-  
-  set execText "Exec=$tclpath $Biblepix"
-
+  Categories=Settings;Utility;Graphics;Education;DesktopSettings;Core
+  Comment=Configures and runs BiblePix
+  Exec=$Biblepix
+  "
   #Make .desktop file for KDE Autostart
-  if [file exists $KdeConfDir] {
-    file mkdir $KdeAutostartDir
-    set desktopfile [open $KdeAutostartDir/biblepix.desktop w]
-    puts $desktopfile "$desktopText"
-    puts $desktopfile "$execText"
-    close $desktopfile
-  }
+  set chan [open $KdeAutostartFile w]
+  puts $chan $desktopText
+  close $chan
 
-  #Make .desktop file for GNOME Autostart
-  file mkdir $GnomeAutostartDir
-  set chan [open $GnomeAutostartDir/biblepix.desktop w]
-  puts $chan "$desktopText"
-  puts $chan "$execText"
+  #Make .desktop file for GNOME/XFCE Autostart
+  set chan [open $LinAutostartFile w]
+  puts $chan $desktopText
   close $chan
 
   #Delete any BP crontab entry - TODO ?????????????'
   catch {setupLinCrontab delete}
 
   return 0
-}
+} ;#END setLinAutostart
 
 proc setSwayAutostartAndBackground {} {
-  global LinConfDir Biblepix
+  global LinConfDir swayConfFile Biblepix env
   
-  #append or create config file
+  if { ![file exists $swayConfFile]} {
+    return 1
+  }
   
   #read out text
   set chan [open $swayConfFile r]
@@ -245,9 +213,9 @@ proc setSwayAutostartAndBackground {} {
   close $chan
   
 #Skip if already there, else append
-  if {![regexp {[Bb]iblepix} $t]} {
+  if {![regexp {[Bb]iblepix} $configText]} {
     
-    set autostartLine "\n\n\#BiblePix: this runs BiblePix & sets initial background picture\nexec $Biblepix
+    append autostartLine \n \n # {BiblePix: this runs BiblePix & sets initial background picture} \n exec { } $Biblepix
     set sleepLine "\nexec sleep 3"
     set setBgLine "\nexec swaymsg output [getSwayOutputName] bg $::TwdBMP center"
 
@@ -259,6 +227,7 @@ proc setSwayAutostartAndBackground {} {
     close $chan
   }
 
+  return 0
 }
 
 
@@ -277,7 +246,7 @@ proc setSwayAutostartAndBackground {} {
 ## General Linux & KDE5: 
 # ~/.local/share/applications
 #
-## KDE4 - deprecated, used for now:
+## KDE4 - deprecated, used if dirs exist:
 ## ~/.kde/share/kde4/services
 ## KDE5 - ignored (see general Linux):
 ## ~/.local/share/applications/kservices5/ServiceMenus
@@ -292,9 +261,8 @@ proc setLinMenu {} {
 Name=$bp Setup
 Type=Application
 Icon=$LinIcon
-Path=$srcdir
 Categories=Settings;Utility;Graphics;Education;DesktopSettings;Core
-Comment=Runs BiblePix Setup"
+Comment=Runs & configures BiblePix"
   set execText "Exec=$wishpath $Setup"
 
   #make .desktop file for GNOME & KDE prog menu
@@ -302,7 +270,9 @@ Comment=Runs BiblePix Setup"
   puts $chan "$desktopText"
   puts $chan "$execText"
   close $chan
-}
+  
+  return 0
+} ;#END setLinMenu
 
 # setKdeActionMenu
 ## Produces right-click action menu in Konqueror (and possibly Dolphin?)
@@ -311,22 +281,21 @@ Comment=Runs BiblePix Setup"
 
 ########################################################
 #Below proved to work sometimes:
-  set referenceText {
-[Desktop Entry]
-Type=Service
-ServiceTypes=KonqPopupMenu/Plugin
-MimeType=all/all;
-Actions=countlines;
-X-KDE-Submenu=Count
-X-KDE-StartupNotify=false
-X-KDE-Priority=TopLevel
+#  reference Text:
+#[Desktop Entry]
+#Type=Service
+#ServiceTypes=KonqPopupMenu/Plugin
+#MimeType=all/all;
+#Actions=countlines;
+#X-KDE-Submenu=Count
+#X-KDE-StartupNotify=false
+#X-KDE-Priority=TopLevel
 
-[Desktop Action countlines]
-Name=Count lines
-Exec=kdialog --msgbox "$(wc -l %F)"
-}
+#[Desktop Action countlines]
+#Name=Count lines
+#Exec=kdialog --msgbox "$(wc -l %F)"
+############################################################
 
-######### startProc #########################################
 proc setKdeActionMenu {} {
   global bp LinIcon Setup Kde5DesktopActionFile
   set desktopFilename "biblepixSetupAction.desktop"
@@ -346,16 +315,57 @@ Exec=$Setup
   set chan [open $Kde5DesktopActionFile w]
   puts $chan $desktopText
   close $chan
+  
+  return 0
 }
 
 
-#########################################################################
-# B A C K G R O U N D   P I C   S E T T E R S   FOR LINUXES THAT NEED CONFIGURING AT SETUP TIME  
-#########################################################################
+################################################
+# B A C K G R O U N D   P I C   S E T T E R S
+################################################
+
+# setKdeBackground
+## Configures KDE4 or KDE5 Plasma for single pic or slideshow
+# TODO: > Anleitung in Manpage für andere KDE-Versionen/andere Desktops (Rechtsklick > Desktop-Einstellungen >Einzelbild/Diaschau)
+
+proc setKdeBackground {} {
+  global KdeVersion KdeConfFile TwdPNG slideshow imgDir
+
+  #check kread/kwrite executables
+  if {[auto_execok kreadconfig5] != "" && 
+      [auto_execok kwriteconfig5] != ""} {
+    set kread kreadconfig5
+    set kwrite kwriteconfig5
+
+  } elseif { [auto_execok kreadconfig] != "" && 
+      [auto_execok kwriteconfig] != ""} {
+    set kread kreadconfig
+    set kwrite kwriteconfig
+
+  } else {
+
+    return 1
+  }
+
+  #set KDE4 if detected
+  set errCode4 ""
+  if {$KdeVersion==4} {
+    catch {setKde4Bg $kread $kwrite} errCode4
+  }
+
+  #set KDE5 in any case
+  catch {setKde5Bg $KdeConfFile $kread $kwrite} errCode5
+  
+  if {$errCode4=="" && $errCode5==""} {
+    return 0
+  } else {
+    return "KDE4: $errCode4 / \nKDE5: $errCode5"
+  }
+} ;#END setKdeBackground
 
 # setKde4Bg
 # called by setKdeBackground if KDE4 rcfile found
-proc setKde4Bg {rcfile kread kwrite} {
+proc setKde4Bg {kread kwrite} {
   global slideshow
   
   if {$slideshow} {
@@ -383,13 +393,15 @@ proc setKde4Bg {rcfile kread kwrite} {
       exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpaperposition 0
     }
   }
+
+  return 0
 } ;#END setKde4Bg
 
 # setKde5Bg
 ## called by setKdeBackground if KDE5 found
 ## expects rcfile [file join $env(HOME) .config plasma-org.kde.plasma.desktop-appletsrc]
-## kr=kreadconfig(?5) kw=kwriteconfig(?5)
-## must be set to slideshow even if single picture, otherwise it is never renewed!
+## expects correct version of kreadconfig(?5) kwriteconfig(?5)
+## must be set to slideshow even if single picture, otherwise it is never renewed at boot
 proc setKde5Bg {rcfile kread kwrite} {
   global slideshow
   
@@ -416,58 +428,28 @@ proc setKde5Bg {rcfile kread kwrite} {
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key FillMode 6
     }
   }
-} ;#END setKde5BG
 
-
-# setKdeBackground
-##configures KDE5 Plasma for single pic or slideshow
-# - TODO: > Anleitung in Manpage für andere KDE-Versionen/andere Desktops (Rechtsklick > Desktop-Einstellungen >Einzelbild/Diaschau)
-#TODO: differentiate kde4/kde5 (s.o.)
-proc setKdeBackground {KdeVersion args} {
-  global KdeConfFile TwdPNG slideshow imgDir
-
-  #set KDE version(s) & execute 1 or 2 progs
-  lappend KdeVersions $KdeVersion $args
-
-  #check kread/kwrite executables
-  if {[auto_execok kreadconfig5] != "" && 
-      [auto_execok kwriteconfig5] != ""} {
-    set kread kreadconfig5
-    set kwrite kwriteconfig5
-  } elseif { [auto_execok kreadconfig] != "" && 
-      [auto_execok kwriteconfig] != ""} {
-    set kread kreadconfig
-    set kwrite kwriteconfig
-  } else {
-    puts "Cannot configure KDE background - Please do a hand job!!!! - TODO"
-  }
-  
-  #Todo : write/rewrite progs!!!
-  foreach v $KdeVersions {
-    if {$v==4} {
-      setKde4Background
-    }
-    if {$v==5} {
-      setKde5Background
-    }
-  
-  }
-  
-}
+  return 0
+} ;#END setKde5Bg
 
 # setXfceBackground
 ##configures XFCE4 single pic or slideshow - TODO: >update MANPAGE!!!!!!!!!
-proc setXfceBackground {} {
-  global slideshow Xfce4ConfigFile
-  package require tdom
-  
- ###configFile hierarchy: 
- #<channel name="xfce4-desktop" ...>
+### configFile hierarchy: 
+  #<channel name="xfce4-desktop" ...>
   #<property name="backdrop" type="empty">
   #  <property name="screen0" type="empty">
   #    <property name="monitor0" type="empty">
   #      <property name="image-path"..."/>
-  
+proc setXfceBackground {} {
+  global slideshow Xfce4ConfigFile LinConfDir
+  package require tdom
+ 
+  #Check for config files & exit 1 if missing
+  set backdropList $LinConfDir/xfce4/desktop/backdrop-list]
+  if {![file exists $Xfce4ConfigFile] ||
+      ![file exists $backdropList] } {
+    return 1
+  }  
   
   #Single Picture
   if {! $slideshow} {
@@ -490,7 +472,7 @@ proc setXfceBackground {} {
   ##backdrop-cycle-timer value=[expr $slideshow/60]
 
     #rewrite backdrop list
-    set backdropList $confDir/xfce4/desktop/backdrop-list
+    set backdropList $LinConfDir/xfce4/desktop/backdrop-list
     set backdropListChan [open $backdropList w]
     puts $backdropListChan "$TwdPNG\n$TwdBMP"
     close $backdropListChan
@@ -501,17 +483,8 @@ proc setXfceBackground {} {
     set backdropCycleTimer "[expr $slideshow/60]"
   }
 
-###################################################################################
-#KEEP THIS AS RELICT FOR GOOD regsub grouping policy!!!
-#append ss2 \\1value= \"true\" /> 
-#WICHTIG: die 1 vor dem Wert bezeichnet die zu ersetzende Gruppe
-#      regsub -all -line {(backdrop-cycle-enable.*)(value=.*$)} $t $ss2 confText
-###################################################################################
-
-
   #2 parse configFile
-  set path $Xfce4ConfigFile
-  set confChan [open $path]
+  set confChan [open $Xfce4ConfigFile r]
   chan configure $confChan -encoding utf-8
   set data [read $confChan]
   set doc [dom parse $data]
@@ -561,22 +534,65 @@ proc setXfceBackground {} {
 
   puts $confChan $confText
   close $confChan
-  
+
+  return 0
 } ;#END setXfceBackground
 
 
-# setGnomeBackground
+# setGnomeBackground - TODO: das funktioniert nicht mit return!
 ##configures Gnome single pic
 ##setting up slideshow not needed because Gnome detects picture change automatically
 proc setGnomeBackground {} {
   #Gnome2
   if {[auto_execok gconftool-2] != ""} {
-    return "gconftool-2 --type=string --set /desktop/gnome/background/picture_filename $::TwdPNG"
+    catch {exec gconftool-2 --type=string --set /desktop/gnome/background/picture_filename $::TwdPNG} errCode
   #Gnome3
   } elseif {[auto_execok gsettings] != ""} {
-    return "gsettings set org.gnome.desktop.background picture-uri file:///$::TwdBMP"
+    catch {exec gsettings set org.gnome.desktop.background picture-uri file:///$::TwdBMP} errCode
+  #no Gnome
+  } else {
+    return 1
+  }
+  
+  if {$errCode==""} {
+    return 0
+  } else {
+  return $errCode
+  }
+} ;#END setGnomeBackground
+
+
+########## R E L O A D   D E S K T O P S  ##########################
+
+# reloadKdeDesktop - TODO: DONT BOTZHER!!
+##Rereads all .desktop and XML files
+##Called by SetupSaveLin after changing config files
+proc reloadKdeDesktop {} {
+  set k4 [auto_execok kbuildsycoca4]
+  set k5 [auto_execok kbuildsycoca5]
+  if {$k5 != ""} {
+    set command $k5
+  } elseif {$k4 != ""} {
+    set command $k4
+  }
+  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:MUSTRELOADDESKTOP"
+  exec $command
+}
+
+# reloadXfceDesktop
+##Rereads XFCE4 Desktop configuration
+##Called by SetupSaveLin after changing config files
+proc reloadXfceDesktop {} {
+  set command [auto_execok xfdesktop]
+  if {$command != ""} {
+    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:MUSTRELOADDESKTOP"
+    exec $command --reload 
   }
 }
+
+######################################
+####### C R O N T A B ################
+######################################
 
 # setupLinCrontab
 ##Detects running cron(d) & installs new crontab
@@ -823,3 +839,11 @@ proc setupLinTerminal {args} {
   }
 
 } ;#END setupLinTerminal
+
+
+###################################################################################
+#KEEP THIS AS RELICT FOR GOOD regsub grouping policy!!!
+#append ss2 \\1value= \"true\" /> 
+#WICHTIG: die 1 vor dem Wert bezeichnet die zu ersetzende Gruppe
+#      regsub -all -line {(backdrop-cycle-enable.*)(value=.*$)} $t $ss2 confText
+###################################################################################
