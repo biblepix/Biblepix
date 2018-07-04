@@ -215,15 +215,17 @@ proc setSwayAutostartAndBackground {} {
 #Skip if already there, else append
   if {![regexp {[Bb]iblepix} $configText]} {
     
-    append autostartLine \n \n # {BiblePix: this runs BiblePix & sets initial background picture} \n exec { } $Biblepix
-    set sleepLine "\nexec sleep 3"
-    set setBgLine "\nexec swaymsg output [getSwayOutputName] bg $::TwdBMP center"
-
+    append autostartLine \n # {BiblePix: this runs BiblePix & sets initial background picture} \n exec { } $Biblepix
+    set sleepLine "exec sleep 3"
+    set outputList [getSwayOutputName]
+    
     #append lines at end of file
     set chan [open $swayConfFile a]
     puts $chan $autostartLine
     puts $chan $sleepLine
-    puts $chan $setBgLine
+    foreach outputName $outputList {
+      puts $chan "exec swaymsg output $outputName bg $::TwdBMP center"
+    }
     close $chan
   }
 

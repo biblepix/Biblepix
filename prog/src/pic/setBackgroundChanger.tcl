@@ -71,15 +71,22 @@ proc getSwayOutputName {} {
   #Get output(s) in raw (JSON) format
   set outputs [exec swaymsg --raw --type get_outputs]
   
-  #Extract first output name string - TODO: allow for several output names?
-  if [regexp "name" $outputs] {
-    set line [regexp -line -inline -lineanchor {name.*$} $outputs]
-    regsub -all {[name",: {}"]} $line {} outputName
-    return $outputName
-    
-  } else {
+  #Extract list of output name string(s), exit 1 if 0
+  set nOutputs [regexp -all name $outputs]
+  if {!$nOutputs} {
     return 1
   }
+
+  set index 0
+  for {set n 1} {$n<=$nOutputs} {incr n} {
+    set line [regexp -start $index -line -inline {name.*$} $outputs]
+    regsub -all {[name",: {}"]} $line {} outputName
+    lappend outputList $outputName
+    #reset index for regexp search
+    set index [lindex [regexp -indices name $outputs] 1] 
+  }
+
+  return $outputList
 }
 
 # C r e a t e  ' s e t B g '   p r o c   i f   a p p l i c a b l e
