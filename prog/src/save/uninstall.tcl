@@ -24,17 +24,27 @@ if {$antwort=="yes"} {
     # L I N U X
     if {$os=="Linux"} {
     
+    
+    
+    #TODO: check variables !!!!!!!!!!!!!!!!!!!!!!!!!!!¨
       #remove Desktop files
+      file delete $homeBinDir/biblepix-setup
       set KDEdir [glob -nocomplain $HOME/.kde*]
-      file delete -force ~/.local/share/applications/biblepixSetup.desktop
-      file delete -force $KDEdir/share/kde4/services/biblepixSetup.desktop
-      file delete -force ~/.config/autostart/biblepix.desktop
-      file delete -force $KDEdir/Autostart/biblepix.desktop
+      file delete ~/.local/share/applications/biblepixSetup.desktop
+      file delete $KDEdir/share/kde4/services/biblepixSetup.desktop
+      file delete ~/.config/autostart/biblepix.desktop
+      file delete $KDEdir/Autostart/biblepix.desktop
 
       #Remove any cron entries
       if [info exists crontab] {
         source $SetupSaveLinHelpers
         catch {setLinCrontab delete}
+      }
+        
+      #Remove any entry in Sway config
+      if [file exists $swayConfFile] {
+        source $SetupSaveLinHelpers
+        catch {setSwayConfig delete}
       }
 
     } elseif {$platform=="windows"} {   

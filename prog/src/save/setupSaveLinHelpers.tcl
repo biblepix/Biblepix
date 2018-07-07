@@ -21,11 +21,10 @@ set LinDesktopFilesDir $LinLocalShareDir/applications
 file mkdir $LinDesktopFilesDir
 
 #Set KDE dirs & Create ~/.kde if missing
-set KdeConfDir [file join [glob -nocomplain $HOME/.kde*] share config]
-if {$KdeConfDir==""} {
-  #this accounts for both old and new path 
-  file mkdir $KdeConfDir
-}
+set KdeDir [glob -nocomplain $HOME/.kde*]
+set KdeConfDir $KdeDir/share/config
+file mkdir $KdeConfDir
+
 
 #Determine KDE config files
 ##KDE4
@@ -39,7 +38,7 @@ if [file exists $KdeConfDir/plasma-desktop-appletsrc] {
 }
 
 #Wayland/Sway
-set swayConfFile $LinConfDir/sway/config
+set SwayConfFile $LinConfDir/sway/config
 
 
 # 1  M E N U   E N T R Y   .DESKTOP   F I L E 
@@ -55,7 +54,7 @@ set Kde5DesktopActionFile $LinDesktopFilesDir/biblepixSetupAction.desktop
 
 
 # 3 Autostart files
-set KdeAutostartDir $KdeConfDir/Autostart
+set KdeAutostartDir $KdeDir/Autostart
 set LinAutostartDir $LinConfDir/autostart
 file mkdir $LinAutostartDir $KdeAutostartDir
 set KdeAutostartFile $KdeAutostartDir/biblepix.desktop
@@ -106,8 +105,8 @@ proc formatLinuxExecutables {} {
   if {![regexp $homeBin $PATH]} {
     
     set homeBinText "
-if \[ -d $HOME/bin \] ; then
-PATH=$HOME/bin:$PATH
+if \[ -d $env(HOME)/bin \] ; then
+PATH=$env(HOME)/bin:$PATH
 fi"
     #read out & check, append if missing
     set chan [open $f r]
@@ -123,7 +122,7 @@ fi"
 
   #Clean up & make file executable
   catch {unset shBangLine $t}
-  file attributes $homeBinFile +x
+  file attributes $homeBinFile -permissions +x
 
 } ;#END formatLinuxExecutables
 
@@ -159,31 +158,33 @@ proc setShebangLine {currentEnvPath} {
 } ;#END setShebangLine
 
 
-########################################################################
-# A U T O S T A R T   S E T T E R   F O R   L I N U X   D E S K T O P S
-########################################################################
+####################################
+# A U T O S T A R T   S E T T E R S
+####################################
 
 # setLinAutostart
-##makes Autostart entries for Linux Desktops (GNOME, XFCE4? & KDE)
-##args == delete
+## makes Autostart entries for Linux Desktops: GNOME, XFCE4, KDE, Wayland/Sway
+## args == delete
+## called by SetupSaveLin
 proc setLinAutostart args {
-  global Biblepix Setup LinIcon bp LinAutostartFile KdeAutostartFile
+  global Biblepix Setup LinIcon bp LinAutostartFile KdeAutostartFile SwayConfFile
+  set Err 0
   
   #If args exists, delete any autostart files and exit
   if  {$args != ""} {
     file delete $LinAutostartFile $KdeAutostartFile
+    catch {setSwayConfig delete}
     return 0
   }
 
   #set Texts
   set desktopText "\[Desktop Entry\]
-  Name=$bp Setup
-  Type=Application
-  Icon=$LinIcon
-  Categories=Settings;Utility;Graphics;Education;DesktopSettings;Core
-  Comment=Configures and runs BiblePix
-  Exec=$Biblepix
-  "
+Name=$bp Setup
+Type=Application
+Icon=$LinIcon
+Comment=Runs BiblePix at System start
+Exec=$Biblepix
+"
   #Make .desktop file for KDE Autostart
   set chan [open $KdeAutostartFile w]
   puts $chan $desktopText
@@ -197,38 +198,67 @@ proc setLinAutostart args {
   #Delete any BP crontab entry - TODO ?????????????'
   catch {setupLinCrontab delete}
 
-  return 0
+  #Set up Sway if conf file found
+  if [file exists $SwayConfFile] {
+    catch setSwayConfig Err
+  }
+  
+  if {$Err} {
+    return 1 
+  } {
+    return 0
+  }
 } ;#END setLinAutostart
 
-proc setSwayAutostartAndBackground {} {
-  global LinConfDir swayConfFile Biblepix env
-  
-  if { ![file exists $swayConfFile]} {
-    return 1
-  }
-  
-  #read out text
-  set chan [open $swayConfFile r]
+# setSwayConfig
+## makes entries for autostart and BG setting in swayConfig
+## args==delete entry
+## called by setLinAutostart
+proc setSwayConfig args {
+  global LinConfDir SwayConfFile Biblepix env
+
+  #Read out text
+  set chan [open $SwayConfFile r]
   set configText [read $chan]
   close $chan
-  
-#Skip if already there, else append
-  if {![regexp {[Bb]iblepix} $configText]} {
-    
-    append autostartLine \n # {BiblePix: this runs BiblePix & sets initial background picture} \n exec { } $Biblepix
-    set sleepLine "exec sleep 3"
-    set outputList [getSwayOutputName]
-    
-    #append lines at end of file
-    set chan [open $swayConfFile a]
-    puts $chan $autostartLine
-    puts $chan $sleepLine
-    foreach outputName $outputList {
-      puts $chan "exec swaymsg output $outputName bg $::TwdBMP center"
-    }
-    close $chan
+
+  #Check previous entries
+  set entryFound 0
+  if [regexp {[Bb]ible[Pp]ix} $configText] {
+    set entryFound 1
   }
 
+  #Delete any entry if "args"
+  if {$args!="" && $entryFound} {
+    set chan [open $SwayConfFile w]
+    regsub -all -line {^.*ible[Pp]ix.*$} $configText {} configText
+    puts $chan $configText
+    close $chan
+    puts "Deleted BiblePix entry from $SwayConfFile"
+    return 0
+  }
+  
+  #Skip if entry found
+  if {$entryFound} {
+    puts "Sway config: Nothing to do."
+    return 0
+  }
+  #Append entry
+  append autostartLine \n # {BiblePix: this runs BiblePix & sets initial background picture} \n exec { } $Biblepix
+#  set sleepLine "exec sleep 3"
+  set outputList [getSwayOutputName]
+  
+#TODO: CHECK sleepline !!!!!!!!!!!!!
+  #append lines at end of file
+  set chan [open $SwayConfFile a]
+  puts $chan $autostartLine
+  #puts $chan $sleepLine
+  foreach outputName $outputList {
+    puts $chan "exec swaymsg output $outputName bg $::TwdBMP center"
+  }
+  close $chan
+
+  puts "Made BiblePix entry in $SwayConfFile"
   return 0
 }
 

@@ -7,13 +7,10 @@ source $SetupSaveLinHelpers
 source $SetupTools
 source $SetBackgroundChanger
 
-#TODO: reform error handling!!!!
-#TODO: remove catches for testing!
-
 set Error 0
 set hasError 0
 
-#Check / Amend Linux executables
+#Check / Amend Linux executables - TODO: Test again
 catch formatLinuxExecutables Error
 puts "linExec $Error"
 
@@ -21,7 +18,17 @@ puts "linExec $Error"
 # 1 Set up Linux A u t o s t a r t for all Desktops
 ##################################################
 catch setLinAutostart Error
-puts "autostart $Error"
+if {$Error} {
+  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linSetAutostartProb
+}
+
+#TODO: Create $linSettingAutostart & $linSetAutostartProb
+
+
+
+####################################################
+# 2 Set up Menu entries for all Desktops
+####################################################
 
 # Check running desktop
 ##returns 1 if GNOME
@@ -31,47 +38,25 @@ puts "autostart $Error"
 ##returns 0 if no running desktop detected
 set runningDesktop [detectRunningLinuxDesktop]
 
-#Install crontab if no Desktop found
-if {$runningDesktop == 0} { 
+#Install crontab autostart if no Desktop found - TODO: Test again
+#TODO: apologize for not making menu entry...
+if {$runningDesktop == 0} {
   puts "No Running Desktop found"
   catch setupLinCrontab Error0
   puts "Crontab $Error0"
-
-#Install Sway Autostart
-} elseif {$runningDesktop == 4} {
-  catch setSwayAutostartAndBackground Error4
-  puts "swayAutostart $Error4"
 }
 
-#TODO: organise
-if {$Error!=0} {
-  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linSetAutostartProb
-  set hasError 1
-}
-
-
-####################################################
-# 2 Set up Menu entries for all Desktops
-####################################################
+#Install Menu entries for all desktops
 catch setLinMenu Error
 puts "LinMenu $Error"
 catch setKdeActionMenu Error
 puts "KdeAction $Error"
 
 if {!$hasError && $Error!=""} {
-  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
+  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message "$desktop: $linChangeDesktopProb"
   set hasError 1
 }
 
-
-#################################################
-# 3 Set up Linux terminal
-#################################################
-if {$enableterm} {
-  catch setupLinTerminal Error
-  puts "Terminal $Error"
-  #TODO? message if failure ??
-}
 
 
 
@@ -82,27 +67,29 @@ if {$enableterm} {
 if {$enablepic} {
   tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangingDesktop
 
-  #Set main backgrounds - successful if config files found
+  #Try setting main backgrounds - successful if config files found
   ##returncodes : 1=success, 0=failure
   lappend successList "1:[setGnomeBackground]"
   lappend successList "2:[setKdeBackground]"
   lappend successList "3:[setXfceBackground]"
-  #lappend successList "4:[setSwayAutostartAndBackground]"
-  puts $successList
-return
-
-#TODO: reorganise from here
-  if {$Error==1} {
-    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
-    set hasError 1
+  
+  set GnomeBg [setGnomeBackground]
+  set KdeBg [setKdeBackground]
+  set XfceBg [setXfceBackground]
+  
+  array set BgSuccessList "Gnome $GnomeBg Kde $KdeBg Xfce $XfceBg"
+  
+  foreach desktop [array names BgSuccessList] {
+    if {$desktop==1} {
+    #TODO: include Desktop name in messages !!!!
+      tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
+    } else {
+      tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $changeDesktopOk
+    }
   }
+  
 
-} ;#£END if enablepic
 
-#TODO:
-if {!$hasError} {
-  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $changeDesktopOk
-}
 
 ########################################################
 # 5 Try reloading KDE & XFCE Desktops
@@ -122,3 +109,12 @@ if {$enablepic} {
   }
 }
 
+
+#################################################
+# 6 Set up Linux terminal
+#################################################
+if {$enableterm} {
+  catch setupLinTerminal Error
+  puts "Terminal $Error"
+  #TODO? message if failure ??
+}
