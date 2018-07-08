@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4jul18
+# Updated: 8jul18
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -21,9 +21,6 @@ catch setLinAutostart Error
 if {$Error} {
   tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linSetAutostartProb
 }
-
-#TODO: Create $linSettingAutostart & $linSetAutostartProb
-
 
 
 ####################################################
@@ -46,75 +43,75 @@ if {$runningDesktop == 0} {
   puts "Crontab $Error0"
 }
 
-#Install Menu entries for all desktops
+#Install Menu entries for all desktops - no error handling
 catch setLinMenu Error
 puts "LinMenu $Error"
 catch setKdeActionMenu Error
 puts "KdeAction $Error"
 
-if {!$hasError && $Error!=""} {
-  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message "$desktop: $linChangeDesktopProb"
-  set hasError 1
-}
-
-
-
-
-#####################################################
-## 4 Set up Desktop Background Image
-#####################################################
-
-if {$enablepic} {
-  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangingDesktop
-
-  #Try setting main backgrounds - successful if config files found
-  ##returncodes : 1=success, 0=failure
-  lappend successList "1:[setGnomeBackground]"
-  lappend successList "2:[setKdeBackground]"
-  lappend successList "3:[setXfceBackground]"
-  
-  set GnomeBg [setGnomeBackground]
-  set KdeBg [setKdeBackground]
-  set XfceBg [setXfceBackground]
-  
-  array set BgSuccessList "Gnome $GnomeBg Kde $KdeBg Xfce $XfceBg"
-  
-  foreach desktop [array names BgSuccessList] {
-    if {$desktop==1} {
-    #TODO: include Desktop name in messages !!!!
-      tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
-    } else {
-      tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $changeDesktopOk
-    }
-  }
-  
-
-
-
-########################################################
-# 5 Try reloading KDE & XFCE Desktops
-# Gnome & Sway need no reloading
-########################################################
-
-if {$enablepic} {
-  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:RELOADINGDesktop"
-
-  if {$runningDesktop == 2} {
-    catch reloadKdeDesktop Error
-    puts "reloadKde $Error"
-    
-  } elseif {$runningDesktop == 3} {
-    catch reloadXfceDesktop
-    puts "runningDesktop $Error"
-  }
-}
-
 
 #################################################
-# 6 Set up Linux terminal
+# 3 Set up Linux terminal -- TODO? error handling?
 #################################################
 if {$enableterm} {
   catch setupLinTerminal Error
   puts "Terminal $Error"
-  #TODO? message if failure ??
+  
 }
+
+#Exit if no picture desired
+if {!$enablepic} {
+  return 0
+}
+
+
+
+#####################################################
+## 4 Set up Desktop Background Image - with error handling
+#####################################################
+
+tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangingDesktop
+
+set GnomeErr [setGnomeBackground]
+set KdeErr [setKdeBackground]
+set XfceErr [setXfceBackground]
+
+#Create OK message for each successful desktop configuration
+array set BgSuccessList "
+Gnome $GnomeErr 
+Kde $KdeErr
+Xfce $XfceErr
+"
+set arrayText [array get BgSuccessList]
+
+foreach desktopName [array names BgSuccessList] {
+  if {$BgSuccessList($desktopName) == 0} {
+    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "$desktopName: $changeDesktopOk" 
+  }
+}
+
+#Create Error message if no desktop configured
+if {! [regexp 0 $arrayText] } {
+  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
+}
+
+
+########################################################
+# 5 Try reloading KDE & XFCE Desktops - no error handling
+# Gnome & Sway need no reloading
+########################################################
+if {$runningDesktop==2} {set desktopName KDE}
+if {$runningDesktop==3} {set desktopName XFCE4}
+tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "$desktopName: $linReloadingDesktop"
+
+#Run progs end finish
+if {$runningDesktop == 2} {
+  catch reloadKdeDesktop Error
+  puts "reloadKde $Error"
+  
+} elseif {$runningDesktop == 3} {
+  catch reloadXfceDesktop
+  puts "runningDesktop $Error"
+}
+
+return 0

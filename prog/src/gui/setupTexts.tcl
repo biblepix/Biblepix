@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4jun18
+# Updated: 7jul18
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -368,10 +368,9 @@ set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Auto
 set linSetAutostartProb(en) "We had a problem configuring $bp Autostart.\n In order for $bp to run at computer boot time, you must make an entry in the Autostart menu of your Desktop manager. \nTry right-clicking on your Desktop and find the dialog 'Automatically executed programs'. There enter '$::Biblepix' as the new program path.\nFor other solutions consult the Manual."
 set ::linSetAutostartProb $linSetAutostartProb($lang)
 
-#TODO: revise this to include Gnome!!!!!!!!!!!!!
-set linKdeXfceRestart(en) "For the BiblePix settings to take effect now, you must log out quickly and then log in again."
-set linKdeXfceRestart(de) "Damit die BibelPix-Einstellungen jetzt wirksam werden, müssen Sie sich kurz ab- und  wieder anmelden."
-set ::linKdeXfceRestart $linKdeXfceRestart($lang)
+set linReloadingDesktop(en) "We shall now try to reload your Desktop. If this fails, please log out and in again for the BiblePix settings to take effect."
+set linReloadingDesktop(de) "Wir versuchen nun, Ihre Arbeitsfläche neu einzulesen. Falls dies fehlschlägt, müssen Sie sich kurz ab- und wieder anmelden, damit die BibelPix-Einstellungen wirksam werden."
+set ::linReloadingDesktop $linReloadingDesktop($lang)
 
 set changeDesktopOk(en) "$bp has been configured successfully and will start shortly.\nYou can run BiblePix Setup anytime by right-clicking on your Desktop (or in your Computer's Start Menu) and selecting the \"BiblePix Setup\" icon."
 set changeDesktopOk(de) "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\nDas BibelPix-Setup können Sie jederzeit starten, indem Sie durch Recktsklick auf Ihrer Arbeitsfläche oder im Startmenü das Symbol \"BiblePix Setup\" wählen."

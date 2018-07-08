@@ -393,6 +393,7 @@ proc setKdeBackground {} {
   } else {
     return "KDE4: $errCode4 / \nKDE5: $errCode5"
   }
+  
 } ;#END setKdeBackground
 
 # setKde4Bg
@@ -785,7 +786,7 @@ proc setupLinTerminal {args} {
     if [regexp {[Bb]iblepix} $t] {
     
       #Ignore if previous entries found
-      puts "Nothing to do"
+      puts "Bashrc/Terminal: Nothing to do"
 
     } else {
 
