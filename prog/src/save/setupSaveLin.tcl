@@ -94,6 +94,9 @@ proc setXfceBackground {} {
     close $chan
   }
   
+ #Set monitoring
+exec xfconf-query -c xfce4-desktop -m
+  
   #Scan through 5 screeens & monitors
   for {set s 0} {$s<5} {incr s} {
     for {set m 0} {$m<5} {incr m} {
@@ -109,6 +112,8 @@ proc setXfceBackground {} {
       
       } else {
       
+    puts "Setting $imgpath"
+    
     #must set single img path even if slideshow!  
         exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-path --set $TwdBMP
         exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-style --set 3
@@ -135,6 +140,7 @@ proc setXfceBackground {} {
 #    }
   
   if [info exists ctrlBit] {
+  puts NoLuckSettingXfce
     return 0
   } {
     return 1
