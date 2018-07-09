@@ -478,10 +478,11 @@ proc setXfceBackground {} {
   package require tdom
  
   #Check for config files & exit 1 if missing
-  set backdropList $LinConfDir/xfce4/desktop/backdrop-list]
+  set backdropList $LinConfDir/xfce4/desktop/backdrop-list
   if {![file exists $Xfce4ConfigFile] ||
       ![file exists $backdropList] } {
-    return 1
+puts fileBulamadik
+return 1
   }  
   
   #Single Picture
@@ -505,10 +506,10 @@ proc setXfceBackground {} {
   ##backdrop-cycle-timer value=[expr $slideshow/60]
 
     #rewrite backdrop list
-    set backdropList $LinConfDir/xfce4/desktop/backdrop-list
-    set backdropListChan [open $backdropList w]
-    puts $backdropListChan "$TwdPNG\n$TwdBMP"
-    close $backdropListChan
+    puts changingBackdropList
+   set chan [open $backdropList w]
+    puts $chan "$TwdPNG\n$TwdBMP"
+    close $chan
     
     set imgPath $backdropList
     set imgShow "empty"
@@ -522,6 +523,7 @@ proc setXfceBackground {} {
   set data [read $confChan]
   set doc [dom parse $data]
   set root [$doc documentElement]
+puts parsingXfceConfigFile
 
   set mainNode [$root selectNodes {//property[@name="backdrop"]} ]
   
@@ -568,6 +570,7 @@ proc setXfceBackground {} {
   puts $confChan $confText
   close $confChan
 
+puts finishedChangingXFCEConfFile
   return 0
 } ;#END setXfceBackground
 
@@ -608,7 +611,7 @@ proc reloadKdeDesktop {} {
   } elseif {$k4 != ""} {
     set command $k4
   }
-  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:MUSTRELOADDESKTOP"
+#  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:MUSTRELOADDESKTOP"
   exec $command
 }
 
