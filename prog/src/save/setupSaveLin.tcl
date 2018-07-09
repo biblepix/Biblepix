@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8jul18
+# Updated: 9jul18
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -65,7 +65,6 @@ if {!$enablepic} {
 }
 
 
-
 #####################################################
 ## 4 Set up Desktop Background Image - with error handling
 #####################################################
@@ -77,21 +76,24 @@ set KdeErr [setKdeBackground]
 set XfceErr [setXfceBackground]
 
 #Create OK message for each successful desktop configuration
-array set BgSuccessList "
-Gnome $GnomeErr 
-Kde $KdeErr
-Xfce $XfceErr
-"
-set arrayText [array get BgSuccessList]
+if {$GnomeErr==0} {
+  append desktopList GNOME
+}
+if {$KdeErr==0} {
+  append desktopList KDE
+}
+if {$XfceErr==0} {
+  append desktopList XFCE4
+}
+puts "desktopList: $desktopList"
 
-foreach desktopName [array names BgSuccessList] {
-  if {$BgSuccessList($desktopName) == 0} {
+#Create Ok message if desktopList exists
+if {$desktopList} {
+  foreach $desktopName $desktopList {
     tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "$desktopName: $changeDesktopOk" 
   }
-}
-
 #Create Error message if no desktop configured
-if {! [regexp 0 $arrayText] } {
+} else {
   tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
 }
 
