@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 27feb18 
+# Updated : 9jul18 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $twdDir/*$jahr.twd}] } {
@@ -102,8 +102,13 @@ if {$os == "Windows NT"} {
 } elseif {$os == "Linux"} {
   source $SetupSaveLin
 }
-   
-#Delete any old TWD files - TODO : isn't there a better place for this?
+
+########### D E L E T E   O L D   S T U F F  #######################
+
+#Delete obsolete bmpdir
+file delete -force $progDir/bmp
+
+#Delete any old TWD files
 set vorjahr [expr {$jahr - 1}]
 set oldtwdlist [glob -nocomplain -directory $twdDir *$vorjahr.twd]
 if {[info exists oldtwdlist]} {
@@ -112,13 +117,13 @@ if {[info exists oldtwdlist]} {
   foreach file $oldtwdlist {
     file delete $file
   }
-  
   NewsHandler::QueryNews "Old TWD files deleted." green
 }
 
-#Delete old BMPs & start Biblepix
+###### S t a r t   B i b l e p i x  #####################
+
+#Create random BMP if $imgDir empty
 if {$enablepic} {
-  #create random BMP if $imgDir empty
   if { [glob -nocomplain $imgDir/*.bmp] == "" } {
     package require Img
     set photopath [getRandomPhoto]
@@ -126,10 +131,6 @@ if {$enablepic} {
     $quickimg write $TwdBMP -format bmp
     image delete $quickimg
   }
-  foreach file [glob -nocomplain -directory $bmpdir *] {
-    file delete -force $file
-  }
-
 }
 
 source $Biblepix

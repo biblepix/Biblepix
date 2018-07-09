@@ -85,10 +85,10 @@ if {$KdeErr==0} {
 if {$XfceErr==0} {
   append desktopList XFCE4
 }
-puts "desktopList: $desktopList"
+#puts "desktopList: $desktopList"
 
-#Create Ok message if desktopList exists
-if {$desktopList} {
+#Create Ok message if desktopList not empty
+if {$desktopList != ""} {
   foreach $desktopName $desktopList {
     tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "$desktopName: $changeDesktopOk" 
   }
