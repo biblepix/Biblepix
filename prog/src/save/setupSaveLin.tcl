@@ -68,6 +68,40 @@ if {!$enablepic} {
 #####################################################
 ## 4 Set up Desktop Background Image - with error handling
 #####################################################
+proc setXfceBackground {} {
+
+# X F C E 4  - knows TIF/BMP/PNG !
+  if {[auto_execok xfconf-query] != ""} {
+  
+    for {set s 0} {$s<5} {incr s} {
+      for {set m 0} {$m<5} {incr m} {
+        catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-path -s $TwdBMP" err
+        catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-style -s 3" err
+        catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-show -s true" err
+          if {$slideshow} {
+            set backdropdir ~/.config/xfce4/desktop
+            file mkdir $backdropdir
+            set imglist $backdropdir/backdrop.list
+            set chan [open $imglist w]
+            puts $chan "$TwdBMP\n$TwdTIF"
+            close $chan
+            catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --create last-image-list -s $imglist" err
+            catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --create backdrop-cycle-enable -s true" err
+            catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --create backdrop-cycle-timer [expr $slideshow/60]" err  
+              if {$err!=""} {continue}
+            }
+        }
+      }
+#reload XFCE4 desktop if running
+#    if {! [catch "exec pidof xfdesktop"] }  {
+#            wm withdraw .
+#            exec xfdesktop --reload
+#    }
+
+  }
+
+
+}
 
 tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangingDesktop
 
