@@ -89,7 +89,7 @@ if {$XfceErr==0} {
 
 #Create Ok message if desktopList not empty
 if {$desktopList != ""} {
-  foreach $desktopName $desktopList {
+  foreach desktopName $desktopList {
     tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "$desktopName: $changeDesktopOk" 
   }
 #Create Error message if no desktop configured
