@@ -68,40 +68,80 @@ if {!$enablepic} {
 #####################################################
 ## 4 Set up Desktop Background Image - with error handling
 #####################################################
-proc setXfceBackground {} {
 
-# X F C E 4  - knows TIF/BMP/PNG !
-  if {[auto_execok xfconf-query] != ""} {
+
+#NEW ATTEMPT WITH native tools!!!!
+#SET THIS TO MONITOR:
+#xfconf-query -c xfce4-desktop -m
+
+proc setXfceBackground {} {
+  global slideshow TwdBMP TwdTIF
   
-    for {set s 0} {$s<5} {incr s} {
-      for {set m 0} {$m<5} {incr m} {
-        catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-path -s $TwdBMP" err
-        catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-style -s 3" err
-        catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-show -s true" err
-          if {$slideshow} {
-            set backdropdir ~/.config/xfce4/desktop
-            file mkdir $backdropdir
-            set imglist $backdropdir/backdrop.list
-            set chan [open $imglist w]
-            puts $chan "$TwdBMP\n$TwdTIF"
-            close $chan
-            catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --create last-image-list -s $imglist" err
-            catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --create backdrop-cycle-enable -s true" err
-            catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --create backdrop-cycle-timer [expr $slideshow/60]" err  
-              if {$err!=""} {continue}
-            }
-        }
+  #Exit if xfconf-query not found
+  if {[auto_execok xfconf-query] == ""} {
+    return 1
+  }
+  
+  puts "Configuring XFCE background image..."
+  
+  #Create/Change backdrop.list if $slideshow
+  if {$slideshow} {
+    set backdropdir ~/.config/xfce4/desktop
+    file mkdir $backdropdir
+    set backdroplist $backdropdir/backdrop.list
+    set chan [open $backdroplist w]
+    puts $chan "$TwdBMP\n$TwdTIF"
+    close $chan
+  }
+  
+  #Scan through 5 screeens & monitors
+  for {set s 0} {$s<5} {incr s} {
+    for {set m 0} {$m<5} {incr m} {
+    
+      # 'set' = set if existent
+      # 'create' = create if non-existent
+
+      set imgpath /backdrop/screen$s/monitor$m/image-path
+     
+      if [catch "exec xfconf-query -c xfce4-desktop -p $imgpath"] {
+      
+        continue
+      
+      } else {
+      
+    #must set single img path even if slideshow!  
+        exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-path --set $TwdBMP
+        exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-style --set 3
+        set ctrlBit 1
       }
+
+      #this has probably no effect:
+      #catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-show -s true" err
+        
+      if {$slideshow} {
+          
+#            catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --create last-image-list -s $imglist" err
+        exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --set backdrop-cycle-enable -s true
+        exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --set backdrop-cycle-timer [expr $slideshow/60]
+
+      }
+    }
+  } ;#END for
+    
 #reload XFCE4 desktop if running
 #    if {! [catch "exec pidof xfdesktop"] }  {
 #            wm withdraw .
 #            exec xfdesktop --reload
 #    }
-
+  
+  if [info exists ctrlBit] {
+    return 0
+  } {
+    return 1
   }
+  
+} ;#END setXfceBackground
 
-
-}
 
 tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangingDesktop
 
