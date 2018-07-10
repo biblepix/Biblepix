@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9jul18
+# Updated: 10jul18
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -71,9 +71,6 @@ if {!$enablepic} {
 
 
 #NEW ATTEMPT WITH native tools!!!!
-#SET THIS TO MONITOR:
-#xfconf-query -c xfce4-desktop -m
-
 proc setXfceBackground {} {
   global slideshow TwdBMP TwdTIF
   
@@ -82,8 +79,13 @@ proc setXfceBackground {} {
     return 1
   }
   
-  puts "Configuring XFCE background image..."
+  #Our 'channel' is actually an XML file found in .config/xfce4/xfconf/xfce-perchannel-xml/
+  set channel "xfce4-desktop"
   
+  puts "Configuring XFCE background image..."
+
+  
+  #TODO: Check if this is really needed !!!!!!!!!!!!!!
   #Create/Change backdrop.list if $slideshow
   if {$slideshow} {
     set backdropdir ~/.config/xfce4/desktop
@@ -97,8 +99,16 @@ proc setXfceBackground {} {
  #Set monitoring
 exec xfconf-query -c xfce4-desktop -m
   
+#TODO: add .../workspace[?] !!!!
+#or try squeezing below info near 'image-path' ?
+
+#xfconf-query -c xfce4-desktop -l >
+#/backdrop/screen0/monitor0/image-path NEEDED [path]
+#/backdrop/screen0/monitor0/workspace0/backdrop-cycle-enable NEEDED true
+#/backdrop/screen0/monitor0/workspace0/backdrop-cycle-timer NEEDED int
+
   #Scan through 5 screeens & monitors
-  for {set s 0} {$s<5} {incr s} {
+  for {set 0} {$s<5} {incr s} {
     for {set m 0} {$m<5} {incr m} {
     
       # 'set' = set if existent
@@ -106,32 +116,37 @@ exec xfconf-query -c xfce4-desktop -m
 
       set imgpath /backdrop/screen$s/monitor$m/image-path
      
-      if [catch "exec xfconf-query -c xfce4-desktop -p $imgpath"] {
+      if [catch "exec xfconf-query -c $channel -p $imgpath"] {
       
         continue
       
       } else {
       
-    puts "Setting $imgpath"
-    
-    #must set single img path even if slideshow!  
-        exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-path --set $TwdBMP
-        exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-style --set 3
+        puts "Setting $imgpath"
+      
+        #must set single img path even if slideshow!  
+        exec xfconf-query -c $channel -p /backdrop/screen$s/monitor$m/image-path --set $TwdBMP
+        exec xfconf-query -c $channel -p /backdrop/screen$s/monitor$m/image-style --set 3
         set ctrlBit 1
       }
 
-      #this has probably no effect:
-      #catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m/image-show -s true" err
-        
       if {$slideshow} {
+        
+        #run through 5 workspaces (w)
+        for {set w 0} {$w<5} {incr w} {
+          set backdropCycleEnablePath /backdrop/screen$s/monitor$m/workspace$w/backdrop-cycle-enable
+          set backdropCycleTimerPath /backdrop/screen$s/monitor$m/workspace$w/backdrop-cycle-timer
           
-#            catch "exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --create last-image-list -s $imglist" err
-        exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --set backdrop-cycle-enable -s true
-        exec xfconf-query -c xfce4-desktop -p /backdrop/screen$s/monitor$m --set backdrop-cycle-timer [expr $slideshow/60]
-
-      }
-    }
-  } ;#END for
+          if [catch "exec xfconf-query -c $channel -p $backdropCycleEnablePath"] {
+            continue
+          } else {
+            exec xfconf-query -c $channel -p $backdropCycleEnablePath --set true
+            exec xfconf-query -c $channel -p $backdropCycleTimerPath --set [expr $slideshow/60]
+          }
+        } ;#END for3
+      } ;#END if slideshow
+    } ;#END for2
+  } ;#END for1
     
 #reload XFCE4 desktop if running
 #    if {! [catch "exec pidof xfdesktop"] }  {
