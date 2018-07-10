@@ -96,26 +96,23 @@ proc setXfceBackground {} {
     close $chan
   }
   
- #Set monitoring
-exec xfconf-query -c xfce4-desktop -m
+ #Set monitoring - no Luck, holds up everything!
+#exec xfconf-query -c xfce4-desktop -m
   
-#TODO: add .../workspace[?] !!!!
-#or try squeezing below info near 'image-path' ?
-
 #xfconf-query -c xfce4-desktop -l >
 #/backdrop/screen0/monitor0/image-path NEEDED [path]
 #/backdrop/screen0/monitor0/workspace0/backdrop-cycle-enable NEEDED true
 #/backdrop/screen0/monitor0/workspace0/backdrop-cycle-timer NEEDED int
 
   #Scan through 5 screeens & monitors
-  for {set 0} {$s<5} {incr s} {
+  for {set s 0} {$s<5} {incr s} {
     for {set m 0} {$m<5} {incr m} {
     
       # 'set' = set if existent
       # 'create' = create if non-existent
 
       set imgpath /backdrop/screen$s/monitor$m/image-path
-     
+      set imgStylePath /backdrop/screen$s/monitor$m/image-style
       if [catch "exec xfconf-query -c $channel -p $imgpath"] {
       
         continue
@@ -125,8 +122,8 @@ exec xfconf-query -c xfce4-desktop -m
         puts "Setting $imgpath"
       
         #must set single img path even if slideshow!  
-        exec xfconf-query -c $channel -p /backdrop/screen$s/monitor$m/image-path --set $TwdBMP
-        exec xfconf-query -c $channel -p /backdrop/screen$s/monitor$m/image-style --set 3
+        exec xfconf-query -c $channel -p $imgpath --set $TwdBMP
+       # exec xfconf-query -c $channel -p $imgStylePath --create 3
         set ctrlBit 1
       }
 
@@ -134,11 +131,14 @@ exec xfconf-query -c xfce4-desktop -m
         
         #run through 5 workspaces (w)
         for {set w 0} {$w<5} {incr w} {
+        puts "Setting workspace $w"
+        
           set backdropCycleEnablePath /backdrop/screen$s/monitor$m/workspace$w/backdrop-cycle-enable
           set backdropCycleTimerPath /backdrop/screen$s/monitor$m/workspace$w/backdrop-cycle-timer
           
           if [catch "exec xfconf-query -c $channel -p $backdropCycleEnablePath"] {
             continue
+            
           } else {
             exec xfconf-query -c $channel -p $backdropCycleEnablePath --set true
             exec xfconf-query -c $channel -p $backdropCycleTimerPath --set [expr $slideshow/60]
@@ -155,9 +155,9 @@ exec xfconf-query -c xfce4-desktop -m
 #    }
   
   if [info exists ctrlBit] {
-  puts NoLuckSettingXfce
-    return 0
+      return 0
   } {
+    puts NoLuckSettingXfce
     return 1
   }
   
