@@ -69,6 +69,10 @@ if {!$enablepic} {
 ## 4 Set up Desktop Background Image - with error handling
 #####################################################
 
+#xfconf-query syntax für neue 'property':
+# xfconf-query -c -p* -n -t -s
+# * ganzer (neuer) Pfad
+##########################################
 
 #NEW ATTEMPT WITH native tools!!!!
 proc setXfceBackground {} {
@@ -122,8 +126,8 @@ proc setXfceBackground {} {
         puts "Setting $imgpath"
       
         #must set single img path even if slideshow!  
-        exec xfconf-query -c $channel -p $imgpath --set $TwdBMP
-       # exec xfconf-query -c $channel -p $imgStylePath --create 3
+        exec xfconf-query -c $channel -p $imgpath -n -t string -s $TwdBMP
+        exec xfconf-query -c $channel -p $imgStylePath -n -t int -s 3
         set ctrlBit 1
       }
 
@@ -134,14 +138,21 @@ proc setXfceBackground {} {
         puts "Setting workspace $w"
         
           set backdropCycleEnablePath /backdrop/screen$s/monitor$m/workspace$w/backdrop-cycle-enable
+          #seconds
           set backdropCycleTimerPath /backdrop/screen$s/monitor$m/workspace$w/backdrop-cycle-timer
+          #type (=seconds!)
+          set backdropCycleTimerPeriod /backdrop/screen$s/monitor$m/workspace$w/backdrop-cycle-period
           
+          #TODO: is this correct????
           if [catch "exec xfconf-query -c $channel -p $backdropCycleEnablePath"] {
             continue
             
           } else {
-            exec xfconf-query -c $channel -p $backdropCycleEnablePath --set true
-            exec xfconf-query -c $channel -p $backdropCycleTimerPath --set [expr $slideshow/60]
+            exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s true
+            #TODO:check int/uint ...
+            exec xfconf-query -c $channel -p $backdropCycleTimerPath -n -t uint -s $slideshow
+            #TODO:check which one is for seconds!
+            exec xfconf-query -c $channel -p $backdropCycleTimerPeriod -n -t int -s ?
           }
         } ;#END for3
       } ;#END if slideshow
