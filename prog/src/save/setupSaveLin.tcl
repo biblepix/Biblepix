@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10jul18
+# Updated: 14jul18
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -88,8 +88,9 @@ proc setXfceBackground {} {
   
   puts "Configuring XFCE background image..."
 
-  
+proc meyutar {} {
   #TODO: Check if this is really needed !!!!!!!!!!!!!!
+  #was dropped back in 2015 !!!!!!!!!!!!!¨
   #Create/Change backdrop.list if $slideshow
   if {$slideshow} {
     set backdropdir ~/.config/xfce4/desktop
@@ -99,7 +100,8 @@ proc setXfceBackground {} {
     puts $chan "$TwdBMP\n$TwdTIF"
     close $chan
   }
-  
+}
+
  #Set monitoring - no Luck, holds up everything!
 #exec xfconf-query -c xfce4-desktop -m
   
@@ -108,15 +110,23 @@ proc setXfceBackground {} {
 #/backdrop/screen0/monitor0/workspace0/backdrop-cycle-enable NEEDED true
 #/backdrop/screen0/monitor0/workspace0/backdrop-cycle-timer NEEDED int
 
-  #Scan through 5 screeens & monitors
+#Check monitor name
+set desktopXmlTree [xfconf-query -c xfce4-desktop -l]
+if [regexp {monitor[0-9]} $desktopXmlTree] {
+  set monitorName "monitor"
+} else {
+  regexp -line {(backdrop/screen0/)(.*)(/.*$)} $t var1 monitorName var3
+}
+
+  #Scan through 4 screeens & monitors
   for {set s 0} {$s<5} {incr s} {
     for {set m 0} {$m<5} {incr m} {
     
       # 'set' = set if existent
       # 'create' = create if non-existent
 
-      set imgpath /backdrop/screen$s/monitor$m/image-path
-      set imgStylePath /backdrop/screen$s/monitor$m/image-style
+      set imgpath /backdrop/screen$s/$monitorName$m/image-path
+      set imgStylePath /backdrop/screen$s/$monitorName$m/image-style
       if [catch "exec xfconf-query -c $channel -p $imgpath"] {
       
         continue
@@ -125,7 +135,7 @@ proc setXfceBackground {} {
       
         puts "Setting $imgpath"
       
-        #must set single img path even if slideshow!  
+        #must set single img path even if slideshow!
         exec xfconf-query -c $channel -p $imgpath -n -t string -s $TwdBMP
         exec xfconf-query -c $channel -p $imgStylePath -n -t int -s 3
         set ctrlBit 1
@@ -133,27 +143,27 @@ proc setXfceBackground {} {
 
       if {$slideshow} {
         
-        #run through 5 workspaces (w)
-        for {set w 0} {$w<5} {incr w} {
+        #run through 4 workspaces (w)
+        for {set w 0} {$w<4} {incr w} {
         puts "Setting workspace $w"
         
-          set backdropCycleEnablePath /backdrop/screen$s/monitor$m/workspace$w/backdrop-cycle-enable
+          set backdropCycleEnablePath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-enable
           #seconds
-          set backdropCycleTimerPath /backdrop/screen$s/monitor$m/workspace$w/backdrop-cycle-timer
+          set backdropCycleTimerPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-timer
           #type (=seconds!)
-          set backdropCycleTimerPeriod /backdrop/screen$s/monitor$m/workspace$w/backdrop-cycle-period
+          set backdropCycleTimerPeriod /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
           
-          #TODO: is this correct????
-          if [catch "exec xfconf-query -c $channel -p $backdropCycleEnablePath"] {
-            continue
+          #TODO: is this correct???? - NO! no querying at all !
+#          if [catch "exec xfconf-query -c $channel -p $backdropCycleEnablePath"] {
+#            continue
             
-          } else {
+#          } 
             exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s true
-            #TODO:check int/uint ...
+            #use uint for secs
             exec xfconf-query -c $channel -p $backdropCycleTimerPath -n -t uint -s $slideshow
-            #TODO:check which one is for seconds!
-            exec xfconf-query -c $channel -p $backdropCycleTimerPeriod -n -t int -s ?
-          }
+            #seconds=0
+            exec xfconf-query -c $channel -p $backdropCycleTimerPeriod -n -t int -s 0
+          
         } ;#END for3
       } ;#END if slideshow
     } ;#END for2
