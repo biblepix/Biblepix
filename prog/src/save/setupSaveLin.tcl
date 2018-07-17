@@ -111,7 +111,7 @@ proc meyutar {} {
 #/backdrop/screen0/monitor0/workspace0/backdrop-cycle-timer NEEDED int
 
 #Check monitor name
-set desktopXmlTree [xfconf-query -c xfce4-desktop -l]
+set desktopXmlTree [exec xfconf-query -c xfce4-desktop -l]
 if [regexp {monitor[0-9]} $desktopXmlTree] {
   set monitorName "monitor"
 } else {

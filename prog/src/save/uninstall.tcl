@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/uninstall.tcl
 # sourced by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jul18
+# Updated: 17jul18
 
 set msg1 "Do you really want to remove BiblePix from your computer?"
 set msg1DE "Wollen Sie wirklich BibelPix von Ihrem Computer entfernen?"
@@ -44,7 +44,7 @@ if {$antwort=="yes"} {
       #Remove any entry in Sway config
       if [file exists $swayConfFile] {
         source $SetupSaveLinHelpers
-        catch {setSwayConfig delete}
+        catch {setupSwayBackground delete}
       }
 
     } elseif {$platform=="windows"} {   

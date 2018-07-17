@@ -162,7 +162,7 @@ proc setShebangLine {currentEnvPath} {
 # A U T O S T A R T   S E T T E R S
 ####################################
 
-# setLinAutostart
+# setupLinAutostart
 ## makes Autostart entries for Linux Desktops: GNOME, XFCE4, KDE, Wayland/Sway
 ## args == delete
 ## called by SetupSaveLin
@@ -200,21 +200,23 @@ Exec=$Biblepix
 
   #Set up Sway if conf file found
   if [file exists $SwayConfFile] {
-    catch setupSwayConfig Err
+    catch setupSwayBackground SwayErr
   }
   
-  if [info exists Err] {
-    return 1 
+  if [info exists SwayErr] {
+    puts "Having problem setting up Sway config..."
+    return 1
+    
   } {
     return 0
   }
 } ;#END setLinAutostart
 
-# setSwayConfig
-## makes entries for autostart and BG setting in swayConfig
+# setupSwayBackground
+## makes entries for BP autostart and initial background pic
 ## args==delete entry
-## called by setLinAutostart - TODO: CHANGE NAMEè
-proc setupSwayConfig args {
+## called by setupLinAutostart
+proc setupSwayBackground args {
   global LinConfDir SwayConfFile Biblepix env
 
   #Read out text
