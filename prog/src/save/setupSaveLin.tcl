@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14jul18
+# Updated: 17jul18
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -17,8 +17,8 @@ puts "linExec $Error"
 ##################################################
 # 1 Set up Linux A u t o s t a r t for all Desktops
 ##################################################
-catch setLinAutostart Error
-if {$Error} {
+if [catch setupLinAutostart Err] {
+puts $Err
   tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linSetAutostartProb
 }
 
@@ -44,9 +44,9 @@ if {$runningDesktop == 0} {
 }
 
 #Install Menu entries for all desktops - no error handling
-catch setLinMenu Error
+catch setupLinMenu Error
 puts "LinMenu $Error"
-catch setKdeActionMenu Error
+catch setupKdeActionMenu Error
 puts "KdeAction $Error"
 
 
@@ -75,7 +75,7 @@ if {!$enablepic} {
 ##########################################
 
 #NEW ATTEMPT WITH native tools!!!!
-proc setXfceBackground {} {
+proc setupXfceBackground {} {
   global slideshow TwdBMP TwdTIF
   
   #Exit if xfconf-query not found
@@ -116,6 +116,10 @@ if [regexp {monitor[0-9]} $desktopXmlTree] {
   set monitorName "monitor"
 } else {
   regexp -line {(backdrop/screen0/)(.*)(/.*$)} $t var1 monitorName var3
+  set imgpath /backdrop/screen$s/$monitorName$m/image-path
+      set imgStylePath /backdrop/screen$s/$monitorName$m/image-style
+      exec xfconf-query -c $channel -p $imgpath -n -t string -s $TwdBMP
+        exec xfconf-query -c $channel -p $imgStylePath -n -t int -s 3
 }
 
   #Scan through 4 screeens & monitors
@@ -143,38 +147,33 @@ if [regexp {monitor[0-9]} $desktopXmlTree] {
 
       if {$slideshow} {
         
-        #run through 4 workspaces (w)
+        #run through 4 workspaces (w) 
+        #NOTE: any number of ws's can be added, but standard is 4.
         for {set w 0} {$w<4} {incr w} {
         puts "Setting workspace $w"
         
+        #set cycle-timer in secs, set cycle-period to secs (=0), set type to 'uint'
           set backdropCycleEnablePath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-enable
-          #seconds
           set backdropCycleTimerPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-timer
-          #type (=seconds!)
           set backdropCycleTimerPeriod /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
-          
-          #TODO: is this correct???? - NO! no querying at all !
-#          if [catch "exec xfconf-query -c $channel -p $backdropCycleEnablePath"] {
-#            continue
-            
-#          } 
-            exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s true
-            #use uint for secs
-            exec xfconf-query -c $channel -p $backdropCycleTimerPath -n -t uint -s $slideshow
-            #seconds=0
-            exec xfconf-query -c $channel -p $backdropCycleTimerPeriod -n -t int -s 0
+          exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s true
+          exec xfconf-query -c $channel -p $backdropCycleTimerPath -n -t uint -s $slideshow
+          exec xfconf-query -c $channel -p $backdropCycleTimerPeriod -n -t int -s 0
           
         } ;#END for3
       } ;#END if slideshow
     } ;#END for2
   } ;#END for1
     
-#reload XFCE4 desktop if running
-#    if {! [catch "exec pidof xfdesktop"] }  {
-#            wm withdraw .
-#            exec xfdesktop --reload
-#    }
-  
+
+#reload XFCE4 desktop if running - TODO hammer des net scho woanders?
+proc reloadXfceDesktop {} {
+  if {! [catch "exec pidof xfdesktop"] } {
+    wm withdraw .
+    exec xfdesktop --reload
+  }
+}
+
   if [info exists ctrlBit] {
       return 0
   } {
@@ -187,9 +186,9 @@ if [regexp {monitor[0-9]} $desktopXmlTree] {
 
 tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangingDesktop
 
-set GnomeErr [setGnomeBackground]
-set KdeErr [setKdeBackground]
-set XfceErr [setXfceBackground]
+set GnomeErr [setupGnomeBackground]
+set KdeErr [setupKdeBackground]
+set XfceErr [setupXfceBackground]
 
 #Create OK message for each successful desktop configuration
 if {$GnomeErr==0} {

@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4jul18
+# Updated: 17jul18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -166,9 +166,9 @@ proc setShebangLine {currentEnvPath} {
 ## makes Autostart entries for Linux Desktops: GNOME, XFCE4, KDE, Wayland/Sway
 ## args == delete
 ## called by SetupSaveLin
-proc setLinAutostart args {
+proc setupLinAutostart args {
   global Biblepix Setup LinIcon bp LinAutostartFile KdeAutostartFile SwayConfFile
-  set Err 0
+  #set Err 0
   
   #If args exists, delete any autostart files and exit
   if  {$args != ""} {
@@ -200,10 +200,10 @@ Exec=$Biblepix
 
   #Set up Sway if conf file found
   if [file exists $SwayConfFile] {
-    catch setSwayConfig Err
+    catch setupSwayConfig Err
   }
   
-  if {$Err} {
+  if [info exists Err] {
     return 1 
   } {
     return 0
@@ -213,8 +213,8 @@ Exec=$Biblepix
 # setSwayConfig
 ## makes entries for autostart and BG setting in swayConfig
 ## args==delete entry
-## called by setLinAutostart
-proc setSwayConfig args {
+## called by setLinAutostart - TODO: CHANGE NAMEè
+proc setupSwayConfig args {
   global LinConfDir SwayConfFile Biblepix env
 
   #Read out text
@@ -284,7 +284,7 @@ proc setSwayConfig args {
 ## ~/.local/share/applications/kservices5/ServiceMenus
 ## ~/.local/share/kservices5/ServiceMenus
 ########################################################
-proc setLinMenu {} {
+proc setupLinMenu {} {
   global LinIcon srcdir Setup wishpath tclpath bp LinDesktopFilesDir
   set filename "biblepixSetup.desktop"
 
@@ -328,7 +328,7 @@ Comment=Runs & configures BiblePix"
 #Exec=kdialog --msgbox "$(wc -l %F)"
 ############################################################
 
-proc setKdeActionMenu {} {
+proc setupKdeActionMenu {} {
   global bp LinIcon Setup Kde5DesktopActionFile
   set desktopFilename "biblepixSetupAction.desktop"
   set desktopText "\[Desktop Entry\]
@@ -360,7 +360,7 @@ Exec=$Setup
 ## Configures KDE4 or KDE5 Plasma for single pic or slideshow
 # TODO: > Anleitung in Manpage für andere KDE-Versionen/andere Desktops (Rechtsklick > Desktop-Einstellungen >Einzelbild/Diaschau)
 
-proc setKdeBackground {} {
+proc setupKdeBackground {} {
   global KdeVersion KdeConfFile TwdPNG slideshow imgDir
 
   #check kread/kwrite executables
@@ -398,7 +398,7 @@ proc setKdeBackground {} {
 
 # setKde4Bg
 # called by setKdeBackground if KDE4 rcfile found
-proc setKde4Bg {kread kwrite} {
+proc setupKde4Bg {kread kwrite} {
   global slideshow
   
   if {$slideshow} {
@@ -435,7 +435,7 @@ proc setKde4Bg {kread kwrite} {
 ## expects rcfile [file join $env(HOME) .config plasma-org.kde.plasma.desktop-appletsrc]
 ## expects correct version of kreadconfig(?5) kwriteconfig(?5)
 ## must be set to slideshow even if single picture, otherwise it is never renewed at boot
-proc setKde5Bg {rcfile kread kwrite} {
+proc setupKde5Bg {rcfile kread kwrite} {
   global slideshow
   
   if {!$slideshow} {set slideshow 120}
@@ -473,7 +473,7 @@ proc setKde5Bg {rcfile kread kwrite} {
   #  <property name="screen0" type="empty">
   #    <property name="monitor0" type="empty">
   #      <property name="image-path"..."/>
-proc setXfceBackground {} {
+proc setupXfceBackground {} {
   global slideshow Xfce4ConfigFile LinConfDir
   package require tdom
  
@@ -578,7 +578,7 @@ puts finishedChangingXFCEConfFile
 # setGnomeBackground - TODO: das funktioniert nicht mit return!
 ##configures Gnome single pic
 ##setting up slideshow not needed because Gnome detects picture change automatically
-proc setGnomeBackground {} {
+proc setupGnomeBackground {} {
   #Gnome2
   if {[auto_execok gconftool-2] != ""} {
     catch {exec gconftool-2 --type=string --set /desktop/gnome/background/picture_filename $::TwdPNG} errCode
@@ -875,11 +875,3 @@ proc setupLinTerminal {args} {
   }
 
 } ;#END setupLinTerminal
-
-
-###################################################################################
-#KEEP THIS AS RELICT FOR GOOD regsub grouping policy!!!
-#append ss2 \\1value= \"true\" /> 
-#WICHTIG: die 1 vor dem Wert bezeichnet die zu ersetzende Gruppe
-#      regsub -all -line {(backdrop-cycle-enable.*)(value=.*$)} $t $ss2 confText
-###################################################################################
