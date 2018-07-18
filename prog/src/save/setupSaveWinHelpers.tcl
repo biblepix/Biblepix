@@ -60,7 +60,7 @@ proc setWinContextMenu args {
 \[HKEY_CLASSES_ROOT\\DesktopBackground\\Shell\\Biblepix\\Command\]
 \@=\"$setupCommand\"
 
-\[HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\]
+\[HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\]
 \"Wallpaper\"=-
 "
   }
