@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17jul18
+# Updated: 18jul18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -483,7 +483,7 @@ proc setupKde5Bg {rcfile kread kwrite} {
 #NEW ATTEMPT WITH native tools!!!!
 proc setupXfceBackground {} {
   global slideshow TwdBMP TwdTIF
-  
+
   #Exit if xfconf-query not found
   if {[auto_execok xfconf-query] == ""} {
     return 1
@@ -510,33 +510,35 @@ proc meyutar {} {
 
  #Set monitoring - no Luck, holds up everything!
 #exec xfconf-query -c xfce4-desktop -m
-  
+#DIESE PFADE SIND IMMER DA:
+##  A) /backdrop/screen?/monitor?/workspace[0-3]/last-image
+##  B) /backdrop/screen?/monitor?/image-path
+    
 #xfconf-query -c xfce4-desktop -l >
-#/backdrop/screen0/monitor0/image-path NEEDED [path]
+#/backdrop/screen0/monitor0/image-path NEEDED? [path]
 #/backdrop/screen0/monitor0/workspace0/backdrop-cycle-enable NEEDED true
 #/backdrop/screen0/monitor0/workspace0/backdrop-cycle-timer NEEDED int
 
-#Check monitor name
-set desktopXmlTree [exec xfconf-query -c xfce4-desktop -l]
-if [regexp {monitor[0-9]} $desktopXmlTree] {
-  set monitorName "monitor"
-} else {
-  regexp -line {(backdrop/screen0/)(.*)(/.*$)} $t var1 monitorName var3
-  set imgpath /backdrop/screen$s/$monitorName$m/image-path
-      set imgStylePath /backdrop/screen$s/$monitorName$m/image-style
-      exec xfconf-query -c $channel -p $imgpath -n -t string -s $TwdBMP
-        exec xfconf-query -c $channel -p $imgStylePath -n -t int -s 3
-}
+# xfconf-query 'set' = set property if existent
+# xfconf-query 'create' = create property
+
+  #Check monitor name
+  set desktopXmlTree [exec xfconf-query -c xfce4-desktop -l]
+
+  if [regexp {monitor0} $desktopXmlTree] {
+    set monitorName "monitor"
+  } else {
+    regexp -line {(backdrop/screen0/)(.*)(/.*$)} $t var1 monitorName var3
+  }
 
   #Scan through 4 screeens & monitors
+  ##NOTE: Never seen more than screen0 , but 4 each is a reasonable compromise.
   for {set s 0} {$s<5} {incr s} {
     for {set m 0} {$m<5} {incr m} {
-    
-      # 'set' = set if existent
-      # 'create' = create if non-existent
 
-      set imgpath /backdrop/screen$s/$monitorName$m/image-path
+      set imgpath /backdrop/screen$s/${monitorName}${m}/image-path
       set imgStylePath /backdrop/screen$s/$monitorName$m/image-style
+
       if [catch "exec xfconf-query -c $channel -p $imgpath"] {
       
         continue
@@ -545,7 +547,7 @@ if [regexp {monitor[0-9]} $desktopXmlTree] {
       
         puts "Setting $imgpath"
       
-        #must set single img path even if slideshow!
+        #must set single img path even if slideshow? -TODO: needed??
         exec xfconf-query -c $channel -p $imgpath -n -t string -s $TwdBMP
         exec xfconf-query -c $channel -p $imgStylePath -n -t int -s 3
         set ctrlBit 1
@@ -553,19 +555,31 @@ if [regexp {monitor[0-9]} $desktopXmlTree] {
 
       if {$slideshow} {
         
-        #run through 4 workspaces (w) 
+        #Scan through 9 workspaces! (w) 
         #NOTE: any number of ws's can be added, but standard is 4.
-        for {set w 0} {$w<4} {incr w} {
-        puts "Setting workspace $w"
+        for {set w 0} {$w<10} {incr w} {
         
-        #set cycle-timer in secs, set cycle-period to secs (=0), set type to 'uint'
-          set backdropCycleEnablePath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-enable
-          set backdropCycleTimerPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-timer
-          set backdropCycleTimerPeriod /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
-          exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s true
-          exec xfconf-query -c $channel -p $backdropCycleTimerPath -n -t uint -s $slideshow
-          exec xfconf-query -c $channel -p $backdropCycleTimerPeriod -n -t int -s 0
+          set lastImagePath /backdrop/screen$s/$monitorName$m/workspace$w/last-image
           
+          #check if workspace exists, else skip
+          if [catch {exec xfconf-query -c xfce4-desktop -p $lastImagePath}] {
+
+            continue
+            
+          } else {
+
+            puts "Setting $lastImagePath"
+            
+            #set cycle-timer in secs, set cycle-period to secs (=0), set type to 'uint'
+            set backdropLastImage /backdrop/screen$s/$monitorName$m/workspace$w/last-image
+            set backdropCycleEnablePath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-enable
+            set backdropCycleTimerPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-timer
+            set backdropCycleTimerPeriod /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
+            exec xfconf-query -c $channel -p $backdropLastImage -n -t string -s $TwdBMP
+            exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s true
+            exec xfconf-query -c $channel -p $backdropCycleTimerPath -n -t uint -s $slideshow
+            exec xfconf-query -c $channel -p $backdropCycleTimerPeriod -n -t int -s 0
+          }
         } ;#END for3
       } ;#END if slideshow
     } ;#END for2
