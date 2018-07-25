@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18jul18
+# Updated: 25jul18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -494,19 +494,17 @@ proc setupXfceBackground {} {
   
   puts "Configuring XFCE background image..."
 
-proc meyutar {} {
-  #TODO: Check if this is really needed !!!!!!!!!!!!!!
-  #was dropped back in 2015 !!!!!!!!!!!!!¨
-  #Create/Change backdrop.list if $slideshow
+  #This rewrites backdrop.list for old xfce4 installations
+  #Not needed since 2015
   if {$slideshow} {
-    set backdropdir ~/.config/xfce4/desktop
-    file mkdir $backdropdir
-    set backdroplist $backdropdir/backdrop.list
-    set chan [open $backdroplist w]
+    set backdropDir ~/.config/xfce4/desktop
+    file mkdir $backdropDir
+    set backdropList $backdropDir/backdrop.list
+    set chan [open $backdropList w]
     puts $chan "$TwdBMP\n$TwdTIF"
     close $chan
   }
-}
+
 
  #Set monitoring - no Luck, holds up everything!
 #exec xfconf-query -c xfce4-desktop -m
@@ -536,9 +534,22 @@ proc meyutar {} {
   for {set s 0} {$s<5} {incr s} {
     for {set m 0} {$m<5} {incr m} {
 
+      #must set single img path even if slideshow?
+      ##old inst. needs path to backdrop.list!
+      #imgStyle seems to be: 1==centred
+      #imgShow seems to be needed for old inst. 
       set imgpath /backdrop/screen$s/${monitorName}${m}/image-path
       set imgStylePath /backdrop/screen$s/$monitorName$m/image-style
-
+      set imgShowPath /backdrop/screen$s/$monitorName$m/image-show
+      
+      #these are needed here for old inst., and also in the screen section below for the new!!
+      set backdropLastImage /backdrop/screen$s/$monitorName$m/workspace$w/last-image
+      set backdropCycleEnablePath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-enable
+      set backdropCycleTimerPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-timer
+      #this was added in new inst.  - old has only min., hence:
+      #set cycle-timer in mins for old inst. (min=1), set type to 'uint'
+      set backdropCycleTimerPeriod /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
+            
       if [catch "exec xfconf-query -c $channel -p $imgpath"] {
       
         continue
@@ -547,16 +558,23 @@ proc meyutar {} {
       
         puts "Setting $imgpath"
       
-        #must set single img path even if slideshow? -TODO: needed??
-        exec xfconf-query -c $channel -p $imgpath -n -t string -s $TwdBMP
-        exec xfconf-query -c $channel -p $imgStylePath -n -t int -s 3
+        #some of this is only needed for old inst.
+        exec xfconf-query -c $channel -p $imgpath -n -t string -s $backdropList
+        exec xfconf-query -c $channel -p $imgStylePath -n -t int -s 1
+        exec xfconf-query -c $channel -p $imgShowPath -n -t bool -s true
+        exec xfconf-query -c $channel -p $backdropLastImage -n -t string -s $TwdBMP
+        exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s true
+        exec xfconf-query -c $channel -p $backdropCycleTimerPath -n -t uint -s [expr $slideshow/60]
+        exec xfconf-query -c $channel -p $backdropCycleTimerPeriod -n -t int -s 1
+        
         set ctrlBit 1
       }
 
       if {$slideshow} {
         
         #Scan through 9 workspaces! (w) 
-        #NOTE: any number of ws's can be added, but standard is 4.
+        #NOTE1: any number of ws's can be added, but standard is 4.
+        #NOTE2: old installations don't seem to respect workspaces, so we MUST put all information in the /screen0/monitor0 main section anyhow
         for {set w 0} {$w<10} {incr w} {
         
           set lastImagePath /backdrop/screen$s/$monitorName$m/workspace$w/last-image
@@ -570,11 +588,9 @@ proc meyutar {} {
 
             puts "Setting $lastImagePath"
             
-            #set cycle-timer in secs, set cycle-period to secs (=0), set type to 'uint'
-            set backdropLastImage /backdrop/screen$s/$monitorName$m/workspace$w/last-image
-            set backdropCycleEnablePath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-enable
-            set backdropCycleTimerPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-timer
-            set backdropCycleTimerPeriod /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
+            
+            
+            
             exec xfconf-query -c $channel -p $backdropLastImage -n -t string -s $TwdBMP
             exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s true
             exec xfconf-query -c $channel -p $backdropCycleTimerPath -n -t uint -s $slideshow
