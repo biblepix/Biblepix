@@ -90,7 +90,7 @@ proc formatLinuxExecutables {} {
   
   if { ![file exists $homeBin] } {
     file mkdir $homeBin
-    file attributes $homeBin +x
+    file attributes $homeBin -permissions +x
   }
   #Create script text and save
   set chan [open $homeBinFile w]
@@ -495,7 +495,7 @@ proc setupXfceBackground {} {
   puts "Configuring XFCE background image..."
 
   #This rewrites backdrop.list for old xfce4 installations
-  #Not needed since 2015
+  #Not needed since 2015?
   if {$slideshow} {
     set backdropDir ~/.config/xfce4/desktop
     file mkdir $backdropDir
