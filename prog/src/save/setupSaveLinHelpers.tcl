@@ -480,7 +480,6 @@ proc setupKde5Bg {rcfile kread kwrite} {
 # * ganzer (neuer) Pfad
 ##########################################
 
-#NEW ATTEMPT WITH native tools!!!!
 proc setupXfceBackground {} {
   global slideshow TwdBMP TwdTIF
 
@@ -503,6 +502,11 @@ proc setupXfceBackground {} {
     set chan [open $backdropList w]
     puts $chan "$TwdBMP\n$TwdTIF"
     close $chan
+    set picPath $backdropList
+    set cycleEnableValue 1
+  } else {
+    set picPath $TwdBMP
+    set cycleEnableValue 0
   }
 
 
@@ -559,13 +563,11 @@ proc setupXfceBackground {} {
         puts "Setting $imgpath"
       
         #some of this is only needed for old inst.
-        exec xfconf-query -c $channel -p $imgpath -n -t string -s $backdropList
+        exec xfconf-query -c $channel -p $imgpath -n -t string -s $origPicPath
         exec xfconf-query -c $channel -p $imgStylePath -n -t int -s 1
         exec xfconf-query -c $channel -p $imgShowPath -n -t bool -s true
-        exec xfconf-query -c $channel -p $backdropLastImage -n -t string -s $TwdBMP
-        #Slideshow/SinglePic
-        if {$slideshow} {set value 1} {set value 0}
-        exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s $value
+        exec xfconf-query -c $channel -p $backdropLastImage -n -t string -s $TwdBMP        
+        exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s $cycleEnableValue
         exec xfconf-query -c $channel -p $backdropCycleTimerPath -n -t uint -s [expr $slideshow/60]
         exec xfconf-query -c $channel -p $backdropCycleTimerPeriod -n -t int -s 1
         
