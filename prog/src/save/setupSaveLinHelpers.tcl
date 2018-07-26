@@ -563,7 +563,9 @@ proc setupXfceBackground {} {
         exec xfconf-query -c $channel -p $imgStylePath -n -t int -s 1
         exec xfconf-query -c $channel -p $imgShowPath -n -t bool -s true
         exec xfconf-query -c $channel -p $backdropLastImage -n -t string -s $TwdBMP
-        exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s true
+        #Slideshow/SinglePic
+        if {$slideshow} {set value 1} {set value 0}
+        exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s $value
         exec xfconf-query -c $channel -p $backdropCycleTimerPath -n -t uint -s [expr $slideshow/60]
         exec xfconf-query -c $channel -p $backdropCycleTimerPeriod -n -t int -s 1
         
