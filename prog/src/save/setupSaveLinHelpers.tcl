@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25jul18
+# Updated: 26jul18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -529,7 +529,7 @@ proc setupXfceBackground {} {
     regexp -line {(backdrop/screen0/)(.*)(/.*$)} $t var1 monitorName var3
   }
 
-  #Scan through 4 screeens & monitors
+  #1. Scan through 4 screeens & monitors
   ##NOTE: Never seen more than screen0 , but 4 each is a reasonable compromise.
   for {set s 0} {$s<5} {incr s} {
     for {set m 0} {$m<5} {incr m} {
@@ -543,12 +543,12 @@ proc setupXfceBackground {} {
       set imgShowPath /backdrop/screen$s/$monitorName$m/image-show
       
       #these are needed here for old inst., and also in the screen section below for the new!!
-      set backdropLastImage /backdrop/screen$s/$monitorName$m/workspace$w/last-image
-      set backdropCycleEnablePath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-enable
-      set backdropCycleTimerPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-timer
+      set backdropLastImage /backdrop/screen$s/$monitorName$m/last-image
+      set backdropCycleEnablePath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
+      set backdropCycleTimerPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
       #this was added in new inst.  - old has only min., hence:
       #set cycle-timer in mins for old inst. (min=1), set type to 'uint'
-      set backdropCycleTimerPeriod /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
+      set backdropCycleTimerPeriod /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
             
       if [catch "exec xfconf-query -c $channel -p $imgpath"] {
       
@@ -572,9 +572,9 @@ proc setupXfceBackground {} {
 
       if {$slideshow} {
         
-        #Scan through 9 workspaces! (w) 
+      #2. Scan through 9 workspaces! (w) 
         #NOTE1: any number of ws's can be added, but standard is 4.
-        #NOTE2: old installations don't seem to respect workspaces, so we MUST put all information in the /screen0/monitor0 main section anyhow
+        #NOTE2: old ins. dosn't seem to respect workspaces, > MUST put all information in the /screen0/monitor0 main section anyhow
         for {set w 0} {$w<10} {incr w} {
         
           set lastImagePath /backdrop/screen$s/$monitorName$m/workspace$w/last-image
