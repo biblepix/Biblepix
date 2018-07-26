@@ -503,10 +503,10 @@ proc setupXfceBackground {} {
     puts $chan "$TwdBMP\n$TwdTIF"
     close $chan
     set origPicPath $backdropList
-    set cycleEnableValue 1
+    set cycleEnableValue true
   } else {
     set origPicPath $TwdBMP
-    set cycleEnableValue 0
+    set cycleEnableValue false
   }
 
 
