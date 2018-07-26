@@ -99,7 +99,7 @@ proc formatLinuxExecutables {} {
   close $chan
   
   # 4. Add ~/bin to $PATH in .bash_profile
-  set f "$env(HOME)/.bash_profile"
+  set bashProfile "$env(HOME)/.bash_profile"
   set PATH $env(PATH)
 
   if {![regexp $homeBin $PATH]} {
@@ -108,13 +108,15 @@ proc formatLinuxExecutables {} {
 if \[ -d $env(HOME)/bin \] ; then
 PATH=$env(HOME)/bin:$PATH
 fi"
-    #read out & check, append if missing
-    set chan [open $f r]
-    set t [read $chan]
-    close $chan
-    
+    #read out any existing file
+    if [file exists $bashProfile] {
+      set chan [open $bashProfile r]
+      set t [read $chan]
+      close $chan
+    }
+    #append text if missing
     if {![regexp $homeBin $t]} {
-      set chan [open $f a]
+      set chan [open $bashProfile a]
       puts $chan $homeBinText
       close $chan
     }
@@ -494,7 +496,7 @@ proc setupXfceBackground {} {
   puts "Configuring XFCE background image..."
 
   #This rewrites backdrop.list for old xfce4 installations
-  #Not needed since 2015?
+  #Not used now
   if {$slideshow} {
     set backdropDir ~/.config/xfce4/desktop
     file mkdir $backdropDir
@@ -578,7 +580,8 @@ proc setupXfceBackground {} {
         
       #2. Scan through 9 workspaces! (w) 
         #NOTE1: any number of ws's can be added, but standard is 4.
-        #NOTE2: old ins. dosn't seem to respect workspaces, > MUST put all information in the /screen0/monitor0 main section anyhow
+        #NOTE2: old inst. doesn't seem to respect workspaces, 
+        # >> put all information in the /screen0/monitor0 main section for now
         for {set w 0} {$w<10} {incr w} {
         
           set lastImagePath /backdrop/screen$s/$monitorName$m/workspace$w/last-image
