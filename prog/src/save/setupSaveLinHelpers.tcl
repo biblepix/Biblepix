@@ -552,7 +552,7 @@ proc setupXfceBackground {} {
       set imgShowPath /backdrop/screen$s/$monitorName$m/image-show
       
       #these are needed here for old inst., and also in the screen section below for the new!!
-      set monitorImagePath /backdrop/screen$s/$monitorName$m/last-image
+      set monitorLastImagePath /backdrop/screen$s/$monitorName$m/last-image
       set monitorCycleEnablePath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
       set monitorCycleTimerPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
       #this was added in new inst.  - old has only min., hence:
