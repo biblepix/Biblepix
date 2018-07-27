@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26jul18
+# Updated: 27jul18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -113,7 +113,10 @@ fi"
       set chan [open $bashProfile r]
       set t [read $chan]
       close $chan
+    } {
+      set t ""
     }
+    
     #append text if missing
     if {![regexp $homeBin $t]} {
       set chan [open $bashProfile a]
@@ -549,12 +552,12 @@ proc setupXfceBackground {} {
       set imgShowPath /backdrop/screen$s/$monitorName$m/image-show
       
       #these are needed here for old inst., and also in the screen section below for the new!!
-      set backdropLastImage /backdrop/screen$s/$monitorName$m/last-image
-      set backdropCycleEnablePath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
-      set backdropCycleTimerPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
+      set monitorImagePath /backdrop/screen$s/$monitorName$m/last-image
+      set monitorCycleEnablePath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
+      set monitorCycleTimerPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
       #this was added in new inst.  - old has only min., hence:
       #set cycle-timer in mins for old inst. (min=1), set type to 'uint'
-      set backdropCycleTimerPeriod /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
+      set monitorCycleTimerPeriodPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
             
       if [catch "exec xfconf-query -c $channel -p $imgpath"] {
       
@@ -568,10 +571,10 @@ proc setupXfceBackground {} {
         exec xfconf-query -c $channel -p $imgpath -n -t string -s $origPicPath
         exec xfconf-query -c $channel -p $imgStylePath -n -t int -s 1
         exec xfconf-query -c $channel -p $imgShowPath -n -t bool -s true
-        exec xfconf-query -c $channel -p $backdropLastImage -n -t string -s $TwdBMP        
-        exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s $cycleEnableValue
-        exec xfconf-query -c $channel -p $backdropCycleTimerPath -n -t uint -s [expr $slideshow/60]
-        exec xfconf-query -c $channel -p $backdropCycleTimerPeriod -n -t int -s 1
+        exec xfconf-query -c $channel -p $monitorLastImagePath -n -t string -s $TwdBMP        
+        exec xfconf-query -c $channel -p $monitorCycleEnablePath -n -t bool -s $cycleEnableValue
+        exec xfconf-query -c $channel -p $monitorCycleTimerPath -n -t uint -s [expr $slideshow/60]
+        exec xfconf-query -c $channel -p $monitorCycleTimerPeriodPath -n -t int -s 1
         
         set ctrlBit 1
       }
@@ -595,13 +598,14 @@ proc setupXfceBackground {} {
 
             puts "Setting $lastImagePath"
             
-            
-            
-            
-            exec xfconf-query -c $channel -p $backdropLastImage -n -t string -s $TwdBMP
-            exec xfconf-query -c $channel -p $backdropCycleEnablePath -n -t bool -s true
-            exec xfconf-query -c $channel -p $backdropCycleTimerPath -n -t uint -s $slideshow
-            exec xfconf-query -c $channel -p $backdropCycleTimerPeriod -n -t int -s 0
+            set wsCycleEnablePath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-enable
+            set wsCycleTimerPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-timer
+            set wsCycleTimerPeriodPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
+             
+            exec xfconf-query -c $channel -p $lastImagePath -n -t string -s $TwdBMP
+            exec xfconf-query -c $channel -p $wsCycleEnablePath -n -t bool -s true
+            exec xfconf-query -c $channel -p $wsCycleTimerPath -n -t uint -s $slideshow
+            exec xfconf-query -c $channel -p $wsCycleTimerPeriodPath -n -t int -s 0
           }
         } ;#END for3
       } ;#END if slideshow
