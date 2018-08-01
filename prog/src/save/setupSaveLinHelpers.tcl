@@ -562,7 +562,7 @@ proc setupXfceBackground {} {
       
       } else {
       
-        puts "Setting $imgpath"
+        puts "Setting $ImgMonPath"
         
       #A: MONITOR SECTION
       ##most of this is only needed for old inst.
@@ -588,15 +588,15 @@ proc setupXfceBackground {} {
       for {set w 0} {$w<10} {incr w} {
       
         #check if workspace exists, else skip
-        if [catch {exec xfconf-query -c xfce4-desktop -p $LastImageWsPath}] {
+        set LastImgWsPath /backdrop/screen$s/$monitorName$m/workspace$w/last-image
+        if [catch {exec xfconf-query -c xfce4-desktop -p $LastImgWsPath}] {
 
           continue
           
         } else {
 
-          puts "Setting $lastImagePath"
+          puts "Setting $LastImgWsPath"
           
-          set LastImgWsPath /backdrop/screen$s/$monitorName$m/workspace$w/last-image
           set CycleEnableWsPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-enable
           set CycleTimerWsPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-timer
           set CycleTimerPeriodWsPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
