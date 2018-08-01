@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27jul18
+# Updated: 1aug18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -68,7 +68,7 @@ set Xfce4ConfigFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.x
 ## 1 Check first line of Linux executables for correct 'env' path
 #### Standard env path as in Ubuntu/Debian/Gentoois /usr/bin/env
 ## 2 Make files executable
-## 3 Copy biblepix-setup to $HOME/bin
+## 3 Make biblepix-setup.sh in $HOME/bin
 proc formatLinuxExecutables {} {
   global Setup Biblepix env
   
@@ -86,7 +86,7 @@ proc formatLinuxExecutables {} {
 
   # 3. Put Setup bash script in ~/bin (precaution in case it can't be found in menus)
   set homeBin $env(HOME)/bin
-  set homeBinFile $homeBin/setup-biblepix
+  set homeBinFile $homeBin/setup-biblepix.sh
   
   if { ![file exists $homeBin] } {
     file mkdir $homeBin
@@ -200,7 +200,7 @@ Exec=$Biblepix
   puts $chan $desktopText
   close $chan
 
-  #Delete any BP crontab entry - TODO ?????????????'
+  #Delete any BP crontab entry
   catch {setupLinCrontab delete}
 
   #Set up Sway if conf file found
@@ -252,14 +252,11 @@ proc setupSwayBackground args {
   }
   #Append entry
   append autostartLine \n # {BiblePix: this runs BiblePix & sets initial background picture} \n exec { } $Biblepix
-#  set sleepLine "exec sleep 3"
   set outputList [getSwayOutputName]
-  
-#TODO: CHECK sleepline !!!!!!!!!!!!!
+
   #append lines at end of file
   set chan [open $SwayConfFile a]
   puts $chan $autostartLine
-  #puts $chan $sleepLine
   foreach outputName $outputList {
     puts $chan "exec swaymsg output $outputName bg $::TwdBMP center"
   }
@@ -507,10 +504,10 @@ proc setupXfceBackground {} {
     set chan [open $backdropList w]
     puts $chan "$TwdBMP\n$TwdTIF"
     close $chan
-    set origPicPath $backdropList
+    set monPicPath $backdropList
     set cycleEnableValue true
   } else {
-    set origPicPath $TwdBMP
+    set monPicPath $TwdBMP
     set cycleEnableValue false
   }
 
@@ -547,17 +544,17 @@ proc setupXfceBackground {} {
       ##old inst. needs path to backdrop.list!
       #imgStyle seems to be: 1==centred
       #imgShow seems to be needed for old inst. 
-      set imgpath /backdrop/screen$s/${monitorName}${m}/image-path
-      set imgStylePath /backdrop/screen$s/$monitorName$m/image-style
-      set imgShowPath /backdrop/screen$s/$monitorName$m/image-show
+      set ImgMonPath /backdrop/screen$s/${monitorName}${m}/image-path
+      set ImgStyleMonPath /backdrop/screen$s/$monitorName$m/image-style
+      set ImgShowMonPath /backdrop/screen$s/$monitorName$m/image-show
       
       #these are needed here for old inst., and also in the screen section below for the new!!
-      set monitorLastImagePath /backdrop/screen$s/$monitorName$m/last-image
-      set monitorCycleEnablePath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
-      set monitorCycleTimerPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
+      set LastImgMonPath /backdrop/screen$s/$monitorName$m/last-image
+      set CycleEnableMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
+      set CycleTimerMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
       #this was added in new inst.  - old has only min., hence:
       #set cycle-timer in mins for old inst. (min=1), set type to 'uint'
-      set monitorCycleTimerPeriodPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
+      set CycleTimerPeriodMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
             
       if [catch "exec xfconf-query -c $channel -p $imgpath"] {
       
@@ -566,61 +563,57 @@ proc setupXfceBackground {} {
       } else {
       
         puts "Setting $imgpath"
-      
-        #some of this is only needed for old inst.
-        exec xfconf-query -c $channel -p $imgpath -n -t string -s $origPicPath
-        exec xfconf-query -c $channel -p $imgStylePath -n -t int -s 1
-        exec xfconf-query -c $channel -p $imgShowPath -n -t bool -s true
-        exec xfconf-query -c $channel -p $monitorLastImagePath -n -t string -s $TwdBMP        
-        exec xfconf-query -c $channel -p $monitorCycleEnablePath -n -t bool -s $cycleEnableValue
-        exec xfconf-query -c $channel -p $monitorCycleTimerPath -n -t uint -s [expr $slideshow/60]
-        exec xfconf-query -c $channel -p $monitorCycleTimerPeriodPath -n -t int -s 1
         
+      #A: MONITOR SECTION
+      ##most of this is only needed for old inst.
+        exec xfconf-query -c $channel -p $ImgMonPath -n -t string -s $monPicPath
+        exec xfconf-query -c $channel -p $ImgStyleMonPath -n -t int -s 1
+        exec xfconf-query -c $channel -p $ImgShowMonPath -n -t bool -s true
+        exec xfconf-query -c $channel -p $LastImgMonPath -n -t string -s $TwdBMP        
+        exec xfconf-query -c $channel -p $CycleEnableMonPath -n -t bool -s $cycleEnableValue
+        exec xfconf-query -c $channel -p $CycleTimerMonPath -n -t uint -s [expr $slideshow/60]
+        exec xfconf-query -c $channel -p $CycleTimerPeriodMonPath -n -t int -s 1
+        
+        #this makes no sense.... TODO!
         set ctrlBit 1
       }
 
-      if {$slideshow} {
-        
-      #2. Scan through 9 workspaces! (w) 
-        #NOTE1: any number of ws's can be added, but standard is 4.
-        #NOTE2: old inst. doesn't seem to respect workspaces, 
-        # >> put all information in the /screen0/monitor0 main section for now
-        for {set w 0} {$w<10} {incr w} {
-        
-          set lastImagePath /backdrop/screen$s/$monitorName$m/workspace$w/last-image
+
+      #B: WORKSPACE SECTION
+      
+      ## Scan through 9 workspaces! (w) 
+      #NOTE1: any number of ws's can be added, but standard is 4.
+      #NOTE2: old inst. doesn't seem to respect workspaces, 
+      # >> put all information in the /screen0/monitor0 main section for now
+      for {set w 0} {$w<10} {incr w} {
+      
+        #check if workspace exists, else skip
+        if [catch {exec xfconf-query -c xfce4-desktop -p $LastImageWsPath}] {
+
+          continue
           
-          #check if workspace exists, else skip
-          if [catch {exec xfconf-query -c xfce4-desktop -p $lastImagePath}] {
+        } else {
 
-            continue
-            
-          } else {
-
-            puts "Setting $lastImagePath"
-            
-            set wsCycleEnablePath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-enable
-            set wsCycleTimerPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-timer
-            set wsCycleTimerPeriodPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
-             
-            exec xfconf-query -c $channel -p $lastImagePath -n -t string -s $TwdBMP
-            exec xfconf-query -c $channel -p $wsCycleEnablePath -n -t bool -s true
-            exec xfconf-query -c $channel -p $wsCycleTimerPath -n -t uint -s $slideshow
-            exec xfconf-query -c $channel -p $wsCycleTimerPeriodPath -n -t int -s 0
-          }
-        } ;#END for3
-      } ;#END if slideshow
+          puts "Setting $lastImagePath"
+          
+          set LastImgWsPath /backdrop/screen$s/$monitorName$m/workspace$w/last-image
+          set CycleEnableWsPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-enable
+          set CycleTimerWsPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-timer
+          set CycleTimerPeriodWsPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
+          set ImgStyleWsPath /backdrop/screen$s/$monitorName$m/workspace$w/image-style
+          
+          exec xfconf-query -c $channel -p $LastImgWsPath -n -t string -s $TwdBMP
+          exec xfconf-query -c $channel -p $CycleEnableWsPath -n -t bool -s $cycleEnableValue
+          exec xfconf-query -c $channel -p $CycleTimerWsPath -n -t uint -s $slideshow
+          exec xfconf-query -c $channel -p $CycleTimerPeriodWsPath -n -t int -s 0
+          exec xfconf-query -c $channel -p $ImgStyleWsPath -n -t int -s 1
+        }
+      } ;#END for3
     } ;#END for2
   } ;#END for1
     
 
-#reload XFCE4 desktop if running - TODO hammer des net scho woanders?
-proc reloadXfceDesktop {} {
-  if {! [catch "exec pidof xfdesktop"] } {
-    wm withdraw .
-    exec xfdesktop --reload
-  }
-}
-
+#TODO: this dusn work!
   if [info exists ctrlBit] {
       return 0
   } {
@@ -628,107 +621,6 @@ proc reloadXfceDesktop {} {
     return 1
   }
   
-} ;#END setXfceBackground
- 
-proc setupXfceBackgroundOLD {} {
-  global slideshow Xfce4ConfigFile LinConfDir
-  package require tdom
- 
-  #Check for config files & exit 1 if missing
-  set backdropList $LinConfDir/xfce4/desktop/backdrop-list
-  if {![file exists $Xfce4ConfigFile] ||
-      ![file exists $backdropList] } {
-puts fileBulamadik
-return 1
-  }  
-  
-  #Single Picture
-  if {! $slideshow} {
-  #needed properties:
-  ##image-path value=TwdPNG oder TwdBMP
-  ##image-show value=true
-  ##backdrop-cycle-enable value=false
-  
-    set imgPath $TwdBMP
-    set imgShow "true"
-    set backdropCycleEnable "false"
-    set backdropCycleTimer "0"
-  
-  #Slideshow
-  } else {
-    
-  #needed properties:
-  ##image-path value=backdropList
-  ##backdrop-cycle-enable value=true
-  ##backdrop-cycle-timer value=[expr $slideshow/60]
-
-    #rewrite backdrop list
-    puts changingBackdropList
-   set chan [open $backdropList w]
-    puts $chan "$TwdPNG\n$TwdBMP"
-    close $chan
-    
-    set imgPath $backdropList
-    set imgShow "empty"
-    set backdropCycleEnable "true"
-    set backdropCycleTimer "[expr $slideshow/60]"
-  }
-
-  #2 parse configFile
-  set confChan [open $Xfce4ConfigFile r]
-  chan configure $confChan -encoding utf-8
-  set data [read $confChan]
-  set doc [dom parse $data]
-  set root [$doc documentElement]
-puts parsingXfceConfigFile
-
-  set mainNode [$root selectNodes {//property[@name="backdrop"]} ]
-  
-  #Search screens 1-10 and monitors 1-10 for relevant properties
-  for {set screenNo 0} {$screenNo==10} {incr screenNo} {
-  
-    #skip if screen not found (screen0 should always be there)
-    set screenNode [$mainNode selectNodes "/property\[@name=\"screen${$screenNo}\"\]" ]
-    if {$screenNode == ""} {
-      continue
-    }
-    
-    for {set monitorNo 0} {$monitorNo==10} {incr monitorNo} {
-
-      #skip if monitor not found (monitor0 should always be there)
-      set monitorNode [$screenNode selectNodes "/property\[@name=\"monitor${monitorNo}\"\]" ]
-      if {$monitorNode == ""} {
-        continue
-      }
-      
-      set imgPathNode [$monitorNode selectNodes {/property[@name="image-path"]} ]
-      $imgPathNode setAttribute value $imgPath
-      
-      set imgShowNode [$monitorNode selectNodes {/property[@name="image-show"]} ]
-      $imgShowNode setAttribute value $imgShow
-
-      set backdropCycleEnableNode [$monitorNode selectNodes {/property[@name="backdrop-cycle-enable"]} ]
-      if {$slideshow && $backdropCycleEnableNode == ""} {
-          #TODO create node
-        }
-      #This property is only needed for slideshow
-      catch {$backdropCycleEnableNode setAttribute value $backdropCycleEnable}
-
-      set backdropCycleTimerNode [$monitorNode selectNodes {/property[@name="backdrop-cycle-timer"]} ]
-      if {$slideshow && $backdropCycleTimerNode == ""} {
-          #TODO create node
-      }
-      #This property is only needed for slideshow
-      catch {$backdropCycleTimerNode setAttribute value $backdropCycleTimer}
-     
-    } #END for1
-  } ;#END for2
-
-  puts $confChan $confText
-  close $confChan
-
-puts finishedChangingXFCEConfFile
-  return 0
 } ;#END setXfceBackground
 
 
