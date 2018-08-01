@@ -556,7 +556,7 @@ proc setupXfceBackground {} {
       #set cycle-timer in mins for old inst. (min=1), set type to 'uint'
       set CycleTimerPeriodMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
             
-      if [catch "exec xfconf-query -c $channel -p $imgpath"] {
+      if [catch {exec xfconf-query -c $channel -p $ImgMonPath}] {
       
         continue
       
