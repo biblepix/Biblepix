@@ -401,13 +401,13 @@ puts $kread
   #set KDE4 if detected
   set errCode4 ""
   if {$KdeVersion==4} {
-    catch {setKde4Bg $kread $kwrite} errCode4
+    catch {setupKde4Bg $kread $kwrite} errCode4
 puts $errCode4
 
   }
 
   #set KDE5 in any case
-  catch {setKde5Bg $KdeConfFile $kread $kwrite} errCode5
+  catch {setupKde5Bg $KdeConfFile $kread $kwrite} errCode5
 puts $errCode5
 
   if {$errCode4=="" && $errCode5==""} {
