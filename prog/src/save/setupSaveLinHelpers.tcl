@@ -453,12 +453,12 @@ proc setupKde4Bg {kread kwrite} {
 } ;#END setKde4Bg
 
 # setupKde5Bg
-## called by setKdeBackground if KDE5 found
+## called by setKdeBackground if KdeVersion==5
 ## expects rcfile [file join $env(HOME) .config plasma-org.kde.plasma.desktop-appletsrc]
 ## expects correct version of kreadconfig(?5) kwriteconfig(?5)
 ## must be set to slideshow even if single picture, otherwise it is never renewed at boot
 proc setupKde5Bg {rcfile kread kwrite} {
-  global slideshow
+  global slideshow TwdPNG imgDir
   
   if {!$slideshow} {
     set slideshow 120
