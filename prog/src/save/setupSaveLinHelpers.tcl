@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1aug18
+# Updated: 2aug18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -36,6 +36,9 @@ if [file exists $KdeConfDir/plasma-desktop-appletsrc] {
   set KdeConfFile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
   set KdeVersion 5
 }
+
+##KDE4 deprecated service path - only respected if KdeVersion=4
+set Kde4ServiceDir ~/.kde/share/kde4/services
 
 #Wayland/Sway
 set SwayConfFile $LinConfDir/sway/config
@@ -289,26 +292,35 @@ proc setupSwayBackground args {
 ## ~/.local/share/kservices5/ServiceMenus
 ########################################################
 proc setupLinMenu {} {
-  global LinIcon srcdir Setup wishpath tclpath bp LinDesktopFilesDir
+  global LinIcon srcdir Setup bp LinDesktopFilesDir KdeVersion Kde4ServiceDir
   set filename "biblepixSetup.desktop"
-
+  set categories "Settings;Utility;Education;DesktopSettings;Core"
+  
   #set Texts
   set desktopText "\[Desktop Entry\]
 Name=$bp Setup
 Type=Application
 Icon=$LinIcon
-Categories=Settings;Utility;Graphics;Education;DesktopSettings;Core
-Comment=Runs & configures BiblePix"
-  set execText "Exec=$wishpath $Setup"
+Categories=$categories
+Comment=Runs & configures $bp
+Exec=$Setup
+"
 
   #make .desktop file for GNOME & KDE prog menu
   set chan [open $LinDesktopFilesDir/$filename w]
-  puts $chan "$desktopText"
-  puts $chan "$execText"
+  puts $chan $desktopText
   close $chan
   
+  #make .desktop file for KDE4, if dir exists
+  if {$KdeVersion==4} {
+    set categories "Education;Graphics"
+    set chan [open $Kde4ServiceDir/$filename w]
+    puts $chan $desktopText
+    close $chan
+  }
   return 0
-} ;#END setLinMenu
+  
+} ;#END setupLinMenu
 
 # setupKdeActionMenu
 ## Produces right-click action menu in Konqueror (and possibly Dolphin?)
@@ -332,6 +344,7 @@ Comment=Runs & configures BiblePix"
 #Exec=kdialog --msgbox "$(wc -l %F)"
 ############################################################
 
+#This works with Konqueror
 proc setupKdeActionMenu {} {
   global bp LinIcon Setup Kde5DesktopActionFile
   set desktopFilename "biblepixSetupAction.desktop"
@@ -378,6 +391,8 @@ proc setupKdeBackground {} {
     set kread kreadconfig
     set kwrite kwriteconfig
 
+puts $kwrite
+puts $kread
   } else {
 
     return 1
@@ -387,11 +402,14 @@ proc setupKdeBackground {} {
   set errCode4 ""
   if {$KdeVersion==4} {
     catch {setKde4Bg $kread $kwrite} errCode4
+puts $errCode4
+
   }
 
   #set KDE5 in any case
   catch {setKde5Bg $KdeConfFile $kread $kwrite} errCode5
-  
+puts $errCode5
+
   if {$errCode4=="" && $errCode5==""} {
     return 0
   } else {
@@ -442,8 +460,12 @@ proc setupKde4Bg {kread kwrite} {
 proc setupKde5Bg {rcfile kread kwrite} {
   global slideshow
   
-  if {!$slideshow} {set slideshow 120}
-  set oks "org.kde.slideshow"
+  if {!$slideshow} {
+    set slideshow 120
+    set oks "org.kde.image"
+  } else {
+    set oks "org.kde.slideshow"
+  }
 
   for {set g 1} {$g<200} {incr g} {
         
