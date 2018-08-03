@@ -92,7 +92,7 @@ proc formatLinuxExecutables {} {
 
   # 3. Put Setup bash script in ~/bin (precaution in case it can't be found in menus)
   set homeBin $env(HOME)/bin
-  set homeBinFile $homeBin/setup-biblepix.sh
+  set homeBinFile $homeBin/biblepix-setup.sh
   
   if { ![file exists $homeBin] } {
     file mkdir $homeBin
@@ -112,7 +112,7 @@ proc formatLinuxExecutables {} {
   if {![regexp $homeBin $PATH]} {
     set homeBinText "
 if \[ -d $env(HOME)/bin \] ; then
-export PATH=$env(HOME)/bin:$PATH
+export PATH=\$HOME/bin:\$PATH
 fi"
     #read out existing .bashrc
     if [file exists $bashrc] {
