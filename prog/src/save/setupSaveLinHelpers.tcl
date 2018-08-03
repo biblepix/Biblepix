@@ -112,7 +112,7 @@ proc formatLinuxExecutables {} {
   if {![regexp $homeBin $PATH]} {
     set homeBinText "
 if \[ -d $env(HOME)/bin \] ; then
-PATH=$env(HOME)/bin:$PATH
+export PATH=$env(HOME)/bin:$PATH
 fi"
     #read out existing .bashrc
     if [file exists $bashrc] {
@@ -125,6 +125,7 @@ fi"
     
     #append text if missing
     if {![regexp $homeBin $t]} {
+      puts "Adding path entry to .bashrc..."
       set chan [open $bashrc a]
       puts $chan $homeBinText
       close $chan
@@ -484,10 +485,10 @@ proc setupKde4Bg {kread kwrite} {
 proc setupKde5Bg {rcfile kread kwrite} {
   global slideshow TwdPNG imgDir
   
-  #Always set wallpaperplugin=slideshow, single pic never renewed!
+  #Always set wallpaperplugin=slideshow, set single pic hourly (else never renewed!)
+  set oks "org.kde.slideshow"
   if {!$slideshow} {
-    set slideshow 120
-    set oks "org.kde.slideshow"
+    set slideshow 3600
   }
   
   for {set g 1} {$g<200} {incr g} {
