@@ -73,7 +73,8 @@ set Xfce4ConfigFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.x
 ## 1 Check first line of Linux executables for correct 'env' path
 #### Standard env path as in Ubuntu/Debian/Gentoois /usr/bin/env
 ## 2 Make files executable
-## 3 Make biblepix-setup.sh in $HOME/bin
+## 3 make ~/bin/biblepix-setup.sh
+## 4 Add ~/bin to PATH in .bashrc
 proc formatLinuxExecutables {} {
   global Setup Biblepix env
   
@@ -103,19 +104,19 @@ proc formatLinuxExecutables {} {
   puts $chan $t
   close $chan
   
-  # 4. Add ~/bin to $PATH in .bash_profile
-  set bashProfile "$env(HOME)/.bash_profile"
+  # 4. Add ~/bin to $PATH in .bashrc
+  set bashrc "$env(HOME)/.bashrc"
   set PATH $env(PATH)
 
+  ##check PATH & make entry text
   if {![regexp $homeBin $PATH]} {
-    
     set homeBinText "
 if \[ -d $env(HOME)/bin \] ; then
 PATH=$env(HOME)/bin:$PATH
 fi"
-    #read out any existing file
-    if [file exists $bashProfile] {
-      set chan [open $bashProfile r]
+    #read out existing .bashrc
+    if [file exists $bashrc] {
+      set chan [open $bashrc r]
       set t [read $chan]
       close $chan
     } {
@@ -124,7 +125,7 @@ fi"
     
     #append text if missing
     if {![regexp $homeBin $t]} {
-      set chan [open $bashProfile a]
+      set chan [open $bashrc a]
       puts $chan $homeBinText
       close $chan
     }
