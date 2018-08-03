@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2aug18
+# Updated: 3aug18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -57,10 +57,13 @@ set Kde5DesktopActionFile $LinDesktopFilesDir/biblepixSetupAction.desktop
 
 
 # 3 Autostart files
-set KdeAutostartDir $KdeDir/Autostart
+##this is obsolete:
+set Kde4AutostartDir $KdeDir/Autostart
+
+set Kde4AutostartFile $KdeAutostartDir/biblepix.desktop
+
 set LinAutostartDir $LinConfDir/autostart
-file mkdir $LinAutostartDir $KdeAutostartDir
-set KdeAutostartFile $KdeAutostartDir/biblepix.desktop
+file mkdir $LinAutostartDir
 set LinAutostartFile $LinAutostartDir/biblepix.desktop
 
 #TODO: move to?
@@ -171,53 +174,55 @@ proc setShebangLine {currentEnvPath} {
 ####################################
 
 # setupLinAutostart
-## makes Autostart entries for Linux Desktops: GNOME, XFCE4, KDE, Wayland/Sway
+## makes Autostart entries for Linux Desktops: GNOME, XFCE4, KDE4, KDE5, Wayland/Sway
 ## args == delete
 ## called by SetupSaveLin
 proc setupLinAutostart args {
-  global Biblepix Setup LinIcon bp LinAutostartFile KdeAutostartFile SwayConfFile
+  global Biblepix Setup LinIcon bp LinAutostartFile Kde4AutostartDir Kde4AutostartFile SwayConfFile
   #set Err 0
   
   #If args exists, delete any autostart files and exit
   if  {$args != ""} {
-    file delete $LinAutostartFile $KdeAutostartFile
+    file delete $LinAutostartFile $Kde4AutostartFile
     catch {setSwayConfig delete}
     return 0
   }
+  
+  #Delete any previous crontab entry
+  catch {setupLinCrontab delete}
 
   #set Texts
   set desktopText "\[Desktop Entry\]
-Name=$bp Setup
+Name=$bp
 Type=Application
 Icon=$LinIcon
 Comment=Runs BiblePix at System start
 Exec=$Biblepix
 "
-  #Make .desktop file for KDE Autostart
-  set chan [open $KdeAutostartFile w]
-  puts $chan $desktopText
-  close $chan
+  #Make .desktop file for KDE4 Autostart (obsolete)
+  if [file exists $Kde4AutostartDir] {
+    set chan [open $Kde4AutostartFile w]
+    puts $chan $desktopText
+    close $chan
+    file attributes $Kde4AutostartFile -permissions +x
+  }
 
-  #Make .desktop file for GNOME/XFCE Autostart
+  #Make .desktop file for GNOME/XFCE/KDE5 Autostart
   set chan [open $LinAutostartFile w]
   puts $chan $desktopText
   close $chan
-
-  #Delete any BP crontab entry
-  catch {setupLinCrontab delete}
-
+  file attributes $LinAutostartFile -permissions +x
+  
+  
   #Set up Sway if conf file found
   if [file exists $SwayConfFile] {
-    catch setupSwayBackground SwayErr
+    if [catch setupSwayBackground] {
+      puts "Having problem setting up Sway background"
+      return 1
+    }
   }
-  
-  if [info exists SwayErr] {
-    puts "Having problem setting up Sway config..."
-    return 1
-    
-  } {
     return 0
-  }
+  
 } ;#END setLinAutostart
 
 # setupSwayBackground
@@ -274,7 +279,7 @@ proc setupSwayBackground args {
 #  M E N U  E N T R Y   C R E A T E R   F O R   L I N U X   D E S K T O P S
 ################################################################################
 
-# setLinMenu
+# setupLinMenu
 ## Makes .desktop files for Linux Program Menu entries 
 ## Works on KDE / GNOME / XFCE4
 ## called by SetupSaveLin
@@ -457,37 +462,57 @@ proc setupKde4Bg {kread kwrite} {
 ## expects rcfile [file join $env(HOME) .config plasma-org.kde.plasma.desktop-appletsrc]
 ## expects correct version of kreadconfig(?5) kwriteconfig(?5)
 ## must be set to slideshow even if single picture, otherwise it is never renewed at boot
+#
+
+###This was produced by KDE5 upon choosing slideshow: #########################
+# [Containments][1][Wallpaper][General]
+# Image=file:///usr/share/desktop-base/joy-inksplat-theme/wallpaper/contents/images/1280x1024.svg
+# SlidePaths=/usr/share/images
+
+#(We don't (re)produce this section)
+# [Containments][1][Wallpaper][org.kde.image][General]
+# Image=file:///usr/share/desktop-base/joy-inksplat-theme/wallpaper/contents/images/1280x1024.svg
+# height=1024
+# width=1280
+
+# [Containments][1][Wallpaper][org.kde.slideshow][General]
+# SlideInterval=30
+# SlidePaths=/home/pv/Biblepix/Image
+# height=1024
+# width=1280
+################################################################################3
 proc setupKde5Bg {rcfile kread kwrite} {
   global slideshow TwdPNG imgDir
   
+  #Always set wallpaperplugin=slideshow, single pic never renewed!
   if {!$slideshow} {
     set slideshow 120
-    set oks "org.kde.image"
-  } else {
     set oks "org.kde.slideshow"
   }
-
+  
   for {set g 1} {$g<200} {incr g} {
         
     if {[exec $kread --file $rcfile --group Containments --group $g --key activityId] != ""} {
     
       puts "Changing KDE $rcfile Containments $g ..."
       
-      ##1.[Containments][$g] >wallpaperplugin - must be slideshow, bec. single pic never renewed!
+      ##1. [Containments][$g] : Set wallpaperplugin
       exec $kwrite --file $rcfile --group Containments --group $g --key wallpaperplugin $oks
-      ##2.[Containments][$g][Wallpaper][General] >Image+SlidePaths
+      
+      ##2.[Containments][$g][Wallpaper][General] - General settings (not sure if needed)
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key Image file://$TwdPNG
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $imgDir 
-      ##3.[Containments][7][Wallpaper][org.kde.slideshow][General] >SlideInterval+SlidePaths+height+width
+      
+      ##3. [Containments][$g][Wallpaper][org.kde.slideshow][General]: Set SlideInterval+SlidePaths+height+width
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlidePaths $imgDir
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlideInterval $slideshow
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key height [winfo screenheight .]
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key width [winfo screenwidth .]
       #FillMode 6=centered
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key FillMode 6
+  
     }
   }
-
   return 0
 } ;#END setKde5Bg
 
