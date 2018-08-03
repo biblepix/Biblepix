@@ -59,8 +59,7 @@ set Kde5DesktopActionFile $LinDesktopFilesDir/biblepixSetupAction.desktop
 # 3 Autostart files
 ##this is obsolete:
 set Kde4AutostartDir $KdeDir/Autostart
-
-set Kde4AutostartFile $KdeAutostartDir/biblepix.desktop
+set Kde4AutostartFile $Kde4AutostartDir/biblepix.desktop
 
 set LinAutostartDir $LinConfDir/autostart
 file mkdir $LinAutostartDir
