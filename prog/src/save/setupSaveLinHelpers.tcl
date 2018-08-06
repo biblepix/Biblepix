@@ -361,7 +361,7 @@ Actions=BPSetup;
 X-KDE-ServiceTypes=KonqPopupMenu/Plugin
 X-KDE-StartupNotify=true
 X-KDE-Priority=TopLevel
-Categories=ConsoleOnly;
+OnlyShowIn=Old;
 
 \[Desktop Action BPSetup\]
 Name=$bp Setup
