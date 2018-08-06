@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3aug18
+# Updated: 6aug18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -361,7 +361,8 @@ Actions=BPSetup;
 X-KDE-ServiceTypes=KonqPopupMenu/Plugin
 X-KDE-StartupNotify=true
 X-KDE-Priority=TopLevel
-OnlyShowIn=Old
+Categories=ConsoleOnly;
+OnlyShowIn=Old;
 
 \[Desktop Action BPSetup\]
 Name=$bp Setup
