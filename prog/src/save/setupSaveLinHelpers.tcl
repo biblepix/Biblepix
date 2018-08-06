@@ -350,7 +350,7 @@ Exec=$Setup
 #Exec=kdialog --msgbox "$(wc -l %F)"
 ############################################################
 
-#This works with Konqueror
+#This works with Konqueror and Dolphin (only KDE4?)
 proc setupKdeActionMenu {} {
   global bp LinIcon Setup Kde5DesktopActionFile
   set desktopFilename "biblepixSetupAction.desktop"
@@ -361,6 +361,7 @@ Actions=BPSetup;
 X-KDE-ServiceTypes=KonqPopupMenu/Plugin
 X-KDE-StartupNotify=true
 X-KDE-Priority=TopLevel
+OnlyShowIn=Old
 
 \[Desktop Action BPSetup\]
 Name=$bp Setup
