@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6aug18
+# Updated: 8aug18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -27,13 +27,12 @@ file mkdir $KdeConfDir
 
 
 #Determine KDE config files
-##KDE4
-if [file exists $KdeConfDir/plasma-desktop-appletsrc] {
-  set Kde4ConfFile $KdeConfDir/plasma-desktop-appletsrc
+set Kde4ConfFile $KdeConfDir/plasma-desktop-appletsrc
+set Kde5ConfFile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
+
+if [file exists $Kde4ConfFile] {
   set KdeVersion 4
-##KDE5
 } else {
-  set Kde5ConfFile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
   set KdeVersion 5
 }
 
@@ -413,7 +412,7 @@ puts $errCode4
 
   }
 
-  #set KDE5 in any case
+  #set KDE5 always
   catch {setupKde5Bg $Kde5ConfFile $kread $kwrite} errCode5
 puts $errCode5
 
@@ -430,7 +429,6 @@ puts $errCode5
 proc setupKde4Bg {Kde4ConfFile kread kwrite} {
   global slideshow imgDir
   set rcfile [file tail $Kde4ConfFile]
-  
   puts "Setting up KDE4 background..."
   
   if {!$slideshow} {
@@ -456,8 +454,8 @@ proc setupKde4Bg {Kde4ConfFile kread kwrite} {
       ##this is in seconds:
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slideTimer $slideshow
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slidepaths $slidepaths
-      #exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key userswallpapers ''
-#      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaper $TwdPNG
+      #exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key userswallpapers ''    #set general pic (not sure if needed)
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaper $TwdPNG
       #exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpapercolor 0,0,0
       ##position: 1 seems to be 'centered'
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaperposition 1
