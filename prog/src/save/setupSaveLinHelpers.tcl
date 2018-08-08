@@ -555,14 +555,14 @@ proc setupXfceBackground {} {
   
   puts "Configuring XFCE background image..."
 
-  #This rewrites backdrop.list for old xfce4 installations
-  #Not used now
+  #This rewrites backdrop.list for old Xfce4 installations
+  ##not used now
   if {$slideshow} {
     set backdropDir ~/.config/xfce4/desktop
     file mkdir $backdropDir
     set backdropList $backdropDir/backdrop.list
     set chan [open $backdropList w]
-    puts $chan "$TwdBMP\n$TwdTIF"
+    puts $chan "$TwdBMP\n$TwdPNG"
     close $chan
     set monPicPath $backdropList
     set cycleEnableValue true
@@ -612,9 +612,14 @@ proc setupXfceBackground {} {
       set LastImgMonPath /backdrop/screen$s/$monitorName$m/last-image
       set CycleEnableMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
       set CycleTimerMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
-      #this was added in new inst.  - old has only min., hence:
-      #set cycle-timer in mins for old inst. (min=1), set type to 'uint'
-      set CycleTimerPeriodMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
+      #Old inst. has only minutes, hence set in mins. (=1)
+      ##set type to 'uint', set timer to 1 minute or greater
+      set minutes [expr $slideshow/60]
+      if {!$minutes} {
+        set minutes 1
+      }
+#This key was added in new inst., not needed here:
+#      set CycleTimerPeriodMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
             
       if [catch {exec xfconf-query -c $channel -p $ImgMonPath}] {
       
@@ -631,8 +636,8 @@ proc setupXfceBackground {} {
         exec xfconf-query -c $channel -p $ImgShowMonPath -n -t bool -s true
         exec xfconf-query -c $channel -p $LastImgMonPath -n -t string -s $TwdBMP        
         exec xfconf-query -c $channel -p $CycleEnableMonPath -n -t bool -s $cycleEnableValue
-        exec xfconf-query -c $channel -p $CycleTimerMonPath -n -t uint -s [expr $slideshow/60]
-        exec xfconf-query -c $channel -p $CycleTimerPeriodMonPath -n -t int -s 1
+        exec xfconf-query -c $channel -p $CycleTimerMonPath -n -t uint -s $minutes
+        #exec xfconf-query -c $channel -p $CycleTimerPeriodMonPath -n -t int -s 1
         
         #this makes no sense.... TODO!
         set ctrlBit 1
