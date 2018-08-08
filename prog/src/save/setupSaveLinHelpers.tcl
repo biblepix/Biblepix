@@ -597,26 +597,7 @@ proc setupXfceBackground {} {
   for {set s 0} {$s<5} {incr s} {
     for {set m 0} {$m<5} {incr m} {
 
-      #must set single img path even if slideshow?
-      ##old inst. needs path to backdrop.list!
-      #imgStyle seems to be: 1==centred
-      #imgShow seems to be needed for old inst. 
-      set ImgMonPath /backdrop/screen$s/${monitorName}${m}/image-path
-      set ImgStyleMonPath /backdrop/screen$s/$monitorName$m/image-style
-      set ImgShowMonPath /backdrop/screen$s/$monitorName$m/image-show
-      
-      #these are needed here for old inst., and also in the screen section below for the new!!
-      set LastImgMonPath /backdrop/screen$s/$monitorName$m/last-image
-      set CycleEnableMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
-      set CycleTimerMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
-      #Old inst. has only minutes, hence set in mins. (=1)
-      ##set type to 'uint', set timer to 1 minute or greater
-      set minutes [expr $slideshow/60]
-      if {!$minutes} {
-        set minutes 1
-      }
-      puts "minutes: $minutes"
-#This key was added in new inst., not needed here:
+      #This key was added in new inst., not needed here:
 #      set CycleTimerPeriodMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
             
       if [catch {exec xfconf-query -c $channel -p $ImgMonPath}] {
@@ -627,8 +608,28 @@ proc setupXfceBackground {} {
       
         puts "Setting $ImgMonPath"
         
-      #A: MONITOR SECTION
-      ##most of this is only needed for old inst.
+        #A: MONITOR SECTION
+
+        ##most of this is only needed for old inst.
+        #must set single img path even if slideshow?
+        ##old inst. needs path to backdrop.list!
+        #imgStyle seems to be: 1==centred
+        #imgShow seems to be needed for old inst. 
+        set ImgMonPath /backdrop/screen$s/${monitorName}${m}/image-path
+        set ImgStyleMonPath /backdrop/screen$s/$monitorName$m/image-style
+        set ImgShowMonPath /backdrop/screen$s/$monitorName$m/image-show
+        
+        #these are needed here for old inst., and also in the screen section below for the new!!
+        set LastImgMonPath /backdrop/screen$s/$monitorName$m/last-image
+        set CycleEnableMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
+        set CycleTimerMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
+        
+        #Old inst. has only minutes
+        ##set type to 'uint', set timer to >1 minute
+        set minutes [expr max($slideshow/60, 1)]
+        puts "minutes: $minutes"
+
+      
         exec xfconf-query -c $channel -p $ImgMonPath -n -t string -s $monPicPath
         exec xfconf-query -c $channel -p $ImgStyleMonPath -n -t int -s 1
         exec xfconf-query -c $channel -p $ImgShowMonPath -n -t bool -s true
