@@ -615,6 +615,7 @@ proc setupXfceBackground {} {
       if {!$minutes} {
         set minutes 1
       }
+      puts "minutes: $minutes"
 #This key was added in new inst., not needed here:
 #      set CycleTimerPeriodMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
             
