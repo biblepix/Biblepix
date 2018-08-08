@@ -439,9 +439,6 @@ proc setupKde4Bg {Kde4ConfFile kread kwrite} {
   
   set slidepaths $imgDir
   set mode Slideshow
-   
-
-# rcfile ausschreiben? ohne path? - so übernommen.
         
   for {set g 1} {$g<200} {incr g} {
 
@@ -543,7 +540,7 @@ proc setupKde5Bg {Kde5ConfFile kread kwrite} {
 ##########################################
 
 proc setupXfceBackground {} {
-  global slideshow TwdBMP TwdTIF
+  global slideshow TwdBMP TwdPNG
 
   #Exit if xfconf-query not found
   if {[auto_execok xfconf-query] == ""} {
