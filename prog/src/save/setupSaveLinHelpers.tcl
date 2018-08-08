@@ -196,7 +196,9 @@ proc setupLinAutostart args {
 Name=$bp
 Type=Application
 Icon=$LinIcon
-Comment=Runs BiblePix at System start
+Comment=Runs BiblePix at System boot
+StartupNotify=false
+X-KDE-StartupNotify=False
 Exec=$Biblepix
 "
   #Make .desktop file for KDE4 Autostart (obsolete)
@@ -446,17 +448,17 @@ proc setupKde4Bg {Kde4ConfFile kread kwrite} {
     if {[exec $kread --file $rcfile --group Containments --group $g --key wallpaperplugin] != ""} {
     
       puts "Changing KDE $rcfile Containments $g ..."
+
       #1. [Containments][$g]
       ##this is always 'image'
       exec $kwrite --file $rcfile --group Containments --group $g --key wallpaperplugin image
       exec $kwrite --file $rcfile --group Containments --group $g --key wallpaperpluginmode $mode
+
       #2. [Containments][$g][Wallpaper][image]
       ##this is in seconds:
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slideTimer $slideshow
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slidepaths $slidepaths
-      #exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key userswallpapers ''    #set general pic (not sure if needed)
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaper $TwdPNG
-      #exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpapercolor 0,0,0
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaper $::TwdPNG
       ##position: 1 seems to be 'centered'
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaperposition 1
     }
