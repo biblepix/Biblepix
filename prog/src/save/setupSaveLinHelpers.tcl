@@ -29,11 +29,11 @@ file mkdir $KdeConfDir
 #Determine KDE config files
 ##KDE4
 if [file exists $KdeConfDir/plasma-desktop-appletsrc] {
-  set KdeConfFile $KdeConfDir/plasma-desktop-appletsrc
+  set Kde4ConfFile $KdeConfDir/plasma-desktop-appletsrc
   set KdeVersion 4
 ##KDE5
 } else {
-  set KdeConfFile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
+  set Kde5ConfFile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
   set KdeVersion 5
 }
 
@@ -385,7 +385,7 @@ Exec=$Setup
 # TODO: > Anleitung in Manpage für andere KDE-Versionen/andere Desktops (Rechtsklick > Desktop-Einstellungen >Einzelbild/Diaschau)
 
 proc setupKdeBackground {} {
-  global KdeVersion KdeConfFile TwdPNG slideshow imgDir
+  global KdeVersion Kde4ConfFile Kde5ConfFile TwdPNG slideshow imgDir
 
   #check kread/kwrite executables
   if {[auto_execok kreadconfig5] != "" && 
@@ -408,13 +408,13 @@ puts $kread
   #set KDE4 if detected
   set errCode4 ""
   if {$KdeVersion==4} {
-    catch {setupKde4Bg $kread $kwrite} errCode4
+    catch {setupKde4Bg $Kde4ConfFile $kread $kwrite} errCode4
 puts $errCode4
 
   }
 
   #set KDE5 in any case
-  catch {setupKde5Bg $KdeConfFile $kread $kwrite} errCode5
+  catch {setupKde5Bg $Kde5ConfFile $kread $kwrite} errCode5
 puts $errCode5
 
   if {$errCode4=="" && $errCode5==""} {
@@ -427,8 +427,11 @@ puts $errCode5
 
 # setupKde4Bg
 # called by setKdeBackground if KDE4 rcfile found
-proc setupKde4Bg {kread kwrite} {
-  global slideshow
+proc setupKde4Bg {Kde4ConfFile kread kwrite} {
+  global slideshow imgDir
+  set rcfile [file tail $Kde4ConfFile]
+  
+  puts "Setting up KDE4 background..."
   
   if {!$slideshow} {
     set slideshow 3600
@@ -442,22 +445,22 @@ proc setupKde4Bg {kread kwrite} {
         
   for {set g 1} {$g<200} {incr g} {
 
-    if {[exec $kread --file plasma-desktop-appletsrc --group Containments --group $g --key wallpaperplugin] != ""} {
+    if {[exec $kread --file $rcfile --group Containments --group $g --key wallpaperplugin] != ""} {
     
       puts "Changing KDE $rcfile Containments $g ..."
       #1. [Containments][$g]
       ##this is always 'image'
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --key wallpaperplugin image
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --key wallpaperpluginmode $mode
+      exec $kwrite --file $rcfile --group Containments --group $g --key wallpaperplugin image
+      exec $kwrite --file $rcfile --group Containments --group $g --key wallpaperpluginmode $mode
       #2. [Containments][$g][Wallpaper][image]
       ##this is in seconds:
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key slideTimer $slideshow
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key slidepaths $slidepaths
-      #exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key userswallpapers ''
-#      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpaper $TwdPNG
-      #exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpapercolor 0,0,0
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slideTimer $slideshow
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slidepaths $slidepaths
+      #exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key userswallpapers ''
+#      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaper $TwdPNG
+      #exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpapercolor 0,0,0
       ##position: 1 seems to be 'centered'
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpaperposition 1
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaperposition 1
     }
   }
 
@@ -488,8 +491,11 @@ proc setupKde4Bg {kread kwrite} {
 # height=1024
 # width=1280
 ################################################################################3
-proc setupKde5Bg {rcfile kread kwrite} {
+proc setupKde5Bg {Kde5ConfFile kread kwrite} {
   global slideshow TwdPNG imgDir
+  set rcfile $Kde5ConfFile
+  
+  puts "Setting up KDE5 background..."
   
   #Always set wallpaperplugin=slideshow, set single pic hourly (else never renewed!)
   set oks "org.kde.slideshow"
@@ -521,7 +527,7 @@ proc setupKde5Bg {rcfile kread kwrite} {
     }
   }
   return 0
-} ;#END setKde5Bg
+} ;#END setupKde5Bg
 
 # setupXfceBackground
 ##configures XFCE4 single pic or slideshow - TODO: >update MANPAGE!!!!!!!!!
