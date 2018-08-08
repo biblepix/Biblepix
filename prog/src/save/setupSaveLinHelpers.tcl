@@ -430,13 +430,13 @@ puts $errCode5
 proc setupKde4Bg {kread kwrite} {
   global slideshow
   
-  if {$slideshow} {
-    set slidepaths $imgDir
-    set mode Slideshow
-  } else {
-    set slidepaths ""
-    set mode SingleImage
+  if {!$slideshow} {
+    set slideshow 3600
   }
+  
+  set slidepaths $imgDir
+  set mode Slideshow
+   
 
 # rcfile ausschreiben? ohne path? - so übernommen.
         
@@ -454,7 +454,7 @@ proc setupKde4Bg {kread kwrite} {
       exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key slideTimer $slideshow
       exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key slidepaths $slidepaths
       #exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key userswallpapers ''
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpaper $TwdPNG
+#      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpaper $TwdPNG
       #exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpapercolor 0,0,0
       ##position: 1 seems to be 'centered'
       exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpaperposition 1
