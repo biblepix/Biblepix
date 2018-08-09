@@ -434,7 +434,7 @@ proc setupKde4Bg {Kde4ConfFile kread kwrite} {
   puts "Setting up KDE4 background..."
   
   if {!$slideshow} {
-    set slideshow 3600
+    set interval 3600
   }
   
   set slidepaths $imgDir
@@ -453,14 +453,13 @@ proc setupKde4Bg {Kde4ConfFile kread kwrite} {
 
       #2. [Containments][$g][Wallpaper][image]
       ##this is in seconds:
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slideTimer $slideshow
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slideTimer $interval
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slidepaths $slidepaths
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaper $::TwdPNG
       ##position: 1 seems to be 'centered'
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaperposition 1
     }
   }
-
   return 0
 } ;#END setKde4Bg
 
@@ -497,7 +496,7 @@ proc setupKde5Bg {Kde5ConfFile kread kwrite} {
   #Always set wallpaperplugin=slideshow, set single pic hourly (else never renewed!)
   set oks "org.kde.slideshow"
   if {!$slideshow} {
-    set slideshow 3600
+    set interval 3600
   }
   
   for {set g 1} {$g<200} {incr g} {
@@ -511,11 +510,11 @@ proc setupKde5Bg {Kde5ConfFile kread kwrite} {
       
       ##2.[Containments][$g][Wallpaper][General] - General settings (not sure if needed)
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key Image file://$TwdPNG
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $imgDir 
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $imgDir
       
       ##3. [Containments][$g][Wallpaper][org.kde.slideshow][General]: Set SlideInterval+SlidePaths+height+width
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlidePaths $imgDir
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlideInterval $slideshow
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlideInterval $interval
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key height [winfo screenheight .]
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key width [winfo screenwidth .]
       #FillMode 6=centered
@@ -629,7 +628,6 @@ proc setupXfceBackground {} {
         set minutes [expr max($slideshow/60, 1)]
         puts "minutes: $minutes"
 
-      
         exec xfconf-query -c $channel -p $ImgMonPath -n -t string -s $monPicPath
         exec xfconf-query -c $channel -p $ImgStyleMonPath -n -t int -s 1
         exec xfconf-query -c $channel -p $ImgShowMonPath -n -t bool -s true
@@ -736,8 +734,11 @@ proc reloadKdeDesktop {} {
 proc reloadXfceDesktop {} {
   set command [auto_execok xfdesktop]
   if {$command != ""} {
-    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:MUSTRELOADDESKTOP"
-    exec $command --reload 
+    exec xfdesktop-settings
+    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "Testing XFCE reload"
+    #exec $command --reload
+    
+    exec killall xfdesktop-settings
   }
 }
 
