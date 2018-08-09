@@ -435,6 +435,8 @@ proc setupKde4Bg {Kde4ConfFile kread kwrite} {
   
   if {!$slideshow} {
     set interval 3600
+  } else {
+    set interval $slideshow
   }
   
   set slidepaths $imgDir
@@ -497,6 +499,8 @@ proc setupKde5Bg {Kde5ConfFile kread kwrite} {
   set oks "org.kde.slideshow"
   if {!$slideshow} {
     set interval 3600
+  } else {
+    set interval $slideshow
   }
   
   for {set g 1} {$g<200} {incr g} {
@@ -599,12 +603,6 @@ proc setupXfceBackground {} {
       #This key was added in new inst., not needed here:
 #      set CycleTimerPeriodMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
       set ImgMonPath /backdrop/screen$s/${monitorName}${m}/image-path
-
-
-puts $ImgMonPath
-exec xfconf-query -c $channel -p $ImgMonPath
-
-
 
       if [catch {exec xfconf-query -c $channel -p $ImgMonPath}] {
       
