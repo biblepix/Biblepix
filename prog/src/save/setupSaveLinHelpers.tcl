@@ -564,6 +564,7 @@ proc setupXfceBackground {} {
     set chan [open $backdropList w]
     puts $chan "$::TwdBMP\n$::TwdPNG"
     close $chan
+    file attributes $backdropList -permissions 00644
     set monPicPath $backdropList
     set cycleEnableValue true
   } else {
@@ -740,11 +741,8 @@ proc reloadXfceDesktop {} {
   #set command [auto_execok xfdesktop]
   #if {$command != ""} {
     exec xfdesktop-settings
-    #tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "Testing XFCE reload"
-    #exec $command --reload
-    
+    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "Testing XFCE reload" -parent .
     exec killall xfdesktop-settings
-  #}
 }
 
 ######################################
