@@ -599,7 +599,13 @@ proc setupXfceBackground {} {
       #This key was added in new inst., not needed here:
 #      set CycleTimerPeriodMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
       set ImgMonPath /backdrop/screen$s/${monitorName}${m}/image-path
-            
+
+
+puts $ImgMonPath
+exec xfconf-query -c $channel -p $ImgMonPath
+
+
+
       if [catch {exec xfconf-query -c $channel -p $ImgMonPath}] {
       
         continue
@@ -629,6 +635,7 @@ proc setupXfceBackground {} {
         puts "minutes: $minutes"
 
         exec xfconf-query -c $channel -p $ImgMonPath -n -t string -s $monPicPath
+        
         exec xfconf-query -c $channel -p $ImgStyleMonPath -n -t int -s 1
         exec xfconf-query -c $channel -p $ImgShowMonPath -n -t bool -s true
         exec xfconf-query -c $channel -p $LastImgMonPath -n -t string -s $::TwdBMP        
@@ -732,14 +739,14 @@ proc reloadKdeDesktop {} {
 ##Rereads XFCE4 Desktop configuration
 ##Called by SetupSaveLin after changing config files
 proc reloadXfceDesktop {} {
-  set command [auto_execok xfdesktop]
-  if {$command != ""} {
+  #set command [auto_execok xfdesktop]
+  #if {$command != ""} {
     exec xfdesktop-settings
-    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "Testing XFCE reload"
+    #tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "Testing XFCE reload"
     #exec $command --reload
     
     exec killall xfdesktop-settings
-  }
+  #}
 }
 
 ######################################
