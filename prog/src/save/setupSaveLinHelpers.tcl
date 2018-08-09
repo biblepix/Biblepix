@@ -562,6 +562,7 @@ proc setupXfceBackground {} {
     file mkdir $backdropDir
     set backdropList $backdropDir/backdrop.list
     set chan [open $backdropList w]
+    puts $chan {# xfce backdrop list}
     puts $chan "$::TwdBMP\n$::TwdPNG"
     close $chan
     file attributes $backdropList -permissions 00644
