@@ -738,11 +738,11 @@ proc reloadKdeDesktop {} {
 ##Rereads XFCE4 Desktop configuration
 ##Called by SetupSaveLin after changing config files
 proc reloadXfceDesktop {} {
-  #set command [auto_execok xfdesktop]
-  #if {$command != ""} {
+  if {[auto_execok xfdesktop-settings] != ""} {
     exec xfdesktop-settings
     tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "Testing XFCE reload" -parent .
     exec killall xfdesktop-settings
+  }
 }
 
 ######################################
