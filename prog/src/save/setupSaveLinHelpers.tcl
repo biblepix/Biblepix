@@ -540,7 +540,7 @@ proc setupKde5Bg {Kde5ConfFile kread kwrite} {
 ##########################################
 
 proc setupXfceBackground {} {
-  global slideshow TwdBMP TwdPNG
+  global slideshow
 
   #Exit if xfconf-query not found
   if {[auto_execok xfconf-query] == ""} {
@@ -559,12 +559,12 @@ proc setupXfceBackground {} {
     file mkdir $backdropDir
     set backdropList $backdropDir/backdrop.list
     set chan [open $backdropList w]
-    puts $chan "$TwdBMP\n$TwdPNG"
+    puts $chan "$::TwdBMP\n$::TwdPNG"
     close $chan
     set monPicPath $backdropList
     set cycleEnableValue true
   } else {
-    set monPicPath $TwdBMP
+    set monPicPath $::TwdBMP
     set cycleEnableValue false
   }
 
@@ -599,6 +599,7 @@ proc setupXfceBackground {} {
 
       #This key was added in new inst., not needed here:
 #      set CycleTimerPeriodMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
+      set ImgMonPath /backdrop/screen$s/${monitorName}${m}/image-path
             
       if [catch {exec xfconf-query -c $channel -p $ImgMonPath}] {
       
@@ -615,7 +616,7 @@ proc setupXfceBackground {} {
         ##old inst. needs path to backdrop.list!
         #imgStyle seems to be: 1==centred
         #imgShow seems to be needed for old inst. 
-        set ImgMonPath /backdrop/screen$s/${monitorName}${m}/image-path
+        
         set ImgStyleMonPath /backdrop/screen$s/$monitorName$m/image-style
         set ImgShowMonPath /backdrop/screen$s/$monitorName$m/image-show
         
@@ -624,8 +625,7 @@ proc setupXfceBackground {} {
         set CycleEnableMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
         set CycleTimerMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
         
-        #Old inst. has only minutes
-        ##set type to 'uint', set timer to >1 minute
+        #Old inst. has only minutes ; set type to 'uint', timer to >1 minute
         set minutes [expr max($slideshow/60, 1)]
         puts "minutes: $minutes"
 
@@ -633,15 +633,17 @@ proc setupXfceBackground {} {
         exec xfconf-query -c $channel -p $ImgMonPath -n -t string -s $monPicPath
         exec xfconf-query -c $channel -p $ImgStyleMonPath -n -t int -s 1
         exec xfconf-query -c $channel -p $ImgShowMonPath -n -t bool -s true
-        exec xfconf-query -c $channel -p $LastImgMonPath -n -t string -s $TwdBMP        
+        exec xfconf-query -c $channel -p $LastImgMonPath -n -t string -s $::TwdBMP        
         exec xfconf-query -c $channel -p $CycleEnableMonPath -n -t bool -s $cycleEnableValue
         exec xfconf-query -c $channel -p $CycleTimerMonPath -n -t uint -s $minutes
         #exec xfconf-query -c $channel -p $CycleTimerPeriodMonPath -n -t int -s 1
         
         #this makes no sense.... TODO!
+        
         set ctrlBit 1
       }
 
+puts "Ad hena azaranu 1"
 
       #B: WORKSPACE SECTION
       
@@ -666,7 +668,7 @@ proc setupXfceBackground {} {
           set CycleTimerPeriodWsPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
           set ImgStyleWsPath /backdrop/screen$s/$monitorName$m/workspace$w/image-style
           
-          exec xfconf-query -c $channel -p $LastImgWsPath -n -t string -s $TwdBMP
+          exec xfconf-query -c $channel -p $LastImgWsPath -n -t string -s $::TwdBMP
           exec xfconf-query -c $channel -p $CycleEnableWsPath -n -t bool -s $cycleEnableValue
           exec xfconf-query -c $channel -p $CycleTimerWsPath -n -t uint -s $slideshow
           exec xfconf-query -c $channel -p $CycleTimerPeriodWsPath -n -t int -s 0
@@ -675,9 +677,9 @@ proc setupXfceBackground {} {
       } ;#END for3
     } ;#END for2
   } ;#END for1
-    
+    puts "Ad hena azaranu 2"
 
-#TODO: this dusn work!
+#TODO: this dunnot work!
   if [info exists ctrlBit] {
       return 0
   } {
