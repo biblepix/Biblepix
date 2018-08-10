@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17jul18
+# Updated: 10aug18
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -45,9 +45,9 @@ if {$runningDesktop == 0} {
 
 #Install Menu entries for all desktops - no error handling
 catch setupLinMenu Error
-puts "LinMenu $Error"
+#puts "LinMenu $Error"
 catch setupKdeActionMenu Error
-puts "KdeAction $Error"
+#puts "KdeAction $Error"
 
 
 #################################################
@@ -77,13 +77,13 @@ set XfceErr [setupXfceBackground]
 
 #Create OK message for each successful desktop configuration
 if {$GnomeErr==0} {
-  append desktopList GNOME
+  lappend desktopList GNOME
 }
 if {$KdeErr==0} {
-  append desktopList KDE
+  lappend desktopList {KDE Plasma}
 }
 if {$XfceErr==0} {
-  append desktopList XFCE4
+  lappend desktopList XFCE4
 }
 #puts "desktopList: $desktopList"
 
@@ -102,17 +102,17 @@ if {$desktopList != ""} {
 # 5 Try reloading KDE & XFCE Desktops - no error handling
 # Gnome & Sway need no reloading
 ########################################################
-if {$runningDesktop==2} {set desktopName KDE}
+if {$runningDesktop==2} {set desktopName "KDE Plasma"}
 if {$runningDesktop==3} {set desktopName XFCE4}
 tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "$desktopName: $linReloadingDesktop"
 
 #Run progs end finish
-if {$runningDesktop == 2} {
+if {$runningDesktop==2} {
   catch reloadKdeDesktop Error
   puts "reloadKde $Error"
   
-} elseif {$runningDesktop == 3} {
-  catch reloadXfceDesktop
+} elseif {$runningDesktop==3} {
+  catch reloadXfceDesktop Error
   puts "runningDesktop $Error"
 }
 
