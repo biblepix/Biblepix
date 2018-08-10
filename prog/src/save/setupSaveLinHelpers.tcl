@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6aug18
+# Updated: 8aug18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -27,13 +27,12 @@ file mkdir $KdeConfDir
 
 
 #Determine KDE config files
-##KDE4
-if [file exists $KdeConfDir/plasma-desktop-appletsrc] {
-  set KdeConfFile $KdeConfDir/plasma-desktop-appletsrc
+set Kde4ConfFile $KdeConfDir/plasma-desktop-appletsrc
+set Kde5ConfFile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
+
+if [file exists $Kde4ConfFile] {
   set KdeVersion 4
-##KDE5
 } else {
-  set KdeConfFile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
   set KdeVersion 5
 }
 
@@ -197,7 +196,9 @@ proc setupLinAutostart args {
 Name=$bp
 Type=Application
 Icon=$LinIcon
-Comment=Runs BiblePix at System start
+Comment=Runs BiblePix at System boot
+StartupNotify=false
+X-KDE-StartupNotify=False
 Exec=$Biblepix
 "
   #Make .desktop file for KDE4 Autostart (obsolete)
@@ -385,7 +386,7 @@ Exec=$Setup
 # TODO: > Anleitung in Manpage für andere KDE-Versionen/andere Desktops (Rechtsklick > Desktop-Einstellungen >Einzelbild/Diaschau)
 
 proc setupKdeBackground {} {
-  global KdeVersion KdeConfFile TwdPNG slideshow imgDir
+  global KdeVersion Kde4ConfFile Kde5ConfFile TwdPNG slideshow imgDir
 
   #check kread/kwrite executables
   if {[auto_execok kreadconfig5] != "" && 
@@ -408,13 +409,13 @@ puts $kread
   #set KDE4 if detected
   set errCode4 ""
   if {$KdeVersion==4} {
-    catch {setupKde4Bg $kread $kwrite} errCode4
+    catch {setupKde4Bg $Kde4ConfFile $kread $kwrite} errCode4
 puts $errCode4
 
   }
 
-  #set KDE5 in any case
-  catch {setupKde5Bg $KdeConfFile $kread $kwrite} errCode5
+  #set KDE5 always
+  catch {setupKde5Bg $Kde5ConfFile $kread $kwrite} errCode5
 puts $errCode5
 
   if {$errCode4=="" && $errCode5==""} {
@@ -427,35 +428,40 @@ puts $errCode5
 
 # setupKde4Bg
 # called by setKdeBackground if KDE4 rcfile found
-proc setupKde4Bg {kread kwrite} {
-  global slideshow
+proc setupKde4Bg {Kde4ConfFile kread kwrite} {
+  global slideshow imgDir
+  set rcfile [file tail $Kde4ConfFile]
+  puts "Setting up KDE4 background..."
   
-  if {$slideshow} {
-    set slidepaths $imgDir
-    set mode Slideshow
+  if {!$slideshow} {
+    set interval 3600
   } else {
-    set slidepaths ""
-    set mode SingleImage
+    set interval $slideshow
   }
-
-# rcfile ausschreiben? ohne path? - so übernommen.
+  
+  set slidepaths $imgDir
+  set mode Slideshow
         
   for {set g 1} {$g<200} {incr g} {
 
-    if {[exec $kread --file plasma-desktop-appletsrc --group Containments --group $g --key wallpaperplugin] != ""} {
+    if {[exec $kread --file $rcfile --group Containments --group $g --key wallpaperplugin] != ""} {
     
       puts "Changing KDE $rcfile Containments $g ..."
-      
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --key mode $mode
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key slideTimer $slideshow
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key slidepaths $slidepaths
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key userswallpapers ''
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpaper $TwdPNG
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpapercolor 0,0,0
-      exec $kwrite --file plasma-desktop-appletsrc --group Containments --group $g --group Wallpaper --group image --key wallpaperposition 0
+
+      #1. [Containments][$g]
+      ##this is always 'image'
+      exec $kwrite --file $rcfile --group Containments --group $g --key wallpaperplugin image
+      exec $kwrite --file $rcfile --group Containments --group $g --key wallpaperpluginmode $mode
+
+      #2. [Containments][$g][Wallpaper][image]
+      ##this is in seconds:
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slideTimer $interval
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slidepaths $slidepaths
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaper $::TwdPNG
+      ##position: 1 seems to be 'centered'
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaperposition 1
     }
   }
-
   return 0
 } ;#END setKde4Bg
 
@@ -483,13 +489,18 @@ proc setupKde4Bg {kread kwrite} {
 # height=1024
 # width=1280
 ################################################################################3
-proc setupKde5Bg {rcfile kread kwrite} {
+proc setupKde5Bg {Kde5ConfFile kread kwrite} {
   global slideshow TwdPNG imgDir
+  set rcfile $Kde5ConfFile
+  
+  puts "Setting up KDE5 background..."
   
   #Always set wallpaperplugin=slideshow, set single pic hourly (else never renewed!)
   set oks "org.kde.slideshow"
   if {!$slideshow} {
-    set slideshow 3600
+    set interval 3600
+  } else {
+    set interval $slideshow
   }
   
   for {set g 1} {$g<200} {incr g} {
@@ -503,11 +514,11 @@ proc setupKde5Bg {rcfile kread kwrite} {
       
       ##2.[Containments][$g][Wallpaper][General] - General settings (not sure if needed)
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key Image file://$TwdPNG
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $imgDir 
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $imgDir
       
       ##3. [Containments][$g][Wallpaper][org.kde.slideshow][General]: Set SlideInterval+SlidePaths+height+width
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlidePaths $imgDir
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlideInterval $slideshow
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlideInterval $interval
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key height [winfo screenheight .]
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key width [winfo screenwidth .]
       #FillMode 6=centered
@@ -516,7 +527,7 @@ proc setupKde5Bg {rcfile kread kwrite} {
     }
   }
   return 0
-} ;#END setKde5Bg
+} ;#END setupKde5Bg
 
 # setupXfceBackground
 ##configures XFCE4 single pic or slideshow - TODO: >update MANPAGE!!!!!!!!!
@@ -532,7 +543,7 @@ proc setupKde5Bg {rcfile kread kwrite} {
 ##########################################
 
 proc setupXfceBackground {} {
-  global slideshow TwdBMP TwdTIF
+  global slideshow
 
   #Exit if xfconf-query not found
   if {[auto_execok xfconf-query] == ""} {
@@ -544,19 +555,21 @@ proc setupXfceBackground {} {
   
   puts "Configuring XFCE background image..."
 
-  #This rewrites backdrop.list for old xfce4 installations
-  #Not used now
+  #This rewrites backdrop.list for old Xfce4 installations
+  ##not used now
   if {$slideshow} {
     set backdropDir ~/.config/xfce4/desktop
     file mkdir $backdropDir
     set backdropList $backdropDir/backdrop.list
     set chan [open $backdropList w]
-    puts $chan "$TwdBMP\n$TwdTIF"
+    puts $chan {# xfce backdrop list}
+    puts $chan "$::TwdBMP\n$::TwdPNG"
     close $chan
+    file attributes $backdropList -permissions 00644
     set monPicPath $backdropList
     set cycleEnableValue true
   } else {
-    set monPicPath $TwdBMP
+    set monPicPath $::TwdBMP
     set cycleEnableValue false
   }
 
@@ -589,22 +602,10 @@ proc setupXfceBackground {} {
   for {set s 0} {$s<5} {incr s} {
     for {set m 0} {$m<5} {incr m} {
 
-      #must set single img path even if slideshow?
-      ##old inst. needs path to backdrop.list!
-      #imgStyle seems to be: 1==centred
-      #imgShow seems to be needed for old inst. 
+      #This key was added in new inst., not needed here:
+#      set CycleTimerPeriodMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
       set ImgMonPath /backdrop/screen$s/${monitorName}${m}/image-path
-      set ImgStyleMonPath /backdrop/screen$s/$monitorName$m/image-style
-      set ImgShowMonPath /backdrop/screen$s/$monitorName$m/image-show
-      
-      #these are needed here for old inst., and also in the screen section below for the new!!
-      set LastImgMonPath /backdrop/screen$s/$monitorName$m/last-image
-      set CycleEnableMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
-      set CycleTimerMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
-      #this was added in new inst.  - old has only min., hence:
-      #set cycle-timer in mins for old inst. (min=1), set type to 'uint'
-      set CycleTimerPeriodMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
-            
+
       if [catch {exec xfconf-query -c $channel -p $ImgMonPath}] {
       
         continue
@@ -613,20 +614,41 @@ proc setupXfceBackground {} {
       
         puts "Setting $ImgMonPath"
         
-      #A: MONITOR SECTION
-      ##most of this is only needed for old inst.
+        #A: MONITOR SECTION
+
+        ##most of this is only needed for old inst.
+        #must set single img path even if slideshow?
+        ##old inst. needs path to backdrop.list!
+        #imgStyle seems to be: 1==centred
+        #imgShow seems to be needed for old inst. 
+        
+        set ImgStyleMonPath /backdrop/screen$s/$monitorName$m/image-style
+        set ImgShowMonPath /backdrop/screen$s/$monitorName$m/image-show
+        
+        #these are needed here for old inst., and also in the screen section below for the new!!
+        set LastImgMonPath /backdrop/screen$s/$monitorName$m/last-image
+        set CycleEnableMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
+        set CycleTimerMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
+        
+        #Old inst. has only minutes ; set type to 'uint', timer to >1 minute
+        set minutes [expr max($slideshow/60, 1)]
+        puts "minutes: $minutes"
+
         exec xfconf-query -c $channel -p $ImgMonPath -n -t string -s $monPicPath
+        
         exec xfconf-query -c $channel -p $ImgStyleMonPath -n -t int -s 1
         exec xfconf-query -c $channel -p $ImgShowMonPath -n -t bool -s true
-        exec xfconf-query -c $channel -p $LastImgMonPath -n -t string -s $TwdBMP        
+        exec xfconf-query -c $channel -p $LastImgMonPath -n -t string -s $::TwdBMP        
         exec xfconf-query -c $channel -p $CycleEnableMonPath -n -t bool -s $cycleEnableValue
-        exec xfconf-query -c $channel -p $CycleTimerMonPath -n -t uint -s [expr $slideshow/60]
-        exec xfconf-query -c $channel -p $CycleTimerPeriodMonPath -n -t int -s 1
+        exec xfconf-query -c $channel -p $CycleTimerMonPath -n -t uint -s $minutes
+        #exec xfconf-query -c $channel -p $CycleTimerPeriodMonPath -n -t int -s 1
         
         #this makes no sense.... TODO!
+        
         set ctrlBit 1
       }
 
+puts "Ad hena azaranu 1"
 
       #B: WORKSPACE SECTION
       
@@ -651,7 +673,7 @@ proc setupXfceBackground {} {
           set CycleTimerPeriodWsPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
           set ImgStyleWsPath /backdrop/screen$s/$monitorName$m/workspace$w/image-style
           
-          exec xfconf-query -c $channel -p $LastImgWsPath -n -t string -s $TwdBMP
+          exec xfconf-query -c $channel -p $LastImgWsPath -n -t string -s $::TwdBMP
           exec xfconf-query -c $channel -p $CycleEnableWsPath -n -t bool -s $cycleEnableValue
           exec xfconf-query -c $channel -p $CycleTimerWsPath -n -t uint -s $slideshow
           exec xfconf-query -c $channel -p $CycleTimerPeriodWsPath -n -t int -s 0
@@ -660,9 +682,9 @@ proc setupXfceBackground {} {
       } ;#END for3
     } ;#END for2
   } ;#END for1
-    
+    puts "Ad hena azaranu 2"
 
-#TODO: this dusn work!
+#TODO: this dunnot work!
   if [info exists ctrlBit] {
       return 0
   } {
@@ -717,11 +739,12 @@ proc reloadKdeDesktop {} {
 ##Rereads XFCE4 Desktop configuration
 ##Called by SetupSaveLin after changing config files
 proc reloadXfceDesktop {} {
-  set command [auto_execok xfdesktop]
-  if {$command != ""} {
-    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:MUSTRELOADDESKTOP"
-    exec $command --reload 
+  if {[auto_execok xfdesktop-setting?] != ""} {
+    exec xfdesktop-settings
+    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "Testing XFCE reload" -parent .
+    exec killall xfdesktop-settings
   }
+  xfdesktop --reload
 }
 
 ######################################
