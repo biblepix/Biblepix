@@ -77,10 +77,10 @@ set XfceErr [setupXfceBackground]
 
 #Create OK message for each successful desktop configuration
 if {$GnomeErr==0} {
-  lappend desktopList GNOME
+  lappend desktopList GNOME /
 }
 if {$KdeErr==0} {
-  lappend desktopList {KDE Plasma}
+  lappend desktopList {KDE Plasma} /
 }
 if {$XfceErr==0} {
   lappend desktopList XFCE4
@@ -89,9 +89,9 @@ if {$XfceErr==0} {
 
 #Create Ok message if desktopList not empty
 if {$desktopList != ""} {
-  foreach desktopName $desktopList {
-    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "$desktopName: $changeDesktopOk" 
-  }
+  #foreach desktopName $desktopList {
+    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "$desktopList: $changeDesktopOk" 
+  #}
 #Create Error message if no desktop configured
 } else {
   tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
