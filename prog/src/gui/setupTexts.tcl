@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7jul18
+# Updated: 10aug18
 
 proc setReadmeText {lang} {
 #Isolates Readme text from <de> to </de> usw.
@@ -348,8 +348,8 @@ Example:"
 ######## S E T U P S A V E   T E X T S  ################################
 
 #Changing Desktops Info
-set linChangingDesktop(de) "BiblePix versucht nun, Ihre Desktop-Einstellungen zu ändern."
-set linChangingDesktop(en) "BiblePix will now try to register with your Desktop Background."
+set linChangingDesktop(de) "BibelPix versucht nun, Ihre Desktop-Einstellungen zu ändern. Falls Sie danach kein neues Hintergrundbild sehen, können Sie auf Ihrer Arbeitsfläche rechtsklicken und im Dialog \"Schreibtisch\" oder \"Arbeitsfläche\" das BibelPix-Hintergrundbild eigenhändig auswählen. Der Bildpfad ist: $imgDir ."
+set linChangingDesktop(en) "BiblePix will now try to register with your Desktop Background. If you can't see a new background picture after that, right-click on your Desktop and select the \"Desktop\" or \"Background\" settings dialog to manually set the picture path to BiblePix. This is the path you should enter: $imgDir ."
 set ::linChangingDesktop $linChangingDesktop($lang)
 
 set winChangingDesktop(de) "$linChangingDesktop($lang) \nKlicken Sie im Dialogfenster auf das BibelPix-Thema und schliessen Sie dann das Fenster."
@@ -372,8 +372,8 @@ set linReloadingDesktop(en) "We shall now try to reload your Desktop. If this fa
 set linReloadingDesktop(de) "Wir versuchen nun, Ihre Arbeitsfläche neu einzulesen. Falls dies fehlschlägt, müssen Sie sich kurz ab- und wieder anmelden, damit die BibelPix-Einstellungen wirksam werden."
 set ::linReloadingDesktop $linReloadingDesktop($lang)
 
-set changeDesktopOk(en) "$bp has been configured successfully and will start shortly.\nYou can run BiblePix Setup anytime by right-clicking on your Desktop (or in your Computer's Start Menu) and selecting the \"BiblePix Setup\" icon."
-set changeDesktopOk(de) "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\nDas BibelPix-Setup können Sie jederzeit starten, indem Sie durch Recktsklick auf Ihrer Arbeitsfläche oder im Startmenü das Symbol \"BiblePix Setup\" wählen."
+set changeDesktopOk(en) "$bp has been configured successfully and will start shortly.\nYou can run the BiblePix Setup program anytime by selecting the \"BiblePix Setup\" icon in your computer's Programs Menu."
+set changeDesktopOk(de) "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\nDas BibelPix-Einrichtungsprogramm können Sie jederzeit starten, indem Sie im Startmenü Ihres PCs das Symbol \"BibelPix Setup\" wählen."
 set ::changeDesktopOk $changeDesktopOk($lang)
 
 set winRegister(en) "BiblePix will no try to register with your system.\nYou must confirm any dialogue boxes with \"Yes\"."
