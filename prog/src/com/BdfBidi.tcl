@@ -47,8 +47,11 @@ proc bidi {dw TwdLang args} {
     regsub -all {[\U05B9\U05BB]} $dw \U05D5 dw
     
     #eliminate remaining vowels, excluding maqaf (\u05BE)
-    regsub -all {[\u0591-\u05BD]} $dw {} dw
-    regsub -all {[\u05BF-\u05C7]} $dw {} dw
+    #TESTING: Maqaf>Space
+    regsub -all {\u05BE} $dw { } dw
+#    regsub -all {[\u0591-\u05BD]} $dw {} dw
+#    regsub -all {[\u05BF-\u05C7]} $dw {} dw
+    regsub -all {[\u0591-\u05C7]} $dw {} dw
   }
   
   #Arabic, Urdu, Farsi
