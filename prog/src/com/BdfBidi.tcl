@@ -17,7 +17,27 @@ proc bidi {dw TwdLang args} {
   #Hebrew
   if {$TwdLang=="he"} {
     
-    #change chirik to yod for Pi'el
+    #1. Devowelize:
+    ##Mosche
+    regsub -all {מֹשֶה} $dw משה dw
+    ##Yaaqov
+    regsub -all {עֲקֹב} $dw עקב dw
+    ##Shlomoh, koh etc. : Cholam+He > He
+    regsub -all {\U05B9\U05D4} $dw \U05D4 dw
+    ##Zion
+    regsub -all {צִיּו} $dw {ציו} dw
+    ##Noach
+    regsub -all {נֹח} $dw {נח} dw
+    ##kol, ..chol
+    regsub -all {כֹּל} $dw {כל} dw
+    regsub -all {כֹל} $dw {כל} dw
+    
+    #2. Vorsilbe mi- ohne Jod: mem+chirik+?+dagesh > mem - TODO: group replacement geht nicht!
+    regsub -all {\U05DE\U05B4} $dw \U05DE dw
+    
+    
+    #3. change chirik to yod for Pi'el, but not Hif'il +Hitpael
+    regsub -all {הִ} $dw {ה} dw
     regsub -all {\U05B4.\U05BC} $dw \U05D9& dw
     
     #change all waw+cholam to waw
@@ -26,8 +46,9 @@ proc bidi {dw TwdLang args} {
     regsub -all {\u05DC\U05B9\u05D0} $dw \u05DC\u05D0 dw
     regsub -all {[\U05B9\U05BB]} $dw \U05D5 dw
     
-    #eliminate remaining vowels
-    regsub -all {[\u0591-\u05C7]} $dw {} dw
+    #eliminate remaining vowels, excluding maqaf (\u05BE)
+    regsub -all {[\u0591-\u05BD]} $dw {} dw
+    regsub -all {[\u05BF-\u05C7]} $dw {} dw
   }
   
   #Arabic, Urdu, Farsi
