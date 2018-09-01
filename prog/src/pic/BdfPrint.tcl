@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 24aug18
+# Updated: 1sept18
 
 #1. SET BASIC VARS
 source $TwdTools
