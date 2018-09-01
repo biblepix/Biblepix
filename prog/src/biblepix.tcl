@@ -80,12 +80,17 @@ if {$enablepic} {
     while {[file exists $pidfile]} {
       if {$pidfiledatum==$heute} {
         sleep [expr $slideshow * 1000]
-        
+
         #export new TwdFile
         set ::TwdFileName [getRandomTwdFile]
-        catch {source $Image}
-        catch setBg
-      
+
+        if {[catch {source $Image} error]} {
+          puts $error
+        }
+
+        if {[catch setBg error]} {
+          puts $error
+        }
       } else {
       
         #Calling new instance of myself

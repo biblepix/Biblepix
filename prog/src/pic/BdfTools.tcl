@@ -254,15 +254,17 @@ proc printTextLine {textLine x y img args} {
     set encLetter [scan $letter %c]
 
     if { [catch {upvar 3 ${prefix}::print_$encLetter print_$encLetter} error] } {
- #     puts $error
+      puts $error
       continue
       
     } else {
       
       array set curLetter [array get print_$encLetter]
-      catch {printLetter curLetter $img $xBase $yBase} error
- #     puts $error
-    
+      if {[catch {printLetter curLetter $img $xBase $yBase}]} {
+        puts "could not print letter: $encLetter"
+        continue
+      }
+      
       set xBase [expr $xBase $operator $curLetter(DWx)]
     }
   } ;#END foreach
