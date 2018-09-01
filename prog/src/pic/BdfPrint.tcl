@@ -2,14 +2,15 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 19may18
+# Updated: 1sept18
 
 #1. SET BASIC VARS
 source $TwdTools
 source $BdfTools
 set TwdLang [getTwdLang $::TwdFileName]
 set ::RtL [isRtL $TwdLang]
-puts $TwdLang
+
+puts "TwdLang: $TwdLang"
 
 #2. SOURCE FONTS INTO NAMESPACES
 
@@ -22,25 +23,24 @@ if {$TwdLang == "zh"} {
     }
   }
 
-  ##Thai: (regular_20)
-  } elseif {$TwdLang == "th"} {
+##Thai: (regular_20)
+} elseif {$TwdLang == "th"} {
   set ::prefix T
-    if {! [namespace exists T]} {
-      namespace eval T {
-        source -encoding utf-8 $BdfFontsArray(ThaiFont)
-      }
+  if {! [namespace exists T]} {
+    namespace eval T {
+      source -encoding utf-8 $BdfFontsArray(ThaiFont)
     }
-  
-  ## All else: Regular / Bold / Italic
-  } else {
+  }
 
-  # Source Regular ???if fontweight==normal - gab einige Störungen, weiss nicht warum...
+## All else: Regular / Bold / Italic
+} else {
+
+  # TODO: Source Regular ???if fontweight==normal - gab einige Störungen, weiss nicht warum...
   # vorläufig wirds immer geladen, auch wenn bei "fontweight==bold" kein R:: nötig wäre
   #if {$fontweight == "normal"} {
     if {! [namespace exists R]} {
       namespace eval R {
         source -encoding utf-8 $BdfFontsArray($fontName)
-#        puts $FontAsc
       }
     }
 #  }
@@ -50,7 +50,6 @@ if {$TwdLang == "zh"} {
     set ::prefix I
     namespace eval I {
       source -encoding utf-8 $BdfFontsArray($fontNameItalic)
-#      puts $FontAsc
     }
   }
   
@@ -59,7 +58,6 @@ if {$TwdLang == "zh"} {
     if {! [namespace exists B]} {
       namespace eval B {
         source -encoding utf-8 $BdfFontsArray($fontNameBold)
-#        puts $FontAsc
       }
     }
   }
@@ -68,14 +66,12 @@ if {$TwdLang == "zh"} {
 # 3. LAUNCH PRINTING & SAVE IMAGE
 set img hgbild
 set finalImg [printTwd $TwdFileName $img]
-
 if {$platform=="windows"} {  
-    $finalImg write $TwdTIF -format TIFF
-  
-  } elseif {$platform=="unix"} {
-    $finalImg write $TwdBMP -format BMP
-    $finalImg write $TwdPNG -format PNG
-  }
+  $finalImg write $TwdTIF -format TIFF
+} elseif {$platform=="unix"} {
+  $finalImg write $TwdBMP -format BMP
+  $finalImg write $TwdPNG -format PNG
+}
 
 #Cleanup
 image delete $finalImg

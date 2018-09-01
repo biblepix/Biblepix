@@ -3,7 +3,7 @@
 # called by BdfPrint
 # optional 'args' reverts string for Setup apps
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 11may18
+# Updated: 14aug18
 
 proc bidi {dw TwdLang args} {
 
@@ -17,16 +17,46 @@ proc bidi {dw TwdLang args} {
   #Hebrew
   if {$TwdLang=="he"} {
     
-    #change chirik to yod for Pi'el
+    #1. Devowelize:
+    ##Mosche
+    regsub -all {מֹשֶה} $dw משה dw
+    ##Yaaqov
+    regsub -all {עֲקֹב} $dw עקב dw
+    ##Shlomoh, koh etc. : Cholam+He > He
+    regsub -all {\U05B9\U05D4} $dw \U05D4 dw
+    ##Zion
+    regsub -all {צִיּו} $dw {ציו} dw
+    ##Noach
+    regsub -all {נֹח} $dw {נח} dw
+    ##kol, ..chol
+    regsub -all {כֹּל} $dw {כל} dw
+    regsub -all {כֹל} $dw {כל} dw
+    
+    #2. Vorsilbe mi- ohne Jod: mem+chirik+?+dagesh > mem
+    regsub -all {\U05DE\U05B4} $dw \U05DE dw
+    
+    #3. change chirik to yod for Pi'el, excluding Hif'il +Hitpael
+    regsub -all {הִ} $dw {ה} dw
     regsub -all {\U05B4.\U05BC} $dw \U05D9& dw
     
-    #change all waw+cholam to waw
+    #4. Cholam
+    ##change all alef+cholam to alef
+    regsub -all {\u5D0\u05b9} $dw \u5D0 dw
+    ##change all cholam+alef to alef
+    regsub -all {\u05b9\u5D0} $dw \u5D0 dw
+    ##change remaining waw+cholam to waw
     regsub -all {\u05D5\U05B9} $dw \U05D5 dw
-    #change all cholam/kubutz to waw, excluding לא +TODO: Mosche/Schlomo/(kol)
+    
+    #5. Kubutz
+    #change all cholam/kubutz to waw
     regsub -all {\u05DC\U05B9\u05D0} $dw \u05DC\u05D0 dw
     regsub -all {[\U05B9\U05BB]} $dw \U05D5 dw
     
-    #eliminate remaining vowels
+    #eliminate remaining vowels, excluding maqaf (\u05BE)
+    #TESTING: Maqaf>Space
+    regsub -all {\u05BE} $dw { } dw
+#    regsub -all {[\u0591-\u05BD]} $dw {} dw
+#    regsub -all {[\u05BF-\u05C7]} $dw {} dw
     regsub -all {[\u0591-\u05C7]} $dw {} dw
   }
   
@@ -37,6 +67,7 @@ proc bidi {dw TwdLang args} {
     #Ar: eliminate all vowels
     regsub -all {[\u064B-\u065F]} $dw {} dw
     set dw [fixArabic $dw]
+#puts $dw
   }
   
   #Provide reverse text for Setup apps

@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 25may18
+# Updated: 1sept18
 
 
 # printTwd
@@ -99,11 +99,16 @@ proc printTwdTextParts {x y img} {
     set markB ""
     set markI ""
     set markR ""
-    } else {
+  } elseif {[isArabicScript $TwdLang]} {
+    #Arabic has no Italics!
+    set markB +
+    set markI ~
+    set markR ~
+  } else {
     set markB +
     set markI <
     set markR ~
-    }
+  }
 
   # 1. Print Title in Bold +...~
   if {$enabletitle} {
@@ -254,15 +259,17 @@ proc printTextLine {textLine x y img args} {
     set encLetter [scan $letter %c]
 
     if { [catch {upvar 3 ${prefix}::print_$encLetter print_$encLetter} error] } {
- #     puts $error
+      puts $error
       continue
       
     } else {
       
       array set curLetter [array get print_$encLetter]
-      catch {printLetter curLetter $img $xBase $yBase} error
- #     puts $error
-    
+      if {[catch {printLetter curLetter $img $xBase $yBase}]} {
+        puts "could not print letter: $encLetter"
+        continue
+      }
+      
       set xBase [expr $xBase $operator $curLetter(DWx)]
     }
   } ;#END foreach

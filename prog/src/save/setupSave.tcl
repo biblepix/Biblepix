@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 9jul18 
+# Updated : 1sept18 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $twdDir/*$jahr.twd}] } {
@@ -121,16 +121,5 @@ if {[info exists oldtwdlist]} {
 }
 
 ###### S t a r t   B i b l e p i x  #####################
-
-#Create random BMP if $imgDir empty
-if {$enablepic} {
-  if { [glob -nocomplain $imgDir/*.bmp] == "" } {
-    package require Img
-    set photopath [getRandomPhoto]
-    set quickimg [image create photo -file $photopath]
-    $quickimg write $TwdBMP -format bmp
-    image delete $quickimg
-  }
-}
 
 source $Biblepix

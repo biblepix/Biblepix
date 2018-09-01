@@ -185,6 +185,16 @@ proc getTwdLang {TwdFileName} {
 proc isRtL {TwdLang} {
   if {
   $TwdLang == "he" ||
+	[isArabicScript $TwdLang]
+  } {
+    return 1
+  } else {
+    return 0
+  }
+}
+
+proc isArabicScript {TwdLang} {
+  if {
   $TwdLang == "ar" || 
   $TwdLang == "ur" || 
   $TwdLang == "fa"
