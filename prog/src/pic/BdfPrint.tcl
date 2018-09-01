@@ -23,17 +23,17 @@ if {$TwdLang == "zh"} {
     }
   }
 
-  ##Thai: (regular_20)
-  } elseif {$TwdLang == "th"} {
+##Thai: (regular_20)
+} elseif {$TwdLang == "th"} {
   set ::prefix T
-    if {! [namespace exists T]} {
-      namespace eval T {
-        source -encoding utf-8 $BdfFontsArray(ThaiFont)
-      }
+  if {! [namespace exists T]} {
+    namespace eval T {
+      source -encoding utf-8 $BdfFontsArray(ThaiFont)
     }
-  
-  ## All else: Regular / Bold / Italic
-  } else {
+  }
+
+## All else: Regular / Bold / Italic
+} else {
 
   # TODO: Source Regular ???if fontweight==normal - gab einige Störungen, weiss nicht warum...
   # vorläufig wirds immer geladen, auch wenn bei "fontweight==bold" kein R:: nötig wäre

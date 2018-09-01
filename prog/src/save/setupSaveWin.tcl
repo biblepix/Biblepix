@@ -23,20 +23,10 @@ if { [info exists Debug] && $Debug } {
 
 #1b. Execute single pic theme if running slideshow detected
 if {$enablepic} {
-
-  #Detect running slideshow (entry reset by Windows when user sets bg)
-  set regpathExplorer [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
-  set regpathExplorerOld [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
-  
-  # Fallback behavior if BackgroundType is missing or wrong.
-  if {{[catch {set BackgroundType [registry get $regpathExplorer BackgroundType]}] && [catch {set BackgroundType [registry get $regpathExplorerOld BackgroundType]}]} || $BackgroundType != 0} {
-    tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangingDesktop
-    
-    if { [info exists Debug] && $Debug } {
-      setWinTheme
-    } else {
-      set themeError [catch setWinTheme]
-    }
+  if { [info exists Debug] && $Debug } {
+    setBackgroundType
+  } else {
+    set themeError [catch setBackgroundType]
   }
 }
 
