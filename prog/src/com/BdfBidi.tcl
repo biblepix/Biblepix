@@ -67,6 +67,7 @@ proc bidi {dw TwdLang args} {
     #Ar: eliminate all vowels
     regsub -all {[\u064B-\u065F]} $dw {} dw
     set dw [fixArabic $dw]
+#puts $dw
   }
   
   #Provide reverse text for Setup apps
