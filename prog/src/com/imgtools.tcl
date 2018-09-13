@@ -67,10 +67,13 @@ proc copyAndResizeSamplePhotos {} {
   set screenY [winfo screenheight .]
 
   foreach fileName [array names sampleJpegArray] {
-  
-    #Skip if found in $photosDir
-		if { [file exists $photosDir/$fileName] &&  
-				 [file size $sampleJpegDir/$fileName] == [file size $photosDir/$fileName] } {
+
+	  set origJpgPath [lindex [array get sampleJpegArray $fileName] 1]
+  	set newJpgPath $photosDir/$fileName
+
+	  #Skip if found in $photosDir
+		if { [file exists $newJpgPath] &&  
+				 [file size $origJpgPath] == [file size $newJpgPath] } {
     
       continue
 
@@ -78,20 +81,18 @@ proc copyAndResizeSamplePhotos {} {
 		} else {
 
 #TODO: check what this is doing
-    
-		  set filePath [lindex [array get sampleJpegArray $fileName] 1]
+      
 
-		  image create photo origJpeg -file $filePath 
+		  image create photo origJpeg -file $origJpgPath
 		  set imgX [image width origJpeg]
 		  set imgY [image height origJpeg]
-
     
 		  if {$screenX == $imgX && $screenY == $imgY} {
 		    file copy $fileName [file join $photosDir $fileName]
 		  
 		  } else {
 		
-		    puts "Resizing $fileName"   
+		    puts "Resizing $newFilePath"   
 		    set newPic [resize origJpeg $screenX $screenY]
 		    set pngFileName [setPngFileName $fileName]
 		    $newPic write [file join $photosDir $pngFileName] -format PNG

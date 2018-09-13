@@ -2,7 +2,7 @@
 # Searches system for current Desktop manager, gives out appropriate BG changing command
 # Called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4jul18
+# Updated: 13sep18
 
 ########################################################################
 # WINDOWS: accepts command through RUNDLL32.EXE - a bit buggy still...
@@ -50,8 +50,7 @@ proc detectRunningLinuxDesktop {} {
   }
   
   #check Wayland/Sway (return 4)
-  if { [info exists env(SWAYSOCK)] ||
-       [info exists env(WAYLAND_DISPLAY)] } {
+  if [info exists env(SWAYSOCK)] {
     return 4
   }
 
@@ -122,7 +121,8 @@ if {$runningDesktop == 4} {
   return
 }
 
-#Create setBg for Xloadimage (general Linux, no effect on modern Desktops!)
+#Create setBg for Xloadimage (general Linux, no effect on popular Desktops)
+##tested on dwm
 if {[auto_execok xloadimage] != ""} {
   proc setBg {} {
     exec xloadimage -onroot $::TwdPNG
@@ -130,7 +130,7 @@ if {[auto_execok xloadimage] != ""} {
   return
 }
 
-#Create setBg for ImageMagick (general Linux, no effect on modern Desktops!)
+#Create setBg for ImageMagick (general Linux, no effect on popular Desktops!)
 if {[auto_execok display] != ""} {
   proc setBg {} {
     exec display -window root $::TwdBMP
