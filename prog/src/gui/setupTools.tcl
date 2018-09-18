@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jun18
+# Updated: 18sep18
 
 source $JList
 
@@ -154,12 +154,15 @@ global Flags
 # C A N V A S   M O V E   P R O C S
 
 # dragCanvasItem
-##called by movingTextBox & dlgCanvas
+## Called by SetupDesktop
 proc dragCanvasItem {c item newX newY} {
   ###adapted from a proc by ...THANKS TO  ...
   set xDiff [expr {$newX - $::x}]
   set yDiff [expr {$newY - $::y}]
-
+puts $newX
+puts $newY
+puts $xDiff
+puts $yDiff
   #test before moving
   if {[checkItemInside $c $item $xDiff $yDiff]} {
     $c move $item $xDiff $yDiff
@@ -168,9 +171,11 @@ proc dragCanvasItem {c item newX newY} {
   set ::y $newY
 }
 
-#TODO: VARIABELN FÜR movingTextBox anpassen
+# checkItemInside
+## makes sure movingItem stays inside canvas
+## called by dragCanvasItem
 proc checkItemInside {c item xDiff yDiff} {
-##called by dragCanvasItem
+
 
   lassign [$c bbox $item] - - can(maxx) can(maxy)
  
@@ -196,7 +201,7 @@ proc checkItemInside {c item xDiff yDiff} {
     set can(maxx) 0
   }
 
-#item coords
+	#item coords
   set item [$c coords $item]
   #check min values
   foreach {x y} $item {
@@ -218,7 +223,10 @@ proc checkItemInside {c item xDiff yDiff} {
   return 1
   }
 
-proc createMovingTextBox {textposCanv} {
+# createMovingTextBox
+## Creates textbox with TW text on canvas $c
+## Called by SetupDesktop
+proc createMovingTextBox {c} {
 global marginleft margintop textPosFactor fontsize setupTwdText fontcolor
 
   set screenx [winfo screenwidth .]
@@ -226,14 +234,15 @@ global marginleft margintop textPosFactor fontsize setupTwdText fontcolor
 
   set textPosSubwinX [expr $screenx/20]
   set textPosSubwinY [expr $screeny/30]
+
   set x1 [expr $marginleft/$textPosFactor]
   set y1 [expr $margintop/$textPosFactor]
-  set x2 [expr ($marginleft/$textPosFactor)+$textPosSubwinX]
-  set y2 [expr ($margintop/$textPosFactor)+$textPosSubwinY]
+  #set x2 [expr ($marginleft/$textPosFactor)+$textPosSubwinX]
+  #set y2 [expr ($margintop/$textPosFactor)+$textPosSubwinY]
 
-  $textposCanv create text [expr $marginleft/$textPosFactor] [expr $margintop/$textPosFactor] -anchor nw -justify left -tags {canvTxt mv}
-  $textposCanv itemconfigure canvTxt -text $setupTwdText
-  $textposCanv itemconfigure canvTxt -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill $fontcolor -activefill red
+  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt mv}
+  $c itemconfigure canvTxt -text $setupTwdText
+  $c itemconfigure canvTxt -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill $fontcolor -activefill red
   
 #  $textposCanv itemconfigure canvTxt -width 
 }

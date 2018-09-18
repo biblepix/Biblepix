@@ -73,18 +73,19 @@ image create photo canvasbild
 canvasbild copy origbild -subsample $textPosFactor -shrink
 set screeny [winfo screenheight .]
 
-canvas .textposCanv -bg lightgrey -borderwidth 1
-.textposCanv conf -width [image width canvasbild] -height [expr $screeny/$textPosFactor]
-.textposCanv create image 0 0 -image canvasbild -anchor nw
+set c [canvas .textposCanv -bg lightgrey -borderwidth 1]
+$c conf -width [image width canvasbild] -height [expr $screeny/$textPosFactor]
+$c create image 0 0 -image canvasbild -anchor nw
 
 set textposTxt [label .desktopF.fright.fbot.textpostxt -textvar textpos]
-createMovingTextBox .textposCanv
+createMovingTextBox $c
 
 .textposCanv bind mv <1> {
      set ::x %X
      set ::y %Y
  }
-.textposCanv bind mv <B1-Motion> [list dragCanvasItem %W mv %X %Y]
+.textposCanv bind mv <Button1-Motion> [list dragCanvasItem %W mv %X %Y]
+
 
 #2. Create InternationalText Canvas - Fonts based on System fonts, not Bdf!!!!
 ## Tcl picks any available Sans or Serif font from the system
