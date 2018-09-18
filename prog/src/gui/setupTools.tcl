@@ -219,7 +219,7 @@ proc checkItemInside {c item xDiff yDiff} {
   }
 
 proc createMovingTextBox {textposCanv} {
-global marginleft margintop textPosFactor fontsize setupTwdText
+global marginleft margintop textPosFactor fontsize setupTwdText fontcolor
 
   set screenx [winfo screenwidth .]
   set screeny [winfo screenheight .]
@@ -233,9 +233,9 @@ global marginleft margintop textPosFactor fontsize setupTwdText
 
   $textposCanv create text [expr $marginleft/$textPosFactor] [expr $margintop/$textPosFactor] -anchor nw -justify left -tags {canvTxt mv}
   $textposCanv itemconfigure canvTxt -text $setupTwdText
-  $textposCanv itemconfigure canvTxt -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill orange  -activefill red
+  $textposCanv itemconfigure canvTxt -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill $fontcolor -activefill red
   
-  $textposCanv itemconfigure canvTxt -width 
+#  $textposCanv itemconfigure canvTxt -width 
 }
 
 ##### S E T U P P H O T O S   P R O C S ####################################################
