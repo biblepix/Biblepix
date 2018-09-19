@@ -3,7 +3,7 @@
 # called by BdfPrint
 # optional 'args' reverts string for Setup apps
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 14aug18
+# Updated: 19sep18
 
 proc bidi {dw TwdLang args} {
 
@@ -22,7 +22,7 @@ proc bidi {dw TwdLang args} {
     regsub -all {מֹשֶה} $dw משה dw
     ##Yaaqov
     regsub -all {עֲקֹב} $dw עקב dw
-    ##Shlomoh, koh etc. : Cholam+He > He
+    ##Shlomoh, koh etc. : Cholam+He -> He
     regsub -all {\U05B9\U05D4} $dw \U05D4 dw
     ##Zion
     regsub -all {צִיּו} $dw {ציו} dw
@@ -32,7 +32,7 @@ proc bidi {dw TwdLang args} {
     regsub -all {כֹּל} $dw {כל} dw
     regsub -all {כֹל} $dw {כל} dw
     
-    #2. Vorsilbe mi- ohne Jod: mem+chirik+?+dagesh > mem
+    #2. Vorsilbe mi- ohne Jod: mem+chirik+?+dagesh -> mem
     regsub -all {\U05DE\U05B4} $dw \U05DE dw
     
     #3. change chirik to yod for Pi'el, excluding Hif'il +Hitpael
@@ -52,11 +52,10 @@ proc bidi {dw TwdLang args} {
     regsub -all {\u05DC\U05B9\u05D0} $dw \u05DC\u05D0 dw
     regsub -all {[\U05B9\U05BB]} $dw \U05D5 dw
     
-    #eliminate remaining vowels, excluding maqaf (\u05BE)
-    #TESTING: Maqaf>Space
+    #6. Change all Maqaf to Space
     regsub -all {\u05BE} $dw { } dw
-#    regsub -all {[\u0591-\u05BD]} $dw {} dw
-#    regsub -all {[\u05BF-\u05C7]} $dw {} dw
+
+		#7. Eliminate all remaining vowels
     regsub -all {[\u0591-\u05C7]} $dw {} dw
   }
   
@@ -67,29 +66,30 @@ proc bidi {dw TwdLang args} {
     #Ar: eliminate all vowels
     regsub -all {[\u064B-\u065F]} $dw {} dw
     set dw [fixArabic $dw]
-#puts $dw
   }
   
   #Provide reverse text for Setup apps
   if {$args != ""} {
     set dw [string reverse $dw]
   }
-   
+
+	#Can someone explain why this is needed?
+  set dw [string map {( ) ) (} $dw]
+
   return $dw
   
 } ;#END bidi
 
 
+# fixArabic
+## Sets correct letter forms
+## Assign UTF letter codes & forms:
+## 1.Initial / 2.Middle / 3.Final-linked
 proc fixArabic {dw} {
-#Sets correct letter forms
-#added Persion & Urdu 5/16
-#Assign UTF letter codes & forms
-#1.Initial / 2.Middle / 3.Final-linked
 
-
-if {$dw == ""} {
-  return "No Text Found"
-}
+	if {$dw == ""} {
+		return "No Text Found"
+	}
 
 
 # Preliminary substitution of special letters:
