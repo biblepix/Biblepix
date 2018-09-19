@@ -6,7 +6,7 @@
 ################################################################################
 # Version: 3.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4jun18
+# Updated: 19sep18
 
 package require Tk
 
@@ -54,7 +54,8 @@ if {[catch {source $Globals}]} {
       source $Imgtools
       copyAndResizeSamplePhotos
       set pbTitle $uptodateHttp
-            
+
+   #TODO: Joel, this var isn't set anywhere         
     } elseif { [info exists UpdateJustDone] } {      
       set pbTitle $uptodateHttp
   
@@ -65,7 +66,6 @@ if {[catch {source $Globals}]} {
       
       if { ![file exists $Config] } {      
         set pbTitle "Copying sample photos..."
-        source $Imgtools
         copyAndResizeSamplePhotos
       }
     }

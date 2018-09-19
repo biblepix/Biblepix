@@ -463,6 +463,49 @@ proc deleteImg {localJList c} {
   return $localJList
 }
 
+# copyAndResizeSamplePhotos
+## copies sample Jpegs to PhotosDir unchanged if size OK
+## else calls [resize] 
+## no cutting intended because these pics can be stretched
+## called by BiblepixSetup
+##$$$$$$$$$$$$$ TODO: Joel, this proc needs threading!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+proc copyAndResizeSamplePhotos {} {
+  global sampleJpgArray sampleJpgDir photosDir
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+
+  foreach fileName [array names sampleJpgArray] {
+
+		set origJpgPath [file join $sampleJpgDir $fileName]
+	  set newJpgPath [file join $photosDir $fileName]
+		set newPngPath [setPngFileName $newJpgPath]
+
+	  #Skip if JPG or PNG found in $photosDir
+		if { [file exists $newJpgPath] || [file exists $newPngPath] } {
+			puts "Skipping $fileName"
+      continue
+		} 
+
+	  #Copy over as JPG if size OK
+		image create photo origJpeg -file $origJpgPath
+		set imgX [image width origJpeg]
+	  set imgY [image height origJpeg]	 	  
+
+		if {$screenX == $imgX && $screenY == $imgY} {
+			puts "Copying $fileName unchanged"	    
+			file copy $origJpgPath $newJpgPath
+					
+		#else resize & save as PNG
+	  } else {
+
+	    puts "Resizing $origJpgPath"
+			
+		  set newPic [resize origJpeg $screenX $screenY]
+	    $newPic write $newPngPath -format PNG
+	  }
+	} ;#END foreach
+} ;#END copyAndResizeSamplePhotos
+
 
 ##### Procs for SetupWelcome ####################################################
 

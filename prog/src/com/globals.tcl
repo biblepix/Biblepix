@@ -109,9 +109,9 @@ foreach i [array names filepaths] {
   set $name $path
 }
 
-#Set JPEGs array
+#Set sample JPEG array
 set bpxJpegUrl "http://vollmar.ch/biblepix/jpeg"
-array set sampleJpegArray "
+array set sampleJpgArray "
   utah.jpg [file join $sampleJpgDir utah.jpg]
   eire.jpg [file join $sampleJpgDir eire.jpg]
   lake.jpg [file join $sampleJpgDir lake.jpg]
