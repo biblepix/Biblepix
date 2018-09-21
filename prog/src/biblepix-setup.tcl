@@ -6,7 +6,7 @@
 ################################################################################
 # Version: 3.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19sep18
+# Updated: 21sep18
 
 package require Tk
 
@@ -28,6 +28,7 @@ pack .updateFrame.pbTitle .updateFrame.progbar
 if {[catch {source $Globals}]} {
   set pbTitle "Update not possible.\nYou must download and rerun the BiblePix Installer from bible2.net."
   after 7000 {exit}
+
 } else {
   
   #In case of GIT download: makeDirs
@@ -49,9 +50,9 @@ if {[catch {source $Globals}]} {
 
     .updateFrame.progbar start
     
-    if { [info exists InitialJustDone] } {
+		#Copy photos after first run of Installer or if Config missing
+    if { [info exists InitialJustDone] || ![file exists $Config] } {
       set pbTitle "Copying & resizing sample photos..."
-      source $Imgtools
       copyAndResizeSamplePhotos
       set pbTitle $uptodateHttp
 
@@ -63,17 +64,10 @@ if {[catch {source $Globals}]} {
       set pbTitle $updatingHttp
         
       catch {runHTTP 0}
-      
-      if { ![file exists $Config] } {      
-        set pbTitle "Copying sample photos..."
-        copyAndResizeSamplePhotos
-      }
     }
     
     .updateFrame.progbar stop
-    
     pack forget .updateFrame.pbTitle .updateFrame.progbar .updateFrame
-    
     catch {source $UpdateInjection}
     
     # 2. B U I L D  M A I N  G U I
@@ -81,5 +75,3 @@ if {[catch {source $Globals}]} {
     source $SetupMainFrame
   }
 }
-
-

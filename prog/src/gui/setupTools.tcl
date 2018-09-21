@@ -175,17 +175,15 @@ puts $yDiff
 ## makes sure movingItem stays inside canvas
 ## called by dragCanvasItem
 proc checkItemInside {c item xDiff yDiff} {
-
-
   lassign [$c bbox $item] - - can(maxx) can(maxy)
- 
   set imgX [image width photosCanvPic]
   set imgY [image height photosCanvPic]
   set canvX [winfo width $c]
   set canvY [winfo height $c]
-  
   set can(miny) 0
   set can(minx) 0
+
+#TODO: is this to prevent moving down and right? Do we need this?
 #  set can(maxy) [$c itemcget $item -height]
 #  set can(maxx) [$c itemcget $item -width]
 
@@ -227,14 +225,12 @@ proc checkItemInside {c item xDiff yDiff} {
 ## Creates textbox with TW text on canvas $c
 ## Called by SetupDesktop
 proc createMovingTextBox {c} {
-global marginleft margintop textPosFactor fontsize setupTwdText fontcolor
+	global marginleft margintop textPosFactor fontsize setupTwdText fontcolor
 
   set screenx [winfo screenwidth .]
   set screeny [winfo screenheight .]
-
   set textPosSubwinX [expr $screenx/20]
   set textPosSubwinY [expr $screeny/30]
-
   set x1 [expr $marginleft/$textPosFactor]
   set y1 [expr $margintop/$textPosFactor]
   #set x2 [expr ($marginleft/$textPosFactor)+$textPosSubwinX]
@@ -499,7 +495,6 @@ proc copyAndResizeSamplePhotos {} {
 	  } else {
 
 	    puts "Resizing $origJpgPath"
-			
 		  set newPic [resize origJpeg $screenX $screenY]
 	    $newPic write $newPngPath -format PNG
 	  }
