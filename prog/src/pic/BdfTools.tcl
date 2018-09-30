@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 1sept18
+# Updated: 30sept18
 
 
 # printTwd
@@ -73,7 +73,7 @@ proc parseTwdTextParts {TwdFileName} {
     foreach node "[split [$textNode1 selectNodes em/text()]] [split [$textNode2 selectNodes em/text()]]" {
       set nodeText [$node nodeValue]
       if {$nodeText != ""} {
-        $node nodeValue \<$nodeText\>
+        $node nodeValue \<$nodeText\~
       }
     }
     ##extract text including any tagged
