@@ -152,7 +152,7 @@ proc printTwdTextParts {x y img} {
 ## prints single letter to $img
 ## called by printTextLine
 proc printLetter {letterName img x y} {
-  global sun shade fontcolortext RtL weight prefix BBxoff
+  global sun shade fontcolortext RtL BBxoff prefix
   upvar $letterName curLetter
   
   set color [set fontcolortext]
@@ -240,7 +240,7 @@ proc printTextLine {textLine x y img args} {
 # jetzt durch "source -encoding utf-8" ersetzt in BdfPrint - JOEL BITTE TESTEN!
 
   set letterList [split $textLine {}]
-  set weight R
+  set prefix R
   
   foreach letter $letterList {
 
