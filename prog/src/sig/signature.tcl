@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15apr18
+# Updated: 2oct18
 
 source $TwdTools
 
@@ -12,9 +12,9 @@ set twdList [getTWDlist]
 foreach twdFileName $twdList {
   set twdSig [getTodaysTwdSig $twdFileName]
 
-  #set endung mit 5 Extrabuchstaben nach Sprache_
-  set endung [string range $twdFileName 0 5] 
-  set sigFile [file join $sigDir signature-$endung]
+  #set endung mit 8 Extrabuchstaben nach Sprache_
+  set endung [string range $twdFileName 0 8] 
+  set sigFile [file join $sigDir signature-$endung.txt]
   
   #create the File if it doesn't exist and open it.
   set sigFileChan [open $sigFile a+]
@@ -52,3 +52,29 @@ foreach twdFileName $twdList {
 
   puts "Creating signature for signature-$endung"
 } ;#END main loop
+
+
+proc trojitaSig {} {
+  #TESTING signature creation for trojita IMAP mailer
+  set trojitaConfigDir $env(HOME)/.config/flaska.net
+  if {![file exists $trojitaConfigDir]} {
+	  return
+  }
+
+  #TODO: what about langs?
+  set dw [getTodaysTwdText [getRandomTwdFile]]
+
+  #Trojita can have several *.conf files for different accounts, for now let's use the default
+  set file $trojitaConfigDir/trojita.conf
+  set chan [open $file r]
+  set fileText [read $chan]
+  close $chan
+
+  if [regexp signature $fileText] {
+	  regsub -line {^..signature.*$} $fileText &$dw fileText
+  }
+
+  set chan [open $file w]
+  puts $chan $fileText
+  close $chan
+}
