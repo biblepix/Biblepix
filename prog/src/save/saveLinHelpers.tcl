@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8aug18
+# Updated: 28sep18
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -274,6 +274,42 @@ proc setupSwayBackground args {
 
   puts "Made BiblePix entry in $SwayConfFile"
   return 0
+}
+
+#TESTING WESTON (if running): 
+##THIS WONT WORK WITHOUT Weston providing an Autostart mechanism!
+#TODO: implemented in checkRunningLinuxDesktop
+proc setupWestonBackground {} {
+	global TwdPNG env
+
+	if [info exists env(WESTON_CONFIG_FILE)] {
+		set westonConfFile $env(WESTON_CONFIG_FILE)
+	} elseif [file exists .config/weston.ini] {
+		set westonConfFile .config/weston.ini
+	}
+	set chan [file open $westonConfFile r]
+	set fileText [read $chan]
+	close $chan
+
+	if [regexp iblepix $fileText] {
+	puts "Nothing to do"		
+	return 1
+	}
+	
+	set chan [file open $westonConfFile w]
+	
+	if [regexp background-image $fileText] {
+		regsub -line {(background-image=)(.*$) $fileText \2$TwdPNG} fileText
+	} elseif [regexp Shell $fileText] {
+		regsub -line {^\[Shell\].*$} $fileText {[Shell]
+background-image=$TwdPNG} fileText
+	} else {
+		append fileText \n \[Shell\] \n background-image=$TwdPNG \n background-type=scale-crop
+	}
+
+	puts $chan $fileText
+	close $chan
+	return 0
 }
 
 

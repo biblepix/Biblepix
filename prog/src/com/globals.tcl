@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 8jun18
+# Updated: 2oct18
 
 set version "3.0"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
@@ -82,11 +82,11 @@ array set filepaths "
   SetupWelcome [file join $guidir setupWelcome.tcl]
   SetupTools [file join $guidir setupTools.tcl]
   SetupTexts [file join $guidir setupTexts.tcl]
-  SetupSave [file join $savedir setupSave.tcl]
-  SetupSaveLin [file join $savedir setupSaveLin.tcl]
-  SetupSaveLinHelpers [file join $savedir setupSaveLinHelpers.tcl]
-  SetupSaveWin [file join $savedir setupSaveWin.tcl]
-  SetupSaveWinHelpers [file join $savedir setupSaveWinHelpers.tcl]
+  SetupSave [file join $savedir save.tcl]
+  SetupSaveLin [file join $savedir saveLin.tcl]
+  SetupSaveLinHelpers [file join $savedir saveLinHelpers.tcl]
+  SetupSaveWin [file join $savedir saveWin.tcl]
+  SetupSaveWinHelpers [file join $savedir saveWinHelpers.tcl]
   BdfBidi [file join $sharedir BdfBidi.tcl]
   Flags [file join $sharedir flags.tcl]
   Http [file join $sharedir http.tcl]
