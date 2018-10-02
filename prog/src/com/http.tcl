@@ -192,7 +192,7 @@ proc getRemoteTWDFileList {} {
     .internationalF.status conf -bg green
     set status $::connTwd
   } else {
-    ..international.status conf -bg red
+    .international.status conf -bg red
     set status $::noConnTwd
   }
   return $status
