@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2oct18
+# Updated: 4oct18
 
 source $TwdTools
 
@@ -44,6 +44,8 @@ foreach twdFileName $twdList {
   }
 
   set sigNew "$sigHead$twdSig"
+  set url {                                                  [bible2.net]}
+  append sigNew \n $url
   
   seek $sigFileChan 0
   puts $sigFileChan $sigNew
@@ -54,8 +56,10 @@ foreach twdFileName $twdList {
 } ;#END main loop
 
 
+#THIS IS FOR TESTING ONLY (NON OPERATIONAL) - 
+##signature creation for trojita IMAP mailer
 proc trojitaSig {} {
-  #TESTING signature creation for trojita IMAP mailer
+  
   set trojitaConfigDir $env(HOME)/.config/flaska.net
   if {![file exists $trojitaConfigDir]} {
 	  return
