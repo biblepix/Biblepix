@@ -20,7 +20,8 @@ BiblePix displays "The Word"
 System requirements
 -------------------
 Operating systems: Linux, Windows
-Pre-installed: Tcl/Tk library with tDom und tkimg (libtk-img) extensions
+Pre-installation Windows: ActiveTcl (from activestate.com/activetcl/downloads)
+Pre-installation Linux: Tcl/Tk library with tDom und tkimg extensions
 
 Installation
 ------------
@@ -55,12 +56,13 @@ an.
 Systemvoraussetzungen
 ---------------------
 Betriebssysteme: Linux, Windows
-Vorinstallation: Tcl/Tk-Bibliothek mit Zusatzpaketen tDom und tkimg (libtk-img)
+Vorinstallation Windows: ActiveTcl (von activestate.com/activetcl/downloads)
+Vorinstallation Linux: Tcl/Tk-Bibliothek mit Zusatzpaketen tDom und tkimg
 
 Installation
 ------------
 Git: git clone https://github.com/Biblepix/Biblepix.git
 Linux: Installer von bible2.net herunterladen und ausführen
+Ausführliche Anleitung im Manual (aus dem Setup-Programm oder in diesem Ordner)
 Windows: Installer von bible2.net herunterladen und ausführen
 
-Ausführliche Anleitung im Manual (aus dem Setup-Programm oder in diesem Ordner)
