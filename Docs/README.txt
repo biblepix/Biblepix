@@ -12,9 +12,8 @@ BiblePix displays "The Word"
 
  * in many languages
  * as background image on Windows & Linux Desktops
- * randomly alternating pictures or languages
- * slideshow on KDE, XFCE, GNOME and WINDOWS
- * as an e-mail signature
+ * slideshow with personal photo collection
+ * as e-mail signature
  * in the Linux terminal
  
 System requirements
@@ -46,8 +45,7 @@ BibelPix zeigt "Das Wort"
 
  * in vielen Sprachen
  * als Hintergrundbild auf Windows & Linux Desktops
- * zufälliger Bild- oder Sprachwechsel 
- * Diaschau für KDE, GNOME, XFCE4 und WINDOWS
+ * Diaschau mit persönlicher Fotosammlung
  * als E-Mail-Signatur
  * im Linux-Terminal
 
@@ -65,4 +63,3 @@ Git: git clone https://github.com/Biblepix/Biblepix.git
 Linux: Installer von bible2.net herunterladen und ausführen
 Ausführliche Anleitung im Manual (aus dem Setup-Programm oder in diesem Ordner)
 Windows: Installer von bible2.net herunterladen und ausführen
-
