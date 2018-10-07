@@ -2,7 +2,7 @@
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12feb18
+# Updated: 7oct18
 
 package require http
 
@@ -192,7 +192,7 @@ proc getRemoteTWDFileList {} {
     .internationalF.status conf -bg green
     set status $::connTwd
   } else {
-    .international.status conf -bg red
+    .internationalF.status conf -bg red
     set status $::noConnTwd
   }
   return $status
