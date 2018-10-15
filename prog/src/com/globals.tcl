@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 2oct18
+# Updated: 11oct18
 
 set version "3.0"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
@@ -61,7 +61,8 @@ proc makeDirs {} {
 
 #Set filepaths array
 array set filepaths "
-  Readme [file join $rootdir README.txt]
+	ManualD [file join $rootdir Docs MANUAL_de.txt]
+	ManualE [file join $rootdir Docs MANUAL_en.txt]
   UpdateInjection [file join $srcdir updateInjection.tcl]
   Biblepix [file join $srcdir biblepix.tcl]
   Setup [file join $srcdir biblepix-setup.tcl]

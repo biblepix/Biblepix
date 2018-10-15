@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18sep18
+# Updated: 11oct18
 
 source $JList
 
@@ -132,7 +132,7 @@ global Flags
     set lang en
     setTexts en
     .manualF.man configure -state normal
-    .manualF.man replace 1.1 end [setReadmeText en]
+    .manualF.man replace 1.1 end [setManText en]
     .manualF.man configure -state disabled
     .en configure -relief flat
   }
@@ -143,13 +143,73 @@ global Flags
     set lang de
     setTexts de
     .manualF.man configure -state normal
-    .manualF.man replace 1.1 end [setReadmeText de]
-    .manualF.man configure -state disabled
+    .manualF.man replace 1.1 end [setManText de]
     .de configure -relief flat
   }
   bind .de <ButtonRelease> { .de configure -relief raised}
 }
 
+# setManText
+## Formats Manual_(..).txt & switches between languages
+proc setManText {lang} {
+	global ManualD ManualE
+
+	set manW .manualF.man
+	$manW configure -state normal
+	
+	if {$lang=="de"} {
+		set manFile $ManualD
+	} elseif {$lang=="en"} {
+		set manFile $ManualE
+	}
+
+	set chan [open $manFile]
+	set manText [read $chan]
+	close $chan
+
+
+	#Adapt \path\ display for WIndows - zu kompliziert!
+#if {$platform=="windows"} {
+		#set manText [string map {\/ \\} $manText]
+		
+	#}
+  
+	$manW replace 1.0 end $manText 
+	
+	#Determine & tag headers
+	set numLines [$manW count -lines 1.0 end]
+
+	for {set line 1} {$line <= $numLines} {incr line} {
+
+		##Level H3 (all caps header) if min. 2 caps at beg. of line
+		if { [$manW search -regexp {^[[:upper:]]{2}} $line.0 $line.end] != ""} {
+	 		$manW tag add H3 $line.0 $line.end
+
+		##Level H2 (1x spaced Header)
+		} elseif { [$manW search -regexp {^[[:upper:]] [[:upper:]]} $line.0 $line.end] != ""} {
+			$manW tag add H2 $line.0 $line.end
+
+		##Level H1 (2x spaced Header)
+		} elseif { [$manW search -regexp {^[[:upper:]]  [[:upper:]]} $line.0 $line.end] != ""} {
+			$manW tag add H1 $line.0 $line.end
+
+		##Level Addenda (dash at line start > all following in small script)
+		} elseif { [$manW search -regexp {^-} $line.0 $line.end] != ""} {
+			$manW tag add Addenda $line.0 end		
+		}
+	}
+
+	
+	#Configure font tags
+	$manW tag conf H1 -font "TkCaptionFont 20 bold"
+	$manW tag conf H2 -font "TkHeadingFont 16 bold"
+	$manW tag conf H3 -font "TkSmallCaptionFont 14 bold"
+	$manW tag conf Addenda -font "TkTooltipFont"
+	##tabs in pixels?
+	$manW configure -tabs 30
+	$manW configure -state disabled
+	
+}
 
 # C A N V A S   M O V E   P R O C S
 

@@ -1,17 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10aug18
-
-proc setReadmeText {lang} {
-#Isolates Readme text from <de> to </de> usw.
-global readmetext
-  set BEG [string first "\<$lang" $readmetext]
-  set END [string first "\<\/$lang" $readmetext]
-  set readmeLang [string range $readmetext $BEG $END]   
-  .manualF.man replace 1.1 end $readmeLang 
-  return $readmeLang
-}
+# Updated: 10oct18
 
 proc setTexts {lang} {
 #exports text variables for current language
@@ -80,7 +70,9 @@ set noConnTwd(en) "No connection to bible2.net. Try later."
 set noConnTwd(de) "Keine Verbindung zu bible2.net. Versuchen Sie es später."
 set ::noConnTwd $noConnTwd($lang)
 
-set ::bpsetup "$bp Setup"
+set bpsetup(de) "$bp Einrichtungsprogramm"
+set bpsetup(en) "$bp Setup"
+set ::bpsetup $bpsetup($lang)
 
 set refresh(en) "Update"
 set refresh(de) "Aktualisieren"
@@ -116,7 +108,7 @@ set textpos(de) "Textposition"
 set ::textpos $textpos($lang)
 
 set welcTit(en) "Welcome to the $bp setup program!"
-set welcTit(de) "Willkommen beim Installationsprogramm von $bp!"
+set welcTit(de) "Willkommen beim Einrichtungsprogramm von $bp!"
 set ::welc.tit $welcTit($lang)      ;#verträgt keinen Punkt im 2. Teil!
 
 set welcSubtit1(en) "What is $bp?"
