@@ -22,7 +22,8 @@ I  N  S  T  A  L  L  A  T  I  O  N
 Vor der Installation von BibelPix müssen Tcl/Tk sowie die angegebenen Zusatzpakete
 installiert sein. Tcl/Tk ist eine systemübergreifende Plattform für viele Betriebssysteme.
 Der BiblePix-Installer sollte nur 1x bei der Erstinstallation ausgeführt werden, 
-da dadurch alle Dateien überschrieben werden. Danach genügt das BibelPix-Setup.
+da dadurch alle Dateien überschrieben werden. Danach genügt das BibelPix-Einrichtungs-
+Programm.
 
 INSTALLATIONSORT
 Das Installationsprogramm wählt automatisch den empfohlenen Standard, nämlich Ihren
@@ -56,7 +57,7 @@ In dieses Verzeichnis wechseln und BibelPix herunterladen (klonen) mit dem Komma
 Danach zum Ordner ~/Biblepix wechseln und mit Doppelklick auf die Datei 
 'biblepix-setup.tcl' das Programm einrichten.
 
-Da die Git-Version ist in stetiger Entwicklung begriffen ist, kann die korrekte
+Da die Git-Version in stetiger Entwicklung begriffen ist, kann die korrekte
 Funktion des Programms NICHT GARANTIERT WERDEN.
 
 
