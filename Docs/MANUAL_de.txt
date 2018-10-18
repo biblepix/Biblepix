@@ -121,7 +121,7 @@ Diese Funktion ist nicht automatisch. Die Dateien werden im Ordner
 gespeichert. Alte Jahrgänge werden durch das Einrichtungsprogramm automatisch gelöscht.
 
 PROGRAMM-AKTUALISIERUNG
-BibelPix verfügt über einen Update-Mechanismus. Das Einrichtungsprogramms sucht
+BibelPix verfügt über einen Update-Mechanismus. Das Einrichtungsprogramm sucht
 bei vorhandener Internetverbindung jeweils nach Programm-Updates und Upgrades und 
 installiert diese automatisch. Somit ist Ihr BibelPix stets auf dem neusten Stand, 
 eine Neuinstallation ist kaum je nötig.
@@ -142,7 +142,7 @@ Wenn zusätzlich die Funktion "Diaschau" aktiviert ist, geschieht dies im gewün
 Minuten-Rhythmus. 
 Der Bibeltext wird in leserlicher Schattenschrift direkt aufs Bild geschrieben. 
 Grösse, Farbe und Art der Schrift können im Einrichtungsprogramm festgelegt werden, 
-ebenso die Position des Textes auf dem Bild (Hebräisch und Arabisch siehe Anmerkung*****).
+ebenso die Position des Textes auf dem Bild (Hebräisch und Arabisch s. Anm.*****).
 Die Darstellung als Desktop-Hintergrundbild sowie der Bildwechsel (bei Diaschau) 
 werden vom BibelPix-Hauptprogramm automatisch gesteuert. 
 
@@ -179,12 +179,14 @@ Eintrag in ~/.bash_profile.
 ________________________________________________________________________________
 
 
-F U S S N O T E N  &  E R G Ä N Z U N G E N
+F U S S N O T E N   &   E R G Ä N Z U N G E N
 -
 
-*Die Konfigurationsdatei wird vom Einrichtungsprogramm geschrieben und ist nicht für User-Eingriffe bestimmt. 
-Falls nach einem Update das Setup nicht mehr laufen sollte, können Sie die Datei löschen und dann das Einrichtungsprogramm neu starten. 
-Die Konfigurationsdatei erlaubt auch den sog. "Debug-Modus", um Programmfehler aufzuspüren. Dazu setzen Sie den Wert 'Debug' auf 1 und starten das Einrichtungsprogramm neu.
+*Die Konfigurationsdatei wird vom Einrichtungsprogramm geschrieben und ist nicht für User-
+Eingriffe bestimmt. Falls nach einem Update das Setup nicht mehr laufen sollte, 
+können Sie die Datei löschen und dann das Einrichtungsprogramm neu starten. 
+Die Konfigurationsdatei erlaubt auch den sog. "Debug-Modus", um Programmfehler aufzuspüren. 
+Dazu setzen Sie den Wert 'Debug' auf 1 und starten das Einrichtungsprogramm neu.
 
 **oder Kurzkommando für Gesamtinstallation in Konsole eingeben:
 	° sudo apt-get install tdom libtk-img (Debian/Ubuntu)
@@ -197,12 +199,14 @@ Die Konfigurationsdatei erlaubt auch den sog. "Debug-Modus", um Programmfehler a
  
 ****Das Einrichtungsprogramm macht Einträge in Systemdateien, damit BibelPix 
 künftig automatisch ausgeführt wird (Autostart) und damit das Hintergrundbild wechselt. 
-Falls dies fehlschlägt, können Sie die nötigen Einstellungen manuell nachholen.
+Falls dies fehlschlägt, können Sie die nötigen Einstellungen manuell nachholen:
 
 A )  W I N D O W S
 
-AUTOSTART: Systemeinstellungen > Automatisch gestartete Programme: genauen Pfad zum Hauptprogramm angeben (s.o. Installationsort).
-HINTERGRUND: Systemsteuerung > Anpassungen > Darstellung > Desktophintergrund (oder Rechtsklick auf der Arbeitsfläche): genauen Bildpfad angeben: 
+AUTOSTART: Systemeinstellungen > Automatisch gestartete Programme: genauen Pfad zum 
+Hauptprogramm angeben (s.o. Installationsort).
+HINTERGRUND: Systemsteuerung > Anpassungen > Darstellung > Desktophintergrund (oder 
+Rechtsklick auf der Arbeitsfläche) - genauen Bildpfad angeben: 
 
 		~\Biblepix\TodaysPic\theword.tif
 
@@ -214,7 +218,7 @@ Bilder immer wieder neu eingelesen und angezeigt werden.
 B )  L I N U X   D E S K T O P S
 
 Bildpfad für Einzelbild: ~/Biblepix/TodaysPic/theword.png od. ~/Biblepix/TodaysPic/theword.bmp
-Bildpfad für Diaschau: ~/Biblepix/TodaysPic
+Bildpfad für Diaschau: ~/Biblepix/TodaysPic/
 
 KDE Plasma 
 Autostart: Programmenü > Systemeinstellungen > Autostart
@@ -232,7 +236,7 @@ Hintergrund: Rechtsklick auf Desktop > Schreibtisch einrichten > Hintergrund > O
 Wichtig: Einzelbild oder Diaschau wählen!
 
  
-*****Arabischer und hebräischer Text wird automatisch rechts positioniert.
+*****Arabischer und hebräischer Text wird automatisch auf der Gegenseite positioniert
 ________________________________________________________________________________
 
 
@@ -242,8 +246,8 @@ BibelPix hat aus der Vielfalt der Linux-Desktops die wichtigsten wie folgt berü
 
 a) X11: KDE/GNOME/XFCE4 : Autostart + Hintergrundwechsel vollautomatisch, bei Problemen s.o. 
 
-b) X11: DWM und hoffentlich viele andere: 
-	Autostart: in ~/.xinitrc oder ~/.xsession Pfad zum Hauptprogramm anfügen
+b) X11: DWM und hoffentlich viele andere Exoten: 
+	Autostart: nicht automatisch, in ~/.xinitrc oder ~/.xsession Pfad zum Hauptprogramm anfügen
 	Hintergrundwechsel: automatisch, falls 'xloadimage' oder 'display' (ImageMagick) installiert sind 
 
 c) Wayland: (very experimental!)
@@ -252,7 +256,7 @@ c) Wayland: (very experimental!)
 			Hintergrund: automatisch über BibelPix
 		Weston: 
 			Autostart: nicht bekannt
-			Hintergrund: folgender Eintrag in ~/.config/weston.ini möglich:
+			Hintergrund: nicht automatisch, folgender Eintrag in ~/.config/weston.ini möglich:
 				[shell]
 				background-image=~/Biblepix/TodaysPic/theword.png
 				background-type=scale-crop
