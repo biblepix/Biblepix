@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 11oct18
+# Updated: 19oct18
 
 set version "3.0"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
@@ -26,16 +26,15 @@ if { [info exists srcdir] } {
 }
 
 #S e t   d i r n a m e s
-set sigDir [file join $rootdir Email]
-set sampleJpgDir [file join $rootdir SamplePhotos]
-set imgDir [file join $rootdir Image]
+set sigDir [file join $rootdir TodaysSignature]
+set imgDir [file join $rootdir TodaysPicture]
 
 #TODO: jpegDir > photosDir
 set photosDir [file join $rootdir Photos]
 set jpegDir $photosDir
-
 set progDir [file join $rootdir prog]
-set twdDir [file join $rootdir Texts]
+set twdDir [file join $rootdir BibleTexts]
+set docDir [file join $rootdir Docs]
 
 set confdir [file join $progDir conf]
 set fontdir [file join $progDir font]
@@ -44,14 +43,15 @@ set srcdir [file join $progDir src]
 set unixdir [file join $progDir unix]
 set windir [file join $progDir win]
 
-set sharedir [file join $srcdir com]
-set guidir [file join $srcdir gui]
-set maildir [file join $srcdir sig]
-set picdir [file join $srcdir pic]
+set sharedir [file join $srcdir share]
+set guidir [file join $srcdir setup]
+set maildir [file join $srcdir makeSig]
+set picdir [file join $srcdir makePic]
 set savedir [file join $srcdir save]
+set sampleJpgDir [file join $picdir SamplePhotos]
 
 proc makeDirs {} {
-  file mkdir $::sigDir $::imgDir $::jpegDir $::sampleJpgDir $::progDir $::twdDir
+  file mkdir $::sigDir $::imgDir $::jpegDir $::sampleJpgDir $::progDir $::twdDir $::docDir
   file mkdir $::confdir $::piddir $::srcdir $::unixdir $::windir
   file mkdir $::sharedir $::guidir $::maildir $::picdir $::savedir
 }
@@ -60,8 +60,8 @@ proc makeDirs {} {
 
 #Set filepaths array
 array set filepaths "
-	ManualD [file join $rootdir Docs MANUAL_de.txt]
-	ManualE [file join $rootdir Docs MANUAL_en.txt]
+	ManualD [file join $docDir MANUAL_de.txt]
+	ManualE [file join $docDir MANUAL_en.txt]
   UpdateInjection [file join $srcdir updateInjection.tcl]
   Biblepix [file join $srcdir biblepix.tcl]
   Setup [file join $srcdir biblepix-setup.tcl]
@@ -265,7 +265,6 @@ proc Show.Modal {win args} {
 
 catch {source $LoadConfig} res
 puts $res
-
 
 #Define current font name from Config
 if {$fontfamily=="Sans"} {

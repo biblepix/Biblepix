@@ -150,8 +150,8 @@ SIGNATUR
 BibelPix bietet die Zusatzfunktion "Das Tageswort als E-Mail-Signatur". Diese 
 Funktion kann im Einrichtungsprogramm aktiviert werden. Dann fügt BibelPix einmal 
 täglich für jede installierte Bibeltextdatei das Tageswort an Ihre Signatur(en) an. 
-Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. signature-de_Schl) 
-im folgenden Ordner gespeichert:
+Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. 
+signature-de_Schlac.txt) im folgenden Ordner gespeichert:
 
 	~/Biblepix/Email/
 

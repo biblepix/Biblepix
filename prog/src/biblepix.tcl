@@ -4,12 +4,12 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jun18
+# Updated: 19oct18
 ######################################################################
 
 #Verify location & source Globals
 set srcdir [file dirname [info script]]
-set Globals "[file join $srcdir com globals.tcl]"
+set Globals "[file join $srcdir share globals.tcl]"
 source $Globals
 source $TwdTools
 
