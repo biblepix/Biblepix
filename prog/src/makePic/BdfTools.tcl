@@ -94,54 +94,58 @@ proc printTwdTextParts {x y img} {
   global enabletitle TwdLang
 #  global title text1 text2 ref1 ref2 intro1 intro2
   
-  #Sort out markings for Italic & Bold
+  #Sort out markRefngs for Italic & Bold
   if {$TwdLang == "th" || $TwdLang == "zh" } {
-    set markB ""
-    set markI ""
-    set markR ""
+    set markTitle ""
+    set markRef ""
+    set markText ""
   } elseif {[isArabicScript $TwdLang]} {
     #Arabic has no Italics!
-    set markB +
-    set markI ~
-    set markR ~
+    set markTitle +
+    set markRef ~
+    set markText ~
+  } elseif {$::fontweight == "bold"} {
+    set markTitle +
+    set markRef <
+    set markText +
   } else {
-    set markB +
-    set markI <
-    set markR ~
+    set markTitle +
+    set markRef <
+    set markText ~
   }
 
   # 1. Print Title in Bold +...~
   if {$enabletitle} {
-    set y [printTextLine ${markB}${twd::title}${markR} $x $y $img]
+    set y [printTextLine ${markTitle}${twd::title} $x $y $img]
   }
   
   #Print intro1 in Italics <...~
   if [info exists twd::intro1] {
-    set y [printTextLine ${markI}${twd::intro1}${markR} $x $y $img IND]
+    set y [printTextLine ${markRef}${twd::intro1} $x $y $img IND]
   }
   
   #Print text1
   set textLines [split $twd::text1 \n]
   foreach line $textLines {
-    set y [printTextLine $line $x $y $img IND]
+    set y [printTextLine ${markText}$line $x $y $img IND]
   }
   
   #Print ref1 in Italics
-  set y [printTextLine ${markI}${twd::ref1}${markR} $x $y $img TAB]
+  set y [printTextLine ${markRef}${twd::ref1} $x $y $img TAB]
 
   #Print intro2 in Italics
   if [info exists twd::intro2] {
-    set y [printTextLine ${markI}${twd::intro2}${markR} $x $y $img IND]
+    set y [printTextLine ${markRef}${twd::intro2} $x $y $img IND]
   }
   
   #Print text2
   set textLines [split $twd::text2 \n]
   foreach line $textLines {
-    set y [printTextLine $line $x $y $img IND]
+    set y [printTextLine ${markText}$line $x $y $img IND]
   }
 
   #Print ref2
-  set y [printTextLine ${markI}${twd::ref2}${markR} $x $y $img TAB]
+  set y [printTextLine ${markRef}${twd::ref2}${markText} $x $y $img TAB]
 
   return $img
   
@@ -220,8 +224,6 @@ proc printTextLine {textLine x y img args} {
     set textLine [bidi $textLine $TwdLang]
     set operator -
     
-# T O D O : THIS IS NOT CLEAR BUT WORKS....(why marginleft*2 ???) 
-# JOEL, das geht nur wenn der Rand klein ist, sonst wird der Text doppelt verschoben!!!
     set xBase [expr $imgW - ($marginleft*2) - $x]
     
   } else {
@@ -234,13 +236,8 @@ proc printTextLine {textLine x y img args} {
   } elseif {$args=="TAB"} {
     set xBase [expr $xBase $operator $tab]
   }
-  
-  
-# T O D O ???: setzt Kodierung nach Systemkodierung? - GEHT NICHT AUF LINUX!!!- 
-# jetzt durch "source -encoding utf-8" ersetzt in BdfPrint - JOEL BITTE TESTEN!
 
   set letterList [split $textLine {}]
-  set prefix R
   
   foreach letter $letterList {
 

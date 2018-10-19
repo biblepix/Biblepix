@@ -21,7 +21,9 @@ I  N  S  T  A  L  L  A  T  I  O  N
 
 Vor der Installation von BibelPix müssen Tcl/Tk sowie die angegebenen Zusatzpakete
 installiert sein. Tcl/Tk ist eine systemübergreifende Plattform für viele Betriebssysteme.
-Der BiblePix-Installer sollte nur 1x bei der Erstinstallation ausgeführt werden, 
+Für Windows: ActiveTcl herunterladen (s.u.)
+
+Der BiblePix-Installer (s.u.) sollte nur 1x bei der Erstinstallation ausgeführt werden, 
 da dadurch alle Dateien überschrieben werden. Danach genügt das BibelPix-Einrichtungs-
 Programm.
 
@@ -42,23 +44,6 @@ BibelPix-Basis bei Windows:
 ° Pfad zum Einrichtungsprogramm: ~/Biblepix/prog/src/biblepix-setup.tcl
 ° Pfad zum Hauptprogramm: ~/Biblepix/prog/src/biblepix.tcl
 ° Pfad zur Konfigurationsdatei: ~/Biblepix/prog/conf/biblepix.conf *
-
-G I T
-
-Die Git-Installationsmethode ist systemunabhängig und funktioniert auf allen
-Plattformen, die eine Version von Git installiert haben. Die Git-Installation
-sollte in einem Unterordner des Heimordners (Symbol ~) installiert werden,
-damit Schreibrechte garantiert sind. 
-
-In dieses Verzeichnis wechseln und BibelPix herunterladen (klonen) mit dem Kommando:
-
-	git clone https://github.com/Biblepix/Biblepix.git
- 
-Danach zum Ordner ~/Biblepix wechseln und mit Doppelklick auf die Datei 
-'biblepix-setup.tcl' das Programm einrichten.
-
-Da die Git-Version in stetiger Entwicklung begriffen ist, kann die korrekte
-Funktion des Programms NICHT GARANTIERT WERDEN.
 
 
 W I N D O W S
@@ -89,6 +74,30 @@ nachinstallieren, bevor Sie BibelPix einrichten. Die Installation erfolgt entwed
 	www.bible2.net
 
 herunterladen und ausführen mit Doppelklick auf die Datei.***
+
+
+G I T
+
+Die Git-Installationsmethode ist systemunabhängig und funktioniert auf allen
+Plattformen, die eine Version von Git installiert haben. Die Git-Installation
+sollte in einem Unterordner des Heimordners (Symbol ~) installiert werden,
+damit Schreibrechte garantiert sind. 
+
+In dieses Verzeichnis wechseln und BibelPix herunterladen (klonen) mit dem Kommando:
+
+	git clone https://github.com/Biblepix/Biblepix.git
+ 
+Danach zum Ordner ~/Biblepix/prog/src/ wechseln und mit Doppelklick auf die Datei 
+'biblepix-setup.tcl' das Programm einrichten.
+
+Da die aktuelle Git-Version in stetiger Entwicklung begriffen ist, kann die korrekte
+Funktion des Programms nicht garantiert werden. Um eine stabile Version 
+herunterzuladen, geben Sie im Internet-Browser folgende Adresse ein:
+
+	https://github.com/Biblepix/Biblepix/releases
+
+und wählen den gewünschten Release zum Download.
+
 ________________________________________________________________________________
  
 
@@ -203,17 +212,21 @@ Falls dies fehlschlägt, können Sie die nötigen Einstellungen manuell nachhole
 
 A )  W I N D O W S
 
-AUTOSTART: Systemeinstellungen > Automatisch gestartete Programme: genauen Pfad zum 
-Hauptprogramm angeben (s.o. Installationsort).
-HINTERGRUND: Systemsteuerung > Anpassungen > Darstellung > Desktophintergrund (oder 
-Rechtsklick auf der Arbeitsfläche) - genauen Bildpfad angeben: 
+AUTOSTART: im Explorer zum Autostart-Ordner wechseln (....) und Verknüpfung auf 
 
-		~\Biblepix\TodaysPic\theword.tif
+	~\Biblepix\prog\src\biblepix.tcl
+
+erstellen.
+
+HINTERGRUND: Einstellungen > Anpassungen und Darstellung > Hintergrund (oder 
+Rechtsklick auf Desktop > Anpassungen), dort genauen Bildpfad angeben: 
+
+	~\Biblepix\TodaysPic\theword.tif
 
 Wichtig: geben Sie die Anzeigeoption als 'Einzelbild' an! Falls Sie im Einrichtungs-
 programm die Option 'Diaschau' gewählt haben, betätigt BibelPix im angegebenen Intervall 
-das Systemprogramm 'RUNDLL32.EXE', welches dafür sorgt, dass geänderte Hintergrund-
-Bilder immer wieder neu eingelesen und angezeigt werden.
+ein Systemprogramm, welches dafür sorgt, dass geänderte Hintergrundbilder immer 
+wieder neu eingelesen und angezeigt werden.
 
 B )  L I N U X   D E S K T O P S
 

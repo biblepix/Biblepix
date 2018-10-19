@@ -6,13 +6,13 @@
 ################################################################################
 # Version: 3.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21sep18
+# Updated: 19Okt18
 
 package require Tk
 
 #Verify location & source vars
 set srcdir [file dirname [info script]]
-set Globals "[file join $srcdir com globals.tcl]"
+set Globals "[file join $srcdir share globals.tcl]"
 
 #Set initial FTP message & progress bar
 destroy .updateFrame
@@ -49,21 +49,22 @@ if {[catch {source $Globals}]} {
   } else {
 
     .updateFrame.progbar start
-    
-		#Copy photos after first run of Installer or if Config missing
-    if { [info exists InitialJustDone] || ![file exists $Config] } {
-      set pbTitle "Copying & resizing sample photos..."
-      copyAndResizeSamplePhotos
-      set pbTitle $uptodateHttp
 
-   #TODO: Joel, this var isn't set anywhere         
-    } elseif { [info exists UpdateJustDone] } {      
+    if { [info exists InitialJustDone] } {      
       set pbTitle $uptodateHttp
   
     } else {
       set pbTitle $updatingHttp
         
       catch {runHTTP 0}
+    }
+    
+		#Copy photos after first run of Installer or if Config missing
+    if { [info exists InitialJustDone] || ![file exists $Config] } {
+      set pbTitle "Copying & resizing sample photos..."
+			source $SetupTools
+      copyAndResizeSamplePhotos
+      set pbTitle $uptodateHttp
     }
     
     .updateFrame.progbar stop

@@ -92,7 +92,7 @@ array set filepaths "
   Http [file join $sharedir http.tcl]
   JList [file join $sharedir JList.tcl]
   Globals [file join $sharedir globals.tcl]
-  Imgtools [file join $sharedir imgtools.tcl]
+  Imgtools [file join $sharedir imgTools.tcl]
   LoadConfig [file join $sharedir LoadConfig.tcl]
   TwdTools [file join $sharedir TwdTools.tcl]
   Uninstall [file join $savedir uninstall.tcl]
@@ -263,8 +263,7 @@ proc Show.Modal {win args} {
   return ${::Modal.Result}
 }
 
-catch {source $LoadConfig} res
-puts $res
+catch {source $LoadConfig}
 
 #Define current font name from Config
 if {$fontfamily=="Sans"} {

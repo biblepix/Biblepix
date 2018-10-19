@@ -35,20 +35,21 @@ if {$TwdLang == "zh"} {
 ## All else: Regular / Bold / Italic
 } else {
 
-  # TODO: Source Regular ???if fontweight==normal - gab einige Störungen, weiss nicht warum...
-  # vorläufig wirds immer geladen, auch wenn bei "fontweight==bold" kein R:: nötig wäre
- 
-    if {! [namespace exists R]} {
-set ::prefix R
-      namespace eval R {
-        source -encoding utf-8 $BdfFontsArray($fontName)
-      }
+  if {$fontweight == "bold"} {
+    set ::prefix B
+  } else {
+    set ::prefix R
+  }
+
+  if {! [namespace exists R] && $fontweight != "bold"} {
+    namespace eval R {
+      source -encoding utf-8 $BdfFontsArray($fontName)
     }
+  }
   
   
   #Source Italic for all except Asian
   if {! [namespace exists I]} {
-    set ::prefix I
     namespace eval I {
       source -encoding utf-8 $BdfFontsArray($fontNameItalic)
     }

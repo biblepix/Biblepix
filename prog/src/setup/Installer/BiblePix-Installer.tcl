@@ -85,7 +85,7 @@ proc testHttpCon {} {
   }
 }
 
-# 2. SET UP PRELIMINARY MESSAGE WINDOW & PROGRESS BAR
+#SET UP PRELIMINARY MESSAGE WINDOW & PROGRESS BAR
 package require Tk
 
 pack [frame .if]
@@ -105,7 +105,7 @@ if { [catch testHttpCon Error] } {
   after 5000 { exit }
 } else {
     
-  # 3. FETCH Globals, Http
+  #FETCH Globals, Http
 
   #fetches Globals, Http
   proc fetchInitialFiles {} {
@@ -134,7 +134,7 @@ if { [catch testHttpCon Error] } {
   source $srcdir/globals.tcl
   makeDirs
 
-  # 5. FETCH ALL prog files (securely, re-fetching above 2!)
+  # FETCH ALL prog files (securely, re-fetching above 2!)
   source $srcdir/http.tcl
 
   if { [catch {runHTTP 1} result] } {
@@ -142,19 +142,17 @@ if { [catch testHttpCon Error] } {
     #exit if error
     set httpStatus $noConnHttp
     .if.pb stop
-    
     puts "ERROR: BiblePix-Installer.tcl: $result"
-    
     after 5000 { exit }
-  } else {
-    source $Http
+
+	} else {
     
-    downloadFileArray exaJpgArray $bpxJpegUrl
+		source $Http
+    downloadFileArray sampleJpgArray $bpxJpegUrl
     downloadFileArray iconArray $bpxIconUrl
 
     #delete extra files (refetched!)
     file delete $srcdir/globals.tcl $srcdir/http.tcl
-    
     .if.pb stop
 
     #set Status message
@@ -162,7 +160,7 @@ if { [catch testHttpCon Error] } {
     .if.initialMsg configure -bg green
     set httpStatus $uptodateHttp
 
-    # 5. Run Setup, providing var for not do above again
+    #Run Setup, providing var for not do above again
     after 2000 {
       pack forget .if
       set ::httpStatus $httpStatus
