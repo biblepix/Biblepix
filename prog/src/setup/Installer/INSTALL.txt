@@ -1,0 +1,21 @@
+# ENGLISH #
+
+If you have downloaded BiblePix from GitHub, you should just execute biblepix-setup.tcl in the Biblepix/prog/src directory to install.
+
+Linux:
+BiblePix-Installer.tcl will install BiblePix to /home/[USERNAME]/Biblepix by default. This way the GitHub version could be replaced by an older version, which may not be desirable.
+
+Windows:
+BiblePix-Installer.tcl will install BiblePix to C:\Users\[USERNAME]\AppData\Local. This way a second version of BiblePix would be installed on your computer, which may not be desirable.
+
+
+# DEUTSCH #
+
+Wenn Sie BibelPix von GitHub heruntergeladen haben, müssen Sie zur Installation lediglich die Datei biblepix-setup.tcl im Verzeichnis Biblepix/prog/src ausführen und mit Ok bestätigen.
+
+Info Linux:
+BiblePix-Installer.tcl installiert BibelPix standardmässig nach /home/[USERNAME]/Biblepix. Dadurch könnte die GitHub-Version durch eine ältere ersetzt werden, was möglicherweise nicht erwünscht ist.
+
+Info Windows:
+BiblePix-Installer.tcl installiert BibelPix standardmässig nach C:\Users\[USERNAME]\AppData\Local. Dadurch würde eine zweite Version von BibelPix auf dem Computer installiert, was möglicherweise nicht erwünscht ist.
+
