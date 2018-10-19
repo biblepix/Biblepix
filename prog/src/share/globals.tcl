@@ -51,10 +51,9 @@ set picdir [file join $srcdir pic]
 set savedir [file join $srcdir save]
 
 proc makeDirs {} {
-  global picdir sigDir sampleJpgDir imgDir jpegDir progDir twdDir confdir piddir srcdir unixdir windir sharedir guidir maildir maindir savedir
-  file mkdir $sigDir $imgDir $jpegDir $sampleJpgDir $progDir $twdDir
-  file mkdir $confdir $piddir $srcdir $unixdir $windir
-  file mkdir $sharedir $guidir $maildir $picdir $savedir
+  file mkdir $::sigDir $::imgDir $::jpegDir $::sampleJpgDir $::progDir $::twdDir
+  file mkdir $::confdir $::piddir $::srcdir $::unixdir $::windir
+  file mkdir $::sharedir $::guidir $::maildir $::picdir $::savedir
 }
 
 #SET ARRAYS FOR DOWNLOAD
