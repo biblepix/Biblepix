@@ -6,12 +6,13 @@
 ################################################################################
 # Version: 3.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19Okt18
+# Updated: 20Okt18
 
 package require Tk
 
 #Verify location & source vars
-set srcdir [file dirname [info script]]
+set rootdir [file dirname [info script]]
+set srcdir [file join $rootdir prog src]
 set Globals "[file join $srcdir share globals.tcl]"
 
 #Set initial FTP message & progress bar
