@@ -27,23 +27,8 @@ Der BiblePix-Installer (s.u.) sollte nur 1x bei der Erstinstallation ausgeführt
 da dadurch alle Dateien überschrieben werden. Danach genügt das BibelPix-Einrichtungs-
 Programm.
 
-INSTALLATIONSORT
-Das Installationsprogramm wählt automatisch den empfohlenen Standard, nämlich Ihren
-"Heimordner", als Basis für die BibelPix-Installation:
-
-BibelPix-Basis bei Linux: 
-	
-	/home/[MEINNAME]/Biblepix/
-
-BibelPix-Basis bei Windows: 
-
-	C:\Users\[MEINNAME]\AppData\Local\Biblepix\
-
-° Der "Heimordner" wird im folgenden mit dem Symbol ~ bezeichnet.
-° Windows-Dateipfade im folgenden mit normalen Schrägstrichen /  
-° Pfad zum Einrichtungsprogramm: ~/Biblepix/prog/src/biblepix-setup.tcl
-° Pfad zum Hauptprogramm: ~/Biblepix/prog/src/biblepix.tcl
-° Pfad zur Konfigurationsdatei: ~/Biblepix/prog/conf/biblepix.conf *
+Als Installationsort wählt BibelPix automatisch den empfohlenen Standard, nämlich Ihren
+"Heimordner" (Genaueres s.u.).
 
 
 W I N D O W S
@@ -80,14 +65,14 @@ G I T
 
 Die Git-Installationsmethode ist systemunabhängig und funktioniert auf allen
 Plattformen, die eine Version von Git installiert haben. Die Git-Installation
-sollte in einem Unterordner des Heimordners (Symbol ~) installiert werden,
-damit Schreibrechte garantiert sind. 
+sollte in einem Unterordner des Heimordners (Symbol ~, s.u. "Installationsort") 
+installiert werden, damit Schreibrechte garantiert sind. 
 
 In dieses Verzeichnis wechseln und BibelPix herunterladen (klonen) mit dem Kommando:
 
 	git clone https://github.com/Biblepix/Biblepix.git
  
-Danach zum Ordner ~/Biblepix/prog/src/ wechseln und mit Doppelklick auf die Datei 
+Danach zum Ordner ~/Biblepix/ wechseln und mit Doppelklick auf die Datei 
 'biblepix-setup.tcl' das Programm einrichten.
 
 Da die aktuelle Git-Version in stetiger Entwicklung begriffen ist, kann die korrekte
@@ -97,6 +82,25 @@ herunterzuladen, geben Sie im Internet-Browser folgende Adresse ein:
 	https://github.com/Biblepix/Biblepix/releases
 
 und wählen den gewünschten Release zum Download.
+
+
+I N S T A L L A T I O N S O R T
+
+Empfohlener Standard bei Linux: 
+	
+	/home/[MEINNAME]/Biblepix/
+
+Empfohlener Standard bei Windows: 
+
+	C:\Users\[MEINNAME]\AppData\Local\Biblepix\
+
+° Der "Heimordner" hat im folgenden das Symbol:     ~
+° Windows-Dateipfade im folgenden mit normalen Schrägstrichen:  /  
+
+° Pfad zum Einrichtungsprogramm: ~/Biblepix/biblepix-setup.tcl
+° Pfad zum Hauptprogramm: ~/Biblepix/prog/src/biblepix.tcl
+° Pfad zur Konfigurationsdatei: ~/Biblepix/prog/conf/biblepix.conf *
+
 
 ________________________________________________________________________________
  
@@ -110,11 +114,13 @@ bequem bestimmt werden. Das Programm lässt sich wie folgt starten:
 	° aus dem Programm-Menü Ihres Systems
 	° per Rechtsklick auf dem Desktop (Windows)
 	° per Rechtsklick im Dateimanager (Linux Konqueror)
+Bei Problemen:
+	° per Doppelklick im Dateimanager (genauer Pfad zum Programm s.o.)
 	° als Shell-Skript in ~/bin (Linux)
 
-° In der Rubrik 'Welcome' können Sie das aktuelle Tageswort in allen installierten 
+In der Rubrik 'Welcome' können Sie das aktuelle Tageswort in allen installierten 
 Sprachen lesen (zum Wechsel auf die Textfläche klicken).
-° Durch Betätigung der OK-Taste werden die BibelPix-Konfiguration sowie die System-
+Durch Betätigung der OK-Taste werden die BibelPix-Konfiguration sowie die System-
 einstellungen**** für Autostart und Hintergrundbild gespeichert. BibelPix wird neu 
 gestartet.
 
@@ -148,7 +154,19 @@ Hintergrundbild. Wenn im Einrichtungsprogramm die Funktion "Hintergrundbild"
 aktiviert ist, nimmt BibelPix ein neues Bild aus der Fotosammlung und versieht es mit 
 dem Tageswort aus einer vorhandenen Textdatei; die Auswahl geschieht im Zufallsprinzip.
 Wenn zusätzlich die Funktion "Diaschau" aktiviert ist, geschieht dies im gewünschten
-Minuten-Rhythmus. 
+Minuten-Rhythmus.
+Je nach Betriebssystem werden 1 oder 2 identische Bilder in  den Formaten:
+
+  theword.tif
+  theword.bmp
+  theword.png
+
+im Bildpfad-Ordner:
+
+	~/Biblepix/TodaysPicture/
+
+gespeichert.
+
 Der Bibeltext wird in leserlicher Schattenschrift direkt aufs Bild geschrieben. 
 Grösse, Farbe und Art der Schrift können im Einrichtungsprogramm festgelegt werden, 
 ebenso die Position des Textes auf dem Bild (Hebräisch und Arabisch s. Anm.*****).
@@ -162,18 +180,18 @@ täglich für jede installierte Bibeltextdatei das Tageswort an Ihre Signatur(en
 Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. 
 signature-de_Schlac.txt) im folgenden Ordner gespeichert:
 
-	~/Biblepix/Email/
+	~/Biblepix/TodaysSignature/
 
 Sie können diese Dateien aus Ihrem E-Mail-Programm oder in einem Texteditor bearbeiten 
 und persönliche Grussformeln, Adressen usw. oben einfügen. Text oberhalb der Trennlinie 
 (====) bleibt beim Wechsel des Tageswortes unbehelligt. Damit Das Wort künftig auf 
 Ihren Mails erscheint, müssen Sie Ihrem Mail-Programm beibringen, die oben beschriebenen 
-Dateien zu verwenden (meist unter Einstellungen>Signatur).
+Dateien zu verwenden (meist unter Einstellungen > Konten/Identitäten > Signatur).
   
 LINUX-TERMINAL
 Dank diesem Zusatz-Feature ermöglicht BibelPix die Darstellung des Tageswortes in Unix-
-Konsolen. Falls aktiviert, erzeugt BibelPix aufgrund vorhandener Bibeltextdateien ein
-Shell-Skript welches beim Öffnen eines Terminals ausgeführt wird: 
+Konsolen. Falls aktiviert (nur bei Linux möglich), erzeugt BibelPix aufgrund vorhandener 
+Bibeltextdateien ein Shell-Skript welches beim Öffnen eines Terminals ausgeführt wird: 
 	
 	~/Biblepix/prog/unix/term.sh
 
@@ -182,7 +200,7 @@ Darstellung und Farben können in
 	~/Biblepix/prog/conf/term.conf
 
 geändert werden. Für die Darstellung von Hebräisch oder Arabisch kommen nur Terminals 
-wie 'mlterm' oder 'Konsole' (KDE) in Frage,welche bidirektionalen Text richtig anzeigen.
+wie 'mlterm' oder 'Konsole' (KDE) in Frage, welche bidirektionellen Text richtig anzeigen.
 Damit term.sh automatisch ausgeführt wird, macht das Einrichtungsprogramm einen 
 Eintrag in ~/.bash_profile.
 ________________________________________________________________________________
@@ -230,10 +248,11 @@ wieder neu eingelesen und angezeigt werden.
 
 B )  L I N U X   D E S K T O P S
 
-Bildpfad für Einzelbild: ~/Biblepix/TodaysPic/theword.png od. ~/Biblepix/TodaysPic/theword.bmp
+Bildpfad für Einzelbild: PNG oder BMP (genaue Pfade s.o. "Wort auf Bild")
 Bildpfad für Diaschau: ~/Biblepix/TodaysPic/
+Pfad für Autostart: s.o. "Installationsort" (Pfad zum Hauptprogramm)
 
-KDE Plasma 
+KDE Plasma
 Autostart: Programmenü > Systemeinstellungen > Autostart
 Hintergrund: Rechtsklick auf Desktop > Arbeitsfläche einrichten > "Bild" od. "Diaschau" wählen
 
@@ -261,17 +280,17 @@ a) X11: KDE/GNOME/XFCE4 : Autostart + Hintergrundwechsel vollautomatisch, bei Pr
 
 b) X11: DWM und hoffentlich viele andere Exoten: 
 	Autostart: nicht automatisch, in ~/.xinitrc oder ~/.xsession Pfad zum Hauptprogramm anfügen
-	Hintergrundwechsel: automatisch, falls 'xloadimage' oder 'display' (ImageMagick) installiert sind 
+	Hintergrundwechsel: automatisch durch BibelPix, falls 'xloadimage' oder 'display' (ImageMagick) installiert sind 
 
 c) Wayland: (very experimental!)
 		Sway:
 			Autostart: automatisch (mit Eintrag in ~/.config/sway/config)
-			Hintergrund: automatisch über BibelPix
+			Hintergrund: automatisch durch BibelPix
 		Weston: 
 			Autostart: nicht bekannt
 			Hintergrund: nicht automatisch, folgender Eintrag in ~/.config/weston.ini möglich:
 				[shell]
-				background-image=~/Biblepix/TodaysPic/theword.png
+				background-image=[BILDPFAD]/theword.png
 				background-type=scale-crop
 
 
@@ -286,7 +305,7 @@ Kopieren Sie die Kommandos OHNE ZEILENUMBRÜCHE in Ihr Terminal.
 
 1. XDM (Linux Standard):
 	1. Eintrag in /etc/X11/xdm/Xsetup:
-		xsetbg /home/YOURNAME/Biblepix/Image/theword.* &
+		xsetbg [BILDPFAD]/theword.* &
 
 	2. Empfohlener Eintrag in /etx/X11/xdm/Xresources, um das Loginfenster nach rechts unten zu versetzen:
 		xlogin*geometry: 1000x350-20-20 
@@ -306,21 +325,18 @@ Kopieren Sie die Kommandos OHNE ZEILENUMBRÜCHE in Ihr Terminal.
 		[Desktop0]
 		BackgroundMode=Wallpaper
 		WallpaperMode=Tiled
-		Wallpaper=/home/YOURNAME/Biblepix/Image/theword.*
+		Wallpaper=[BILDPFAD]/theword.*
 
 3. GDM (Gnome Standard)
 
  	Gnome3 (aktuell):
-		sudo -u gdm gsettings set org.gnome.desktop.background picture-uri file:///home/MEINNAME/Biblepix/Image/theword.*
+		sudo -u gdm gsettings set org.gnome.desktop.background picture-uri file://[BILDPFAD]/theword.*
 
 	Gnome2 (bis 2011):
-		sudo -u gdm gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type string
-		--set /desktop/gnome/background/picture_filename /home/YOURNAME/Biblepix/Image/theword.*
+		sudo -u gdm gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type string --set /desktop/gnome/background/picture_filename [BILDPFAD]/theword.*
 
 4. Lightdm (Gnome, Ubuntu):
 
 Folgendes Kommando als gewöhnlicher User eingeben (keine Zeilenumbrüche!):
 
-	dbus-send --system --print-reply --dest=org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u)
-	org.freedesktop.Accounts.User.SetBackgroundFile string:/home/YOURNAME/Biblepix/Image/theword.*
-
+	dbus-send --system --print-reply --dest=org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u) org.freedesktop.Accounts.User.SetBackgroundFile string:[BILDPFAD]/theword.*
