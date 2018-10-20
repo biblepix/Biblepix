@@ -64,16 +64,19 @@ herunterladen und ausführen mit Doppelklick auf die Datei.***
 G I T
 
 Die Git-Installationsmethode ist systemunabhängig und funktioniert auf allen
-Plattformen, die eine Version von Git installiert haben. Die Git-Installation
-sollte in einem Unterordner des Heimordners (Symbol ~, s.u. "Installationsort") 
-installiert werden, damit Schreibrechte garantiert sind. 
+Plattformen, die über eine Version von Git verfügen. Die Git-Installation
+sollte in einem Unterordner des Heimordners (s.u. "Installationsort") 
+erfolgen, damit Schreibrechte garantiert sind. 
 
 In dieses Verzeichnis wechseln und BibelPix herunterladen (klonen) mit dem Kommando:
 
 	git clone https://github.com/Biblepix/Biblepix.git
  
-Danach zum Ordner ~/Biblepix/ wechseln und mit Doppelklick auf die Datei 
-'biblepix-setup.tcl' das Programm einrichten.
+Danach ins BibelPix-Verzeichnis wechseln und mit Doppelklick auf die Datei
+
+	~/Biblepix/biblepix-setup.tcl
+
+das Einrichtungsprogramm starten.
 
 Da die aktuelle Git-Version in stetiger Entwicklung begriffen ist, kann die korrekte
 Funktion des Programms nicht garantiert werden. Um eine stabile Version 
@@ -81,7 +84,7 @@ herunterzuladen, geben Sie im Internet-Browser folgende Adresse ein:
 
 	https://github.com/Biblepix/Biblepix/releases
 
-und wählen den gewünschten Release zum Download.
+und wählen den gewünschten Release zum Download. Danach wie oben beschrieben.
 
 
 I N S T A L L A T I O N S O R T
@@ -90,7 +93,7 @@ Empfohlener Standard bei Linux:
 	
 	/home/[MEINNAME]/Biblepix/
 
-Empfohlener Standard bei Windows: 
+und bei Windows: 
 
 	C:\Users\[MEINNAME]\AppData\Local\Biblepix\
 
@@ -230,7 +233,11 @@ Falls dies fehlschlägt, können Sie die nötigen Einstellungen manuell nachhole
 
 A )  W I N D O W S
 
-AUTOSTART: im Explorer zum Autostart-Ordner wechseln (....) und Verknüpfung auf 
+AUTOSTART: im Explorer zum Autostart-Ordner wechseln:
+
+	C:\Users\[MEINNAME]\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+und Verknüpfung auf 
 
 	~\Biblepix\prog\src\biblepix.tcl
 
