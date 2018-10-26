@@ -160,9 +160,9 @@ Wenn zusätzlich die Funktion "Diaschau" aktiviert ist, geschieht dies im gewün
 Minuten-Rhythmus.
 Je nach Betriebssystem werden 1 oder 2 identische Bilder in  den Formaten:
 
-  theword.tif
-  theword.bmp
-  theword.png
+	theword.tif
+	theword.bmp
+	theword.png
 
 im Bildpfad-Ordner:
 
@@ -202,10 +202,9 @@ Darstellung und Farben können in
 
 	~/Biblepix/prog/conf/term.conf
 
-geändert werden. Für die Darstellung von Hebräisch oder Arabisch kommen nur Terminals 
-wie 'mlterm' oder 'Konsole' (KDE) in Frage, welche bidirektionellen Text richtig anzeigen.
+geändert werden. 
 Damit term.sh automatisch ausgeführt wird, macht das Einrichtungsprogramm einen 
-Eintrag in ~/.bash_profile.
+Eintrag in ~/.bash_profile.*****
 ________________________________________________________________________________
 
 
@@ -267,7 +266,7 @@ GNOME
 Autostart: Aktivitäten > Optimierungswerkzeug "Tweak Tool" > Startprogramme
 Hintergrund: Aktivitäten > Optimierungswerkzeug "Tweak Tool" > Arbeitsoberfläche > Ort: Pfad zu Einzelbild!
 Falls das Optimierungswerkzeug fehlt, im Terminal mit folgendem Kommando installieren:
-	sudo apt-get install gnome-teweak-tool
+	sudo apt-get install gnome-tweak-tool
 
 XFCE4
 Autostart: Anwendungen > Einstellungen > Sitzung + Startverhalten > Automatisch gestartete Anwendungen
@@ -276,6 +275,9 @@ Wichtig: Einzelbild oder Diaschau wählen!
 
  
 *****Arabischer und hebräischer Text wird automatisch auf der Gegenseite positioniert
+Für die Darstellung von Hebräisch oder Arabisch im Terminal kommen nur Terminals 
+wie 'mlterm' oder 'Konsole' (KDE) in Frage, welche bidirektionellen Text richtig anzeigen.
+
 ________________________________________________________________________________
 
 
@@ -287,7 +289,7 @@ a) X11: KDE/GNOME/XFCE4 : Autostart + Hintergrundwechsel vollautomatisch, bei Pr
 
 b) X11: DWM und hoffentlich viele andere Exoten: 
 	Autostart: nicht automatisch, in ~/.xinitrc oder ~/.xsession Pfad zum Hauptprogramm anfügen
-	Hintergrundwechsel: automatisch durch BibelPix, falls 'xloadimage' oder 'display' (ImageMagick) installiert sind 
+	Hintergrundwechsel: automatisch durch BibelPix, falls 'xloadimage' oder 'display' (ImageMagick) installiert ist 
 
 c) Wayland: (very experimental!)
 		Sway:

@@ -1,6 +1,5 @@
 O  V  E  R  V  I  E  W
 
-
 BiblePix is a Tcl program developed for the "Bible 2.0" project.
 Bible 2.0 aims to publish "The Word" in a growing number of languages. 
 "The Word" consists of two selected Bible verses for each day of the year.
@@ -13,10 +12,10 @@ BiblePix can display "The Word" in various ways:
  * as e-mail signature
  * in the Linux terminal
  
-Features:			duely described in the Setup programm 
-Updates:			automatic whenever Setup is run
-Systems: 			Linux, Windows 
-System requirements: Tcl/Tk library, additional packages tDom and tkimg (or libtk-img)
+Systems: Linux, Windows 
+System requirements: Tcl/Tk library, additional packages tDom and tkimg
+
+________________________________________________________________________________
 
 
 I  N  S  T  A  L  L  A  T  I  O  N
@@ -24,167 +23,277 @@ I  N  S  T  A  L  L  A  T  I  O  N
 Before installing BiblePix, make sure Tcl/Tk as well as the above-mentioned 
 extra packages are present on your PC. Tcl/Tk is a system independent platform 
 for many operating systems.
+For Windows: Download ActiveTcl (see below)
+
+BiblePix Installer (see below) should be executed only once for first installation, 
+since it overwrites all files. After that it is enough to run BiblePix Setup.
+
+BiblePix automatically chooses your Home Directory for installation,
+it is the recommended standard (see below under "Place of Installation").
+
+
+W I N D O W S
+
+1. Download the package 'ActiveTcl' from 
+
+	www.activestate.com/activetcl/downloads 
+
+and double-click it to install. It contains all necessary Tcl programs.
+
+2. Download the BiblePix Installer from
+
+	www.bible2.net
+
+and double-click it to install.
+
+
+L I N U X
+
+1. Installing Tcl/Tk: 
+Most Linux distributions already contain Tcl/Tk, including the afore-mentioned 
+extra packages. If any of it is missing you can easily install it before installing
+BiblePix. Installation is possible through the package manager of your system, or
+by entering a short command in your terminal.**
+
+2. Download the BiblePix Installer from
+
+	www.bible2.net
+
+and double-click it to install.***
 
 
 G I T
 
 The Git installation method is system independent and works on all
-platforms where a version Git is installed.
-The git command should be issued in a subfolder of the Home directory,
-so as to garantee write access. Recommended standard for Linux/Unix is 
-	
-	/home/USERNAME/
+platforms where a version Git is installed. The git command should be issued in 
+a subfolder of the Home directory, so as to guarantee write access (see below under
+"Place of Installation).
+Change to that directory and download (clone) BiblePix with the command:
 
-and for Windows 
+	git clone https://github.com/Biblepix/Biblepix.git
+ 
+Then change to the BiblePix folder and double-click on the file
 
-	C:\Users\USERNAME\AppData\Local\
+	~/Biblepix/biblepix-setup.tcl
 
-In a terminal, enter the commands:
-	
-	cd [HOME DIRECTORY]
-	git clone https://github.com/biblepix/Biblepix.git
+to start the Setup program.
 
-Instead of the terminal, a graphical Git programm can also be used. 
+Since the current Git version is under constant development, the correct functioning
+of the program cannot be guaranteed. To download a stable version, enter the 
+following address in your Internet browser:
 
-Then start the BiblePix Setup program, either in a terminal with the command:
+	https://github.com/Biblepix/Biblepix/releases
 
-	tclsh ~/Biblepix/prog/src/biblepix-setup.tcl
-
-or in a file manager by changing to the '~/Biblepix/prog/src' directory and
-clicking on the file 'biblepix-setup.tcl'.
-
-Note that the tilde (~) stands for the Home directory as described above.
-Not also that the proper function of the Git version CANNOT BE GUARANTEED!
-
-F U N C T I O N S
-
-LINUX TERMINAL
-If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nColours for display etc. may be changed in \n\n\t $confdir/term.conf \n\nNote that for Arabic or Hebrew display, 'mlterm' and 'Konsole' (KDE) are those terminals reported to work with bidirectional text.\n\nFor $dw to be displayed automatically in your terminals, $bp Setup makes an entry in ~/.bash_profile for your convenience.
-
-W I N D O W S
-
-   1. Download and install the ActiveTcl package from http://www.activestate.com/activetcl/downloads
-   2. Download and install the BiblePix installation program http://bible2.net
-   3. Entries into the programs menu and into Autostart are made automatically.
-      If BiblePix does not start automatically, please add it to "Automatically started programs".
-   4. If you have activated "The Word on a background picture" Setup will try to change screen settings automatically. 
-      If this doesn't work you have the following possibilities to make changes manually:
-	
-     Change to the Biblepix\Image directory in your Home directory (exact path to be
-        found in BiblePix Setup, section Desktop) and mark 
-
-		theword.tif
-
-      as the desired picture. Then right-click and choose option "Set as Desktop background". 
-	For a slideshow, you must put another picture in the same directory and select 
-	"Slide Show" instead of "single picture".
+and choose the desired release. After that do as described above.
 
 
-L I N U X
+P L A C E   O F   I N S T A L L A T I O N
 
-   1. Install Tk/Tcl, tDom, tkimg
-	Most Linux distributions already contain the Tcl/Tk library, including the above-mentioned extra packages. Should any of these be missing you can easily install it beforehand:
-	A) through the software management of your system
-	B) by entering one of the following quick commands in a terminal (depending on the system):
-		* sudo apt-get install tdom libtk-img (Debian/Ubuntu)
-		* sudo emerge tdom tkimg (Gentoo)
-		* sudo yum install tdom tkimg (Fedora)
-		* sudo yast -i tkimg tdom (OpenSuse)
-		* sudo urpmi tkimg tdom (Mandriva)
+Recommended standard for Linux: 
 
-   2. Install BiblePix
-	Download 'BiblePix-Installer.tcl' from bible2.net, then
-		A) in a terminal enter:
+	/home/[USERNAME]/Biblepix/
 
-  			cd [Downloads]
-  			tclsh BiblePix-Installer.tcl
-  		
-		B) from a file manager:
+and for Windows: 
 
-			Right-click file and in 'Open with...' specify tclsh.
+	C:\Users\[USERNAME]\AppData\Local\Biblepix\
 
-   3. Automatic entry in program menu and Autostart
-   
-   Setup attempts to make automatic entries in the program menu of your Desktop for BiblePix 
-   and BibelPix Setup along with the program icon (to be found under "Graphics", "Education" 
-   or "Miscellaneous" and the like). KDE, Gnome and XFCE4 should recognize the entries    automatically. 
-   
-   Setup also attempts to add BiblePix to automatically started programs. 
-   If this doesn't work you have the following possibilities to manually adjust settings:
-   
-   A) On your Desktop find the dialogue "Automatically started programs" and add BibelPix (a link will be made in the Autostart folder). The path to the program must be thus:
+° The Home Directory is represented hereunder by the symbol  ~
+° Windows file paths are represented hereunder by normal shlashes  /  
 
-       	tclsh /home/YOURNAME/Biblepix/prog/src/biblepix.tcl
-   
-   B) In a text editor open one of the following files: 
-   
-		/home/YOURNAME/.xinitrc 	or
-		/home/YOURNAME/.xsession
-   	
-   and add the following entry at the end:
-   
-		tclsh Biblepix/prog/src/biblepix.tcl
-     
-   If none of these files exist they are likely not respected by your system. 
-   Nevertheless you can just create them and try your luck.
+° Path to Setup program: ~/Biblepix/biblepix-setup.tcl
+° Path to main program: ~/Biblepix/prog/src/biblepix.tcl
+° Path to configuration file: ~/Biblepix/prog/conf/biblepix.conf *
 
-     	 
-   4. Automatic adjustment of Desktop settings
-   
-   If you have activated "Create Desktop background image" in the Setup dialogue, 
-   BiblePix will try to change the Desktop settings of your computer so that one of
-   
-		theword.bmp
-		theword.png
-   
-   is henceforth set as the background picture. 
-        
-   If the 'Slide show' feature is not deactivated, BiblePix will also try to 
-   program a slide show for your Desktop. If the changes are not implemented automatically you can right-click your Desktop and find the dialogue for background image or Slide Show. 
-   Please use the following paths (instead of YOURNAME put your user name).
-   
-		Path to image folder:	/home/YOURNAME/Biblepix/Image
-		Path to image:			/home/YOURNAME/Biblepix/Image/theword.*
-   	
-   KDE: for Slide Show: path to image folder, for single picture: path to image
-   GNOME: Path to image, automatically detects image change
-   XFCE4: Path to image, image change programmed by BibelPix
-   
+________________________________________________________________________________
 
 
 F  U  N  C  T  I  O  N  S
 
-E-MAIL SIGNATURE
-If activated, $bp will add $dw at the end of your e-mail signatures once a day for any language text files present on your computer. Signature files are stored by language shortcut (e.g. signature-en) in the directory \n\n\t$sigDir \n\nYou can edit these files from your e-mail program, or in a text editor, and add any personal information (greetings, address etc.) at the top. Any text above the separating line ==== will remain untouched when 'The Word' changes. \nFinally you must instruct your e-mail program to use these signature files (generally under Options>Signatures).
+
+SETUP PROGRAM
+By running the BiblePix Setup program you can set all functions with ease. 
+The program can be started as follows:
+
+	° from the program menu of your system
+	° by right-click on the Desktop (Windows)
+	° by right-click in the file manager (Linux Konqueror)
+In case of problems:
+	° double click on the program file in the file manager (path see above)
+	° double click on the shell script in ~/bin (Linux)
+
+In the 'Welcome' section you can view The Word in any installed language (to switch
+click on the text surface).
+By pressing the OK button the BiblePix configuration as well as the system settings**** 
+for Autostart and background picture are saved. BiblePix is restarted.
+
+DOWNLOADING BIBLE TEXTS
+The functioning of BiblePix depends on the presence of Bible text files with
+the ending .TWD, which can be downloaded from our server each year in many languages
+and Bible versions. Downloading is up to the user and should be done through the 
+Setup programm when a year comes to a close. This funcion is not automatic. 
+The files are kept in the folder
+
+	~/Biblepix/Texts
+
+Any redundent files from past years are deleted automatically by the Setup program.
+
+PROGRAM UPDATES
+BiblePix has an automatic update mechanism. If an Internet connection is present,
+the Setup will check for any program updates and install them automatically. 
+Thus your BiblePix is always up-to-date, re-installation is hardly ever needed.
+
+PHOTO MANAGEMENT
+BiblePix provides a few sample pictures which are scaled to screen size and copied
+to the BiblePix Photo directory at first installation. However in the Setup program
+you can add your own photos. These too are resized, if necessary, and copied over.
+Original photos remain untouched.
+
+THE WORD ON PICTURE
+The centre-piece of BiblePix is projecting The Word onto a background image. 
+If the feature "Background Image" is activated in the Setup, BiblePix will take
+a picture from the photo collection and adorn it with The Word from an available
+Bible text file by random selection. If the funcion "Slideshow" is activated too,
+this takes place in the given interval.
+Depending on the operating system, one or two identical pictures of the formats:
+
+	theword.tif
+	theword.bmp
+	theword.png
+
+are saved to the Picture Folder:
+
+	~/Biblepix/TodaysPicture/
+
+The Bible text is written directly onto the picture with nice, readable shadow fonts. 
+The size, colour and type of fonts as well as the text position can be set in the 
+Setup program (for Hebrew and Arabic see footnote*****).
+Displaying the background image as well switching images (in case of slideshow activated) 
+are managed by the BiblePix main program. 
+
+SIGNATURE
+BiblePix has an extended feature called "Add The Word to your e-mail signatures".
+If this is activated in the Setup, BiblePix will add The Word to your signature(s) 
+once a day on the basis of any installed Bible text files. The signature files are 
+stored by language shortcuts (e.g. signature-en_Englis.txt) in the directory:
+
+	~/Biblepix/TodaysSignature/
+
+You can edit these files from your e-mail program or in a text editor and add any
+personal information (greetings, address etc.) at the top. Any text above the
+separating line (======) remains untouched when The Word changes.
+Finally you must instruct your e-mail program to use these files when sending an
+e-mail (usually under Settings > Identities > Signatures).
+
+LINUX TERMINAL
+Thanks to this extra feature BiblePix can display The Word in your Linux terminals.
+If activated (only possible on Linux computers) BiblePix will create a shell script 
+from any available Bible text file, to reside in:
+
+	~/Biblepix/prog/unix/term.sh
+
+The script is executed whenever you open a terminal. Display and colours can be 
+customised by editing:
+
+	~/Biblepix/prog/conf/term.conf
+
+For term.sh to be executed automatically, the Setup program makes an entry in 
+~/.bash_profile.*****
+
+________________________________________________________________________________
 
 
-
-A  D  D  E  N  D  A
+F O O T N O T E S   &   A D D E N D A
 -
 
-G E N E R A L
+*The configuration file is written by Setup and should not normally be touched by users.
+If however after an update the Setup should no longer run, you can try deleting the file and
+then restart the Setup. The configuration file allows the so-called "debug modus", to detect
+program errors. To achieve this, set the value 'debug' to 1 and restart the Setup.
 
-* Place of installation (~): see above under GIT
+**or enter short command for complete installation in a terminal:
+	° sudo apt-get install tdom libtk-img (Debian/Ubuntu)
+	° sudo emerge tdom tkimg (Gentoo)
+	° sudo yum install tdom tkimg (Fedora)
+	° sudo yast -i tkimg tdom (OpenSuse)
+	° sudo urpmi tkimg tdom (Mandriva)
  
-* The BiblePix Setup programm automatically downloads and installs any program updates.
+***or in a terminaln: tclsh /home/[MYNAME]/Biblepix/biblepix-setup.tcl
+ 
+****Setup makes entries in some system files for BiblePix to be run at system start
+(Autostart) and for the background image to change. If this fails you can make the
+necessary changes manually:
 
-* The main executables are found in the directory ~/Biblepix/prog/src/ :
-	
-	° biblepix.tcl (main program)
-	° biblepix-setup.tcl (setup program)
+A )  W I N D O W S
 
-* If after an update the BiblePix Setup or the BiblePix program fails to run, 
-	delete the file ~/Biblepix/prog/conf/biblepix.conf
-	Then rerun Setup.
+AUTOSTART: in Explorer go to the Autostart directory:
 
-* Debug mode: to help resolve any problems, edit the file
-			~/Biblepix/prog/src/com/globals.tcl
-	and set the value 'Debug' to 1. 
-	Then rerun Setup.
-	Send any error messages to linux [at] vollmar.ch
+	C:\Users\[MYNAME]\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+and create a link to 
+
+	~\Biblepix\prog\src\biblepix.tcl
+
+BACKGROUND: Settings > Customization and Display > Background (or right-cklick on 
+Desktop > Customizing), there enter exact path to image:
+
+	~\Biblepix\TodaysPic\theword.tif
+
+Important: select the 'Single Picture' option! If you have chosen 'Slideshow' in the 
+BiblePix Setup, it is BiblePix that will execute a system program which sees that changed
+background pictures will be read and displayed anew each time.
+
+B )  L I N U X   D E S K T O P S
+
+Path to single picture: PNG oder BMP (exact paths see above "The Word on Picture")
+Path for slideshow: ~/Biblepix/TodaysPic/
+Pfad für Autostart: s.o. "Installationsort" (Pfad zum Hauptprogramm)
+
+KDE Plasma
+Autostart: Program menu > System settings > Autostart
+Background: right-cklick on Desktop > Customize Desktop: choose between Single pic / Slideshow
+
+GNOME
+Autostart: Activities > "Tweak Tool" > Startup
+Background: Activities > "Tweak Tool" > Desktop > Place: path to single pic!
+If Tweak Tool is missing you can install it by entering in a terminal:
+	sudo apt-get install gnome-tweak-tool
+
+XFCE4
+Autostart: Applications > Settings > Session & Startup > Automatically started applications
+Background: Right-click on Desktop > Customize Desktop > Background > Directory 
+Important: select either single pic or slideshow!
+
+ 
+*****Arabic and Hebrew text is positioned automatically on the opposite side
+To display such texts in terminals you need programs like 'mlterm' oder 'Konsole' (KDE) 
+which can display bidirectional texts correctly.
+
+________________________________________________________________________________
 
 
-O P T I O N A L   F O R   L I N U X : Get The Word in your login manager
+N O T E S   O N   L I N U X   D E S K T O P S
+
+From the plentitude of Linux Desktops BiblePix has considered the most common ones as follows:
+
+a) X11: KDE/GNOME/XFCE4 : Autostart + Background change fully automatic, in case of problems s.a. 
+
+b) X11: DWM and hopefully many other exotics: 
+	Autostart: not automatic, in ~/.xinitrc or ~/.xsession adad path to main prog
+	Background change: automatic by BiblePix if 'xloadimage' or 'display' (ImageMagick) is installed 
+
+c) Wayland: (very experimental!)
+		Sway:
+			Autostart: automatic (entry in ~/.config/sway/config)
+			Background: automatic by BiblePix
+		Weston: 
+			Autostart: unknown
+			Background: not automatic, following entry in ~/.config/weston.ini possible:
+				[shell]
+				background-image=[IMAGEPATH]/theword.png
+				background-type=scale-crop
+
+
+N O T E   O N   L I N U X   L O G I N   M A N A G E R S
 
 If you log in by password you are probably using one of the below Login Managers.
 You have the possibility to see the BiblePix image right at Login. (This is beyond 
@@ -216,15 +325,11 @@ The program 'xloadimage' must be installed.
 	The following commands have proven successful (no line breaks!):
 
 	Gnome3 (current):
-	sudo -u gdm gsettings set org.gnome.desktop.background picture-uri 
-	file:///home/YOURNAME/Biblepix/Image/theword.bmp
+	sudo -u gdm gsettings set org.gnome.desktop.background picture-uri file:///home/YOURNAME/Biblepix/Image/theword.bmp
 
 	Gnome2 (till 2011):
-	sudo -u gdm gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type string 
-	--set /desktop/gnome/background/picture_filename /home/YOURNAME/Biblepix/Image/theword.bmp
+	sudo -u gdm gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type string --set /desktop/gnome/background/picture_filename /home/YOURNAME/Biblepix/Image/theword.bmp
 
 4) Lightdm (Gnome3, Ubuntu)
 	Enter the following command as an ordinary user (no line breaks!):
-		dbus-send --system --print-reply --dest=org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u)
-		org.freedesktop.Accounts.User.SetBackgroundFile string:/home/YOURNAME/Biblepix/Image/theword.png
-
+		dbus-send --system --print-reply --dest=org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u) org.freedesktop.Accounts.User.SetBackgroundFile string:/home/YOURNAME/Biblepix/Image/theword.png
