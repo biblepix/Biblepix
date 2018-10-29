@@ -28,8 +28,8 @@ For Windows: Download ActiveTcl (see below)
 BiblePix Installer (see below) should be executed only once for first installation, 
 since it overwrites all files. After that it is enough to run BiblePix Setup.
 
-BiblePix automatically chooses your Home Directory for installation,
-it is the recommended standard (see below under "Place of Installation").
+BiblePix automatically chooses your "Home Directory" for installation, as this
+is the recommended standard (see further down, "Place of Installation").
 
 
 W I N D O W S
@@ -64,8 +64,8 @@ and double-click it to install.***
 
 G I T
 
-The Git installation method is system independent and works on all
-platforms where a version Git is installed. The git command should be issued in 
+The Git installation method is system independent and works on all platforms 
+where a version of Git is installed. The 'git' command should be issued in 
 a subfolder of the Home directory, so as to guarantee write access (see below under
 "Place of Installation).
 Change to that directory and download (clone) BiblePix with the command:
