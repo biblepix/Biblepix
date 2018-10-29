@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTerminal.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 2jun18
+# Updated 29oct18
 
 #Create label & checkbutton
 label .terminalF.t1 -textvar f4.tit -font bpfont3
@@ -37,9 +37,17 @@ text .terminalF.mainf.right.bp -width 70
 set t .terminalF.mainf.right.bp
 $t insert 1.0 $setupTwdText
 $t configure -foreground orange -background black -pady 5 -padx 5
-#change 1st line
+##Colour 1st line
 $t tag add intro 1.0 1.end
 $t tag conf intro -foreground yellow -background blue
+
+##Colour refLines
+set refL1 [$t search "                  " 1.0 end]
+set refL2 [$t count -lines 1.0 end].0
+$t tag add refL $refL1 [string index $refL1 0].end
+$t tag add refL $refL2 end
+$t tag conf refL -foreground lightgreen -background black
+
 #add last line
 $t insert end "\nbiblepix@localhost ~ $" grün
 $t tag conf grün -foreground green
