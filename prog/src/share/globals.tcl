@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 20oct18
+# Updated: 2nov18
 
 set version "3.0"
 set twdUrl "http://bible2.net/service/TheWord/twd11/current"
@@ -45,8 +45,8 @@ set windir [file join $progDir win]
 
 set sharedir [file join $srcdir share]
 set guidir [file join $srcdir setup]
-set maildir [file join $srcdir makeSig]
-set picdir [file join $srcdir makePic]
+set maildir [file join $srcdir sig]
+set picdir [file join $srcdir pic]
 set savedir [file join $srcdir save]
 set sampleJpgDir [file join $picdir SamplePhotos]
 
