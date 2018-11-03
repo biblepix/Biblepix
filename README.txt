@@ -28,7 +28,8 @@ Git: git clone https://github.com/Biblepix/Biblepix.git
 Linux: Download Installer from bible2.net
 Windows: Download Installer from bible2.net
 
-For further details consult the Manual (from the Setup program or in this folder)
+For further details consult the Manual (from the BiblePix Setup, or in 
+~/Biblepix/Docs/MANUAL.txt)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -44,12 +45,10 @@ Tag des Jahres - in einer wachsenden Anzahl von Sprachen zu verbreiten.
 BibelPix zeigt "Das Wort"
 
  * in vielen Sprachen
- * als Hintergrundbild auf Windows & Linux Desktops
+ * auf Hintergrundbild für Windows & Linux Desktops
  * Diaschau mit persönlicher Fotosammlung
  * als E-Mail-Signatur
  * im Linux-Terminal
-
-an.
 
 Systemvoraussetzungen
 ---------------------
@@ -61,5 +60,7 @@ Installation
 ------------
 Git: git clone https://github.com/Biblepix/Biblepix.git
 Linux: Installer von bible2.net herunterladen und ausführen
-Ausführliche Anleitung im Manual (aus dem Setup-Programm oder in diesem Ordner)
 Windows: Installer von bible2.net herunterladen und ausführen
+
+Ausführliche Anleitung im Manual (aus dem Einrichtungsprogramm bzw. 
+~/Biblepix/Docs/MANUAL.txt)
