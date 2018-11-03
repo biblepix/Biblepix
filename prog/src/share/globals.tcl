@@ -286,8 +286,13 @@ set fontNameBold "${fontFamilyTag}${fontsize}B"
 set fontWeightTag I
 set fontNameItalic "${fontFamilyTag}${fontsize}${fontWeightTag}"
 
-if { $Debug && $Mock} {
-  set Http [file join $sharedir httpMock.tcl]
+if { $Debug && $httpmock} {
+  proc sourceHTTP {} {
+    source $Http
+    source [file join $sharedir httpMock.tcl]
+  }
 } else {
-  set Http [file join $sharedir http.tcl]
+  proc sourceHTTP {} {
+    source $Http
+  }
 }

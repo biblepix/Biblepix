@@ -63,11 +63,11 @@ puts $chan "set shade [setShade $rgb]"
 puts $chan "set marginleft $marginleftstatus"
 puts $chan "set margintop $margintopstatus"
 
-if {$Debug || $Mock} {
+if {$Debug || $httpmock} {
   puts $chan "
-  # These variables enable Debugging Mode resp. Mocking Http for testing.
+  # These variables enable Debugging Mode / Mocking Http for testing.
   set Debug $Debug
-  set Mock $Mock"
+  set Mock $httpmock"
 }
 
 #3.Write Linux vars to $Config
