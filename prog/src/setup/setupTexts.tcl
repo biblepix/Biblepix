@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10oct18
+# Updated: 3nov18
 
 proc setTexts {lang} {
 #exports text variables for current language
@@ -230,8 +230,8 @@ set f6Tit(en) "Manage your photos for $bp"
 set f6Tit(de) "Fotos für $bp organisieren"
 set ::f6.tit $f6Tit($lang)
 
-set f6Txt(en) "Here you can add any suitable photos from your Pictures directory and put them into the $bp photo collection, or remove them from there. The photos should ideally be in landscape format and have a plain-colour surface (e.g. sky) in the top-left area. \n\nIf the size of a photo does not agree with the screen dimensions, $bp will fit it to size and save it to the $bp Photos directory."
-set f6Txt(de) "Hier können Sie beliebig viele Fotos aus Ihrem persönlichen Bildordner in die $bp-Fotosammlung ziehen. Die Fotos sollten im Querformat aufgenommen sein und eine möglichst ebenfarbige Fläche für den Text im oberen Drittel aufweisen (z.B. Himmel). \n\nFalls das Bildformat nicht mit der Bildschirmgrösse übereinstimmt, speichert $bp das Foto im passenden Format im $bp-Fotoordner ab."
+set f6Txt(en) "Here you can add any suitable photos from your Pictures directory and put them into the $bp photo collection, or remove them from there. The photos should ideally be in landscape format and have a plain-colour surface (e.g. sky) in the top-left area. \n\nIf the size of a photo does not agree with the screen dimensions, $bp will fit it to size and save it to the $bp Photos directory. The original photo remains unchanged."
+set f6Txt(de) "Hier können Sie beliebig viele Fotos aus Ihrem persönlichen Bildordner in die $bp-Fotosammlung ziehen. Die Fotos sollten im Querformat aufgenommen sein und eine möglichst ebenfarbige Fläche für den Text im oberen Drittel aufweisen (z.B. Himmel). \n\nFalls das Bildformat nicht mit der Bildschirmgrösse übereinstimmt, speichert $bp das Foto im passenden Format im $bp-Fotoordner ab. Das Originalbild bleibt unverändert."
 set ::f6.txt $f6Txt($lang)  
 
 set f6Add(en) "Add to $bp Photo Collection:"
@@ -340,8 +340,8 @@ Example:"
 ######## S E T U P S A V E   T E X T S  ################################
 
 #Changing Desktops Info
-set linChangingDesktop(de) "BibelPix versucht nun, Ihre Desktop-Einstellungen zu ändern. Falls Sie danach kein neues Hintergrundbild sehen, können Sie auf Ihrer Arbeitsfläche rechtsklicken und im Dialog \"Schreibtisch\" oder \"Arbeitsfläche\" das BibelPix-Hintergrundbild eigenhändig auswählen. Der Bildpfad ist: $imgDir ."
-set linChangingDesktop(en) "BiblePix will now try to register with your Desktop Background. If you can't see a new background picture after that, right-click on your Desktop and select the \"Desktop\" or \"Background\" settings dialog to manually set the picture path to BiblePix. This is the path you should enter: $imgDir ."
+set linChangingDesktop(de) "BibelPix versucht nun, Ihre Desktop-Einstellungen zu ändern. Falls Sie danach kein neues Hintergrundbild sehen, finden Sie eine Lösung im Manual."
+set linChangingDesktop(en) "BiblePix will now try to register with your Desktop Background. If you can't see a new background picture after that, find a solution in the Manual."
 set ::linChangingDesktop $linChangingDesktop($lang)
 
 set winChangingDesktop(de) "$linChangingDesktop($lang) \nKlicken Sie im Dialogfenster auf das BibelPix-Thema und schliessen Sie dann das Fenster."
@@ -356,16 +356,16 @@ set linChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung der Deskt
 set linChangeDesktopProb(en) "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgDir as new image path."
 set ::linChangeDesktopProb $linChangeDesktopProb($lang)
 
-set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Autostarts.\nDamit $bp beim PC-Start ausgeführt wird, ist ein Eintrag im Autostart-Menü Ihres Desktops nötig. Rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog 'Automatisch ausgeführte Programme'. Dort geben Sie '$::Biblepix' als neuen Programmpfad ein.\nWeitere Lösungen finden Sie im Manual."
-set linSetAutostartProb(en) "We had a problem configuring $bp Autostart.\n In order for $bp to run at computer boot time, you must make an entry in the Autostart menu of your Desktop manager. \nTry right-clicking on your Desktop and find the dialog 'Automatically executed programs'. There enter '$::Biblepix' as the new program path.\nFor other solutions consult the Manual."
+set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Autostarts.\nDamit $bp beim PC-Start ausgeführt wird, ist ein Eintrag im Autostart-Menü Ihres PCs nötig. Finden Sie den Dialog 'Automatisch ausgeführte Programme'. Dort geben Sie '$::Biblepix' als neuen Programmpfad ein.\nWeitere Lösungen finden Sie im Manual."
+set linSetAutostartProb(en) "We had a problem configuring $bp Autostart.\n In order for $bp to run at computer boot time, you must make an entry in the Autostart menu of your PC. Find the dialog 'Automatically executed programs'. There enter '$::Biblepix' as the new program path.\nFor other solutions consult the Manual."
 set ::linSetAutostartProb $linSetAutostartProb($lang)
 
 set linReloadingDesktop(en) "We shall now try to reload your Desktop. If this fails, please log out and in again for the BiblePix settings to take effect."
 set linReloadingDesktop(de) "Wir versuchen nun, Ihre Arbeitsfläche neu einzulesen. Falls dies fehlschlägt, müssen Sie sich kurz ab- und wieder anmelden, damit die BibelPix-Einstellungen wirksam werden."
 set ::linReloadingDesktop $linReloadingDesktop($lang)
 
-set changeDesktopOk(en) "$bp has been configured successfully and will start shortly.\nYou can run the BiblePix Setup program anytime by selecting the \"BiblePix Setup\" icon in your computer's Programs Menu."
-set changeDesktopOk(de) "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\nDas BibelPix-Einrichtungsprogramm können Sie jederzeit starten, indem Sie im Startmenü Ihres PCs das Symbol \"BibelPix Setup\" wählen."
+set changeDesktopOk(en) "$bp has been configured successfully and will start shortly.\nYou can run the BiblePix Setup program anytime by selecting the \"BiblePix Setup\" icon in the Program Menu."
+set changeDesktopOk(de) "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\nDas BibelPix-Einrichtungsprogramm können Sie jederzeit aus dem Programmmenü starten."
 set ::changeDesktopOk $changeDesktopOk($lang)
 
 set winRegister(en) "BiblePix will no try to register with your system.\nYou must confirm any dialogue boxes with \"Yes\"."
