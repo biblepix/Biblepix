@@ -42,7 +42,7 @@ if {[catch {source $Globals}]} {
   }
   
   # 1.  D O   H T T P  U P D A T E   (if not initial)
-  
+
   if {[catch {sourceHTTP}]} {
     set pbTitle "Update not possible.\nYou must download and rerun the BiblePix Installer from bible2.net."
     after 7000 {exit}

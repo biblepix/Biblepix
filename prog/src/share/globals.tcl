@@ -91,6 +91,7 @@ array set filepaths "
   BdfBidi [file join $sharedir BdfBidi.tcl]
   Flags [file join $sharedir flags.tcl]
   Http [file join $sharedir http.tcl]
+  HttpMock [file join $sharedir httpMock.tcl]
   JList [file join $sharedir JList.tcl]
   Globals [file join $sharedir globals.tcl]
   Imgtools [file join $sharedir imgTools.tcl]
@@ -288,11 +289,11 @@ set fontNameItalic "${fontFamilyTag}${fontsize}${fontWeightTag}"
 
 if { $Debug && $httpmock} {
   proc sourceHTTP {} {
-    source $Http
-    source [file join $sharedir httpMock.tcl]
+    source $::Http
+    source $::HttpMock
   }
 } else {
   proc sourceHTTP {} {
-    source $Http
+    source $::Http
   }
 }

@@ -112,8 +112,36 @@ proc runHTTP isInitial {
         catch {clock scan $newtime} newsecs
         catch {file mtime $filepath} oldsecs
 
-#        puts "New Time: $newsecs\nOld Time: $oldsecs\n"
+        #download if times incorrect OR if oldfile is older/non-existent
+        if { ! [string is digit $newsecs] || 
+             ! [string is digit $oldsecs] ||
+             $oldsecs<$newsecs } {
+          downloadFile $filepath $filename $token
+        }
+      }
+    } ;#end FOREACH loop
+    
+    foreach var [array names BdfFontsArray] {
+      if {$var == "ChinaFont"} {continue}
+
+      set filepath $filepaths($var)
+      set filename [file tail $filepath]
+
+      #get remote 'meta' info (-validate 1)      
+      set token [http::geturl $bpxReleaseUrl/$filename -validate 1]
+      array set meta [http::meta $token]
+      
+      #a) Overwrite file if "Initial" 
+      if {$isInitial} {
+        downloadFile $filepath $filename $token
+      
+      #b) Overwrite file if remote is newer
+      } else {
         
+        set newtime $meta(Last-Modified)
+        catch {clock scan $newtime} newsecs
+        catch {file mtime $filepath} oldsecs
+
         #download if times incorrect OR if oldfile is older/non-existent
         if { ! [string is digit $newsecs] || 
              ! [string is digit $oldsecs] ||
@@ -228,7 +256,36 @@ proc downloadTWDFiles {} {
     set filename [file tail $url]
     
     NewsHandler::QueryNews "Downloading $filename..." lightblue
-    
+
+    if [regexp zh- $url] {
+      set filepath $filepaths(ChinaFont)
+      set filename [file tail $filepath]
+
+      #get remote 'meta' info (-validate 1)      
+      set token [http::geturl $bpxReleaseUrl/$filename -validate 1]
+      array set meta [http::meta $token]
+      
+      #a) Overwrite file if "Initial" 
+      if {$isInitial} {
+        downloadFile $filepath $filename $token
+      
+      #b) Overwrite file if remote is newer
+      } else {
+        
+        set newtime $meta(Last-Modified)
+        catch {clock scan $newtime} newsecs
+        catch {file mtime $filepath} oldsecs
+
+        #download if times incorrect OR if oldfile is older/non-existent
+        if { ! [string is digit $newsecs] || 
+             ! [string is digit $oldsecs] ||
+             $oldsecs<$newsecs } {
+          downloadFile $filepath $filename $token
+        }
+      }
+    }
+
+
     set chan [open $filename w]
     fconfigure $chan -encoding utf-8
     http::geturl $url -channel $chan
