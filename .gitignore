@@ -9,3 +9,4 @@ prog/unix/crontab.ORIG
 prog/unix/cron.sh
 prog/win/install.reg
 prog/fonts
+prog/font/Bdf2TclConverter.tcl
