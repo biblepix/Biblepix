@@ -81,4 +81,14 @@ proc trojitaSig {} {
   set chan [open $file w]
   puts $chan $fileText
   close $chan
+
+# N E U E R   V E R S U C H :
+  #1. verwandle Zeilenumbrüche > \n
+  regsub -all {[[:cntrl:]]} $dw \\n dw
+  #2. Add sig first time
+  if [regexp {signature=.*====} $fileText] {
+    regsub -line {(signature=.*)(====.*$)} $fileText {\1 \n $dw} fileText
+  } else {
+    regsub -line {signature=.*$} $fileText &\n$dw fileText
+  }
 }
