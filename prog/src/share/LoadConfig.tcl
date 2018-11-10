@@ -99,3 +99,23 @@ if {$fontcolortext == "blue"} {
 } else {
   set fontcolor $blue
 }
+
+#Define current font name from Config
+if {$fontfamily=="Sans"} {
+  set fontFamilyTag "Arial"
+} elseif {$fontfamily=="Serif"} {
+  set fontFamilyTag "Times"
+}
+if {$fontweight=="bold"} {
+  set fontWeightTag B
+} else {
+  set fontWeightTag ""
+}
+
+set fontName "${fontFamilyTag}${fontsize}${fontWeightTag}"
+set fontNameBold "${fontFamilyTag}${fontsize}B"
+#puts $fontNameBold
+
+#for Italic: reset fontname to normal if Bold
+set fontWeightTag I
+set fontNameItalic "${fontFamilyTag}${fontsize}${fontWeightTag}"

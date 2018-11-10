@@ -60,6 +60,8 @@ proc makeDirs {} {
 
 #Set FilePaths array
 array set FilePaths "
+  Globals [file join $sharedir globals.tcl]
+  Http [file join $sharedir http.tcl]
   Readme [file join $rootdir README.txt]
   Setup [file join $rootdir biblepix-setup.tcl]
   ManualD [file join $docDir MANUAL_de.txt]
@@ -265,37 +267,15 @@ proc Show.Modal {win args} {
   return ${::Modal.Result}
 }
 
-catch {source $LoadConfig}
-
-#Define current font name from Config
-if {$fontfamily=="Sans"} {
-  set fontFamilyTag "Arial"
-  } elseif {$fontfamily=="Serif"} {
-  set fontFamilyTag "Times"
-}
-if {$fontweight=="bold"} {
-  set fontWeightTag B
-  } else {
-  set fontWeightTag ""
-}
-
-set fontName "${fontFamilyTag}${fontsize}${fontWeightTag}"
-set fontNameBold "${fontFamilyTag}${fontsize}B"
-#puts $fontNameBold
-
-#for Italic: reset fontname to normal if Bold
-set fontWeightTag I
-set fontNameItalic "${fontFamilyTag}${fontsize}${fontWeightTag}"
-
-if { $Debug && $httpmock} {
+if { [info exists Debug] && $Debug && [info exists httpmock] && $httpmock} {
   proc sourceHTTP {} {
     source $::Http
     source $::HttpMock
-    puts "mock"
   }
 } else {
   proc sourceHTTP {} {
     source $::Http
-    puts "nomock"
   }
 }
+
+catch {source $LoadConfig}
