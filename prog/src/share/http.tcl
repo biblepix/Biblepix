@@ -68,7 +68,8 @@ proc downloadFileArray {fileArrayName url} {
 }
 
 proc downloadFile {pathArrayName varName isInitial} {
-  set filepath [array get ::$pathArrayName $varName]
+  set filePathEntry [array get ::$pathArrayName $varName]
+  set filepath [lindex $filePathEntry 1]
   set filename [file tail $filepath]
 
   puts $filename

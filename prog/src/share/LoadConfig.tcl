@@ -64,7 +64,7 @@ if {![info exists fontweight]} {
 
 #Set fontcolortext
 if {![info exists fontcolortext]} {
-  set fontcolortext blue
+  set fontcolortext gold
 }
 
 #Set marginleft
