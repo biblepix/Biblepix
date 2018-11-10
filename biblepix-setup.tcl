@@ -31,47 +31,47 @@ if {[catch {source $Globals}]} {
   after 7000 {exit}
 
 } else {
-  
+
   #In case of GIT download: makeDirs
   makeDirs
-  
+
   #Set initial texts if missing
   if {[catch {source -encoding utf-8 $SetupTexts ; setTexts $lang}]} {
     set updatingHttp "Updating BiblePix program files..."
     set noConnHttp "No connection for BiblePix update. Try later."
   }
-  
+
   # 1.  D O   H T T P  U P D A T E   (if not initial)
 
   if {[catch {sourceHTTP}]} {
     set pbTitle "Update not possible.\nYou must download and rerun the BiblePix Installer from bible2.net."
     after 7000 {exit}
-    
+
   } else {
 
     .updateFrame.progbar start
 
-    if { [info exists InitialJustDone] } {      
+    if { [info exists InitialJustDone] } {
       set pbTitle $uptodateHttp
-  
+
     } else {
       set pbTitle $updatingHttp
-        
+
       catch {runHTTP 0}
     }
-    
-		#Copy photos after first run of Installer or if Config missing
+
+    #Copy photos after first run of Installer or if Config missing
     if { [info exists InitialJustDone] || ![file exists $Config] } {
       set pbTitle "Copying & resizing sample photos..."
-			source $SetupTools
+      source $SetupTools
       copyAndResizeSamplePhotos
       set pbTitle $uptodateHttp
     }
-    
+
+    catch {source $UpdateInjection}
     .updateFrame.progbar stop
     pack forget .updateFrame.pbTitle .updateFrame.progbar .updateFrame
-    catch {source $UpdateInjection}
-    
+
     # 2. B U I L D  M A I N  G U I
 
     source $SetupMainFrame

@@ -19,7 +19,7 @@ if {$TwdLang == "zh"} {
   set ::prefix Z
   if {! [namespace exists Z]} {
     namespace eval Z {
-      source -encoding utf-8 $BdfFontsArray(ChinaFont)
+      source -encoding utf-8 $BdfFontsPaths(ChinaFont)
     }
   }
 
@@ -28,7 +28,7 @@ if {$TwdLang == "zh"} {
   set ::prefix T
   if {! [namespace exists T]} {
     namespace eval T {
-      source -encoding utf-8 $BdfFontsArray(ThaiFont)
+      source -encoding utf-8 $BdfFontsPaths(ThaiFont)
     }
   }
 
@@ -43,7 +43,7 @@ if {$TwdLang == "zh"} {
 
   if {! [namespace exists R] && $fontweight != "bold"} {
     namespace eval R {
-      source -encoding utf-8 $BdfFontsArray($fontName)
+      source -encoding utf-8 $BdfFontsPaths($fontName)
     }
   }
   
@@ -51,7 +51,7 @@ if {$TwdLang == "zh"} {
   #Source Italic for all except Asian
   if {! [namespace exists I]} {
     namespace eval I {
-      source -encoding utf-8 $BdfFontsArray($fontNameItalic)
+      source -encoding utf-8 $BdfFontsPaths($fontNameItalic)
     }
   }
   
@@ -59,7 +59,7 @@ if {$TwdLang == "zh"} {
   if {$enabletitle || $fontweight == "bold"} { 
     if {! [namespace exists B]} {
       namespace eval B {
-        source -encoding utf-8 $BdfFontsArray($fontNameBold)
+        source -encoding utf-8 $BdfFontsPaths($fontNameBold)
       }
     }
   }

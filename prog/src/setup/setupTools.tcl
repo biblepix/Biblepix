@@ -152,63 +152,63 @@ global Flags
 # setManText
 ## Formats Manual_(..).txt & switches between languages
 proc setManText {lang} {
-	global ManualD ManualE
+  global ManualD ManualE
 
-	set manW .manualF.man
-	$manW configure -state normal
-	
-	if {$lang=="de"} {
-		set manFile $ManualD
-	} elseif {$lang=="en"} {
-		set manFile $ManualE
-	}
+  set manW .manualF.man
+  $manW configure -state normal
 
-	set chan [open $manFile]
-	set manText [read $chan]
-	close $chan
+  if {$lang=="de"} {
+    set manFile $ManualD
+  } elseif {$lang=="en"} {
+    set manFile $ManualE
+  }
+
+  set chan [open $manFile]
+  set manText [read $chan]
+  close $chan
 
 
-	#Adapt \path\ display for WIndows - zu kompliziert!
+  #Adapt \path\ display for WIndows - zu kompliziert!
 #if {$platform=="windows"} {
-		#set manText [string map {\/ \\} $manText]
-		
-	#}
-  
-	$manW replace 1.0 end $manText 
-	
-	#Determine & tag headers
-	set numLines [$manW count -lines 1.0 end]
+    #set manText [string map {\/ \\} $manText]
 
-	for {set line 1} {$line <= $numLines} {incr line} {
+  #}
 
-		##Level H3 (all caps header) if min. 2 caps at beg. of line
-		if { [$manW search -regexp {^[[:upper:]]{2}} $line.0 $line.end] != ""} {
-	 		$manW tag add H3 $line.0 $line.end
+  $manW replace 1.0 end $manText
 
-		##Level H2 (1x spaced Header)
-		} elseif { [$manW search -regexp {^[[:upper:]] [[:upper:]]} $line.0 $line.end] != ""} {
-			$manW tag add H2 $line.0 $line.end
+  #Determine & tag headers
+  set numLines [$manW count -lines 1.0 end]
 
-		##Level H1 (2x spaced Header)
-		} elseif { [$manW search -regexp {^[[:upper:]]  [[:upper:]]} $line.0 $line.end] != ""} {
-			$manW tag add H1 $line.0 $line.end
+  for {set line 1} {$line <= $numLines} {incr line} {
 
-		##Level Addenda (dash at line start > all following in small script)
-		} elseif { [$manW search -regexp {^-} $line.0 $line.end] != ""} {
-			$manW tag add Addenda $line.0 end		
-		}
-	}
+    ##Level H3 (all caps header) if min. 2 caps at beg. of line
+    if { [$manW search -regexp {^[[:upper:]]{2}} $line.0 $line.end] != ""} {
+      $manW tag add H3 $line.0 $line.end
 
-	
-	#Configure font tags
-	$manW tag conf H1 -font "TkCaptionFont 20 bold"
-	$manW tag conf H2 -font "TkHeadingFont 16 bold"
-	$manW tag conf H3 -font "TkSmallCaptionFont 14 bold"
-	$manW tag conf Addenda -font "TkTooltipFont"
-	##tabs in pixels?
-	$manW configure -tabs 30
-	$manW configure -state disabled
-	
+    ##Level H2 (1x spaced Header)
+    } elseif { [$manW search -regexp {^[[:upper:]] [[:upper:]]} $line.0 $line.end] != ""} {
+      $manW tag add H2 $line.0 $line.end
+
+    ##Level H1 (2x spaced Header)
+    } elseif { [$manW search -regexp {^[[:upper:]]  [[:upper:]]} $line.0 $line.end] != ""} {
+      $manW tag add H1 $line.0 $line.end
+
+    ##Level Addenda (dash at line start > all following in small script)
+    } elseif { [$manW search -regexp {^-} $line.0 $line.end] != ""} {
+      $manW tag add Addenda $line.0 end
+    }
+  }
+
+
+  #Configure font tags
+  $manW tag conf H1 -font "TkCaptionFont 20 bold"
+  $manW tag conf H2 -font "TkHeadingFont 16 bold"
+  $manW tag conf H3 -font "TkSmallCaptionFont 14 bold"
+  $manW tag conf Addenda -font "TkTooltipFont"
+  ##tabs in pixels?
+  $manW configure -tabs 30
+  $manW configure -state disabled
+
 }
 
 # C A N V A S   M O V E   P R O C S
@@ -251,15 +251,15 @@ proc checkItemInside {c item xDiff yDiff} {
     set can(minx) [expr $canvX - $imgX]
     set can(maxy) 0
     set can(maxx) 0
-    
+
   } elseif {$imgY > $canvY} {
-      
+
     set can(miny) [expr $canvY - $imgY]
     set can(maxy) 0
     set can(maxx) 0
   }
 
-	#item coords
+  #item coords
   set item [$c coords $item]
   #check min values
   foreach {x y} $item {
@@ -285,7 +285,7 @@ proc checkItemInside {c item xDiff yDiff} {
 ## Creates textbox with TW text on canvas $c
 ## Called by SetupDesktop
 proc createMovingTextBox {c} {
-	global marginleft margintop textPosFactor fontsize setupTwdText fontcolor
+  global marginleft margintop textPosFactor fontsize setupTwdText fontcolor
 
   set screenx [winfo screenwidth .]
   set screeny [winfo screenheight .]
@@ -299,8 +299,8 @@ proc createMovingTextBox {c} {
   $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt mv}
   $c itemconfigure canvTxt -text $setupTwdText
   $c itemconfigure canvTxt -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill $fontcolor -activefill red
-  
-#  $textposCanv itemconfigure canvTxt -width 
+
+#  $textposCanv itemconfigure canvTxt -width
 }
 
 ##### S E T U P P H O T O S   P R O C S ####################################################
@@ -311,7 +311,7 @@ proc needsResize {} {
 
   set imgX [image width photosOrigPic]
   set imgY [image height photosOrigPic]
-  
+
   #Compare img dimensions with screen dimensions
   if {$screenX == $imgX && $screenY == $imgY} {
     return 0
@@ -325,14 +325,14 @@ proc needsResize {} {
 # setzt Funktion 'photosOrigPic' voraus und leitet Subprozesse ein
 proc addPic {} {
   global picPath jpegDir
-  
+
   set targetPicPath [file join $jpegDir [setPngFileName [file tail $picPath]]]
-  
+
   if { [file exists $targetPicPath] } {
     NewsHandler::QueryNews $::picSchonDa lightblue
     return
   }
-  
+
   if [needsResize] {
     source $::SetupResizePhoto
     openResizeWindow
@@ -483,7 +483,7 @@ proc openImg {imgFilePath imgCanvas} {
   set photosCanvMargin 6
   set photosCanvX 650
   set photosCanvY [expr round($photosCanvX/$factor)]
-  
+
   image create photo photosOrigPic -file $imgFilePath
 
   #scale photosOrigPic to photosCanvPic
@@ -521,7 +521,7 @@ proc deleteImg {localJList c} {
 
 # copyAndResizeSamplePhotos
 ## copies sample Jpegs to PhotosDir unchanged if size OK
-## else calls [resize] 
+## else calls [resize]
 ## no cutting intended because these pics can be stretched
 ## called by BiblepixSetup
 ##$$$$$$$$$$$$$ TODO: Joel, this proc needs threading!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -532,33 +532,33 @@ proc copyAndResizeSamplePhotos {} {
 
   foreach fileName [array names sampleJpgArray] {
 
-		set origJpgPath [file join $sampleJpgDir $fileName]
-	  set newJpgPath [file join $photosDir $fileName]
-		set newPngPath [setPngFileName $newJpgPath]
+    set origJpgPath [file join $sampleJpgDir $fileName]
+    set newJpgPath [file join $photosDir $fileName]
+    set newPngPath [setPngFileName $newJpgPath]
 
-	  #Skip if JPG or PNG found in $photosDir
-		if { [file exists $newJpgPath] || [file exists $newPngPath] } {
-			puts "Skipping $fileName"
+    #Skip if JPG or PNG found in $photosDir
+    if { [file exists $newJpgPath] || [file exists $newPngPath] } {
+      puts "Skipping $fileName"
       continue
-		} 
+    }
 
-	  #Copy over as JPG if size OK
-		image create photo origJpeg -file $origJpgPath
-		set imgX [image width origJpeg]
-	  set imgY [image height origJpeg]	 	  
+    #Copy over as JPG if size OK
+    image create photo origJpeg -file $origJpgPath
+    set imgX [image width origJpeg]
+    set imgY [image height origJpeg]
 
-		if {$screenX == $imgX && $screenY == $imgY} {
-			puts "Copying $fileName unchanged"	    
-			file copy $origJpgPath $newJpgPath
-					
-		#else resize & save as PNG
-	  } else {
+    if {$screenX == $imgX && $screenY == $imgY} {
+      puts "Copying $fileName unchanged"
+      file copy $origJpgPath $newJpgPath
 
-	    puts "Resizing $origJpgPath"
-		  set newPic [resize origJpeg $screenX $screenY]
-	    $newPic write $newPngPath -format PNG
-	  }
-	} ;#END foreach
+    #else resize & save as PNG
+    } else {
+
+      puts "Resizing $origJpgPath"
+      set newPic [resize origJpeg $screenX $screenY]
+      $newPic write $newPngPath -format PNG
+    }
+  } ;#END foreach
 } ;#END copyAndResizeSamplePhotos
 
 

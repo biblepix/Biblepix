@@ -15,7 +15,7 @@ set wishpath [auto_execok wish]
 
 if { [info exists srcdir] } {
   #set
-  set rootdir "[file dirname [file dirname [file normalize $srcdir ]]]"  
+  set rootdir "[file dirname [file dirname [file normalize $srcdir ]]]"
 } else {
   #reset
   if { [info exists env(LOCALAPPDATA)] } {
@@ -58,12 +58,12 @@ proc makeDirs {} {
 
 #SET ARRAYS FOR DOWNLOAD
 
-#Set filepaths array
-array set filepaths "
+#Set FilePaths array
+array set FilePaths "
   Readme [file join $rootdir README.txt]
   Setup [file join $rootdir biblepix-setup.tcl]
-	ManualD [file join $docDir MANUAL_de.txt]
-	ManualE [file join $docDir MANUAL_en.txt]
+  ManualD [file join $docDir MANUAL_de.txt]
+  ManualE [file join $docDir MANUAL_en.txt]
   UpdateInjection [file join $srcdir updateInjection.tcl]
   Biblepix [file join $srcdir biblepix.tcl]
   BdfTools [file join $picdir BdfTools.tcl]
@@ -103,9 +103,9 @@ array set filepaths "
   Terminal [file join $unixdir term.sh]
 "
 
-#Export single filepaths               
-foreach i [array names filepaths] {
-  set ivalues [array get filepaths $i]
+#Export single FilePaths
+foreach i [array names FilePaths] {
+  set ivalues [array get FilePaths $i]
   set name [lindex $ivalues 0]
   set path [lindex $ivalues 1]
   set $name $path
@@ -125,12 +125,12 @@ array set sampleJpgArray "
 #Set Icons array & export
 set bpxIconUrl "http://vollmar.ch/biblepix"
 array set iconArray "
-  biblepix.png [file join $unixdir biblepix.png] 
+  biblepix.png [file join $unixdir biblepix.png]
   biblepix.ico [file join $windir biblepix.ico]
 "
 
 #Set Bdf Fonts array
-array set BdfFontsArray "
+array set BdfFontsPaths "
 Arial20 [file join $fontdir Arial20.tcl]
 Arial24 [file join $fontdir Arial24.tcl]
 Arial30 [file join $fontdir Arial30.tcl]
@@ -207,7 +207,7 @@ if {$platform == "unix"} {
   set types {
     { {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
   }
-    
+
   #ru
   if { [file exists $HOME/Снимки] } {
     set DesktopPicturesDir $HOME/Снимки
@@ -220,13 +220,13 @@ if {$platform == "unix"} {
   #uz
   } elseif { [file exists $HOME/Suratlar] } {
     set DesktopPicturesDir $HOME/Suratlar
-  #ar صور 
+  #ar صور
   } elseif { [file exists [file join $HOME صور ]] } {
     set DesktopPicturesDir "[file join $HOME صور ]"
   #zh 图片
   } elseif { [file exists [file join $HOME 图片 ]] } {
     set DesktopPicturesDir "[file join $HOME 图片 ]"
-  
+
   #General Ima(ge) | Bil(der) etc.
   } elseif {
       ![catch {glob Imag*} result] ||
@@ -236,10 +236,10 @@ if {$platform == "unix"} {
       ![catch {glob Bil*} result] } {
     set DesktopPicturesDir $HOME/$result
   #All else: set to $HOME
-  } else {  
+  } else {
     set DesktopPicturesDir $HOME
   }
-  
+
 } elseif {$platform == "windows"} {
   #DesktopPicturesDir is always "Pictures"
   set DesktopPicturesDir $env(USERPROFILE)/Pictures
@@ -291,9 +291,11 @@ if { $Debug && $httpmock} {
   proc sourceHTTP {} {
     source $::Http
     source $::HttpMock
+    puts "mock"
   }
 } else {
   proc sourceHTTP {} {
     source $::Http
+    puts "nomock"
   }
 }
