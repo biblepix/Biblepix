@@ -134,7 +134,7 @@ unserem Server heruntergeladen werden können. Der Download geschieht durch den 
 über das Einrichtungsprogramm und sollte um den Jahreswechsel einmal vollzogen werden. 
 Diese Funktion ist nicht automatisch. Die Dateien werden im Ordner
 
-	~/Biblepix/Texts
+	~/Biblepix/BibleTexts
 
 gespeichert. Alte Jahrgänge werden durch das Einrichtungsprogramm automatisch gelöscht.
 

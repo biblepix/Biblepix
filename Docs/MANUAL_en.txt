@@ -133,7 +133,7 @@ and Bible versions. Downloading is up to the user and should be done through the
 Setup programm when a year comes to a close. This funcion is not automatic. 
 The files are kept in the folder
 
-	~/Biblepix/Texts
+	~/Biblepix/BibleTexts
 
 Any redundent files from past years are deleted automatically by the Setup program.
 
