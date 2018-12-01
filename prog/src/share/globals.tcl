@@ -5,7 +5,7 @@
 # Updated: 12nov18
 
 set version "3.0"
-set twdUrl "http://bible2.net/service/TheWord/twd11/current"
+set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
 
 set platform $tcl_platform(platform)

@@ -5,6 +5,8 @@
 # Updated: 7oct18
 
 package require http
+package require tls
+http::register https 443 [list ::tls::socket -tls1 1]
 
 ########### PROCS FOR SETUP UPDATE #################
 
