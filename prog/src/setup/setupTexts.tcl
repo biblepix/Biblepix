@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25nov18
+# Updated: 3dec18
 
 proc setTexts {lang} {
 #exports text variables for current language
@@ -35,6 +35,9 @@ set packageRequireTDom(en) "$bp needs the Tcl 'tDom' extension.\nPlease install 
 set packageRequireTDom(de) "$bp benötigt die Tcl-Erweiterung 'tDom'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n$packageRequireTDom(all)"
 set ::packageRequireTDom $packageRequireTDom($lang)
 
+set packageRequireTls(en) "$bp needs the Tcl 'TLS' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n$packageRequireTDom(all)"
+set packageRequireTls(de) "$bp benötigt die Tcl-Erweiterung 'TLS'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n$packageRequireTDom(all)"
+set ::packageRequireTls $packageRequireTls($lang)
 
 #### S E T U P   G U I ################################
 

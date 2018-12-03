@@ -5,10 +5,10 @@
 # Updated: 7oct18
 
 package require http
-package require tls
-http::register https 443 [list ::tls::socket -tls1 1]
 
-########### PROCS FOR SETUP UPDATE #################
+###############################################################################
+########### PROCS FOR SETUP UPDATE ############################################
+###############################################################################
 
 proc setProxy {} {
   if { [catch {package require autoproxy} ] } {
@@ -145,19 +145,29 @@ proc runHTTP isInitial {
 } ;#end runHTTP
 
 
-########## PROCS FOR TWD LIST ####################
+###############################################################################
+########## PROCS FOR TWD LIST #################################################
+###############################################################################
 
 proc getRemoteRoot {} {
 global twdUrl
 
-  #tDom is standard in ActiveTcl, Linux distros vary
-  if {[catch {package require tdom}]} {
+  #These are standard in ActiveTcl, Linux distros vary
+  if [catch {package require tdom}] {
     package require Tk
     tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $::packageRequireTDom
-     exit
+    return 1
+  }
+  if [catch {package require tls}] {
+    package require Tk
+    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $::packageRequireTls
+    return 1
   }
 
-  #get twd list
+  #Register SSL connection
+  http::register https 443 [list ::tls::socket -tls1 1]
+
+  #Get twd list
   if {[catch "http::geturl $twdUrl"]} {
     setProxy
   }
