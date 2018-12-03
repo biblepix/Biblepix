@@ -20,7 +20,8 @@ System requirements
 -------------------
 Operating systems: Linux, Windows
 Pre-installation Windows: ActiveTcl (from activestate.com/activetcl/downloads)
-Pre-installation Linux: Tcl/Tk library with tDom und tkimg extensions
+Pre-installation Linux: Tcl/Tk library with tls, tDom und tkimg 
+extensions
 
 Installation
 ------------
@@ -54,7 +55,8 @@ Systemvoraussetzungen
 ---------------------
 Betriebssysteme: Linux, Windows
 Vorinstallation Windows: ActiveTcl (von activestate.com/activetcl/downloads)
-Vorinstallation Linux: Tcl/Tk-Bibliothek mit Zusatzpaketen tDom und tkimg
+Vorinstallation Linux: Tcl/Tk-Bibliothek mit Zusatzpaketen tls, tDom und 
+tkimg
 
 Installation
 ------------

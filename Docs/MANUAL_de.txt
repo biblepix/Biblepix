@@ -13,7 +13,7 @@ BibelPix kann "Das Wort" auf vielfältige Weise anzeigen:
 	° im Linux-Terminal
 
 Systeme: Linux, Windows
-Systemvoraussetzungen: Tcl/Tk-Bibliothek, Zusatzpakete tDom und tkimg
+Systemvoraussetzungen: Tcl/Tk-Bibliothek, Zusatzpakete tls, tDom und tkimg
 ________________________________________________________________________________
 
 
@@ -218,8 +218,8 @@ Die Konfigurationsdatei erlaubt auch den sog. "Debug-Modus", um Programmfehler a
 Dazu setzen Sie den Wert 'Debug' auf 1 und starten das Einrichtungsprogramm neu.
 
 **oder Kurzkommando für Gesamtinstallation in Konsole eingeben:
-	° sudo apt-get install tdom libtk-img (Debian/Ubuntu)
-	° sudo emerge tdom tkimg (Gentoo)
+	° sudo apt-get install tcl-tls tdom libtk-img (Debian/Ubuntu)
+	° sudo emerge dev-tcltk/tls tdom tkimg (Gentoo)
 	° sudo yum install tdom tkimg (Fedora)
 	° sudo yast -i tkimg tdom (OpenSuse)
 	° sudo urpmi tkimg tdom (Mandriva)

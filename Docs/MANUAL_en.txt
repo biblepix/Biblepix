@@ -13,7 +13,7 @@ BiblePix can display "The Word" in various ways:
  * in the Linux terminal
  
 Systems: Linux, Windows 
-System requirements: Tcl/Tk library, additional packages tDom and tkimg
+System requirements: Tcl/Tk library, additional packages tls, tDom and tkimg
 
 ________________________________________________________________________________
 
@@ -211,8 +211,8 @@ then restart the Setup. The configuration file allows the so-called "debug modus
 program errors. To achieve this, set the value 'debug' to 1 and restart the Setup.
 
 **or enter short command for complete installation in a terminal:
-	° sudo apt-get install tdom libtk-img (Debian/Ubuntu)
-	° sudo emerge tdom tkimg (Gentoo)
+	° sudo apt-get install tcl-tls tdom libtk-img (Debian/Ubuntu)
+	° sudo emerge dev-tcltk/tls tdom tkimg (Gentoo)
 	° sudo yum install tdom tkimg (Fedora)
 	° sudo yast -i tkimg tdom (OpenSuse)
 	° sudo urpmi tkimg tdom (Mandriva)
