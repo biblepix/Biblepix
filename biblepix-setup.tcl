@@ -6,7 +6,7 @@
 ################################################################################
 # Version: 3.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 20Okt18
+# Updated: 3dec18
 
 package require Tk
 
@@ -17,13 +17,10 @@ set Globals "[file join $srcdir share globals.tcl]"
 
 #Set initial FTP message & progress bar
 destroy .updateFrame
-
 frame .updateFrame -padx 40 -pady 50 -borderwidth 20
 pack .updateFrame -fill y -expand true
-
 label .updateFrame.pbTitle -justify center -bg lightblue -fg black -borderwidth 10 -textvariable pbTitle
 ttk::progressbar .updateFrame.progbar -mode indeterminate -length 200
-
 pack .updateFrame.pbTitle .updateFrame.progbar
 
 if {[catch {source $Globals}]} {

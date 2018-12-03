@@ -2,10 +2,7 @@
 # Regulates shift vom version 2.4 to 3.0
 # sourced once by biblepix-setup.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27nov18
-
-##TODO: This file is not functional yet!
-##Check HTTP(s) AND integration with biblepix-setup.tcl 
+# Updated: 3dec18
 
 #Return to Setup if wrong version
 if {$version == "2.4"} {
@@ -15,14 +12,13 @@ if {$version == "2.4"} {
   .updateFrame.progbar start
   set pbTitle $updatingHttp
 
-  # 1 Download and source new Globals
-  set token [http::geturl $::bpxReleaseUrl/globals.tcl -validate 1]
+  # 1 Download new Globals & Http
   set sharedir [file join $::srcdir share]
   file mkdir $::sharedir
   set Globals [file join $sharedir globals.tcl]
-  downloadFile [file join $sharedir globals.tcl] globals.tcl $token
 
-  # Download new http.tcl
+  set token [http::geturl $::bpxReleaseUrl/globals.tcl -validate 1]  
+  downloadFile [file join $sharedir globals.tcl] globals.tcl $token
   set token [http::geturl $::bpxReleaseUrl/http.tcl -validate 1]
   downloadFile [file join $sharedir http.tcl] http.tcl $token
 
@@ -32,20 +28,7 @@ if {$version == "2.4"} {
   runHTTP 1
   source $Globals
 
-  # 2 Run SaveLin/SaveLin to install new Setup path
-  ##TODO: below needs to be tested & completed!
-  ## already downloaded with runHTTP
-  # if {$os=="Linux"} {
-    # set token1 $SaveLin
-    # set token2 $SaveLinHelpers
-  # } else {
-    # set token1 $SaveWin
-    # set token2 $SaveWinHelpers
-  # }
-
-  # downloadFile ... $token1
-  # downloadFile ... $token2
-
+  # 2 Run SaveWin/SaveLin to install new Setup path
   if {$os=="Linux"} {
     source $SaveLinHelpers
     setupLinMenu
@@ -53,7 +36,6 @@ if {$version == "2.4"} {
     source $SaveWinHelpers
     setWinContextMenu
   }
-
 
   # 3 Delete obsolete directories in rootdir & $srcdir
 
@@ -67,14 +49,13 @@ if {$version == "2.4"} {
   lappend newDirList [file normalize [file join $rootdir Photos]]
   lappend newDirList [file normalize [file join $rootdir BibleTexts]]
   lappend newDirList [file normalize [file join $rootdir Docs]]
-  ## for $srcdir
+  ##set new directories list for $srcdir
   lappend newDirList [file normalize [file join $srcdir share]]
   lappend newDirList [file normalize [file join $srcdir setup]]
   lappend newDirList [file normalize [file join $srcdir sig]]
   lappend newDirList [file normalize [file join $srcdir pic]]
   lappend newDirList [file normalize [file join $srcdir save]]
-
-  ##delete obsolete dir paths including files
+  ##delete obsolete dir paths including all files
   foreach dirpath $oldDirList {
     if { ![string match *$dirpath* $newDirList]} {
       file delete -force $dirpath
@@ -86,7 +67,7 @@ if {$version == "2.4"} {
   file delete $picdir/hgbild.tcl
   file delete $picdir/textbild.tcl
 
-  #Exit progbar and return to Setup
+  # 4 Exit progbar and return to Setup
   .updateFrame.progbar stop
   pack forget .updateFrame.pbTitle .updateFrame.progbar .updateFrame
 }
