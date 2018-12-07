@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 12may18
+# Updated 7dec18
 
 #Create left & right main frames
 pack [frame .desktopF.fleft] -expand 0 -fill y -side left
@@ -96,7 +96,7 @@ canvas .desktopF.fright.fbot2.inttextcanv -width 700 -height 150 -borderwidth 2 
 set inttextCanv .desktopF.fright.fbot2.inttextcanv
 
 ##create background image
-image create photo intTextBG -file $guidir/testbild.png
+image create photo intTextBG -file $SetupDesktopPng
 $inttextCanv create image 0 0 -image intTextBG -anchor nw 
 
 # Set international text
