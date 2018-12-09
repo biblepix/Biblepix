@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 11oct18
+# Updated: 9dec18
 
 source $JList
 
@@ -150,7 +150,8 @@ global Flags
 }
 
 # setManText
-## Formats Manual_(..).txt & switches between languages
+## Formats Manual & switches between languages
+## called by [bind] above
 proc setManText {lang} {
   global ManualD ManualE
 
@@ -164,15 +165,9 @@ proc setManText {lang} {
   }
 
   set chan [open $manFile]
+  chan configure $chan -encoding utf-8
   set manText [read $chan]
   close $chan
-
-
-  #Adapt \path\ display for WIndows - zu kompliziert!
-#if {$platform=="windows"} {
-    #set manText [string map {\/ \\} $manText]
-
-  #}
 
   $manW replace 1.0 end $manText
 

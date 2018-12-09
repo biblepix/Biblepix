@@ -66,7 +66,6 @@ array set FilePaths "
   Setup [file join $rootdir biblepix-setup.tcl]
   ManualD [file join $docDir MANUAL_de.txt]
   ManualE [file join $docDir MANUAL_en.txt]
-  UpdateInjection [file join $srcdir updateInjection.tcl]
   Biblepix [file join $srcdir biblepix.tcl]
   BdfTools [file join $picdir BdfTools.tcl]
   BdfPrint [file join $picdir BdfPrint.tcl]
@@ -102,6 +101,7 @@ array set FilePaths "
   Signature [file join $maildir signature.tcl]
   Config [file join $confdir biblepix.conf]
   Terminal [file join $unixdir term.sh]
+  UpdateInjection [file join $srcdir updateInjection.tcl]
 "
 
 #Export single FilePaths
