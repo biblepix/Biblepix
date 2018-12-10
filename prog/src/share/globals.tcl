@@ -62,6 +62,7 @@ proc makeDirs {} {
 array set FilePaths "
   Globals [file join $sharedir globals.tcl]
   Http [file join $sharedir http.tcl]
+  UpdateInjection [file join $srcdir updateInjection.tcl]
   Readme [file join $rootdir README.txt]
   Setup [file join $rootdir biblepix-setup.tcl]
   ManualD [file join $docDir MANUAL_de.txt]
@@ -101,7 +102,6 @@ array set FilePaths "
   Signature [file join $maildir signature.tcl]
   Config [file join $confdir biblepix.conf]
   Terminal [file join $unixdir term.sh]
-  UpdateInjection [file join $srcdir updateInjection.tcl]
 "
 
 #Export single FilePaths
