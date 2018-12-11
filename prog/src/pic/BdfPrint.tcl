@@ -1,8 +1,8 @@
 # ~/Biblepix/prog/src/pic/BdfPrint.tcl
 # Top level BDF printing prog
-# sourced by Image
+# sourced by image.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 1sept18
+# Updated: 11dec18
 
 #1. SET BASIC VARS
 source $TwdTools
@@ -10,9 +10,8 @@ source $BdfTools
 set TwdLang [getTwdLang $::TwdFileName]
 set ::RtL [isRtL $TwdLang]
 
-puts "TwdLang: $TwdLang"
-
 #2. SOURCE FONTS INTO NAMESPACES
+puts "Sourcing fonts..."
 
 ##Chinese: (regular_24)
 if {$TwdLang == "zh"} {
@@ -47,7 +46,6 @@ if {$TwdLang == "zh"} {
     }
   }
   
-  
   #Source Italic for all except Asian
   if {! [namespace exists I]} {
     namespace eval I {
@@ -65,9 +63,15 @@ if {$TwdLang == "zh"} {
   }
 } ;#END source fonts
 
+
 # 3. LAUNCH PRINTING & SAVE IMAGE
 set img hgbild
 set finalImg [printTwd $TwdFileName $img]
+
+
+
+puts $platform
+
 if {$platform=="windows"} {  
   $finalImg write $TwdTIF -format TIFF
 } elseif {$platform=="unix"} {
