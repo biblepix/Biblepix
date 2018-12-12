@@ -2,7 +2,7 @@
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7oct18
+# Updated: 11dec18
 
 package require http
 
@@ -26,7 +26,7 @@ proc setProxy {} {
 proc getTesttoken {} {
   global bpxReleaseUrl
 
-  set testfile "$bpxReleaseUrl/README"
+  set testfile "$bpxReleaseUrl/README.txt"
   set testtoken [http::geturl $testfile -validate 1]
 
   if {[http::error $testtoken] != ""} {
@@ -74,7 +74,7 @@ proc downloadFile {pathArrayName varName isInitial} {
   set filepath [lindex $filePathEntry 1]
   set filename [file tail $filepath]
 
-  puts $filename
+  puts "Checking $filename..."
 
   #get remote 'meta' info (-validate 1)
   set token [http::geturl $::bpxReleaseUrl/$filename -validate 1]
@@ -91,10 +91,13 @@ proc downloadFile {pathArrayName varName isInitial} {
     catch {clock scan $newtime} newsecs
     catch {file mtime $filepath} oldsecs
 
+#TODO? - compare [file size ..] with $meta(Content-Length) ??
+
     #download if times incorrect OR if oldfile is older/non-existent
     if { ! [string is digit $newsecs] ||
          ! [string is digit $oldsecs] ||
          $oldsecs<$newsecs } {
+      puts "Downloading $filename..."
       downloadFileIntoDir $filepath $filename $token
     }
   }
@@ -279,7 +282,6 @@ proc downloadTWDFiles {} {
         }
       }
     }
-
 
     set chan [open $filename w]
     fconfigure $chan -encoding utf-8
