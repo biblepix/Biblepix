@@ -29,8 +29,7 @@ Git: git clone https://github.com/Biblepix/Biblepix.git
 Linux: Download Installer from bible2.net
 Windows: Download Installer from bible2.net
 
-For further details consult the Manual (from the BiblePix Setup, or in 
-~/Biblepix/Docs/MANUAL.txt)
+For further details consult the Manual (from the BiblePix Setup, or in a text editor open ~/Biblepix/Docs/MANUAL_en.txt).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -64,5 +63,4 @@ Git: git clone https://github.com/Biblepix/Biblepix.git
 Linux: Installer von bible2.net herunterladen und ausführen
 Windows: Installer von bible2.net herunterladen und ausführen
 
-Ausführliche Anleitung im Manual (aus dem Einrichtungsprogramm bzw. 
-~/Biblepix/Docs/MANUAL.txt)
+Ausführliche Anleitung im Manual (aus dem Einrichtungsprogramm, bzw. im Texteditor ~/Biblepix/Docs/MANUAL_de.txt öffnen).
