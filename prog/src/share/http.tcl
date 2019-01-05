@@ -14,8 +14,6 @@ package require http
 ## Main program for BiblePix Http download
 ## Called by ...
 proc runHTTP isInitial {
-  global FilePaths BdfFontPaths
-
   #Test connexion & start download
   if { [catch testHttpCon Error] } {
     set ::ftpStatus $::noConnHttp
@@ -25,18 +23,17 @@ proc runHTTP isInitial {
     error $Error
 
   } else {
-    foreach varName [array names FilePaths] {
-      downloadFile FilePaths $varName $isInitial
+    foreach varName [array names ::FilePaths] {
+      set filePath [lindex [array get ::FilePaths $varName] 1]
+      downloadFile $filePath $isInitial
     }
-    foreach varName [array names BdfFontPaths] {
+    foreach varName [array names ::BdfFontPaths] {
       if {$varName == "ChinaFont"} {
         continue
       }
-      downloadFile BdfFontPaths $varName $isInitial
-      
-      
-      #TODO: incorporate size check here!!!
-      checkFileSize $varName
+
+      set filePath [lindex [array get ::BdfFontPaths $varName] 1]
+      downloadFile $filePath $isInitial
     }
       
     #Success message (source Texts again for Initial)
@@ -47,55 +44,6 @@ proc runHTTP isInitial {
   } ;#end if main condition
   
 } ;#end runHTTP
-
-# setProxy
-##called by testHttpCon
-proc setProxy {} {
-  if { [catch {package require autoproxy} ] } {
-    set host localhost
-    set port 80
-  } else {
-    autoproxy::init
-    set host [autoproxy::cget -host]
-    set port [autoproxy::cget -port]
-  }
-
-  http::config -proxyhost $host -proxyport $port
-}
-
-# getTesttoken
-##called by testHttpCon
-proc getTesttoken {} {
-  set testfile "$::bpxReleaseUrl/README.txt"
-  set testtoken [http::geturl $testfile -validate 1]
-
-  if {[http::error $testtoken] != ""} {
-    error [string cat "testtoken -> error:" [http::error $testtoken]]
-  }
-
-  if {[http::ncode $testtoken] != 200} {
-    error [string cat "testtoken -> ncode:" [http::ncode $testtoken]]
-  }
-
-  return $testtoken
-}
-
-# testHttpCon
-##tests Http Connexion, returns error if connexion fails
-##called by runHTTP
-proc testHttpCon {} {
-  if { [catch getTesttoken error] } {
-    puts "ERROR: http.tcl -> testHttpCon: $error"
-
-    #try proxy & retry connexion
-    setProxy
-
-    if { [catch getTesttoken error] } {
-      puts "ERROR: http.tcl -> testHttpCon -> proxy: $error"
-      error $error
-    }
-  }
-}
 
 # downloadFileArray
 ## called by Installer for sampleJpgArray & iconArray
@@ -115,54 +63,69 @@ proc downloadFileArray {fileArrayName url} {
 
 # downloadFile
 ##called by runHTTP
-proc downloadFile {pathArrayName varName isInitial} {
-  set filePathEntry [array get ::$pathArrayName $varName]
-  set filepath [lindex $filePathEntry 1]
-  set filename [file tail $filepath]
+proc downloadFile {filePath isInitial} {
+  set filename [file tail $filePath]
 
   puts $filename
 
   #get remote 'meta' info (-validate 1)
   set token [http::geturl $::bpxReleaseUrl/$filename -validate 1]
   array set meta [http::meta $token]
+  
+  if { [http::ncode $token] != 200 } {
+    http::cleanup $token
+    return
+  }
 
   #a) Overwrite file if "Initial"
   if {$isInitial} {
-    downloadFileIntoDir $filepath $filename $token
+    downloadFileIntoDir $filePath $filename
 
   #b) Overwrite file if remote is newer
   } else {
 
     catch {set newtime $meta(Last-Modified)}
     catch {clock scan $newtime} newsecs
-    catch {file mtime $filepath} oldsecs
+    catch {file mtime $filePath} oldsecs
 
     #download if times incorrect OR if oldfile is older/non-existent
     if { ! [string is digit $newsecs] ||
          ! [string is digit $oldsecs] ||
          $oldsecs<$newsecs } {
-      downloadFileIntoDir $filepath $filename $token
+      downloadFileIntoDir $filePath $filename
     }
   }
+
+  http::cleanup $token
 }
 
 # downloadFileIntoDir
 ##called by downloadFile
-proc downloadFileIntoDir {filePath fileName token} {
-  #download file into channel unless error message
+proc downloadFileIntoDir {filePath fileName} {
+  #download file into channel
   puts $filePath
 
-  if { "[http::ncode $token]" == 200 } {
+  set chan [open $filePath w]
+
+  fconfigure $chan -encoding utf-8
+  set token [http::geturl $::bpxReleaseUrl/$fileName -channel $chan]
+
+  close $chan
+
+  if { [http::status $token] != "ok" } {
+    puts "error status, try it again."
     http::cleanup $token
+
     set chan [open $filePath w]
 
     fconfigure $chan -encoding utf-8
-    http::geturl $::bpxReleaseUrl/$fileName -channel $chan
+    set token [http::geturl $::bpxReleaseUrl/$fileName -channel $chan]
 
     close $chan
   }
+  
+  http::cleanup $token
 }
-
 
 
 ###############################################################################
@@ -170,8 +133,6 @@ proc downloadFileIntoDir {filePath fileName token} {
 ###############################################################################
 
 proc getRemoteRoot {} {
-global twdUrl
-
   #These are standard in ActiveTcl, Linux distros vary
   if [catch {package require tdom}] {
     package require Tk
@@ -187,7 +148,7 @@ global twdUrl
   #Register SSL connection
   http::register https 443 [list ::tls::socket -tls1 1]
 
-  set token [http::geturl $twdUrl]
+  set token [http::geturl $::twdUrl]
   set data [http::data $token]
   
   http::cleanup $token
@@ -243,16 +204,14 @@ proc getRemoteTWDFileList {} {
 }
 
 proc downloadTWDFiles {} {
-  global twdDir noConnTwd gettingTwd
-
   if { [catch {set root [getRemoteRoot]}] } {
     NewsHandler::QueryNews $::noConnTwd red
     return 1
   }
 
-#  NewsHandler::QueryNews "$gettingTwd" orange - falsche Message!
+#  NewsHandler::QueryNews "$::gettingTwd" orange - falsche Message!
 
-  cd $twdDir
+  cd $::twdDir
   #get hrefs alphabetically ordered
   set urllist [$root selectNodes {//tr/td/a}]
   set hrefs ""
@@ -274,42 +233,71 @@ proc downloadTWDFiles {} {
     NewsHandler::QueryNews "Downloading $filename..." lightblue
 
     if [regexp zh- $url] {
-      set filepath $::FilePaths(ChinaFont)
-      set filename [file tail $filepath]
-
-      #get remote 'meta' info (-validate 1)
-      set token [http::geturl $::bpxReleaseUrl/$filename -validate 1]
-      array set meta [http::meta $token]
-
-      #a) Overwrite file if "Initial"
-      if {$isInitial} {
-        downloadFile $filepath $filename $token
-
-      #b) Overwrite file if remote is newer
-      } else {
-
-        set newtime $meta(Last-Modified)
-        catch {clock scan $newtime} newsecs
-        catch {file mtime $filepath} oldsecs
-
-        #download if times incorrect OR if oldfile is older/non-existent
-        if { ! [string is digit $newsecs] ||
-             ! [string is digit $oldsecs] ||
-             $oldsecs<$newsecs } {
-          downloadFile $filepath $filename $token
-        }
-      }
+      set filePath $::FilePaths(ChinaFont)
+      downloadFile $filePath 0
     }
-
 
     set chan [open $filename w]
     fconfigure $chan -encoding utf-8
     http::geturl $url -channel $chan
     close $chan
 
-    after 5000 .internationalF.f1.twdlocal insert end $filename
+    after 3000 .internationalF.f1.twdlocal insert end $filename
   }
-    #deselect all downloaded files
-    .internationalF.twdremoteframe.lb selection clear 0 end
+  #deselect all downloaded files
+  .internationalF.twdremoteframe.lb selection clear 0 end
+}
 
+
+###############################################################################
+########## BASIC PROCS ########################################################
+###############################################################################
+
+# testHttpCon
+##tests Http Connexion, returns error if connexion fails
+##called by runHTTP
+proc testHttpCon {} {
+  if { [catch getTesttoken error] } {
+    puts "ERROR: http.tcl -> testHttpCon: $error"
+
+    #try proxy & retry connexion
+    setProxy
+
+    if { [catch getTesttoken error] } {
+      puts "ERROR: http.tcl -> testHttpCon -> proxy: $error"
+      error $error
+    }
+  }
+}
+
+# getTesttoken
+##called by testHttpCon
+proc getTesttoken {} {
+  set testfile "$::bpxReleaseUrl/README.txt"
+  set testtoken [http::geturl $testfile -validate 1]
+
+  if {[http::error $testtoken] != ""} {
+    error [string cat "testtoken -> error:" [http::error $testtoken]]
+  }
+
+  if {[http::ncode $testtoken] != 200} {
+    error [string cat "testtoken -> ncode:" [http::ncode $testtoken]]
+  }
+
+  return $testtoken
+}
+
+# setProxy
+##called by testHttpCon
+proc setProxy {} {
+  if { [catch {package require autoproxy} ] } {
+    set host localhost
+    set port 80
+  } else {
+    autoproxy::init
+    set host [autoproxy::cget -host]
+    set port [autoproxy::cget -port]
+  }
+
+  http::config -proxyhost $host -proxyport $port
 }
