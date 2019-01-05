@@ -1,5 +1,4 @@
 # ~/Biblepix/prog/src/com/http.tcl
-# Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 5jan19
@@ -12,7 +11,7 @@ package require http
 
 # runHTTP
 ## Main program for BiblePix Http download
-## Called by ...
+## Called by Installer, Setup, UpdateInjection
 proc runHTTP isInitial {
   #Test connexion & start download
   if { [catch testHttpCon Error] } {
@@ -46,7 +45,7 @@ proc runHTTP isInitial {
 } ;#end runHTTP
 
 # downloadFileArray
-## called by Installer for sampleJpgArray & iconArray
+##Called by Installer for sampleJpgArray & iconArray
 proc downloadFileArray {fileArrayName url} {
   upvar $fileArrayName fileArray
   foreach fileName [array names fileArray] {
@@ -103,24 +102,21 @@ proc downloadFile {filePath isInitial} {
 ##called by downloadFile
 proc downloadFileIntoDir {filePath fileName} {
   #download file into channel
-  puts $filePath
+  #puts $filePath
 
   set chan [open $filePath w]
-
   fconfigure $chan -encoding utf-8
   set token [http::geturl $::bpxReleaseUrl/$fileName -channel $chan]
-
   close $chan
 
+  #Retry download if status not ok
   if { [http::status $token] != "ok" } {
-    puts "error status, try it again."
+    puts "Error status $fileName, retrying download..."
     http::cleanup $token
 
     set chan [open $filePath w]
-
     fconfigure $chan -encoding utf-8
     set token [http::geturl $::bpxReleaseUrl/$fileName -channel $chan]
-
     close $chan
   }
   
