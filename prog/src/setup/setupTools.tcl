@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9dec18
+# Updated: 4jan19
 
 source $JList
 
@@ -519,9 +519,10 @@ proc deleteImg {localJList c} {
 ## else calls [resize]
 ## no cutting intended because these pics can be stretched
 ## called by BiblepixSetup
-##$$$$$$$$$$$$$ TODO: Joel, this proc needs threading!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+##$$$$$$$$$$$$$ TODO: Joel, this proc needs threading!! - use [after] !!!!!!!!!!!!!!!!!!!!!!!!!!!
 proc copyAndResizeSamplePhotos {} {
   global sampleJpgArray sampleJpgDir photosDir
+  source $::Imgtools
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
 
