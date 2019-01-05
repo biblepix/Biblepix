@@ -2,7 +2,7 @@
 # Fetches TWD file list from bible2.net
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 11dec18
+# Updated: 5jan19
 
 package require http
 
@@ -10,6 +10,46 @@ package require http
 ########### PROCS FOR SETUP UPDATE ############################################
 ###############################################################################
 
+# runHTTP
+## Main program for BiblePix Http download
+## Called by ...
+proc runHTTP isInitial {
+  global FilePaths BdfFontPaths
+
+  #Test connexion & start download
+  if { [catch testHttpCon Error] } {
+    set ::ftpStatus $::noConnHttp
+    catch {NewsHandler::QueryNews $::noConnHttp red}
+
+    puts "ERROR: http.tcl -> runHTTP($args): $Error"
+    error $Error
+
+  } else {
+    foreach varName [array names FilePaths] {
+      downloadFile FilePaths $varName $isInitial
+    }
+    foreach varName [array names BdfFontPaths] {
+      if {$varName == "ChinaFont"} {
+        continue
+      }
+      downloadFile BdfFontPaths $varName $isInitial
+      
+      
+      #TODO: incorporate size check here!!!
+      checkFileSize $varName
+    }
+      
+    #Success message (source Texts again for Initial)
+    catch {.if.initialMsg configure -bg green}
+    catch {NewsHandler::QueryNews $::uptodateHttp green}
+    catch {set ::ftpStatus $::uptodateHttp}
+
+  } ;#end if main condition
+  
+} ;#end runHTTP
+
+# setProxy
+##called by testHttpCon
 proc setProxy {} {
   if { [catch {package require autoproxy} ] } {
     set host localhost
@@ -23,10 +63,12 @@ proc setProxy {} {
   http::config -proxyhost $host -proxyport $port
 }
 
+# getTesttoken
+##called by testHttpCon
 proc getTesttoken {} {
   global bpxReleaseUrl
 
-  set testfile "$bpxReleaseUrl/README.txt"
+  set testfile "$bpxReleaseUrl/README"
   set testtoken [http::geturl $testfile -validate 1]
 
   if {[http::error $testtoken] != ""} {
@@ -40,7 +82,9 @@ proc getTesttoken {} {
   return $testtoken
 }
 
-# throws an error if the test fails
+# testHttpCon
+##tests Http Connexion, returns error if connexion fails
+##called by runHTTP
 proc testHttpCon {} {
   if { [catch getTesttoken error] } {
     puts "ERROR: http.tcl -> testHttpCon: $error"
@@ -55,6 +99,8 @@ proc testHttpCon {} {
   }
 }
 
+# downloadFileArray
+## called by Installer for sampleJpgArray & iconArray
 proc downloadFileArray {fileArrayName url} {
   upvar $fileArrayName fileArray
   foreach fileName [array names fileArray] {
@@ -69,12 +115,14 @@ proc downloadFileArray {fileArrayName url} {
   }
 }
 
+# downloadFile
+##called by runHTTP
 proc downloadFile {pathArrayName varName isInitial} {
   set filePathEntry [array get ::$pathArrayName $varName]
   set filepath [lindex $filePathEntry 1]
   set filename [file tail $filepath]
 
-  puts "Checking $filename..."
+  puts $filename
 
   #get remote 'meta' info (-validate 1)
   set token [http::geturl $::bpxReleaseUrl/$filename -validate 1]
@@ -91,18 +139,17 @@ proc downloadFile {pathArrayName varName isInitial} {
     catch {clock scan $newtime} newsecs
     catch {file mtime $filepath} oldsecs
 
-#TODO? - compare [file size ..] with $meta(Content-Length) ??
-
     #download if times incorrect OR if oldfile is older/non-existent
     if { ! [string is digit $newsecs] ||
          ! [string is digit $oldsecs] ||
          $oldsecs<$newsecs } {
-      puts "Downloading $filename..."
       downloadFileIntoDir $filepath $filename $token
     }
   }
 }
 
+# downloadFileIntoDir
+##called by downloadFile
 proc downloadFileIntoDir {filePath fileName token} {
   #download file into channel unless error message
   puts $filePath
@@ -118,34 +165,6 @@ proc downloadFileIntoDir {filePath fileName token} {
   }
 }
 
-proc runHTTP isInitial {
-  global FilePaths BdfFontsPaths
-
-  #Test connexion & start download
-  if { [catch testHttpCon Error] } {
-    set ::ftpStatus $::noConnHttp
-    catch {NewsHandler::QueryNews $::noConnHttp red}
-
-    puts "ERROR: http.tcl -> runHTTP($args): $Error"
-    error $Error
-  } else {
-    foreach varName [array names FilePaths] {
-      downloadFile FilePaths $varName $isInitial
-    }
-
-    foreach varName [array names BdfFontsPaths] {
-      if {$varName == "ChinaFont"} {continue}
-
-      downloadFile BdfFontsPaths $varName $isInitial
-    }
-
-    #Success message (source Texts again for Initial)
-    catch {.if.initialMsg configure -bg green}
-    catch {NewsHandler::QueryNews $::uptodateHttp green}
-    catch {set ::ftpStatus $::uptodateHttp}
-
-  } ;#end main condition
-} ;#end runHTTP
 
 
 ###############################################################################
@@ -282,6 +301,7 @@ proc downloadTWDFiles {} {
         }
       }
     }
+
 
     set chan [open $filename w]
     fconfigure $chan -encoding utf-8
