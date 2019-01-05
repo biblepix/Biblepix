@@ -24,9 +24,7 @@ proc setProxy {} {
 }
 
 proc getTesttoken {} {
-  global bpxReleaseUrl
-
-  set testfile "$bpxReleaseUrl/README.txt"
+  set testfile "$::bpxReleaseUrl/README.txt"
   set testtoken [http::geturl $testfile -validate 1]
 
   if {[http::error $testtoken] != ""} {
@@ -108,13 +106,13 @@ proc downloadFileIntoDir {filePath fileName token} {
   puts $filePath
 
   if { "[http::ncode $token]" == 200 } {
+    http::cleanup $token
     set chan [open $filePath w]
 
     fconfigure $chan -encoding utf-8
     http::geturl $::bpxReleaseUrl/$fileName -channel $chan
 
     close $chan
-    http::cleanup $token
   }
 }
 
@@ -170,17 +168,11 @@ global twdUrl
   #Register SSL connection
   http::register https 443 [list ::tls::socket -tls1 1]
 
-  #Get twd list
-  if {[catch "http::geturl $twdUrl"]} {
-    setProxy
-  }
-  set con [http::geturl $twdUrl]
-  set data [http::data $con]
-    if {$data==""} {
-      setProxy
-      set con [http::geturl $twdUrl]
-      set data [http::data $con]
-    }
+  set token [http::geturl $twdUrl]
+  set data [http::data $token]
+  
+  http::cleanup $token
+  http::unregister https
   return [dom parse -html $data]
 }
 
@@ -213,15 +205,22 @@ proc listAllRemoteTWDFiles {lBox} {
 }
 
 proc getRemoteTWDFileList {} {
-
-  if {![catch {listAllRemoteTWDFiles .internationalF.twdremoteframe.lb}]} {
-    .internationalF.status conf -bg green
-    set status $::connTwd
-  } else {
+  if { [catch testHttpCon Error] } {
     .internationalF.status conf -bg red
     set status $::noConnTwd
+
+    puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
+    error $Error
+  } else {
+    if {![catch {listAllRemoteTWDFiles .internationalF.twdremoteframe.lb}]} {
+      .internationalF.status conf -bg green
+      set status $::connTwd
+    } else {
+      .internationalF.status conf -bg red
+      set status $::noConnTwd
+    }
+    return $status
   }
-  return $status
 }
 
 proc downloadTWDFiles {} {
