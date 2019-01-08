@@ -4,7 +4,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19oct18
+# Updated: 8jan19
 ######################################################################
 
 #Verify location & source Globals
@@ -18,7 +18,7 @@ if [catch {set twdfile [getRandomTwdFile]}] {
   source -encoding utf-8 $SetupTexts
   setTexts $lang
   package require Tk
-  tk_messageBox -title BiblePix -type ok -icon error -message $noTWDFilesFound
+tk_messageBox -title BiblePix -type ok -icon error -message $noTWDFilesFound
   #catch if run by running Setup
   catch {source $Setup}
   return
@@ -32,20 +32,19 @@ if {$enablesig} {
   source $Signature
 }
 
-#2. C r e a t e   t e r m . s h  for Unix terminal if $enableterm
-if {[info exists enableterm] && $enableterm} {
-  if {![catch {getTodaysTwdTerm $twdfile} dwTerm]} {
-    #create shell script
-    set chan [open $Terminal w]
-    puts $chan "# ~/Biblepix/prog/unix/term.sh"
-    puts $chan "# Bash script to display 'The Word' in a Linux terminal"
-    puts $chan "# Recreated by biblepix.tcl on [clock format [clock seconds] -format {%d%b%Y at %H:%M}]\n"
-    puts $chan ". $confdir/term.conf"
-    puts $chan $dwTerm
-    close $chan
-    file attributes $Terminal -permissions +x
-  } elseif { [info exists Debug] && $Debug } {
-      error $dwTerm
+#2. C r e a t e   TheWord for for Unix terminal once per day, if $enableterm
+if {[info exists enableterm] && $enableterm } {
+  #check date of any existing file
+  if [file exists $TerminalShell] {
+    set fileDay [clock format [file mtime $TerminalShell] -format %d]
+    if {$fileDay != $heute} {
+      puts "Renewing The Word for the terminal..."
+      source $Terminal
+    }
+  } else {
+  #first time ever
+    puts "Renewing The Word for the terminal..."
+    source $Terminal
   }
 }
 

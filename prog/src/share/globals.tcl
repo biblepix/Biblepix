@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 7dec18
+# Updated: 8jan19
 
 set version "3.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
@@ -49,6 +49,7 @@ set maildir [file join $srcdir sig]
 set picdir [file join $srcdir pic]
 set savedir [file join $srcdir save]
 set sampleJpgDir [file join $picdir SamplePhotos]
+set termdir [file join $srcdir term]
 
 proc makeDirs {} {
   file mkdir $::sigDir $::imgDir $::jpegDir $::sampleJpgDir $::progDir $::twdDir $::docDir
@@ -62,11 +63,11 @@ proc makeDirs {} {
 array set FilePaths "
   Globals [file join $sharedir globals.tcl]
   Http [file join $sharedir http.tcl]
-  UpdateInjection [file join $srcdir updateInjection.tcl]
   Readme [file join $rootdir README.txt]
   Setup [file join $rootdir biblepix-setup.tcl]
   ManualD [file join $docDir MANUAL_de.txt]
   ManualE [file join $docDir MANUAL_en.txt]
+  UpdateInjection [file join $srcdir updateInjection.tcl]
   Biblepix [file join $srcdir biblepix.tcl]
   BdfTools [file join $picdir BdfTools.tcl]
   BdfPrint [file join $picdir BdfPrint.tcl]
@@ -101,7 +102,8 @@ array set FilePaths "
   Uninstall [file join $savedir uninstall.tcl]
   Signature [file join $maildir signature.tcl]
   Config [file join $confdir biblepix.conf]
-  Terminal [file join $unixdir term.sh]
+  Terminal [file join $termdir terminal.tcl]
+  TerminalShell [file join $unixdir term.sh]
 "
 
 #Export single FilePaths
