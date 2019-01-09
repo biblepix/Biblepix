@@ -63,11 +63,11 @@ proc makeDirs {} {
 array set FilePaths "
   Globals [file join $sharedir globals.tcl]
   Http [file join $sharedir http.tcl]
+  UpdateInjection [file join $srcdir updateInjection.tcl]
   Readme [file join $rootdir README.txt]
   Setup [file join $rootdir biblepix-setup.tcl]
   ManualD [file join $docDir MANUAL_de.txt]
   ManualE [file join $docDir MANUAL_en.txt]
-  UpdateInjection [file join $srcdir updateInjection.tcl]
   Biblepix [file join $srcdir biblepix.tcl]
   BdfTools [file join $picdir BdfTools.tcl]
   BdfPrint [file join $picdir BdfPrint.tcl]
