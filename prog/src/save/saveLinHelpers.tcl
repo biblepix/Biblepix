@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28sep18
+# Updated: 9jan19
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -74,9 +74,9 @@ set Xfce4ConfigFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.x
 ## 2 Make files executable
 ## 3 make ~/bin/biblepix-setup.sh
 ## 4 Add ~/bin to PATH in .bashrc
+## Called by SaveLin
 proc formatLinuxExecutables {} {
   global Setup Biblepix env
-  
   set standardEnvPath {/usr/bin/env}
   set currentEnvPath [auto_execok env]
 
@@ -89,7 +89,7 @@ proc formatLinuxExecutables {} {
     setShebangLine $currentEnvPath
   }
 
-  # 3. Put Setup bash script in ~/bin (precaution in case it can't be found in menus)
+  # 3. Put Setup bash script in $HOME/bin (precaution in case it can't be found in menus)
   set homeBin $env(HOME)/bin
   set homeBinFile $homeBin/biblepix-setup.sh
   
