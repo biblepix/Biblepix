@@ -2,7 +2,7 @@
 # Regulates shift vom version 2.4 to 3.0
 # sourced once by biblepix-setup.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8dec18
+# Updated: 8jan19
 
 #Return to Setup if wrong version
 if {$version == "2.4"} {
@@ -29,7 +29,7 @@ if {$version == "2.4"} {
   source $Globals
   
   # 2 Move twd files
-  file rename $twdDir [file join $rootdir BibleTexts]
+  file rename [file join $rootdir Texts] [file join $rootdir BibleTexts]
 
   # 3 Delete obsolete directories in rootdir & $srcdir
   set oldDirList ""
