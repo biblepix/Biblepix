@@ -42,6 +42,7 @@ if {$version == "2.4"} {
 
   ##set new directories list for $rootdir
   set newDirList ""
+  lappend newDirList [file join $rootdir BibleTexts]
   lappend newDirList [file join $rootdir prog]
   lappend newDirList [file join $rootdir TodaysSignature]
   lappend newDirList [file join $rootdir TodaysPicture]
