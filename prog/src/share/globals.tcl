@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 8jan19
+# Updated: 10jan19
 
 set version "3.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
@@ -55,6 +55,9 @@ proc makeDirs {} {
   file mkdir $::sigDir $::imgDir $::jpegDir $::sampleJpgDir $::progDir $::twdDir $::docDir
   file mkdir $::confdir $::piddir $::srcdir $::unixdir $::windir
   file mkdir $::sharedir $::guidir $::maildir $::picdir $::savedir
+  if {$platform=="unix"} {
+    file mkdir $::termdir
+  }
 }
 
 #SET ARRAYS FOR DOWNLOAD
