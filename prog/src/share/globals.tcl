@@ -55,7 +55,7 @@ proc makeDirs {} {
   file mkdir $::sigDir $::imgDir $::jpegDir $::sampleJpgDir $::progDir $::twdDir $::docDir
   file mkdir $::confdir $::piddir $::srcdir $::unixdir $::windir
   file mkdir $::sharedir $::guidir $::maildir $::picdir $::savedir
-  if {$platform=="unix"} {
+  if {$::platform=="unix"} {
     file mkdir $::termdir
   }
 }
