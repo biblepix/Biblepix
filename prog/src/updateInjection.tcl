@@ -2,7 +2,7 @@
 # Regulates shift vom version 2.4 to 3.0
 # sourced once by biblepix-setup.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8jan19
+# Updated: 10jan19
 
 #Return to Setup if wrong version
 if {$version == "2.4"} {
@@ -28,8 +28,8 @@ if {$version == "2.4"} {
   runHTTP 1
   source $Globals
   
-  # 2 Move twd files
-  file rename [file join $rootdir Texts] [file join $rootdir BibleTexts]
+  # 2 Move any Twd files
+  catch {file rename [file join $rootdir Texts] [file join $rootdir BibleTexts]}
 
   # 3 Delete obsolete directories in rootdir & $srcdir
   set oldDirList ""
@@ -46,7 +46,6 @@ if {$version == "2.4"} {
   lappend newDirList [file join $rootdir TodaysSignature]
   lappend newDirList [file join $rootdir TodaysPicture]
   lappend newDirList [file join $rootdir Photos]
-  lappend newDirList [file join $rootdir BibleTexts]
   lappend newDirList [file join $rootdir Docs]
   ##set new directories list for $srcdir
   lappend newDirList [file join $srcdir share]
@@ -54,8 +53,16 @@ if {$version == "2.4"} {
   lappend newDirList [file join $srcdir sig]
   lappend newDirList [file join $srcdir pic]
   lappend newDirList [file join $srcdir save]
-
+  lappend newDirList [file join $srcdir term]
+  
   ##delete obsolete dir paths including all files
+  foreach path $oldDirList {
+    if {[string first $i $newDirList] == -1} {
+      file delete -force $path
+    }
+  }
+
+proc joelwatsolls? {} {
   foreach oldDirPath $oldDirList {
     puts $oldDirPath
     set keep 0
@@ -71,6 +78,7 @@ if {$version == "2.4"} {
       file delete -force $oldDirPath
     }
   }
+}
 
   ##delete obsolete single files
   file delete $rootdir/README
