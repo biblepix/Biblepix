@@ -190,6 +190,12 @@ und persönliche Grussformeln, Adressen usw. oben einfügen. Text oberhalb der T
 (====) bleibt beim Wechsel des Tageswortes unbehelligt. Damit Das Wort künftig auf 
 Ihren Mails erscheint, müssen Sie Ihrem Mail-Programm beibringen, die oben beschriebenen 
 Dateien zu verwenden (meist unter Einstellungen > Konten/Identitäten > Signatur).
+
+Für E-Mail-Programme, welche Signaturen nur intern verwalten (also keine externen Dateien
+laden können), ist vorläufig Trojitá berücksichtigt. Nutzer von Trojitá müssen das erste Mal
+unter 'IMAP > Settings > General' die gewünschte Identität markieren und im Dialog 'Edit' 
+eine neue Zeile mit dem Ausdruck www.bible2.net anfügen. BibelPix setzt dort künftig 
+'Das Wort' automatisch ein.
   
 LINUX-TERMINAL
 Dank diesem Zusatz-Feature ermöglicht BibelPix die Darstellung des Tageswortes in Unix-

@@ -184,6 +184,12 @@ separating line (======) remains untouched when The Word changes.
 Finally you must instruct your e-mail program to use these files when sending an
 e-mail (usually under Settings > Identities > Signatures).
 
+For e-mail programs that manage signatures only internally (i.e. that cannot load
+external files), for now Trojitá is taken into account. First time users of Trojitá 
+should go to 'IMAP > Settings > General' and mark the desired identity. In the 'Edit' 
+dialog add a new line saying www.bible2.net. Henceforth BiblePix will insert 
+'The Word' in its place.
+
 LINUX TERMINAL
 Thanks to this extra feature BiblePix can display The Word in your Linux terminals.
 If activated (only possible on Linux computers) BiblePix will create a shell script 
