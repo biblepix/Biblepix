@@ -1,13 +1,13 @@
 # ~/Biblepix/prog/src/com/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 4jun18
+# Updated 19jan19
 
 #tDom is standard in ActiveTcl, Linux distros vary
-if {[catch {package require tdom}]} {
+if [catch {package require tdom}] {
   package require Tk
   tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $packageRequireTDom
-   exit
+  exit
 }
 
 
@@ -297,7 +297,9 @@ proc getTodaysTwdSig {TwdFileName} {
   }
   
   $twdDomDoc delete
-  
+  set bible2Url {                                               [bible2.net]}
+  append TwdText \n $bible2Url
+
   return $TwdText
 }
 
@@ -325,4 +327,14 @@ proc getTodaysTwdTerm {TwdFileName} {
   $twdDomDoc delete
   
   return $twdTerm
+}
+
+# getTwdHex
+##convert The Word to Hex format
+##called by trojitaSig for non-Ascii characters
+proc getTwdHex {dw} {
+  foreach letter [split $dw ""] {
+    append dwhex \\x[binary encode hex $letter]
+  }
+  return $dwhex
 }
