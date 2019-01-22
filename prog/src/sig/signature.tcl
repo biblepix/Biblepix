@@ -103,8 +103,13 @@ proc trojitaSig {} {
 
   #1. Determine catchwordPresent / twdPresent & exit if both missing
   set catchwordPresent [regexp $catchword $sigChunk]
+  ##check twdPresent in Ascii & Hex  
   set twdPresent [regexp $startcatch $sigChunk]
-    if {!$catchwordPresent && !$twdPresent} {
+  if {!$twdPresent} {
+    set twdPresent [regexp x3d+ $sigChunk]
+  }
+
+  if {!$catchwordPresent && !$twdPresent} {
     return "Trojitá: No signatures to process, exiting. If you expected something else, add a line with $catchword where you want The Word."
   }
 
@@ -114,8 +119,7 @@ proc trojitaSig {} {
   set twdDatePresent [regexp {twdDate} $sigChunk] 
   if {$twdDatePresent} {
     set twdDateIndex [string first twdDate= $sigChunk]
-    set twdDate [string range $sigChunk [expr $twdDateIndex + 9] [expr $twdDateIndex + 11]]
-
+    set twdDate [string range $sigChunk [expr $twdDateIndex + 8] [expr $twdDateIndex + 11]]
     if {$twdDate==$dayOTY} {
       return " Trojita signatures up-to-date"
     }
