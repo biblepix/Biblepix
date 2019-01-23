@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22jan19
+# Updated: 23jan19
 
 source $TwdTools
 puts "Updating signatures..."
@@ -64,7 +64,7 @@ foreach twdFileName $twdList {
 
 #Check presence of Trojita executable
 if {[auto_execok trojita] == ""} {
-  return "No Trojitá executable found. Exiting."
+  return "No $tr executable found. Exiting."
 }
 
 # trojitaSig
@@ -75,6 +75,7 @@ if {[auto_execok trojita] == ""} {
 ## CATCHWORD: !!Important: FIRST TIME USERS MUST ADD A CATCHWORD at end of each signature text where they want 'The Word' inserted {in Trojita go to >IMAP >Settings >General >"NAMES" >Edit and edit signature text accordingly} !!  
 proc trojitaSig {} {
   global env heute jahr trojitaConfFile dw
+  set tr {Trojitá}
   set catchword {www.bible2.net}
   set startcatch {=====}
   set endcatch {bible2.net]}
@@ -83,7 +84,7 @@ proc trojitaSig {} {
   set trojitaConfDir "$env(HOME)/.config/flaska.net"
   set trojitaConfFile $trojitaConfDir/trojita.conf
   if {![file exists $trojitaConfFile]} {
-    return "No Trojitá configuration file found. Exiting."
+    return "No $tr configuration file found. Exiting."
   }
   
   #Get The Word in Hex format
@@ -110,7 +111,7 @@ proc trojitaSig {} {
   }
 
   if {!$catchwordPresent && !$twdPresent} {
-    return "Trojitá: No signatures to process, exiting. If you expected something else, add a line with $catchword where you want The Word."
+    return "$tr: No signatures to process, exiting. If you expected something else, add a line with $catchword where you want The Word."
   }
 
   #2. Determine date, exit if Today's found
@@ -121,7 +122,7 @@ proc trojitaSig {} {
     set twdDateIndex [string first twdDate= $sigChunk]
     set twdDate [string range $sigChunk [expr $twdDateIndex + 8] [expr $twdDateIndex + 11]]
     if {$twdDate==$dayOTY} {
-      return " Trojita signatures up-to-date"
+      return " $tr signatures up-to-date"
     }
   }
 
@@ -154,7 +155,7 @@ proc trojitaSig {} {
     ##find catchword, replace and exit, do not verify date
     if [regexp $catchword $idChunk] {
       ##replace catchword, put whole sig between ""
-      puts "replacing $catchword..."
+      puts "replacing $tr $catchword..."
 
       regsub $catchword $idChunk \n$dwhex\" idChunk
       regsub {signature=} $idChunk signature=\" idChunk    
@@ -179,7 +180,7 @@ proc trojitaSig {} {
 
   #Amend/Add date if sig changed
   if [info exists sigChanged] {
-    puts "Added The Word to $sigChanged Trojitá signature(s)."
+    puts "Added The Word to $sigChanged $tr signature(s)."
     ##amend
     if [info exists twdDate] {
       regsub {twdDate=...} $sigChunk twdDate=$dayOTY sigChunk
@@ -189,7 +190,7 @@ proc trojitaSig {} {
     }
   #Exit if nothing done
   } else {
-    return "Trojita: signatures unchanged; if you want The Word added to one of your signatures please add a new line with the expression $catchword under >IMAP>Settings>General>Edit."
+    return "$tr: signatures unchanged; if you want The Word added to one of your signatures please add a new line with the expression $catchword under >IMAP>Settings>General>Edit."
   }
 
   #Save original config file once
@@ -204,7 +205,7 @@ proc trojitaSig {} {
   set chan [open $trojitaConfFile w]
   puts $chan $confNeuText
   close $chan
-  puts "Saved new Trojitá config file."
+  puts "Saved new $tr config file."
 } ;#END trojitaSig
 
 catch trojitaSig err
