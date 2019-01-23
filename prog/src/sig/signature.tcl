@@ -64,7 +64,7 @@ foreach twdFileName $twdList {
 
 #Check presence of Trojita executable
 if {[auto_execok trojita] == ""} {
-  return "No $tr executable found. Exiting."
+  return "No Trojitá executable found. Exiting."
 }
 
 # trojitaSig
