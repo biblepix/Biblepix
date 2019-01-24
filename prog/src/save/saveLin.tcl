@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/setupSaveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12aug18
+# Updated: 24jan19
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -56,7 +56,6 @@ catch setupKdeActionMenu Error
 if {$enableterm} {
   catch setupLinTerminal Error
   puts "Terminal $Error"
-  
 }
 
 #Exit if no picture desired
@@ -99,14 +98,14 @@ if [info exists desktopList] {
 
 ########################################################
 # 5 Try reloading KDE & XFCE Desktops - no error handling
-# Gnome & Sway need no reloading
+# Gnome(1) & Sway(4) need no reloading
 ########################################################
-if {!$runningDesktop} {
-  return
+if {$runningDesktop !=2 && $runningDesktop !=3} {
+  return "Desktop needs no reloading"
 } elseif {$runningDesktop==2} {
   set desktopName "KDE Plasma"
 } elseif {$runningDesktop==3} {
-  set desktopName XFCE4
+  set desktopName "XFCE4"
 }
 
 tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "$desktopName: $linReloadingDesktop"

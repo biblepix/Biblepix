@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9jan19
+# Updated: 21jan19
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -278,7 +278,7 @@ proc setupSwayBackground args {
 
 #TESTING WESTON (if running): 
 ##THIS WONT WORK WITHOUT Weston providing an Autostart mechanism!
-#TODO: implemented in checkRunningLinuxDesktop
+#TODO: implemented in detectRunningLinuxDesktop
 proc setupWestonBackground {} {
 	global TwdPNG env
 
