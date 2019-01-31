@@ -200,7 +200,7 @@ eine neue Zeile mit dem Ausdruck www.bible2.net anfügen. BibelPix setzt dort k�
 LINUX-TERMINAL
 Dank diesem Zusatz-Feature ermöglicht BibelPix die Darstellung des Tageswortes in Unix-
 Konsolen. Falls aktiviert (nur bei Linux möglich), erzeugt BibelPix aufgrund vorhandener 
-Bibeltextdateien ein Shell-Skript welches beim Öffnen eines Terminals ausgeführt wird: 
+Bibeltextdateien ein Shell-Skript, welches beim Öffnen eines Terminals ausgeführt wird: 
 	
 	~/Biblepix/prog/unix/term.sh
 
