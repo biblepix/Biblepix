@@ -2,15 +2,13 @@
 # ~/?Downloads/BiblePix-Installer.tcl (location unimportant, can be deleted after first use)
 # Download file to install BiblePix on a Linux or Windows PC
 # Overwrites any old program version
-# Version: 2.4
+# Version: 3.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22Sep17
-
-set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
+# Updated: 3feb19
 
 package require http
 
-#Text messages (when Texts not available)
+set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
 set downloadingHttp "Downloading BiblePix program files...\nLade BibelPix-Programmdateien herunter..."
 set noConnHttp "No Internet connection. Try later. Exiting...\nKeine Internetverbindung. Versuchen Sie es später. Abbruch..."
 set uptodateHttp "Program files downloaded successfulfy.\nErster Download gelungen!"
@@ -40,6 +38,10 @@ if { [info exists env(LOCALAPPDATA)] } {
   catch {file delete -force [file join $rootdir prog tcl]}
 }
 
+# 2. DEFINE PROCS
+
+# setProxy
+##called by testHttpCon
 proc setProxy {} {
   if { [catch {package require autoproxy} ] } {
     set host localhost
@@ -49,10 +51,11 @@ proc setProxy {} {
     set host [autoproxy::cget -host]
     set port [autoproxy::cget -port]
   }
-  
   http::config -proxyhost $host -proxyport $port    
 }
 
+# getTesttoken
+##called by testHttpCon
 proc getTesttoken {} {
   global bpxReleaseUrl
 
@@ -70,7 +73,8 @@ proc getTesttoken {} {
   return $testtoken
 }
 
-# throws an error if the test fails
+# testHttpCon
+##throws error if test fails
 proc testHttpCon {} {
   if { [catch getTesttoken error] } {
     puts "ERROR: BiblePix-Installer.tcl -> testHttpCon: $error"  
@@ -85,7 +89,27 @@ proc testHttpCon {} {
   }
 }
 
-#SET UP PRELIMINARY MESSAGE WINDOW & PROGRESS BAR
+# fetchInitialFiles
+##fetches Globals + Http
+##called further down
+proc fetchInitialFiles {} {
+  global bpxReleaseUrl
+  lappend filelist globals.tcl http.tcl
+  
+  foreach filename $filelist {
+    set token [http::geturl $bpxReleaseUrl/$filename]
+    set data [http::data $token]
+    if { "[string index $data 0]" == "#"} {
+      set chan [open $filename w]
+      puts $chan $data
+      close $chan
+      http::cleanup $token
+    }
+  }
+}
+
+
+# 3. SET UP PRELIMINARY MESSAGE WINDOW & PROGRESS BAR
 package require Tk
 
 pack [frame .if]
@@ -103,27 +127,11 @@ if { [catch testHttpCon Error] } {
   puts "ERROR: BiblePix-Installer.tcl: $Error"
   
   after 5000 { exit }
+
+
+#4. FETCH Globals + Http
 } else {
-    
-  #FETCH Globals, Http
-
-  #fetches Globals, Http
-  proc fetchInitialFiles {} {
-    global bpxReleaseUrl
-    lappend filelist globals.tcl http.tcl
-    
-    foreach filename $filelist {
-      set token [http::geturl $bpxReleaseUrl/$filename]
-      set data [http::data $token]
-      if { "[string index $data 0]" == "#"} {
-        set chan [open $filename w]
-        puts $chan $data
-        close $chan
-        http::cleanup $token
-      }
-    }
-  }
-
+ 
   .if.pb start
   
   #Create directory structure & source Globals
@@ -134,7 +142,7 @@ if { [catch testHttpCon Error] } {
   source $srcdir/globals.tcl
   makeDirs
 
-  # FETCH ALL prog files (securely, re-fetching above 2!)
+  #5. FETCH ALL prog files (securely, re-fetching above 2!)
   source $srcdir/http.tcl
 
   if { [catch {runHTTP 1} result] } {
