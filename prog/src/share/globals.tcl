@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 5feb19
+# Updated: 9feb19
 
 set version "3.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
@@ -137,7 +137,7 @@ array set iconArray "
 "
 
 #Set Bdf Fonts array
-array set BdfFontsPaths "
+array set BdfFontPaths "
 Arial20 [file join $fontdir Arial20.tcl]
 Arial24 [file join $fontdir Arial24.tcl]
 Arial30 [file join $fontdir Arial30.tcl]

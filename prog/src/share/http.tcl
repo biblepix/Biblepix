@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5jan19
+# Updated: 9feb19
 
 package require http
 
@@ -229,7 +229,7 @@ proc downloadTWDFiles {} {
     NewsHandler::QueryNews "Downloading $filename..." lightblue
 
     if [regexp zh- $url] {
-      set filePath $::FilePaths(ChinaFont)
+      set filePath $::BdfFontPaths(ChinaFont)
       downloadFile $filePath 0
     }
 

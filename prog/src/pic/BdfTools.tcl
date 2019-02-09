@@ -1,20 +1,23 @@
-# ~/Biblepix/prog/src/share/BdfTools.tcl
+# ~/Biblepix/prog/src/com/BdfTools.tcl
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 11dec18
+# Updated: 30sept18
+
 
 # printTwd
 ## Toplevel printing proc
 proc printTwd {TwdFileName img} {
   global marginleft margintop
-puts "Parsing text parts"
+
   parseTwdTextParts $TwdFileName
-puts "Printing img"
   set finalImg [printTwdTextParts $marginleft $margintop $img]
+  
   namespace delete twd
+  
   return $finalImg
 }
+
 
 # parseTwdTextParts
 ## prepares Twd nodes in a separate namespace for further processing
@@ -220,6 +223,7 @@ proc printTextLine {textLine x y img args} {
     set imgW [image width $img]
     set textLine [bidi $textLine $TwdLang]
     set operator -
+    
     set xBase [expr $imgW - ($marginleft*2) - $x]
     
   } else {
