@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8feb19
+# Updated: 9feb19
 
 #Called by Signature if Trojitá installed
 ##scans Trojita identities in Registry & replaces any BiblePix signatures
@@ -51,7 +51,7 @@ proc replaceTrojitaSigWin {sigtext} {
   #1. Replace catchword
   if [regexp $catchword $sigtext] {
     puts "Replacing $tr catchword with The Word..."
-    regsub $catchword $sigtext \n\"$::dw\" sigtext 
+    regsub $catchword $sigtext \n$::dw sigtext 
     incr ::sigChanged
   }
   
