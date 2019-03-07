@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6feb19
+# Updated: 7mch19
 
 source $TwdTools
 puts "Updating signatures..."
@@ -87,3 +87,6 @@ if {$os=="Windows NT"} {
 if [info exists err] {
   puts $err
 }
+
+#Clean up global vars
+catch {unset ::sigChanged ::dw}
