@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 2mch19
+# Updated 8mch19
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -337,7 +337,6 @@ proc getTwdHex {dw} {
     #append dwhex \\x[binary encode hex $letter]
     set uniCode [scan $letter %c]
     set hexCode [format %x $uniCode]
-
     append dwhex \\x${hexCode}
   }
 
