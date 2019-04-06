@@ -15,10 +15,11 @@ if {$setupTwdFileName == ""} {
 
 #Create title logo with icon
 if { [catch {package require Img} ] } {
-	NewsHandler::QueryNews $packageRequireImg red
+  NewsHandler::QueryNews $packageRequireImg red
 } else {
-	image create photo Logo -file $WinIcon -format ICO
-	.ftop.titelmitlogo configure -compound left -image Logo
+  image create photo Logo -file $WinIcon -format ICO
+  wm iconphoto . -default Logo
+  .ftop.titelmitlogo configure -compound left -image Logo
 }
 
 #Configure Fonts                     ??? -PIXELS ???
