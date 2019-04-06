@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7mch19
+# Updated: 7apr19
 
 source $TwdTools
 puts "Updating signatures..."
@@ -70,7 +70,7 @@ if {$os=="Windows NT"} {
   package require registry
   
   if [catch {registry keys $trojitaWinRegpath}] {
-    error "No Registry entry for Trojitá found. Exiting."
+    return "No Registry entry for Trojitá found. Exiting."
   }
     source $SigTrojita
 	  catch trojitaSigWin err
@@ -78,7 +78,7 @@ if {$os=="Windows NT"} {
 } elseif {$os=="Linux"} {
 
   if {[auto_execok trojita] == "" || ![file exists $trojitaLinConfFile]} {
-    error "No Trojitá executable / configuration file found. Exiting."
+    return "No Trojitá executable / configuration file found. Exiting."
   }
     source $SigTrojita
     catch trojitaSigLin err
