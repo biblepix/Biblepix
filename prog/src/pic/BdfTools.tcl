@@ -162,15 +162,13 @@ proc printLetter {letterName img x y} {
   set color [set fontcolortext]
   set BBxoff $curLetter(BBxoff)
   set BBx $curLetter(BBx)
-  
-  # T O D O : JOEL, this doesn't work for Italic Hebrew!!!
+
   if {$RtL} {
-    set FBBx "$${prefix}::FBBx"
-    #puts $FBBx
-    set BBxoff [expr $FBBx - $BBx - $BBxoff]
+    set DWx $curLetter(DWx)
+    set BBxoff [expr $DWx - $BBxoff]
   }
 
-  set xLetter [expr $x + $BBxoff]
+  set xLetter [expr $x - $BBxoff]
   set yLetter [expr $y - $curLetter(BByoff) - $curLetter(BBy)]
 
   set yCur $yLetter
@@ -216,8 +214,8 @@ proc printTextLine {textLine x y img args} {
   if [catch {set yBase [expr $y + $FontAsc]}] {
     set yBase $y
   }
-  
-  #Compute xBase for RtL    
+
+  #Compute xBase for RtL
   if {$RtL} {
     source $BdfBidi
     set imgW [image width $img]
