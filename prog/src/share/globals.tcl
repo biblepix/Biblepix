@@ -200,14 +200,6 @@ set green #2e8b57
 set sunfactor 2.0
 set shadefactor 0.6
 
-#Set colours for text image calculation
-##background black
-set hghex "#000000"
-set hgrgb "0 0 0"
-##foreground almost black
-set fghex "#000001"
-set fgrgb "0 0 1"
-
 #Bildformate & DesktopPicturesDir
 if {$platform == "unix"} {
   set HOME $env(HOME)

@@ -67,8 +67,17 @@ close $pidfile
 if {$enablepic} {
 
   #Run once for all Desktops
-  catch {source $Image}
-  catch setBg
+  if { [info exists Debug] && $Debug } {
+    source $Image
+  } else {
+    catch {source $Image}
+  }
+
+  if { [info exists Debug] && $Debug } {
+    setBg
+  } else {
+    catch setBg
+  }
  
   #Run multiple times if $slideshow
   if {$slideshow > 0} {
@@ -83,12 +92,16 @@ if {$enablepic} {
         #export new TwdFile
         set ::TwdFileName [getRandomTwdFile]
 
-        if {[catch {source $Image} error]} {
-          puts $error
+        if { [info exists Debug] && $Debug } {
+          source $Image
+        } else {
+          catch {source $Image}
         }
 
-        if {[catch setBg error]} {
-          puts $error
+        if { [info exists Debug] && $Debug } {
+          setBg
+        } else {
+          catch setBg
         }
       } else {
       
