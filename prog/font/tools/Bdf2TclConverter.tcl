@@ -1,87 +1,91 @@
 # ~/Biblepix/prog/src/com/Bdf2TclConverter.tcl
 # Tools to provide new fonts for BiblePix BDF version
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14jun18
+# Updated: 8Apr19
 
 ################ To convert TTF fonts follow these steps: ##################
-# 1. convert TTF to OTF online (https://everythingfonts.com/ttf-to-otf)
+# 1. convert TTF to OTF online (https://onlinefontconverter.com)
 # 2. run otf2bdf (found on Linux)
 # 3. run ConvertBdf2Tcl
 ############################################################################
 
-# BDF file with path
-proc ConvertBdf2Tcl {BdfFilePath} {
-  global heute fontdir
 
-  set BdfFile [file tail $BdfFilePath]
-  
-  #Set up files and channels  
+# BDF file with path
+proc ConvertBdf2Tcl {BdfFilePath fontDir} {
+  # read BdfText
   set BdfFontChan [open $BdfFilePath]
   set BdfText [read $BdfFontChan]
   close $BdfFontChan
 
-  # A) SCAN BDF FOR GENERAL INFORMATION 
-  
-  if {[regexp -line {(^FONT )(.*$)} $BdfText -> name value]} {
-    set FontSpec $value
-  } else {
-    set FontSpec "Undefined"
-  }
-  
-  if {[regexp -line {(^SIZE )(.*$)} $BdfText -> name value]} {
-    set FontSize $value
-  } else {
-    set FontSize "Undefined"
-  }
-  
-  if {[regexp -line {(^FAMILY_NAME )(.*$)} $BdfText -> name value]} {
-    set FontName $value
-  } else {
+  # scan bdf for general information
+  set BdfFile [file tail $BdfFilePath]
+  set TclFontFile [writeGeneralInformation $BdfText $BdfFile $fontDir]
+
+  # scan bdf for single characters
+  convertCharacters $BdfText $TclFontFile
+
+  # fix arabic shadows
+  set currFileDir [file dirname [info script]]
+  set ArabicShadowTool [file join $currFileDir ArabicShadowTool.tcl]
+  source $ArabicShadowTool
+  fixArabicShadows $TclFontFile
+
+  puts "Font successfully parsed to $TclFontFile"
+}
+
+proc writeGeneralInformation {BdfText BdfFile fontDir} {
+  if {![regexp -line {(^FAMILY_NAME )(.*$)} $BdfText -> name FontName]} {
     set FontName "Undefined"
   }
-  
-  if {[regexp -line {(^WEIGHT_NAME )(.*$)} $BdfText -> name value]} {
-    set FontWeight $value
-  } else {
+
+  if {![regexp -line {(^SIZE )(.*$)} $BdfText -> name FontSize]} {
+    set FontSize "Undefined"
+  }
+
+  if {![regexp -line {(^FONT )(.*$)} $BdfText -> name FontSpec]} {
+    set FontSpec "Undefined"
+  }
+
+  if {![regexp -line {(^COPYRIGHT )(.*$)} $BdfText -> name copyright]} {
+    set copyright "Undefined"
+  }
+
+  if {![regexp -line {(^WEIGHT_NAME )(.*$)} $BdfText -> name FontWeight]} {
     set FontWeight "Undefined"
   }
 
-  ##get character width, height and offsets
-  regexp -line {^FONTBOUNDINGBOX .*$} $BdfText FBBList
-  if {[regexp -line {(^FONT_ASCENT )(.*$)} $BdfText -> name value]} {
-    set FontAsc $value
-  } else {
-    set FontAsc "Undefined"
+  #get default character width, height and offsets
+  if {![regexp -line {(^FONTBOUNDINGBOX )(.*) (.*) (.*) (.*$)} $BdfText -> name FBBx FBBy FBBxoff FBByoff]} {
+    set FBBx "Undefined"
+    set FBBy "Undefined"
+    set FBBxoff "Undefined"
+    set FBByoff "Undefined"
   }
-  
-  ##get number of characters  - JOEL WOZU DAS?
-  if {[regexp -line {(^CHARS )(.*$)} $BdfText -> name value]} {
-    set numChars $value
-  } else {
-    set numChars "Undefined"
-  }
-  
-  #copyright info
-  if {[regexp -line {(^COPYRIGHT )(.*$)} $BdfText -> name value]} {
-    set copyright $value
-  } else {
-    set copyright "Undefined"
-  }
-  
+
   #Slant (R/B/I/BI)
-  if {[regexp -line {(^SLANT )(.*$)} $BdfText -> name value]} {
-    set slant $value
-  } else {
+  if {![regexp -line {(^SLANT )(.*$)} $BdfText -> name slant]} {
     set slant "Undefined"
   }
 
+  if {![regexp -line {(^FONT_ASCENT )(.*$)} $BdfText -> name FontAsc]} {
+    set FontAsc "Undefined"
+  }
+
+  #get number of characters
+  if {![regexp -line {(^CHARS )(.*$)} $BdfText -> name numChars]} {
+    set numChars "Undefined"
+  }
+
+  foreach i $FontName {
+    append noSpaceFontName $i
+  }
+
   #Trying to get sensible name for font file
-  foreach i $FontName {append noSpaceFontName $i} 
-  append TclFontFile $noSpaceFontName _ $FontWeight _ $slant _ [string range $FontSize 0 1] .tcl
-  set TclFontChan [open $fontdir/$TclFontFile w]
-  
-  # Save general information to TclFontFile
-  puts $TclFontChan "\# $fontdir\/$TclFontFile
+  set TclFontFileName [string cat $noSpaceFontName [string range $FontSize 0 1] [expr $slant] ".tcl"]
+  set TclFontFile [file join $fontDir $TclFontFileName]
+  set TclFontChan [open $TclFontFile w]
+
+  puts $TclFontChan "\# $TclFontFile
 \# BiblePix font extracted from $BdfFile
 \# Font Name: $FontName
 \# Font size: $FontSize
@@ -90,69 +94,84 @@ proc ConvertBdf2Tcl {BdfFilePath} {
 \# Created: [clock format [clock seconds] -format "%d-%m-%Y"]
 
 \# FONTBOUNDINGBOX INFO
-set FBBx [lindex $FBBList 1]
-set FBBy [lindex $FBBList 2]
-set FBBxoff [lindex $FBBList 3]
-set FBByoff [lindex $FBBList 4]
+set FBBx $FBBx
+set FBBy $FBBy
+set FBBxoff $FBBxoff
+set FBByoff $FBByoff
 set FontAsc $FontAsc
 set numChars $numChars
 "
-    
-  # B) SCAN BDF FOR SINGLE CHARACTERS
+
+  close $TclFontChan
+  return $TclFontFile
+}
+
+proc convertCharacters {BdfText TclFontFile} {
+  if {![regexp -line {(^CHARS )(.*$)} $BdfText -> name numChars]} {
+    error "number of characters is not defined in the BDF file"
+  }
+
+  set TclFontChan [open $TclFontFile a]
 
   set indexEndChar 0
 
   for {set charNo 0} {$charNo < $numChars} {incr charNo} {
-    
+
     #Set next character indices
     set indexBegChar [string first {STARTCHAR} $BdfText $indexEndChar]
     set indexEndChar [expr [string first ENDCHAR $BdfText $indexBegChar] +7]
-    
+
     set charText [string range $BdfText $indexBegChar $indexEndChar]
 
     # 1. Extract necessary information
-    
-    ##set Codename (to be used for character name)
-    regexp -line {^ENCODING .*$} $charText encList
-    set enc [lindex $encList 1]
-        
-    ##set BBX (for typesetting proc)
-    regexp -line {^BBX .*$} $charText BBXList
-    
-    ##set DW
-    regexp -line {^DWIDTH .*$} $charText DWList
-        
+
+    ##get character encoding (to be used for character name)
+    if {![regexp -line {(^ENCODING )(.*$)} $charText -> name enc]} {
+      puts "skip character, no encoding value"
+      continue
+    }
+
+    ##get boundingbox
+    if {![regexp -line {(^BBX )(.*) (.*) (.*) (.*$)} $charText -> name BBx BBy BBxoff BByoff]} {
+      puts "skip character, faulty boundingbox"
+      continue
+    }
+
+    ##get DW
+    if {![regexp -line {(^DWIDTH )(.*) (.*$)} $charText -> name DWx DWy]} {
+      puts "skip character, faulty dWidth"
+      continue
+    }
+
     ##create BITMAP list 
     set indexBegBMP [expr [string first BITMAP $charText] +6]
     set indexEndBMP [expr [string first ENDCHAR $charText] -1]
     set BMPList [string range $charText $indexBegBMP $indexEndBMP]
-    
+
     #Convert bitmap list to binary
     set binList ""
     foreach line $BMPList {
       lappend binList [hex2bin $line]
     }
-    
+
     #Colour + format binary bitmap list
-    set binList [colourBinlist $binList $BBXList]
-    
+    set binList [colourBinlist $binList $BBx]
+
     # 2. Create character array & append to TclFontFile
     puts $TclFontChan "array set print_$enc \{ 
-  BBx [expr [lindex $BBXList 1] + 2]
-  BBy [expr [lindex $BBXList 2] + 2]
-  BBxoff [expr [lindex $BBXList 3] - 1]
-  BByoff [expr [lindex $BBXList 4] - 1]
-  DWx [expr [lindex $DWList 1] + 2]
-  DWy [lindex $DWList 2]
+  BBx [expr $BBx + 2]
+  BBy [expr $BBy + 2]
+  BBxoff $BBxoff
+  BByoff [expr $BByoff - 1]
+  DWx [expr $DWx + 2]
+  DWy $DWy
   BITMAP \{ $binList \}
 \}
 "
-  } ;#END LOOP
+  }
 
   close $TclFontChan
-  puts "Font successfully parsed to $fontdir/$TclFontFile"
-
-} ;#END scanBdf  
+}
 
 proc hex2bin {hex} {
   binary scan [binary format H* $hex] B* bin
@@ -165,9 +184,9 @@ proc calcColorLine {sunLine charLine shadeLine BBx} {
   set charLine [string cat "0" $charLine "0"]
   set shadeLine1 [string cat "00" $shadeLine]
   set shadeLine2 [string cat "0" $shadeLine "0"]
-  
+
   set colourLine ""
-  
+
   for {set index 0} {$index < [expr $BBx + 2]} {incr index} {
     if {[string index $charLine $index] == "1"} {
       set colourLine [string cat $colourLine "1"]
@@ -183,43 +202,45 @@ proc calcColorLine {sunLine charLine shadeLine BBx} {
       set colourLine [string cat $colourLine "0"]
     }
   }
-  
+
   return $colourLine
 }
 
 # S c h e m a   bei Sonne von links oben:
-#   S
-#  SS#
-# SS###
-#  #####
-#   ###ss
-#    #ss
-#     s
-       
+#    SSSSS
+#   SS####S
+#  SS######S
+# SS###ss###S
+# S###ss S###
+# S###s  S###s
+#  ###s SS###s
+#  s###SS###ss
+#   s######ss
+#    s####ss
+#     sssss
+
 # Colour a single bitmap character
-proc colourBinlist {binList BBXList} {
+proc colourBinlist {binList BBx} {
   set colourList ""
-  
-  set BBx [lindex $BBXList 1]
-  
+
   set sunLine [string repeat "0" $BBx]
   set charLine [string repeat "0" $BBx]
-  
+
   foreach line $binList {
     set shadeLine $charLine
     set charLine $sunLine
     set sunLine $line
-    
+
     lappend colourList [calcColorLine $sunLine $charLine $shadeLine $BBx]
   }
-  
+
   for {set i 0} {$i < 2} {incr i} {
     set shadeLine $charLine
     set charLine $sunLine
     set sunLine [string repeat "0" $BBx]
-    
+
     lappend colourList [calcColorLine $sunLine $charLine $shadeLine $BBx]
   }
-  
+
   return $colourList
 }

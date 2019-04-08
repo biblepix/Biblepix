@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 30sept18
+# Updated: 8Apr19
 
 
 # printTwd
@@ -156,19 +156,18 @@ proc printTwdTextParts {x y img} {
 ## prints single letter to $img
 ## called by printTextLine
 proc printLetter {letterName img x y} {
-  global sun shade fontcolortext RtL BBxoff prefix
+  global sun shade fontcolortext RtL prefix
   upvar $letterName curLetter
   
-  set color [set fontcolortext]
+  set color $fontcolortext
   set BBxoff $curLetter(BBxoff)
   set BBx $curLetter(BBx)
 
   if {$RtL} {
-    set DWx $curLetter(DWx)
-    set BBxoff [expr $DWx - $BBxoff]
+    set x [expr $x - $curLetter(DWx)]
   }
 
-  set xLetter [expr $x - $BBxoff]
+  set xLetter [expr $x + $BBxoff]
   set yLetter [expr $y - $curLetter(BByoff) - $curLetter(BBy)]
 
   set yCur $yLetter
@@ -201,7 +200,7 @@ proc printLetter {letterName img x y} {
 ## calls printLetter
 ## use 'args' for TAB or IND
 proc printTextLine {textLine x y img args} {
-  global TwdLang fontName marginleft margintop enabletitle RtL BdfBidi prefix
+  global TwdLang marginleft enabletitle RtL BdfBidi prefix
    
   set FontAsc "$${prefix}::FontAsc"
   
@@ -260,8 +259,9 @@ proc printTextLine {textLine x y img args} {
     } else {
       
       array set curLetter [array get print_$encLetter]
-      if {[catch {printLetter curLetter $img $xBase $yBase}]} {
+      if {[catch {printLetter curLetter $img $xBase $yBase} error]} {
         puts "could not print letter: $encLetter"
+        error $error
         continue
       }
       
