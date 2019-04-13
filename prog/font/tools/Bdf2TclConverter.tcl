@@ -1,17 +1,20 @@
 # ~/Biblepix/prog/src/com/Bdf2TclConverter.tcl
 # Tools to provide new fonts for BiblePix BDF version
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8Apr19
+# Updated: 12Apr19
 
 ################ To convert TTF fonts follow these steps: ##################
-# 1. convert TTF to OTF online (https://onlinefontconverter.com)
+# 1. convert TTF to OTF online (https://onlinefontconverter.com: click just OTF, then Select files...)
 # 2. run otf2bdf (found on Linux)
 # 3. run ConvertBdf2Tcl
 ############################################################################
 
+set fontToolsDir [file dirname [file normalize [info script]]]
 
 # BDF file with path
 proc ConvertBdf2Tcl {BdfFilePath fontDir} {
+  global fontToolsDir
+
   # read BdfText
   set BdfFontChan [open $BdfFilePath]
   set BdfText [read $BdfFontChan]
@@ -24,9 +27,9 @@ proc ConvertBdf2Tcl {BdfFilePath fontDir} {
   # scan bdf for single characters
   convertCharacters $BdfText $TclFontFile
 
-  # fix arabic shadows
-  set currFileDir [file dirname [info script]]
-  set ArabicShadowTool [file join $currFileDir ArabicShadowTool.tcl]
+  # fix Arabic shadows
+ 
+  set ArabicShadowTool [file join $fontToolsDir ArabicShadowTool.tcl]
   source $ArabicShadowTool
   fixArabicShadows $TclFontFile
 
