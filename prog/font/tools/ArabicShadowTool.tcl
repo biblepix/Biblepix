@@ -50,8 +50,11 @@ proc removeShadowFromLetters {letters type fontFileText} {
     set enc [expr $letter]
 
     set indexBegChar [string first "array set print_$enc" $fontFileText]
-    set indexEndChar [expr [string first "\}\n\}" $fontFileText $indexBegChar] + 3]
+    if {$indexBegChar < 0} {
+      continue
+    }
 
+    set indexEndChar [expr [string first "\}\n\}" $fontFileText $indexBegChar] + 3]
     set charText [string range $fontFileText $indexBegChar $indexEndChar]
 
     if {$charText == ""} {

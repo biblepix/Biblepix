@@ -20,9 +20,13 @@ proc ConvertBdf2Tcl {BdfFilePath fontDir} {
   set BdfText [read $BdfFontChan]
   close $BdfFontChan
 
-  # scan bdf for general information
+  # get tcl file name
   set BdfFile [file tail $BdfFilePath]
-  set TclFontFile [writeGeneralInformation $BdfText $BdfFile $fontDir]
+  set TclFontFileName [string cat [file rootname $BdfFile] ".tcl"]
+  set TclFontFile [file join $fontDir $TclFontFileName]
+
+  # scan bdf for general information
+  writeGeneralInformation $BdfText $BdfFile $TclFontFile
 
   # scan bdf for single characters
   convertCharacters $BdfText $TclFontFile
@@ -36,7 +40,7 @@ proc ConvertBdf2Tcl {BdfFilePath fontDir} {
   puts "Font successfully parsed to $TclFontFile"
 }
 
-proc writeGeneralInformation {BdfText BdfFile fontDir} {
+proc writeGeneralInformation {BdfText BdfFile TclFontFile} {
   if {![regexp -line {(^FAMILY_NAME )(.*$)} $BdfText -> name FontName]} {
     set FontName "Undefined"
   }
@@ -53,11 +57,7 @@ proc writeGeneralInformation {BdfText BdfFile fontDir} {
     set copyright "Undefined"
   }
 
-  if {![regexp -line {(^WEIGHT_NAME )(.*$)} $BdfText -> name FontWeight]} {
-    set FontWeight "Undefined"
-  }
-
-  #get default character width, height and offsets
+  # get default character width, height and offsets
   if {![regexp -line {(^FONTBOUNDINGBOX )(.*) (.*) (.*) (.*$)} $BdfText -> name FBBx FBBy FBBxoff FBByoff]} {
     set FBBx "Undefined"
     set FBBy "Undefined"
@@ -65,29 +65,20 @@ proc writeGeneralInformation {BdfText BdfFile fontDir} {
     set FBByoff "Undefined"
   }
 
-  #Slant (R/B/I/BI)
-  if {![regexp -line {(^SLANT )(.*$)} $BdfText -> name slant]} {
-    set slant "Undefined"
-  }
-
   if {![regexp -line {(^FONT_ASCENT )(.*$)} $BdfText -> name FontAsc]} {
     set FontAsc "Undefined"
   }
 
-  #get number of characters
+  # get number of characters
   if {![regexp -line {(^CHARS )(.*$)} $BdfText -> name numChars]} {
     set numChars "Undefined"
   }
 
-  foreach i $FontName {
-    append noSpaceFontName $i
-  }
-
-  #Trying to get sensible name for font file
-  set TclFontFileName [string cat $noSpaceFontName [string range $FontSize 0 1] [expr $slant] ".tcl"]
-  set TclFontFile [file join $fontDir $TclFontFileName]
+  # Write to the file
   set TclFontChan [open $TclFontFile w]
 
+  puts $TclFontFile
+  
   puts $TclFontChan "\# $TclFontFile
 \# BiblePix font extracted from $BdfFile
 \# Font Name: $FontName
@@ -106,7 +97,6 @@ set numChars $numChars
 "
 
   close $TclFontChan
-  return $TclFontFile
 }
 
 proc convertCharacters {BdfText TclFontFile} {
@@ -120,7 +110,7 @@ proc convertCharacters {BdfText TclFontFile} {
 
   for {set charNo 0} {$charNo < $numChars} {incr charNo} {
 
-    #Set next character indices
+    # Set next character indices
     set indexBegChar [string first {STARTCHAR} $BdfText $indexEndChar]
     set indexEndChar [expr [string first ENDCHAR $BdfText $indexBegChar] +7]
 
@@ -247,3 +237,6 @@ proc colourBinlist {binList BBx} {
 
   return $colourList
 }
+
+# ConvertBdf2Tcl "E:/Projekte/BiblePix/prog/font/bdf/Arial15I.bdf" "E:/Projekte/BiblePix/prog/font/bdf"
+# exit
