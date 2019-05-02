@@ -10,6 +10,17 @@
 ############################################################################
 
 set fontToolsDir [file dirname [file normalize [info script]]]
+set sharedir [file normalize $fontToolsDir/../../src/share]
+source $sharedir/globals.tcl
+
+puts "
+S Y N T A X :
+* To convert 1 OTF file to any number of BDF files:
+    \[convertOtf2Bdf OtfFilePath PtSize \[Ptsize\] ...\]
+* To convert a number of BDF files from any directory to Tcl files in the $fontdir directory:
+
+    \[convertBdf2Tcl BdfFontDir\]
+"
 
 # convertOtf2Bdf
 ##Batch program to make any number of BDF fonts out of an OTF font file
@@ -21,6 +32,7 @@ proc convertOtf2Bdf {OtfFilePath {args}} {
   global fontdir
   set bdfdir $fontdir/bdf
   set OtfFileName [file tail $OtfFilePath]
+  set OtfFilePath [file normalize $OtfFilePath]
 
   if {[auto_execok otf2bdf] == ""} {
     return "Program 'otf2bdf' not found. Please install Linux Fonttols first."
@@ -30,41 +42,51 @@ proc convertOtf2Bdf {OtfFilePath {args}} {
   }
 
   foreach ptsize $args {
-    append BdfFileName [file root $OtfFileName] $ptsize . bdf]
+    set BdfFileName "[file root $OtfFileName]${ptsize}.bdf"
     set BdfFilePath $bdfdir/$BdfFileName
-    exec otf2bdf -n $ptsize $OtfFilePath -o $BdfFilePath
-    puts "Created $BdfFilePath" 
+    exec otf2bdf $OtfFilePath -p $ptsize -o $BdfFilePath &
+    puts "Created $BdfFileName"
   }
 }
 
 # convertBdf2Tcl
-# BDF file with path
-proc convertBdf2Tcl {BdfFilePath fontDir} {
-  global fontToolsDir
+##converts all Bdf files in a directory to Tcl format for Biblepix use
+##Tcl files are saved to $fontdir
+##required arg: BdfFontDir (e.g. $fontdir/bdf)
+proc convertBdf2Tcl {BdfFontDir} {
+  global fontdir fontToolsDir
+  set BdfFontList [glob -directory $BdfFontDir *.bdf]
 
-  # read BdfText
-  set BdfFontChan [open $BdfFilePath]
-  set BdfText [read $BdfFontChan]
-  close $BdfFontChan
+  foreach filepath $BdfFontList {
+    puts "Converting $filepath to ..."
 
-  # get tcl file name
-  set BdfFile [file tail $BdfFilePath]
-  set TclFontFileName [string cat [file rootname $BdfFile] ".tcl"]
-  set TclFontFile [file join $fontDir $TclFontFileName]
+    # read BdfText
+    set BdfFontChan [open $filepath]
+    set BdfText [read $BdfFontChan]
+    close $BdfFontChan
 
-  # scan bdf for general information
-  writeGeneralInformation $BdfText $BdfFile $TclFontFile
+    # get tcl file name
+    set BdfFileName [file root [file tail $filepath]]
+    set TclFileName [string cat [file root $BdfFileName] ".tcl"]
+    set TclFilePath [file join $fontdir $TclFileName]
+    
+    puts $TclFilePath
 
-  # scan bdf for single characters
-  convertCharacters $BdfText $TclFontFile
+    # A C T I O N S :
 
-  # fix Arabic shadows
- 
-  set ArabicShadowTool [file join $fontToolsDir ArabicShadowTool.tcl]
-  source $ArabicShadowTool
-  fixArabicShadows $TclFontFile
+    #1. scan bdf for general information & write to TclFilePath
+    writeGeneralInformation $BdfText $BdfFileName $TclFilePath
 
-  puts "Font successfully parsed to $TclFontFile"
+    #2. scan bdf for single characters & write to TclFilePath
+    convertCharacters $BdfText $TclFilePath
+
+    #3. fix Arabic shadows & write to TclFilePath
+    set ArabicShadowTool [file join $fontToolsDir ArabicShadowTool.tcl]
+    source $ArabicShadowTool
+    fixArabicShadows $TclFilePath
+  }
+
+  puts "Fonts successfully parsed to $fontdir"
 }
 
 proc writeGeneralInformation {BdfText BdfFile TclFontFile} {
@@ -103,9 +125,6 @@ proc writeGeneralInformation {BdfText BdfFile TclFontFile} {
 
   # Write to the file
   set TclFontChan [open $TclFontFile w]
-
-  puts $TclFontFile
-  
   puts $TclFontChan "\# $TclFontFile
 \# BiblePix font extracted from $BdfFile
 \# Font Name: $FontName

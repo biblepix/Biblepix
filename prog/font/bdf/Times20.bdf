@@ -1,6 +1,6 @@
 STARTFONT 2.1
 COMMENT
-COMMENT Converted from OpenType font "TimesNewRomanPSMT.otf" by "otf2bdf 3.0".
+COMMENT Converted from OpenType font "Times.otf" by "otf2bdf 3.0".
 COMMENT
 FONT -FreeType-Times New Roman-Medium-R-Normal--28-200-100-100-P-135-ISO10646-1
 SIZE 20 100 100
@@ -23,7 +23,7 @@ CHARSET_ENCODING "1"
 FONT_ASCENT 24
 FONT_DESCENT 6
 COPYRIGHT "© 2006 The Monotype Corporation. All Rights Reserved."
-_OTF_FONTFILE "TimesNewRomanPSMT.otf"
+_OTF_FONTFILE "Times.otf"
 _OTF_PSNAME "TimesNewRomanPSMT"
 ENDPROPERTIES
 CHARS 1425

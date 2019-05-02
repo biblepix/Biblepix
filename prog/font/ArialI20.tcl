@@ -1,11 +1,28 @@
-array set print_65172 {
-  BBx -132
+# /home/pv/Biblepix/prog/font/ArialI20.tcl
+# BiblePix font extracted from ArialI20
+# Font Name: "Arial"
+# Font size: 20 100 100
+# Font Specification: -FreeType-Arial-Medium-I-Normal--28-200-100-100-P-145-ISO10646-1
+# Copyright: "© 2006 The Monotype Corporation. All Rights Reserved."
+# Created: 02-05-2019
+# Arabic shadows removed
+
+# FONTBOUNDINGBOX INFO
+set FBBx 44
+set FBBy 37
+set FBBxoff -14
+set FBByoff -9
+set FontAsc 25
+set numChars 959
+
+array set print_32 { 
+  BBx 2
   BBy 2
   BBxoff 0
   BByoff -1
-  DWx -124
+  DWx 10
   DWy 0
-  BITMAP { \\ \\ }
+  BITMAP { 00 00 }
 }
 
 array set print_33 { 

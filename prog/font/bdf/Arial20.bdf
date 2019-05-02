@@ -1,6 +1,6 @@
 STARTFONT 2.1
 COMMENT
-COMMENT Converted from OpenType font "ArialMT.otf" by "otf2bdf 3.0".
+COMMENT Converted from OpenType font "Arial.otf" by "otf2bdf 3.0".
 COMMENT
 FONT -FreeType-Arial-Medium-R-Normal--28-200-100-100-P-134-ISO10646-1
 SIZE 20 100 100
@@ -23,7 +23,7 @@ CHARSET_ENCODING "1"
 FONT_ASCENT 25
 FONT_DESCENT 5
 COPYRIGHT "© 2006 The Monotype Corporation. All Rights Reserved."
-_OTF_FONTFILE "ArialMT.otf"
+_OTF_FONTFILE "Arial.otf"
 _OTF_PSNAME "ArialMT"
 ENDPROPERTIES
 CHARS 1425

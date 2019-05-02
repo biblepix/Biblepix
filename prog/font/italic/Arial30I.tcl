@@ -1,33 +1,17 @@
-# /home/pv/Biblepix/prog/font/italic/Arial30I.tcl
-# BiblePix font extracted from Arial30I.bdf
-# Font Name: "Arial"
-# Font size: 30 100 100
-# Font Specification: -FreeType-Arial-Medium-I-Normal--42-300-100-100-P-217-ISO10646-1
-# Copyright: "© 2006 The Monotype Corporation. All Rights Reserved."
-# Created: 25-04-2018
-
-# FONTBOUNDINGBOX INFO
-set FBBx 67
-set FBBy 56
-set FBBxoff -22
-set FBByoff -14
-set FontAsc 38
-set numChars 959
-
-array set print_32 { 
-  BBx 2
+array set print_65172 {
+  BBx -132
   BBy 2
-  BBxoff -1
+  BBxoff 0
   BByoff -1
-  DWx 14
+  DWx -120
   DWy 0
-  BITMAP { 00 00 }
+  BITMAP { \\ \\ }
 }
 
 array set print_33 { 
   BBx 13
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -37,7 +21,7 @@ array set print_33 {
 array set print_34 { 
   BBx 14
   BBy 13
-  BBxoff 5
+  BBxoff 6
   BByoff 18
   DWx 17
   DWy 0
@@ -47,7 +31,7 @@ array set print_34 {
 array set print_35 { 
   BBx 24
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 25
   DWy 0
@@ -57,7 +41,7 @@ array set print_35 {
 array set print_36 { 
   BBx 24
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -5
   DWx 25
   DWy 0
@@ -67,7 +51,7 @@ array set print_36 {
 array set print_37 { 
   BBx 34
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 39
   DWy 0
@@ -77,7 +61,7 @@ array set print_37 {
 array set print_38 { 
   BBx 26
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 30
   DWy 0
@@ -87,7 +71,7 @@ array set print_38 {
 array set print_39 { 
   BBx 8
   BBy 13
-  BBxoff 4
+  BBxoff 5
   BByoff 18
   DWx 10
   DWy 0
@@ -97,7 +81,7 @@ array set print_39 {
 array set print_40 { 
   BBx 15
   BBy 41
-  BBxoff 3
+  BBxoff 4
   BByoff -10
   DWx 16
   DWy 0
@@ -107,7 +91,7 @@ array set print_40 {
 array set print_41 { 
   BBx 15
   BBy 41
-  BBxoff -3
+  BBxoff -2
   BByoff -10
   DWx 16
   DWy 0
@@ -117,7 +101,7 @@ array set print_41 {
 array set print_42 { 
   BBx 15
   BBy 14
-  BBxoff 4
+  BBxoff 5
   BByoff 17
   DWx 18
   DWy 0
@@ -127,7 +111,7 @@ array set print_42 {
 array set print_43 { 
   BBx 21
   BBy 22
-  BBxoff 3
+  BBxoff 4
   BByoff 4
   DWx 26
   DWy 0
@@ -137,7 +121,7 @@ array set print_43 {
 array set print_44 { 
   BBx 8
   BBy 12
-  BBxoff 0
+  BBxoff 1
   BByoff -7
   DWx 14
   DWy 0
@@ -147,7 +131,7 @@ array set print_44 {
 array set print_45 { 
   BBx 14
   BBy 6
-  BBxoff 1
+  BBxoff 2
   BByoff 8
   DWx 16
   DWy 0
@@ -157,7 +141,7 @@ array set print_45 {
 array set print_46 { 
   BBx 7
   BBy 6
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -167,7 +151,7 @@ array set print_46 {
 array set print_47 { 
   BBx 21
   BBy 32
-  BBxoff -3
+  BBxoff -2
   BByoff -1
   DWx 14
   DWy 0
@@ -177,7 +161,7 @@ array set print_47 {
 array set print_48 { 
   BBx 23
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 25
   DWy 0
@@ -187,7 +171,7 @@ array set print_48 {
 array set print_49 { 
   BBx 16
   BBy 32
-  BBxoff 5
+  BBxoff 6
   BByoff -1
   DWx 25
   DWy 0
@@ -197,7 +181,7 @@ array set print_49 {
 array set print_50 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -207,7 +191,7 @@ array set print_50 {
 array set print_51 { 
   BBx 23
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 25
   DWy 0
@@ -217,7 +201,7 @@ array set print_51 {
 array set print_52 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -227,7 +211,7 @@ array set print_52 {
 array set print_53 { 
   BBx 23
   BBy 31
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 25
   DWy 0
@@ -237,7 +221,7 @@ array set print_53 {
 array set print_54 { 
   BBx 23
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 25
   DWy 0
@@ -247,7 +231,7 @@ array set print_54 {
 array set print_55 { 
   BBx 22
   BBy 31
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 25
   DWy 0
@@ -257,7 +241,7 @@ array set print_55 {
 array set print_56 { 
   BBx 23
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 25
   DWy 0
@@ -267,7 +251,7 @@ array set print_56 {
 array set print_57 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 25
   DWy 0
@@ -277,7 +261,7 @@ array set print_57 {
 array set print_58 { 
   BBx 11
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -287,7 +271,7 @@ array set print_58 {
 array set print_59 { 
   BBx 12
   BBy 30
-  BBxoff 0
+  BBxoff 1
   BByoff -7
   DWx 14
   DWy 0
@@ -297,7 +281,7 @@ array set print_59 {
 array set print_60 { 
   BBx 22
   BBy 22
-  BBxoff 3
+  BBxoff 4
   BByoff 4
   DWx 26
   DWy 0
@@ -307,7 +291,7 @@ array set print_60 {
 array set print_61 { 
   BBx 21
   BBy 15
-  BBxoff 3
+  BBxoff 4
   BByoff 7
   DWx 26
   DWy 0
@@ -317,7 +301,7 @@ array set print_61 {
 array set print_62 { 
   BBx 22
   BBy 21
-  BBxoff 3
+  BBxoff 4
   BByoff 5
   DWx 26
   DWy 0
@@ -327,7 +311,7 @@ array set print_62 {
 array set print_63 { 
   BBx 19
   BBy 32
-  BBxoff 5
+  BBxoff 6
   BByoff -1
   DWx 25
   DWy 0
@@ -337,7 +321,7 @@ array set print_63 {
 array set print_64 { 
   BBx 40
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 44
   DWy 0
@@ -347,7 +331,7 @@ array set print_64 {
 array set print_65 { 
   BBx 29
   BBy 32
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -357,7 +341,7 @@ array set print_65 {
 array set print_66 { 
   BBx 27
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -367,7 +351,7 @@ array set print_66 {
 array set print_67 { 
   BBx 28
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -377,7 +361,7 @@ array set print_67 {
 array set print_68 { 
   BBx 30
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -387,7 +371,7 @@ array set print_68 {
 array set print_69 { 
   BBx 30
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -397,7 +381,7 @@ array set print_69 {
 array set print_70 { 
   BBx 27
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 27
   DWy 0
@@ -407,7 +391,7 @@ array set print_70 {
 array set print_71 { 
   BBx 30
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -417,7 +401,7 @@ array set print_71 {
 array set print_72 { 
   BBx 31
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -427,7 +411,7 @@ array set print_72 {
 array set print_73 { 
   BBx 13
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -437,7 +421,7 @@ array set print_73 {
 array set print_74 { 
   BBx 23
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -2
   DWx 23
   DWy 0
@@ -447,7 +431,7 @@ array set print_74 {
 array set print_75 { 
   BBx 31
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -457,7 +441,7 @@ array set print_75 {
 array set print_76 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -467,7 +451,7 @@ array set print_76 {
 array set print_77 { 
   BBx 36
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 37
   DWy 0
@@ -477,7 +461,7 @@ array set print_77 {
 array set print_78 { 
   BBx 31
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -487,7 +471,7 @@ array set print_78 {
 array set print_79 { 
   BBx 30
   BBy 32
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -497,7 +481,7 @@ array set print_79 {
 array set print_80 { 
   BBx 29
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -507,7 +491,7 @@ array set print_80 {
 array set print_81 { 
   BBx 30
   BBy 35
-  BBxoff 3
+  BBxoff 4
   BByoff -4
   DWx 34
   DWy 0
@@ -517,7 +501,7 @@ array set print_81 {
 array set print_82 { 
   BBx 30
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -527,7 +511,7 @@ array set print_82 {
 array set print_83 { 
   BBx 27
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 30
   DWy 0
@@ -537,7 +521,7 @@ array set print_83 {
 array set print_84 { 
   BBx 26
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 27
   DWy 0
@@ -547,7 +531,7 @@ array set print_84 {
 array set print_85 { 
   BBx 29
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -557,7 +541,7 @@ array set print_85 {
 array set print_86 { 
   BBx 28
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 30
   DWy 0
@@ -567,7 +551,7 @@ array set print_86 {
 array set print_87 { 
   BBx 41
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 41
   DWy 0
@@ -577,7 +561,7 @@ array set print_87 {
 array set print_88 { 
   BBx 35
   BBy 32
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -587,7 +571,7 @@ array set print_88 {
 array set print_89 { 
   BBx 29
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 30
   DWy 0
@@ -597,7 +581,7 @@ array set print_89 {
 array set print_90 { 
   BBx 28
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 27
   DWy 0
@@ -607,7 +591,7 @@ array set print_90 {
 array set print_91 { 
   BBx 18
   BBy 40
-  BBxoff -1
+  BBxoff 0
   BByoff -9
   DWx 14
   DWy 0
@@ -617,7 +601,7 @@ array set print_91 {
 array set print_92 { 
   BBx 9
   BBy 32
-  BBxoff 3
+  BBxoff 4
   BByoff -1
   DWx 14
   DWy 0
@@ -627,7 +611,7 @@ array set print_92 {
 array set print_93 { 
   BBx 18
   BBy 40
-  BBxoff -3
+  BBxoff -2
   BByoff -9
   DWx 14
   DWy 0
@@ -637,7 +621,7 @@ array set print_93 {
 array set print_94 { 
   BBx 19
   BBy 18
-  BBxoff 2
+  BBxoff 3
   BByoff 13
   DWx 22
   DWy 0
@@ -647,7 +631,7 @@ array set print_94 {
 array set print_95 { 
   BBx 27
   BBy 4
-  BBxoff -4
+  BBxoff -3
   BByoff -9
   DWx 25
   DWy 0
@@ -657,7 +641,7 @@ array set print_95 {
 array set print_96 { 
   BBx 9
   BBy 8
-  BBxoff 5
+  BBxoff 6
   BByoff 23
   DWx 16
   DWy 0
@@ -667,7 +651,7 @@ array set print_96 {
 array set print_97 { 
   BBx 22
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -677,7 +661,7 @@ array set print_97 {
 array set print_98 { 
   BBx 23
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -687,7 +671,7 @@ array set print_98 {
 array set print_99 { 
   BBx 21
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -697,7 +681,7 @@ array set print_99 {
 array set print_100 { 
   BBx 25
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -707,7 +691,7 @@ array set print_100 {
 array set print_101 { 
   BBx 22
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -717,7 +701,7 @@ array set print_101 {
 array set print_102 { 
   BBx 17
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -727,7 +711,7 @@ array set print_102 {
 array set print_103 { 
   BBx 24
   BBy 33
-  BBxoff 0
+  BBxoff 1
   BByoff -10
   DWx 25
   DWy 0
@@ -737,7 +721,7 @@ array set print_103 {
 array set print_104 { 
   BBx 23
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -747,7 +731,7 @@ array set print_104 {
 array set print_105 { 
   BBx 12
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -757,7 +741,7 @@ array set print_105 {
 array set print_106 { 
   BBx 18
   BBy 41
-  BBxoff -6
+  BBxoff -5
   BByoff -10
   DWx 11
   DWy 0
@@ -767,7 +751,7 @@ array set print_106 {
 array set print_107 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -777,7 +761,7 @@ array set print_107 {
 array set print_108 { 
   BBx 12
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -787,7 +771,7 @@ array set print_108 {
 array set print_109 { 
   BBx 35
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 37
   DWy 0
@@ -797,7 +781,7 @@ array set print_109 {
 array set print_110 { 
   BBx 23
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -807,7 +791,7 @@ array set print_110 {
 array set print_111 { 
   BBx 23
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -817,7 +801,7 @@ array set print_111 {
 array set print_112 { 
   BBx 24
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -9
   DWx 25
   DWy 0
@@ -827,7 +811,7 @@ array set print_112 {
 array set print_113 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -9
   DWx 25
   DWy 0
@@ -837,7 +821,7 @@ array set print_113 {
 array set print_114 { 
   BBx 18
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 16
   DWy 0
@@ -847,7 +831,7 @@ array set print_114 {
 array set print_115 { 
   BBx 21
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -857,7 +841,7 @@ array set print_115 {
 array set print_116 { 
   BBx 13
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -867,7 +851,7 @@ array set print_116 {
 array set print_117 { 
   BBx 22
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -877,7 +861,7 @@ array set print_117 {
 array set print_118 { 
   BBx 22
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 23
   DWy 0
@@ -887,7 +871,7 @@ array set print_118 {
 array set print_119 { 
   BBx 31
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 32
   DWy 0
@@ -897,7 +881,7 @@ array set print_119 {
 array set print_120 { 
   BBx 24
   BBy 24
-  BBxoff -1
+  BBxoff 0
   BByoff -1
   DWx 23
   DWy 0
@@ -907,7 +891,7 @@ array set print_120 {
 array set print_121 { 
   BBx 25
   BBy 33
-  BBxoff -1
+  BBxoff 0
   BByoff -10
   DWx 23
   DWy 0
@@ -917,7 +901,7 @@ array set print_121 {
 array set print_122 { 
   BBx 22
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 23
   DWy 0
@@ -927,7 +911,7 @@ array set print_122 {
 array set print_123 { 
   BBx 18
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 16
   DWy 0
@@ -937,7 +921,7 @@ array set print_123 {
 array set print_124 { 
   BBx 5
   BBy 41
-  BBxoff 3
+  BBxoff 4
   BByoff -10
   DWx 13
   DWy 0
@@ -947,7 +931,7 @@ array set print_124 {
 array set print_125 { 
   BBx 18
   BBy 41
-  BBxoff -4
+  BBxoff -3
   BByoff -10
   DWx 16
   DWy 0
@@ -957,7 +941,7 @@ array set print_125 {
 array set print_126 { 
   BBx 23
   BBy 9
-  BBxoff 2
+  BBxoff 3
   BByoff 10
   DWx 26
   DWy 0
@@ -967,7 +951,7 @@ array set print_126 {
 array set print_160 { 
   BBx 2
   BBy 2
-  BBxoff -1
+  BBxoff 0
   BByoff -1
   DWx 14
   DWy 0
@@ -977,7 +961,7 @@ array set print_160 {
 array set print_161 { 
   BBx 12
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -9
   DWx 16
   DWy 0
@@ -987,7 +971,7 @@ array set print_161 {
 array set print_162 { 
   BBx 21
   BBy 40
-  BBxoff 2
+  BBxoff 3
   BByoff -9
   DWx 25
   DWy 0
@@ -997,7 +981,7 @@ array set print_162 {
 array set print_163 { 
   BBx 26
   BBy 33
-  BBxoff 0
+  BBxoff 1
   BByoff -2
   DWx 25
   DWy 0
@@ -1007,7 +991,7 @@ array set print_163 {
 array set print_164 { 
   BBx 22
   BBy 22
-  BBxoff 2
+  BBxoff 3
   BByoff 4
   DWx 25
   DWy 0
@@ -1017,7 +1001,7 @@ array set print_164 {
 array set print_165 { 
   BBx 28
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1027,7 +1011,7 @@ array set print_165 {
 array set print_166 { 
   BBx 5
   BBy 41
-  BBxoff 3
+  BBxoff 4
   BByoff -10
   DWx 13
   DWy 0
@@ -1037,7 +1021,7 @@ array set print_166 {
 array set print_167 { 
   BBx 24
   BBy 41
-  BBxoff 0
+  BBxoff 1
   BByoff -10
   DWx 25
   DWy 0
@@ -1047,7 +1031,7 @@ array set print_167 {
 array set print_168 { 
   BBx 14
   BBy 6
-  BBxoff 4
+  BBxoff 5
   BByoff 24
   DWx 16
   DWy 0
@@ -1057,7 +1041,7 @@ array set print_168 {
 array set print_169 { 
   BBx 32
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 33
   DWy 0
@@ -1067,7 +1051,7 @@ array set print_169 {
 array set print_170 { 
   BBx 16
   BBy 17
-  BBxoff 2
+  BBxoff 3
   BByoff 14
   DWx 17
   DWy 0
@@ -1077,7 +1061,7 @@ array set print_170 {
 array set print_171 { 
   BBx 20
   BBy 21
-  BBxoff 3
+  BBxoff 4
   BByoff 0
   DWx 25
   DWy 0
@@ -1087,7 +1071,7 @@ array set print_171 {
 array set print_172 { 
   BBx 21
   BBy 14
-  BBxoff 3
+  BBxoff 4
   BByoff 8
   DWx 26
   DWy 0
@@ -1097,7 +1081,7 @@ array set print_172 {
 array set print_173 { 
   BBx 14
   BBy 6
-  BBxoff 1
+  BBxoff 2
   BByoff 8
   DWx 16
   DWy 0
@@ -1107,7 +1091,7 @@ array set print_173 {
 array set print_174 { 
   BBx 32
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 33
   DWy 0
@@ -1117,7 +1101,7 @@ array set print_174 {
 array set print_175 { 
   BBx 26
   BBy 5
-  BBxoff 3
+  BBxoff 4
   BByoff 31
   DWx 25
   DWy 0
@@ -1127,7 +1111,7 @@ array set print_175 {
 array set print_176 { 
   BBx 13
   BBy 13
-  BBxoff 5
+  BBxoff 6
   BByoff 18
   DWx 19
   DWy 0
@@ -1137,7 +1121,7 @@ array set print_176 {
 array set print_177 { 
   BBx 21
   BBy 27
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -1147,7 +1131,7 @@ array set print_177 {
 array set print_178 { 
   BBx 16
   BBy 17
-  BBxoff 2
+  BBxoff 3
   BByoff 14
   DWx 16
   DWy 0
@@ -1157,7 +1141,7 @@ array set print_178 {
 array set print_179 { 
   BBx 15
   BBy 17
-  BBxoff 3
+  BBxoff 4
   BByoff 14
   DWx 16
   DWy 0
@@ -1167,7 +1151,7 @@ array set print_179 {
 array set print_180 { 
   BBx 10
   BBy 8
-  BBxoff 6
+  BBxoff 7
   BByoff 23
   DWx 16
   DWy 0
@@ -1177,7 +1161,7 @@ array set print_180 {
 array set print_181 { 
   BBx 26
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -9
   DWx 26
   DWy 0
@@ -1187,7 +1171,7 @@ array set print_181 {
 array set print_182 { 
   BBx 24
   BBy 40
-  BBxoff 2
+  BBxoff 3
   BByoff -9
   DWx 24
   DWy 0
@@ -1197,7 +1181,7 @@ array set print_182 {
 array set print_183 { 
   BBx 6
   BBy 6
-  BBxoff 3
+  BBxoff 4
   BByoff 12
   DWx 14
   DWy 0
@@ -1207,7 +1191,7 @@ array set print_183 {
 array set print_184 { 
   BBx 12
   BBy 11
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 16
   DWy 0
@@ -1217,7 +1201,7 @@ array set print_184 {
 array set print_185 { 
   BBx 11
   BBy 17
-  BBxoff 5
+  BBxoff 6
   BByoff 14
   DWx 16
   DWy 0
@@ -1227,7 +1211,7 @@ array set print_185 {
 array set print_186 { 
   BBx 16
   BBy 17
-  BBxoff 2
+  BBxoff 3
   BByoff 14
   DWx 17
   DWy 0
@@ -1237,7 +1221,7 @@ array set print_186 {
 array set print_187 { 
   BBx 21
   BBy 21
-  BBxoff 1
+  BBxoff 2
   BByoff 0
   DWx 25
   DWy 0
@@ -1247,7 +1231,7 @@ array set print_187 {
 array set print_188 { 
   BBx 33
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 37
   DWy 0
@@ -1257,7 +1241,7 @@ array set print_188 {
 array set print_189 { 
   BBx 33
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 37
   DWy 0
@@ -1267,7 +1251,7 @@ array set print_189 {
 array set print_190 { 
   BBx 34
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 37
   DWy 0
@@ -1277,7 +1261,7 @@ array set print_190 {
 array set print_191 { 
   BBx 19
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -10
   DWx 27
   DWy 0
@@ -1287,7 +1271,7 @@ array set print_191 {
 array set print_192 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -1297,7 +1281,7 @@ array set print_192 {
 array set print_193 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -1307,7 +1291,7 @@ array set print_193 {
 array set print_194 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -1317,7 +1301,7 @@ array set print_194 {
 array set print_195 { 
   BBx 29
   BBy 38
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -1327,7 +1311,7 @@ array set print_195 {
 array set print_196 { 
   BBx 29
   BBy 38
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -1337,7 +1321,7 @@ array set print_196 {
 array set print_197 { 
   BBx 29
   BBy 38
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -1347,7 +1331,7 @@ array set print_197 {
 array set print_198 { 
   BBx 46
   BBy 32
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 44
   DWy 0
@@ -1357,7 +1341,7 @@ array set print_198 {
 array set print_199 { 
   BBx 28
   BBy 41
-  BBxoff 3
+  BBxoff 4
   BByoff -10
   DWx 32
   DWy 0
@@ -1367,7 +1351,7 @@ array set print_199 {
 array set print_200 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -1377,7 +1361,7 @@ array set print_200 {
 array set print_201 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -1387,7 +1371,7 @@ array set print_201 {
 array set print_202 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -1397,7 +1381,7 @@ array set print_202 {
 array set print_203 { 
   BBx 30
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -1407,7 +1391,7 @@ array set print_203 {
 array set print_204 { 
   BBx 14
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -1417,7 +1401,7 @@ array set print_204 {
 array set print_205 { 
   BBx 16
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -1427,7 +1411,7 @@ array set print_205 {
 array set print_206 { 
   BBx 17
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -1437,7 +1421,7 @@ array set print_206 {
 array set print_207 { 
   BBx 17
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -1447,7 +1431,7 @@ array set print_207 {
 array set print_208 { 
   BBx 30
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -1457,7 +1441,7 @@ array set print_208 {
 array set print_209 { 
   BBx 31
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -1467,7 +1451,7 @@ array set print_209 {
 array set print_210 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -1477,7 +1461,7 @@ array set print_210 {
 array set print_211 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -1487,7 +1471,7 @@ array set print_211 {
 array set print_212 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -1497,7 +1481,7 @@ array set print_212 {
 array set print_213 { 
   BBx 30
   BBy 38
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -1507,7 +1491,7 @@ array set print_213 {
 array set print_214 { 
   BBx 30
   BBy 38
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -1517,7 +1501,7 @@ array set print_214 {
 array set print_215 { 
   BBx 20
   BBy 20
-  BBxoff 4
+  BBxoff 5
   BByoff 5
   DWx 26
   DWy 0
@@ -1527,7 +1511,7 @@ array set print_215 {
 array set print_216 { 
   BBx 30
   BBy 36
-  BBxoff 3
+  BBxoff 4
   BByoff -3
   DWx 34
   DWy 0
@@ -1537,7 +1521,7 @@ array set print_216 {
 array set print_217 { 
   BBx 29
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -1547,7 +1531,7 @@ array set print_217 {
 array set print_218 { 
   BBx 29
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -1557,7 +1541,7 @@ array set print_218 {
 array set print_219 { 
   BBx 29
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -1567,7 +1551,7 @@ array set print_219 {
 array set print_220 { 
   BBx 29
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -1577,7 +1561,7 @@ array set print_220 {
 array set print_221 { 
   BBx 29
   BBy 39
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 30
   DWy 0
@@ -1587,7 +1571,7 @@ array set print_221 {
 array set print_222 { 
   BBx 28
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -1597,7 +1581,7 @@ array set print_222 {
 array set print_223 { 
   BBx 24
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 27
   DWy 0
@@ -1607,7 +1591,7 @@ array set print_223 {
 array set print_224 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1617,7 +1601,7 @@ array set print_224 {
 array set print_225 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1627,7 +1611,7 @@ array set print_225 {
 array set print_226 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1637,7 +1621,7 @@ array set print_226 {
 array set print_227 { 
   BBx 22
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1647,7 +1631,7 @@ array set print_227 {
 array set print_228 { 
   BBx 22
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1657,7 +1641,7 @@ array set print_228 {
 array set print_229 { 
   BBx 22
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1667,7 +1651,7 @@ array set print_229 {
 array set print_230 { 
   BBx 36
   BBy 25
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 39
   DWy 0
@@ -1677,7 +1661,7 @@ array set print_230 {
 array set print_231 { 
   BBx 21
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -9
   DWx 23
   DWy 0
@@ -1687,7 +1671,7 @@ array set print_231 {
 array set print_232 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1697,7 +1681,7 @@ array set print_232 {
 array set print_233 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1707,7 +1691,7 @@ array set print_233 {
 array set print_234 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1717,7 +1701,7 @@ array set print_234 {
 array set print_235 { 
   BBx 22
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1727,7 +1711,7 @@ array set print_235 {
 array set print_236 { 
   BBx 12
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 14
   DWy 0
@@ -1737,7 +1721,7 @@ array set print_236 {
 array set print_237 { 
   BBx 13
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 14
   DWy 0
@@ -1747,7 +1731,7 @@ array set print_237 {
 array set print_238 { 
   BBx 14
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 14
   DWy 0
@@ -1757,7 +1741,7 @@ array set print_238 {
 array set print_239 { 
   BBx 15
   BBy 31
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 14
   DWy 0
@@ -1767,7 +1751,7 @@ array set print_239 {
 array set print_240 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 25
   DWy 0
@@ -1777,7 +1761,7 @@ array set print_240 {
 array set print_241 { 
   BBx 23
   BBy 31
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -1787,7 +1771,7 @@ array set print_241 {
 array set print_242 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1797,7 +1781,7 @@ array set print_242 {
 array set print_243 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1807,7 +1791,7 @@ array set print_243 {
 array set print_244 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1817,7 +1801,7 @@ array set print_244 {
 array set print_245 { 
   BBx 23
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1827,7 +1811,7 @@ array set print_245 {
 array set print_246 { 
   BBx 23
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1837,7 +1821,7 @@ array set print_246 {
 array set print_247 { 
   BBx 21
   BBy 19
-  BBxoff 2
+  BBxoff 3
   BByoff 5
   DWx 25
   DWy 0
@@ -1847,7 +1831,7 @@ array set print_247 {
 array set print_248 { 
   BBx 23
   BBy 28
-  BBxoff 2
+  BBxoff 3
   BByoff -3
   DWx 27
   DWy 0
@@ -1857,7 +1841,7 @@ array set print_248 {
 array set print_249 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -1867,7 +1851,7 @@ array set print_249 {
 array set print_250 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -1877,7 +1861,7 @@ array set print_250 {
 array set print_251 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -1887,7 +1871,7 @@ array set print_251 {
 array set print_252 { 
   BBx 22
   BBy 31
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -1897,7 +1881,7 @@ array set print_252 {
 array set print_253 { 
   BBx 25
   BBy 41
-  BBxoff -1
+  BBxoff 0
   BByoff -10
   DWx 23
   DWy 0
@@ -1907,7 +1891,7 @@ array set print_253 {
 array set print_254 { 
   BBx 24
   BBy 40
-  BBxoff -1
+  BBxoff 0
   BByoff -9
   DWx 25
   DWy 0
@@ -1917,7 +1901,7 @@ array set print_254 {
 array set print_255 { 
   BBx 25
   BBy 40
-  BBxoff -1
+  BBxoff 0
   BByoff -10
   DWx 23
   DWy 0
@@ -1927,7 +1911,7 @@ array set print_255 {
 array set print_256 { 
   BBx 29
   BBy 37
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -1937,7 +1921,7 @@ array set print_256 {
 array set print_257 { 
   BBx 22
   BBy 30
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1947,7 +1931,7 @@ array set print_257 {
 array set print_258 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -1957,7 +1941,7 @@ array set print_258 {
 array set print_259 { 
   BBx 22
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -1967,7 +1951,7 @@ array set print_259 {
 array set print_260 { 
   BBx 32
   BBy 41
-  BBxoff -2
+  BBxoff -1
   BByoff -10
   DWx 30
   DWy 0
@@ -1977,7 +1961,7 @@ array set print_260 {
 array set print_261 { 
   BBx 24
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 25
   DWy 0
@@ -1987,7 +1971,7 @@ array set print_261 {
 array set print_262 { 
   BBx 28
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -1997,7 +1981,7 @@ array set print_262 {
 array set print_263 { 
   BBx 21
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -2007,7 +1991,7 @@ array set print_263 {
 array set print_264 { 
   BBx 28
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -2017,7 +2001,7 @@ array set print_264 {
 array set print_265 { 
   BBx 21
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -2027,7 +2011,7 @@ array set print_265 {
 array set print_266 { 
   BBx 28
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -2037,7 +2021,7 @@ array set print_266 {
 array set print_267 { 
   BBx 21
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -2047,7 +2031,7 @@ array set print_267 {
 array set print_268 { 
   BBx 28
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -2057,7 +2041,7 @@ array set print_268 {
 array set print_269 { 
   BBx 21
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -2067,7 +2051,7 @@ array set print_269 {
 array set print_270 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -2077,7 +2061,7 @@ array set print_270 {
 array set print_271 { 
   BBx 31
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 28
   DWy 0
@@ -2087,7 +2071,7 @@ array set print_271 {
 array set print_272 { 
   BBx 30
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -2097,7 +2081,7 @@ array set print_272 {
 array set print_273 { 
   BBx 27
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -2107,7 +2091,7 @@ array set print_273 {
 array set print_274 { 
   BBx 30
   BBy 37
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -2117,7 +2101,7 @@ array set print_274 {
 array set print_275 { 
   BBx 22
   BBy 30
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -2127,7 +2111,7 @@ array set print_275 {
 array set print_276 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -2137,7 +2121,7 @@ array set print_276 {
 array set print_277 { 
   BBx 22
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -2147,7 +2131,7 @@ array set print_277 {
 array set print_278 { 
   BBx 30
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -2157,7 +2141,7 @@ array set print_278 {
 array set print_279 { 
   BBx 22
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -2167,7 +2151,7 @@ array set print_279 {
 array set print_280 { 
   BBx 30
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 30
   DWy 0
@@ -2177,7 +2161,7 @@ array set print_280 {
 array set print_281 { 
   BBx 22
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 25
   DWy 0
@@ -2187,7 +2171,7 @@ array set print_281 {
 array set print_282 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -2197,7 +2181,7 @@ array set print_282 {
 array set print_283 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -2207,7 +2191,7 @@ array set print_283 {
 array set print_284 { 
   BBx 30
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -2217,7 +2201,7 @@ array set print_284 {
 array set print_285 { 
   BBx 24
   BBy 41
-  BBxoff 0
+  BBxoff 1
   BByoff -10
   DWx 25
   DWy 0
@@ -2227,7 +2211,7 @@ array set print_285 {
 array set print_286 { 
   BBx 30
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -2237,7 +2221,7 @@ array set print_286 {
 array set print_287 { 
   BBx 24
   BBy 40
-  BBxoff 0
+  BBxoff 1
   BByoff -10
   DWx 25
   DWy 0
@@ -2247,7 +2231,7 @@ array set print_287 {
 array set print_288 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -2257,7 +2241,7 @@ array set print_288 {
 array set print_289 { 
   BBx 24
   BBy 40
-  BBxoff 0
+  BBxoff 1
   BByoff -10
   DWx 25
   DWy 0
@@ -2267,7 +2251,7 @@ array set print_289 {
 array set print_290 { 
   BBx 30
   BBy 41
-  BBxoff 3
+  BBxoff 4
   BByoff -10
   DWx 34
   DWy 0
@@ -2277,7 +2261,7 @@ array set print_290 {
 array set print_291 { 
   BBx 24
   BBy 43
-  BBxoff 0
+  BBxoff 1
   BByoff -10
   DWx 25
   DWy 0
@@ -2287,7 +2271,7 @@ array set print_291 {
 array set print_292 { 
   BBx 31
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -2297,7 +2281,7 @@ array set print_292 {
 array set print_293 { 
   BBx 23
   BBy 39
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -2307,7 +2291,7 @@ array set print_293 {
 array set print_294 { 
   BBx 33
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -2317,7 +2301,7 @@ array set print_294 {
 array set print_295 { 
   BBx 23
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -2327,7 +2311,7 @@ array set print_295 {
 array set print_296 { 
   BBx 18
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -2337,7 +2321,7 @@ array set print_296 {
 array set print_297 { 
   BBx 17
   BBy 31
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 14
   DWy 0
@@ -2347,7 +2331,7 @@ array set print_297 {
 array set print_298 { 
   BBx 18
   BBy 37
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -2357,7 +2341,7 @@ array set print_298 {
 array set print_299 { 
   BBx 16
   BBy 30
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 14
   DWy 0
@@ -2367,7 +2351,7 @@ array set print_299 {
 array set print_300 { 
   BBx 18
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -2377,7 +2361,7 @@ array set print_300 {
 array set print_301 { 
   BBx 16
   BBy 31
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 14
   DWy 0
@@ -2387,7 +2371,7 @@ array set print_301 {
 array set print_302 { 
   BBx 14
   BBy 41
-  BBxoff 0
+  BBxoff 1
   BByoff -10
   DWx 14
   DWy 0
@@ -2397,7 +2381,7 @@ array set print_302 {
 array set print_303 { 
   BBx 13
   BBy 41
-  BBxoff -1
+  BBxoff 0
   BByoff -10
   DWx 11
   DWy 0
@@ -2407,7 +2391,7 @@ array set print_303 {
 array set print_304 { 
   BBx 14
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -2417,7 +2401,7 @@ array set print_304 {
 array set print_305 { 
   BBx 10
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 14
   DWy 0
@@ -2427,7 +2411,7 @@ array set print_305 {
 array set print_306 { 
   BBx 32
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 33
   DWy 0
@@ -2437,7 +2421,7 @@ array set print_306 {
 array set print_307 { 
   BBx 22
   BBy 41
-  BBxoff 0
+  BBxoff 1
   BByoff -10
   DWx 21
   DWy 0
@@ -2447,7 +2431,7 @@ array set print_307 {
 array set print_308 { 
   BBx 27
   BBy 39
-  BBxoff 0
+  BBxoff 1
   BByoff -2
   DWx 23
   DWy 0
@@ -2457,7 +2441,7 @@ array set print_308 {
 array set print_309 { 
   BBx 21
   BBy 41
-  BBxoff -6
+  BBxoff -5
   BByoff -10
   DWx 11
   DWy 0
@@ -2467,7 +2451,7 @@ array set print_309 {
 array set print_310 { 
   BBx 31
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 30
   DWy 0
@@ -2477,7 +2461,7 @@ array set print_310 {
 array set print_311 { 
   BBx 23
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 23
   DWy 0
@@ -2487,7 +2471,7 @@ array set print_311 {
 array set print_312 { 
   BBx 23
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -2497,7 +2481,7 @@ array set print_312 {
 array set print_313 { 
   BBx 22
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -2507,7 +2491,7 @@ array set print_313 {
 array set print_314 { 
   BBx 15
   BBy 39
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -2517,7 +2501,7 @@ array set print_314 {
 array set print_315 { 
   BBx 22
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 25
   DWy 0
@@ -2527,7 +2511,7 @@ array set print_315 {
 array set print_316 { 
   BBx 16
   BBy 41
-  BBxoff -4
+  BBxoff -3
   BByoff -10
   DWx 11
   DWy 0
@@ -2537,7 +2521,7 @@ array set print_316 {
 array set print_317 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -2547,7 +2531,7 @@ array set print_317 {
 array set print_318 { 
   BBx 18
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 14
   DWy 0
@@ -2557,7 +2541,7 @@ array set print_318 {
 array set print_319 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -2567,7 +2551,7 @@ array set print_319 {
 array set print_320 { 
   BBx 16
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 19
   DWy 0
@@ -2577,7 +2561,7 @@ array set print_320 {
 array set print_321 { 
   BBx 23
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -2587,7 +2571,7 @@ array set print_321 {
 array set print_322 { 
   BBx 13
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -2597,7 +2581,7 @@ array set print_322 {
 array set print_323 { 
   BBx 31
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -2607,7 +2591,7 @@ array set print_323 {
 array set print_324 { 
   BBx 23
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -2617,7 +2601,7 @@ array set print_324 {
 array set print_325 { 
   BBx 31
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 32
   DWy 0
@@ -2627,7 +2611,7 @@ array set print_325 {
 array set print_326 { 
   BBx 23
   BBy 33
-  BBxoff 0
+  BBxoff 1
   BByoff -10
   DWx 25
   DWy 0
@@ -2637,7 +2621,7 @@ array set print_326 {
 array set print_327 { 
   BBx 31
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -2647,7 +2631,7 @@ array set print_327 {
 array set print_328 { 
   BBx 23
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -2657,7 +2641,7 @@ array set print_328 {
 array set print_329 { 
   BBx 25
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 28
   DWy 0
@@ -2667,7 +2651,7 @@ array set print_329 {
 array set print_330 { 
   BBx 30
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 32
   DWy 0
@@ -2677,7 +2661,7 @@ array set print_330 {
 array set print_331 { 
   BBx 22
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 25
   DWy 0
@@ -2687,7 +2671,7 @@ array set print_331 {
 array set print_332 { 
   BBx 30
   BBy 37
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -2697,7 +2681,7 @@ array set print_332 {
 array set print_333 { 
   BBx 23
   BBy 30
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -2707,7 +2691,7 @@ array set print_333 {
 array set print_334 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -2717,7 +2701,7 @@ array set print_334 {
 array set print_335 { 
   BBx 23
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -2727,7 +2711,7 @@ array set print_335 {
 array set print_336 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -2737,7 +2721,7 @@ array set print_336 {
 array set print_337 { 
   BBx 24
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -2747,7 +2731,7 @@ array set print_337 {
 array set print_338 { 
   BBx 42
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 44
   DWy 0
@@ -2757,7 +2741,7 @@ array set print_338 {
 array set print_339 { 
   BBx 37
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 41
   DWy 0
@@ -2767,7 +2751,7 @@ array set print_339 {
 array set print_340 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -2777,7 +2761,7 @@ array set print_340 {
 array set print_341 { 
   BBx 18
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 16
   DWy 0
@@ -2787,7 +2771,7 @@ array set print_341 {
 array set print_342 { 
   BBx 30
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 32
   DWy 0
@@ -2797,7 +2781,7 @@ array set print_342 {
 array set print_343 { 
   BBx 20
   BBy 33
-  BBxoff -2
+  BBxoff -1
   BByoff -10
   DWx 16
   DWy 0
@@ -2807,7 +2791,7 @@ array set print_343 {
 array set print_344 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -2817,7 +2801,7 @@ array set print_344 {
 array set print_345 { 
   BBx 20
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 16
   DWy 0
@@ -2827,7 +2811,7 @@ array set print_345 {
 array set print_346 { 
   BBx 27
   BBy 40
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 30
   DWy 0
@@ -2837,7 +2821,7 @@ array set print_346 {
 array set print_347 { 
   BBx 21
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -2847,7 +2831,7 @@ array set print_347 {
 array set print_348 { 
   BBx 27
   BBy 40
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 30
   DWy 0
@@ -2857,7 +2841,7 @@ array set print_348 {
 array set print_349 { 
   BBx 21
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -2867,7 +2851,7 @@ array set print_349 {
 array set print_350 { 
   BBx 27
   BBy 41
-  BBxoff 2
+  BBxoff 3
   BByoff -10
   DWx 30
   DWy 0
@@ -2877,7 +2861,7 @@ array set print_350 {
 array set print_351 { 
   BBx 21
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -9
   DWx 23
   DWy 0
@@ -2887,7 +2871,7 @@ array set print_351 {
 array set print_352 { 
   BBx 27
   BBy 40
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 30
   DWy 0
@@ -2897,7 +2881,7 @@ array set print_352 {
 array set print_353 { 
   BBx 21
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -2907,7 +2891,7 @@ array set print_353 {
 array set print_354 { 
   BBx 26
   BBy 43
-  BBxoff 4
+  BBxoff 5
   BByoff -12
   DWx 27
   DWy 0
@@ -2917,7 +2901,7 @@ array set print_354 {
 array set print_355 { 
   BBx 13
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -12
   DWx 14
   DWy 0
@@ -2927,7 +2911,7 @@ array set print_355 {
 array set print_356 { 
   BBx 26
   BBy 39
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 27
   DWy 0
@@ -2937,7 +2921,7 @@ array set print_356 {
 array set print_357 { 
   BBx 20
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 17
   DWy 0
@@ -2947,7 +2931,7 @@ array set print_357 {
 array set print_358 { 
   BBx 26
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 27
   DWy 0
@@ -2957,7 +2941,7 @@ array set print_358 {
 array set print_359 { 
   BBx 14
   BBy 31
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 14
   DWy 0
@@ -2967,7 +2951,7 @@ array set print_359 {
 array set print_360 { 
   BBx 29
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -2977,7 +2961,7 @@ array set print_360 {
 array set print_361 { 
   BBx 22
   BBy 31
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -2987,7 +2971,7 @@ array set print_361 {
 array set print_362 { 
   BBx 29
   BBy 38
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -2997,7 +2981,7 @@ array set print_362 {
 array set print_363 { 
   BBx 22
   BBy 30
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -3007,7 +2991,7 @@ array set print_363 {
 array set print_364 { 
   BBx 29
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -3017,7 +3001,7 @@ array set print_364 {
 array set print_365 { 
   BBx 22
   BBy 31
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -3027,7 +3011,7 @@ array set print_365 {
 array set print_366 { 
   BBx 29
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -3037,7 +3021,7 @@ array set print_366 {
 array set print_367 { 
   BBx 22
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -3047,7 +3031,7 @@ array set print_367 {
 array set print_368 { 
   BBx 29
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -3057,7 +3041,7 @@ array set print_368 {
 array set print_369 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -3067,7 +3051,7 @@ array set print_369 {
 array set print_370 { 
   BBx 29
   BBy 41
-  BBxoff 3
+  BBxoff 4
   BByoff -10
   DWx 32
   DWy 0
@@ -3077,7 +3061,7 @@ array set print_370 {
 array set print_371 { 
   BBx 22
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -10
   DWx 25
   DWy 0
@@ -3087,7 +3071,7 @@ array set print_371 {
 array set print_372 { 
   BBx 41
   BBy 39
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 41
   DWy 0
@@ -3097,7 +3081,7 @@ array set print_372 {
 array set print_373 { 
   BBx 31
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 32
   DWy 0
@@ -3107,7 +3091,7 @@ array set print_373 {
 array set print_374 { 
   BBx 29
   BBy 39
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 30
   DWy 0
@@ -3117,7 +3101,7 @@ array set print_374 {
 array set print_375 { 
   BBx 25
   BBy 41
-  BBxoff -1
+  BBxoff 0
   BByoff -10
   DWx 23
   DWy 0
@@ -3127,7 +3111,7 @@ array set print_375 {
 array set print_376 { 
   BBx 29
   BBy 38
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 30
   DWy 0
@@ -3137,7 +3121,7 @@ array set print_376 {
 array set print_377 { 
   BBx 28
   BBy 39
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 27
   DWy 0
@@ -3147,7 +3131,7 @@ array set print_377 {
 array set print_378 { 
   BBx 22
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 23
   DWy 0
@@ -3157,7 +3141,7 @@ array set print_378 {
 array set print_379 { 
   BBx 28
   BBy 38
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 27
   DWy 0
@@ -3167,7 +3151,7 @@ array set print_379 {
 array set print_380 { 
   BBx 22
   BBy 31
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 23
   DWy 0
@@ -3177,7 +3161,7 @@ array set print_380 {
 array set print_381 { 
   BBx 28
   BBy 39
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 27
   DWy 0
@@ -3187,7 +3171,7 @@ array set print_381 {
 array set print_382 { 
   BBx 22
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 23
   DWy 0
@@ -3197,7 +3181,7 @@ array set print_382 {
 array set print_383 { 
   BBx 17
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -3207,7 +3191,7 @@ array set print_383 {
 array set print_399 { 
   BBx 29
   BBy 32
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -3217,7 +3201,7 @@ array set print_399 {
 array set print_402 { 
   BBx 23
   BBy 41
-  BBxoff 0
+  BBxoff 1
   BByoff -10
   DWx 25
   DWy 0
@@ -3227,7 +3211,7 @@ array set print_402 {
 array set print_416 { 
   BBx 35
   BBy 32
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 36
   DWy 0
@@ -3237,7 +3221,7 @@ array set print_416 {
 array set print_417 { 
   BBx 28
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 27
   DWy 0
@@ -3247,7 +3231,7 @@ array set print_417 {
 array set print_431 { 
   BBx 36
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 35
   DWy 0
@@ -3257,7 +3241,7 @@ array set print_431 {
 array set print_432 { 
   BBx 29
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 28
   DWy 0
@@ -3267,7 +3251,7 @@ array set print_432 {
 array set print_461 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -3277,7 +3261,7 @@ array set print_461 {
 array set print_462 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -3287,7 +3271,7 @@ array set print_462 {
 array set print_463 { 
   BBx 18
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -3297,7 +3281,7 @@ array set print_463 {
 array set print_464 { 
   BBx 16
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -3307,7 +3291,7 @@ array set print_464 {
 array set print_465 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -3317,7 +3301,7 @@ array set print_465 {
 array set print_466 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -3327,7 +3311,7 @@ array set print_466 {
 array set print_467 { 
   BBx 29
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -3337,7 +3321,7 @@ array set print_467 {
 array set print_468 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -3347,7 +3331,7 @@ array set print_468 {
 array set print_469 { 
   BBx 29
   BBy 41
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -3357,7 +3341,7 @@ array set print_469 {
 array set print_470 { 
   BBx 22
   BBy 37
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -3367,7 +3351,7 @@ array set print_470 {
 array set print_471 { 
   BBx 29
   BBy 41
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -3377,7 +3361,7 @@ array set print_471 {
 array set print_472 { 
   BBx 22
   BBy 39
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -3387,7 +3371,7 @@ array set print_472 {
 array set print_473 { 
   BBx 29
   BBy 41
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -3397,7 +3381,7 @@ array set print_473 {
 array set print_474 { 
   BBx 22
   BBy 39
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -3407,7 +3391,7 @@ array set print_474 {
 array set print_475 { 
   BBx 29
   BBy 41
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -3417,7 +3401,7 @@ array set print_475 {
 array set print_476 { 
   BBx 22
   BBy 39
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -3427,7 +3411,7 @@ array set print_476 {
 array set print_506 { 
   BBx 29
   BBy 44
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -3437,7 +3421,7 @@ array set print_506 {
 array set print_507 { 
   BBx 22
   BBy 40
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -3447,7 +3431,7 @@ array set print_507 {
 array set print_508 { 
   BBx 46
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 44
   DWy 0
@@ -3457,7 +3441,7 @@ array set print_508 {
 array set print_509 { 
   BBx 36
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 39
   DWy 0
@@ -3467,7 +3451,7 @@ array set print_509 {
 array set print_510 { 
   BBx 30
   BBy 41
-  BBxoff 3
+  BBxoff 4
   BByoff -3
   DWx 34
   DWy 0
@@ -3477,7 +3461,7 @@ array set print_510 {
 array set print_511 { 
   BBx 23
   BBy 34
-  BBxoff 2
+  BBxoff 3
   BByoff -3
   DWx 27
   DWy 0
@@ -3487,7 +3471,7 @@ array set print_511 {
 array set print_536 { 
   BBx 27
   BBy 43
-  BBxoff 2
+  BBxoff 3
   BByoff -12
   DWx 30
   DWy 0
@@ -3497,7 +3481,7 @@ array set print_536 {
 array set print_537 { 
   BBx 21
   BBy 35
-  BBxoff 1
+  BBxoff 2
   BByoff -12
   DWx 23
   DWy 0
@@ -3507,7 +3491,7 @@ array set print_537 {
 array set print_538 { 
   BBx 26
   BBy 43
-  BBxoff 4
+  BBxoff 5
   BByoff -12
   DWx 27
   DWy 0
@@ -3517,7 +3501,7 @@ array set print_538 {
 array set print_539 { 
   BBx 13
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -12
   DWx 14
   DWy 0
@@ -3527,7 +3511,7 @@ array set print_539 {
 array set print_601 { 
   BBx 22
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -3537,7 +3521,7 @@ array set print_601 {
 array set print_710 { 
   BBx 14
   BBy 8
-  BBxoff 3
+  BBxoff 4
   BByoff 23
   DWx 16
   DWy 0
@@ -3547,7 +3531,7 @@ array set print_710 {
 array set print_711 { 
   BBx 14
   BBy 8
-  BBxoff 4
+  BBxoff 5
   BByoff 23
   DWx 16
   DWy 0
@@ -3557,7 +3541,7 @@ array set print_711 {
 array set print_713 { 
   BBx 15
   BBy 5
-  BBxoff 3
+  BBxoff 4
   BByoff 24
   DWx 16
   DWy 0
@@ -3567,7 +3551,7 @@ array set print_713 {
 array set print_728 { 
   BBx 15
   BBy 7
-  BBxoff 3
+  BBxoff 4
   BByoff 23
   DWx 16
   DWy 0
@@ -3577,7 +3561,7 @@ array set print_728 {
 array set print_729 { 
   BBx 7
   BBy 6
-  BBxoff 7
+  BBxoff 8
   BByoff 24
   DWx 16
   DWy 0
@@ -3587,7 +3571,7 @@ array set print_729 {
 array set print_730 { 
   BBx 9
   BBy 10
-  BBxoff 6
+  BBxoff 7
   BByoff 22
   DWx 16
   DWy 0
@@ -3597,7 +3581,7 @@ array set print_730 {
 array set print_731 { 
   BBx 10
   BBy 12
-  BBxoff 2
+  BBxoff 3
   BByoff -10
   DWx 16
   DWy 0
@@ -3607,7 +3591,7 @@ array set print_731 {
 array set print_732 { 
   BBx 16
   BBy 6
-  BBxoff 3
+  BBxoff 4
   BByoff 24
   DWx 16
   DWy 0
@@ -3617,7 +3601,7 @@ array set print_732 {
 array set print_733 { 
   BBx 17
   BBy 8
-  BBxoff 3
+  BBxoff 4
   BByoff 23
   DWx 16
   DWy 0
@@ -3627,7 +3611,7 @@ array set print_733 {
 array set print_768 { 
   BBx 8
   BBy 8
-  BBxoff -6
+  BBxoff -5
   BByoff 30
   DWx 2
   DWy 0
@@ -3637,7 +3621,7 @@ array set print_768 {
 array set print_769 { 
   BBx 10
   BBy 8
-  BBxoff -5
+  BBxoff -4
   BByoff 30
   DWx 2
   DWy 0
@@ -3647,7 +3631,7 @@ array set print_769 {
 array set print_771 { 
   BBx 15
   BBy 6
-  BBxoff -14
+  BBxoff -13
   BByoff 31
   DWx 2
   DWy 0
@@ -3657,7 +3641,7 @@ array set print_771 {
 array set print_777 { 
   BBx 10
   BBy 8
-  BBxoff -5
+  BBxoff -4
   BByoff 30
   DWx 2
   DWy 0
@@ -3667,7 +3651,7 @@ array set print_777 {
 array set print_803 { 
   BBx 7
   BBy 7
-  BBxoff -20
+  BBxoff -19
   BByoff -8
   DWx 2
   DWy 0
@@ -3677,7 +3661,7 @@ array set print_803 {
 array set print_894 { 
   BBx 12
   BBy 30
-  BBxoff 0
+  BBxoff 1
   BByoff -7
   DWx 14
   DWy 0
@@ -3687,7 +3671,7 @@ array set print_894 {
 array set print_900 { 
   BBx 10
   BBy 8
-  BBxoff 7
+  BBxoff 8
   BByoff 23
   DWx 16
   DWy 0
@@ -3697,7 +3681,7 @@ array set print_900 {
 array set print_901 { 
   BBx 19
   BBy 8
-  BBxoff 1
+  BBxoff 2
   BByoff 23
   DWx 16
   DWy 0
@@ -3707,7 +3691,7 @@ array set print_901 {
 array set print_902 { 
   BBx 29
   BBy 32
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -3717,7 +3701,7 @@ array set print_902 {
 array set print_903 { 
   BBx 7
   BBy 7
-  BBxoff 5
+  BBxoff 6
   BByoff 16
   DWx 14
   DWy 0
@@ -3727,7 +3711,7 @@ array set print_903 {
 array set print_904 { 
   BBx 35
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 35
   DWy 0
@@ -3737,7 +3721,7 @@ array set print_904 {
 array set print_905 { 
   BBx 37
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 37
   DWy 0
@@ -3747,7 +3731,7 @@ array set print_905 {
 array set print_906 { 
   BBx 17
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 18
   DWy 0
@@ -3757,7 +3741,7 @@ array set print_906 {
 array set print_908 { 
   BBx 33
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 35
   DWy 0
@@ -3767,7 +3751,7 @@ array set print_908 {
 array set print_910 { 
   BBx 40
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 38
   DWy 0
@@ -3777,7 +3761,7 @@ array set print_910 {
 array set print_911 { 
   BBx 33
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 34
   DWy 0
@@ -3787,7 +3771,7 @@ array set print_911 {
 array set print_912 { 
   BBx 18
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -1
   DWx 11
   DWy 0
@@ -3797,7 +3781,7 @@ array set print_912 {
 array set print_913 { 
   BBx 29
   BBy 32
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -3807,7 +3791,7 @@ array set print_913 {
 array set print_914 { 
   BBx 27
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -3817,7 +3801,7 @@ array set print_914 {
 array set print_915 { 
   BBx 27
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 26
   DWy 0
@@ -3827,7 +3811,7 @@ array set print_915 {
 array set print_916 { 
   BBx 28
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -1
   DWx 30
   DWy 0
@@ -3837,7 +3821,7 @@ array set print_916 {
 array set print_917 { 
   BBx 30
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -3847,7 +3831,7 @@ array set print_917 {
 array set print_918 { 
   BBx 28
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 27
   DWy 0
@@ -3857,7 +3841,7 @@ array set print_918 {
 array set print_919 { 
   BBx 31
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -3867,7 +3851,7 @@ array set print_919 {
 array set print_920 { 
   BBx 30
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -3877,7 +3861,7 @@ array set print_920 {
 array set print_921 { 
   BBx 13
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -3887,7 +3871,7 @@ array set print_921 {
 array set print_922 { 
   BBx 31
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -3897,7 +3881,7 @@ array set print_922 {
 array set print_923 { 
   BBx 28
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -1
   DWx 30
   DWy 0
@@ -3907,7 +3891,7 @@ array set print_923 {
 array set print_924 { 
   BBx 36
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 37
   DWy 0
@@ -3917,7 +3901,7 @@ array set print_924 {
 array set print_925 { 
   BBx 31
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -3927,7 +3911,7 @@ array set print_925 {
 array set print_926 { 
   BBx 31
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -1
   DWx 29
   DWy 0
@@ -3937,7 +3921,7 @@ array set print_926 {
 array set print_927 { 
   BBx 30
   BBy 32
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -3947,7 +3931,7 @@ array set print_927 {
 array set print_928 { 
   BBx 31
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -3957,7 +3941,7 @@ array set print_928 {
 array set print_929 { 
   BBx 29
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -3967,7 +3951,7 @@ array set print_929 {
 array set print_931 { 
   BBx 29
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 27
   DWy 0
@@ -3977,7 +3961,7 @@ array set print_931 {
 array set print_932 { 
   BBx 26
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 27
   DWy 0
@@ -3987,7 +3971,7 @@ array set print_932 {
 array set print_933 { 
   BBx 29
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 30
   DWy 0
@@ -3997,7 +3981,7 @@ array set print_933 {
 array set print_934 { 
   BBx 32
   BBy 34
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 37
   DWy 0
@@ -4007,7 +3991,7 @@ array set print_934 {
 array set print_935 { 
   BBx 35
   BBy 32
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -4017,7 +4001,7 @@ array set print_935 {
 array set print_936 { 
   BBx 34
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 37
   DWy 0
@@ -4027,7 +4011,7 @@ array set print_936 {
 array set print_937 { 
   BBx 33
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -1
   DWx 34
   DWy 0
@@ -4037,7 +4021,7 @@ array set print_937 {
 array set print_938 { 
   BBx 18
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -4047,7 +4031,7 @@ array set print_938 {
 array set print_939 { 
   BBx 29
   BBy 38
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 30
   DWy 0
@@ -4057,7 +4041,7 @@ array set print_939 {
 array set print_940 { 
   BBx 25
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 26
   DWy 0
@@ -4067,7 +4051,7 @@ array set print_940 {
 array set print_941 { 
   BBx 20
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 20
   DWy 0
@@ -4077,7 +4061,7 @@ array set print_941 {
 array set print_942 { 
   BBx 23
   BBy 40
-  BBxoff 0
+  BBxoff 1
   BByoff -9
   DWx 25
   DWy 0
@@ -4087,7 +4071,7 @@ array set print_942 {
 array set print_943 { 
   BBx 14
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -4097,7 +4081,7 @@ array set print_943 {
 array set print_944 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -4107,7 +4091,7 @@ array set print_944 {
 array set print_945 { 
   BBx 25
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 26
   DWy 0
@@ -4117,7 +4101,7 @@ array set print_945 {
 array set print_946 { 
   BBx 25
   BBy 40
-  BBxoff -1
+  BBxoff 0
   BByoff -9
   DWx 26
   DWy 0
@@ -4127,7 +4111,7 @@ array set print_946 {
 array set print_947 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -9
   DWx 23
   DWy 0
@@ -4137,7 +4121,7 @@ array set print_947 {
 array set print_948 { 
   BBx 25
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -4147,7 +4131,7 @@ array set print_948 {
 array set print_949 { 
   BBx 20
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 20
   DWy 0
@@ -4157,7 +4141,7 @@ array set print_949 {
 array set print_950 { 
   BBx 23
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 21
   DWy 0
@@ -4167,7 +4151,7 @@ array set print_950 {
 array set print_951 { 
   BBx 23
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -9
   DWx 25
   DWy 0
@@ -4177,7 +4161,7 @@ array set print_951 {
 array set print_952 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -4187,7 +4171,7 @@ array set print_952 {
 array set print_953 { 
   BBx 10
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -4197,7 +4181,7 @@ array set print_953 {
 array set print_954 { 
   BBx 24
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 23
   DWy 0
@@ -4207,7 +4191,7 @@ array set print_954 {
 array set print_955 { 
   BBx 22
   BBy 32
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 23
   DWy 0
@@ -4217,7 +4201,7 @@ array set print_955 {
 array set print_956 { 
   BBx 25
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -9
   DWx 25
   DWy 0
@@ -4227,7 +4211,7 @@ array set print_956 {
 array set print_957 { 
   BBx 22
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 23
   DWy 0
@@ -4237,7 +4221,7 @@ array set print_957 {
 array set print_958 { 
   BBx 21
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 21
   DWy 0
@@ -4247,7 +4231,7 @@ array set print_958 {
 array set print_959 { 
   BBx 23
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -4257,7 +4241,7 @@ array set print_959 {
 array set print_960 { 
   BBx 28
   BBy 24
-  BBxoff 3
+  BBxoff 4
   BByoff -1
   DWx 30
   DWy 0
@@ -4267,7 +4251,7 @@ array set print_960 {
 array set print_961 { 
   BBx 25
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -9
   DWx 26
   DWy 0
@@ -4277,7 +4261,7 @@ array set print_961 {
 array set print_962 { 
   BBx 22
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 22
   DWy 0
@@ -4287,7 +4271,7 @@ array set print_962 {
 array set print_963 { 
   BBx 27
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 27
   DWy 0
@@ -4297,7 +4281,7 @@ array set print_963 {
 array set print_964 { 
   BBx 15
   BBy 24
-  BBxoff 3
+  BBxoff 4
   BByoff -1
   DWx 18
   DWy 0
@@ -4307,7 +4291,7 @@ array set print_964 {
 array set print_965 { 
   BBx 22
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -4317,7 +4301,7 @@ array set print_965 {
 array set print_966 { 
   BBx 27
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -9
   DWx 29
   DWy 0
@@ -4327,7 +4311,7 @@ array set print_966 {
 array set print_967 { 
   BBx 30
   BBy 32
-  BBxoff -4
+  BBxoff -3
   BByoff -9
   DWx 25
   DWy 0
@@ -4337,7 +4321,7 @@ array set print_967 {
 array set print_968 { 
   BBx 30
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -9
   DWx 32
   DWy 0
@@ -4347,7 +4331,7 @@ array set print_968 {
 array set print_969 { 
   BBx 32
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 34
   DWy 0
@@ -4357,7 +4341,7 @@ array set print_969 {
 array set print_970 { 
   BBx 16
   BBy 31
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -4367,7 +4351,7 @@ array set print_970 {
 array set print_971 { 
   BBx 22
   BBy 31
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -4377,7 +4361,7 @@ array set print_971 {
 array set print_972 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -4387,7 +4371,7 @@ array set print_972 {
 array set print_973 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -4397,7 +4381,7 @@ array set print_973 {
 array set print_974 { 
   BBx 32
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 34
   DWy 0
@@ -4407,7 +4391,7 @@ array set print_974 {
 array set print_1025 { 
   BBx 30
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -4417,7 +4401,7 @@ array set print_1025 {
 array set print_1026 { 
   BBx 31
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -2
   DWx 37
   DWy 0
@@ -4427,7 +4411,7 @@ array set print_1026 {
 array set print_1027 { 
   BBx 27
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -4437,7 +4421,7 @@ array set print_1027 {
 array set print_1028 { 
   BBx 28
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 31
   DWy 0
@@ -4447,7 +4431,7 @@ array set print_1028 {
 array set print_1029 { 
   BBx 27
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 30
   DWy 0
@@ -4457,7 +4441,7 @@ array set print_1029 {
 array set print_1030 { 
   BBx 13
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -4467,7 +4451,7 @@ array set print_1030 {
 array set print_1031 { 
   BBx 18
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -4477,7 +4461,7 @@ array set print_1031 {
 array set print_1032 { 
   BBx 23
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -2
   DWx 23
   DWy 0
@@ -4487,7 +4471,7 @@ array set print_1032 {
 array set print_1033 { 
   BBx 45
   BBy 33
-  BBxoff -1
+  BBxoff 0
   BByoff -2
   DWx 46
   DWy 0
@@ -4497,7 +4481,7 @@ array set print_1033 {
 array set print_1034 { 
   BBx 40
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 43
   DWy 0
@@ -4507,7 +4491,7 @@ array set print_1034 {
 array set print_1035 { 
   BBx 31
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 37
   DWy 0
@@ -4517,7 +4501,7 @@ array set print_1035 {
 array set print_1036 { 
   BBx 28
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 27
   DWy 0
@@ -4527,7 +4511,7 @@ array set print_1036 {
 array set print_1037 { 
   BBx 31
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -4537,7 +4521,7 @@ array set print_1037 {
 array set print_1038 { 
   BBx 28
   BBy 39
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 29
   DWy 0
@@ -4547,7 +4531,7 @@ array set print_1038 {
 array set print_1039 { 
   BBx 32
   BBy 40
-  BBxoff 1
+  BBxoff 2
   BByoff -9
   DWx 32
   DWy 0
@@ -4557,7 +4541,7 @@ array set print_1039 {
 array set print_1040 { 
   BBx 29
   BBy 32
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -4567,7 +4551,7 @@ array set print_1040 {
 array set print_1041 { 
   BBx 27
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 29
   DWy 0
@@ -4577,7 +4561,7 @@ array set print_1041 {
 array set print_1042 { 
   BBx 27
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -4587,7 +4571,7 @@ array set print_1042 {
 array set print_1043 { 
   BBx 27
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -4597,7 +4581,7 @@ array set print_1043 {
 array set print_1044 { 
   BBx 35
   BBy 38
-  BBxoff -4
+  BBxoff -3
   BByoff -7
   DWx 31
   DWy 0
@@ -4607,7 +4591,7 @@ array set print_1044 {
 array set print_1045 { 
   BBx 30
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -4617,7 +4601,7 @@ array set print_1045 {
 array set print_1046 { 
   BBx 45
   BBy 32
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 40
   DWy 0
@@ -4627,7 +4611,7 @@ array set print_1046 {
 array set print_1047 { 
   BBx 26
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 28
   DWy 0
@@ -4637,7 +4621,7 @@ array set print_1047 {
 array set print_1048 { 
   BBx 31
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -4647,7 +4631,7 @@ array set print_1048 {
 array set print_1049 { 
   BBx 31
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -4657,7 +4641,7 @@ array set print_1049 {
 array set print_1050 { 
   BBx 28
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 27
   DWy 0
@@ -4667,7 +4651,7 @@ array set print_1050 {
 array set print_1051 { 
   BBx 32
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -1
   DWx 31
   DWy 0
@@ -4677,7 +4661,7 @@ array set print_1051 {
 array set print_1052 { 
   BBx 36
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 37
   DWy 0
@@ -4687,7 +4671,7 @@ array set print_1052 {
 array set print_1053 { 
   BBx 31
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -4697,7 +4681,7 @@ array set print_1053 {
 array set print_1054 { 
   BBx 30
   BBy 32
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -4707,7 +4691,7 @@ array set print_1054 {
 array set print_1055 { 
   BBx 31
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 32
   DWy 0
@@ -4717,7 +4701,7 @@ array set print_1055 {
 array set print_1056 { 
   BBx 29
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -4727,7 +4711,7 @@ array set print_1056 {
 array set print_1057 { 
   BBx 28
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -4737,7 +4721,7 @@ array set print_1057 {
 array set print_1058 { 
   BBx 26
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 27
   DWy 0
@@ -4747,7 +4731,7 @@ array set print_1058 {
 array set print_1059 { 
   BBx 28
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 29
   DWy 0
@@ -4757,7 +4741,7 @@ array set print_1059 {
 array set print_1060 { 
   BBx 32
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 35
   DWy 0
@@ -4767,7 +4751,7 @@ array set print_1060 {
 array set print_1061 { 
   BBx 35
   BBy 32
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -4777,7 +4761,7 @@ array set print_1061 {
 array set print_1062 { 
   BBx 32
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -7
   DWx 32
   DWy 0
@@ -4787,7 +4771,7 @@ array set print_1062 {
 array set print_1063 { 
   BBx 27
   BBy 32
-  BBxoff 3
+  BBxoff 4
   BByoff -1
   DWx 30
   DWy 0
@@ -4797,7 +4781,7 @@ array set print_1063 {
 array set print_1064 { 
   BBx 40
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 40
   DWy 0
@@ -4807,7 +4791,7 @@ array set print_1064 {
 array set print_1065 { 
   BBx 40
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -7
   DWx 40
   DWy 0
@@ -4817,7 +4801,7 @@ array set print_1065 {
 array set print_1066 { 
   BBx 30
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 36
   DWy 0
@@ -4827,7 +4811,7 @@ array set print_1066 {
 array set print_1067 { 
   BBx 38
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 39
   DWy 0
@@ -4837,7 +4821,7 @@ array set print_1067 {
 array set print_1068 { 
   BBx 26
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 29
   DWy 0
@@ -4847,7 +4831,7 @@ array set print_1068 {
 array set print_1069 { 
   BBx 29
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 31
   DWy 0
@@ -4857,7 +4841,7 @@ array set print_1069 {
 array set print_1070 { 
   BBx 42
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 45
   DWy 0
@@ -4867,7 +4851,7 @@ array set print_1070 {
 array set print_1071 { 
   BBx 33
   BBy 32
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -4877,7 +4861,7 @@ array set print_1071 {
 array set print_1072 { 
   BBx 22
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -4887,7 +4871,7 @@ array set print_1072 {
 array set print_1073 { 
   BBx 25
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -4897,7 +4881,7 @@ array set print_1073 {
 array set print_1074 { 
   BBx 21
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 24
   DWy 0
@@ -4907,7 +4891,7 @@ array set print_1074 {
 array set print_1075 { 
   BBx 20
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -4917,7 +4901,7 @@ array set print_1075 {
 array set print_1076 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -4927,7 +4911,7 @@ array set print_1076 {
 array set print_1077 { 
   BBx 22
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -4937,7 +4921,7 @@ array set print_1077 {
 array set print_1078 { 
   BBx 34
   BBy 24
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 31
   DWy 0
@@ -4947,7 +4931,7 @@ array set print_1078 {
 array set print_1079 { 
   BBx 20
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 21
   DWy 0
@@ -4957,7 +4941,7 @@ array set print_1079 {
 array set print_1080 { 
   BBx 22
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -4967,7 +4951,7 @@ array set print_1080 {
 array set print_1081 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -4977,7 +4961,7 @@ array set print_1081 {
 array set print_1082 { 
   BBx 23
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 22
   DWy 0
@@ -4987,7 +4971,7 @@ array set print_1082 {
 array set print_1083 { 
   BBx 27
   BBy 24
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 26
   DWy 0
@@ -4997,7 +4981,7 @@ array set print_1083 {
 array set print_1084 { 
   BBx 30
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 31
   DWy 0
@@ -5007,7 +4991,7 @@ array set print_1084 {
 array set print_1085 { 
   BBx 24
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -5017,7 +5001,7 @@ array set print_1085 {
 array set print_1086 { 
   BBx 23
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -5027,7 +5011,7 @@ array set print_1086 {
 array set print_1087 { 
   BBx 24
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -5037,7 +5021,7 @@ array set print_1087 {
 array set print_1088 { 
   BBx 24
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -9
   DWx 25
   DWy 0
@@ -5047,7 +5031,7 @@ array set print_1088 {
 array set print_1089 { 
   BBx 21
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -5057,7 +5041,7 @@ array set print_1089 {
 array set print_1090 { 
   BBx 35
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 37
   DWy 0
@@ -5067,7 +5051,7 @@ array set print_1090 {
 array set print_1091 { 
   BBx 25
   BBy 33
-  BBxoff -1
+  BBxoff 0
   BByoff -10
   DWx 23
   DWy 0
@@ -5077,7 +5061,7 @@ array set print_1091 {
 array set print_1092 { 
   BBx 34
   BBy 40
-  BBxoff 1
+  BBxoff 2
   BByoff -9
   DWx 37
   DWy 0
@@ -5087,7 +5071,7 @@ array set print_1092 {
 array set print_1093 { 
   BBx 24
   BBy 24
-  BBxoff -1
+  BBxoff 0
   BByoff -1
   DWx 23
   DWy 0
@@ -5097,7 +5081,7 @@ array set print_1093 {
 array set print_1094 { 
   BBx 22
   BBy 30
-  BBxoff 2
+  BBxoff 3
   BByoff -7
   DWx 26
   DWy 0
@@ -5107,7 +5091,7 @@ array set print_1094 {
 array set print_1095 { 
   BBx 21
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 24
   DWy 0
@@ -5117,7 +5101,7 @@ array set print_1095 {
 array set print_1096 { 
   BBx 35
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 37
   DWy 0
@@ -5127,7 +5111,7 @@ array set print_1096 {
 array set print_1097 { 
   BBx 35
   BBy 30
-  BBxoff 1
+  BBxoff 2
   BByoff -7
   DWx 37
   DWy 0
@@ -5137,7 +5121,7 @@ array set print_1097 {
 array set print_1098 { 
   BBx 24
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 28
   DWy 0
@@ -5147,7 +5131,7 @@ array set print_1098 {
 array set print_1099 { 
   BBx 32
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 33
   DWy 0
@@ -5157,7 +5141,7 @@ array set print_1099 {
 array set print_1100 { 
   BBx 22
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 24
   DWy 0
@@ -5167,7 +5151,7 @@ array set print_1100 {
 array set print_1101 { 
   BBx 21
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 22
   DWy 0
@@ -5177,7 +5161,7 @@ array set print_1101 {
 array set print_1102 { 
   BBx 32
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 33
   DWy 0
@@ -5187,7 +5171,7 @@ array set print_1102 {
 array set print_1103 { 
   BBx 25
   BBy 24
-  BBxoff -1
+  BBxoff 0
   BByoff -1
   DWx 24
   DWy 0
@@ -5197,7 +5181,7 @@ array set print_1103 {
 array set print_1105 { 
   BBx 22
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -5207,7 +5191,7 @@ array set print_1105 {
 array set print_1106 { 
   BBx 23
   BBy 41
-  BBxoff 0
+  BBxoff 1
   BByoff -10
   DWx 25
   DWy 0
@@ -5217,7 +5201,7 @@ array set print_1106 {
 array set print_1107 { 
   BBx 20
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 18
   DWy 0
@@ -5227,7 +5211,7 @@ array set print_1107 {
 array set print_1108 { 
   BBx 21
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -5237,7 +5221,7 @@ array set print_1108 {
 array set print_1109 { 
   BBx 21
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -5247,7 +5231,7 @@ array set print_1109 {
 array set print_1110 { 
   BBx 12
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -5257,7 +5241,7 @@ array set print_1110 {
 array set print_1111 { 
   BBx 15
   BBy 31
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -5267,7 +5251,7 @@ array set print_1111 {
 array set print_1112 { 
   BBx 18
   BBy 41
-  BBxoff -6
+  BBxoff -5
   BByoff -10
   DWx 11
   DWy 0
@@ -5277,7 +5261,7 @@ array set print_1112 {
 array set print_1113 { 
   BBx 40
   BBy 24
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 40
   DWy 0
@@ -5287,7 +5271,7 @@ array set print_1113 {
 array set print_1114 { 
   BBx 34
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 36
   DWy 0
@@ -5297,7 +5281,7 @@ array set print_1114 {
 array set print_1115 { 
   BBx 23
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -5307,7 +5291,7 @@ array set print_1115 {
 array set print_1116 { 
   BBx 23
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 22
   DWy 0
@@ -5317,7 +5301,7 @@ array set print_1116 {
 array set print_1117 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -5327,7 +5311,7 @@ array set print_1117 {
 array set print_1118 { 
   BBx 25
   BBy 41
-  BBxoff -1
+  BBxoff 0
   BByoff -10
   DWx 23
   DWy 0
@@ -5337,7 +5321,7 @@ array set print_1118 {
 array set print_1119 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -9
   DWx 25
   DWy 0
@@ -5347,7 +5331,7 @@ array set print_1119 {
 array set print_1168 { 
   BBx 26
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -5357,7 +5341,7 @@ array set print_1168 {
 array set print_1169 { 
   BBx 19
   BBy 29
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 16
   DWy 0
@@ -5367,7 +5351,7 @@ array set print_1169 {
 array set print_1170 { 
   BBx 28
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -5377,7 +5361,7 @@ array set print_1170 {
 array set print_1171 { 
   BBx 20
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 18
   DWy 0
@@ -5387,7 +5371,7 @@ array set print_1171 {
 array set print_1174 { 
   BBx 45
   BBy 40
-  BBxoff -2
+  BBxoff -1
   BByoff -9
   DWx 40
   DWy 0
@@ -5397,7 +5381,7 @@ array set print_1174 {
 array set print_1175 { 
   BBx 34
   BBy 30
-  BBxoff -2
+  BBxoff -1
   BByoff -7
   DWx 31
   DWy 0
@@ -5407,7 +5391,7 @@ array set print_1175 {
 array set print_1178 { 
   BBx 28
   BBy 40
-  BBxoff 1
+  BBxoff 2
   BByoff -9
   DWx 27
   DWy 0
@@ -5417,7 +5401,7 @@ array set print_1178 {
 array set print_1179 { 
   BBx 23
   BBy 30
-  BBxoff 0
+  BBxoff 1
   BByoff -7
   DWx 22
   DWy 0
@@ -5427,7 +5411,7 @@ array set print_1179 {
 array set print_1180 { 
   BBx 28
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 27
   DWy 0
@@ -5437,7 +5421,7 @@ array set print_1180 {
 array set print_1181 { 
   BBx 23
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 22
   DWy 0
@@ -5447,7 +5431,7 @@ array set print_1181 {
 array set print_1186 { 
   BBx 31
   BBy 40
-  BBxoff 1
+  BBxoff 2
   BByoff -9
   DWx 32
   DWy 0
@@ -5457,7 +5441,7 @@ array set print_1186 {
 array set print_1187 { 
   BBx 24
   BBy 30
-  BBxoff 0
+  BBxoff 1
   BByoff -7
   DWx 25
   DWy 0
@@ -5467,7 +5451,7 @@ array set print_1187 {
 array set print_1198 { 
   BBx 25
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 25
   DWy 0
@@ -5477,7 +5461,7 @@ array set print_1198 {
 array set print_1199 { 
   BBx 22
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -9
   DWx 23
   DWy 0
@@ -5487,7 +5471,7 @@ array set print_1199 {
 array set print_1200 { 
   BBx 27
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -5497,7 +5481,7 @@ array set print_1200 {
 array set print_1201 { 
   BBx 25
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -9
   DWx 23
   DWy 0
@@ -5507,7 +5491,7 @@ array set print_1201 {
 array set print_1202 { 
   BBx 35
   BBy 40
-  BBxoff -2
+  BBxoff -1
   BByoff -9
   DWx 30
   DWy 0
@@ -5517,7 +5501,7 @@ array set print_1202 {
 array set print_1203 { 
   BBx 24
   BBy 30
-  BBxoff -1
+  BBxoff 0
   BByoff -7
   DWx 23
   DWy 0
@@ -5527,7 +5511,7 @@ array set print_1203 {
 array set print_1208 { 
   BBx 27
   BBy 32
-  BBxoff 3
+  BBxoff 4
   BByoff -1
   DWx 30
   DWy 0
@@ -5537,7 +5521,7 @@ array set print_1208 {
 array set print_1209 { 
   BBx 21
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 24
   DWy 0
@@ -5547,7 +5531,7 @@ array set print_1209 {
 array set print_1210 { 
   BBx 28
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -5557,7 +5541,7 @@ array set print_1210 {
 array set print_1211 { 
   BBx 23
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -5567,7 +5551,7 @@ array set print_1211 {
 array set print_1240 { 
   BBx 29
   BBy 32
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -5577,7 +5561,7 @@ array set print_1240 {
 array set print_1241 { 
   BBx 22
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -5587,7 +5571,7 @@ array set print_1241 {
 array set print_1256 { 
   BBx 30
   BBy 32
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -5597,7 +5581,7 @@ array set print_1256 {
 array set print_1257 { 
   BBx 23
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -5607,7 +5591,7 @@ array set print_1257 {
 array set print_1456 { 
   BBx 6
   BBy 11
-  BBxoff 2
+  BBxoff 3
   BByoff -14
   DWx 16
   DWy 0
@@ -5617,7 +5601,7 @@ array set print_1456 {
 array set print_1457 { 
   BBx 15
   BBy 11
-  BBxoff -2
+  BBxoff -1
   BByoff -14
   DWx 16
   DWy 0
@@ -5627,7 +5611,7 @@ array set print_1457 {
 array set print_1458 { 
   BBx 14
   BBy 11
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 16
   DWy 0
@@ -5637,7 +5621,7 @@ array set print_1458 {
 array set print_1459 { 
   BBx 14
   BBy 11
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 16
   DWy 0
@@ -5647,7 +5631,7 @@ array set print_1459 {
 array set print_1460 { 
   BBx 5
   BBy 5
-  BBxoff 3
+  BBxoff 4
   BByoff -9
   DWx 16
   DWy 0
@@ -5657,7 +5641,7 @@ array set print_1460 {
 array set print_1461 { 
   BBx 11
   BBy 5
-  BBxoff 0
+  BBxoff 1
   BByoff -9
   DWx 16
   DWy 0
@@ -5667,7 +5651,7 @@ array set print_1461 {
 array set print_1462 { 
   BBx 11
   BBy 11
-  BBxoff 0
+  BBxoff 1
   BByoff -14
   DWx 16
   DWy 0
@@ -5677,7 +5661,7 @@ array set print_1462 {
 array set print_1463 { 
   BBx 10
   BBy 4
-  BBxoff 1
+  BBxoff 2
   BByoff -7
   DWx 16
   DWy 0
@@ -5687,7 +5671,7 @@ array set print_1463 {
 array set print_1464 { 
   BBx 10
   BBy 8
-  BBxoff 1
+  BBxoff 2
   BByoff -11
   DWx 16
   DWy 0
@@ -5697,7 +5681,7 @@ array set print_1464 {
 array set print_1465 { 
   BBx 5
   BBy 5
-  BBxoff 10
+  BBxoff 11
   BByoff 23
   DWx 16
   DWy 0
@@ -5707,7 +5691,7 @@ array set print_1465 {
 array set print_1466 { 
   BBx 5
   BBy 5
-  BBxoff 10
+  BBxoff 11
   BByoff 23
   DWx 16
   DWy 0
@@ -5717,7 +5701,7 @@ array set print_1466 {
 array set print_1467 { 
   BBx 14
   BBy 11
-  BBxoff -2
+  BBxoff -1
   BByoff -14
   DWx 16
   DWy 0
@@ -5727,7 +5711,7 @@ array set print_1467 {
 array set print_1468 { 
   BBx 5
   BBy 5
-  BBxoff 7
+  BBxoff 8
   BByoff 9
   DWx 16
   DWy 0
@@ -5737,7 +5721,7 @@ array set print_1468 {
 array set print_1469 { 
   BBx 6
   BBy 10
-  BBxoff 2
+  BBxoff 3
   BByoff -13
   DWx 16
   DWy 0
@@ -5747,7 +5731,7 @@ array set print_1469 {
 array set print_1470 { 
   BBx 14
   BBy 6
-  BBxoff 5
+  BBxoff 6
   BByoff 17
   DWx 18
   DWy 0
@@ -5757,7 +5741,7 @@ array set print_1470 {
 array set print_1471 { 
   BBx 11
   BBy 5
-  BBxoff 7
+  BBxoff 8
   BByoff 24
   DWx 16
   DWy 0
@@ -5767,7 +5751,7 @@ array set print_1471 {
 array set print_1472 { 
   BBx 11
   BBy 28
-  BBxoff 3
+  BBxoff 4
   BByoff -1
   DWx 13
   DWy 0
@@ -5777,7 +5761,7 @@ array set print_1472 {
 array set print_1473 { 
   BBx 6
   BBy 5
-  BBxoff 20
+  BBxoff 21
   BByoff 23
   DWx 16
   DWy 0
@@ -5787,7 +5771,7 @@ array set print_1473 {
 array set print_1474 { 
   BBx 6
   BBy 5
-  BBxoff -1
+  BBxoff 0
   BByoff 23
   DWx 16
   DWy 0
@@ -5797,7 +5781,7 @@ array set print_1474 {
 array set print_1475 { 
   BBx 11
   BBy 24
-  BBxoff 3
+  BBxoff 4
   BByoff -1
   DWx 14
   DWy 0
@@ -5807,7 +5791,7 @@ array set print_1475 {
 array set print_1488 { 
   BBx 26
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -5817,7 +5801,7 @@ array set print_1488 {
 array set print_1489 { 
   BBx 23
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -5827,7 +5811,7 @@ array set print_1489 {
 array set print_1490 { 
   BBx 18
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 19
   DWy 0
@@ -5837,7 +5821,7 @@ array set print_1490 {
 array set print_1491 { 
   BBx 22
   BBy 24
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 23
   DWy 0
@@ -5847,7 +5831,7 @@ array set print_1491 {
 array set print_1492 { 
   BBx 24
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 27
   DWy 0
@@ -5857,7 +5841,7 @@ array set print_1492 {
 array set print_1493 { 
   BBx 11
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 12
   DWy 0
@@ -5867,7 +5851,7 @@ array set print_1493 {
 array set print_1494 { 
   BBx 17
   BBy 24
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 18
   DWy 0
@@ -5877,7 +5861,7 @@ array set print_1494 {
 array set print_1495 { 
   BBx 24
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 27
   DWy 0
@@ -5887,7 +5871,7 @@ array set print_1495 {
 array set print_1496 { 
   BBx 22
   BBy 25
-  BBxoff 4
+  BBxoff 5
   BByoff -2
   DWx 27
   DWy 0
@@ -5897,7 +5881,7 @@ array set print_1496 {
 array set print_1497 { 
   BBx 9
   BBy 14
-  BBxoff 4
+  BBxoff 5
   BByoff 9
   DWx 12
   DWy 0
@@ -5907,7 +5891,7 @@ array set print_1497 {
 array set print_1498 { 
   BBx 18
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -9
   DWx 23
   DWy 0
@@ -5917,7 +5901,7 @@ array set print_1498 {
 array set print_1499 { 
   BBx 20
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 21
   DWy 0
@@ -5927,7 +5911,7 @@ array set print_1499 {
 array set print_1500 { 
   BBx 19
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 21
   DWy 0
@@ -5937,7 +5921,7 @@ array set print_1500 {
 array set print_1501 { 
   BBx 24
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 27
   DWy 0
@@ -5947,7 +5931,7 @@ array set print_1501 {
 array set print_1502 { 
   BBx 25
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 27
   DWy 0
@@ -5957,7 +5941,7 @@ array set print_1502 {
 array set print_1503 { 
   BBx 12
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -9
   DWx 12
   DWy 0
@@ -5967,7 +5951,7 @@ array set print_1503 {
 array set print_1504 { 
   BBx 16
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 17
   DWy 0
@@ -5977,7 +5961,7 @@ array set print_1504 {
 array set print_1505 { 
   BBx 23
   BBy 25
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 26
   DWy 0
@@ -5987,7 +5971,7 @@ array set print_1505 {
 array set print_1506 { 
   BBx 25
   BBy 26
-  BBxoff 0
+  BBxoff 1
   BByoff -3
   DWx 24
   DWy 0
@@ -5997,7 +5981,7 @@ array set print_1506 {
 array set print_1507 { 
   BBx 21
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -9
   DWx 26
   DWy 0
@@ -6007,7 +5991,7 @@ array set print_1507 {
 array set print_1508 { 
   BBx 23
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -6017,7 +6001,7 @@ array set print_1508 {
 array set print_1509 { 
   BBx 19
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -9
   DWx 21
   DWy 0
@@ -6027,7 +6011,7 @@ array set print_1509 {
 array set print_1510 { 
   BBx 23
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 22
   DWy 0
@@ -6037,7 +6021,7 @@ array set print_1510 {
 array set print_1511 { 
   BBx 25
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -9
   DWx 25
   DWy 0
@@ -6047,7 +6031,7 @@ array set print_1511 {
 array set print_1512 { 
   BBx 18
   BBy 24
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 23
   DWy 0
@@ -6057,7 +6041,7 @@ array set print_1512 {
 array set print_1513 { 
   BBx 28
   BBy 25
-  BBxoff 4
+  BBxoff 5
   BByoff -2
   DWx 31
   DWy 0
@@ -6067,7 +6051,7 @@ array set print_1513 {
 array set print_1514 { 
   BBx 28
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 29
   DWy 0
@@ -6077,7 +6061,7 @@ array set print_1514 {
 array set print_1520 { 
   BBx 21
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 23
   DWy 0
@@ -6087,7 +6071,7 @@ array set print_1520 {
 array set print_1521 { 
   BBx 19
   BBy 24
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 23
   DWy 0
@@ -6097,7 +6081,7 @@ array set print_1521 {
 array set print_1522 { 
   BBx 19
   BBy 14
-  BBxoff 4
+  BBxoff 5
   BByoff 9
   DWx 23
   DWy 0
@@ -6107,7 +6091,7 @@ array set print_1522 {
 array set print_1523 { 
   BBx 10
   BBy 10
-  BBxoff 4
+  BBxoff 5
   BByoff 13
   DWx 12
   DWy 0
@@ -6117,7 +6101,7 @@ array set print_1523 {
 array set print_1524 { 
   BBx 17
   BBy 10
-  BBxoff 4
+  BBxoff 5
   BByoff 13
   DWx 19
   DWy 0
@@ -6127,7 +6111,7 @@ array set print_1524 {
 array set print_7808 { 
   BBx 41
   BBy 39
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 41
   DWy 0
@@ -6137,7 +6121,7 @@ array set print_7808 {
 array set print_7809 { 
   BBx 31
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 32
   DWy 0
@@ -6147,7 +6131,7 @@ array set print_7809 {
 array set print_7810 { 
   BBx 41
   BBy 39
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 41
   DWy 0
@@ -6157,7 +6141,7 @@ array set print_7810 {
 array set print_7811 { 
   BBx 31
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 32
   DWy 0
@@ -6167,7 +6151,7 @@ array set print_7811 {
 array set print_7812 { 
   BBx 41
   BBy 38
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 41
   DWy 0
@@ -6177,7 +6161,7 @@ array set print_7812 {
 array set print_7813 { 
   BBx 31
   BBy 31
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 32
   DWy 0
@@ -6187,7 +6171,7 @@ array set print_7813 {
 array set print_7840 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -8
   DWx 30
   DWy 0
@@ -6197,7 +6181,7 @@ array set print_7840 {
 array set print_7841 { 
   BBx 22
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -8
   DWx 25
   DWy 0
@@ -6207,7 +6191,7 @@ array set print_7841 {
 array set print_7842 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -6217,7 +6201,7 @@ array set print_7842 {
 array set print_7843 { 
   BBx 22
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6227,7 +6211,7 @@ array set print_7843 {
 array set print_7844 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -6237,7 +6221,7 @@ array set print_7844 {
 array set print_7845 { 
   BBx 22
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6247,7 +6231,7 @@ array set print_7845 {
 array set print_7846 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -6257,7 +6241,7 @@ array set print_7846 {
 array set print_7847 { 
   BBx 22
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6267,7 +6251,7 @@ array set print_7847 {
 array set print_7848 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -6277,7 +6261,7 @@ array set print_7848 {
 array set print_7849 { 
   BBx 22
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6287,7 +6271,7 @@ array set print_7849 {
 array set print_7850 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -6297,7 +6281,7 @@ array set print_7850 {
 array set print_7851 { 
   BBx 23
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6307,7 +6291,7 @@ array set print_7851 {
 array set print_7852 { 
   BBx 29
   BBy 42
-  BBxoff -2
+  BBxoff -1
   BByoff -8
   DWx 30
   DWy 0
@@ -6317,7 +6301,7 @@ array set print_7852 {
 array set print_7853 { 
   BBx 22
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -8
   DWx 25
   DWy 0
@@ -6327,7 +6311,7 @@ array set print_7853 {
 array set print_7854 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -6337,7 +6321,7 @@ array set print_7854 {
 array set print_7855 { 
   BBx 22
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6347,7 +6331,7 @@ array set print_7855 {
 array set print_7856 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -6357,7 +6341,7 @@ array set print_7856 {
 array set print_7857 { 
   BBx 22
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6367,7 +6351,7 @@ array set print_7857 {
 array set print_7858 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -6377,7 +6361,7 @@ array set print_7858 {
 array set print_7859 { 
   BBx 22
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6387,7 +6371,7 @@ array set print_7859 {
 array set print_7860 { 
   BBx 29
   BBy 39
-  BBxoff -2
+  BBxoff -1
   BByoff -1
   DWx 30
   DWy 0
@@ -6397,7 +6381,7 @@ array set print_7860 {
 array set print_7861 { 
   BBx 23
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6407,7 +6391,7 @@ array set print_7861 {
 array set print_7862 { 
   BBx 29
   BBy 42
-  BBxoff -2
+  BBxoff -1
   BByoff -8
   DWx 30
   DWy 0
@@ -6417,7 +6401,7 @@ array set print_7862 {
 array set print_7863 { 
   BBx 22
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -8
   DWx 25
   DWy 0
@@ -6427,7 +6411,7 @@ array set print_7863 {
 array set print_7864 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -8
   DWx 30
   DWy 0
@@ -6437,7 +6421,7 @@ array set print_7864 {
 array set print_7865 { 
   BBx 22
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -8
   DWx 25
   DWy 0
@@ -6447,7 +6431,7 @@ array set print_7865 {
 array set print_7866 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -6457,7 +6441,7 @@ array set print_7866 {
 array set print_7867 { 
   BBx 22
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6467,7 +6451,7 @@ array set print_7867 {
 array set print_7868 { 
   BBx 30
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -6477,7 +6461,7 @@ array set print_7868 {
 array set print_7869 { 
   BBx 22
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6487,7 +6471,7 @@ array set print_7869 {
 array set print_7870 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -6497,7 +6481,7 @@ array set print_7870 {
 array set print_7871 { 
   BBx 22
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6507,7 +6491,7 @@ array set print_7871 {
 array set print_7872 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -6517,7 +6501,7 @@ array set print_7872 {
 array set print_7873 { 
   BBx 22
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6527,7 +6511,7 @@ array set print_7873 {
 array set print_7874 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -6537,7 +6521,7 @@ array set print_7874 {
 array set print_7875 { 
   BBx 22
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6547,7 +6531,7 @@ array set print_7875 {
 array set print_7876 { 
   BBx 30
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 30
   DWy 0
@@ -6557,7 +6541,7 @@ array set print_7876 {
 array set print_7877 { 
   BBx 23
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6567,7 +6551,7 @@ array set print_7877 {
 array set print_7878 { 
   BBx 30
   BBy 42
-  BBxoff 1
+  BBxoff 2
   BByoff -8
   DWx 30
   DWy 0
@@ -6577,7 +6561,7 @@ array set print_7878 {
 array set print_7879 { 
   BBx 22
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -8
   DWx 25
   DWy 0
@@ -6587,7 +6571,7 @@ array set print_7879 {
 array set print_7880 { 
   BBx 16
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -6597,7 +6581,7 @@ array set print_7880 {
 array set print_7881 { 
   BBx 15
   BBy 33
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -6607,7 +6591,7 @@ array set print_7881 {
 array set print_7882 { 
   BBx 14
   BBy 39
-  BBxoff 0
+  BBxoff 1
   BByoff -8
   DWx 14
   DWy 0
@@ -6617,7 +6601,7 @@ array set print_7882 {
 array set print_7883 { 
   BBx 13
   BBy 39
-  BBxoff -1
+  BBxoff 0
   BByoff -8
   DWx 11
   DWy 0
@@ -6627,7 +6611,7 @@ array set print_7883 {
 array set print_7884 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -8
   DWx 34
   DWy 0
@@ -6637,7 +6621,7 @@ array set print_7884 {
 array set print_7885 { 
   BBx 23
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -8
   DWx 25
   DWy 0
@@ -6647,7 +6631,7 @@ array set print_7885 {
 array set print_7886 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -6657,7 +6641,7 @@ array set print_7886 {
 array set print_7887 { 
   BBx 23
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6667,7 +6651,7 @@ array set print_7887 {
 array set print_7888 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -6677,7 +6661,7 @@ array set print_7888 {
 array set print_7889 { 
   BBx 23
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6687,7 +6671,7 @@ array set print_7889 {
 array set print_7890 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -6697,7 +6681,7 @@ array set print_7890 {
 array set print_7891 { 
   BBx 23
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6707,7 +6691,7 @@ array set print_7891 {
 array set print_7892 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -6717,7 +6701,7 @@ array set print_7892 {
 array set print_7893 { 
   BBx 23
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6727,7 +6711,7 @@ array set print_7893 {
 array set print_7894 { 
   BBx 30
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 34
   DWy 0
@@ -6737,7 +6721,7 @@ array set print_7894 {
 array set print_7895 { 
   BBx 23
   BBy 38
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -6747,7 +6731,7 @@ array set print_7895 {
 array set print_7896 { 
   BBx 30
   BBy 43
-  BBxoff 3
+  BBxoff 4
   BByoff -8
   DWx 34
   DWy 0
@@ -6757,7 +6741,7 @@ array set print_7896 {
 array set print_7897 { 
   BBx 23
   BBy 39
-  BBxoff 1
+  BBxoff 2
   BByoff -8
   DWx 25
   DWy 0
@@ -6767,7 +6751,7 @@ array set print_7897 {
 array set print_7898 { 
   BBx 35
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 36
   DWy 0
@@ -6777,7 +6761,7 @@ array set print_7898 {
 array set print_7899 { 
   BBx 28
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 27
   DWy 0
@@ -6787,7 +6771,7 @@ array set print_7899 {
 array set print_7900 { 
   BBx 35
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 36
   DWy 0
@@ -6797,7 +6781,7 @@ array set print_7900 {
 array set print_7901 { 
   BBx 28
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 27
   DWy 0
@@ -6807,7 +6791,7 @@ array set print_7901 {
 array set print_7902 { 
   BBx 35
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 36
   DWy 0
@@ -6817,7 +6801,7 @@ array set print_7902 {
 array set print_7903 { 
   BBx 28
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 27
   DWy 0
@@ -6827,7 +6811,7 @@ array set print_7903 {
 array set print_7904 { 
   BBx 35
   BBy 38
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 36
   DWy 0
@@ -6837,7 +6821,7 @@ array set print_7904 {
 array set print_7905 { 
   BBx 28
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 27
   DWy 0
@@ -6847,7 +6831,7 @@ array set print_7905 {
 array set print_7906 { 
   BBx 35
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -8
   DWx 36
   DWy 0
@@ -6857,7 +6841,7 @@ array set print_7906 {
 array set print_7907 { 
   BBx 28
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -8
   DWx 27
   DWy 0
@@ -6867,7 +6851,7 @@ array set print_7907 {
 array set print_7908 { 
   BBx 29
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -8
   DWx 32
   DWy 0
@@ -6877,7 +6861,7 @@ array set print_7908 {
 array set print_7909 { 
   BBx 22
   BBy 31
-  BBxoff 2
+  BBxoff 3
   BByoff -8
   DWx 25
   DWy 0
@@ -6887,7 +6871,7 @@ array set print_7909 {
 array set print_7910 { 
   BBx 29
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 32
   DWy 0
@@ -6897,7 +6881,7 @@ array set print_7910 {
 array set print_7911 { 
   BBx 22
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -6907,7 +6891,7 @@ array set print_7911 {
 array set print_7912 { 
   BBx 36
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 35
   DWy 0
@@ -6917,7 +6901,7 @@ array set print_7912 {
 array set print_7913 { 
   BBx 29
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 28
   DWy 0
@@ -6927,7 +6911,7 @@ array set print_7913 {
 array set print_7914 { 
   BBx 36
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 35
   DWy 0
@@ -6937,7 +6921,7 @@ array set print_7914 {
 array set print_7915 { 
   BBx 29
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 28
   DWy 0
@@ -6947,7 +6931,7 @@ array set print_7915 {
 array set print_7916 { 
   BBx 36
   BBy 40
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 35
   DWy 0
@@ -6957,7 +6941,7 @@ array set print_7916 {
 array set print_7917 { 
   BBx 29
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 28
   DWy 0
@@ -6967,7 +6951,7 @@ array set print_7917 {
 array set print_7918 { 
   BBx 36
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 35
   DWy 0
@@ -6977,7 +6961,7 @@ array set print_7918 {
 array set print_7919 { 
   BBx 29
   BBy 31
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 28
   DWy 0
@@ -6987,7 +6971,7 @@ array set print_7919 {
 array set print_7920 { 
   BBx 36
   BBy 39
-  BBxoff 3
+  BBxoff 4
   BByoff -8
   DWx 35
   DWy 0
@@ -6997,7 +6981,7 @@ array set print_7920 {
 array set print_7921 { 
   BBx 29
   BBy 31
-  BBxoff 2
+  BBxoff 3
   BByoff -8
   DWx 28
   DWy 0
@@ -7007,7 +6991,7 @@ array set print_7921 {
 array set print_7922 { 
   BBx 29
   BBy 39
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 30
   DWy 0
@@ -7017,7 +7001,7 @@ array set print_7922 {
 array set print_7923 { 
   BBx 25
   BBy 41
-  BBxoff -1
+  BBxoff 0
   BByoff -10
   DWx 23
   DWy 0
@@ -7027,7 +7011,7 @@ array set print_7923 {
 array set print_7924 { 
   BBx 29
   BBy 39
-  BBxoff 4
+  BBxoff 5
   BByoff -8
   DWx 30
   DWy 0
@@ -7037,7 +7021,7 @@ array set print_7924 {
 array set print_7925 { 
   BBx 25
   BBy 33
-  BBxoff -1
+  BBxoff 0
   BByoff -10
   DWx 23
   DWy 0
@@ -7047,7 +7031,7 @@ array set print_7925 {
 array set print_7926 { 
   BBx 29
   BBy 39
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 30
   DWy 0
@@ -7057,7 +7041,7 @@ array set print_7926 {
 array set print_7927 { 
   BBx 25
   BBy 42
-  BBxoff -1
+  BBxoff 0
   BByoff -10
   DWx 23
   DWy 0
@@ -7067,7 +7051,7 @@ array set print_7927 {
 array set print_7928 { 
   BBx 29
   BBy 38
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 30
   DWy 0
@@ -7077,7 +7061,7 @@ array set print_7928 {
 array set print_7929 { 
   BBx 25
   BBy 40
-  BBxoff -1
+  BBxoff 0
   BByoff -10
   DWx 23
   DWy 0
@@ -7087,7 +7071,7 @@ array set print_7929 {
 array set print_8204 { 
   BBx 4
   BBy 34
-  BBxoff -2
+  BBxoff -1
   BByoff -7
   DWx 2
   DWy 0
@@ -7097,7 +7081,7 @@ array set print_8204 {
 array set print_8205 { 
   BBx 10
   BBy 37
-  BBxoff -5
+  BBxoff -4
   BByoff -7
   DWx 2
   DWy 0
@@ -7107,7 +7091,7 @@ array set print_8205 {
 array set print_8206 { 
   BBx 12
   BBy 37
-  BBxoff -2
+  BBxoff -1
   BByoff -7
   DWx 2
   DWy 0
@@ -7117,7 +7101,7 @@ array set print_8206 {
 array set print_8207 { 
   BBx 12
   BBy 37
-  BBxoff -10
+  BBxoff -9
   BByoff -7
   DWx 2
   DWy 0
@@ -7127,7 +7111,7 @@ array set print_8207 {
 array set print_8211 { 
   BBx 25
   BBy 5
-  BBxoff -1
+  BBxoff 0
   BByoff 8
   DWx 25
   DWy 0
@@ -7137,7 +7121,7 @@ array set print_8211 {
 array set print_8212 { 
   BBx 44
   BBy 5
-  BBxoff -1
+  BBxoff 0
   BByoff 8
   DWx 44
   DWy 0
@@ -7147,7 +7131,7 @@ array set print_8212 {
 array set print_8213 { 
   BBx 41
   BBy 5
-  BBxoff 1
+  BBxoff 2
   BByoff 8
   DWx 44
   DWy 0
@@ -7157,7 +7141,7 @@ array set print_8213 {
 array set print_8215 { 
   BBx 27
   BBy 10
-  BBxoff -4
+  BBxoff -3
   BByoff -15
   DWx 25
   DWy 0
@@ -7167,7 +7151,7 @@ array set print_8215 {
 array set print_8216 { 
   BBx 9
   BBy 12
-  BBxoff 4
+  BBxoff 5
   BByoff 19
   DWx 11
   DWy 0
@@ -7177,7 +7161,7 @@ array set print_8216 {
 array set print_8217 { 
   BBx 8
   BBy 12
-  BBxoff 4
+  BBxoff 5
   BByoff 19
   DWx 11
   DWy 0
@@ -7187,7 +7171,7 @@ array set print_8217 {
 array set print_8218 { 
   BBx 8
   BBy 12
-  BBxoff -1
+  BBxoff 0
   BByoff -7
   DWx 11
   DWy 0
@@ -7197,7 +7181,7 @@ array set print_8218 {
 array set print_8219 { 
   BBx 8
   BBy 12
-  BBxoff 5
+  BBxoff 6
   BByoff 19
   DWx 11
   DWy 0
@@ -7207,7 +7191,7 @@ array set print_8219 {
 array set print_8220 { 
   BBx 15
   BBy 12
-  BBxoff 3
+  BBxoff 4
   BByoff 19
   DWx 16
   DWy 0
@@ -7217,7 +7201,7 @@ array set print_8220 {
 array set print_8221 { 
   BBx 14
   BBy 12
-  BBxoff 4
+  BBxoff 5
   BByoff 19
   DWx 16
   DWy 0
@@ -7227,7 +7211,7 @@ array set print_8221 {
 array set print_8222 { 
   BBx 15
   BBy 12
-  BBxoff -2
+  BBxoff -1
   BByoff -7
   DWx 16
   DWy 0
@@ -7237,7 +7221,7 @@ array set print_8222 {
 array set print_8224 { 
   BBx 22
   BBy 38
-  BBxoff 3
+  BBxoff 4
   BByoff -8
   DWx 25
   DWy 0
@@ -7247,7 +7231,7 @@ array set print_8224 {
 array set print_8225 { 
   BBx 26
   BBy 38
-  BBxoff -1
+  BBxoff 0
   BByoff -8
   DWx 25
   DWy 0
@@ -7257,7 +7241,7 @@ array set print_8225 {
 array set print_8226 { 
   BBx 13
   BBy 13
-  BBxoff 1
+  BBxoff 2
   BByoff 8
   DWx 17
   DWy 0
@@ -7267,7 +7251,7 @@ array set print_8226 {
 array set print_8230 { 
   BBx 35
   BBy 6
-  BBxoff 5
+  BBxoff 6
   BByoff -1
   DWx 44
   DWy 0
@@ -7277,7 +7261,7 @@ array set print_8230 {
 array set print_8234 { 
   BBx 12
   BBy 33
-  BBxoff -2
+  BBxoff -1
   BByoff -7
   DWx 2
   DWy 0
@@ -7287,7 +7271,7 @@ array set print_8234 {
 array set print_8235 { 
   BBx 12
   BBy 33
-  BBxoff -10
+  BBxoff -9
   BByoff -7
   DWx 2
   DWy 0
@@ -7297,7 +7281,7 @@ array set print_8235 {
 array set print_8236 { 
   BBx 12
   BBy 37
-  BBxoff -6
+  BBxoff -5
   BByoff -7
   DWx 2
   DWy 0
@@ -7307,7 +7291,7 @@ array set print_8236 {
 array set print_8237 { 
   BBx 12
   BBy 37
-  BBxoff -6
+  BBxoff -5
   BByoff -7
   DWx 2
   DWy 0
@@ -7317,7 +7301,7 @@ array set print_8237 {
 array set print_8238 { 
   BBx 12
   BBy 37
-  BBxoff -6
+  BBxoff -5
   BByoff -7
   DWx 2
   DWy 0
@@ -7327,7 +7311,7 @@ array set print_8238 {
 array set print_8240 { 
   BBx 41
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 44
   DWy 0
@@ -7337,7 +7321,7 @@ array set print_8240 {
 array set print_8242 { 
   BBx 8
   BBy 13
-  BBxoff 4
+  BBxoff 5
   BByoff 18
   DWx 10
   DWy 0
@@ -7347,7 +7331,7 @@ array set print_8242 {
 array set print_8243 { 
   BBx 14
   BBy 13
-  BBxoff 5
+  BBxoff 6
   BByoff 18
   DWx 17
   DWy 0
@@ -7357,7 +7341,7 @@ array set print_8243 {
 array set print_8249 { 
   BBx 13
   BBy 21
-  BBxoff 1
+  BBxoff 2
   BByoff 0
   DWx 16
   DWy 0
@@ -7367,7 +7351,7 @@ array set print_8249 {
 array set print_8250 { 
   BBx 13
   BBy 21
-  BBxoff 0
+  BBxoff 1
   BByoff 0
   DWx 16
   DWy 0
@@ -7377,7 +7361,7 @@ array set print_8250 {
 array set print_8252 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -7387,7 +7371,7 @@ array set print_8252 {
 array set print_8254 { 
   BBx 18
   BBy 5
-  BBxoff 2
+  BBxoff 3
   BByoff 24
   DWx 16
   DWy 0
@@ -7397,7 +7381,7 @@ array set print_8254 {
 array set print_8260 { 
   BBx 33
   BBy 33
-  BBxoff -11
+  BBxoff -10
   BByoff -2
   DWx 9
   DWy 0
@@ -7407,7 +7391,7 @@ array set print_8260 {
 array set print_8298 { 
   BBx 12
   BBy 37
-  BBxoff -6
+  BBxoff -5
   BByoff -7
   DWx 2
   DWy 0
@@ -7417,7 +7401,7 @@ array set print_8298 {
 array set print_8299 { 
   BBx 12
   BBy 37
-  BBxoff -6
+  BBxoff -5
   BByoff -7
   DWx 2
   DWy 0
@@ -7427,7 +7411,7 @@ array set print_8299 {
 array set print_8300 { 
   BBx 12
   BBy 37
-  BBxoff -6
+  BBxoff -5
   BByoff -7
   DWx 2
   DWy 0
@@ -7437,7 +7421,7 @@ array set print_8300 {
 array set print_8301 { 
   BBx 11
   BBy 36
-  BBxoff -6
+  BBxoff -5
   BByoff -6
   DWx 2
   DWy 0
@@ -7447,7 +7431,7 @@ array set print_8301 {
 array set print_8302 { 
   BBx 12
   BBy 36
-  BBxoff -6
+  BBxoff -5
   BByoff -6
   DWx 2
   DWy 0
@@ -7457,7 +7441,7 @@ array set print_8302 {
 array set print_8303 { 
   BBx 12
   BBy 37
-  BBxoff -6
+  BBxoff -5
   BByoff -7
   DWx 2
   DWy 0
@@ -7467,7 +7451,7 @@ array set print_8303 {
 array set print_8319 { 
   BBx 15
   BBy 15
-  BBxoff 2
+  BBxoff 3
   BByoff 10
   DWx 17
   DWy 0
@@ -7477,7 +7461,7 @@ array set print_8319 {
 array set print_8355 { 
   BBx 27
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -1
   DWx 25
   DWy 0
@@ -7487,7 +7471,7 @@ array set print_8355 {
 array set print_8356 { 
   BBx 26
   BBy 33
-  BBxoff 0
+  BBxoff 1
   BByoff -2
   DWx 25
   DWy 0
@@ -7497,7 +7481,7 @@ array set print_8356 {
 array set print_8359 { 
   BBx 46
   BBy 33
-  BBxoff 0
+  BBxoff 1
   BByoff -2
   DWx 48
   DWy 0
@@ -7507,7 +7491,7 @@ array set print_8359 {
 array set print_8362 { 
   BBx 34
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 36
   DWy 0
@@ -7517,7 +7501,7 @@ array set print_8362 {
 array set print_8363 { 
   BBx 22
   BBy 27
-  BBxoff 1
+  BBxoff 2
   BByoff 4
   DWx 23
   DWy 0
@@ -7527,7 +7511,7 @@ array set print_8363 {
 array set print_8364 { 
   BBx 27
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 25
   DWy 0
@@ -7537,7 +7521,7 @@ array set print_8364 {
 array set print_8453 { 
   BBx 34
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 39
   DWy 0
@@ -7547,7 +7531,7 @@ array set print_8453 {
 array set print_8467 { 
   BBx 19
   BBy 32
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 15
   DWy 0
@@ -7557,7 +7541,7 @@ array set print_8467 {
 array set print_8470 { 
   BBx 45
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 47
   DWy 0
@@ -7567,7 +7551,7 @@ array set print_8470 {
 array set print_8482 { 
   BBx 33
   BBy 19
-  BBxoff 5
+  BBxoff 6
   BByoff 12
   DWx 44
   DWy 0
@@ -7577,7 +7561,7 @@ array set print_8482 {
 array set print_8486 { 
   BBx 29
   BBy 33
-  BBxoff 3
+  BBxoff 4
   BByoff -1
   DWx 34
   DWy 0
@@ -7587,7 +7571,7 @@ array set print_8486 {
 array set print_8494 { 
   BBx 23
   BBy 25
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 27
   DWy 0
@@ -7597,7 +7581,7 @@ array set print_8494 {
 array set print_8531 { 
   BBx 33
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 37
   DWy 0
@@ -7607,7 +7591,7 @@ array set print_8531 {
 array set print_8532 { 
   BBx 33
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 37
   DWy 0
@@ -7617,7 +7601,7 @@ array set print_8532 {
 array set print_8539 { 
   BBx 33
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 37
   DWy 0
@@ -7627,7 +7611,7 @@ array set print_8539 {
 array set print_8540 { 
   BBx 33
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 37
   DWy 0
@@ -7637,7 +7621,7 @@ array set print_8540 {
 array set print_8541 { 
   BBx 33
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 37
   DWy 0
@@ -7647,7 +7631,7 @@ array set print_8541 {
 array set print_8542 { 
   BBx 34
   BBy 33
-  BBxoff 1
+  BBxoff 2
   BByoff -2
   DWx 37
   DWy 0
@@ -7657,7 +7641,7 @@ array set print_8542 {
 array set print_8592 { 
   BBx 40
   BBy 17
-  BBxoff 1
+  BBxoff 2
   BByoff 2
   DWx 44
   DWy 0
@@ -7667,7 +7651,7 @@ array set print_8592 {
 array set print_8593 { 
   BBx 17
   BBy 38
-  BBxoff 2
+  BBxoff 3
   BByoff -10
   DWx 23
   DWy 0
@@ -7677,7 +7661,7 @@ array set print_8593 {
 array set print_8594 { 
   BBx 40
   BBy 17
-  BBxoff 1
+  BBxoff 2
   BByoff 2
   DWx 44
   DWy 0
@@ -7687,7 +7671,7 @@ array set print_8594 {
 array set print_8595 { 
   BBx 17
   BBy 38
-  BBxoff 2
+  BBxoff 3
   BByoff -10
   DWx 23
   DWy 0
@@ -7697,7 +7681,7 @@ array set print_8595 {
 array set print_8596 { 
   BBx 40
   BBy 17
-  BBxoff 1
+  BBxoff 2
   BByoff 2
   DWx 44
   DWy 0
@@ -7707,7 +7691,7 @@ array set print_8596 {
 array set print_8597 { 
   BBx 17
   BBy 41
-  BBxoff 2
+  BBxoff 3
   BByoff -10
   DWx 23
   DWy 0
@@ -7717,7 +7701,7 @@ array set print_8597 {
 array set print_8616 { 
   BBx 17
   BBy 45
-  BBxoff 2
+  BBxoff 3
   BByoff -14
   DWx 23
   DWy 0
@@ -7727,7 +7711,7 @@ array set print_8616 {
 array set print_8706 { 
   BBx 21
   BBy 33
-  BBxoff 0
+  BBxoff 1
   BByoff -2
   DWx 23
   DWy 0
@@ -7737,7 +7721,7 @@ array set print_8706 {
 array set print_8710 { 
   BBx 26
   BBy 30
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 28
   DWy 0
@@ -7747,7 +7731,7 @@ array set print_8710 {
 array set print_8719 { 
   BBx 30
   BBy 41
-  BBxoff 4
+  BBxoff 5
   BByoff -10
   DWx 36
   DWy 0
@@ -7757,7 +7741,7 @@ array set print_8719 {
 array set print_8721 { 
   BBx 28
   BBy 41
-  BBxoff 1
+  BBxoff 2
   BByoff -10
   DWx 32
   DWy 0
@@ -7767,7 +7751,7 @@ array set print_8721 {
 array set print_8722 { 
   BBx 21
   BBy 5
-  BBxoff 3
+  BBxoff 4
   BByoff 12
   DWx 26
   DWy 0
@@ -7777,7 +7761,7 @@ array set print_8722 {
 array set print_8725 { 
   BBx 33
   BBy 33
-  BBxoff -11
+  BBxoff -10
   BByoff -2
   DWx 9
   DWy 0
@@ -7787,7 +7771,7 @@ array set print_8725 {
 array set print_8729 { 
   BBx 6
   BBy 6
-  BBxoff 3
+  BBxoff 4
   BByoff 12
   DWx 14
   DWy 0
@@ -7797,7 +7781,7 @@ array set print_8729 {
 array set print_8730 { 
   BBx 23
   BBy 42
-  BBxoff 1
+  BBxoff 2
   BByoff -3
   DWx 25
   DWy 0
@@ -7807,7 +7791,7 @@ array set print_8730 {
 array set print_8734 { 
   BBx 26
   BBy 15
-  BBxoff 2
+  BBxoff 3
   BByoff 7
   DWx 32
   DWy 0
@@ -7817,7 +7801,7 @@ array set print_8734 {
 array set print_8735 { 
   BBx 28
   BBy 28
-  BBxoff 6
+  BBxoff 7
   BByoff -1
   DWx 43
   DWy 0
@@ -7827,7 +7811,7 @@ array set print_8735 {
 array set print_8745 { 
   BBx 25
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 32
   DWy 0
@@ -7837,7 +7821,7 @@ array set print_8745 {
 array set print_8747 { 
   BBx 13
   BBy 44
-  BBxoff -1
+  BBxoff 0
   BByoff -5
   DWx 13
   DWy 0
@@ -7847,7 +7831,7 @@ array set print_8747 {
 array set print_8776 { 
   BBx 22
   BBy 16
-  BBxoff 2
+  BBxoff 3
   BByoff 7
   DWx 25
   DWy 0
@@ -7857,7 +7841,7 @@ array set print_8776 {
 array set print_8800 { 
   BBx 21
   BBy 33
-  BBxoff 2
+  BBxoff 3
   BByoff -2
   DWx 25
   DWy 0
@@ -7867,7 +7851,7 @@ array set print_8800 {
 array set print_8801 { 
   BBx 21
   BBy 23
-  BBxoff 3
+  BBxoff 4
   BByoff 3
   DWx 26
   DWy 0
@@ -7877,7 +7861,7 @@ array set print_8801 {
 array set print_8804 { 
   BBx 21
   BBy 27
-  BBxoff 2
+  BBxoff 3
   BByoff 1
   DWx 25
   DWy 0
@@ -7887,7 +7871,7 @@ array set print_8804 {
 array set print_8805 { 
   BBx 21
   BBy 27
-  BBxoff 2
+  BBxoff 3
   BByoff 1
   DWx 25
   DWy 0
@@ -7897,7 +7881,7 @@ array set print_8805 {
 array set print_8962 { 
   BBx 21
   BBy 25
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 27
   DWy 0
@@ -7907,7 +7891,7 @@ array set print_8962 {
 array set print_8976 { 
   BBx 22
   BBy 14
-  BBxoff 1
+  BBxoff 2
   BByoff 8
   DWx 26
   DWy 0
@@ -7917,7 +7901,7 @@ array set print_8976 {
 array set print_8992 { 
   BBx 11
   BBy 47
-  BBxoff 10
+  BBxoff 11
   BByoff -11
   DWx 27
   DWy 0
@@ -7927,7 +7911,7 @@ array set print_8992 {
 array set print_8993 { 
   BBx 11
   BBy 47
-  BBxoff 4
+  BBxoff 5
   BByoff -11
   DWx 27
   DWy 0
@@ -7937,7 +7921,7 @@ array set print_8993 {
 array set print_9472 { 
   BBx 32
   BBy 5
-  BBxoff -1
+  BBxoff 0
   BByoff 10
   DWx 32
   DWy 0
@@ -7947,7 +7931,7 @@ array set print_9472 {
 array set print_9474 { 
   BBx 6
   BBy 53
-  BBxoff 8
+  BBxoff 9
   BByoff -14
   DWx 28
   DWy 0
@@ -7957,7 +7941,7 @@ array set print_9474 {
 array set print_9484 { 
   BBx 19
   BBy 29
-  BBxoff 12
+  BBxoff 13
   BByoff -14
   DWx 32
   DWy 0
@@ -7967,7 +7951,7 @@ array set print_9484 {
 array set print_9488 { 
   BBx 19
   BBy 29
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -7977,7 +7961,7 @@ array set print_9488 {
 array set print_9492 { 
   BBx 19
   BBy 29
-  BBxoff 12
+  BBxoff 13
   BByoff 10
   DWx 32
   DWy 0
@@ -7987,7 +7971,7 @@ array set print_9492 {
 array set print_9496 { 
   BBx 19
   BBy 29
-  BBxoff -1
+  BBxoff 0
   BByoff 10
   DWx 32
   DWy 0
@@ -7997,7 +7981,7 @@ array set print_9496 {
 array set print_9500 { 
   BBx 19
   BBy 53
-  BBxoff 12
+  BBxoff 13
   BByoff -14
   DWx 32
   DWy 0
@@ -8007,7 +7991,7 @@ array set print_9500 {
 array set print_9508 { 
   BBx 19
   BBy 53
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8017,7 +8001,7 @@ array set print_9508 {
 array set print_9516 { 
   BBx 32
   BBy 29
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8027,7 +8011,7 @@ array set print_9516 {
 array set print_9524 { 
   BBx 32
   BBy 29
-  BBxoff -1
+  BBxoff 0
   BByoff 10
   DWx 32
   DWy 0
@@ -8037,7 +8021,7 @@ array set print_9524 {
 array set print_9532 { 
   BBx 32
   BBy 53
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8047,7 +8031,7 @@ array set print_9532 {
 array set print_9552 { 
   BBx 32
   BBy 13
-  BBxoff -1
+  BBxoff 0
   BByoff 6
   DWx 32
   DWy 0
@@ -8057,7 +8041,7 @@ array set print_9552 {
 array set print_9553 { 
   BBx 13
   BBy 53
-  BBxoff 8
+  BBxoff 9
   BByoff -14
   DWx 32
   DWy 0
@@ -8067,7 +8051,7 @@ array set print_9553 {
 array set print_9554 { 
   BBx 19
   BBy 33
-  BBxoff 12
+  BBxoff 13
   BByoff -14
   DWx 32
   DWy 0
@@ -8077,7 +8061,7 @@ array set print_9554 {
 array set print_9555 { 
   BBx 23
   BBy 29
-  BBxoff 8
+  BBxoff 9
   BByoff -14
   DWx 32
   DWy 0
@@ -8087,7 +8071,7 @@ array set print_9555 {
 array set print_9556 { 
   BBx 23
   BBy 33
-  BBxoff 8
+  BBxoff 9
   BByoff -14
   DWx 32
   DWy 0
@@ -8097,7 +8081,7 @@ array set print_9556 {
 array set print_9557 { 
   BBx 19
   BBy 33
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8107,7 +8091,7 @@ array set print_9557 {
 array set print_9558 { 
   BBx 22
   BBy 29
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8117,7 +8101,7 @@ array set print_9558 {
 array set print_9559 { 
   BBx 22
   BBy 33
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8127,7 +8111,7 @@ array set print_9559 {
 array set print_9560 { 
   BBx 19
   BBy 33
-  BBxoff 12
+  BBxoff 13
   BByoff 6
   DWx 32
   DWy 0
@@ -8137,7 +8121,7 @@ array set print_9560 {
 array set print_9561 { 
   BBx 23
   BBy 29
-  BBxoff 8
+  BBxoff 9
   BByoff 10
   DWx 32
   DWy 0
@@ -8147,7 +8131,7 @@ array set print_9561 {
 array set print_9562 { 
   BBx 23
   BBy 33
-  BBxoff 8
+  BBxoff 9
   BByoff 6
   DWx 32
   DWy 0
@@ -8157,7 +8141,7 @@ array set print_9562 {
 array set print_9563 { 
   BBx 19
   BBy 33
-  BBxoff -1
+  BBxoff 0
   BByoff 6
   DWx 32
   DWy 0
@@ -8167,7 +8151,7 @@ array set print_9563 {
 array set print_9564 { 
   BBx 22
   BBy 29
-  BBxoff -1
+  BBxoff 0
   BByoff 10
   DWx 32
   DWy 0
@@ -8177,7 +8161,7 @@ array set print_9564 {
 array set print_9565 { 
   BBx 22
   BBy 33
-  BBxoff -1
+  BBxoff 0
   BByoff 6
   DWx 32
   DWy 0
@@ -8187,7 +8171,7 @@ array set print_9565 {
 array set print_9566 { 
   BBx 19
   BBy 53
-  BBxoff 12
+  BBxoff 13
   BByoff -14
   DWx 32
   DWy 0
@@ -8197,7 +8181,7 @@ array set print_9566 {
 array set print_9567 { 
   BBx 23
   BBy 53
-  BBxoff 8
+  BBxoff 9
   BByoff -14
   DWx 32
   DWy 0
@@ -8207,7 +8191,7 @@ array set print_9567 {
 array set print_9568 { 
   BBx 23
   BBy 53
-  BBxoff 8
+  BBxoff 9
   BByoff -14
   DWx 32
   DWy 0
@@ -8217,7 +8201,7 @@ array set print_9568 {
 array set print_9569 { 
   BBx 19
   BBy 53
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8227,7 +8211,7 @@ array set print_9569 {
 array set print_9570 { 
   BBx 22
   BBy 53
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8237,7 +8221,7 @@ array set print_9570 {
 array set print_9571 { 
   BBx 22
   BBy 53
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8247,7 +8231,7 @@ array set print_9571 {
 array set print_9572 { 
   BBx 32
   BBy 33
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8257,7 +8241,7 @@ array set print_9572 {
 array set print_9573 { 
   BBx 32
   BBy 29
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8267,7 +8251,7 @@ array set print_9573 {
 array set print_9574 { 
   BBx 32
   BBy 33
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8277,7 +8261,7 @@ array set print_9574 {
 array set print_9575 { 
   BBx 32
   BBy 33
-  BBxoff -1
+  BBxoff 0
   BByoff 6
   DWx 32
   DWy 0
@@ -8287,7 +8271,7 @@ array set print_9575 {
 array set print_9576 { 
   BBx 32
   BBy 29
-  BBxoff -1
+  BBxoff 0
   BByoff 10
   DWx 32
   DWy 0
@@ -8297,7 +8281,7 @@ array set print_9576 {
 array set print_9577 { 
   BBx 32
   BBy 33
-  BBxoff -1
+  BBxoff 0
   BByoff 6
   DWx 32
   DWy 0
@@ -8307,7 +8291,7 @@ array set print_9577 {
 array set print_9578 { 
   BBx 32
   BBy 53
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8317,7 +8301,7 @@ array set print_9578 {
 array set print_9579 { 
   BBx 32
   BBy 53
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8327,7 +8311,7 @@ array set print_9579 {
 array set print_9580 { 
   BBx 32
   BBy 53
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8337,7 +8321,7 @@ array set print_9580 {
 array set print_9600 { 
   BBx 32
   BBy 27
-  BBxoff -1
+  BBxoff 0
   BByoff 12
   DWx 32
   DWy 0
@@ -8347,7 +8331,7 @@ array set print_9600 {
 array set print_9604 { 
   BBx 32
   BBy 28
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8357,7 +8341,7 @@ array set print_9604 {
 array set print_9608 { 
   BBx 32
   BBy 53
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8367,7 +8351,7 @@ array set print_9608 {
 array set print_9612 { 
   BBx 17
   BBy 53
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8377,7 +8361,7 @@ array set print_9612 {
 array set print_9616 { 
   BBx 17
   BBy 53
-  BBxoff 14
+  BBxoff 15
   BByoff -14
   DWx 32
   DWy 0
@@ -8387,7 +8371,7 @@ array set print_9616 {
 array set print_9617 { 
   BBx 30
   BBy 50
-  BBxoff 1
+  BBxoff 2
   BByoff -11
   DWx 32
   DWy 0
@@ -8397,7 +8381,7 @@ array set print_9617 {
 array set print_9618 { 
   BBx 32
   BBy 50
-  BBxoff -1
+  BBxoff 0
   BByoff -11
   DWx 32
   DWy 0
@@ -8407,7 +8391,7 @@ array set print_9618 {
 array set print_9619 { 
   BBx 32
   BBy 53
-  BBxoff -1
+  BBxoff 0
   BByoff -14
   DWx 32
   DWy 0
@@ -8417,7 +8401,7 @@ array set print_9619 {
 array set print_9632 { 
   BBx 21
   BBy 21
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 27
   DWy 0
@@ -8427,7 +8411,7 @@ array set print_9632 {
 array set print_9633 { 
   BBx 21
   BBy 21
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 27
   DWy 0
@@ -8437,7 +8421,7 @@ array set print_9633 {
 array set print_9642 { 
   BBx 11
   BBy 11
-  BBxoff 2
+  BBxoff 3
   BByoff 9
   DWx 17
   DWy 0
@@ -8447,7 +8431,7 @@ array set print_9642 {
 array set print_9643 { 
   BBx 11
   BBy 11
-  BBxoff 2
+  BBxoff 3
   BByoff 9
   DWx 17
   DWy 0
@@ -8457,7 +8441,7 @@ array set print_9643 {
 array set print_9644 { 
   BBx 44
   BBy 10
-  BBxoff -1
+  BBxoff 0
   BByoff 5
   DWx 44
   DWy 0
@@ -8467,7 +8451,7 @@ array set print_9644 {
 array set print_9650 { 
   BBx 31
   BBy 31
-  BBxoff 5
+  BBxoff 6
   BByoff -1
   DWx 43
   DWy 0
@@ -8477,7 +8461,7 @@ array set print_9650 {
 array set print_9658 { 
   BBx 31
   BBy 31
-  BBxoff 5
+  BBxoff 6
   BByoff -2
   DWx 43
   DWy 0
@@ -8487,7 +8471,7 @@ array set print_9658 {
 array set print_9660 { 
   BBx 30
   BBy 30
-  BBxoff 6
+  BBxoff 7
   BByoff -2
   DWx 43
   DWy 0
@@ -8497,7 +8481,7 @@ array set print_9660 {
 array set print_9668 { 
   BBx 31
   BBy 30
-  BBxoff 5
+  BBxoff 6
   BByoff -1
   DWx 43
   DWy 0
@@ -8507,7 +8491,7 @@ array set print_9668 {
 array set print_9674 { 
   BBx 21
   BBy 31
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -8517,7 +8501,7 @@ array set print_9674 {
 array set print_9675 { 
   BBx 20
   BBy 20
-  BBxoff 3
+  BBxoff 4
   BByoff 2
   DWx 27
   DWy 0
@@ -8527,7 +8511,7 @@ array set print_9675 {
 array set print_9679 { 
   BBx 20
   BBy 20
-  BBxoff 3
+  BBxoff 4
   BByoff 2
   DWx 27
   DWy 0
@@ -8537,7 +8521,7 @@ array set print_9679 {
 array set print_9688 { 
   BBx 22
   BBy 22
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 27
   DWy 0
@@ -8547,7 +8531,7 @@ array set print_9688 {
 array set print_9689 { 
   BBx 25
   BBy 26
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 27
   DWy 0
@@ -8557,7 +8541,7 @@ array set print_9689 {
 array set print_9702 { 
   BBx 12
   BBy 12
-  BBxoff 1
+  BBxoff 2
   BByoff 8
   DWx 17
   DWy 0
@@ -8567,7 +8551,7 @@ array set print_9702 {
 array set print_9786 { 
   BBx 28
   BBy 27
-  BBxoff 7
+  BBxoff 8
   BByoff -2
   DWx 45
   DWy 0
@@ -8577,7 +8561,7 @@ array set print_9786 {
 array set print_9787 { 
   BBx 28
   BBy 27
-  BBxoff 8
+  BBxoff 9
   BByoff -2
   DWx 46
   DWy 0
@@ -8587,7 +8571,7 @@ array set print_9787 {
 array set print_9788 { 
   BBx 40
   BBy 40
-  BBxoff -1
+  BBxoff 0
   BByoff -6
   DWx 40
   DWy 0
@@ -8597,7 +8581,7 @@ array set print_9788 {
 array set print_9792 { 
   BBx 23
   BBy 42
-  BBxoff 4
+  BBxoff 5
   BByoff -10
   DWx 33
   DWy 0
@@ -8607,7 +8591,7 @@ array set print_9792 {
 array set print_9794 { 
   BBx 29
   BBy 40
-  BBxoff 1
+  BBxoff 2
   BByoff -6
   DWx 33
   DWy 0
@@ -8617,7 +8601,7 @@ array set print_9794 {
 array set print_9824 { 
   BBx 22
   BBy 26
-  BBxoff 0
+  BBxoff 1
   BByoff 0
   DWx 24
   DWy 0
@@ -8627,7 +8611,7 @@ array set print_9824 {
 array set print_9827 { 
   BBx 27
   BBy 27
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 29
   DWy 0
@@ -8637,7 +8621,7 @@ array set print_9827 {
 array set print_9829 { 
   BBx 24
   BBy 27
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 27
   DWy 0
@@ -8647,7 +8631,7 @@ array set print_9829 {
 array set print_9830 { 
   BBx 21
   BBy 27
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 23
   DWy 0
@@ -8657,7 +8641,7 @@ array set print_9830 {
 array set print_9834 { 
   BBx 21
   BBy 31
-  BBxoff 0
+  BBxoff 1
   BByoff -2
   DWx 23
   DWy 0
@@ -8667,7 +8651,7 @@ array set print_9834 {
 array set print_9835 { 
   BBx 27
   BBy 36
-  BBxoff 1
+  BBxoff 2
   BByoff -4
   DWx 33
   DWy 0
@@ -8677,7 +8661,7 @@ array set print_9835 {
 array set print_59393 { 
   BBx 11
   BBy 29
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 12
   DWy 0
@@ -8687,7 +8671,7 @@ array set print_59393 {
 array set print_59394 { 
   BBx 18
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -9
   DWx 23
   DWy 0
@@ -8697,7 +8681,7 @@ array set print_59394 {
 array set print_59395 { 
   BBx 19
   BBy 32
-  BBxoff 3
+  BBxoff 4
   BByoff -9
   DWx 23
   DWy 0
@@ -8707,7 +8691,7 @@ array set print_59395 {
 array set print_59396 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 21
   DWy 0
@@ -8717,7 +8701,7 @@ array set print_59396 {
 array set print_59397 { 
   BBx 22
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 21
   DWy 0
@@ -8727,7 +8711,7 @@ array set print_59397 {
 array set print_61441 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -8737,7 +8721,7 @@ array set print_61441 {
 array set print_61442 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -8747,7 +8731,7 @@ array set print_61442 {
 array set print_61444 { 
   BBx 8
   BBy 11
-  BBxoff 0
+  BBxoff 1
   BByoff -12
   DWx 16
   DWy 0
@@ -8757,7 +8741,7 @@ array set print_61444 {
 array set print_61445 { 
   BBx 12
   BBy 10
-  BBxoff -1
+  BBxoff 0
   BByoff -10
   DWx 16
   DWy 0
@@ -8767,7 +8751,7 @@ array set print_61445 {
 array set print_61446 { 
   BBx 8
   BBy 5
-  BBxoff -4
+  BBxoff -3
   BByoff 33
   DWx 2
   DWy 0
@@ -8777,7 +8761,7 @@ array set print_61446 {
 array set print_61447 { 
   BBx 9
   BBy 5
-  BBxoff -12
+  BBxoff -11
   BByoff 33
   DWx 2
   DWy 0
@@ -8787,7 +8771,7 @@ array set print_61447 {
 array set print_61448 { 
   BBx 10
   BBy 8
-  BBxoff -4
+  BBxoff -3
   BByoff 23
   DWx 2
   DWy 0
@@ -8797,7 +8781,7 @@ array set print_61448 {
 array set print_61449 { 
   BBx 10
   BBy 8
-  BBxoff -10
+  BBxoff -9
   BByoff 30
   DWx 2
   DWy 0
@@ -8807,7 +8791,7 @@ array set print_61449 {
 array set print_61450 { 
   BBx 4
   BBy 48
-  BBxoff -2
+  BBxoff -1
   BByoff -10
   DWx 2
   DWy 0
@@ -8817,7 +8801,7 @@ array set print_61450 {
 array set print_61451 { 
   BBx 12
   BBy 48
-  BBxoff -6
+  BBxoff -5
   BByoff -10
   DWx 2
   DWy 0
@@ -8827,7 +8811,7 @@ array set print_61451 {
 array set print_61452 { 
   BBx 8
   BBy 48
-  BBxoff -2
+  BBxoff -1
   BByoff -10
   DWx 2
   DWy 0
@@ -8837,7 +8821,7 @@ array set print_61452 {
 array set print_61453 { 
   BBx 8
   BBy 48
-  BBxoff -6
+  BBxoff -5
   BByoff -10
   DWx 2
   DWy 0
@@ -8847,7 +8831,7 @@ array set print_61453 {
 array set print_61454 { 
   BBx 8
   BBy 48
-  BBxoff -2
+  BBxoff -1
   BByoff -10
   DWx 2
   DWy 0
@@ -8857,7 +8841,7 @@ array set print_61454 {
 array set print_61455 { 
   BBx 8
   BBy 8
-  BBxoff -12
+  BBxoff -11
   BByoff 23
   DWx 2
   DWy 0
@@ -8867,7 +8851,7 @@ array set print_61455 {
 array set print_61456 { 
   BBx 10
   BBy 5
-  BBxoff -5
+  BBxoff -4
   BByoff 33
   DWx 2
   DWy 0
@@ -8877,7 +8861,7 @@ array set print_61456 {
 array set print_61457 { 
   BBx 10
   BBy 5
-  BBxoff -14
+  BBxoff -13
   BByoff 33
   DWx 2
   DWy 0
@@ -8887,7 +8871,7 @@ array set print_61457 {
 array set print_61458 { 
   BBx 10
   BBy 9
-  BBxoff -5
+  BBxoff -4
   BByoff 23
   DWx 2
   DWy 0
@@ -8897,7 +8881,7 @@ array set print_61458 {
 array set print_61459 { 
   BBx 10
   BBy 8
-  BBxoff -11
+  BBxoff -10
   BByoff 30
   DWx 2
   DWy 0
@@ -8907,7 +8891,7 @@ array set print_61459 {
 array set print_61460 { 
   BBx 11
   BBy 9
-  BBxoff -13
+  BBxoff -12
   BByoff 23
   DWx 2
   DWy 0
@@ -8917,7 +8901,7 @@ array set print_61460 {
 array set print_61461 { 
   BBx 14
   BBy 5
-  BBxoff -16
+  BBxoff -15
   BByoff 33
   DWx 2
   DWy 0
@@ -8927,7 +8911,7 @@ array set print_61461 {
 array set print_61462 { 
   BBx 16
   BBy 6
-  BBxoff -17
+  BBxoff -16
   BByoff 32
   DWx 2
   DWy 0
@@ -8937,7 +8921,7 @@ array set print_61462 {
 array set print_61463 { 
   BBx 15
   BBy 6
-  BBxoff -21
+  BBxoff -20
   BByoff 32
   DWx 2
   DWy 0
@@ -8947,7 +8931,7 @@ array set print_61463 {
 array set print_61464 { 
   BBx 15
   BBy 6
-  BBxoff -21
+  BBxoff -20
   BByoff 32
   DWx 2
   DWy 0
@@ -8957,7 +8941,7 @@ array set print_61464 {
 array set print_61465 { 
   BBx 15
   BBy 6
-  BBxoff -16
+  BBxoff -15
   BByoff 24
   DWx 2
   DWy 0
@@ -8967,7 +8951,7 @@ array set print_61465 {
 array set print_61466 { 
   BBx 16
   BBy 6
-  BBxoff -19
+  BBxoff -18
   BByoff 24
   DWx 2
   DWy 0
@@ -8977,7 +8961,7 @@ array set print_61466 {
 array set print_61467 { 
   BBx 15
   BBy 6
-  BBxoff -19
+  BBxoff -18
   BByoff 24
   DWx 2
   DWy 0
@@ -8987,7 +8971,7 @@ array set print_61467 {
 array set print_61468 { 
   BBx 16
   BBy 6
-  BBxoff -8
+  BBxoff -7
   BByoff 32
   DWx 2
   DWy 0
@@ -8997,7 +8981,7 @@ array set print_61468 {
 array set print_61469 { 
   BBx 16
   BBy 6
-  BBxoff -9
+  BBxoff -8
   BByoff 24
   DWx 2
   DWy 0
@@ -9007,7 +8991,7 @@ array set print_61469 {
 array set print_61470 { 
   BBx 7
   BBy 7
-  BBxoff -19
+  BBxoff -18
   BByoff -8
   DWx 2
   DWy 0
@@ -9017,7 +9001,7 @@ array set print_61470 {
 array set print_61471 { 
   BBx 7
   BBy 7
-  BBxoff -20
+  BBxoff -19
   BByoff -8
   DWx 2
   DWy 0
@@ -9027,7 +9011,7 @@ array set print_61471 {
 array set print_61472 { 
   BBx 7
   BBy 7
-  BBxoff -22
+  BBxoff -21
   BByoff -8
   DWx 2
   DWy 0
@@ -9037,7 +9021,7 @@ array set print_61472 {
 array set print_61473 { 
   BBx 7
   BBy 7
-  BBxoff -20
+  BBxoff -19
   BByoff -8
   DWx 2
   DWy 0
@@ -9047,7 +9031,7 @@ array set print_61473 {
 array set print_61474 { 
   BBx 7
   BBy 7
-  BBxoff -23
+  BBxoff -22
   BByoff -8
   DWx 2
   DWy 0
@@ -9057,7 +9041,7 @@ array set print_61474 {
 array set print_61475 { 
   BBx 7
   BBy 7
-  BBxoff -19
+  BBxoff -18
   BByoff -8
   DWx 2
   DWy 0
@@ -9067,7 +9051,7 @@ array set print_61475 {
 array set print_61476 { 
   BBx 7
   BBy 7
-  BBxoff -17
+  BBxoff -16
   BByoff -8
   DWx 2
   DWy 0
@@ -9077,7 +9061,7 @@ array set print_61476 {
 array set print_61477 { 
   BBx 7
   BBy 7
-  BBxoff -17
+  BBxoff -16
   BByoff -8
   DWx 2
   DWy 0
@@ -9087,7 +9071,7 @@ array set print_61477 {
 array set print_61478 { 
   BBx 7
   BBy 7
-  BBxoff -19
+  BBxoff -18
   BByoff -8
   DWx 2
   DWy 0
@@ -9097,7 +9081,7 @@ array set print_61478 {
 array set print_61479 { 
   BBx 7
   BBy 7
-  BBxoff -19
+  BBxoff -18
   BByoff -8
   DWx 2
   DWy 0
@@ -9107,7 +9091,7 @@ array set print_61479 {
 array set print_61480 { 
   BBx 7
   BBy 7
-  BBxoff -23
+  BBxoff -22
   BByoff -8
   DWx 2
   DWy 0
@@ -9117,7 +9101,7 @@ array set print_61480 {
 array set print_61481 { 
   BBx 7
   BBy 7
-  BBxoff -12
+  BBxoff -11
   BByoff -8
   DWx 2
   DWy 0
@@ -9127,7 +9111,7 @@ array set print_61481 {
 array set print_61482 { 
   BBx 7
   BBy 7
-  BBxoff -10
+  BBxoff -9
   BByoff -8
   DWx 2
   DWy 0
@@ -9137,7 +9121,7 @@ array set print_61482 {
 array set print_61483 { 
   BBx 7
   BBy 7
-  BBxoff -19
+  BBxoff -18
   BByoff -8
   DWx 2
   DWy 0
@@ -9147,7 +9131,7 @@ array set print_61483 {
 array set print_61484 { 
   BBx 7
   BBy 7
-  BBxoff -10
+  BBxoff -9
   BByoff -8
   DWx 2
   DWy 0
@@ -9157,7 +9141,7 @@ array set print_61484 {
 array set print_61485 { 
   BBx 15
   BBy 5
-  BBxoff -16
+  BBxoff -15
   BByoff 33
   DWx 2
   DWy 0
@@ -9167,7 +9151,7 @@ array set print_61485 {
 array set print_61486 { 
   BBx 16
   BBy 6
-  BBxoff -15
+  BBxoff -14
   BByoff 32
   DWx 2
   DWy 0
@@ -9177,7 +9161,7 @@ array set print_61486 {
 array set print_61487 { 
   BBx 14
   BBy 5
-  BBxoff -19
+  BBxoff -18
   BByoff 33
   DWx 2
   DWy 0
@@ -9187,7 +9171,7 @@ array set print_61487 {
 array set print_61488 { 
   BBx 16
   BBy 6
-  BBxoff -20
+  BBxoff -19
   BByoff 32
   DWx 2
   DWy 0
@@ -9197,7 +9181,7 @@ array set print_61488 {
 array set print_61489 { 
   BBx 10
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 11
   DWy 0
@@ -9207,7 +9191,7 @@ array set print_61489 {
 array set print_64257 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -9217,7 +9201,7 @@ array set print_64257 {
 array set print_64258 { 
   BBx 23
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 23
   DWy 0
@@ -9227,7 +9211,7 @@ array set print_64258 {
 array set print_64285 { 
   BBx 9
   BBy 19
-  BBxoff 4
+  BBxoff 5
   BByoff 4
   DWx 12
   DWy 0
@@ -9237,7 +9221,7 @@ array set print_64285 {
 array set print_64286 { 
   BBx 14
   BBy 8
-  BBxoff -1
+  BBxoff 0
   BByoff 24
   DWx 2
   DWy 0
@@ -9247,7 +9231,7 @@ array set print_64286 {
 array set print_64287 { 
   BBx 19
   BBy 18
-  BBxoff 4
+  BBxoff 5
   BByoff 5
   DWx 23
   DWy 0
@@ -9257,7 +9241,7 @@ array set print_64287 {
 array set print_64288 { 
   BBx 25
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 24
   DWy 0
@@ -9267,7 +9251,7 @@ array set print_64288 {
 array set print_64298 { 
   BBx 29
   BBy 30
-  BBxoff 4
+  BBxoff 5
   BByoff -2
   DWx 31
   DWy 0
@@ -9277,7 +9261,7 @@ array set print_64298 {
 array set print_64299 { 
   BBx 28
   BBy 30
-  BBxoff 4
+  BBxoff 5
   BByoff -2
   DWx 31
   DWy 0
@@ -9287,7 +9271,7 @@ array set print_64299 {
 array set print_64300 { 
   BBx 29
   BBy 30
-  BBxoff 4
+  BBxoff 5
   BByoff -2
   DWx 31
   DWy 0
@@ -9297,7 +9281,7 @@ array set print_64300 {
 array set print_64301 { 
   BBx 28
   BBy 30
-  BBxoff 4
+  BBxoff 5
   BByoff -2
   DWx 31
   DWy 0
@@ -9307,7 +9291,7 @@ array set print_64301 {
 array set print_64302 { 
   BBx 26
   BBy 30
-  BBxoff 1
+  BBxoff 2
   BByoff -7
   DWx 25
   DWy 0
@@ -9317,7 +9301,7 @@ array set print_64302 {
 array set print_64303 { 
   BBx 26
   BBy 34
-  BBxoff 1
+  BBxoff 2
   BByoff -11
   DWx 25
   DWy 0
@@ -9327,7 +9311,7 @@ array set print_64303 {
 array set print_64304 { 
   BBx 26
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 25
   DWy 0
@@ -9337,7 +9321,7 @@ array set print_64304 {
 array set print_64305 { 
   BBx 23
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -9347,7 +9331,7 @@ array set print_64305 {
 array set print_64306 { 
   BBx 18
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 19
   DWy 0
@@ -9357,7 +9341,7 @@ array set print_64306 {
 array set print_64307 { 
   BBx 22
   BBy 24
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 23
   DWy 0
@@ -9367,7 +9351,7 @@ array set print_64307 {
 array set print_64308 { 
   BBx 24
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 27
   DWy 0
@@ -9377,7 +9361,7 @@ array set print_64308 {
 array set print_64309 { 
   BBx 13
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 14
   DWy 0
@@ -9387,7 +9371,7 @@ array set print_64309 {
 array set print_64310 { 
   BBx 20
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 19
   DWy 0
@@ -9397,7 +9381,7 @@ array set print_64310 {
 array set print_64312 { 
   BBx 22
   BBy 25
-  BBxoff 4
+  BBxoff 5
   BByoff -2
   DWx 27
   DWy 0
@@ -9407,7 +9391,7 @@ array set print_64312 {
 array set print_64313 { 
   BBx 12
   BBy 14
-  BBxoff 2
+  BBxoff 3
   BByoff 9
   DWx 14
   DWy 0
@@ -9417,7 +9401,7 @@ array set print_64313 {
 array set print_64314 { 
   BBx 18
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -9
   DWx 23
   DWy 0
@@ -9427,7 +9411,7 @@ array set print_64314 {
 array set print_64315 { 
   BBx 20
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 21
   DWy 0
@@ -9437,7 +9421,7 @@ array set print_64315 {
 array set print_64316 { 
   BBx 19
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 21
   DWy 0
@@ -9447,7 +9431,7 @@ array set print_64316 {
 array set print_64318 { 
   BBx 25
   BBy 24
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 27
   DWy 0
@@ -9457,7 +9441,7 @@ array set print_64318 {
 array set print_64320 { 
   BBx 16
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 17
   DWy 0
@@ -9467,7 +9451,7 @@ array set print_64320 {
 array set print_64321 { 
   BBx 23
   BBy 25
-  BBxoff 3
+  BBxoff 4
   BByoff -2
   DWx 26
   DWy 0
@@ -9477,7 +9461,7 @@ array set print_64321 {
 array set print_64323 { 
   BBx 21
   BBy 32
-  BBxoff 4
+  BBxoff 5
   BByoff -9
   DWx 26
   DWy 0
@@ -9487,7 +9471,7 @@ array set print_64323 {
 array set print_64324 { 
   BBx 23
   BBy 24
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -9497,7 +9481,7 @@ array set print_64324 {
 array set print_64326 { 
   BBx 23
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 22
   DWy 0
@@ -9507,7 +9491,7 @@ array set print_64326 {
 array set print_64327 { 
   BBx 25
   BBy 32
-  BBxoff 1
+  BBxoff 2
   BByoff -9
   DWx 25
   DWy 0
@@ -9517,7 +9501,7 @@ array set print_64327 {
 array set print_64328 { 
   BBx 18
   BBy 24
-  BBxoff 4
+  BBxoff 5
   BByoff -1
   DWx 23
   DWy 0
@@ -9527,7 +9511,7 @@ array set print_64328 {
 array set print_64329 { 
   BBx 28
   BBy 25
-  BBxoff 4
+  BBxoff 5
   BByoff -2
   DWx 31
   DWy 0
@@ -9537,7 +9521,7 @@ array set print_64329 {
 array set print_64330 { 
   BBx 28
   BBy 24
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 29
   DWy 0
@@ -9547,7 +9531,7 @@ array set print_64330 {
 array set print_64331 { 
   BBx 11
   BBy 29
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 12
   DWy 0
@@ -9557,7 +9541,7 @@ array set print_64331 {
 array set print_64332 { 
   BBx 23
   BBy 30
-  BBxoff 0
+  BBxoff 1
   BByoff -1
   DWx 25
   DWy 0
@@ -9567,7 +9551,7 @@ array set print_64332 {
 array set print_64333 { 
   BBx 20
   BBy 30
-  BBxoff 1
+  BBxoff 2
   BByoff -1
   DWx 21
   DWy 0
@@ -9577,7 +9561,7 @@ array set print_64333 {
 array set print_64334 { 
   BBx 23
   BBy 30
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 25
   DWy 0
@@ -9587,7 +9571,7 @@ array set print_64334 {
 array set print_64335 { 
   BBx 25
   BBy 32
-  BBxoff 2
+  BBxoff 3
   BByoff -1
   DWx 26
   DWy 0
@@ -9597,10 +9581,11 @@ array set print_64335 {
 array set print_65532 { 
   BBx 44
   BBy 32
-  BBxoff -1
+  BBxoff 0
   BByoff -1
   DWx 44
   DWy 0
   BITMAP { 22222222000022222220000222222220000222222220 21111111000021111110000211111110000211111110 21111111300001111113000011111113000011111113 21133333300003333333000033333333000033332113 21130000000000000000000000000000000000002113 21130000000000000000000000000000000000002113 21130000000000000000000000000000000000002113 01130000000000000000000000000000000000000113 03330002222222220022222222220000002220000333 00000022111111112021111111112000002110000000 00000021111111111021111111111000002113000000 00000221133333211321113333111300002113000000 22200211130000011121113000211300002113002220 21100211330000021121113022211300002113002110 21130211300000021121112221111300002113002113 21130211300000021121111111113300002113002113 21130211300000021121111111111200002113002113 21130211300000021121113333311100002113002113 01130211300000221121113000021130002113000113 03330211100000211121113000221130002113000333 00000011122222211321112222211122222113000000 00000031111111111321111111111221111113000000 00000003111111113301111111113311111133000000 22200000333333333003333333333033333330002220 21100000000000000000000000000000000000002110 21130000000000000000000000000000000000002113 21130000000000000000000000000000000000002113 21130000000000000000000000000000000000002113 21122222000022222220000222222220000222222113 21111111000021111110000211111110000211111113 01111111300001111113000011111113000011111113 03333333300003333333000033333333000033333333 }
 }
+
 
