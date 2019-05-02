@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/com/LoadConfig.tcl
+# ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 4nov18
+# Updated: 30apr19
 
 #Source Config and LoadConfig for defaults
 if { [catch {source $Config}] } {
@@ -52,9 +52,9 @@ if {![info exists fontfamily] || ($fontfamily != "Sans" && $fontfamily != "Serif
   set fontfamily "Sans"
 }
 
-#Set fontsize (must exist and be digits)
-if {![info exists fontsize] || ![regexp {[[:digit:]]} $fontsize] || ($fontsize != 20 && $fontsize != 24 && $fontsize != 30)} {
-  set fontsize 24
+#Set fontsize (must exist and be digits and be listed in fontSizeList)
+if {![info exists fontsize] || ![string is digit $fontsize] || ![regexp $fontsize $fontSizeList]} {
+  set fontsize [lindex $fontSizeList 2]
 }
 
 #Set fontweight
@@ -112,10 +112,7 @@ if {$fontweight=="bold"} {
   set fontWeightTag ""
 }
 
-set fontName "${fontFamilyTag}${fontsize}${fontWeightTag}"
-set fontNameBold "${fontFamilyTag}${fontsize}B"
-#puts $fontNameBold
-
+set fontName "${fontFamilyTag}${fontWeightTag}${fontsize}"
+set fontNameBold "${fontFamilyTag}B${fontsize}"
 #for Italic: reset fontname to normal if Bold
-set fontWeightTag I
-set fontNameItalic "${fontFamilyTag}${fontsize}${fontWeightTag}"
+set fontNameItalic "${fontFamilyTag}I${fontsize}"

@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19sep18
+# Updated: 17apr2019
 
 #Check for Img package
 if { [catch {package require Img} ] } {
@@ -10,7 +10,13 @@ if { [catch {package require Img} ] } {
   exit
 }
 
-####### Procs for $Hgbild #####################
+proc mean {rgbList} {
+  namespace path {::tcl::mathop ::tcl::mathfunc}
+  set average [/ [+ {*}$rgbList] [double [llength $rgbList]]]
+  return [expr round($average)]
+}
+
+######### P I X E L   T O O L S ########################
 
 #called by setShade + setSun
 proc rgb2hex {rgb} {
@@ -19,14 +25,69 @@ proc rgb2hex {rgb} {
   return $hex
 }
 
-#called by Hgbild
-proc hex2rgb {hex} {
-  set rgb [scan $hex "#%2x %2x %2x"]
-  foreach i [split $rgb] {
-    lappend rgblist $i
-  }
-  return $rgb
-}
+# computeAvColours
+##fetches R G B from a section & computes avarages into ::rgb namespace
+##called by BdfPrint
+proc computeAvColours {img} {
+  global marginleft margintop RtL
+  #no. of pixels to be skipped
+  set skip 5
+
+  set imgX [image width $img]
+  set imgY [image height $img]
+  set x1 $marginleft
+  set y1 $margintop
+  set x2 [expr $imgX / 3]
+  set y2 [expr $imgY / 3]
+
+  if $RtL {
+    set x2 [expr $imgX - $marginleft]
+    set x1 [expr $x2 - ($imgX / 3)]
+  }    
+
+puts "Computing pixels..."
+
+    for {set x $x1} {$x<$x2} {incr x $skip} {
+
+      for {set y $y1} {$y<$y2} {incr y $skip} {
+        
+        lassign [$img get $x $y] r g b
+        lappend R $r
+        lappend G $g
+        lappend B $b
+      }
+    }
+puts "Done computing pixels"
+
+  #Compute avarage colours
+  set avR [mean $R]
+  set avG [mean $G]
+  set avB [mean $B]
+  set avBri [mean [list $avR $avG $avB]]
+puts "avR $avR"
+puts "avG $avG"
+puts "avB $avB"
+
+
+
+  #Compute strong colour
+
+  #Export vars to ::rgb namespace
+  catch {namespace delete rgb}
+  namespace eval rgb {}
+  set rgb::avRed $avR
+  set rgb::avGreen $avG
+  set rgb::avBlue $avB
+  set rgb::avBrightness $avBri
+
+  namespace path {::tcl::mathfunc}
+  set rgb::maxCol [max $avR $avG $avB]
+puts "strongCol $rgb::maxCol"
+
+  #Delete colour lists
+  catch {unset R G B}
+} ;#END computeAvColours
+
 
 proc setShade {rgb} {
 #called by ??? - now in Setup, var saved to Config!!! ????
@@ -353,3 +414,14 @@ proc resize {src newx newy {dest ""} } {
 
   return $dest
 }
+
+# A R C H I V E #####################################################
+
+proc hex2rgb {hex} {
+  set rgb [scan $hex "#%2x %2x %2x"]
+  foreach i [split $rgb] {
+    lappend rgblist $i
+  }
+  return $rgb
+}
+

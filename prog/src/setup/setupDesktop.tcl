@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 7dec18
+# Updated 30apr19
 
 #Create left & right main frames
 pack [frame .desktopF.fleft] -expand 0 -fill y -side left
@@ -152,7 +152,7 @@ if {!$fontsize} {
 }
 
 message .desktopF.fright.fbot1.fontsizeTxt -width 200 -textvar f2.fontsizetext
-spinbox .desktopF.fright.fbot1.fontsizeSpin -width 2 -values {20 24 30} -command {font configure displayfont -size %s}
+spinbox .desktopF.fright.fbot1.fontsizeSpin -width 2 -values $fontSizeList -command {font configure displayfont -size %s}
 set fontsizeTxt .desktopF.fright.fbot1.fontsizeTxt
 set fontsizeSpin .desktopF.fright.fbot1.fontsizeSpin
 $fontsizeSpin set $fontsize

@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 9feb19
+# Updated: 30apr19
 
 set version "3.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
@@ -136,28 +136,24 @@ array set iconArray "
   biblepix.ico [file join $windir biblepix.ico]
 "
 
-#Set Bdf Fonts array
+#Set font size list (in pts)
+set fontSizeList {16 20 26 32}
+
+#Set fonts array
+foreach ptsize $fontSizeList {
+  array set BdfFontPaths "
+    Arial${ptsize}  [file join $fontdir Arial${ptsize}.tcl]
+    ArialI${ptsize} [file join $fontdir ArialI${ptsize}.tcl]
+    ArialB${ptsize} [file join $fontdir ArialB${ptsize}.tcl]
+    Times${ptsize}  [file join $fontdir Times${ptsize}.tcl]
+    TimesI${ptsize} [file join $fontdir TimesI${ptsize}.tcl]
+    TimesB${ptsize} [file join $fontdir TimesB${ptsize}.tcl]
+  "
+}
+#Add Asian fonts to array (1 size!)
 array set BdfFontPaths "
-Arial20 [file join $fontdir Arial20.tcl]
-Arial24 [file join $fontdir Arial24.tcl]
-Arial30 [file join $fontdir Arial30.tcl]
-Times20 [file join $fontdir Times20.tcl]
-Times24 [file join $fontdir Times24.tcl]
-Times30 [file join $fontdir Times30.tcl]
-Arial20B [file join $fontdir bold Arial20B.tcl]
-Arial24B [file join $fontdir bold Arial24B.tcl]
-Arial30B [file join $fontdir bold Arial30B.tcl]
-Times20B [file join $fontdir bold Times20B.tcl]
-Times24B [file join $fontdir bold Times24B.tcl]
-Times30B [file join $fontdir bold Times30B.tcl]
-Arial20I [file join $fontdir italic Arial20I.tcl]
-Arial24I [file join $fontdir italic Arial24I.tcl]
-Arial30I [file join $fontdir italic Arial30I.tcl]
-Times20I [file join $fontdir italic Times20I.tcl]
-Times24I [file join $fontdir italic Times24I.tcl]
-Times30I [file join $fontdir italic Times30I.tcl]
-ChinaFont [file join $fontdir asian WenQuanYi_ZenHei_24.tcl]
-ThaiFont [file join $fontdir asian Kinnari_Bold_20.tcl]
+  ChinaFont [file join $fontdir asian WenQuanYi_ZenHei_24.tcl]
+  ThaiFont [file join $fontdir asian Kinnari_Bold_20.tcl]
 "
 
 set WinIcon [lindex [array get iconArray biblepix.ico] 1]
