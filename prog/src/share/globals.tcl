@@ -1,8 +1,8 @@
-# ~/Biblepix/prog/src/com/globals.tcl
+# ~/Biblepix/prog/src/share/globals.tcl
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 30apr19
+# Updated: 9may19
 
 set version "3.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
@@ -99,7 +99,7 @@ array set FilePaths "
   Http [file join $sharedir http.tcl]
   HttpMock [file join $sharedir httpMock.tcl]
   JList [file join $sharedir JList.tcl]
-  Imgtools [file join $sharedir imgTools.tcl]
+  ImgTools [file join $sharedir imgTools.tcl]
   LoadConfig [file join $sharedir LoadConfig.tcl]
   TwdTools [file join $sharedir TwdTools.tcl]
   Uninstall [file join $savedir uninstall.tcl]
@@ -187,13 +187,13 @@ proc sleep { ms } {
   unset ::__sleep__tmp__$uniq
 }
 
-#Define font colours & sun/shade factors
-#set gold #daa520
-set gold #eb9b09
-set silver #707585
-set blue #4682b4
-set green #2e8b57
-set sunfactor 2.0
+#Define font colours & colour computing values
+set gold #ff9b00
+set silver #c0c0c0
+set blue #00bfff
+set green #3cb978
+set brightnessThreshold 170
+set sunfactor 1.8
 set shadefactor 0.6
 
 #Bildformate & DesktopPicturesDir

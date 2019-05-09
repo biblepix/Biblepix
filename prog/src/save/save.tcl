@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 1sept18 
+# Updated : 9may19 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $twdDir/*$jahr.twd}] } {
@@ -58,8 +58,8 @@ puts $chan "set fontfamily \{$fontfamilystatus\}"
 puts $chan "set fontsize $fontsizestatus"
 puts $chan "set fontcolortext $fontcolourstatus"
 puts $chan "set fontweight $fontweight"
-puts $chan "set sun [setSun $rgb]"
-puts $chan "set shade [setShade $rgb]"
+#puts $chan "set sun [setSun $rgb]"
+#puts $chan "set shade [setShade $rgb]"
 puts $chan "set marginleft $marginleftstatus"
 puts $chan "set margintop $margintopstatus"
 

@@ -1,11 +1,11 @@
-# ~/Biblepix/prog/src/pic/imgtools.tcl
+# ~/Biblepix/prog/src/pic/imgTools.tcl
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17apr2019
+# Updated: 10may19
 
 #Check for Img package
-if { [catch {package require Img} ] } {
+if [catch {package require Img} ] {
   tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message $packageRequireImg
   exit
 }
@@ -16,13 +16,19 @@ proc mean {rgbList} {
   return [expr round($average)]
 }
 
-######### P I X E L   T O O L S ########################
-
 #called by setShade + setSun
 proc rgb2hex {rgb} {
   set rgblist [split $rgb]
   set hex [format "#%02x%02x%02x" [lindex $rgblist 0] [lindex $rgblist 1] [lindex $rgblist 2] ]
   return $hex
+}
+
+proc hex2rgb {hex} {
+  set rgb [scan $hex "#%2x %2x %2x"]
+  foreach i [split $rgb] {
+    lappend rgblist $i
+  }
+  return $rgb
 }
 
 # computeAvColours
@@ -64,13 +70,9 @@ puts "Done computing pixels"
   set avG [mean $G]
   set avB [mean $B]
   set avBri [mean [list $avR $avG $avB]]
-puts "avR $avR"
-puts "avG $avG"
-puts "avB $avB"
-
-
-
-  #Compute strong colour
+#puts "avR $avR"
+#puts "avG $avG"
+#puts "avB $avB"
 
   #Export vars to ::rgb namespace
   catch {namespace delete rgb}
@@ -80,14 +82,39 @@ puts "avB $avB"
   set rgb::avBlue $avB
   set rgb::avBrightness $avBri
 
+  #Compute strong colour
   namespace path {::tcl::mathfunc}
   set rgb::maxCol [max $avR $avG $avB]
-puts "strongCol $rgb::maxCol"
+  set rgb::minCol [min $avR $avG $avB]
+
+#puts "strongCol $rgb::maxCol"
 
   #Delete colour lists
   catch {unset R G B}
 } ;#END computeAvColours
 
+# changeFontColour
+#TODO: to be implemented in above!
+#Theory: 
+##wenn HG überwiegend dunkelblau, fontcolor-> silver
+##wenn HG überwiegend dunkelgrün, fontcolor-> gold
+proc changeFontColour {} {
+  if {$rgb::avBrightness <= 100 &&
+  [expr $rgb::maxCol - $rgb::minCol] > 70} {
+  #puts "Not resetting colour."
+    return 0
+  }
+
+  if {$rgb::maxCol == $rgb::avBlue} {
+    set newFontcolortext silver
+  } elseif {$rgb::maxCol == $rgb::avGreen} {
+    set newFontcolortext gold
+  }
+
+  set rgb::fontcolortext $newFontcolortext
+  puts "Changed font colour to $fontcolortext"
+  return 1
+}
 
 proc setShade {rgb} {
 #called by ??? - now in Setup, var saved to Config!!! ????
@@ -414,14 +441,3 @@ proc resize {src newx newy {dest ""} } {
 
   return $dest
 }
-
-# A R C H I V E #####################################################
-
-proc hex2rgb {hex} {
-  set rgb [scan $hex "#%2x %2x %2x"]
-  foreach i [split $rgb] {
-    lappend rgblist $i
-  }
-  return $rgb
-}
-

@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 19Apr19
+# Updated: 10may19
 
 # printTwd
 ## Toplevel printing proc
@@ -16,7 +16,6 @@ proc printTwd {TwdFileName img} {
   
   return $finalImg
 }
-
 
 # parseTwdTextParts
 ## prepares Twd nodes in a separate namespace for further processing
@@ -221,8 +220,7 @@ proc printTextLine {textLine x y img args} {
     set imgW [image width $img]
     set textLine [bidi $textLine $TwdLang]
     set operator -
-    
-    set xBase [expr $imgW - ($marginleft*2) - $x]
+    set xBase [expr $imgW - ($marginleft) - $x]
     
   } else {
     set operator +

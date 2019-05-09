@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4jan19
+# Updated: 4may19
 
 source $JList
 
@@ -522,7 +522,7 @@ proc deleteImg {localJList c} {
 ##$$$$$$$$$$$$$ TODO: Joel, this proc needs threading!! - use [after] !!!!!!!!!!!!!!!!!!!!!!!!!!!
 proc copyAndResizeSamplePhotos {} {
   global sampleJpgArray sampleJpgDir photosDir
-  source $::Imgtools
+  source $::ImgTools
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
 

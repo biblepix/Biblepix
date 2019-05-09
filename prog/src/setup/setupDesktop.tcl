@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 30apr19
+# Updated 5may19
 
 #Create left & right main frames
 pack [frame .desktopF.fleft] -expand 0 -fill y -side left
@@ -116,7 +116,7 @@ if {$os=="Linux"} {
 set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt $f2thai_txt"
 
 #create sun / shade /main text
-source $Imgtools
+source $ImgTools
 
 proc setIntCanvText {fontcolor} {
   global rgblist inttextCanv internationalText
