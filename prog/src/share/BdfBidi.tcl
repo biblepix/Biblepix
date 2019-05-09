@@ -1,9 +1,9 @@
-# ~/Biblepix/prog/src/com/BdfBidi.tcl
+# ~/Biblepix/prog/src/share/BdfBidi.tcl
 # Fixes missing bidi algorithm for Unix and Win Tk Hebrew/Arabic
 # called by BdfPrint
 # optional 'args' reverts string for Setup apps
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 19sep18
+# Updated: 9may18
 
 proc bidi {dw TwdLang args} {
 
@@ -31,7 +31,10 @@ proc bidi {dw TwdLang args} {
     ##kol, ..chol
     regsub -all {כֹּל} $dw {כל} dw
     regsub -all {כֹל} $dw {כל} dw
-    
+    ##imm.
+    regsub -all {ע\u05b4מ\u05bc} $dw {עמ} dw
+    regsub -all {א\u05b4מ\u05bc} $dw {אמ} dw
+
     #2. Vorsilbe mi- ohne Jod: mem+chirik+?+dagesh -> mem
     regsub -all {\U05DE\U05B4} $dw \U05DE dw
     
