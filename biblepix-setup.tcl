@@ -4,9 +4,9 @@
 # Called by User via Windows/Unix Desktop entry
 # If called by BiblePix-Installer, this is the first file downloaded + executed
 ################################################################################
-# Version: 3.0
+# Version: 3.1
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3dec18
+# Updated: 13may19
 
 package require Tk
 
@@ -65,12 +65,23 @@ if {[catch {source $Globals}]} {
       set pbTitle $uptodateHttp
     }
 
+
     catch {source $UpdateInjection}
     .updateFrame.progbar stop
     pack forget .updateFrame.pbTitle .updateFrame.progbar .updateFrame
 
+  
     # 2. B U I L D  M A I N  G U I
-
     source $SetupMainFrame
   }
+}
+
+#Delete old fonts (before version 3.1)
+after idle {
+  source $Globals
+  file delete -force $fontdir/italic $fontdir/bold
+  file delete [glob -nocomplain -directory $fontdir *B.tcl] ||
+  file delete [glob -nocomplain -directory $fontdir *I.tcl] ||
+  file delete [glob -nocomplain -directory $fontdir *24*] || 
+  file delete [glob -nocomplain -directory $fontdir *30*]
 }

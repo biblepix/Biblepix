@@ -22,15 +22,18 @@ proc runHTTP isInitial {
     error $Error
 
   } else {
+
+  #Download all registered files
     foreach varName [array names ::FilePaths] {
       set filePath [lindex [array get ::FilePaths $varName] 1]
       downloadFile $filePath $isInitial
     }
+
+  #Download all registered fonts
     foreach varName [array names ::BdfFontPaths] {
       if {$varName == "ChinaFont"} {
         continue
       }
-
       set filePath [lindex [array get ::BdfFontPaths $varName] 1]
       downloadFile $filePath $isInitial
     }
