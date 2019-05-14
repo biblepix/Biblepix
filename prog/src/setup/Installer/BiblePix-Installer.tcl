@@ -131,6 +131,7 @@ if { [catch testHttpCon Error] } {
 
 #4. FETCH Globals + Http
 } else {
+#return testing
  
   .if.pb start
   
