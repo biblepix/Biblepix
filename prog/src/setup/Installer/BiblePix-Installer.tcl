@@ -1,10 +1,11 @@
 #!/usr/bin/tclsh
-# ~/?Downloads/BiblePix-Installer.tcl (location unimportant, can be deleted after first use)
-# Download file to install BiblePix on a Linux or Windows PC
-# Overwrites any old program version
-# Version: 3.0
+# ~/Biblepix/prog/src/setup/Install/BiblePix-Installer.tcl 
+##(Location after download unimportant, can be deleted after first use)
+# First time installer for BiblePix on a Linux or Windows PC
+# Overwrites any old program version!
+# Version: 3.1
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3feb19
+# Updated: 14may19
 
 package require http
 
