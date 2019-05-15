@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupSaveWin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24may18
+# Updated: 24may19
 
 #Windows handles TIF + BMP
 package require registry
@@ -9,7 +9,7 @@ source $SetupSaveWinHelpers
 
 #Set Registry compatible paths
 set wishpath [file nativename [auto_execok wish]]
-set winpath [file nativename $windir]
+set winpath [file nativename $dirlist(windir)]
 
 
 # A)  N O N - A D M I N   R E G I S T E R I N G S

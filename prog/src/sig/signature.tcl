@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7apr19
+# Updated: 15may19
 
 source $TwdTools
 puts "Updating signatures..."
@@ -14,7 +14,7 @@ foreach twdFileName $twdList {
   
   #set endung mit 8 Extrabuchstaben nach Sprache_
   set endung [string range $twdFileName 0 8] 
-  set sigFile [file join $sigDir signature-$endung.txt]
+  set sigFile [file join $dirlist(sigDir) signature-$endung.txt]
   
   #create the File if it doesn't exist and open it.
   set sigFileChan [open $sigFile a+]

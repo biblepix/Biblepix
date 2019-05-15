@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/gui/setupPhotos.tcl
+# ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 31jan18
+# Updated 15may19
 
 set fileJList ""
 

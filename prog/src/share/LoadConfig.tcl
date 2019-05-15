@@ -1,11 +1,11 @@
 # ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 30apr19
+# Updated: 15may19
 
 #Source Config and LoadConfig for defaults
 if { [catch {source $Config}] } {
-  file mkdir $confdir
+  file mkdir $dirlist(confdir)
 }
 
 #Set language

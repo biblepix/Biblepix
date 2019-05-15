@@ -25,31 +25,30 @@ if { [info exists srcdir] } {
 }
 
 #S e t   d i r n a m e s
-set sigDir [file join $rootdir TodaysSignature]
-set imgDir [file join $rootdir TodaysPicture]
+array set dirlist "
+  sigDir [file join $rootdir TodaysSignature]
+  imgDir [file join $rootdir TodaysPicture]
+  photosDir [file join $rootdir Photos]
+  progDir [file join $rootdir prog]
+  twdDir [file join $rootdir BibleTexts]
+  docDir [file join $rootdir Docs]
+  confdir [file join $progDir conf]
+  fontdir [file join $progDir font]
+  piddir [file join $progDir pid]
+  srcdir [file join $progDir src]
+  unixdir [file join $progDir unix]
+  windir [file join $progDir win]
+  sharedir [file join $srcdir share]
+  guidir [file join $srcdir setup]
+  maildir [file join $srcdir sig]
+  picdir [file join $srcdir pic]
+  savedir [file join $srcdir save]
+  sampleJpgDir [file join $picdir SamplePhotos]
+  termdir [file join $srcdir term]
+"
 
-#TODO: jpegDir > photosDir
-set photosDir [file join $rootdir Photos]
-set jpegDir $photosDir
-set progDir [file join $rootdir prog]
-set twdDir [file join $rootdir BibleTexts]
-set docDir [file join $rootdir Docs]
-
-set confdir [file join $progDir conf]
-set fontdir [file join $progDir font]
-set piddir [file join $progDir pid]
-set srcdir [file join $progDir src]
-set unixdir [file join $progDir unix]
-set windir [file join $progDir win]
-
-set sharedir [file join $srcdir share]
-set guidir [file join $srcdir setup]
-set maildir [file join $srcdir sig]
-set picdir [file join $srcdir pic]
-set savedir [file join $srcdir save]
-set sampleJpgDir [file join $picdir SamplePhotos]
-set termdir [file join $srcdir term]
-
+# makeDirs - TODO: why needed?
+##called by Installer & UpdateInjection
 proc makeDirs {} {
   file mkdir $::sigDir $::imgDir $::jpegDir $::sampleJpgDir $::progDir $::twdDir $::docDir
   file mkdir $::confdir $::piddir $::srcdir $::unixdir $::windir

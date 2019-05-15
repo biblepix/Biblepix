@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/com/uninstall.tcl
 # sourced by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17jul18
+# Updated: 17may19
 
 set msg1 "Do you really want to remove BiblePix from your computer?"
 set msg1DE "Wollen Sie wirklich BibelPix von Ihrem Computer entfernen?"
@@ -59,7 +59,7 @@ if {$antwort=="yes"} {
       #1. restore custom.theme
       set themepath [file join $env(appdata) Local Microsoft Windows Themes biblepix.theme]
       file delete -force $themepath
-      catch {exec cmd /c [file join $windir Custom.theme]}
+      catch {exec cmd /c [file join $dirlist(windir) Custom.theme]}
 
       #2. unregister Autorun
       setWinAutorun delete

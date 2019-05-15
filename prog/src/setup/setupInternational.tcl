@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 12nov18
+# Updated 12may19
 
 #Statusbar
 frame .internationalF.f0 -padx $px
@@ -34,7 +34,7 @@ button .internationalF.f1.delbtn -bg $bg -textvar delete -command {
   set lbIndex [.internationalF.f1.twdlocal cursel]
   if {$lbIndex != ""} {
     set fileName [.internationalF.f1.twdlocal get active]
-    file delete $twdDir/$fileName
+    file delete $dirlist(twdDir)/$fileName
     .internationalF.f1.twdlocal delete $lbIndex
   }
 }

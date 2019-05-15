@@ -11,10 +11,11 @@ if {$version == "2.4"} {
   pack .updateFrame.pbTitle .updateFrame.progbar
   .updateFrame.progbar start
   set pbTitle $updatingHttp
+  set srcdir $dirlist(srcdir)
 
   # 1 Download new Globals & Http
-  set sharedir [file join $::srcdir share]
-  file mkdir $::sharedir
+  set sharedir [file join $srcdir share]
+  file mkdir $sharedir
   set Globals [file join $sharedir globals.tcl]
 
   set token [http::geturl $::bpxReleaseUrl/globals.tcl -validate 1]  
@@ -36,7 +37,7 @@ if {$version == "2.4"} {
   foreach path [glob -directory $rootdir -type d *] {
     lappend oldDirList $path
   }
-  foreach path [glob -directory $srcdir -type d *] {
+  foreach path [glob -directory $dirlist(srcdir) -type d *] {
     lappend oldDirList $path
   }
 
@@ -83,8 +84,8 @@ proc joelwatsolls? {} {
 
   ##delete obsolete single files
   file delete $rootdir/README
-  file delete $picdir/hgbild.tcl
-  file delete $picdir/textbild.tcl
+  file delete $dirlist(picdir)/hgbild.tcl
+  file delete $dirlist(picdir)/textbild.tcl
 
   # 4 Exit progbar and return to Setup
   .updateFrame.progbar stop

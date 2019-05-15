@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/com/http.tcl
+# ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9feb19
+# Updated: 15may19
 
 package require http
 
@@ -210,7 +210,7 @@ proc downloadTWDFiles {} {
 
 #  NewsHandler::QueryNews "$::gettingTwd" orange - falsche Message!
 
-  cd $::twdDir
+  cd $::dirlist(twdDir)
   #get hrefs alphabetically ordered
   set urllist [$root selectNodes {//tr/td/a}]
   set hrefs ""

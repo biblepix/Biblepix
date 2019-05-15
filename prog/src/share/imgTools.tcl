@@ -157,9 +157,9 @@ proc setPngFileName {fileName} {
 ## organises all resizing processes
 ## called by addPic
 proc doResize {c} {
-  global photosDir picPath
+  global dirlist picPath
 
-  set targetPicPath [file join $photosDir [setPngFileName [file tail $picPath]]]
+  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
   
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]

@@ -29,6 +29,9 @@ if {[catch {source $Globals}]} {
 
 } else {
 
+  #Get current version before update (var used in UpdateInjection)
+  set curVersion $version
+
   #In case of GIT download: makeDirs
   makeDirs
 
@@ -61,10 +64,12 @@ if {[catch {source $Globals}]} {
     if { [info exists InitialJustDone] || ![file exists $Config] } {
       set pbTitle "Copying & resizing sample photos..."
       source $SetupTools
+#move to background
+after idle {
       copyAndResizeSamplePhotos
       set pbTitle $uptodateHttp
+}
     }
-
 
     catch {source $UpdateInjection}
     .updateFrame.progbar stop
@@ -76,8 +81,9 @@ if {[catch {source $Globals}]} {
   }
 }
 
+#TODO: delete, now in updateInjection!
 #Delete old fonts (before version 3.1)
-after idle {
+proc idle {} {
   source $Globals
   file delete -force $fontdir/italic $fontdir/bold
   file delete [glob -nocomplain -directory $fontdir *B.tcl] ||

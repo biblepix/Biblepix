@@ -1,14 +1,14 @@
 # ~/Biblepix/prog/src/share/setupSaveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22Sep17
+# Updated: 15may19
 
 package require registry
 
 #Set Registry compatible paths
 set wishpath [file nativename [auto_execok wish]]
 set srcpath [file nativename $srcdir]
-set winpath [file nativename $windir]
+set winpath [file nativename $dirlist(windir)]
 
 #sets/unsets BiblePix Autorun
 #no admin rights required
@@ -54,7 +54,7 @@ proc setBackgroundType {} {
 #adds context menu & icon
 #removes any "Policies\System Wallpaper" key (blocks user intervention)
 proc setWinContextMenu args {
-  global wishpath Setup winpath windir
+  global wishpath Setup winpath dirlist
   
   set SetupPath [file nativename $Setup]
 
@@ -91,12 +91,12 @@ proc setWinContextMenu args {
   regsub -all {[\{\}]} $regtext {} regtext
 
   #Write regtext to install.reg, overwriting any old files
-  set chan [open $windir/install.reg w]
+  set chan [open $dirlist(windir)/install.reg w]
   puts $chan $regtext
   close $chan
 
   #Execute regfile
-  set regpath "[file nativename $windir]\\install.reg"
+  set regpath "[file nativename $dirlist(windir)]\\install.reg"
   regsub -all {\\} $regpath {\\\\} regpath
   
   catch {exec cmd /c regedit.exe $regpath}
@@ -128,7 +128,7 @@ MTSM=DABJDKT"
 
   #1.Save current theme to $windir (for Uninstall)
   set CustomThemePath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Custom.theme]
-  catch {file copy $CustomThemePath $windir}
+  catch {file copy $CustomThemePath $dirlist(windir)}
 
   #2.Write & execute BP theme
   set chan [open $themepath w]

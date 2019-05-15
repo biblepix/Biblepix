@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21jan19
+# Updated: 15may19
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -422,7 +422,7 @@ Exec=$Setup
 # TODO: > Anleitung in Manpage für andere KDE-Versionen/andere Desktops (Rechtsklick > Desktop-Einstellungen >Einzelbild/Diaschau)
 
 proc setupKdeBackground {} {
-  global KdeVersion Kde4ConfFile Kde5ConfFile TwdPNG slideshow imgDir
+  global KdeVersion Kde4ConfFile Kde5ConfFile TwdPNG slideshow dirlist
 
   #check kread/kwrite executables
   if {[auto_execok kreadconfig5] != "" && 
@@ -465,7 +465,7 @@ puts $errCode5
 # setupKde4Bg
 # called by setKdeBackground if KDE4 rcfile found
 proc setupKde4Bg {Kde4ConfFile kread kwrite} {
-  global slideshow imgDir
+  global slideshow dirlist
   set rcfile [file tail $Kde4ConfFile]
   puts "Setting up KDE4 background..."
   
@@ -475,7 +475,7 @@ proc setupKde4Bg {Kde4ConfFile kread kwrite} {
     set interval $slideshow
   }
   
-  set slidepaths $imgDir
+  set slidepaths $dirlist(imgDir)
   set mode Slideshow
         
   for {set g 1} {$g<200} {incr g} {
@@ -526,7 +526,7 @@ proc setupKde4Bg {Kde4ConfFile kread kwrite} {
 # width=1280
 ################################################################################3
 proc setupKde5Bg {Kde5ConfFile kread kwrite} {
-  global slideshow TwdPNG imgDir
+  global slideshow TwdPNG dirlist
   set rcfile $Kde5ConfFile
   
   puts "Setting up KDE5 background..."
@@ -550,10 +550,10 @@ proc setupKde5Bg {Kde5ConfFile kread kwrite} {
       
       ##2.[Containments][$g][Wallpaper][General] - General settings (not sure if needed)
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key Image file://$TwdPNG
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $imgDir
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $dirlist(imgDir)
       
       ##3. [Containments][$g][Wallpaper][org.kde.slideshow][General]: Set SlideInterval+SlidePaths+height+width
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlidePaths $imgDir
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlidePaths $dirlist(imgDir)
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlideInterval $interval
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key height [winfo screenheight .]
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key width [winfo screenwidth .]
@@ -795,8 +795,8 @@ proc reloadXfceDesktop {} {
 #    only FOR DESKTOPS OTHER THAN KDE/GNOME/XFCE4
 proc setupLinCrontab args {
 
-  global Biblepix Setup slideshow tclpath unixdir env linConfDir
-  set cronfileOrig $unixdir/crontab.ORIG
+  global Biblepix Setup slideshow tclpath dirlist env linConfDir
+  set cronfileOrig $dirlist(unixdir)/crontab.ORIG
   
   #if ARGS: Delete any crontab entries & exit
   if {$args != ""}  {
@@ -838,7 +838,7 @@ proc setupLinCrontab args {
   }
 
   #Prepare new crontab entry for running BiblePix at boot
-  set cronScript $unixdir/cron.sh
+  set cronScript $dirlist(unixdir)/cron.sh
   set cronfileTmp /tmp/crontab.TMP
   append BPcrontext \n @daily $cronScript \n @reboot $cronScript
 
@@ -905,7 +905,7 @@ done
 ##use 'args' to delete - T O D O > Uninstall !!
 # Called by SetupSaveLin if $enableterm==1
 proc setupLinTerminal {args} {
-  global confdir HOME Terminal
+  global dirlist HOME Terminal
   
   #Delete any previous/erroneous entries in .bash_profile
   set f $HOME/.bash_profile
@@ -1023,7 +1023,7 @@ proc setupLinTerminal {args} {
   }
   
   #Copy to file if new or corrupt
-  set termConfFile "$confdir/term.conf"
+  set termConfFile "$dirlist(confdir)/term.conf"
   catch {file size $termConfFile} size
   if {![string is digit $size] || $size<50} {
     set chan [open $termConfFile w]

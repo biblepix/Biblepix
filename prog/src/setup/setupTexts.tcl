@@ -5,7 +5,7 @@
 
 proc setTexts {lang} {
 #exports text variables for current language
-global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG confdir imgDir sigDir unixdir windir twdDir
+global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
 
 #### G E N E R A L ###############################
 set DW(de) {'Das Wort'}
@@ -89,7 +89,7 @@ set ::delete $delete($lang)
 #Create RtL info on text positioning
 set RtlInfo ""
 ##Hebrew
-if {! [catch "glob $twdDir/he_*"]} {
+if {! [catch "glob $dirlist(twdDir)/he_*"]} {
   set RtlHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
   if {$platform=="unix"} {
     set RtlHe [string reverse $RtlHe]
@@ -97,10 +97,10 @@ if {! [catch "glob $twdDir/he_*"]} {
   append RtlInfo \n $RtlHe
 }
 ##Arabic
-if {! [catch "glob $twdDir/ar_*"]} {
+if {! [catch "glob $dirlist(twdDir)/ar_*"]} {
   set RtlAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
   if {$platform=="unix"} {
-    source $BdfBidi
+    source $BdfBidis
     set RtlAr [bidi $RtlAr ar revert]
     #set RtlInfo [bidi $RtlInfo ar]
   }
@@ -225,8 +225,8 @@ if {$platform=="unix"} {
 #win has only TIF
   set picNo ": '[file tail $TwdTIF]'"
 }
-set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image $picNo will be put in \n\n\t [file nativename $imgDir] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. For only 1 picture per day, unset this feature (see above).\n\nThe Text Position window allows you to put $dw wherever you like on your screen. $RtlInfo\n\nThe font size is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters = better contrast).\n\nIf the new background image fails to appear automatically, please consult the Manual page for a solution."
-set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild $picNo steht jeweils in \n\n\t [file nativename $imgDir] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Soll nur 1 Bild pro Tag angezeigt werden, kann die Diaschau deaktiviert werden (s.o.).\n\nIm Fenster 'Textposition' können Sie $dw an die gewünschte Stelle auf dem Bildschirm verschieben. $RtlInfo\n\nDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, Grösse und Dicke anzupassen (grössere Buchstaben = besserer Kontrast).\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, finden Sie im Manual eine Lösung."
+set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image $picNo will be put in \n\n\t [file nativename $dirlist(imgDir)] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. For only 1 picture per day, unset this feature (see above).\n\nThe Text Position window allows you to put $dw wherever you like on your screen. $RtlInfo\n\nThe font size is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters = better contrast).\n\nIf the new background image fails to appear automatically, please consult the Manual page for a solution."
+set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild $picNo steht jeweils in \n\n\t [file nativename $dirlist(imgDir)] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Soll nur 1 Bild pro Tag angezeigt werden, kann die Diaschau deaktiviert werden (s.o.).\n\nIm Fenster 'Textposition' können Sie $dw an die gewünschte Stelle auf dem Bildschirm verschieben. $RtlInfo\n\nDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, Grösse und Dicke anzupassen (grössere Buchstaben = besserer Kontrast).\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, finden Sie im Manual eine Lösung."
 set ::f2.txt $f2Txt($lang)
 
 ### S E T U P   P H O T O S ##############################
@@ -272,20 +272,20 @@ set movePic(en) "Move picture section \u21CA"
 set ::movePic $movePic($lang)
 
 proc ::copiedPic {picPath} {
-  global photosDir lang
+  global dirlist lang
   if {$lang == "en"} {
-    return "Copied [file tail $picPath] to [file nativename $photosDir]"
+    return "Copied [file tail $picPath] to [file nativename $dirlist(photosDir)]"
   } elseif {$lang == "de"} {
-    return "[file tail $picPath] nach [file nativename $photosDir] kopiert"
+    return "[file tail $picPath] nach [file nativename $dirlist(photosDir)] kopiert"
   }
 }
 
 proc ::deletedPic {picPath} {
-  global photosDir lang
+  global dirlist lang
   if {$lang == "en"} {
-    return "Deleted [file tail $picPath] from [file nativename $photosDir]"
+    return "Deleted [file tail $picPath] from [file nativename $dirlist(photosDir)]"
   } elseif {$lang == "de"} {
-    return "[file tail $picPath] aus [file nativename $photosDir] gelöscht"
+    return "[file tail $picPath] aus [file nativename $dirlist(photosDir)] gelöscht"
   }
 }
 
@@ -303,8 +303,8 @@ set f3Btn(en) "Create e-mail signature"
 set f3Btn(de) "E-Mail-Signatur erzeugen"
 set ::f3.btn $f3Btn($lang)
 
-set f3Txt(en) "If activated, $bp will add $dw at the end of your e-mail signatures once a day for any language text files present on your computer. Signature files are stored by language shortcut (e.g. signature-en_Englis.txt) in the directory \n\n\t$sigDir \n\nYou can edit these files from your e-mail program, or in a text editor, and add any personal information (greetings, address etc.) at the top. Any text above the separating line ==== will remain untouched when 'The Word' changes. \nFinally you must instruct your e-mail program to use these signature files (generally under Options>Signatures)."
-set f3Txt(de) "Wenn aktiviert, fügt $bp einmal täglich für jede installierte Bibeltextdatei $dw an Ihre E-Mail-Signaturen an. Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. signature-de_Schlac.txt) im folgenden Ordner gespeichert: \n\n\t$sigDir \n\nSie können diese Dateien aus Ihrem E-Mail-Programm oder in einem Texteditor bearbeiten und persönliche Grussformeln, Adressen usw. oben einfügen. Text oberhalb der Trennlinie ==== bleibt beim Wechsel von $dw unbehelligt. \n\nDamit $dw künftig auf Ihren Mails erscheint, müssen Sie Ihrem Mail-Programm beibringen, die oben beschriebenen Dateien zu verwenden (meist unter Einstellungen>Signatur)."
+set f3Txt(en) "If activated, $bp will add $dw at the end of your e-mail signatures once a day for any language text files present on your computer. Signature files are stored by language shortcut (e.g. signature-en_Englis.txt) in the directory \n\n\t$dirlist(sigDir) \n\nYou can edit these files from your e-mail program, or in a text editor, and add any personal information (greetings, address etc.) at the top. Any text above the separating line ==== will remain untouched when 'The Word' changes. \nFinally you must instruct your e-mail program to use these signature files (generally under Options>Signatures)."
+set f3Txt(de) "Wenn aktiviert, fügt $bp einmal täglich für jede installierte Bibeltextdatei $dw an Ihre E-Mail-Signaturen an. Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. signature-de_Schlac.txt) im folgenden Ordner gespeichert: \n\n\t$dirlist(sigDir) \n\nSie können diese Dateien aus Ihrem E-Mail-Programm oder in einem Texteditor bearbeiten und persönliche Grussformeln, Adressen usw. oben einfügen. Text oberhalb der Trennlinie ==== bleibt beim Wechsel von $dw unbehelligt. \n\nDamit $dw künftig auf Ihren Mails erscheint, müssen Sie Ihrem Mail-Programm beibringen, die oben beschriebenen Dateien zu verwenden (meist unter Einstellungen>Signatur)."
 set ::f3.txt $f3Txt($lang)
 
 set f3Expl(en) "
@@ -330,8 +330,8 @@ set f4Btn(en) "Create $dw for display in terminal"
 set f4Btn(de) "$dw zur Anzeige im Terminal erzeugen"
 set ::f4Btn $f4Btn($lang)
 
-set f4Txt(en) "If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nColours for display etc. may be changed in \n\n\t $confdir/term.conf \n\nNote that for Arabic or Hebrew display, 'mlterm' and 'Konsole' (KDE) are those terminals reported to work with bidirectional text.\n\nFor $dw to be displayed automatically in your terminals, $bp Setup makes an entry in ~/.bash_profile for your convenience."
-set f4Txt(de) "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDarstellung und Farben können in \n\n\t $confdir/term.conf \n\ngeändert werden.\n\nFür die Darstellung von Hebräisch oder Arabisch kommen nur Terminals wie 'mlterm' oder 'Konsole' (KDE) in Frage. \n\nDamit $dw automatisch im Terminal angezeigt wird, macht das $bp-Setup einen Eintrag in ~/.bash_profile."
+set f4Txt(en) "If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nColours for display etc. may be changed in \n\n\t $dirlist(confdir)/term.conf \n\nNote that for Arabic or Hebrew display, 'mlterm' and 'Konsole' (KDE) are those terminals reported to work with bidirectional text.\n\nFor $dw to be displayed automatically in your terminals, $bp Setup makes an entry in ~/.bash_profile for your convenience."
+set f4Txt(de) "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDarstellung und Farben können in \n\n\t $dirlist(confdir)/term.conf \n\ngeändert werden.\n\nFür die Darstellung von Hebräisch oder Arabisch kommen nur Terminals wie 'mlterm' oder 'Konsole' (KDE) in Frage. \n\nDamit $dw automatisch im Terminal angezeigt wird, macht das $bp-Setup einen Eintrag in ~/.bash_profile."
 set ::f4.txt $f4Txt($lang)
 
 set ::f4.ex  "
@@ -356,8 +356,8 @@ set winChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung des Deskt
 set winChangeDesktopProb(en) "We are having a problem changing your Desktop background.\nPlease right-click on your Desktop and select \"Customize\".\nFind the BiblePix theme, click on it and then close the window."
 set ::winChangeDesktopProb $winChangeDesktopProb($lang)
 
-set linChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung der Desktopeinstellungen.\nBitte rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog für 'Hintergrundbild'. Dort geben Sie $imgDir als Bildpfad an."
-set linChangeDesktopProb(en) "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgDir as new image path."
+set linChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung der Desktopeinstellungen.\nBitte rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog für 'Hintergrundbild'. Dort geben Sie $dirlist(imgDir) als Bildpfad an."
+set linChangeDesktopProb(en) "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $dirlist(imgDir) as new image path."
 set ::linChangeDesktopProb $linChangeDesktopProb($lang)
 
 set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Autostarts.\nDamit $bp beim PC-Start ausgeführt wird, ist ein Eintrag im Autostart-Menü Ihres PCs nötig. Finden Sie den Dialog 'Automatisch ausgeführte Programme'. Dort geben Sie '$::Biblepix' als neuen Programmpfad ein.\nWeitere Lösungen finden Sie im Manual."
@@ -376,8 +376,8 @@ set winRegister(en) "BiblePix will no try to register with your system.\nYou mus
 set winRegister(de) "BiblePix muss nun auf Ihrem System registriert werden.\nBitte bestätigen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\"!"
 set ::winRegister $winRegister($lang)
 
-set winRegisterProb(en) "BiblePix has not been registered properly on your computer.\nPlease find the location $windir and execute $windir/install.reg by double-clicking on it, or restart Setup."
-set winRegisterProb(de) "BibelPix ist auf Ihrem Computer noch nicht korrekt installiert.\nBitte gehen Sie nach $windir und führen Sie die Datei $windir/install.reg durch Doppelklick aus, oder starten Sie das Setup nochmals."
+set winRegisterProb(en) "BiblePix has not been registered properly on your computer.\nPlease find the location $dirlist(windir) and execute $dirlist(windir)/install.reg by double-clicking on it, or restart Setup."
+set winRegisterProb(de) "BibelPix ist auf Ihrem Computer noch nicht korrekt installiert.\nBitte gehen Sie nach $dirlist(windir) und führen Sie die Datei $dirlist(windir)/install.reg durch Doppelklick aus, oder starten Sie das Setup nochmals."
 set ::winRegisterProb $winRegisterProb($lang)
 
 #PHOTOS

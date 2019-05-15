@@ -1,8 +1,8 @@
-# ~/Biblepix/prog/src/gui/setupBuildGUI.tcl
+# ~/Biblepix/prog/src/setup/setupBuildGUI.tcl
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12may18
+# Updated: 12may19
 
 setFlags
 

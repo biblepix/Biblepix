@@ -318,9 +318,9 @@ proc needsResize {} {
 # adds new Picture to BiblePix Photo collection
 # setzt Funktion 'photosOrigPic' voraus und leitet Subprozesse ein
 proc addPic {} {
-  global picPath photosDir
+  global picPath dirlist
 
-  set targetPicPath [file join $photosDir [setPngFileName [file tail $picPath]]]
+  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
 
   if { [file exists $targetPicPath] } {
     NewsHandler::QueryNews $::picSchonDa lightblue
@@ -422,15 +422,15 @@ proc openFileDialog {bildordner} {
 }
 
 proc refreshFileList {} {
-  global tcl_platform photosDir
+  global tcl_platform dirlist
   set storage ""
   set parted 0
   set localJList ""
 
   if {$tcl_platform(os) == "Linux"} {
-    set fileNames [glob -nocomplain -directory $photosDir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
+    set fileNames [glob -nocomplain -directory $dirlist(photosDir) *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
   } elseif {$tcl_platform(platform) == "windows"} {
-    set fileNames [glob -nocomplain -directory $photosDir *.jpg *.jpeg *.png]
+    set fileNames [glob -nocomplain -directory $dirlist(photosDir) *.jpg *.jpeg *.png]
   }
 
   foreach fileName $fileNames {
@@ -520,15 +520,15 @@ proc deleteImg {localJList c} {
 ## called by BiblepixSetup
 ##$$$$$$$$$$$$$ TODO: Joel, this proc needs threading!! - use [after] !!!!!!!!!!!!!!!!!!!!!!!!!!!
 proc copyAndResizeSamplePhotos {} {
-  global sampleJpgArray sampleJpgDir photosDir
+  global sampleJpgArray dirlist
   source $::ImgTools
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
 
   foreach fileName [array names sampleJpgArray] {
 
-    set origJpgPath [file join $sampleJpgDir $fileName]
-    set newJpgPath [file join $photosDir $fileName]
+    set origJpgPath [file join $dirlist(sampleJpgDir) $fileName]
+    set newJpgPath [file join $dirlist(photosDir) $fileName]
     set newPngPath [setPngFileName $newJpgPath]
 
     #Skip if JPG or PNG found in $photosDir
@@ -593,7 +593,7 @@ proc deleteOldStuff {} {
 
 #Delete any old TWD files
 set vorjahr [expr {$jahr - 1}]
-set oldtwdlist [glob -nocomplain -directory $twdDir *$vorjahr.twd]
+set oldtwdlist [glob -nocomplain -directory $dirlist(twdDir) *$vorjahr.twd]
 if {[info exists oldtwdlist]} {
   NewsHandler::QueryNews "Deleting old language files..." lightblue
   
@@ -616,7 +616,7 @@ foreach name [array names BdfFontPaths] {
   lappend curFontList $name
 }
 ##list installed font names
-foreach name [glob -tail -directory $fontdir *] {
+foreach name [glob -tail -directory $dirlist(fontdir) *] {
   lappend oldFontList $name
 }
 ##delete any obsolete fonts
@@ -634,7 +634,7 @@ foreach path [array get FilePaths] {
   lappend curFileList [file tail $path]
 }
 ##list all subdirs in $srcdir
-foreach dir [glob -directory $srcdir -type d *] {
+foreach dir [glob -directory $dirlist(srcdir) -type d *] {
   lappend dirList $dir
 }
 ##list all files in subdirs

@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/gui/setupResizePhoto.tcl
+# ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 2jun18
+# Updated 15may19
 
 proc openResizeWindow {} {
   
