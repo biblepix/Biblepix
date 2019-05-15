@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3dec18
+# Updated: 15may19
 
 proc setTexts {lang} {
 #exports text variables for current language
@@ -272,20 +272,20 @@ set movePic(en) "Move picture section \u21CA"
 set ::movePic $movePic($lang)
 
 proc ::copiedPic {picPath} {
-  global jpegDir lang
+  global photosDir lang
   if {$lang == "en"} {
-    return "Copied [file tail $picPath] to [file nativename $jpegDir]"
+    return "Copied [file tail $picPath] to [file nativename $photosDir]"
   } elseif {$lang == "de"} {
-    return "[file tail $picPath] nach [file nativename $jpegDir] kopiert"
+    return "[file tail $picPath] nach [file nativename $photosDir] kopiert"
   }
 }
 
 proc ::deletedPic {picPath} {
-  global jpegDir lang
+  global photosDir lang
   if {$lang == "en"} {
-    return "Deleted [file tail $picPath] from [file nativename $jpegDir]"
+    return "Deleted [file tail $picPath] from [file nativename $photosDir]"
   } elseif {$lang == "de"} {
-    return "[file tail $picPath] aus [file nativename $jpegDir] gelöscht"
+    return "[file tail $picPath] aus [file nativename $photosDir] gelöscht"
   }
 }
 

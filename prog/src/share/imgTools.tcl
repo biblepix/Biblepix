@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10may19
+# Updated: 15may19
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -157,9 +157,9 @@ proc setPngFileName {fileName} {
 ## organises all resizing processes
 ## called by addPic
 proc doResize {c} {
-  global jpegDir picPath
+  global photosDir picPath
 
-  set targetPicPath [file join $jpegDir [setPngFileName [file tail $picPath]]]
+  set targetPicPath [file join $photosDir [setPngFileName [file tail $picPath]]]
   
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]

@@ -1,8 +1,7 @@
-# ~/Biblepix/prog/src/gui/setupTools.tcl
-# Image manipulating procs
-# Called by SetupGui
+# ~/Biblepix/prog/src/setup/setupTools.tcl
+# Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4may19
+# Updated: 15may19
 
 source $JList
 
@@ -319,9 +318,9 @@ proc needsResize {} {
 # adds new Picture to BiblePix Photo collection
 # setzt Funktion 'photosOrigPic' voraus und leitet Subprozesse ein
 proc addPic {} {
-  global picPath jpegDir
+  global picPath photosDir
 
-  set targetPicPath [file join $jpegDir [setPngFileName [file tail $picPath]]]
+  set targetPicPath [file join $photosDir [setPngFileName [file tail $picPath]]]
 
   if { [file exists $targetPicPath] } {
     NewsHandler::QueryNews $::picSchonDa lightblue
@@ -423,15 +422,15 @@ proc openFileDialog {bildordner} {
 }
 
 proc refreshFileList {} {
-  global tcl_platform jpegDir
+  global tcl_platform photosDir
   set storage ""
   set parted 0
   set localJList ""
 
   if {$tcl_platform(os) == "Linux"} {
-    set fileNames [glob -nocomplain -directory $jpegDir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
+    set fileNames [glob -nocomplain -directory $photosDir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
   } elseif {$tcl_platform(platform) == "windows"} {
-    set fileNames [glob -nocomplain -directory $jpegDir *.jpg *.jpeg *.png]
+    set fileNames [glob -nocomplain -directory $photosDir *.jpg *.jpeg *.png]
   }
 
   foreach fileName $fileNames {
@@ -584,4 +583,75 @@ proc fillWidgetWithTodaysTwd {twdWidget} {
   }
 
   $twdWidget conf -text $twdText
+}
+
+# deleteOldStuff
+##Removes stale prog files & dirs not listed in Globals
+##called by ?Setup? / ?Save?
+proc deleteOldStuff {} {
+#1. old TWDs
+
+#Delete any old TWD files
+set vorjahr [expr {$jahr - 1}]
+set oldtwdlist [glob -nocomplain -directory $twdDir *$vorjahr.twd]
+if {[info exists oldtwdlist]} {
+  NewsHandler::QueryNews "Deleting old language files..." lightblue
+  
+  foreach file $oldtwdlist {
+    file delete $file
+  }
+  NewsHandler::QueryNews "Old TWD files deleted." green
+}
+
+#2. clear $srcdir with subdirs
+#Delete obsolete bmpdir  TODO >start counting subdirs from $progdir
+#file delete -force $progDir/bmp
+
+#A) Compare font list
+
+#TODO: remove from Setup!
+
+##get current font list from Globals
+foreach name [array names BdfFontPaths] {
+  lappend curFontList $name
+}
+##list installed font names
+foreach name [glob -tail -directory $fontdir *] {
+  lappend oldFontList $name
+}
+##delete any obsolete fonts
+foreach f $oldFontList {
+  if {![string is digit [string first $i $curFontList]]} {
+    set filepath [lindex [array get BdfFontPaths $f] 1]
+    file delete $filepath
+  }
+}
+
+#B) Compare file list
+
+##get current file list from Globals
+foreach path [array get FilePaths] {
+  lappend curFileList [file tail $path]
+}
+##list all subdirs in $srcdir
+foreach dir [glob -directory $srcdir -type d *] {
+  lappend dirList $dir
+}
+##list all files in subdirs
+foreach dir $dirlist {
+  foreach f [glob $dir/*] { 
+    lappend oldFileList $f
+  }
+}
+##delete any obsolete files
+foreach f $oldFileList {
+  if {![string is digit [string first $i $curFileList]]}  {
+    file delete $f
+  }
+}
+
+#3. clear $fontdir
+
+
+
 }

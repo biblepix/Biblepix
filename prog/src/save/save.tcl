@@ -1,8 +1,8 @@
-# ~/Biblepix/prog/src/save/setupSave.tcl
+# ~/Biblepix/prog/src/save/save.tcl
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 9may19 
+# Updated : 15may19 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $twdDir/*$jahr.twd}] } {
@@ -11,7 +11,7 @@ if { [catch {glob $twdDir/*$jahr.twd}] } {
   return
 
 # Return to PHOTOS section if $picsdir empty
-} elseif { [catch {glob $jpegDir/*}] } {
+} elseif { [catch {glob $photosDir/*}] } {
  .nb select .photosF
   NewsHandler::QueryNews "$noPhotosFound" red
   return
@@ -102,24 +102,5 @@ if {$os == "Windows NT"} {
 } elseif {$os == "Linux"} {
   source $SetupSaveLin
 }
-
-########### D E L E T E   O L D   S T U F F  #######################
-
-#Delete obsolete bmpdir
-file delete -force $progDir/bmp
-
-#Delete any old TWD files
-set vorjahr [expr {$jahr - 1}]
-set oldtwdlist [glob -nocomplain -directory $twdDir *$vorjahr.twd]
-if {[info exists oldtwdlist]} {
-  NewsHandler::QueryNews "Deleting old language files..." lightblue
-  
-  foreach file $oldtwdlist {
-    file delete $file
-  }
-  NewsHandler::QueryNews "Old TWD files deleted." green
-}
-
-###### S t a r t   B i b l e p i x  #####################
 
 source $Biblepix
