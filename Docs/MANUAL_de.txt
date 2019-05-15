@@ -152,7 +152,7 @@ Diese werden, wenn nötig, ebenfalls skaliert und kopiert. Die Originalfotos ble
 unberührt.
 
 WORT AUF BILD
-Das Kernstück von BibelPix ist die Projektion des täglichen Bibelwortes auf ein
+Das Kernstück von BibelPix ist die Projektion des täglichen Bibelspruchs auf ein
 Hintergrundbild. Wenn im Einrichtungsprogramm die Funktion "Hintergrundbild" 
 aktiviert ist, nimmt BibelPix ein neues Bild aus der Fotosammlung und versieht es mit 
 dem Tageswort aus einer vorhandenen Textdatei; die Auswahl geschieht im Zufallsprinzip.
