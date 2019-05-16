@@ -25,34 +25,48 @@ if { [info exists srcdir] } {
 }
 
 #S e t   d i r n a m e s
+set progdir [file join $rootdir prog]
+set srcdir [file join $progdir src]
+
 array set dirlist "
-  sigDir [file join $rootdir TodaysSignature]
-  imgDir [file join $rootdir TodaysPicture]
-  photosDir [file join $rootdir Photos]
-  progDir [file join $rootdir prog]
-  twdDir [file join $rootdir BibleTexts]
-  docDir [file join $rootdir Docs]
-  confdir [file join $progDir conf]
-  fontdir [file join $progDir font]
-  piddir [file join $progDir pid]
-  srcdir [file join $progDir src]
-  unixdir [file join $progDir unix]
-  windir [file join $progDir win]
-  sharedir [file join $srcdir share]
-  guidir [file join $srcdir setup]
+  confdir [file join $progdir conf]
+  docdir [file join $rootdir Docs]
+  fontdir [file join $progdir font]
+  imgdir [file join $rootdir TodaysPicture]
   maildir [file join $srcdir sig]
+  photosDir [file join $rootdir Photos]
   picdir [file join $srcdir pic]
+  progdir [file join $rootdir prog]
+  piddir [file join $progdir pid]
   savedir [file join $srcdir save]
-  sampleJpgDir [file join $picdir SamplePhotos]
+  sampleJpgDir [file join $srcdir pic SamplePhotos]
+  setupdir [file join $srcdir setup]
+  sharedir [file join $srcdir share]
+  sigdir [file join $rootdir TodaysSignature]
   termdir [file join $srcdir term]
+  twdDir [file join $rootdir BibleTexts]
+  unixdir [file join $progdir unix]
+  windir [file join $progdir win]
 "
+#Export single dir names
+foreach i [array names dirlist] {
+  set ivalues [array get dirlist $i]
+  set name [lindex $ivalues 0]
+  set path [lindex $ivalues 1]
+  set $name $path
+}
 
 # makeDirs - TODO: why needed?
 ##called by Installer & UpdateInjection
 proc makeDirs {} {
-  file mkdir $::sigDir $::imgDir $::jpegDir $::sampleJpgDir $::progDir $::twdDir $::docDir
-  file mkdir $::confdir $::piddir $::srcdir $::unixdir $::windir
-  file mkdir $::sharedir $::guidir $::maildir $::picdir $::savedir
+  global dirlist
+
+foreach dir [array names dirlist] {
+  file mkdir $dirlist($dir)
+}
+#  file mkdir $dirlist(sigDir) $dirlist(imgDir) $dirlist(photosDir) $dirlist(sampleJpgDir) $dirlist(progdir) $dirlist(twdDir) $dirlist(docdir)
+#  file mkdir $dirlist(confdir) $dirlist(piddir) $dirlist(srcdir) $dirlist(unixdir) $dirlist(windir)
+#  file mkdir $dirlist(sharedir $::setupdir $::maildir $::picdir $::savedir
   if {$::platform=="unix"} {
     file mkdir $::termdir
   }
@@ -67,27 +81,27 @@ array set FilePaths "
   UpdateInjection [file join $srcdir updateInjection.tcl]
   Readme [file join $rootdir README.txt]
   Setup [file join $rootdir biblepix-setup.tcl]
-  ManualD [file join $docDir MANUAL_de.txt]
-  ManualE [file join $docDir MANUAL_en.txt]
+  ManualD [file join $docdir MANUAL_de.txt]
+  ManualE [file join $docdir MANUAL_en.txt]
   Biblepix [file join $srcdir biblepix.tcl]
   BdfTools [file join $picdir BdfTools.tcl]
   BdfPrint [file join $picdir BdfPrint.tcl]
   BdfBidi [file join $sharedir BdfBidi.tcl]
   Image [file join $picdir image.tcl]
   SetBackgroundChanger [file join $picdir setBackgroundChanger.tcl]
-  SetupMainFrame [file join $guidir setupMainFrame.tcl]
-  SetupBuild [file join $guidir setupBuildGUI.tcl]
-  SetupDesktop [file join $guidir setupDesktop.tcl]
-  SetupDesktopPng [file join $guidir setupDesktop.png]
-  SetupEmail [file join $guidir setupEmail.tcl]
-  SetupInternational [file join $guidir setupInternational.tcl]
-  SetupPhotos [file join $guidir setupPhotos.tcl]
-  SetupReadme [file join $guidir setupReadme.tcl]
-  SetupResizePhoto [file join $guidir setupResizePhoto.tcl]
-  SetupTerminal [file join $guidir setupTerminal.tcl]
-  SetupWelcome [file join $guidir setupWelcome.tcl]
-  SetupTools [file join $guidir setupTools.tcl]
-  SetupTexts [file join $guidir setupTexts.tcl]
+  SetupMainFrame [file join $setupdir setupMainFrame.tcl]
+  SetupBuild [file join $setupdir setupBuildGUI.tcl]
+  SetupDesktop [file join $setupdir setupDesktop.tcl]
+  SetupDesktopPng [file join $setupdir setupDesktop.png]
+  SetupEmail [file join $setupdir setupEmail.tcl]
+  SetupInternational [file join $setupdir setupInternational.tcl]
+  SetupPhotos [file join $setupdir setupPhotos.tcl]
+  SetupReadme [file join $setupdir setupReadme.tcl]
+  SetupResizePhoto [file join $setupdir setupResizePhoto.tcl]
+  SetupTerminal [file join $setupdir setupTerminal.tcl]
+  SetupWelcome [file join $setupdir setupWelcome.tcl]
+  SetupTools [file join $setupdir setupTools.tcl]
+  SetupTexts [file join $setupdir setupTexts.tcl]
   SetupSave [file join $savedir save.tcl]
   SetupSaveLin [file join $savedir saveLin.tcl]
   SetupSaveLinHelpers [file join $savedir saveLinHelpers.tcl]
@@ -107,7 +121,6 @@ array set FilePaths "
   Terminal [file join $termdir terminal.tcl]
   TerminalShell [file join $unixdir term.sh]
 "
-
 #Export single FilePaths
 foreach i [array names FilePaths] {
   set ivalues [array get FilePaths $i]
@@ -119,12 +132,12 @@ foreach i [array names FilePaths] {
 #Set sample JPEG array
 set bpxJpegUrl "http://vollmar.ch/biblepix/jpeg"
 array set sampleJpgArray "
-  utah.jpg [file join $sampleJpgDir utah.jpg]
-  eire.jpg [file join $sampleJpgDir eire.jpg]
-  lake.jpg [file join $sampleJpgDir lake.jpg]
-  palms.jpg [file join $sampleJpgDir palms.jpg]
-  mountain.jpg [file join $sampleJpgDir mountain.jpg]
-  nevada.jpg [file join $sampleJpgDir nevada.jpg]
+  utah.jpg [file join $sampleJpgDir) utah.jpg]
+  eire.jpg [file join $sampleJpgDir) eire.jpg]
+  lake.jpg [file join $sampleJpgDir) lake.jpg]
+  palms.jpg [file join $sampleJpgDir) palms.jpg]
+  mountain.jpg [file join $sampleJpgDir) mountain.jpg]
+  nevada.jpg [file join $sampleJpgDir) nevada.jpg]
 "
 
 #Set Icons array & export
@@ -158,9 +171,9 @@ set WinIcon [lindex [array get iconArray biblepix.ico] 1]
 set LinIcon [lindex [array get iconArray biblepix.png] 1]
 
 #Set TWD picture paths
-set TwdBMP [file join $imgDir theword.bmp]
-set TwdTIF [file join $imgDir theword.tif]
-set TwdPNG [file join $imgDir theword.png]
+set TwdBMP [file join $imgdir theword.bmp]
+set TwdTIF [file join $imgdir theword.tif]
+set TwdPNG [file join $imgdir theword.png]
 
 #Miscellaneous vars (sourced by various progs)
 set datum [clock format [clock seconds] -format %Y-%m-%d]
