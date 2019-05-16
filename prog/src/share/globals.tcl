@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 10may19
+# Updated: 16may19
 set version "3.1"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
@@ -27,7 +27,6 @@ if { [info exists srcdir] } {
 #S e t   d i r n a m e s
 set progdir [file join $rootdir prog]
 set srcdir [file join $progdir src]
-
 array set dirlist "
   confdir [file join $progdir conf]
   docdir [file join $rootdir Docs]
@@ -60,19 +59,10 @@ foreach i [array names dirlist] {
 ##called by Installer & UpdateInjection
 proc makeDirs {} {
   global dirlist
-
-foreach dir [array names dirlist] {
-  file mkdir $dirlist($dir)
-}
-#  file mkdir $dirlist(sigDir) $dirlist(imgDir) $dirlist(photosDir) $dirlist(sampleJpgDir) $dirlist(progdir) $dirlist(twdDir) $dirlist(docdir)
-#  file mkdir $dirlist(confdir) $dirlist(piddir) $dirlist(srcdir) $dirlist(unixdir) $dirlist(windir)
-#  file mkdir $dirlist(sharedir $::setupdir $::maildir $::picdir $::savedir
-  if {$::platform=="unix"} {
-    file mkdir $::termdir
+  foreach dir [array names dirlist] {
+    file mkdir $dirlist($dir)
   }
 }
-
-#SET ARRAYS FOR DOWNLOAD
 
 #Set FilePaths array
 array set FilePaths "
