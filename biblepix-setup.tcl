@@ -1,12 +1,12 @@
 #!/usr/bin/env tclsh
-# ~/Biblepix/prog/src/biblepix-setup.tcl
+# ~/Biblepix/biblepix-setup.tcl
 # Main Setup program for BiblePix, starts Setup dialogue
 # Called by User via Windows/Unix Desktop entry
 # If called by BiblePix-Installer, this is the first file downloaded + executed
 ################################################################################
 # Version: 3.1
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 13may19
+# Updated: 21may19
 
 package require Tk
 
@@ -81,13 +81,6 @@ after idle {
   }
 }
 
-#TODO: delete, now in updateInjection!
-#Delete old fonts (before version 3.1)
-proc idle {} {
-  source $Globals
-  file delete -force $fontdir/italic $fontdir/bold
-  file delete [glob -nocomplain -directory $fontdir *B.tcl] ||
-  file delete [glob -nocomplain -directory $fontdir *I.tcl] ||
-  file delete [glob -nocomplain -directory $fontdir *24*] || 
-  file delete [glob -nocomplain -directory $fontdir *30*]
-}
+#Delete any stale program files/fonts/directories
+catch deleteOldStuff
+

@@ -42,6 +42,7 @@ array set dirlist "
   setupdir [file join $srcdir setup]
   sharedir [file join $srcdir share]
   sigdir [file join $rootdir TodaysSignature]
+  srcdir [file join $progdir src]
   termdir [file join $srcdir term]
   twdDir [file join $rootdir BibleTexts]
   unixdir [file join $progdir unix]
