@@ -24,8 +24,8 @@ installiert sein. Tcl/Tk ist eine systemübergreifende Plattform für viele Betr
 Für Windows: ActiveTcl herunterladen (s.u.)
 
 Der BiblePix-Installer (s.u.) sollte nur 1x bei der Erstinstallation ausgeführt werden, 
-da dadurch alle Dateien überschrieben werden. Danach genügt das BibelPix-Einrichtungs-
-Programm.
+da dadurch alle Dateien überschrieben werden. Danach sorgt die automatische
+Aktualisierungsfunktion des Einrichtungsprogramms für die nötigen Programm-Updates.
 
 Als Installationsort wählt BibelPix automatisch den empfohlenen Standard, nämlich Ihren
 "Heimordner" (Genaueres s.u.).

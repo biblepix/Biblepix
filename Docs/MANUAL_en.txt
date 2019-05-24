@@ -26,7 +26,7 @@ for many operating systems.
 For Windows: Download ActiveTcl (see below)
 
 BiblePix Installer (see below) should be executed only once for first installation, 
-since it overwrites all files. After that it is enough to run BiblePix Setup.
+since it overwrites all files. After that it is enough to run BiblePix Setup for updating.
 
 BiblePix automatically chooses your "Home Directory" for installation, as this
 is the recommended standard (see further down, "Place of Installation").
