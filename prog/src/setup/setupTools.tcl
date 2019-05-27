@@ -518,7 +518,6 @@ proc deleteImg {localJList c} {
 ## else calls [resize]
 ## no cutting intended because these pics can be stretched
 ## called by BiblepixSetup
-##$$$$$$$$$$$$$ TODO: Joel, this proc needs threading!! - use [after] !!!!!!!!!!!!!!!!!!!!!!!!!!!
 proc copyAndResizeSamplePhotos {} {
   global sampleJpgArray dirlist
   source $::ImgTools
@@ -595,13 +594,12 @@ proc deleteOldStuff {} {
   #1. Delete old TWDs
   ##########################################
   set vorjahr [expr {$jahr - 1}]
-  set oldtwdlist [glob -nocomplain -directory $dirlist(twdDir) *$vorjahr.twd]
-  if [info exists oldtwdlist] {
-    NewsHandler::QueryNews "Deleting old language files..." lightblue
+  set oldTwdList [glob -nocomplain -directory $dirlist(twdDir) *$vorjahr.twd]
+  if {$oldTwdList != ""} {
+    NewsHandler::QueryNews "Deleting old Bible text files..." lightblue
     foreach file $oldtwdlist {
       file delete $file
     }
-    NewsHandler::QueryNews "Old TWD files deleted." green
   }
 
   #############################################
@@ -610,22 +608,14 @@ proc deleteOldStuff {} {
 
   #1.List current directory paths starting from progdir
   foreach path [glob -directory $dirlist(progdir) -type d *] {
- #   array set curFolderArr "[file tail $path] $path"
-#OD:
     lappend curFolderList $path
   }
 
   foreach path [glob -directory $dirlist(srcdir) -type d *] {
- #   array set curFolderArr "[file tail $path] $path"
-#OD:
     lappend curFolderList $path
   }
 
-  #2.List latest directory names (no paths) from Globals
-#  foreach name [array names dirlist] {
-#    lappend latestFolderList [file tail [set $name]]
-#  }
-#2. Besser mit Pfad:
+  #2.List latest directory paths from Globals
   foreach name [array names dirlist] {
     lappend latestFolderList [lindex [array get dirlist $name] 1]
   }
@@ -645,7 +635,6 @@ proc deleteOldStuff {} {
 
   ##get latest file list from Globals
   foreach path [array names FilePaths] {
-    #lappend curFileList [file tail $path]
     lappend latestFileList [lindex [array get FilePaths $path] 1]
   }
 
@@ -687,14 +676,14 @@ proc deleteOldStuff {} {
   #3. delete any obsolete fonts
   foreach path $curFontList {
     catch {lsearch -exact $latestFontList $path} res
-    if {$res == -1 && [file isfile $path]} {
+    if {$res == "-1" && [file isfile $path]} {
       file delete $path 
       NewsHandler::QueryNews "Deled obsolete font file: $path" red
     }
   }
 
   NewsHandler::QueryNews "Your program files are up-to-date" blue
-  unset curFolderList curFileList curFontList
-  unset latestFolderList latestFileList latestFontList
+  #unset curFolderList curFileList curFontList
+  #unset latestFolderList latestFileList latestFontList
 
 } ;#END deleteOldStuff

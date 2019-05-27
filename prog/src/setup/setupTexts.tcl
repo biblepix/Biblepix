@@ -259,8 +259,8 @@ set resizeF_txt(de) "Ihr Foto passt nicht zur Bildschirmgrösse und muss zugesch
 set resizeF_txt(en) "The size of your photo does not correspond to the screen size and has to be trimmed. Move to select the desired section and press Ok to save."
 set ::resizeF_txt $resizeF_txt($lang)
 
-set movePicToResize(en) "Move picure to desired section and press Ok to resize."
-set movePicToResize(de) "Verschieben Sie das Bild nach Wunsch und bestätigen Sie mit Ok."
+set movePicToResize(en) "Move picure section to desired position and press Ok to resize."
+set movePicToResize(de) "Verschieben Sie den Bildausschnitt nach Wunsch und bestätigen Sie mit Ok zum Speichern."
 set ::movePicToResize $movePicToResize($lang)
 
 set resizingPic(en) "Resizing photo to fit screen \u2014 please wait a moment..."

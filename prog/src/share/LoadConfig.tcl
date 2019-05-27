@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 15may19
+# Updated: 26may19
 
 #Source Config and LoadConfig for defaults
 if { [catch {source $Config}] } {
@@ -54,7 +54,7 @@ if {![info exists fontfamily] || ($fontfamily != "Sans" && $fontfamily != "Serif
 
 #Set fontsize (must exist and be digits and be listed in fontSizeList)
 if {![info exists fontsize] || ![string is digit $fontsize] || ![regexp $fontsize $fontSizeList]} {
-  set fontsize [lindex $fontSizeList 2]
+  set fontsize [lindex $fontSizeList 1]
 }
 
 #Set fontweight

@@ -6,7 +6,7 @@
 ################################################################################
 # Version: 3.1
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21may19
+# Updated: 27may19
 
 package require Tk
 
@@ -23,7 +23,7 @@ label .updateFrame.pbTitle -justify center -bg lightblue -fg black -borderwidth 
 ttk::progressbar .updateFrame.progbar -mode indeterminate -length 200
 pack .updateFrame.pbTitle .updateFrame.progbar
 
-if {[catch {source $Globals}]} {
+if [catch {source $Globals}] {
   set pbTitle "Update not possible.\nYou must download and rerun the BiblePix Installer from bible2.net."
   after 7000 {exit}
 
@@ -36,14 +36,14 @@ if {[catch {source $Globals}]} {
   makeDirs
 
   #Set initial texts if missing
-  if {[catch {source -encoding utf-8 $SetupTexts ; setTexts $lang}]} {
+  if [catch {source -encoding utf-8 $SetupTexts ; setTexts $lang}] {
     set updatingHttp "Updating BiblePix program files..."
     set noConnHttp "No connection for BiblePix update. Try later."
   }
 
   # 1.  D O   H T T P  U P D A T E   (if not initial)
 
-  if {[catch {sourceHTTP}]} {
+  if [catch {sourceHTTP}] {
     set pbTitle "Update not possible.\nYou must download and rerun the BiblePix Installer from bible2.net."
     after 7000 {exit}
 
@@ -62,25 +62,27 @@ if {[catch {source $Globals}]} {
 
     #Copy photos after first run of Installer or if Config missing
     if { [info exists InitialJustDone] || ![file exists $Config] } {
-      set pbTitle "Copying & resizing sample photos..."
+      source $SetupTexts
       source $SetupTools
-#move to background
-after idle {
-      copyAndResizeSamplePhotos
-      set pbTitle $uptodateHttp
-}
+      set pbTitle $resizingPic
+
+    #move to background -TODO: Blockiert GUI !!!!!!!!!!!!!!!!!
+      after 5000 {
+        NewsHandler::QueryNews $resizingPic yellow
+        copyAndResizeSamplePhotos
+      }
     }
 
     catch {source $UpdateInjection}
     .updateFrame.progbar stop
     pack forget .updateFrame.pbTitle .updateFrame.progbar .updateFrame
 
-  
-    # 2. B U I L D  M A I N  G U I
-    source $SetupMainFrame
   }
+
+    # 2. B U I L D  M A I N  G U I
+   source $SetupMainFrame
+
+
+  #Delete any stale program files/fonts/directories/TWD files
+  after idle {deleteOldStuff}
 }
-
-#Delete any stale program files/fonts/directories
-catch deleteOldStuff
-
