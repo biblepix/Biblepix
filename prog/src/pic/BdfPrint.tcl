@@ -113,6 +113,5 @@ if {$platform=="windows"} {
   puts "Saved new images to:\n $TwdBMP\n $TwdPNG"
 }
 
-#Cleanup
-image delete $img
+#Cleanup original and final image
 image delete $finalImg
