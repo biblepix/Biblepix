@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/save/setupSaveLin.tcl
+# ~/Biblepix/prog/src/save/saveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24jan19
+# Updated: 3jul19
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -11,14 +11,14 @@ set Error 0
 set hasError 0
 
 #Check / Amend Linux executables - TODO: Test again
-catch formatLinuxExecutables Error
-puts "linExec $Error"
+catch {formatLinuxExecutables} Error
+puts "LinExec: $Error"
 
 ##################################################
 # 1 Set up Linux A u t o s t a r t for all Desktops
 ##################################################
-if [catch setupLinAutostart Err] {
-puts $Err
+if [catch {setupLinAutostart} Err] {
+  puts $Err
   tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linSetAutostartProb
 }
 
@@ -39,8 +39,8 @@ set runningDesktop [detectRunningLinuxDesktop]
 #TODO: apologize for not making menu entry...
 if {$runningDesktop == 0} {
   puts "No Running Desktop found"
-  catch setupLinCrontab Error0
-  puts "Crontab $Error0"
+  catch {setupLinCrontab} Error0
+  puts "Crontab: $Error0"
 }
 
 #Install Menu entries for all desktops - no error handling
@@ -55,7 +55,7 @@ catch setupKdeActionMenu Error
 #################################################
 if {$enableterm} {
   catch setupLinTerminal Error
-  puts "Terminal $Error"
+  puts "Terminal: $Error"
 }
 
 #Exit if no picture desired

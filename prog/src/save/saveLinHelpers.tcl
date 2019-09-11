@@ -1,7 +1,7 @@
-#~/Biblepix/prog/src/save/setupSaveLinHelpers.tcl
+#~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15may19
+# Updated: 3jul19
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -20,8 +20,14 @@ set LinDesktopFilesDir $LinLocalShareDir/applications
 #Create dirs if missing (needed for [open] command)
 file mkdir $LinDesktopFilesDir
 
-#Set KDE dirs & Create ~/.kde if missing
-set KdeDir [glob -nocomplain $HOME/.kde*]
+#Set KDE dirs / Create ~/.kde if missing
+if [catch {set KdeDir [glob $HOME/.kde*]}] {
+  set KdeDir "$HOME/.kde"
+  file mkdir $KdeDir
+}
+return "kdedir: $KdeDir"
+
+#TODO? warum geht das nicht?
 set KdeConfDir $KdeDir/share/config
 file mkdir $KdeConfDir
 
@@ -29,7 +35,6 @@ file mkdir $KdeConfDir
 #Determine KDE config files
 set Kde4ConfFile $KdeConfDir/plasma-desktop-appletsrc
 set Kde5ConfFile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
-
 if [file exists $Kde4ConfFile] {
   set KdeVersion 4
 } else {
@@ -59,7 +64,6 @@ set Kde5DesktopActionFile $LinDesktopFilesDir/biblepixSetupAction.desktop
 ##this is obsolete:
 set Kde4AutostartDir $KdeDir/Autostart
 set Kde4AutostartFile $Kde4AutostartDir/biblepix.desktop
-
 set LinAutostartDir $LinConfDir/autostart
 file mkdir $LinAutostartDir
 set LinAutostartFile $LinAutostartDir/biblepix.desktop
@@ -225,7 +229,7 @@ Exec=$Biblepix
   }
     return 0
   
-} ;#END setLinAutostart
+} ;#END setupLinAutostart
 
 # setupSwayBackground
 ## makes entries for BP autostart and initial background pic
