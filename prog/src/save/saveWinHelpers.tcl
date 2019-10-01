@@ -30,23 +30,26 @@ proc setWinAutorun args {
 #Detect running slideshow (entry reset by Windows when user sets bg)
 #no admin rights required
 proc setBackgroundType {} {
+  global winChangingDesktop
+
   set regpathExplorer [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
   set regpathExplorerOld [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
-  
+
   set error [catch {set BackgroundType [registry get $regpathExplorer BackgroundType]}]
-  
+
   if {!$error && $BackgroundType == 0} {
     return
   }
-  
+
   set error [catch {set BackgroundType [registry get $regpathExplorerOld BackgroundType]}]
   if {!$error && $BackgroundType == 0} {
     return
   }
 
-  tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangingDesktop
-
-  setWinTheme
+  if {!$error} {
+    tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangingDesktop
+    setWinTheme
+  }
 }
 
 #sets/unsets BiblePix Context Menu

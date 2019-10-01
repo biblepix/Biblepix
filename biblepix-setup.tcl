@@ -61,14 +61,13 @@ if [catch {source $Globals}] {
     }
 
     #Copy photos after first run of Installer or if Config missing
+
     if { [info exists InitialJustDone] || ![file exists $Config] } {
       source $SetupTexts
       source $SetupTools
-      set pbTitle $resizingPic
 
-    #move to background -TODO: Blockiert GUI !!!!!!!!!!!!!!!!!
-      after 5000 {
-        NewsHandler::QueryNews $resizingPic yellow
+      after idle {
+        catch {NewsHandler::QueryNews $resizingPic yellow}
         copyAndResizeSamplePhotos
       }
     }
