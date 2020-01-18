@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15may19
+# Updated: 18jan20
 
 package require http
 
@@ -155,7 +155,7 @@ proc getRemoteRoot {} {
   return [dom parse -html $data]
 }
 
-proc listAllRemoteTWDFiles {lBox} {
+proc listRemoteTWDFiles {lBox} {
   set root [getRemoteRoot]
   $lBox delete 0 end
 
@@ -164,15 +164,26 @@ proc listAllRemoteTWDFiles {lBox} {
   set spaceSize 12
 
   foreach node $file {
-    set jahr [$node nextSibling]
-    set lang [$jahr nextSibling]
-    set version [[$lang nextSibling] nextSibling]
-    set langText [$lang text]
+    set jahrN [$node nextSibling]
+    set langN [$jahrN nextSibling]
+    set versionN [[$langN nextSibling] nextSibling]
+    set jahrT [$jahrN text]
+    set langT [$langN text]
+    set ausgabeT [$versionN text]
 
-    set name " $langText"
-    for {set i [string length $langText]} {$i < $spaceSize} {incr i} {append name " "}
-    append name "[$jahr text]        [$version text]"
+    #This should work for all LtR languages
+    set bidiRange [regexp {[\u05D0-\u06FC]} $ausgabeT]
+    if {$bidiRange} {
+      set ausgabeT [string reverse $ausgabeT]
+      set digits [regexp -all -inline {[[:digit:]]+} $ausgabeT]
+      foreach zahl $digits {
+        regsub $zahl $ausgabeT [string reverse $zahl] ausgabeT
+      }
+    }
 
+    set name " $langT"
+    for {set i [string length $langT]} {$i < $spaceSize} {incr i} {append name " "}
+    append name "$jahrT        $ausgabeT"
     lappend sortlist $name
   }
 
@@ -191,7 +202,10 @@ proc getRemoteTWDFileList {} {
     puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
     error $Error
   } else {
-    if {![catch {listAllRemoteTWDFiles .internationalF.twdremoteframe.lb}]} {
+  
+#  listRemoteTWDFiles .internationalF.twdremoteframe.lb
+  
+    if {![catch {listRemoteTWDFiles .internationalF.twdremoteframe.lb}]} {
       .internationalF.status conf -bg green
       set status $::connTwd
     } else {
