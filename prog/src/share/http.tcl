@@ -171,7 +171,8 @@ proc listRemoteTWDFiles {lBox} {
     set langT [$langN text]
     set ausgabeT [$versionN text]
 
-    #This should work for all LtR languages
+    #Set RtL languages from right to left, except digits
+    ##this should work for all LtR languages, but only tested on Hebrew!
     set bidiRange [regexp {[\u05D0-\u06FC]} $ausgabeT]
     if {$bidiRange} {
       set ausgabeT [string reverse $ausgabeT]
