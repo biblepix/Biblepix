@@ -64,6 +64,8 @@ puts "Computing pixels..."
       }
     }
 puts "Done computing pixels"
+#zisisnt workin, donno why...
+return
 
   #Compute avarage colours
   set avR [mean $R]
@@ -91,6 +93,8 @@ puts "Done computing pixels"
 
   #Delete colour lists
   catch {unset R G B}
+
+  
 } ;#END computeAvColours
 
 # changeFontColour

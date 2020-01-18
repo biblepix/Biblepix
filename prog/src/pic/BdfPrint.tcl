@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 10may19
+# Updated: 18jan20
 
 #1. SET BASIC VARS
 source $TwdTools
@@ -79,8 +79,10 @@ set img hgbild
 
 #Compute avarage colours of text section
 puts "Computing colours..."
-catch {computeAvColours hgbild}
-puts "Brightness: $rgb::avBrightness"
+#TODO prog hangs here but donno why
+##may be a problem with the namespace in below proc
+#catch {computeAvColours hgbild}
+#puts "Brightness: $rgb::avBrightness"
 
 #Compute sun & shade
 source $Globals
@@ -101,6 +103,8 @@ if {[info exists rgb::avBrightness] && $rgb::avBrightness >= $brightnessThreshol
   puts "MaxCol: $rgb::maxCol"
   puts "MinCol: $rgb::minCol"
 }
+
+#puts adhenaazaranu...
 
 set finalImg [printTwd $TwdFileName $img]
 
