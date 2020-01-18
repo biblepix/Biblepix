@@ -1,5 +1,5 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
-# Sourced by setupGUI
+# Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated 12may19
 
@@ -50,7 +50,7 @@ label .internationalF.f2.twdremotetit -textvar f1.twdremotetit -bg $bg -justify 
 pack .internationalF.f2.twdremotetit -fill x
 
 pack [frame .internationalF.f3] -anchor w -fill x
-label .internationalF.f3.twdremotetit2 -textvar f1.twdremotetit2 -width 0 -padx 20
+label .internationalF.f3.twdremotetit2 -font "TkCaptionFont" -textvar f1.twdremotetit2 -width 0 -padx 20
 pack .internationalF.f3.twdremotetit2 -side left
 
 #set remotelist ( inserted later by http.tcl)

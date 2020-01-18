@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3jul19
+# Updated: 18jan20
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -21,16 +21,12 @@ set LinDesktopFilesDir $LinLocalShareDir/applications
 file mkdir $LinDesktopFilesDir
 
 #Set KDE dirs / Create ~/.kde if missing
-if [catch {set KdeDir [glob $HOME/.kde*]}] {
-  set KdeDir "$HOME/.kde"
+set KdeDir [glob -nocomplain $HOME/.kde*]
+if {$KdeDir == ""} {
   file mkdir $KdeDir
 }
-return "kdedir: $KdeDir"
-
-#TODO? warum geht das nicht?
-set KdeConfDir $KdeDir/share/config
+set KdeConfDir [file join $KdeDir share config]
 file mkdir $KdeConfDir
-
 
 #Determine KDE config files
 set Kde4ConfFile $KdeConfDir/plasma-desktop-appletsrc
@@ -590,9 +586,14 @@ proc setupXfceBackground {} {
     return 1
   }
   
+  #Check monitor name, exit if no XFCE installation found
+  set desktopXmlTree [exec xfconf-query -c xfce4-desktop -l]
+  if {$desktopXmlTree == ""} {
+    return 1
+  }
+  
   #Our 'channel' is actually an XML file found in .config/xfce4/xfconf/xfce-perchannel-xml/
   set channel "xfce4-desktop"
-  
   puts "Configuring XFCE background image..."
 
   #This rewrites backdrop.list for old Xfce4 installations
@@ -628,13 +629,10 @@ proc setupXfceBackground {} {
 # xfconf-query 'set' = set property if existent
 # xfconf-query 'create' = create property
 
-  #Check monitor name
-  set desktopXmlTree [exec xfconf-query -c xfce4-desktop -l]
-
   if [regexp {monitor0} $desktopXmlTree] {
     set monitorName "monitor"
   } else {
-    regexp -line {(backdrop/screen0/)(.*)(/.*$)} $t var1 monitorName var3
+    regexp -line {(backdrop/screen0/)(.*)(/.*$)} $desktopXmlTree var1 monitorName var3
   }
 
   #1. Scan through 4 screeens & monitors

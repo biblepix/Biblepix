@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21may19
+# Updated: 24jun19
 
 source $JList
 
@@ -644,7 +644,7 @@ proc deleteOldStuff {} {
   }
   ##list all files in subdirs
   foreach dir $curFolderList {
-    foreach f [glob $dir/*] { 
+    foreach f [glob -nocomplain $dir/*] { 
       lappend curFileList $f
     }
   }

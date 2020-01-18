@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21may19
+# Updated: 18jan2020
 
 proc setTexts {lang} {
 #exports text variables for current language
@@ -161,8 +161,8 @@ set TwdRemoteTit(en) "Bible text files for download"
 set TwdRemoteTit(de) "Bibeltextdateien zum Herunterladen"
 set ::f1.twdremotetit $TwdRemoteTit($lang)
 
-set TwdRemoteTit2(en) "Language\tYear\t\tBible Version"
-set TwdRemoteTit2(de) "Sprache\tJahr\t\tBibelausgabe"
+set TwdRemoteTit2(en) "Language\t\t\tYear\t\t\tBible Version"
+set TwdRemoteTit2(de) "Sprache\t\t\tJahr\t\t\tBibelausgabe"
 set ::f1.twdremotetit2 $TwdRemoteTit2($lang)
 
 set f1Txt(en) "$bp will create $dw in any language or Bible version installed on your computer. If several language files are found, $bp will randomly pick one at each run. Any new language files you select for download (see below) will be downloaded upon clicking the 'Download' button. Pay attention to the year (current or next)!"

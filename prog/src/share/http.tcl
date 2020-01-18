@@ -182,9 +182,11 @@ proc listRemoteTWDFiles {lBox} {
       }
     }
 
-    set name " $langT"
+    set tab {       }
+    set name " $langT   "
     for {set i [string length $langT]} {$i < $spaceSize} {incr i} {append name " "}
-    append name "$jahrT        $ausgabeT"
+    ##this corresondes to 2 tabs (don't work here, 1 tab=7 spaces)
+    append name $tab $tab $jahrT $tab $tab $ausgabeT
     lappend sortlist $name
   }
 
@@ -193,6 +195,7 @@ proc listRemoteTWDFiles {lBox} {
   foreach line $sortlist {
     $lBox insert end $line
   }
+#  $lBox conf -font "TkCaptionFont"
 }
 
 proc getRemoteTWDFileList {} {

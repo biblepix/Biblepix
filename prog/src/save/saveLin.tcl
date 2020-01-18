@@ -71,8 +71,8 @@ if {!$enablepic} {
 tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangingDesktop
 
 set GnomeErr [setupGnomeBackground]
-set KdeErr [setupKdeBackground]
-set XfceErr [setupXfceBackground]
+set KdeErr   [setupKdeBackground]
+set XfceErr  [setupXfceBackground]
 
 #Create OK message for each successful desktop configuration
 if {$GnomeErr==0} {
