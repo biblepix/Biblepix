@@ -161,9 +161,17 @@ set TwdRemoteTit(en) "Bible text files for download"
 set TwdRemoteTit(de) "Bibeltextdateien zum Herunterladen"
 set ::f1.twdremotetit $TwdRemoteTit($lang)
 
-set TwdRemoteTit2(en) "Language\t\t\tYear\t\t\tBible Version"
-set TwdRemoteTit2(de) "Sprache\t\t\tJahr\t\t\tBibelausgabe"
-set ::f1.twdremotetit2 $TwdRemoteTit2($lang)
+set language(en) "Language"
+set language(de) "Sprache"
+set ::language $language($lang)
+
+set year(en) "Year"
+set year(de) "Jahr"
+set ::year $year($lang)
+
+set bibleversion(en) "Bible version"
+set bibleversion(de) "Bibelausgabe"
+set ::bibleversion $bibleversion($lang)
 
 set f1Txt(en) "$bp will create $dw in any language or Bible version installed on your computer. If several language files are found, $bp will randomly pick one at each run. Any new language files you select for download (see below) will be downloaded upon clicking the 'Download' button. Pay attention to the year (current or next)!"
 set f1Txt(de) "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien zum Download markieren (s. unten), werden diese heruntergeladen, sobald Sie die Taste 'Download' drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)!"  

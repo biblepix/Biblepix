@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 12may19
+# Updated 19jan20
 
 #Statusbar
 frame .internationalF.f0 -padx $px
@@ -46,12 +46,14 @@ pack .internationalF.f1.twdlocal -anchor w
 frame .internationalF.f2 -padx $px
 pack .internationalF.f2 -anchor w -fill x
 
-label .internationalF.f2.twdremotetit -textvar f1.twdremotetit -bg $bg -justify left -font bpfont2 -padx $px
+label .internationalF.f2.twdremotetit -textvar f1.twdremotetit -bg $bg -justify left -font bpfont2 -padx $px -pady $py
 pack .internationalF.f2.twdremotetit -fill x
 
-pack [frame .internationalF.f3] -anchor w -fill x
-label .internationalF.f3.twdremotetit2 -font "TkCaptionFont" -textvar f1.twdremotetit2 -width 0 -padx 20
-pack .internationalF.f3.twdremotetit2 -side left
+pack [frame .internationalF.f3] -anchor w -fill x -padx $px
+label .twdremote1L -font "SmallCaptionFont 8" -textvar language -width 29 -font TkFixedFont -bg beige -anchor w
+label .twdremote2L -font "SmallCaptionFont 8" -textvar year -width 18 -font TkFixedFont -bg beige -anchor w
+label .twdremote3L -font "SmallCaptionFont 8" -textvar bibleversion -width 96 -font TkFixedFont -bg beige -anchor w
+pack .twdremote1L .twdremote2L .twdremote3L -in .internationalF.f3 -side left
 
 #set remotelist ( inserted later by http.tcl)
 frame .internationalF.twdremoteframe -width $wWidth -padx $px
