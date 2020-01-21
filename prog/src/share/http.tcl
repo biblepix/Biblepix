@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18jan20
+# Updated: 21jan20
 
 package require http
 
@@ -161,7 +161,9 @@ proc listRemoteTWDFiles {lBox} {
 
   #set langlist
   set file [ $root selectNodes {//tr/td[text()="file"]} ]
-  set spaceSize 12
+    set space { }
+    set spaceSize 21
+    set spaceL [string repeat $space $spaceSize]
 
   foreach node $file {
     set jahrN [$node nextSibling]
@@ -181,35 +183,36 @@ proc listRemoteTWDFiles {lBox} {
         regsub $zahl $ausgabeT [string reverse $zahl] ausgabeT
       }
     }
-
-    set tab {       }
-    set name " $langT   "
-    for {set i [string length $langT]} {$i < $spaceSize} {incr i} {append name " "}
-    ##this corresondes to 2 tabs (don't work here, 1 tab=7 spaces)
-    append name $tab $tab $jahrT $tab $tab $ausgabeT
-    lappend sortlist $name
+    
+    ##start building line
+    append nameline $langT
+    
+    ##compute tab lengths for Monospace font
+    for {set i [string length $langT]} {$i < $spaceSize} {incr i} {
+      append nameline $space
+    }
+    
+    append nameline $jahrT [string repeat $space 10] $ausgabeT
+    lappend sortlist $nameline
+    unset nameline
   }
 
   set sortlist [lsort $sortlist]
-
   foreach line $sortlist {
     $lBox insert end $line
   }
-#  $lBox conf -font "TkCaptionFont"
 }
 
 proc getRemoteTWDFileList {} {
   if { [catch testHttpCon Error] } {
     .internationalF.status conf -bg red
     set status $::noConnTwd
-
     puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
     error $Error
+
   } else {
-  
-#  listRemoteTWDFiles .internationalF.twdremoteframe.lb
-  
-    if {![catch {listRemoteTWDFiles .internationalF.twdremoteframe.lb}]} {
+   
+    if {![catch {.twdremoteLB}]} {
       .internationalF.status conf -bg green
       set status $::connTwd
     } else {
