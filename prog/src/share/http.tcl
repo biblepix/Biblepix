@@ -176,7 +176,7 @@ proc listRemoteTWDFiles {lBox} {
     #Set RtL languages from right to left, except digits
     ##this should work for all LtR languages, but only tested on Hebrew!
     set bidiRange [regexp {[\u05D0-\u06FC]} $ausgabeT]
-    if {$bidiRange} {
+    if {$platform != "windows" && $bidiRange} {
       set ausgabeT [string reverse $ausgabeT]
       set digits [regexp -all -inline {[[:digit:]]+} $ausgabeT]
       foreach zahl $digits {
