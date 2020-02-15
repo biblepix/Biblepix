@@ -156,6 +156,8 @@ proc getRemoteRoot {} {
 }
 
 proc listRemoteTWDFiles {lBox} {
+  global platform
+  
   set root [getRemoteRoot]
   $lBox delete 0 end
 
