@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21jan20
+# Updated: 15feb20
 
 package require http
 
@@ -240,7 +240,7 @@ proc downloadTWDFiles {} {
 
   foreach url $urllist {lappend hrefs [$url @href]}
   set urllist [lsort $hrefs]
-  set selectedindices [.internationalF.twdremoteframe.lb curselection]
+  set selectedindices [.twdremoteLB curselection]
 
   foreach item $selectedindices {
     set url [lindex $urllist $item]
@@ -267,7 +267,7 @@ proc downloadTWDFiles {} {
     after 3000 .internationalF.f1.twdlocal insert end $filename
   }
   #deselect all downloaded files
-  .internationalF.twdremoteframe.lb selection clear 0 end
+  .twdremoteLB selection clear 0 end
 }
 
 
