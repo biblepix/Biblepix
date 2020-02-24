@@ -1,8 +1,8 @@
-# ~/Biblepix/prog/src/gui/setupMainFrame.tcl
+# ~/Biblepix/prog/src/setup/setupMainFrame.tcl
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18apr18
+# Updated: 24feb20
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
@@ -60,8 +60,8 @@ if { [winfo y .] > 20 } {
 }
 
 #Fill .fbottom
-button .b4 -text Ok -width 10 -command {source $SetupSave}
-button .b5 -textvariable ::cancel -width 10 -command exit
+button .b4 -activebackground lightgreen -textvar ::saveSettings -width 10 -command {source $SetupSave}
+button .b5 -activebackground red -textvar ::cancel -width 10 -command exit
 pack .b5 .b4 -in .fbottom -side right
 
 if {![info exists version]} {set version ""}
