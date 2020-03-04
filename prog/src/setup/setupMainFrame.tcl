@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24feb20
+# Updated: 4mch20
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
@@ -60,9 +60,9 @@ if { [winfo y .] > 20 } {
 }
 
 #Fill .fbottom
-button .b4 -activebackground lightgreen -textvar ::saveSettings -width 10 -command {source $SetupSave}
-button .b5 -activebackground red -textvar ::cancel -width 10 -command exit
-pack .b5 .b4 -in .fbottom -side right
+button .mainSaveB -activebackground lightgreen -textvar ::saveSettings -width 20 -command {source $SetupSave}
+button .mainCloseB -activebackground red -textvar ::cancel -width 20 -command exit
+pack .mainCloseB .mainSaveB -in .fbottom -side right
 
 if {![info exists version]} {set version ""}
 label .label -text "BiblePix Version $version"
