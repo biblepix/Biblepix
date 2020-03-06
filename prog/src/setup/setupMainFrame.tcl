@@ -2,21 +2,21 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4mch20
+# Updated: 5mch20
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
 source $SetupTools
 source $TwdTools
 
-#Set general X vars
+#Set general X vars & Main Window width
 set screenX [winfo screenwidth .]
 set screenY [winfo screenheight .]
-set wWidth 1280
-set wHeight 940
+set wWidth [expr round($screenX * 0.9)]
+set wHeight [expr round($screenY * 0.9)]
 
-if {$screenX < $wWidth} { set wWidth $screenX}
-if {$screenY < $wHeight} { set wHeight $screenY}
+#if {$screenX < $wWidth} { set wWidth $screenX}
+#if {$screenY < $wHeight} { set wHeight $screenY}
 set wMx [expr ($screenX - $wWidth) / 2]
 set wMy [expr ($screenY - $wHeight) / 2]
 
