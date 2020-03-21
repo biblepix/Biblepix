@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21jan20
+# Updated: 15feb20
 
 package require http
 
@@ -156,6 +156,8 @@ proc getRemoteRoot {} {
 }
 
 proc listRemoteTWDFiles {lBox} {
+  global platform
+  
   set root [getRemoteRoot]
   $lBox delete 0 end
 
@@ -176,7 +178,7 @@ proc listRemoteTWDFiles {lBox} {
     #Set RtL languages from right to left, except digits
     ##this should work for all LtR languages, but only tested on Hebrew!
     set bidiRange [regexp {[\u05D0-\u06FC]} $ausgabeT]
-    if {$bidiRange} {
+    if {$platform != "windows" && $bidiRange} {
       set ausgabeT [string reverse $ausgabeT]
       set digits [regexp -all -inline {[[:digit:]]+} $ausgabeT]
       foreach zahl $digits {
@@ -238,7 +240,7 @@ proc downloadTWDFiles {} {
 
   foreach url $urllist {lappend hrefs [$url @href]}
   set urllist [lsort $hrefs]
-  set selectedindices [.internationalF.twdremoteframe.lb curselection]
+  set selectedindices [.twdremoteLB curselection]
 
   foreach item $selectedindices {
     set url [lindex $urllist $item]
@@ -265,7 +267,7 @@ proc downloadTWDFiles {} {
     after 3000 .internationalF.f1.twdlocal insert end $filename
   }
   #deselect all downloaded files
-  .internationalF.twdremoteframe.lb selection clear 0 end
+  .twdremoteLB selection clear 0 end
 }
 
 

@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/gui/setupEmail.tcl
+# ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 21jan20
+# Updated 4mch20
 
 #Statusbar
 frame .internationalF.f0 -padx $px
@@ -10,7 +10,7 @@ label .internationalF.status -textvar status -font bpfont1 -height 1 -bg $bg -re
 pack .internationalF.status -in .internationalF.f0 -fill x
 
 #Refresh button
-button .internationalF.refbtn -textvariable refresh -bg lightblue -command {set status [getRemoteTWDFileList]}
+button .internationalF.refbtn -textvariable refresh -bg orange -activebackground orange -command {set status [getRemoteTWDFileList]}
 pack .internationalF.refbtn -side bottom -fill x -padx $px
 
 #Title
@@ -48,13 +48,15 @@ pack .internationalF.f2 -anchor w -fill x
 label .internationalF.f2.twdremotetit -textvar f1.twdremotetit -bg $bg -justify left -font bpfont2 -padx $px -pady $py
 pack .internationalF.f2.twdremotetit -fill x
 pack [frame .internationalF.f3] -anchor w -fill x -padx $px
-label .twdremote1L -font "SmallCaptionFont 8" -textvar language -width 20 -font TkFixedFont -bg beige -anchor w
-label .twdremote2L -font "SmallCaptionFont 8" -textvar year -width 14 -font TkFixedFont -bg beige -anchor w
-label .twdremote3L -font "SmallCaptionFont 8" -textvar bibleversion -width 96 -font TkFixedFont -bg beige -anchor w
-pack .twdremote1L .twdremote2L .twdremote3L -in .internationalF.f3 -side left
+#Titel frame
+pack [frame .twdremoteTitleF -bg beige] -in .internationalF.f3 -fill x -anchor w
+label .twdremote1L -font "SmallCaptionFont 8" -textvar language -font TkFixedFont -bg beige -anchor w -width 20
+label .twdremote2L -font "SmallCaptionFont 8" -textvar year -font TkFixedFont -bg beige -anchor w -width 14
+label .twdremote3L -font "SmallCaptionFont 8" -textvar bibleversion -font TkFixedFont -bg beige -anchor w
+pack .twdremote1L .twdremote2L .twdremote3L -in .twdremoteTitleF -side left
 
 #setup remotelist (inserted later by http.tcl)
-frame .internationalF.twdremoteframe -width $wWidth -padx $px
+frame .internationalF.twdremoteframe -padx $px
 listbox .twdremoteLB -yscrollcommand {.twdremoteScr set} -selectmode multiple -activestyle none -font TkFixedFont -width [expr $wWidth - 50] -height [expr $wHeight - 300] -bg lightblue
 scrollbar .twdremoteScr -command {.twdremoteLB yview}
 button .downloadB -text Download -command downloadTWDFiles

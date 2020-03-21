@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24jun19
+# Updated: 14mch20
 
 source $JList
 
@@ -213,12 +213,12 @@ proc dragCanvasItem {c item newX newY} {
   ###adapted from a proc by ...THANKS TO  ...
   set xDiff [expr {$newX - $::x}]
   set yDiff [expr {$newY - $::y}]
-puts $newX
-puts $newY
-puts $xDiff
-puts $yDiff
+#puts $newX
+#puts $newY
+#puts $xDiff
+#puts $yDiff
   #test before moving
-  if {[checkItemInside $c $item $xDiff $yDiff]} {
+  if [checkItemInside $c $item $xDiff $yDiff] {
     $c move $item $xDiff $yDiff
   }
   set ::x $newX
@@ -229,9 +229,13 @@ puts $yDiff
 ## makes sure movingItem stays inside canvas
 ## called by dragCanvasItem
 proc checkItemInside {c item xDiff yDiff} {
+
+#TODO Joel das sind vorläufige fixes...
+set pic resizePic
+  
   lassign [$c bbox $item] - - can(maxx) can(maxy)
-  set imgX [image width photosCanvPic]
-  set imgY [image height photosCanvPic]
+  set imgX [image width $pic]
+  set imgY [image height $pic]
   set canvX [winfo width $c]
   set canvY [winfo height $c]
   set can(miny) 0
@@ -342,6 +346,8 @@ proc delPic {} {
   set fileJList [deleteImg $fileJList .imgCanvas]
   NewsHandler::QueryNews "[deletedPic $picPath]" red
 }
+
+#TODO help - where is bildordner set???
 
 proc doOpen {bildordner c} {
   set localJList [openFileDialog $bildordner]

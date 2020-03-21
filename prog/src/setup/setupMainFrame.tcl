@@ -1,22 +1,22 @@
-# ~/Biblepix/prog/src/gui/setupMainFrame.tcl
+# ~/Biblepix/prog/src/setup/setupMainFrame.tcl
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18apr18
+# Updated: 5mch20
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
 source $SetupTools
 source $TwdTools
 
-#Set general X vars
+#Set general X vars & Main Window width
 set screenX [winfo screenwidth .]
 set screenY [winfo screenheight .]
-set wWidth 1280
-set wHeight 940
+set wWidth [expr round($screenX * 0.9)]
+set wHeight [expr round($screenY * 0.9)]
 
-if {$screenX < $wWidth} { set wWidth $screenX}
-if {$screenY < $wHeight} { set wHeight $screenY}
+#if {$screenX < $wWidth} { set wWidth $screenX}
+#if {$screenY < $wHeight} { set wHeight $screenY}
 set wMx [expr ($screenX - $wWidth) / 2]
 set wMy [expr ($screenY - $wHeight) / 2]
 
@@ -60,9 +60,9 @@ if { [winfo y .] > 20 } {
 }
 
 #Fill .fbottom
-button .b4 -text Ok -width 10 -command {source $SetupSave}
-button .b5 -textvariable ::cancel -width 10 -command exit
-pack .b5 .b4 -in .fbottom -side right
+button .mainSaveB -activebackground lightgreen -textvar ::saveSettings -width 20 -command {source $SetupSave}
+button .mainCloseB -activebackground red -textvar ::cancel -width 20 -command exit
+pack .mainCloseB .mainSaveB -in .fbottom -side right
 
 if {![info exists version]} {set version ""}
 label .label -text "BiblePix Version $version"

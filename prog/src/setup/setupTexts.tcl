@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/gui/setupTexts.tcl
+# ~/Biblepix/prog/src/setup/setupTexts.tcl
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18jan2020
+# Updated: 5mch2020
 
 proc setTexts {lang} {
 #exports text variables for current language
@@ -19,9 +19,13 @@ set bp $BP($lang)
 set ::bp $bp
 
 #Buttons
-set cancel(de) Abbruch
-set cancel(en) Cancel
+set cancel(de) "Abbruch"
+set cancel(en) "Cancel"
 set ::cancel $cancel($lang)
+
+set saveSettings(de) "Einstellungen speichern"
+set saveSettings(en) "Save settings"
+set ::saveSettings $saveSettings($lang)
 
 # # # #  M I S S I N G   P A C K A G E  # # # # # # # # # # # #                               
 
