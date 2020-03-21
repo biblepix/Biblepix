@@ -13,12 +13,14 @@ set Globals "[file join $srcdir share globals.tcl]"
 source $Globals
 source $TwdTools
 
+updateTwd
+
 #Set TwdFileName for the 1st time, else run Setup
 if [catch {set twdfile [getRandomTwdFile]}] {
   source -encoding utf-8 $SetupTexts
   setTexts $lang
   package require Tk
-tk_messageBox -title BiblePix -type ok -icon error -message $noTWDFilesFound
+  tk_messageBox -title BiblePix -type ok -icon error -message $noTWDFilesFound
   #catch if run by running Setup
   catch {source $Setup}
   return

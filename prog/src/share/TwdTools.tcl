@@ -48,6 +48,10 @@ proc getRandomPhoto {} {
   return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ] 
 }
 
+proc updateTwd {} {
+  
+}
+
 
 ### T W D   P A R S I N G   T O O L S   ###############################
   

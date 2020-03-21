@@ -597,7 +597,7 @@ proc deleteOldStuff {} {
   set oldTwdList [glob -nocomplain -directory $dirlist(twdDir) *$vorjahr.twd]
   if {$oldTwdList != ""} {
     NewsHandler::QueryNews "Deleting old Bible text files..." lightblue
-    foreach file $oldtwdlist {
+    foreach file $oldTwdList {
       file delete $file
     }
   }

@@ -64,24 +64,6 @@ if {$version == "2.4"} {
     }
   }
 
-proc joelwatsolls? {} {
-  foreach oldDirPath $oldDirList {
-    puts $oldDirPath
-    set keep 0
-    foreach newDirPath $newDirList {
-      if { $oldDirPath == $newDirPath } {
-        set keep 1
-        puts "keep"
-        break
-      }
-    }
-    if { !$keep } {
-      puts "delete"
-      file delete -force $oldDirPath
-    }
-  }
-}
-
   ##delete obsolete single files
   file delete $rootdir/README
   file delete $dirlist(picdir)/hgbild.tcl
