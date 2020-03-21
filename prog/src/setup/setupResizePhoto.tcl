@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 15may19
+# Updated 21mch20
 
 proc openResizeWindow {} {
   
@@ -9,12 +9,27 @@ proc openResizeWindow {} {
 
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-  set imgX [image width photosCanvPic]
-  set imgY [image height photosCanvPic]
+  set imgX [image width photosOrigPic]
+  set imgY [image height photosOrigPic]
+
+  image create photo resizePic
+
+
+#TODO Joel, hier sind meine letzten Änderungen:
+
+  #Display original pic in largest possible size
+  set reductionFactor 1
+  while { $imgX >= $screenX || $imgY >= $screenY } {
+    incr reductionFactor
+    set imgX [expr $imgX / 2]
+    set imgY [expr $imgY / 2]
+  }
+
+  resizePic copy photosOrigPic -subsample $reductionFactor
 
   #Create canvas with pic
   canvas .resizePhoto.resizePhotoCanv
-  .resizePhoto.resizePhotoCanv create image 0 0 -image photosCanvPic -anchor nw -tags {img mv}
+  .resizePhoto.resizePhotoCanv create image 0 0 -image resizePic -anchor nw -tags {img mv}
 
   #Create title & buttons
   set okButton {set ::Modal.Result [doResize .resizePhoto.resizePhotoCanv]}
@@ -34,14 +49,12 @@ proc openResizeWindow {} {
   
   
   #Set cutting coordinates & configure canvas
-  #set canvCutX2 [expr $screenX * $factor]
-  #set canvCutY2 [expr $screenY * $factor]
-  
-#TODO: falsch BERECHTNET:
+   
+#TODO: falsch BERECHTNET:??
   set canvCutX2 [expr $screenX * $factor]
   set canvCutY2 [expr $screenY * $factor]
   
-  .resizePhoto.resizePhotoCanv configure -width $canvCutX2 -height $canvCutY2 -bg lightblue -relief solid -borderwidth 2
+  .resizePhoto.resizePhotoCanv conf -width $canvCutX2 -height $canvCutY2 -bg lightblue -relief solid -borderwidth 2
   
   #Pack everything
   pack .resizePhoto.resizeLbl
@@ -60,6 +73,8 @@ proc openResizeWindow {} {
   
   Show.Modal .resizePhoto -destroy 1 -onclose $cancelButton
 } ;#END openResizeWindow
+
+
 
 namespace eval ResizeHandler {
   namespace export QueryResize
