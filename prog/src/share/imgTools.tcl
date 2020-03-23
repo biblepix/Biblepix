@@ -1,8 +1,8 @@
-# ~/Biblepix/prog/src/pic/imgTools.tcl
+# ~/Biblepix/prog/src/share/imgTools.tcl
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15may19
+# Updated: 23mch20
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -33,7 +33,7 @@ proc hex2rgb {hex} {
 
 # computeAvColours
 ##fetches R G B from a section & computes avarages into ::rgb namespace
-##called by BdfPrint
+##called by BdfPrint - TODO: still testing!!!
 proc computeAvColours {img} {
   global marginleft margintop RtL
   #no. of pixels to be skipped
@@ -94,11 +94,12 @@ return
   #Delete colour lists
   catch {unset R G B}
 
-  
+
 } ;#END computeAvColours
 
-# changeFontColour
-#TODO: to be implemented in above!
+
+# changeFontColour - TODO tsting
+#TODO: to be implemented in above! - MAY NOT BE NECESSARY!!!
 #Theory: 
 ##wenn HG überwiegend dunkelblau, fontcolor-> silver
 ##wenn HG überwiegend dunkelgrün, fontcolor-> gold
