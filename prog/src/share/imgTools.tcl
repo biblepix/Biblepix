@@ -160,95 +160,40 @@ proc setPngFileName {fileName} {
 # doResize
 ## organises all resizing processes
 ## called by addPic
-proc doResize {c} {
+proc doResize {canv} {
   set origX [image width photosOrigPic]
   set origY [image height photosOrigPic]
-  set imgX [image width photosCanvPic]
-  set imgY [image height photosCanvPic]
-  set canvX [lindex [$c conf -width] end]
-  set canvY [lindex [$c conf -height] end]
-  lassign [$c bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
+  set canvX [lindex [$canv conf -width] end]
+  set canvY [lindex [$canv conf -height] end]
+  lassign [$canv bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
   
-  ResizeHandler::QueryResize $origX $origY $imgX $imgY $canvX $canvY $canvPicX1 $canvPicY1 $canvPicX2 $canvPicY2
+  set scale [expr $origX. / $canvX]
+  if {[expr $canvY. * $scale] > $origY} {
+    set scale [expr $origY. / $canvY]
+  }
+  
+  set cutX1 [expr int($canvPicX1 * -1 * $scale)]
+  set cutY1 [expr int($canvPicY1 * -1 * $scale)]
+  set cutX2 [expr int($canvX * $scale + $cutX1)]
+  set cutY2 [expr int($canvY * $scale + $cutY1)]
+  
+  set cutImg [trimPic photosOrigPic $cutX1 $cutY1 $cutX2 $cutY2]
+  
+  ResizeHandler::QueryResize $cutImg
   after idle {
     ResizeHandler::Run
   }
 }
 
-proc processResize {origX origY imgX imgY canvX canvY canvPicX1 canvPicY1 canvPicX2 canvPicY2} {
+proc processResize {cutImg} {
   global dirlist picPath
-
-  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
 
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-  set screenFactor [expr $screenX. / $screenY]
-  set enlargementFactor [expr $origX. / $canvX]
   
-  #1. C U T   P I C   T O   C O R R E C T   R A T I O 
-  ##Wegen ungenauer Ergebisse mit Vergrösserungsfaktor wird er nur auf 1 Seite angewendet
-  #Check which edge shouldn't be touched
-  
-  ##A) pic too high: set fix X values, adapt Y values
-  if {$imgX == $canvX} {
-    puts "imgX = canvX"
-    set cutX1 0
-    set cutX2 $origX
-    set reqY [expr round($origX / $screenFactor)]
-    
-    #a)Pos oberer Rand
-    if {$canvPicY1 == 0} {
-      puts a
-      set cutY1 0
-      set cutY2 $reqY
-      
-    #b)Pos unterer Rand
-    } elseif {[expr $imgY + $canvPicY1] == $imgY} {
-      puts b
-      set cutY1 [expr $origY - $reqY] 
-      set cutY2 [expr $reqY + $cutY1]
-    
-    #c)Pos dazwischen
-    } else {
-      puts c
-      set Ydiff [expr 0 - $canvPicY1]
-      set cutY1 [expr round($Ydiff * $enlargementFactor) ]
-      set cutY2 [expr round($reqY - ($canvPicY1 * $enlargementFactor))]
-    }
-    
-  ##B) Pic too wide: set fix Y values, adapt X values
-  } elseif {$imgY == $canvY} {
-  
-    puts "imgY = canvY"
-    set cutY1 0
-    set cutY2 $origY
-    set reqX [expr round($origY * $screenFactor)]
-
-    #a)Pos linker Rand
-    if {$canvPicX1 == 0} {
-      puts a
-      set cutX1 0
-      set cutX2 $reqX
-      
-    #b)Pos rechter Rand - TODO: GEHT NICHT EINWANDFREI
-    } elseif {[expr $imgX + $canvPicX1] == $imgX} {
-      puts b
-      set cutX1 [expr $origX - $reqX] 
-      set cutX2 [expr $reqX + $cutX1]
-    
-    #c)Pos dazwischen
-    } else {
-      puts c
-      set Xdiff [expr 0 - $canvPicX1]
-      set cutX1 [expr round($Xdiff * $enlargementFactor) ]
-      set cutX2 [expr round($reqX - ($canvPicX1 * $enlargementFactor))]
-    }
-  }
-  
-  #2. R E S I Z E   P I C   T O   S C R E E N   &  S A V E
-  
-  set cutImg [trimPic photosOrigPic $cutX1 $cutY1 $cutX2 $cutY2]
   set finalImage [resize $cutImg $screenX $screenY]
+  
+  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
   $finalImage write $targetPicPath -format PNG
 
   image delete $cutImg

@@ -230,32 +230,18 @@ proc dragCanvasItem {c item newX newY} {
 ## called by dragCanvasItem
 proc checkItemInside {c item xDiff yDiff} {
 
-#TODO Joel das sind vorläufige fixes...
-set pic resizePic
-  
-  lassign [$c bbox $item] - - can(maxx) can(maxy)
+  #TODO Joel das sind vorläufige fixes...
+  set pic resizePic
+
   set imgX [image width $pic]
   set imgY [image height $pic]
-  set canvX [winfo width $c]
-  set canvY [winfo height $c]
-  set can(miny) 0
-  set can(minx) 0
+  set canvX [expr [winfo width $c] - 8]
+  set canvY [expr [winfo height $c] - 8]
 
-#TODO: is this to prevent moving down and right? Do we need this?
-#  set can(maxy) [$c itemcget $item -height]
-#  set can(maxx) [$c itemcget $item -width]
-
-  if {$imgX > $canvX} {
-    set can(minx) [expr $canvX - $imgX]
-    set can(maxy) 0
-    set can(maxx) 0
-
-  } elseif {$imgY > $canvY} {
-
-    set can(miny) [expr $canvY - $imgY]
-    set can(maxy) 0
-    set can(maxx) 0
-  }
+  set can(minx) [expr $canvX - $imgX]
+  set can(miny) [expr $canvY - $imgY]
+  set can(maxy) 0
+  set can(maxx) 0
 
   #item coords
   set item [$c coords $item]
@@ -347,8 +333,6 @@ proc delPic {} {
   NewsHandler::QueryNews "[deletedPic $picPath]" red
 }
 
-#TODO help - where is bildordner set???
-
 proc doOpen {bildordner c} {
   set localJList [openFileDialog $bildordner]
   refreshImg $localJList $c
@@ -356,6 +340,7 @@ proc doOpen {bildordner c} {
   if {$localJList != ""} {
     pack .addBtn -in .photosF.mainf.right.unten -side left -fill x
   }
+
   pack .picPath -in .photosF.mainf.right.unten -side left -fill x
   pack .photosF.mainf.right.bar.collect -side right -fill x
   pack forget .delBtn

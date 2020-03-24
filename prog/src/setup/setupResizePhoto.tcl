@@ -4,7 +4,6 @@
 # Updated 21mch20
 
 proc openResizeWindow {} {
-  
   toplevel .resizePhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600
 
   set screenX [winfo screenwidth .]
@@ -14,12 +13,9 @@ proc openResizeWindow {} {
 
   image create photo resizePic
 
-
-#TODO Joel, hier sind meine letzten Änderungen:
-
   #Display original pic in largest possible size
   set reductionFactor 1
-  while { $imgX >= $screenX || $imgY >= $screenY } {
+  while { $imgX >= $screenX && $imgY >= $screenY } {
     incr reductionFactor
     set imgX [expr $imgX / 2]
     set imgY [expr $imgY / 2]
@@ -38,19 +34,13 @@ proc openResizeWindow {} {
   ttk::button .resizePhoto.resizeConfirmBtn -text Ok -command $okButton
   ttk::button .resizePhoto.resizeCancelBtn -textvar ::cancel -command $cancelButton
   
-  #Set pic factor
+  #Set scale factor
   set factor [expr $imgX. / $screenX]
   if {[expr $imgY. / $factor] < $screenY} {
     set factor [expr $imgY. / $screenY]
   }
-
-  #SET SCREENFACTOR - schon da!!!
-  set screenFactor [expr $screenY. / $screenX]
-  
   
   #Set cutting coordinates & configure canvas
-   
-#TODO: falsch BERECHTNET:??
   set canvCutX2 [expr $screenX * $factor]
   set canvCutY2 [expr $screenY * $factor]
   
@@ -80,57 +70,21 @@ namespace eval ResizeHandler {
   namespace export QueryResize
   namespace export Run
 
-  variable queryOrigXJList ""
-  variable queryOrigYJList ""
-  variable queryImgXJList ""
-  variable queryImgYJList ""
-  variable queryCanvXJList ""
-  variable queryCanvYJList ""
-  variable queryCanvPicX1JList ""
-  variable queryCanvPicY1JList ""
-  variable queryCanvPicX2JList ""
-  variable queryCanvPicY2JList ""
+  variable queryCutImgJList ""
   variable counter 0
   variable isRunning 0
 
-  proc QueryResize {origX origY imgX imgY canvX canvY canvPicX1 canvPicY1 canvPicX2 canvPicY2} {
-    variable queryOrigXJList
-    variable queryOrigYJList
-    variable queryImgXJList
-    variable queryImgYJList
-    variable queryCanvXJList
-    variable queryCanvYJList
-    variable queryCanvPicX1JList
-    variable queryCanvPicY1JList
-    variable queryCanvPicX2JList
-    variable queryCanvPicY2JList
+  proc QueryResize {cutImg} {
+    variable queryCutImgJList
     variable counter
 
-    set queryOrigXJList [jappend $queryOrigXJList $origX]
-    set queryOrigYJList [jappend $queryOrigYJList $origY]
-    set queryImgXJList [jappend $queryImgXJList $imgX]
-    set queryImgYJList [jappend $queryImgYJList $imgY]
-    set queryCanvXJList [jappend $queryCanvXJList $canvX]
-    set queryCanvYJList [jappend $queryCanvYJList $canvY]
-    set queryCanvPicX1JList [jappend $queryCanvPicX1JList $canvPicX1]
-    set queryCanvPicY1JList [jappend $queryCanvPicY1JList $canvPicY1]
-    set queryCanvPicX2JList [jappend $queryCanvPicX2JList $canvPicX2]
-    set queryCanvPicY2JList [jappend $queryCanvPicY2JList $canvPicY2]
+    set queryCutImgJList [jappend $queryCutImgJList $cutImg]
 
     incr counter
   }
 
   proc Run {} {
-    variable queryOrigXJList
-    variable queryOrigYJList
-    variable queryImgXJList
-    variable queryImgYJList
-    variable queryCanvXJList
-    variable queryCanvYJList
-    variable queryCanvPicX1JList
-    variable queryCanvPicY1JList
-    variable queryCanvPicX2JList
-    variable queryCanvPicY2JList
+    variable queryCutImgJList
     variable counter
     variable isRunning
 
@@ -138,39 +92,12 @@ namespace eval ResizeHandler {
       if {!$isRunning} {
         set isRunning 1
 
-        set origX [jlfirst $queryOrigXJList]
-        set queryOrigXJList [jlremovefirst $queryOrigXJList]
-
-        set origY [jlfirst $queryOrigYJList]
-        set queryOrigYJList [jlremovefirst $queryOrigYJList]
-
-        set imgX [jlfirst $queryImgXJList]
-        set queryImgXJList [jlremovefirst $queryImgXJList]
-
-        set imgY [jlfirst $queryImgYJList]
-        set queryImgYJList [jlremovefirst $queryImgYJList]
-
-        set canvX [jlfirst $queryCanvXJList]
-        set queryCanvXJList [jlremovefirst $queryCanvXJList]
-
-        set canvY [jlfirst $queryCanvYJList]
-        set queryCanvYJList [jlremovefirst $queryCanvYJList]
-
-        set canvPicX1 [jlfirst $queryCanvPicX1JList]
-        set queryCanvPicX1JList [jlremovefirst $queryCanvPicX1JList]
-
-        set canvPicY1 [jlfirst $queryCanvPicY1JList]
-        set queryCanvPicY1JList [jlremovefirst $queryCanvPicY1JList]
-
-        set canvPicX2 [jlfirst $queryCanvPicX2JList]
-        set queryCanvPicX2JList [jlremovefirst $queryCanvPicX2JList]
-
-        set canvPicY2 [jlfirst $queryCanvPicY2JList]
-        set queryCanvPicY2JList [jlremovefirst $queryCanvPicY2JList]
+        set cutImg [jlfirst $queryCutImgJList]
+        set queryCutImgJList [jlremovefirst $queryCutImgJList]
 
         incr counter -1
 
-        processResize $origX $origY $imgX $imgY $canvX $canvY $canvPicX1 $canvPicY1 $canvPicX2 $canvPicY2
+        processResize $cutImg
 
         ResizeHandler::FinishRun
       }
