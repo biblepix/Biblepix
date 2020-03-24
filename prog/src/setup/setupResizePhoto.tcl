@@ -4,6 +4,8 @@
 # Updated 21mch20
 
 proc openResizeWindow {} {
+
+
   toplevel .resizePhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600
 
   set screenX [winfo screenwidth .]
@@ -14,8 +16,12 @@ proc openResizeWindow {} {
   image create photo resizePic
 
   #Display original pic in largest possible size
+  #TODO either avoid too big size for buttons to hide, OR ELIMINATE BUTTONS!
+  set maxX [expr $screenX - 200]
+  set maxY [expr $screenY - 200]
+  
   set reductionFactor 1
-  while { $imgX >= $screenX && $imgY >= $screenY } {
+  while { $imgX >= $maxX && $imgY >= $maxY } {
     incr reductionFactor
     set imgX [expr $imgX / 2]
     set imgY [expr $imgY / 2]
@@ -30,9 +36,11 @@ proc openResizeWindow {} {
   #Create title & buttons
   set okButton {set ::Modal.Result [doResize .resizePhoto.resizePhotoCanv]}
   set cancelButton {set ::Modal.Result "Cancelled"}
-  ttk::label .resizePhoto.resizeLbl -text "$::movePicToResize" -font {TkHeadingFont 18} -background orange
+  
+#  ttk::label .resizePhoto.resizeLbl -text "$::movePicToResize" -font {TkHeadingFont 18} -background orange
   ttk::button .resizePhoto.resizeConfirmBtn -text Ok -command $okButton
   ttk::button .resizePhoto.resizeCancelBtn -textvar ::cancel -command $cancelButton
+  pack .resizePhoto.resizeConfirmBtn .resizePhoto.resizeCancelBtn ;#will be repacked into canv window
   
   #Set scale factor
   set factor [expr $imgX. / $screenX]
@@ -45,20 +53,27 @@ proc openResizeWindow {} {
   set canvCutY2 [expr $screenY * $factor]
   
   .resizePhoto.resizePhotoCanv conf -width $canvCutX2 -height $canvCutY2 -bg lightblue -relief solid -borderwidth 2
+  .resizePhoto.resizePhotoCanv create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -text "$::movePicToResize"
+  .resizePhoto.resizePhotoCanv create window [expr $canvCutX2 - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn
+  .resizePhoto.resizePhotoCanv create window [expr $canvCutX2 - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn
   
+  #[expr [winfo width .resizePhoto.resizePhotoCanv] - 500]
   #Pack everything
-  pack .resizePhoto.resizeLbl
-  pack .resizePhoto.resizePhotoCanv
-  pack .resizePhoto.resizeCancelBtn .resizePhoto.resizeConfirmBtn -side right
-  focus .resizePhoto.resizeConfirmBtn
+ # pack .resizePhoto.resizeLbl
+ # pack .resizePhoto.resizeConfirmBtn -side bottom -fill x
+  pack .resizePhoto.resizePhotoCanv -side top -fill none
+#  pack .resizePhoto.resizeCancelBtn .resizePhoto.resizeConfirmBtn -side right -expand 1
+#
+#  focus .resizePhoto.resizeConfirmBtn
   
   #Set bindings
-  bind .resizePhoto <Return> $cancelButton
+  bind .resizePhoto <Return> $okButton
   bind .resizePhoto <Escape> $cancelButton
  .resizePhoto.resizePhotoCanv bind mv <1> {
      set ::x %X
      set ::y %Y
  }
+ 
  .resizePhoto.resizePhotoCanv bind mv <B1-Motion> [list dragCanvasItem %W mv %X %Y]
   
   Show.Modal .resizePhoto -destroy 1 -onclose $cancelButton
