@@ -200,7 +200,7 @@ proc processResize {cutImg} {
   image delete $cutImg
   image delete $finalImage
 
-  NewsHandler::QueryNews "[copiedPic $picPath]" lightblue
+  NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
 } ;#END doResize
 
 

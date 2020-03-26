@@ -322,7 +322,7 @@ proc addPic {} {
     openResizeWindow
   } else {
     photosOrigPic write $targetPicPath -format PNG
-    NewsHandler::QueryNews "[copiedPic $picPath]" lightblue
+    NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
   }
 } ;#END addPic
 
@@ -330,7 +330,7 @@ proc delPic {} {
   global fileJList picPath
   file delete $picPath
   set fileJList [deleteImg $fileJList .imgCanvas]
-  NewsHandler::QueryNews "[deletedPic $picPath]" red
+  NewsHandler::QueryNews "[deletedPicMsg $picPath]" red
 }
 
 proc doOpen {bildordner c} {
