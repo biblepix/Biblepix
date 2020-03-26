@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15feb20
+# Updated: 26mch20
 
 package require http
 
@@ -40,7 +40,7 @@ proc runHTTP isInitial {
       
     #Success message (source Texts again for Initial)
     catch {.if.initialMsg configure -bg green}
-    catch {NewsHandler::QueryNews $::uptodateHttp green}
+    catch {NewsHandler::QueryNews $::uptodateHttp lightgreen}
     catch {set ::ftpStatus $::uptodateHttp}
 
   } ;#end if main condition

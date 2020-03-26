@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14mch20
+# Updated: 26mch20
 
 source $JList
 
@@ -673,8 +673,6 @@ proc deleteOldStuff {} {
     }
   }
 
-  NewsHandler::QueryNews "Your program files are up-to-date" blue
-  #unset curFolderList curFileList curFontList
-  #unset latestFolderList latestFileList latestFontList
+  NewsHandler::QueryNews "$::uptodateHttp" lightgreen
 
 } ;#END deleteOldStuff

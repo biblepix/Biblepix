@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5mch20
+# Updated: 25mch20
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
@@ -71,7 +71,7 @@ pack .label -in .fbottom -side left
 # TODO colorieren
 message .news -textvariable news -width [expr $wWidth - 350]
 if {![info exists error] || !$error} {
-  NewsHandler::QueryNews "$uptodateHttp" green
+  NewsHandler::QueryNews "$uptodateHttp" lightgreen
 } else {
   NewsHandler::QueryNews "$noConnHttp" red
 }
