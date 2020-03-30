@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # Called by Signature if Trojitá IMAP Mailer installed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7mch19
+# Updated: 30mch20
 
 #Set global vars
 set tr {Trojitá}
@@ -29,11 +29,11 @@ proc trojitaSigWin {} {
     }
   }
   
-  #2. Check date & exit if Today's
-  set twdDate [trojitaGetDate]
-  if {$twdDate==$dayOTY} {
-    return " $tr signatures up-to-date"
-  }
+  #2. Check date & exit if Today's - OBSOLETE, Verse is changed at each reboot (=BiblePix routine)
+#  set twdDate [trojitaGetDate]
+#  if {$twdDate==$dayOTY} {
+#    return " $tr signatures up-to-date"
+#  }
   
   #3. 2nd run: replace previous Twd's
   foreach id [registry keys $idPath] {
@@ -42,7 +42,7 @@ proc trojitaSigWin {} {
     registry set $idPath\\$id signature $newSig
   }
 
-  #4. Reset date if sig changed (var from trojitaReplaceSigWin)
+  #4. Reset date if sig changed (var from trojitaReplaceSigWin) - OBSOLETE, has no effect now
   if [info exists ::sigChanged] {
     trojitaSetDate
   }
@@ -126,13 +126,13 @@ proc trojitaSigLin {} {
 
     return "Added The Word to $::sigChanged $tr signatures"
 
-  #2. Check date & exit if todays
+  #2. Check date & exit if todays - OBSOLETE, see above
   } elseif {$twdPresent} {
     
-    set twdDate [trojitaGetDate]
-    if {$twdDate==$dayOTY} {
-      return "$tr signatures up-to-date."
-    } 
+#    set twdDate [trojitaGetDate]
+#    if {$twdDate==$dayOTY} {
+#      return "$tr signatures up-to-date."
+#    } 
   }
 
   #3. Replace old Twd's with new
