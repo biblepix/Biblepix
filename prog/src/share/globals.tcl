@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 16feb20
+# Updated: 30mch20
 set version "3.1"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
@@ -190,7 +190,16 @@ proc sleep { ms } {
 }
 
 #Define font colours & colour computing values
-set gold #ff9b00
+
+#TODO why are changes not respected???
+#set gold #ff9b00
+#set gold #ffd700
+#set gold #daa520
+#set gold #ff8c00
+#set gold #ffa500 ;#should be orange!
+
+set gold {#FF6300}
+
 set silver #c0c0c0
 set blue #00bfff
 set green #3cb978
@@ -203,38 +212,6 @@ if {$platform == "unix"} {
   set HOME $env(HOME)
   set types {
     { {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
-  }
-
-  #ru
-  if { [file exists $HOME/Снимки] } {
-    set DesktopPicturesDir $HOME/Снимки
-  #hu
-  } elseif { [file exists $HOME/Képek] } {
-    set DesktopPicturesDir $HOME/Képek
-  #tr
-  } elseif { [file exists $HOME/Resimler] } {
-    set DesktopPicturesDir $HOME/Resimler
-  #uz
-  } elseif { [file exists $HOME/Suratlar] } {
-    set DesktopPicturesDir $HOME/Suratlar
-  #ar صور
-  } elseif { [file exists [file join $HOME صور ]] } {
-    set DesktopPicturesDir "[file join $HOME صور ]"
-  #zh 图片
-  } elseif { [file exists [file join $HOME 图片 ]] } {
-    set DesktopPicturesDir "[file join $HOME 图片 ]"
-
-  #General Ima(ge) | Bil(der) etc.
-  } elseif {
-      ![catch {glob Imag*} result] ||
-      ![catch {glob Immag*} result] ||
-      ![catch {glob Imág*} result] ||
-      ![catch {glob Pict*} result] ||
-      ![catch {glob Bil*} result] } {
-    set DesktopPicturesDir $HOME/$result
-  #All else: set to $HOME
-  } else {
-    set DesktopPicturesDir $HOME
   }
 
 } elseif {$platform == "windows"} {

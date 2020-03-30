@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 26may19
+# Updated: 30mch20
 
 #Source Config and LoadConfig for defaults
 if { [catch {source $Config}] } {
@@ -21,6 +21,7 @@ if { ![info exists lang] } {
       }
     }
   } elseif {$platform=="unix"} {
+  
     if {[info exists env(LANG)] && [string range $env(LANG) 0 1] == "de"} {
       set lang de
     }
@@ -82,9 +83,9 @@ if {![info exists Debug]} {
   set Debug 0
 }
 
-#Set httpmock
-if {![info exists httpmock]} {
-  set httpmock 0
+#Set Httpmock
+if {![info exists Httpmock]} {
+  set Httpmock 0
 }
 
 #Set current font colour

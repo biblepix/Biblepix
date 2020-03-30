@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/saveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3jul19
+# Updated: 30mch20
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -119,5 +119,66 @@ if {$runningDesktop==2} {
   catch reloadXfceDesktop Error
   puts "runningDesktop $Error"
 }
+
+
+
+#TODO Check with Live Install CD!!!
+#
+#Provide correct "Images" path for Unix/Linux languages
+proc setLinDesktopPicturesDir {} {
+
+  #ru
+  if { [file exists $HOME/Снимки] } {
+    set DesktopPicturesDir $HOME/Снимки
+  #hu
+  } elseif { [file exists $HOME/Képek] } {
+    set DesktopPicturesDir $HOME/Képek
+  #tr
+  } elseif { [file exists $HOME/Resimler] } {
+    set DesktopPicturesDir $HOME/Resimler
+  #uz
+  } elseif { [file exists $HOME/Suratlar] } {
+    set DesktopPicturesDir $HOME/Suratlar
+  #ar صور
+  } elseif { [file exists [file join $HOME صور ]] } {
+    set DesktopPicturesDir "[file join $HOME صور ]"
+  #zh 图片
+  } elseif { [file exists [file join $HOME 图片 ]] } {
+    set DesktopPicturesDir "[file join $HOME 图片 ]"
+
+  #General Ima(ge) | Bil(der) etc.
+  } elseif {
+      ![catch {glob Imag*} result] ||
+      ![catch {glob Immag*} result] ||
+      ![catch {glob Imág*} result] ||
+      ![catch {glob Pict*} result] ||
+      ![catch {glob Bil*} result] } {
+    set DesktopPicturesDir $HOME/$result
+  #All else: set to $HOME
+  } else {
+    set DesktopPicturesDir $HOME
+  }
+  
+  #TODO 2. Versuch:
+    if [file isdirectory ~/Bilder]   {set dirlist(photosDir) [file join $HOME Bilder]}
+    if [file isdirectory ~/Képek]    {set dirlist(photosDir) [file join $HOME Képek]}
+    if [file isdirectory ~/Resimler] {set dirlist(photosDir) [file join $HOME Resimler]}
+    if [file isdirectory ~/Suratlar] {set dirlist(photosDir) [file join $HOME Suratlar]}
+    if [file isdirectory ~/Immagini] {set dirlist(photosDir) [file join $HOME Immagini]}
+    if [file isdirectory ~/Images]   {set dirlist(photosDir) [file join $HOME Images]}
+    if [file isdirectory ~/Imagini]  {set dirlist(photosDir) [file join $HOME Imagini]}
+    if [file isdirectory ~/Imágenes] {set dirlist(photosDir) [file join $HOME Imágenes]}
+    if [file isdirectory ~/Billeder] {set dirlist(photosDir) [file join $HOME Billeder]}
+    if [file isdirectory [file join $HOME תמונות]] {set dirlist(photosDir) [file join $HOME תמונות]}
+    if [file isdirectory [file join $HOME رسوم]] {set dirlist(photosDir) [file join $HOME رسوم]}
+    if [file isdirectory [file join $HOME Снимки]] {set dirlist(photosDir) [file join $HOME Снимки]}
+    if [file isdirectory [file join $HOME Суратлар]] {set dirlist(photosDir) [file join $HOME Снимки]}
+    if [file isdirectory [file join $HOME Obrazy]] {set dirlist(photosDir) [file join $HOME Obrazy]}
+    
+    #verify these!
+    if [file isdirectory [file join $HOME ภาพ]] {set dirlist(photosDir) [file join $HOME ภาพ]}
+    if [file isdirectory [file join $HOME 圖片]] {set dirlist(photosDir) [file join $HOME 圖片]}
+  
+} ;#END setLinDesktopPicturesDir
 
 return 0
