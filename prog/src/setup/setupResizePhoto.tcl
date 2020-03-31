@@ -5,7 +5,6 @@
 
 proc openResizeWindow {} {
 
-
   toplevel .resizePhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600
 
   set screenX [winfo screenwidth .]
@@ -53,7 +52,7 @@ proc openResizeWindow {} {
   set canvCutY2 [expr $screenY * $factor]
   
   .resizePhoto.resizePhotoCanv conf -width $canvCutX2 -height $canvCutY2 -bg lightblue -relief solid -borderwidth 2
-  .resizePhoto.resizePhotoCanv create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -text "$::movePicToResize"
+  .resizePhoto.resizePhotoCanv create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill green -text "$::movePicToResize"
   .resizePhoto.resizePhotoCanv create window [expr $canvCutX2 - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn
   .resizePhoto.resizePhotoCanv create window [expr $canvCutX2 - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn
   
