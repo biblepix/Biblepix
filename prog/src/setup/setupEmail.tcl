@@ -6,9 +6,9 @@
 label .emailF.t1 -textvar f3.tit -font bpfont3
 pack .emailF.t1 -anchor w
 
-pack [frame .emailF.titelF -pady 20] -fill x
+pack [frame .emailF.titelF -pady 20 -padx 20] -fill x
 
-checkbutton .emailF.titelF.sigyes -textvar f3.btn -variable sigyesState
+checkbutton .emailF.titelF.sigyes -textvar f3.btn -variable sigyesState -command {toggleCBstate}
 label .emailF.titelF.sprachenL -textvar f3.sprachen -bg lightblue
 
 pack [frame .emailF.topframe] -expand false -fill x
@@ -16,27 +16,69 @@ pack [frame .emailF.topframe.left] -side left -expand false
 pack [frame .emailF.topframe.right] -side right -expand 0
 .emailF.topframe.right configure -borderwidth 2 -relief sunken -padx 50 -pady 30 -bg $bg
 
-#Set Sprachbuttons nach Sprachkürzeln 
+#List language codes of installed TWD files 
 foreach L [glob -tail -directory $twdDir *.twd] {
   lappend langlist $L
 }
-
 foreach e $langlist {
   lappend codelist [string range $e 0 1]
 }
-
 set CodeList [lsort -decreasing -unique $codelist]
 puts $CodeList
 
-foreach code $CodeList {
-  checkbutton .${code}CB -text $code -bg lightblue -highlightbackground blue
-  pack .${code}CB -in .emailF.titelF -side right
+#Lists selected sigLangCB's
+proc updateSelectedList {} {
+  global CodeList
+  foreach code $CodeList {
+    set varname "sel${code}" 
+    if [set ::$varname] {
+      lappend sigLanglist $code
+    }
+  }
+  return $sigLanglist
 }
 
-if {$lang == "de"} {
-  .deCB select
-} elseif {$lang == "en"} {
-  .enCB select
+##called by .sigyes CB to enable/disable lang checkbuttons
+proc toggleCBstate {} {
+  global sigLangCBList sigyesState
+  
+  foreach cb $sigLangCBList {
+    
+    if {$sigyesState} {
+      $cb conf -state normal
+    } else {
+      $cb conf -state disabled
+    }
+  }
+}
+
+#Create language buttons for each language code
+foreach code $CodeList {
+  checkbutton .${code}CB -text $code -width 5 -selectcolor yellow -indicatoron 0 -variable sel${code}
+  pack .${code}CB -in .emailF.titelF -side right -padx 3
+  lappend sigLangCBList .${code}CB
+}
+
+#Preselect language Buttons:
+##A) $sigLanglist exists
+if {[info exists sigLanglist] && $sigLanglist != ""} {
+  foreach code $sigLanglist {
+    set CB .${code}CB
+    $CB select
+  }
+    
+##B) $sigLanglist not found
+} else {
+
+  if {[info exists syslangCode] && [winfo exists .${syslangCode}CB]} {
+    .${syslangCode}CB select
+  }
+
+  if {$lang == "de" && [winfo exists .deCB]} {
+    .deCB select
+  } elseif {$lang == "en" && [winfo exists .enCB]} {
+    .enCB select
+  }
 }
 
 pack .emailF.titelF.sprachenL -side right
@@ -44,12 +86,8 @@ pack .emailF.titelF.sigyes -anchor w -side left
 
 if {$enablesig==1} {
   set sigyesState 1
-#  set codeState 1
-#  foreach s [pack slaves .emailF.titelF] {$s conf -state normal}
 } else {
   set sigyesState 0
-#  set codeState 0  
-#  foreach s [pack slaves .emailF.titelF] {$s conf -state disabled;.emailF.titelF.sigyes conf -state normal}
 }
 
 #Create Message
@@ -73,20 +111,3 @@ if { [isRtL [getTwdLang $setupTwdFileName]] } {
 }
 
 pack $sigLabel1 $sigLabel2 -anchor w
-
-#TODO remove after testing
-proc prob {langlist} {
-foreach e $langlist {
-  set letter [string index $e 0]
-  set i 0
-  
-  while [string is alpha $letter] {
-    append code $letter
-    incr i
-    set letter [string index $e $i]
-    
-  }
-  
-  lappend ::codelist $code
-}
-}

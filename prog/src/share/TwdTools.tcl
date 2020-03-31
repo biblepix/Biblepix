@@ -20,10 +20,46 @@ proc getTWDlist {} {
   return $twdlist
 }
 
+# getTwdSigList
+##selects TWD files for languages selected in SetupEmail CodeList
+##called by getRandomTwdFile with args = sig
+proc getSigTwdList {} {
+
+  global dirlist jahr sigLanglist
+ 
+  #A) Use only files that match $sigLanglist
+  if { [info exists sigLanglist] && $sigLanglist != ""} {
+
+    foreach code $sigLanglist {
+      set file [glob -nocomplain -tails -directory $dirlist(twdDir) ${code}*${jahr}.twd]
+        if {$file != ""} {
+         lappend twdList $file
+       }
+    }
+  
+  #B) use all files if no list found  
+  } else {
+   
+    set twdList [glob -nocomplain -tails -directory $dirlist(twdDir) *_$jahr.twd]
+    
+  }
+    
+  return $twdList
+}
+
 #R a n d o m i z e r s
-proc getRandomTwdFile {} {
-  #Ausgabe ohne Pfad
-  set twdlist [getTWDlist]
+
+# getRandomTwdFile
+##Ausgabe ohne Pfad
+##called by Signature with args==sig
+proc getRandomTwdFile args {
+  #A) for signature
+  if [info exists args] {
+    set twdlist [getSigTwdList]
+  #B) for all others 
+  } else { 
+    set twdlist [getTWDlist]
+  }
   set randIndex [expr {int(rand()*[llength $twdlist])}]
   return [lindex $twdlist $randIndex]
 }

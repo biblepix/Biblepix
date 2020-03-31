@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 30mch20 
+# Updated : 31mch20 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $dirlist(twdDir)/*$jahr.twd}] } {
@@ -22,7 +22,14 @@ if { [catch {glob $dirlist(twdDir)/*$jahr.twd}] } {
 
 #1.Fetch status variables from GUI
 set imgstatus [set imgyesState]
+
+##ticked signature languages
 set sigstatus [set sigyesState]
+if {$sigstatus} {
+#scan $CodeList from SetupEmail for selected items
+set sigLanglist [updateSelectedList]
+}
+
 set titlelinestatus [set enabletitle]
 set fontcolourstatus [$fontcolorSpin get]
 set fontsizestatus [$fontsizeSpin get]
@@ -52,14 +59,19 @@ set chan [open $Config w]
 puts $chan "set lang $lang"
 puts $chan "set enabletitle $titlelinestatus"
 puts $chan "set enablepic $imgstatus"
+##signature
 puts $chan "set enablesig $sigstatus"
+if {$sigstatus} {
+  puts $chan "set sigLanglist \{$sigLanglist\}"
+}
+##slideshow
 puts $chan "set slideshow $slidestatus"
+##fonts
 puts $chan "set fontfamily \{$fontfamilystatus\}"
 puts $chan "set fontsize $fontsizestatus"
 puts $chan "set fontcolortext $fontcolourstatus"
 puts $chan "set fontweight $fontweight"
-#puts $chan "set sun [setSun $rgb]"
-#puts $chan "set shade [setShade $rgb]"
+##margins
 puts $chan "set marginleft $marginleftstatus"
 puts $chan "set margintop $margintopstatus"
 

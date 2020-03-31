@@ -2,12 +2,12 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16may19
+# Updated: 31mch20
 
 source $TwdTools
 puts "Updating signatures..."
-set twdList [getTWDlist]
-set twdFile [getRandomTwdFile]
+set twdList [getSigTwdList]
+set twdFile [getRandomTwdFile sig]
 set ::dw [getTodaysTwdSig $twdFile]
 
 foreach twdFileName $twdList {
