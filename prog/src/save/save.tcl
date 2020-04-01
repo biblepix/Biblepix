@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 31mch20 
+# Updated : 1apr20 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $dirlist(twdDir)/*$jahr.twd}] } {
@@ -90,6 +90,9 @@ if {$os == "Linux"} {
   if {[info exists termstatus]} {
     puts $chan "set enableterm $termstatus"
   }
+  #Define Desktop Images dir
+  source $SetupSaveLinHelpers
+  puts $chan "set DesktopPicturesDir [setLinDesktopPicturesDir]" 
 } 
 
 close $chan

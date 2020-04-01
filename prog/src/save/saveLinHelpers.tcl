@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18jan20
+# Updated: 1apr20
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -1034,3 +1034,73 @@ proc setupLinTerminal {args} {
   }
 
 } ;#END setupLinTerminal
+
+
+#TODO Check with Live Install CD!!!
+# setLinDesktopPicturesDir
+##Provides correct "Images" path for Unix/Linux languages
+##Called by saveLin.tcl
+proc setLinDesktopPicturesDir {} {
+  global HOME
+  
+  set ru "[file join $HOME Снимки]"
+  set he "[file join $HOME תמונות]"
+  set hu "[file join $HOME Képek]"
+  set tr "[file join $HOME Resimler]"
+  set uzl "[file join $HOME Suratlar]"
+  set uzc  "[file join $HOME Суратлар]"
+  set ar "[file join $HOME صور]"
+  set pl "[file join $HOME Obrazy]"
+  set th "[file join $HOME ภาพ]"
+  set zhtrad "[file join $HOME 圖片]"
+  set zhsimp "[file join $HOME 图片]"
+  
+  #ru
+  if [file isdirectory $ru] {
+    set DesktopPicturesDir $ru
+  #hu
+  } elseif [file isdirectory $hu] {
+    set DesktopPicturesDir $hu
+  #he
+  } elseif [file isdirectory $he] {
+  set DesktopPicturesDir $he
+  #tr
+  } elseif [file isdirectory $tr] {
+    set DesktopPicturesDir $tr
+  #Polish?
+  } elseif [file isdirectory $pl] {
+    set DesktopPicturesDir $pl
+  #uzl
+  } elseif [file isdirectory $uzl] {
+    set DesktopPicturesDir $uzl
+  #uzc
+  } elseif [file isdirectory $uzc] {
+    set DesktopPicturesDir $uzc
+  #ar
+  } elseif [file isdirectory $ar] {
+    set DesktopPicturesDir $ar
+  #zhtrad
+  } elseif [file isdirectory $zhtrad] {
+    set DesktopPicturesDir $zhtrad
+  #zhsimp
+  } elseif [file isdirectory $zhsimp] {
+    set DesktopPicturesDir $zhsimp
+  #Thai?
+  } elseif [file isdirectory $th] {
+    set DesktopPicturesDir $th
+  
+  #General Ima(ge) | Bil(der) etc.
+  } elseif {
+      ![catch {glob -directory $HOME Im*} result] ||
+      ![catch {glob -directory $HOME Pict*} result] ||
+      ![catch {glob -directory $HOME Bil*} result] } {
+      
+    set DesktopPicturesDir $result
+      
+  #All else: set to $HOME
+  } else {
+    set DesktopPicturesDir $HOME
+  }
+    
+    return $DesktopPicturesDir
+} ;#END setLinDesktopPicturesDir
