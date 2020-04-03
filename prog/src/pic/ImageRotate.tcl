@@ -3,14 +3,67 @@
 # from: https://wiki.tcl-lang.org/page/Photo+image+rotation
 
 #TODO integrate in BiblePix photo manipulation!
+#set C .rotateW.rotateC
+#package require Tk
+#package require Img
+proc makeRotateTopwin {} {
+  global picdir C
 
-package require Tk
-package require Img
+#Picture & buttons
+      source $picdir/ImageRotate.tcl
+
+      toplevel .rotateW -width 600 -height 400
+ 
+      button .rotateW.okBtn -text "Vorschau berechnen"
+      button .rotateW.cancelBtn -text Abbruch -command {destroy .rotateW; return 0}
+      
+      set angle 1
+      button .rotateW.saveBtn -text Abspeichern -command "image_rotate photosOrigPic $angle"
+           
+     catch  {  canvas $C -width 600 -height 400}
+      $C create image 0 0 -image photosCanvPic -anchor nw
+      
+     
+  #Meter
+  source $picdir/ImageAngle.tcl      
+  pack .rotateW.rotateC .rotateW.okBtn .rotateW.cancelBtn .rotateW.saveBtn
+  pack [makeMeter]
+  #scale
+  pack [scale $s -orient h -length 300 -from -90 -to 90 -variable v]
+  trace variable v w updateMeter
+  updateMeterTimer
+  
+    set im photosCanvPic
+    set im2 [image create photo]
+    $im2 copy $im
+    set C .rotateW.rotateC
+    
+$C create image 50  90 -image $im
+$C create image 170 90 -image $im2
+entry $C.e -textvar angle -width 4
+    set angle 99
+    bind $C.e <Return> {
+        $im2 config -width [image width $im] -height [image height $im]
+        $im2 copy $im
+        wm title . [time {image_rotate $im2 $::angle}]
+    }
+$C create window 5 5 -window $C.e -anchor nw
+    checkbutton $C.cb -text Update -variable update
+    set ::update 1
+    $C create window 40 5 -window $C.cb -anchor nw
+
+    bind . <Escape> {exec wish $argv0 &; exit}
+
+} ;#END makeRotateTopwin
+
+#.rotateW.okBtn conf -command "image_rotate photosCanvPic $::v"
 
 proc image_rotate {img angle} {
+  global C
   set ::update 0
-
-    set angle [expr {fmod($angle, 360.0)}]
+  
+      set angle [expr {fmod($angle, 360.0)}]
+ 
     if {$angle < 0} {set angle [expr {$angle + 360.0}]}
     if {$angle} {
        set w [image width  $img]
@@ -117,34 +170,39 @@ proc image_rotate {img angle} {
        }
        image delete $tmp
     }
+ 
+ 
  }
  
 #TESTING
-set sample ~/Biblepix/TodaysPicture/theword.png
+#set sample ~/Biblepix/TodaysPicture/theword.png
 #set ::angle 10
 #set ::update 1
 
-#if {[file tail [info script]] == [file tail $argv0]} {
-    pack [canvas .c -height 160 -width 250]
+proc aggdarilacak {} {
+if {[file tail [info script]] == [file tail $argv0]} {
+    pack [canvas .C -height 160 -width 250]
     #---assume standard installation paths:
 #    set sample [file join [lindex $auto_path 2] images logo100.gif]
     set im [image create photo -file $sample]
     set im2 [image create photo]
     $im2 copy $im
-    .c create image 50  90 -image $im
-    .c create image 170 90 -image $im2
-    entry .c.e -textvar angle -width 4
+    .C create image 50  90 -image $im
+    .C create image 170 90 -image $im2
+    entry .C.e -textvar angle -width 4
     set angle 99
-    bind .c.e <Return> {
+    bind .C.e <Return> {
         $im2 config -width [image width $im] -height [image height $im]
         $im2 copy $im
         wm title . [time {image_rotate $im2 $::angle}]
     }
-    .c create window 5 5 -window .c.e -anchor nw
-    checkbutton .c.cb -text Update -variable update
+    .C create window 5 5 -window .C.e -anchor nw
+    checkbutton .C.cb -text Update -variable update
 #    set ::update 1
-    .c create window 40 5 -window .c.cb -anchor nw
+    .C create window 40 5 -window .C.cb -anchor nw
 
     bind . <Escape> {exec wish $argv0 &; exit}
-#}
+}
+}
 
+#addRotate

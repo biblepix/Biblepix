@@ -210,6 +210,9 @@ set shadefactor 0.6
 #Bildformate & DesktopPicturesDir
 if {$platform == "unix"} {
   set HOME $env(HOME)
+  #TODO: DesktopPicturesDir changes with languages, reset in Save > Config as $linuxDesktopPicturesDir
+  #make switch in LoadConfig !!!
+  set DesktopPicturesDir $HOME 
   set types {
     { {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
   }

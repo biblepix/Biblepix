@@ -324,6 +324,9 @@ proc addPic {} {
     photosOrigPic write $targetPicPath -format PNG
     NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
   }
+  
+#addRotate
+  
 } ;#END addPic
 
 proc delPic {} {
@@ -339,6 +342,8 @@ proc doOpen {bildordner c} {
 
   if {$localJList != ""} {
     pack .addBtn -in .photosF.mainf.right.unten -side left -fill x
+
+   
   }
 
   pack .picPath -in .photosF.mainf.right.unten -side left -fill x
