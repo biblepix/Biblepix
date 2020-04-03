@@ -93,7 +93,7 @@ if {$os == "Linux"} {
   #Define Desktop Images dir
   source $SetupSaveLinHelpers
   puts $chan "set DesktopPicturesDir [setLinDesktopPicturesDir]" 
-} 
+}
 
 close $chan
 

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 15may19
+# Updated 3apr20
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -54,7 +54,7 @@ proc getSigTwdList {} {
 ##called by Signature with args==sig
 proc getRandomTwdFile args {
   #A) for signature
-  if [info exists args] {
+  if { [info exists args] && $args == "sig"} {
     set twdlist [getSigTwdList]
   #B) for all others 
   } else { 
