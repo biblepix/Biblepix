@@ -26,7 +26,7 @@ proc runHTTP isInitial {
   #Download all registered files
     foreach varName [array names ::FilePaths] {
       set filePath [lindex [array get ::FilePaths $varName] 1]
-      downloadFile $filePath $isInitial
+      downloadFileFromRelease $filePath $isInitial
     }
 
   #Download all registered fonts
@@ -35,7 +35,7 @@ proc runHTTP isInitial {
         continue
       }
       set filePath [lindex [array get ::BdfFontPaths $varName] 1]
-      downloadFile $filePath $isInitial
+      downloadFileFromRelease $filePath $isInitial
     }
       
     #Success message (source Texts again for Initial)
@@ -63,9 +63,9 @@ proc downloadFileArray {fileArrayName url} {
   }
 }
 
-# downloadFile
+# downloadFileFromRelease
 ##called by runHTTP
-proc downloadFile {filePath isInitial} {
+proc downloadFileFromRelease {filePath isInitial} {
   set filename [file tail $filePath]
 
   puts $filename
@@ -81,7 +81,7 @@ proc downloadFile {filePath isInitial} {
 
   #a) Overwrite file if "Initial"
   if {$isInitial} {
-    downloadFileIntoDir $filePath $filename
+    downloadFileFromUrl $filePath $::bpxReleaseUrl/$filename
 
   #b) Overwrite file if remote is newer
   } else {
@@ -94,36 +94,88 @@ proc downloadFile {filePath isInitial} {
     if { ! [string is digit $newsecs] ||
          ! [string is digit $oldsecs] ||
          $oldsecs<$newsecs } {
-      downloadFileIntoDir $filePath $filename
+      downloadFileFromUrl $filePath $::bpxReleaseUrl/$filename
     }
   }
 
   http::cleanup $token
 }
 
-# downloadFileIntoDir
-##called by downloadFile
-proc downloadFileIntoDir {filePath fileName} {
+# downloadFileFromUrl
+##called by downloadFileFromRelease
+proc downloadFileFromUrl {filePath url} {
   #download file into channel
   #puts $filePath
 
   set chan [open $filePath w]
   fconfigure $chan -encoding utf-8
-  set token [http::geturl $::bpxReleaseUrl/$fileName -channel $chan]
+  set token [http::geturl $url -channel $chan]
   close $chan
 
   #Retry download if status not ok
   if { [http::status $token] != "ok" } {
-    puts "Error status $fileName, retrying download..."
+    puts "Error status $url, retrying download..."
     http::cleanup $token
 
     set chan [open $filePath w]
     fconfigure $chan -encoding utf-8
-    set token [http::geturl $::bpxReleaseUrl/$fileName -channel $chan]
+    set token [http::geturl $url -channel $chan]
     close $chan
   }
   
   http::cleanup $token
+}
+
+proc downloadTwdFile {twdFile year} {
+  set twdFile [file tail $twdFile]
+  set nameParts [split $twdFile "_"]
+  lset nameParts 2 "$year.twd"
+  set fileName [join $nameParts "_"]
+
+  set filePath $::dirlist(twdDir)/$fileName
+  set url $::twdBaseUrl/$fileName
+
+  if [catch {package require tls}] {
+    error "tls missing"
+  }
+
+  #Register SSL connection
+  http::register https 443 [list ::tls::socket -tls1 1]
+
+  set chan [open $filePath w]
+  fconfigure $chan -encoding utf-8
+  set token [http::geturl $url -channel $chan]
+  close $chan
+
+  if {[http::status $token] != "ok"} {
+    error "No Internet connection"
+  }
+
+  http::cleanup $token
+  http::unregister https
+}
+
+
+proc getDataFromUrl {url} {
+  if [catch {package require tls}] {
+    error "tls missing"
+  }
+
+  #Register SSL connection
+  http::register https 443 [list ::tls::socket -tls1 1]
+
+  set token [http::geturl $url]
+
+  if {[http::status $token] != "ok"} {
+    error "No Internet connection"
+  }
+
+  set data [http::data $token]
+
+  http::cleanup $token
+  http::unregister https
+
+  return $data
 }
 
 
@@ -138,6 +190,7 @@ proc getRemoteRoot {} {
     tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $::packageRequireTDom
     return 1
   }
+
   if [catch {package require tls}] {
     package require Tk
     tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $::packageRequireTls
@@ -244,25 +297,16 @@ proc downloadTWDFiles {} {
 
   foreach item $selectedindices {
     set url [lindex $urllist $item]
-
-    # https mit http ersetzen
-    # TODO soon to be removed
-    set indexOfSInHttps [expr [string first https $url] + 4]
-    set url [string replace $url $indexOfSInHttps $indexOfSInHttps]
-
     set filename [file tail $url]
 
     NewsHandler::QueryNews "Downloading $filename..." lightblue
 
     if [regexp zh- $url] {
       set filePath $::BdfFontPaths(ChinaFont)
-      downloadFile $filePath 0
+      downloadFileFromRelease $filePath 0
     }
 
-    set chan [open $filename w]
-    fconfigure $chan -encoding utf-8
-    http::geturl $url -channel $chan
-    close $chan
+    downloadTwdFile $filename $::jahr
 
     after 3000 .internationalF.f1.twdlocal insert end $filename
   }

@@ -24,7 +24,6 @@ proc getTWDlist {} {
 ##selects TWD files for languages selected in SetupEmail CodeList
 ##called by getRandomTwdFile with args = sig
 proc getSigTwdList {} {
-
   global dirlist jahr sigLanglist
  
   #A) Use only files that match $sigLanglist
@@ -85,7 +84,80 @@ proc getRandomPhoto {} {
 }
 
 proc updateTwd {} {
-  
+  package require json
+  source $::Http
+
+  set twdFiles [glob -nocomplain -directory $::dirlist(twdDir) *.twd]
+
+  ##########################################
+  # Download Current TwdFiles if missing
+  ##########################################
+
+  set onlyOldFiles 1
+  foreach twdFile $twdFiles {
+    if {[lindex [split [file tail $twdFile] "_"] 2] == "$::jahr.twd"} {
+      set onlyOldFiles 0
+      break
+    }
+  }
+
+  if {$onlyOldFiles} {
+    foreach twdFile $twdFiles {
+      downloadTwdFile $twdFile $::jahr
+    }
+  }
+
+  if {[catch {set onlineJsonFileList [getDataFromUrl "$::twdUrl?format=json"]}]} {
+    return
+  }
+
+  ##########################################
+  # Download New TwdFiles if available
+  ##########################################
+
+  set onlineDictFileList [::json::json2dict $onlineJsonFileList]
+
+  set nextYearAvailable 0
+  set nextYear [expr {$::jahr + 1}]
+
+  foreach file $onlineDictFileList {
+    if {[dict get $file "year"] == $nextYear} {
+      set nextYearAvailable 1
+      break
+    }
+  }
+
+  if {$nextYearAvailable} {
+    set currentTwdList [glob -nocomplain -directory $::dirlist(twdDir) *$::jahr.twd]
+    set nextTwdList [glob -nocomplain -directory $::dirlist(twdDir) *$nextYear.twd]
+
+    foreach currentFile $currentTwdList {
+      set nextExists 0
+      set currentName [lindex [split [file tail $currentFile] "_"] 1]
+
+      if {$nextTwdList != ""} {
+        foreach nextFile $nextTwdList{
+          if {$currentName == [lindex [split [file tail $nextFile] "_"] 1]} {
+            set nextExists 1
+          }
+        }
+      }
+
+      if {!$nextExists} {
+        downloadTwdFile $currentFile $nextYear
+      }
+    }
+  }
+
+  ##########################################
+  # Delete old TwdFiles
+  ##########################################
+
+  foreach twdFile $twdFiles {
+    if {[lindex [split [file tail $twdFile] "_"] 2] < "$::jahr.twd"} {
+      file delete $twdFile
+    }
+  }
 }
 
 

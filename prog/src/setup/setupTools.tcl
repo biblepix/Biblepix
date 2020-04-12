@@ -584,22 +584,10 @@ proc fillWidgetWithTodaysTwd {twdWidget} {
 ##Removes stale prog files & dirs not listed in Globals
 ##called by Setup
 proc deleteOldStuff {} {
-  global dirlist jahr
-
-  ##########################################
-  #1. Delete old TWDs
-  ##########################################
-  set vorjahr [expr {$jahr - 1}]
-  set oldTwdList [glob -nocomplain -directory $dirlist(twdDir) *$vorjahr.twd]
-  if {$oldTwdList != ""} {
-    NewsHandler::QueryNews "Deleting old Bible text files..." lightblue
-    foreach file $oldTwdList {
-      file delete $file
-    }
-  }
+  global dirlist
 
   #############################################
-  # 2. Delete stale directories
+  # 1. Delete stale directories
   #############################################
 
   #1.List current directory paths starting from progdir
@@ -626,7 +614,7 @@ proc deleteOldStuff {} {
   }
 
   ####################################
-  # 3. Delete stale single files
+  # 2. Delete stale single files
   ####################################
 
   ##get latest file list from Globals
@@ -655,7 +643,7 @@ proc deleteOldStuff {} {
 
 
   #########################################
-  # 4. Delete stale fonts 
+  # 3. Delete stale fonts 
   #########################################
 
   #1. Get latest font paths from globals
