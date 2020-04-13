@@ -1,11 +1,13 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26mch20
+# Updated: Easter 13apr20 pv+jh (merged!)
 
 source $JList
 
-###### Procs for News handling ######################
+#######################################################################
+###### P r o c s   f o r   N e w s   h a n d l i n g ##################
+#######################################################################
 
 namespace eval NewsHandler {
   namespace export QueryNews
@@ -67,18 +69,21 @@ namespace eval NewsHandler {
   }
 }
 
-
-###### Procs for SetupGUI + SetupDesktop ######################
+##########################################################################
+###### P r o c s   f o r   S e t u p G U I   +   S e t u p D e s k t o p #
+##########################################################################
 
 # Set International Canvas Text
-proc setIntCanvasText {fontcolor} {
-  global inttextCanv internationaltext
+proc setIntCanvText {fontcolor} {
+  global inttextCanv internationalText
+  
   set rgb [hex2rgb $fontcolor]
   set shade [setShade $rgb]
   set sun [setSun $rgb]
   $inttextCanv itemconfigure main -fill $fontcolor
   $inttextCanv itemconfigure sun -fill $sun
   $inttextCanv itemconfigure shade -fill $shade
+  $inttextCanv itemconfigure textitem -text $internationalText -anchor nw -width 680 -font displayfont
 }
 
 # Grey out all spinboxes if !$enablepic
@@ -205,19 +210,19 @@ proc setManText {lang} {
 
 }
 
-# C A N V A S   M O V E   P R O C S
+#########################################################################
+##### C A N V A S   M O V E   P R O C S #################################
+#########################################################################
 
 # dragCanvasItem
-## Called by SetupDesktop
+##adapted from a proc by ? ...THANKS TO  ...
+##called by SetupDesktop & setupRespositionText
 proc dragCanvasItem {c item newX newY} {
-  ###adapted from a proc by ...THANKS TO  ...
+
   set xDiff [expr {$newX - $::x}]
   set yDiff [expr {$newY - $::y}]
-#puts $newX
-#puts $newY
-#puts $xDiff
-#puts $yDiff
-  #test before moving
+
+  #test margins before moving
   if [checkItemInside $c $item $xDiff $yDiff] {
     $c move $item $xDiff $yDiff
   }
@@ -230,47 +235,75 @@ proc dragCanvasItem {c item newX newY} {
 ## called by dragCanvasItem
 proc checkItemInside {c item xDiff yDiff} {
 
-  #TODO Joel das sind vorläufige fixes...
-  set pic resizePic
-
-  set imgX [image width $pic]
-  set imgY [image height $pic]
+puts $xDiff
+puts $yDiff
+  #The 'img' tag should work with any calling prog
+  set img [$c itemcget img -image]
+  
+  set imgX [image width $img]
+  set imgY [image height $img]
   set canvX [expr [winfo width $c] - 8]
   set canvY [expr [winfo height $c] - 8]
 
-  set can(minx) [expr $canvX - $imgX]
-  set can(miny) [expr $canvY - $imgY]
-  set can(maxy) 0
-  set can(maxx) 0
+
+#  set can(minx) [expr $canvX - $imgX]
+#  set can(miny) [expr $canvY - $imgY]
+#  set can(maxy) 10
+#  set can(maxx) 10
+
+#TODO set item tags more intelligently !
+#TODO soluciona para ambos pantallas
+lassign [$c bbox canvTxt] x1 y1 x2 y2
+set textHeight [expr $y2 - $y1]
+set textWidth  [expr $x2 - $x1]
+set minMargin 15
+set can(minx) $minMargin
+set can(miny) $minMargin
+set can(maxx) [expr $imgX - $textWidth - $minMargin]
+set can(maxy) [expr $imgY - $textHeight - $minMargin]
 
   #item coords
-  set item [$c coords $item]
+  set itemPos [$c coords $item]
+
   #check min values
-  foreach {x y} $item {
+  foreach {x y} $itemPos {
     set x [expr $x + $xDiff]
     set y [expr $y + $yDiff]
+    
     if {$x < $can(minx)} {
+    puts $x
       return 0
-    }
+          }
     if {$y < $can(miny)} {
+    puts $y
       return 0
+
     }
     if {$x > $can(maxx)} {
+    puts $x
       return 0
+      
+
     }
     if {$y > $can(maxy)} {
+    puts $y
       return 0
+ 
     }
   }
   return 1
-  }
+  
+} ;#END checkItemInside
 
 # createMovingTextBox
 ## Creates textbox with TW text on canvas $c
 ## Called by SetupDesktop
 proc createMovingTextBox {c} {
-  global marginleft margintop textPosFactor fontsize setupTwdText fontcolor
+  global marginleft margintop textPosFactor fontcolor fontsize fontfamily fontweight setupTwdText
 
+  #Verkleinerungsfaktor für textposition window
+  set displayFactor 2
+  
   set screenx [winfo screenwidth .]
   set screeny [winfo screenheight .]
   set textPosSubwinX [expr $screenx/20]
@@ -280,12 +313,22 @@ proc createMovingTextBox {c} {
   #set x2 [expr ($marginleft/$textPosFactor)+$textPosSubwinX]
   #set y2 [expr ($margintop/$textPosFactor)+$textPosSubwinY]
 
+#TODO link size + bold + colour to textsize window !!
+#TODO get font colour, family + size from spinboxes / bold checkbox!!
+set fontsize [expr $fontsize / $displayFactor]
+
+#if {$::fontweightState == "bold"} {set fontweight "bold"} {set fontweight "normal"}
+font create movingTextFont -family $fontfamily -size $fontsize -weight $fontweight
+
   $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt mv}
   $c itemconfigure canvTxt -text $setupTwdText
-  $c itemconfigure canvTxt -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill $fontcolor -activefill red
+  #$c itemconfigure canvTxt -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill $fontcolor -activefill red
+  $c itemconfigure canvTxt -font movingTextFont -fill $fontcolor -activefill red
 
 #  $textposCanv itemconfigure canvTxt -width
-}
+
+} ;#END createMovingTextBox
+
 
 ##### S E T U P P H O T O S   P R O C S ####################################################
 

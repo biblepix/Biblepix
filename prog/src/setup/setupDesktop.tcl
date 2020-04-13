@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 5may19
+# Updated 13apr20
 
 #Create left & right main frames
 pack [frame .desktopF.fleft] -expand 0 -fill y -side left
@@ -66,8 +66,21 @@ if {!$slideshow} {
   $slideSpin configure -state normal
 }
 
+# setCanvasFont
+##called by SetupDesktop ... ... ... spinboxes & ... fontweight Button
+proc setCanvasFont {} {
+  global slideshowState 
+
+#Fonts to adapt
+displayfont ...
+movingTextFont? ...
+}
+
 #1. Create TextPos Canvas
+
+#TODO this makes no sense, link to Textsize window! 
 set textPosFactor 3
+
 image create photo origbild -file [getRandomPhoto]
 image create photo canvasbild
 canvasbild copy origbild -subsample $textPosFactor -shrink
@@ -75,7 +88,7 @@ set screeny [winfo screenheight .]
 
 set c [canvas .textposCanv -bg lightgrey -borderwidth 1]
 $c conf -width [image width canvasbild] -height [expr $screeny/$textPosFactor]
-$c create image 0 0 -image canvasbild -anchor nw
+$c create image 0 0 -image canvasbild -anchor nw -tags img
 
 set textposTxt [label .desktopF.fright.fbot.textpostxt -textvar textpos]
 createMovingTextBox $c
@@ -90,7 +103,7 @@ createMovingTextBox $c
 #2. Create InternationalText Canvas - Fonts based on System fonts, not Bdf!!!!
 ## Tcl picks any available Sans or Serif font from the system
 
-##Create generic Serif or Sans font
+##Create generic Serif or Sans font - TODO change name to sth more usable!
 font create displayfont -family $fontfamily -size $fontsize -weight $fontweight
 canvas .desktopF.fright.fbot2.inttextcanv -width 700 -height 150 -borderwidth 2 -relief raised
 set inttextCanv .desktopF.fright.fbot2.inttextcanv
@@ -115,28 +128,15 @@ if {$os=="Linux"} {
 
 set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt $f2thai_txt"
 
-#create sun / shade /main text
-source $ImgTools
 
-proc setIntCanvText {fontcolor} {
-  global rgblist inttextCanv internationalText
-  set rgblist [hex2rgb $fontcolor]
-  set shade [setShade $rgblist]
-  set sun [setSun $rgblist]
 
-  $inttextCanv create text 09 19 -fill $sun -tags {textitem sun}
-  $inttextCanv create text 11 21 -fill $shade -tags {textitem shade}
-  $inttextCanv create text 10 20 -fill $fontcolor -tags {textitem main}
-  $inttextCanv itemconfigure textitem -text $internationalText -anchor nw -width 680 -font displayfont
-}
-
-setIntCanvText $fontcolor
-
-#1. Fontcolour spinbox - TODO: GEHT NOCH NICHT !!!!!!!!!!!!!!!!!!!!!! command not found
+#1. Fontcolour spinbox
 message .desktopF.fright.fbot1.fontcolorTxt -width 200 -textvar f2.farbe
 spinbox .desktopF.fright.fbot1.fontcolorSpin -width 10 -values {blue green gold silver} 
 set fontcolorTxt .desktopF.fright.fbot1.fontcolorTxt
 set fontcolorSpin .desktopF.fright.fbot1.fontcolorSpin
+
+#TODO include setCanvasFont 
 $fontcolorSpin configure -command {
   setIntCanvText [set %s]
   .textposCanv itemconfigure mv -fill %s
@@ -152,23 +152,23 @@ if {!$fontsize} {
 }
 
 message .desktopF.fright.fbot1.fontsizeTxt -width 200 -textvar f2.fontsizetext
-spinbox .desktopF.fright.fbot1.fontsizeSpin -width 2 -values $fontSizeList -command {font configure displayfont -size %s}
+
+#TODO include in setFont proc!
+spinbox .desktopF.fright.fbot1.fontsizeSpin -width 2 -values $fontSizeList -command {setCanvasFont $c}
+#  font configure displayfont -size %s
+#  font configure movingTextFont -size %s
+
+  
 set fontsizeTxt .desktopF.fright.fbot1.fontsizeTxt
 set fontsizeSpin .desktopF.fright.fbot1.fontsizeSpin
 $fontsizeSpin set $fontsize
 
 #3. Fontweight checkbutton - TODO: needs reworking to be in line with FontNames
-checkbutton .desktopF.fright.fbot1.fontweightBtn -width 5 -variable fontweightState -textvar f2.fontweight 
+checkbutton .desktopF.fright.fbot1.fontweightBtn -width 5 -variable fontweightState -textvar f2.fontweight -command {setCanvasFont}
 set fontweightBtn .desktopF.fright.fbot1.fontweightBtn
 
-$fontweightBtn configure -command {
-  if {$fontweightState==1} {
-    font configure displayfont -weight bold
-  } else {
-    font configure displayfont -weight normal
-  }
-}
 
+#create sun / shade /main text
 if {$fontweight=="bold"} {
   set fontweightState 1
   font configure displayfont -weight bold
@@ -177,14 +177,17 @@ if {$fontweight=="bold"} {
   font configure displayfont -weight normal
 }
 
-
-
 #4. Fontfamily dropdown Menu
 message .desktopF.fright.fbot1.fontfamilyTxt -width 250 -textvar f2.fontfamilytext
-ttk::combobox .desktopF.fright.fbot1.fontfamilyDrop -width 20 -height 30
+ttk::combobox .desktopF.fright.fbot1.fontfamilyDrop -width 20 -height 30 
+#TODO how to do this? -command {setCanvasFont}
+
 set fontfamilyTxt .desktopF.fright.fbot1.fontfamilyTxt
 set fontfamilySpin .desktopF.fright.fbot1.fontfamilyDrop
 lappend Fontlist Serif Sans
+
+source $ImgTools
+setIntCanvText $fontcolor
 
 $fontfamilySpin configure -values $Fontlist -validate focusin -validatecommand {
   font configure displayfont -family [$fontfamilySpin get]
@@ -192,6 +195,7 @@ $fontfamilySpin configure -values $Fontlist -validate focusin -validatecommand {
 }
 ##set current fontfamily
 $fontfamilySpin set $fontfamily
+
 
 #P A C K   R I G H T
 pack $showdateBtn -anchor w

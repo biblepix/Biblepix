@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 23mch20
+# Updated: 12apr20
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -98,7 +98,7 @@ return
 } ;#END computeAvColours
 
 
-# changeFontColour - TODO tsting
+# changeFontColour - TODO just testing
 #TODO: to be implemented in above! - MAY NOT BE NECESSARY!!!
 #Theory: 
 ##wenn HG überwiegend dunkelblau, fontcolor-> silver
@@ -157,7 +157,6 @@ proc setPngFileName {fileName} {
   return $fileName
 }
 
-
 # doResize
 ## organises all resizing processes
 ## called by addPic
@@ -191,8 +190,9 @@ proc processResize {cutImg} {
 
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-  
-  set finalImage [resize $cutImg $screenX $screenY]
+
+  NewsHandler::QueryNews "$::resizingPic" orange  
+  set finalImage [resizePic $cutImg $screenX $screenY]
   
   set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
   $finalImage write $targetPicPath -format PNG
@@ -214,10 +214,11 @@ proc trimPic {pic x1 y1 x2 y2} {
   return $cutPic
 }
 
-# resize
+# resizePic
 ## TODOS: CHANGE NAME? MOVE TO BACKGROUND!!!!
-proc resize {src newx newy {dest ""} } { 
-#Proc called for even-sided resizing, after cutting
+## called for even-sided resizing, after cutting
+proc resizePic {src newx newy {dest ""} } { 
+
  #  Decsription:  Copies a source image to a destination
  #   image and resizes it using linear interpolation
  #
@@ -230,9 +231,6 @@ proc resize {src newx newy {dest ""} } {
  #  Author: David Easton, wiki.tcl.tk, 2004 - God bless you David, you have saved us a lot of trouble!
 
  ######## IDEAL FOR EVEN SIDED ZOOMING , else picture is distorted ##########
-
-  global resizingPic
-  catch {NewsHandler::QueryNews "$resizingPic" orange}
 
   set mx [image width $src]
   set my [image height $src]
