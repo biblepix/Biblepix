@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/gui/setupDesktop.tcl
+# ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 13apr20
+# Updated Easter 13apr20
 
 #Create left & right main frames
 pack [frame .desktopF.fleft] -expand 0 -fill y -side left
