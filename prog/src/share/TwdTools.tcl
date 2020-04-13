@@ -93,27 +93,30 @@ proc updateTwd {} {
   # Download Current TwdFiles if missing
   ##########################################
 
-  set onlyOldFiles 1
   foreach twdFile $twdFiles {
-    if {[lindex [split [file tail $twdFile] "_"] 2] == "$::jahr.twd"} {
-      set onlyOldFiles 0
-      break
-    }
-  }
+    if {[lindex [split [file tail $twdFile] "_"] 2] < "$::jahr.twd"} {
+      set oldFileName [lindex [split [file tail $twdFile] "_"] 1]
+      set currentExists 0
+      foreach otherTwdFile $twdFiles {
+        if {[lindex [split [file tail $otherTwdFile] "_"] 1] == oldFileName \
+         && [lindex [split [file tail $otherTwdFile] "_"] 2] == "$::jahr.twd"} {
+          set currentExists 1
+        }
+      }
 
-  if {$onlyOldFiles} {
-    foreach twdFile $twdFiles {
-      downloadTwdFile $twdFile $::jahr
+      if {!$currentExists} {
+        downloadTwdFile $twdFile $::jahr
+      }
     }
-  }
-
-  if {[catch {set onlineJsonFileList [getDataFromUrl "$::twdUrl?format=json"]}]} {
-    return
   }
 
   ##########################################
   # Download New TwdFiles if available
   ##########################################
+
+  if {[catch {set onlineJsonFileList [getDataFromUrl "$::twdUrl?format=json"]}]} {
+    return
+  }
 
   set onlineDictFileList [::json::json2dict $onlineJsonFileList]
 
@@ -153,8 +156,9 @@ proc updateTwd {} {
   # Delete old TwdFiles
   ##########################################
 
+  set lastYear [expr {$::jahr - 1}]
   foreach twdFile $twdFiles {
-    if {[lindex [split [file tail $twdFile] "_"] 2] < "$::jahr.twd"} {
+    if {[lindex [split [file tail $twdFile] "_"] 2] < "$lastYear.twd"} {
       file delete $twdFile
     }
   }
