@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 18jan20
+# Updated: 14apr20
 
 #1. SET BASIC VARS
 source $TwdTools
@@ -51,7 +51,6 @@ if {$TwdLang == "zh"} {
     }
   }
   
-  
   #Source Italic for all except Asian
   if {! [namespace exists I]} {
     namespace eval I {
@@ -79,6 +78,8 @@ set img hgbild
 
 #Compute avarage colours of text section
 puts "Computing colours..."
+#TODO outsource > computeColours.tcl >> move to Setup!
+#TODO move TODO[getSimilarColourArea] & [computeAvColours] from imgtools.tcl > into above
 #TODO prog hangs here but donno why
 ##may be a problem with the namespace in below proc
 #catch {computeAvColours hgbild}
@@ -92,19 +93,18 @@ set shade [setShade $rgb]
 puts "Fontcolor1: $fontcolor"
 puts "Sun: $sun"
 
+#TODO move this into Setup proc >> see above
 #Use shade for fontcolour & reset shade if $avBrightness exceeds $maxBrightness
 ##leave sun alone
-if {[info exists rgb::avBrightness] && $rgb::avBrightness >= $brightnessThreshold} {
-  set fontcolor $shade
-  set rgb [hex2rgb $fontcolor]
-  set shade [setShade $rgb]
-##comments for testing:
-  puts "Fontcolor2: $fontcolor"
-  puts "MaxCol: $rgb::maxCol"
-  puts "MinCol: $rgb::minCol"
-}
-
-#puts adhenaazaranu...
+#if {[info exists rgb::avBrightness] && $rgb::avBrightness >= $brightnessThreshold} {
+#  set fontcolor $shade
+#  set rgb [hex2rgb $fontcolor]
+#  set shade [setShade $rgb]
+###comments for testing:
+#  puts "Fontcolor2: $fontcolor"
+#  puts "MaxCol: $rgb::maxCol"
+#  puts "MinCol: $rgb::minCol"
+#}
 
 set finalImg [printTwd $TwdFileName $img]
 
