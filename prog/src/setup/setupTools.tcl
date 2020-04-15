@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: Easter 13apr20 pv+jh (merged!)
+# Updated: 15apr20 pv
 
 source $JList
 
@@ -75,15 +75,15 @@ namespace eval NewsHandler {
 
 # Set International Canvas Text
 proc setIntCanvText {fontcolor} {
-  global inttextCanv internationalText
+  global internationalText
   
   set rgb [hex2rgb $fontcolor]
   set shade [setShade $rgb]
   set sun [setSun $rgb]
-  $inttextCanv itemconfigure main -fill $fontcolor
-  $inttextCanv itemconfigure sun -fill $sun
-  $inttextCanv itemconfigure shade -fill $shade
-  $inttextCanv itemconfigure textitem -text $internationalText -anchor nw -width 680 -font displayfont
+  .inttextCanv itemconfigure main -fill $fontcolor
+  .inttextCanv itemconfigure sun -fill $sun
+  .inttextCanv itemconfigure shade -fill $shade
+  .inttextCanv itemconfigure textitem -text $internationalText -anchor nw -width 680 -font displayfont
 }
 
 # Grey out all spinboxes if !$enablepic
@@ -235,8 +235,6 @@ proc dragCanvasItem {c item newX newY} {
 ## called by dragCanvasItem
 proc checkItemInside {c item xDiff yDiff} {
 
-puts $xDiff
-puts $yDiff
   #The 'img' tag should work with any calling prog
   set img [$c itemcget img -image]
   
@@ -246,13 +244,8 @@ puts $yDiff
   set canvY [expr [winfo height $c] - 8]
 
 
-#  set can(minx) [expr $canvX - $imgX]
-#  set can(miny) [expr $canvY - $imgY]
-#  set can(maxy) 10
-#  set can(maxx) 10
-
 #TODO set item tags more intelligently !
-#TODO soluciona para ambos pantallas
+#TODO soluciona para ambas pantallas
 lassign [$c bbox canvTxt] x1 y1 x2 y2
 set textHeight [expr $y2 - $y1]
 set textWidth  [expr $x2 - $x1]
@@ -271,23 +264,18 @@ set can(maxy) [expr $imgY - $textHeight - $minMargin]
     set y [expr $y + $yDiff]
     
     if {$x < $can(minx)} {
-    puts $x
-      return 0
+        return 0
           }
     if {$y < $can(miny)} {
-    puts $y
-      return 0
+        return 0
 
     }
     if {$x > $can(maxx)} {
-    puts $x
       return 0
-      
-
+  
     }
     if {$y > $can(maxy)} {
-    puts $y
-      return 0
+        return 0
  
     }
   }

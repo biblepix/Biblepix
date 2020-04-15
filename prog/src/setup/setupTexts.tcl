@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30mch2020
+# Updated: 15apr2020 pv
 
 proc setTexts {lang} {
   global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -112,8 +112,8 @@ set ::packageRequireTls $packageRequireTls($lang)
     append RtlInfo \n $RtlAr
   }
 
-  set textpos(en) "Text position"
-  set textpos(de) "Textposition"
+  set textpos(en) "Adjust text position"
+  set textpos(de) "Textposition anpassen"
   set ::textpos $textpos($lang)
 
   set welcTit(en) "Welcome to the $bp setup program!"
@@ -218,8 +218,8 @@ set ::packageRequireTls $packageRequireTls($lang)
   set f2Fontfamily(de) "Schriftart"
   set ::f2.fontfamilytext $f2Fontfamily($lang)
 
-  set f2Fontexpl(en) "Font example"
-  set f2Fontexpl(de) "Schriftbeispiel"
+  set f2Fontexpl(en) "Adjust Font"
+  set f2Fontexpl(de) "Schrift anpassen"
   set ::f2.fontexpl $f2Fontexpl($lang)
 
   set ::f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94"
