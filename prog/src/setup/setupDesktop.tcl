@@ -7,10 +7,15 @@
 pack [frame .desktopF.leftF] -fill y -side left
 pack [frame .desktopF.rightF] -fill y -side right -pady 5 -padx 5
 
-#Create left & right subframes
-pack [frame .rtopF -relief ridge -borderwidth 3]  -in .desktopF.rightF
-pack [frame .rbot1F -relief ridge -borderwidth 3] -in .desktopF.rightF -pady $py -padx $px
-pack [frame .rbot2F -relief ridge -borderwidth 3] -in .desktopF.rightF -pady $py -padx $px
+#Create right subframes
+pack [frame .rtopF -relief ridge -borderwidth 0]  -in .desktopF.rightF -fill x
+
+pack [frame .rbot1F -relief ridge -borderwidth 3] -in .desktopF.rightF -pady $py -padx $px -fill x
+pack [frame .rbot1F.1F] -fill x
+pack [frame .rbot1F.2F] -fill x
+
+#pack [frame .rbot2F] -in .rbot1F -fill x
+pack [frame .rbot2F -relief ridge -borderwidth 3] -in .desktopF.rightF -pady $py -padx $px -fill both
 
 #F I L L   L E F T 
 
@@ -104,6 +109,8 @@ createMovingTextBox $c
 
 ##Create generic Serif or Sans font
 font create intCanvFont -family $fontfamily -size $fontsize -weight $fontweight
+font create widgetFont -family Serif -size 11 -weight normal -slant italic
+
 canvas .inttextCanv -width 700 -height 150 -borderwidth 2 -relief raised
 
 ##create background image
@@ -127,9 +134,9 @@ if {$os=="Linux"} {
 set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt $f2thai_txt"
 
 #1. Fontcolour spinbox
-message .fontcolorTxt -width 200 -textvar f2.farbe
-spinbox .fontcolorSpin -width 8 -values {blue green gold silver} 
-.fontcolorSpin conf -bg $fontcolor -fg white
+message .fontcolorTxt -width 50 -textvar f2.farbe -font widgetFont
+spinbox .fontcolorSpin -width 20 -values {blue green gold silver} 
+.fontcolorSpin conf -bg $fontcolor -fg white -font TkCaptionFont
 .fontcolorSpin set $fontcolortext
 
 #TODO include setCanvasFont 
@@ -147,10 +154,10 @@ if {!$fontsize} {
   set fontsize [ expr round($screeny/40) ] 
 }
 
-message .fontsizeTxt -width 200 -textvar f2.fontsizetext
+message .fontsizeTxt -width 200 -textvar f2.fontsizetext -font widgetFont
 
 #TODO include in setFont proc!
-spinbox .fontsizeSpin -width 2 -values $fontSizeList -command {setCanvasFont $c}
+spinbox .fontsizeSpin -width 2 -values $fontSizeList -font TkCaptionFont -command {setCanvasFont $c}
 #  font configure intCanvFont -size %s
 #  font configure movingTextFont -size %s
 
@@ -170,8 +177,8 @@ if {$fontweight=="bold"} {
 }
 
 #4. Fontfamily dropdown Menu
-message .fontfamilyTxt -width 250 -textvar f2.fontfamilytext
-ttk::combobox .fontfamilyDrop -width 20 -height 30 
+message .fontfamilyTxt -width 250 -textvar f2.fontfamilytext -font widgetFont
+#ttk::combobox .fontfamilyDrop -width 20 -height 30 
 #TODO how to do this? -command {setCanvasFont}
 
 lappend Fontlist Serif Sans
@@ -180,7 +187,7 @@ source $ImgTools
 setIntCanvText $fontcolor
 
 ##set fontfamily spinbox
-spinbox .fontfamilySpin
+spinbox .fontfamilySpin -width 20 -bg lightblue -font TkCaptionFont
 .fontfamilySpin conf -values $Fontlist -validate focusin -validatecommand {
   font configure intCanvFont -family [.fontfamilySpin get]
   return 0
@@ -193,14 +200,14 @@ pack .showdateBtn -in .rtopF -anchor w
 pack .slideBtn -in .rtopF -anchor w -side left
 pack .secTxt .slideSpin .slideTxt -in .rtopF -anchor nw -side right
 
-#Bottom 1
-#pack .inttextTit -in .rbot1F -pady 7
-pack .fontcolorTxt .fontcolorSpin .fontfamilyTxt .fontfamilySpin .fontweightBtn .fontsizeSpin .fontsizeTxt -in .rbot1F -side left -anchor n -fill x
+#Bottom 1.1
+pack .inttextTit -in .rbot1F.1F -pady 7
+#Bottom 1.2
+pack .inttextCanv -in .rbot1F.2F -fill x
+pack .fontcolorTxt .fontcolorSpin .fontfamilyTxt .fontfamilySpin -in .rbot1F.2F -side left -anchor n
+pack .fontweightBtn .fontsizeSpin .fontsizeTxt -in .rbot1F.2F -side right -anchor n
 
 #Bottom 2
-pack .inttextTit -in .rbot2F -pady 7
-pack .inttextCanv -in .rbot2F
-
 pack .textposTxt -in .rbot2F -pady 7
 pack .textposCanv -in .rbot2F -fill y
 

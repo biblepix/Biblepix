@@ -190,8 +190,8 @@ set ::packageRequireTls $packageRequireTls($lang)
   set f2Box(de) "Hintergrundbild erzeugen"
   set ::f2.box $f2Box($lang)  
           
-  set f2Farbe(en) "Font colour"
-  set f2Farbe(de) "Schriftfarbe"
+  set f2Farbe(en) "Colour: "
+  set f2Farbe(de) "Farbe: "
   set ::f2.farbe $f2Farbe($lang)
 
   set f2Slideshow(en) "Enable slide show"
@@ -206,16 +206,16 @@ set ::packageRequireTls $packageRequireTls($lang)
   set f2Introline(de) "Datum anzeigen"
   set ::f2.introline $f2Introline($lang)
 
-  set f2Fontsize(en) "Font size"
-  set f2Fontsize(de) "Schriftgrösse"
+  set f2Fontsize(en) "Size: "
+  set f2Fontsize(de) "Grösse: "
   set ::f2.fontsizetext $f2Fontsize($lang)
 
   set f2Fontweight(en) "bold"
   set f2Fontweight(de) "fett"
   set ::f2.fontweight $f2Fontweight($lang)
 
-  set f2Fontfamily(en) "Font family"
-  set f2Fontfamily(de) "Schriftart"
+  set f2Fontfamily(en) "Family: "
+  set f2Fontfamily(de) "Art: "
   set ::f2.fontfamilytext $f2Fontfamily($lang)
 
   set f2Fontexpl(en) "Adjust Font"
