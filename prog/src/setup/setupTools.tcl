@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15apr20 pv
+# Updated: 16apr20 pv
 
 source $JList
 
@@ -111,13 +111,13 @@ proc setCanvasFontColour {c colour} {
 
 # Grey out all spinboxes if !$enablepic
 proc setSpinState {imgyesState} {
-global showdateBtn slideBtn slideSpin fontcolorSpin fontsizeSpin fontweightBtn fontfamilySpin
+
   if {$imgyesState} {
     set com normal
   } else {
     set com disabled
   }
-  lappend widgetlist $showdateBtn $slideBtn $slideSpin $fontcolorSpin $fontsizeSpin $fontweightBtn $fontfamilySpin
+  lappend widgetlist .showdateBtn .slideBtn .slideSpin .fontcolorSpin .fontsizeSpin .fontweightBtn .fontfamilySpin
 
   foreach i $widgetlist {
     $i configure -state $com

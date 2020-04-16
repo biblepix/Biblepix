@@ -69,7 +69,7 @@ if {!$slideshow} {
 
 #1. Create InternationalText Canvas - Fonts based on System fonts, not Bdf!!!!
     ## Tcl picks any available Sans or Serif font from the system
-canvas .inttextCanv -width 700 -height 150 -borderwidth 2 -relief raised
+canvas .inttextCanv -width 700 -height 150 -borderwidth 0
 
 ##create background image
 image create photo intTextBG -file $SetupDesktopPng
@@ -115,7 +115,7 @@ spinbox .fontcolorSpin -width 12 -values {blue green gold silver}
 
 #set Fontsize spinbox
 message .fontsizeTxt -width 200 -textvar f2.fontsizetext -font widgetFont
-spinbox .fontsizeSpin -width 2 -values $fontSizeList -font TkCaptionFont 
+spinbox .fontsizeSpin -width 2 -values $fontSizeList -bg lightgrey -font TkCaptionFont 
 .fontsizeSpin conf -command {setCanvasFontSize %s}
 .fontsizeSpin set $fontsize
 
@@ -133,7 +133,7 @@ checkbutton .fontweightBtn -width 5 -variable fontweightState -font widgetFont -
 #set Fontfamily spinbox
 message .fontfamilyTxt -width 200 -textvar f2.fontfamilytext -font widgetFont
 lappend Fontlist Serif Sans
-spinbox .fontfamilySpin -width 12 -bg lightblue -font TkCaptionFont
+spinbox .fontfamilySpin -width 12 -font TkCaptionFont -bg lightgrey
 .fontfamilySpin conf -values $Fontlist -command {setCanvasFontSize %s}
 .fontfamilySpin set $fontfamily
 
