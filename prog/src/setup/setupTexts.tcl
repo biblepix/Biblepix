@@ -99,7 +99,7 @@ set ::packageRequireTls $packageRequireTls($lang)
     if {$platform=="unix"} {
       set RtlHe [string reverse $RtlHe]
     }
-    append RtlInfo \n $RtlHe
+    append RtlInfo $RtlHe
   }
   ##Arabic
   if {! [catch "glob $dirlist(twdDir)/ar_*"]} {
@@ -109,15 +109,15 @@ set ::packageRequireTls $packageRequireTls($lang)
       set RtlAr [bidi $RtlAr ar revert]
       #set RtlInfo [bidi $RtlInfo ar]
     }
-    append RtlInfo \n $RtlAr
+    append RtlInfo $RtlAr
   }
 
   set textpos(en) "Adjust text position *"
   set textpos(de) "Textposition anpassen *"
   set ::textpos $textpos($lang)
 
-  set textposFN(en) "* Text positioning can be corrected for individual pictures when adding to the $bp photo collection. $RtlInfo"
-  set textposFN(de) "* Die Textposition kann beim Hinzufügen von Bildern zur $bp-Fotosammlung einzeln korrigiert werden. $RtlInfo"
+  set textposFN(en) "* Text positioning can be corrected for individual pictures when adding to the $bp photo collection.\n$RtlInfo"
+  set textposFN(de) "* Die Textposition kann beim Hinzufügen von Bildern zur $bp-Fotosammlung einzeln korrigiert werden.\n$RtlInfo"
   set ::textposFN $textposFN($lang)
 
   set welcTit(en) "Welcome to the $bp setup program!"
@@ -230,7 +230,7 @@ set ::packageRequireTls $packageRequireTls($lang)
   #set ::f2ar_txt "كَلاَمك"
   set ::f2he_txt "הדבר"
   set ::f2ltr_txt "The Word 每日金句 Калом"
-  set ::f2thai_txt "พระคำสำหรับวันศุกร์"
+  set ::f2thai_txt "พระคำสำหรับวันศุกร์ Слово"
 
   if {$platform=="unix"} {
   #unix needs BMP+PNG

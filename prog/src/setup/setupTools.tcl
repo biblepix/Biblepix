@@ -73,39 +73,41 @@ namespace eval NewsHandler {
 ###### P r o c s   f o r   S e t u p G U I   +   S e t u p D e s k t o p #
 ##########################################################################
 
-# setCanvasFont
-##called by SetupDesktop ... ... ... spinboxes & ... fontweight Button
-proc setCanvasFont {size weight family colour} {
-
-#TODO set factor somewhere else
-set factor 3
-  
-  #Fonts to adapt
-  font conf intCanvFont -size $size -weight $weight -family $family
-  #font conf movingTextFont -size [expr $size / $factor] -weight $weight -family $family
-  #set colour
-  .textPosCanv itemconf mv -fill $colour
-
-  return 0
+# setCanvasFontSize
+##changes canvas font's size||weight||family
+##called by SetupGUI for intTextCanv
+proc setCanvasFontSize args {
+  if [string is integer $args] {
+    font conf intCanvFont -size $args
+    font conf movingTextFont -size [expr round($args / 3) + 2]
+    
+  } elseif {$args == "bold" || $args == "normal"} {
+    font conf intCanvFont -weight $args
+  } elseif {$args == "Serif" || $args == "Sans"} {
+    font conf intCanvFont -family $args
+  }
+  return 0 
 }
 
-# Set International Canvas Text
-proc setIntCanvText {colour {args}} {
-  global internationalText
+# setCanvasFontColour
+##changes canvas' font's colour
+##called by SetGUI
+proc setCanvasFontColour {colour} {
   
   set rgb [hex2rgb $colour]
   set shade [setShade $rgb]
   set sun [setSun $rgb]
   
+  #A) International Canvas
   .inttextCanv itemconfigure main -fill $colour
   .inttextCanv itemconfigure sun -fill $sun
   .inttextCanv itemconfigure shade -fill $shade
-#  .inttextCanv itemconfigure textitem -text $internationalText -anchor nw -width 680 -font intCanvFont
   
-  if {$args != ""} {
-    lassign $args size weight family
-    font config intCanvFont -size $size -weight $weight -family $family
-  }
+  #B) Textposition Canvas
+  .textposCanv itemconf mv -fill $colour
+  font conf movingTextFont -weight bold
+  
+  return 0
 }
 
 # Grey out all spinboxes if !$enablepic
@@ -320,15 +322,9 @@ proc createMovingTextBox {c} {
   set textPosSubwinY [expr $screeny/30]
   set x1 [expr $marginleft/$textPosFactor]
   set y1 [expr $margintop/$textPosFactor]
-  #set x2 [expr ($marginleft/$textPosFactor)+$textPosSubwinX]
-  #set y2 [expr ($margintop/$textPosFactor)+$textPosSubwinY]
-
-#TODO link size + bold + colour to textsize window !!
-#TODO get font colour, family + size from spinboxes / bold checkbox!!
-set fontsize [expr $fontsize / $displayFactor]
-
-#if {$::fontweightState == "bold"} {set fontweight "bold"} {set fontweight "normal"}
-font create movingTextFont -family $fontfamily -size $fontsize -weight $fontweight
+ 
+  #Create movingTextFont here, configure later with setCanvasFontSize
+  font create movingTextFont -family $fontfamily -weight bold
 
   $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt mv}
   $c itemconfigure canvTxt -text $setupTwdText

@@ -66,15 +66,6 @@ if {!$slideshow} {
   .slideSpin configure -state normal
 }
 
-#Initial setting of TextPos Canvas
-#TODO mit Faktor berechnen! od. Faktor in proc integrieren
-#TODO can't get font , not ready
-#setCanvasFont .textposCanv $fontsize $fontweight $fontfamily $fontcolor
-
-
-
-
-
 
 #1. Create InternationalText Canvas - Fonts based on System fonts, not Bdf!!!!
     ## Tcl picks any available Sans or Serif font from the system
@@ -99,17 +90,15 @@ if {$os=="Linux"} {
   set f2he_txt [bidi $f2he_txt he revert]
 } 
 
-set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Bríathar"
+set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
 
 source $ImgTools
 set rgb [hex2rgb $fontcolor]
-  set shade [setShade $rgb]
-  set sun [setSun $rgb]
-
+set shade [setShade $rgb]
+set sun [setSun $rgb]
 .inttextCanv create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shade -tags {shade textitem}
 .inttextCanv create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sun -tags {sun textitem}
 .inttextCanv create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $fontcolor -tags {main textitem}
-
 
 
 #1. Fontcolour spinbox
@@ -118,27 +107,24 @@ spinbox .fontcolorSpin -width 12 -values {blue green gold silver}
 .fontcolorSpin conf -bg $fontcolor -fg white -font TkCaptionFont
 .fontcolorSpin set $fontcolortext
 
-#TODO include setCanvasFont 
 .fontcolorSpin configure -command {
   %W conf -bg [set %s]
-  setIntCanvText [set %s]
-  .textposCanv itemconf mv -fill [set %s]
-  #setCanvasFont
+  setCanvasFontColour [set %s]
 }
 
 #set Fontsize spinbox
 message .fontsizeTxt -width 200 -textvar f2.fontsizetext -font widgetFont
 spinbox .fontsizeSpin -width 2 -values $fontSizeList -font TkCaptionFont 
-.fontsizeSpin conf -command {font conf intCanvFont -size %s}
+.fontsizeSpin conf -command {setCanvasFontSize %s}
 .fontsizeSpin set $fontsize
 
 #set Fontweight checkbutton
 checkbutton .fontweightBtn -width 5 -variable fontweightState -font widgetFont -textvar f2.fontweight 
 .fontweightBtn conf -command {
   if {$fontweightState} {
-    font configure intCanvFont -weight bold
+    setCanvasFontSize bold
   } else {
-    font configure intCanvFont -weight normal
+    setCanvasFontSize normal
   }
   return 0
 }
@@ -147,30 +133,24 @@ checkbutton .fontweightBtn -width 5 -variable fontweightState -font widgetFont -
 message .fontfamilyTxt -width 200 -textvar f2.fontfamilytext -font widgetFont
 lappend Fontlist Serif Sans
 spinbox .fontfamilySpin -width 12 -bg lightblue -font TkCaptionFont
-.fontfamilySpin conf -values $Fontlist -command {font conf intCanvFont -family %s}
+.fontfamilySpin conf -values $Fontlist -command {setCanvasFontSize %s}
 .fontfamilySpin set $fontfamily
 
 
 label .textposTxt -textvar textpos -font TkCaptionFont
 
-proc olacak {} {
-#2. Create TextPos Canvas
 
-#TODO this makes no sense, link to Textsize window! 
-set textPosFactor 3
+#2. Create TextPos Canvas
+set textPosFactor 3 ;#Verkleinerungsfaktor gegenüber real font size
 
 image create photo origbild -file [getRandomPhoto]
 image create photo canvasbild
 canvasbild copy origbild -subsample $textPosFactor -shrink
 set screeny [winfo screenheight .]
+.textposCanv conf -width [image width canvasbild] -height [expr $screeny/$textPosFactor]
+.textposCanv create image 0 0 -image canvasbild -anchor nw -tags img
 
-
-$c conf -width [image width canvasbild] -height [expr $screeny/$textPosFactor]
-$c create image 0 0 -image canvasbild -anchor nw -tags img
-
-
-#TODO
-createMovingTextBox $c
+createMovingTextBox .textposCanv
 
 .textposCanv bind mv <1> {
      set ::x %X
@@ -178,7 +158,9 @@ createMovingTextBox $c
  }
 .textposCanv bind mv <Button1-Motion> [list dragCanvasItem %W mv %X %Y]
 
-}
+setCanvasFontSize $fontsize
+
+
 
 #P A C K   R I G H T
 #Top right
