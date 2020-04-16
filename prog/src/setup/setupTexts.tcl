@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15apr2020 pv
+# Updated: 16apr2020 pv
 
 proc setTexts {lang} {
   global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -112,9 +112,13 @@ set ::packageRequireTls $packageRequireTls($lang)
     append RtlInfo \n $RtlAr
   }
 
-  set textpos(en) "Adjust text position"
-  set textpos(de) "Textposition anpassen"
+  set textpos(en) "Adjust text position *"
+  set textpos(de) "Textposition anpassen *"
   set ::textpos $textpos($lang)
+
+  set textposFN(en) "* Text positioning can be corrected for individual pictures when adding to the $bp photo collection. $RtlInfo"
+  set textposFN(de) "* Die Textposition kann beim Hinzufügen von Bildern zur $bp-Fotosammlung einzeln korrigiert werden. $RtlInfo"
+  set ::textposFN $textposFN($lang)
 
   set welcTit(en) "Welcome to the $bp setup program!"
   set welcTit(de) "Willkommen beim Einrichtungsprogramm von $bp!"
@@ -190,8 +194,8 @@ set ::packageRequireTls $packageRequireTls($lang)
   set f2Box(de) "Hintergrundbild erzeugen"
   set ::f2.box $f2Box($lang)  
           
-  set f2Farbe(en) "Colour: "
-  set f2Farbe(de) "Farbe: "
+  set f2Farbe(en) "Font colour: "
+  set f2Farbe(de) "Schriftfarbe: "
   set ::f2.farbe $f2Farbe($lang)
 
   set f2Slideshow(en) "Enable slide show"
@@ -206,16 +210,16 @@ set ::packageRequireTls $packageRequireTls($lang)
   set f2Introline(de) "Datum anzeigen"
   set ::f2.introline $f2Introline($lang)
 
-  set f2Fontsize(en) "Size: "
-  set f2Fontsize(de) "Grösse: "
+  set f2Fontsize(en) "Font size: "
+  set f2Fontsize(de) "Schriftgrösse: "
   set ::f2.fontsizetext $f2Fontsize($lang)
 
   set f2Fontweight(en) "bold"
   set f2Fontweight(de) "fett"
   set ::f2.fontweight $f2Fontweight($lang)
 
-  set f2Fontfamily(en) "Family: "
-  set f2Fontfamily(de) "Art: "
+  set f2Fontfamily(en) "Font family: "
+  set f2Fontfamily(de) "Schriftart: "
   set ::f2.fontfamilytext $f2Fontfamily($lang)
 
   set f2Fontexpl(en) "Adjust Font"
@@ -239,8 +243,8 @@ set ::packageRequireTls $packageRequireTls($lang)
     set picNo ": '[file tail $TwdTIF]'"
   }
 
-  set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image $picNo will be put in \n\n\t [file nativename $dirlist(imgdir)] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. For only 1 picture per day, unset this feature (see above).\n\nThe Text Position window allows you to put $dw wherever you like on your screen. $RtlInfo\n\nThe font size is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters = better contrast).\n\nIf the new background image fails to appear automatically, please consult the Manual page for a solution."
-  set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild $picNo steht jeweils in \n\n\t [file nativename $dirlist(imgdir)] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Soll nur 1 Bild pro Tag angezeigt werden, kann die Diaschau deaktiviert werden (s.o.).\n\nIm Fenster 'Textposition' können Sie $dw an die gewünschte Stelle auf dem Bildschirm verschieben. $RtlInfo\n\nDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, Grösse und Dicke anzupassen (grössere Buchstaben = besserer Kontrast).\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, finden Sie im Manual eine Lösung."
+  set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image $picNo will be put in \n\n\t [file nativename $dirlist(imgdir)] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. For only 1 picture per day, unset this feature (see above).\n\nThe Text Position window allows you to put $dw wherever you like on your screen. \n\nThe font size is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters = better contrast).\n\nIf the new background image fails to appear automatically, please consult the Manual page for a solution."
+  set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild $picNo steht jeweils in \n\n\t [file nativename $dirlist(imgdir)] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Soll nur 1 Bild pro Tag angezeigt werden, kann die Diaschau deaktiviert werden (s.o.).\n\nIm Fenster 'Textposition' können Sie $dw an die gewünschte Stelle auf dem Bildschirm verschieben. \n\nDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, Grösse und Dicke anzupassen (grössere Buchstaben = besserer Kontrast).\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, finden Sie im Manual eine Lösung."
   set ::f2.txt $f2Txt($lang)
 
   ### S E T U P   P H O T O S ##############################

@@ -73,17 +73,39 @@ namespace eval NewsHandler {
 ###### P r o c s   f o r   S e t u p G U I   +   S e t u p D e s k t o p #
 ##########################################################################
 
+# setCanvasFont
+##called by SetupDesktop ... ... ... spinboxes & ... fontweight Button
+proc setCanvasFont {size weight family colour} {
+
+#TODO set factor somewhere else
+set factor 3
+  
+  #Fonts to adapt
+  font conf intCanvFont -size $size -weight $weight -family $family
+  #font conf movingTextFont -size [expr $size / $factor] -weight $weight -family $family
+  #set colour
+  .textPosCanv itemconf mv -fill $colour
+
+  return 0
+}
+
 # Set International Canvas Text
-proc setIntCanvText {fontcolor} {
+proc setIntCanvText {colour {args}} {
   global internationalText
   
-  set rgb [hex2rgb $fontcolor]
+  set rgb [hex2rgb $colour]
   set shade [setShade $rgb]
   set sun [setSun $rgb]
-  .inttextCanv itemconfigure main -fill $fontcolor
+  
+  .inttextCanv itemconfigure main -fill $colour
   .inttextCanv itemconfigure sun -fill $sun
   .inttextCanv itemconfigure shade -fill $shade
-  .inttextCanv itemconfigure textitem -text $internationalText -anchor nw -width 680 -font displayfont
+#  .inttextCanv itemconfigure textitem -text $internationalText -anchor nw -width 680 -font intCanvFont
+  
+  if {$args != ""} {
+    lassign $args size weight family
+    font config intCanvFont -size $size -weight $weight -family $family
+  }
 }
 
 # Grey out all spinboxes if !$enablepic
