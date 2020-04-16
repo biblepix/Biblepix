@@ -83,29 +83,28 @@ proc setCanvasFontSize args {
     
   } elseif {$args == "bold" || $args == "normal"} {
     font conf intCanvFont -weight $args
+    font conf movingTextFont -weight $args
+    
   } elseif {$args == "Serif" || $args == "Sans"} {
     font conf intCanvFont -family $args
+    font conf movingTextFont -family $args
   }
   return 0 
 }
 
 # setCanvasFontColour
 ##changes canvas' font's colour
-##called by SetGUI
-proc setCanvasFontColour {colour} {
+##called by SetGUI for inttextCanv & .textposCanv
+proc setCanvasFontColour {c colour} {
   
   set rgb [hex2rgb $colour]
   set shade [setShade $rgb]
   set sun [setSun $rgb]
   
   #A) International Canvas
-  .inttextCanv itemconfigure main -fill $colour
-  .inttextCanv itemconfigure sun -fill $sun
-  .inttextCanv itemconfigure shade -fill $shade
-  
-  #B) Textposition Canvas
-  .textposCanv itemconf mv -fill $colour
-  font conf movingTextFont -weight bold
+  $c itemconf main -fill $colour
+  $c itemconf sun -fill $sun
+  $c itemconf shade -fill $shade
   
   return 0
 }
@@ -324,14 +323,18 @@ proc createMovingTextBox {c} {
   set y1 [expr $margintop/$textPosFactor]
  
   #Create movingTextFont here, configure later with setCanvasFontSize
-  font create movingTextFont -family $fontfamily -weight bold
+  font create movingTextFont
 
-  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt mv}
-  $c itemconfigure canvTxt -text $setupTwdText
-  #$c itemconfigure canvTxt -font "TkTextFont -[expr $fontsize/$textPosFactor]" -fill $fontcolor -activefill red
-  $c itemconfigure canvTxt -font movingTextFont -fill $fontcolor -activefill red
+  set shadeX [expr $x1 + 1]
+  set shadeY [expr $y1 + 1]
+  set sunX [expr $x1 - 1]
+  set sunY [expr $y1 - 1]
 
-#  $textposCanv itemconfigure canvTxt -width
+  $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt mv shade}
+  $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt mv sun}
+  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt mv main}
+  $c itemconf canvTxt -text $setupTwdText
+  $c itemconf canvTxt -font movingTextFont -activefill red
 
 } ;#END createMovingTextBox
 
@@ -399,6 +402,9 @@ proc doOpen {bildordner c} {
   pack .photosF.mainf.right.bar.collect -side right -fill x
   pack forget .delBtn
 
+  #Add Rotate button
+  pack .rotateBtn -in .photosF.mainf.right.unten -side right
+  
   return $localJList
 }
 
@@ -539,6 +545,7 @@ proc openImg {imgFilePath imgCanvas} {
 
   photosCanvPic copy photosOrigPic -subsample $factor -shrink
   $imgCanvas create image $photosCanvMargin $photosCanvMargin -image photosCanvPic -anchor nw -tag img
+  
 }
 
 proc hideImg {imgCanvas} {

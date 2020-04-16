@@ -109,7 +109,8 @@ spinbox .fontcolorSpin -width 12 -values {blue green gold silver}
 
 .fontcolorSpin configure -command {
   %W conf -bg [set %s]
-  setCanvasFontColour [set %s]
+  setCanvasFontColour .textposCanv [set %s]
+  setCanvasFontColour .inttextCanv [set %s]
 }
 
 #set Fontsize spinbox
@@ -136,9 +137,7 @@ spinbox .fontfamilySpin -width 12 -bg lightblue -font TkCaptionFont
 .fontfamilySpin conf -values $Fontlist -command {setCanvasFontSize %s}
 .fontfamilySpin set $fontfamily
 
-
 label .textposTxt -textvar textpos -font TkCaptionFont
-
 
 #2. Create TextPos Canvas
 set textPosFactor 3 ;#Verkleinerungsfaktor gegenüber real font size
@@ -159,7 +158,7 @@ createMovingTextBox .textposCanv
 .textposCanv bind mv <Button1-Motion> [list dragCanvasItem %W mv %X %Y]
 
 setCanvasFontSize $fontsize
-
+setCanvasFontColour .textposCanv $fontcolor
 
 
 #P A C K   R I G H T

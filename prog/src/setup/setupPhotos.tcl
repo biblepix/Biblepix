@@ -48,6 +48,7 @@ button .delBtn -textvar f6.del -bg orange -activebackground red -command {delPic
 #TODO Testing
 ttk::button .rotateBtn -textvar rotatePic -command "source $setupdir/setupRotate.tcl"
 set rotatePic "Bild drehen"
-pack .rotateBtn -in .photosF.mainf.right.unten -side right
+
+#pack .rotateBtn -in .photosF.mainf.right.unten -side right
 
 set fileJList [doCollect .imgCanvas]
