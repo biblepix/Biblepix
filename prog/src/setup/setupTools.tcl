@@ -126,22 +126,22 @@ proc setSpinState {imgyesState} {
 
 # Grey out Slideshow spinbox if !enableSlideshow
 proc setSlideSpin {state} {
-global slideSpin slideTxt slideSec slideshow
+  global slideshow
 
-     if {$state==1} {
-         $slideSpin configure -state normal
+  if {$state==1} {
+    .slideSpin conf -state normal
     #set standard if changed from 0
     if {$slideshow==0} {
       set slideshow 300
     }
-    $slideSpin set $slideshow
-         $slideTxt conf -fg black
-    $slideSec conf -fg black
+    .slideSpin set $slideshow
+    .slideTxt conf -fg black
+    .slideSecTxt conf -fg black
   } else {
-    $slideSpin configure -state disabled
-    $slideSpin set 0
-    $slideTxt conf -fg grey
-    $slideSec conf -fg grey
+    .slideSpin conf -state disabled
+    .slideSpin set 0
+    .slideTxt conf -fg grey
+    .slideSecTxt conf -fg grey
   }
 }
 

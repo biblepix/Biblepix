@@ -117,7 +117,7 @@ set ::packageRequireTls $packageRequireTls($lang)
   set ::textpos $textpos($lang)
 
   set textposFN(en) "* Text positioning can be corrected for individual pictures when adding to the $bp photo collection.\n$RtlInfo"
-  set textposFN(de) "* Die Textposition kann beim Hinzufügen von Bildern zur $bp-Fotosammlung einzeln korrigiert werden.\n$RtlInfo"
+  set textposFN(de) "* Beim Hinzufügen von Bildern zur $bp-Fotosammlung kann die Textposition individuell angepasst werden.\n$RtlInfo"
   set ::textposFN $textposFN($lang)
 
   set welcTit(en) "Welcome to the $bp setup program!"

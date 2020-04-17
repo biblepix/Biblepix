@@ -52,7 +52,7 @@ checkbutton .slideBtn -textvar f2.slideshow -variable slideshowState -command {s
 
 #5. Slideshow spinbox
 message .slideTxt -textvar f2.int -width 200
-message .secTxt -text sec -width 100
+message .slideSecTxt -text sec -width 100
 spinbox .slideSpin -from 10 -to 600 -increment 10 -width 3
 .slideSpin set $slideshow
 
@@ -77,7 +77,7 @@ image create photo intTextBG -file $SetupDesktopPng
 
 # Set international text
 label .inttextTit -font TkCaptionFont -textvar f2.fontexpl
-label .inttextFN -width 50 -font TkSmallCaptionFont -textvar ::textposFN
+
  
 if {$os=="Linux"} {
   #Unix needs a lot of formatting for Arabic & Hebrew
@@ -156,16 +156,16 @@ createMovingTextBox .textposCanv
      set ::y %Y
  }
 .textposCanv bind mv <Button1-Motion> [list dragCanvasItem %W mv %X %Y]
-
 setCanvasFontSize $fontsize
 setCanvasFontColour .textposCanv $fontcolor
-
+#Footnote
+label .textposFN -width 50 -font "Serif 10" -textvar ::textposFN
 
 #P A C K   R I G H T
 #Top right
 pack .showdateBtn -in .rtopF -anchor w
 pack .slideBtn -in .rtopF -anchor w -side left
-pack .secTxt .slideSpin .slideTxt -in .rtopF -anchor nw -side right
+pack .slideSecTxt .slideSpin .slideTxt -in .rtopF -anchor nw -side right
 
 #Bottom 1.1
 pack .inttextTit -in .rbot1F.1F -pady 7
@@ -178,5 +178,4 @@ pack .fontweightBtn .fontsizeSpin .fontsizeTxt -in .rbot1F.2F -side right -ancho
 #Bottom 2
 pack .textposTxt -in .rbot2F -pady 7
 pack .textposCanv -in .rbot2F -fill y
-pack .inttextFN -in .rbot2F -fill x
-
+pack .textposFN -in .rbot2F -fill x
