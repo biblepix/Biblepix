@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16apr20 pv
+# Updated: 17apr20 pv
 
 source $JList
 
@@ -394,8 +394,6 @@ proc doOpen {bildordner c} {
 
   if {$localJList != ""} {
     pack .addBtn -in .photosF.mainf.right.unten -side left -fill x
-
-   
   }
 
   pack .picPath -in .photosF.mainf.right.unten -side left -fill x
