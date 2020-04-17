@@ -411,7 +411,7 @@ proc doCollect {c} {
   refreshImg $localJList $c
 
   pack .delBtn .picPath -in .photosF.mainf.right.unten -side left -fill x
-  pack forget .addBtn .photosF.mainf.right.bar.collect
+  pack forget .addBtn .photosF.mainf.right.bar.collect .rotateBtn
 
   return $localJList
 }

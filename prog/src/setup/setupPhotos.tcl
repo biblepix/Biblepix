@@ -25,12 +25,13 @@ pack .photosF.mainf.left.t1 -anchor nw -side left -padx {10 40} -pady 40
 button .photosF.mainf.right.bar.open -width 30 -textvar f6.find -height 1 -command {set fileJList [doOpen $DesktopPicturesDir .imgCanvas]}
 button .photosF.mainf.right.bar.< -text < -height 1 -command {set fileJList [step $fileJList 0 .imgCanvas]}
 button .photosF.mainf.right.bar.> -text > -height 1 -command {set fileJList [step $fileJList 1 .imgCanvas]}
+button .photosF.mainf.right.bar.collect -textvar f6.show -height 1 -command {set fileJList [doCollect .imgCanvas]}
+
 
 #TODO Joel bitte "Jump to end" und "Jump to beginning" programmieren!
 button .photosF.mainf.right.bar.<< -text << -height 1 -command {set fileJList [lindex $fileJList 0] }
 button .photosF.mainf.right.bar.>> -text >> -height 1 -command {set fileJList [lindex $fileJList end] }
 
-button .photosF.mainf.right.bar.collect -textvar f6.show -height 1 -command {set fileJList [doCollect .imgCanvas]}
 
 pack .photosF.mainf.right.bar.open -side left
 pack .photosF.mainf.right.bar.<< -side left
