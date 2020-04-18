@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17apr20 pv
+# Updated: 18apr20 pv
 
 source $JList
 
@@ -240,13 +240,14 @@ proc setManText {lang} {
 # dragCanvasItem
 ##adapted from a proc by ? ...THANKS TO  ...
 ##called by SetupDesktop & setupRespositionText
-proc dragCanvasItem {c item newX newY} {
+proc dragCanvasItem {c item newX newY args} {
 
   set xDiff [expr {$newX - $::x}]
   set yDiff [expr {$newY - $::y}]
 
   #test margins before moving
-  if [checkItemInside $c $item $xDiff $yDiff] {
+  if {![info exists args]} {set args ""}
+  if [checkItemInside $c $item $xDiff $yDiff $args] {
     $c move $item $xDiff $yDiff
   }
   set ::x $newX
@@ -255,29 +256,38 @@ proc dragCanvasItem {c item newX newY} {
 
 # checkItemInside
 ## makes sure movingItem stays inside canvas
-## called by dragCanvasItem
-proc checkItemInside {c item xDiff yDiff} {
+## called by setupResizePhoto (tag: img) & setupDesktop moving text (tag: txt) 
+## 'args' is for compulsory margin for text item
+proc checkItemInside {c item xDiff yDiff args} {
 
-  #The 'img' tag should work with any calling prog
-  set img [$c itemcget img -image]
+  set canvX [lindex [$c conf -width] end]
+  set canvY [lindex [$c conf -height] end]
+
+  #A) Image (resizePic)
+  if {$item == "img"} {
   
-  set imgX [image width $img]
-  set imgY [image height $img]
-  set canvX [expr [winfo width $c] - 8]
-  set canvY [expr [winfo height $c] - 8]
+    set imgname [lindex [$c itemconf img -image] end]
+    set itemX [image width $imgname]
+    set itemY [image height $imgname]
+    
+    set can(maxx) 0
+    set can(maxy) 0
+    set can(minx) [expr ($canvX - $itemX)]
+    set can(miny) [expr ($canvY - $itemY)]
+   
+  #B) Text (moving Text)
+  } elseif {$item == "txt"} {
 
+    lassign [.textposCanv bbox canvTxt] x1 y1 x2 y2
+    set itemY [expr $y2 - $y1]
+    set itemX [expr $x2 - $x1]
 
-#TODO set item tags more intelligently !
-#TODO soluciona para ambas pantallas
-lassign [$c bbox canvTxt] x1 y1 x2 y2
-set textHeight [expr $y2 - $y1]
-set textWidth  [expr $x2 - $x1]
-set minMargin 15
-set can(minx) $minMargin
-set can(miny) $minMargin
-set can(maxx) [expr $imgX - $textWidth - $minMargin]
-set can(maxy) [expr $imgY - $textHeight - $minMargin]
-
+    set can(maxx) [expr $canvX - $itemX - $args]
+    set can(maxy) [expr $canvY - $itemY - $args]
+    set can(minx) $args
+    set can(miny) $args
+  }
+  
   #item coords
   set itemPos [$c coords $item]
 
@@ -287,19 +297,24 @@ set can(maxy) [expr $imgY - $textHeight - $minMargin]
     set y [expr $y + $yDiff]
     
     if {$x < $can(minx)} {
+       
+        puts "minx $can(minx)"
         return 0
           }
+          
     if {$y < $can(miny)} {
+       puts "miny $can(miny)"
         return 0
-
     }
+    
     if {$x > $can(maxx)} {
+      puts "maxx $can(maxx)"
       return 0
   
     }
     if {$y > $can(maxy)} {
-        return 0
- 
+         puts "maxy $can(maxy)"
+         return 0
     }
   }
   return 1
@@ -330,9 +345,9 @@ proc createMovingTextBox {c} {
   set sunX [expr $x1 - 1]
   set sunY [expr $y1 - 1]
 
-  $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt mv shade}
-  $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt mv sun}
-  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt mv main}
+  $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade}
+  $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun}
+  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main}
   $c itemconf canvTxt -text $setupTwdText
   $c itemconf canvTxt -font movingTextFont -activefill red
 

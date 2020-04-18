@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 21mch20
+# Updated 17apr20 pv
 
 proc openResizeWindow {} {
 
@@ -15,7 +15,6 @@ proc openResizeWindow {} {
   image create photo resizePic
 
   #Display original pic in largest possible size
-  #TODO either avoid too big size for buttons to hide, OR ELIMINATE BUTTONS!
   set maxX [expr $screenX - 200]
   set maxY [expr $screenY - 200]
   
@@ -26,44 +25,59 @@ proc openResizeWindow {} {
     set imgY [expr $imgY / 2]
   }
 
+puts $reductionFactor
+
   resizePic copy photosOrigPic -subsample $reductionFactor
 
   #Create canvas with pic
-  canvas .resizePhoto.resizePhotoCanv
+  canvas .resizePhoto.resizePhotoCanv -bg lightblue
   .resizePhoto.resizePhotoCanv create image 0 0 -image resizePic -anchor nw -tags {img mv}
 
   #Create title & buttons
   set okButton {set ::Modal.Result [doResize .resizePhoto.resizePhotoCanv]}
   set cancelButton {set ::Modal.Result "Cancelled"}
   
-#  ttk::label .resizePhoto.resizeLbl -text "$::movePicToResize" -font {TkHeadingFont 18} -background orange
   ttk::button .resizePhoto.resizeConfirmBtn -text Ok -command $okButton
   ttk::button .resizePhoto.resizeCancelBtn -textvar ::cancel -command $cancelButton
   pack .resizePhoto.resizeConfirmBtn .resizePhoto.resizeCancelBtn ;#will be repacked into canv window
+
+
   
   #Set scale factor
-  set factor [expr $imgX. / $screenX]
-  if {[expr $imgY. / $factor] < $screenY} {
-    set factor [expr $imgY. / $screenY]
+#  set factor [expr $imgX. / $screenX]
+#  if {[expr $imgY. / $factor] < $screenY} {
+#    set factor [expr $imgY. / $screenY]
+#  }
+#puts $factor
+
+  set screenFactor [expr $screenX. / $screenY]
+  set imgXYFactor [expr $imgX. / $imgY]
+  set canvImgX [image width resizePic]
+  set canvImgY [image height resizePic]
+
+  #do Höhe schneiden
+  if {$imgXYFactor < $screenFactor} {
+puts Höheschneiden
+    set canvCutX2 $canvImgX
+    set canvCutY2 [expr round($canvImgX / $screenFactor)]
+
+  } else {
+puts Tiefeschneiden
+    set canvCutX2 [expr round($canvImgY / $screenFactor)]
+    set canvCutY2 $canvImgY
   }
-  
+
+
+#puts $imgXYFactor
+#puts $screenFactor
+
   #Set cutting coordinates & configure canvas
-  set canvCutX2 [expr $screenX * $factor]
-  set canvCutY2 [expr $screenY * $factor]
-  
-  .resizePhoto.resizePhotoCanv conf -width $canvCutX2 -height $canvCutY2 -bg lightblue -relief solid -borderwidth 2
+  .resizePhoto.resizePhotoCanv conf -width $canvCutX2 -height $canvCutY2 -bg lightblue -bd 0
   .resizePhoto.resizePhotoCanv create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill green -text "$::movePicToResize"
   .resizePhoto.resizePhotoCanv create window [expr $canvCutX2 - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn
   .resizePhoto.resizePhotoCanv create window [expr $canvCutX2 - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn
   
-  #[expr [winfo width .resizePhoto.resizePhotoCanv] - 500]
-  #Pack everything
- # pack .resizePhoto.resizeLbl
- # pack .resizePhoto.resizeConfirmBtn -side bottom -fill x
   pack .resizePhoto.resizePhotoCanv -side top -fill none
-#  pack .resizePhoto.resizeCancelBtn .resizePhoto.resizeConfirmBtn -side right -expand 1
-#
-#  focus .resizePhoto.resizeConfirmBtn
   
   #Set bindings
   bind .resizePhoto <Return> $okButton
@@ -73,11 +87,14 @@ proc openResizeWindow {} {
      set ::y %Y
  }
  
- .resizePhoto.resizePhotoCanv bind mv <B1-Motion> [list dragCanvasItem %W mv %X %Y]
+ #Run dragging canvasItem
+ set margin 0
+ set itemW 0
+ .resizePhoto.resizePhotoCanv bind mv <B1-Motion> [list dragCanvasItem %W img %X %Y]
   
   Show.Modal .resizePhoto -destroy 1 -onclose $cancelButton
-} ;#END openResizeWindow
 
+} ;#END openResizeWindow
 
 
 namespace eval ResizeHandler {
@@ -87,6 +104,10 @@ namespace eval ResizeHandler {
   variable queryCutImgJList ""
   variable counter 0
   variable isRunning 0
+
+#TODO Joel was läuft hier falsch?
+#Das Problem ist, dass 'cutImg' nicht resizePhoto (das Bild vom Resize-Canvas), sondern photosOrigPic sein muss.
+#set cutImg photosOrigPic
 
   proc QueryResize {cutImg} {
     variable queryCutImgJList

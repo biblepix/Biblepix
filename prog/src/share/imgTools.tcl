@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12apr20
+# Updated: 18apr20
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -397,4 +397,4 @@ proc resizePic {src newx newy {dest ""} } {
   update
 
   return $dest
-}
+} ;#END resizePic

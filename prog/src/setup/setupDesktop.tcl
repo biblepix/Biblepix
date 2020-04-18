@@ -96,10 +96,9 @@ source $ImgTools
 set rgb [hex2rgb $fontcolor]
 set shade [setShade $rgb]
 set sun [setSun $rgb]
-.inttextCanv create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shade -tags {shade textitem}
-.inttextCanv create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sun -tags {sun textitem}
-.inttextCanv create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $fontcolor -tags {main textitem}
-
+.inttextCanv create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shade -tags {shade txt mv}
+.inttextCanv create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sun -tags {sun txt mv}
+.inttextCanv create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $fontcolor -tags {main txt mv}
 
 #1. Fontcolour spinbox
 message .fontcolorTxt -width 150 -textvar f2.farbe -font widgetFont
@@ -147,7 +146,7 @@ image create photo canvasbild
 canvasbild copy origbild -subsample $textPosFactor -shrink
 set screeny [winfo screenheight .]
 .textposCanv conf -width [image width canvasbild] -height [expr $screeny/$textPosFactor]
-.textposCanv create image 0 0 -image canvasbild -anchor nw -tags img
+.textposCanv create image 0 0 -image canvasbild -anchor nw
 
 createMovingTextBox .textposCanv
 
@@ -155,7 +154,14 @@ createMovingTextBox .textposCanv
      set ::x %X
      set ::y %Y
  }
-.textposCanv bind mv <Button1-Motion> [list dragCanvasItem %W mv %X %Y]
+ 
+#set up dragging item
+lassign [.textposCanv bbox canvTxt] x1 y1 x2 y2
+set itemW [expr $y2 - $y1]
+puts "itemW $itemW"
+set margin 15
+
+.textposCanv bind mv <Button1-Motion> [list dragCanvasItem %W txt %X %Y $margin]
 setCanvasFontSize $fontsize
 setCanvasFontColour .textposCanv $fontcolor
 #Footnote
