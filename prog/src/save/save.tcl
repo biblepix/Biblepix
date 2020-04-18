@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 1apr20 
+# Updated : 18apr20 pv 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $dirlist(twdDir)/*$jahr.twd}] } {
@@ -31,10 +31,10 @@ set sigLanglist [updateSelectedList]
 }
 
 set titlelinestatus [set enabletitle]
-set fontcolourstatus [$fontcolorSpin get]
-set fontsizestatus [$fontsizeSpin get]
+set fontcolourstatus [.fontcolorSpin get]
+set fontsizestatus   [.fontsizeSpin get]
 set fontweightstatus [set fontweightState]
-set fontfamilystatus [$fontfamilySpin get]
+set fontfamilystatus [.fontfamilySpin get]
 
 if {$fontweightstatus == 1} {
   set fontweight "bold"
@@ -44,7 +44,7 @@ if {$fontweightstatus == 1} {
   
 set fontcolor [set $fontcolourstatus]
 set rgb [hex2rgb $fontcolor]
-set slidestatus [$slideSpin get]
+set slidestatus [.slideSpin get]
 
 ##textpos coordinates
 lassign [.textposCanv coords mv] x y - -

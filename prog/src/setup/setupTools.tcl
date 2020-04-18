@@ -78,8 +78,9 @@ namespace eval NewsHandler {
 ##called by SetupGUI for intTextCanv
 proc setCanvasFontSize args {
   if [string is integer $args] {
+    #set size in pt as in BDF
     font conf intCanvFont -size $args
-    font conf movingTextFont -size [expr round($args / 3) + 2]
+    font conf movingTextFont -size [expr round($args / 3) + 3]
     
   } elseif {$args == "bold" || $args == "normal"} {
     font conf intCanvFont -weight $args

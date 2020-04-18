@@ -160,9 +160,11 @@ lassign [.textposCanv bbox canvTxt] x1 y1 x2 y2
 set itemW [expr $y2 - $y1]
 puts "itemW $itemW"
 set margin 15
-
+#set font in pixels
 .textposCanv bind mv <Button1-Motion> [list dragCanvasItem %W txt %X %Y $margin]
 setCanvasFontSize $fontsize
+
+
 setCanvasFontColour .textposCanv $fontcolor
 #Footnote
 label .textposFN -width 50 -font "Serif 10" -textvar ::textposFN
