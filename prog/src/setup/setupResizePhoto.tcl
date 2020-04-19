@@ -1,18 +1,25 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 17apr20 pv
+# Updated 19apr20 pv
 
 proc openResizeWindow {} {
 
   toplevel .resizePhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600
 
+  #Check which original to use
+  if [catch {image inuse rotateOrigPic}] {
+    set origPic photosOrigPic
+  } else {
+    set origPic rotateOrigPic
+  }
+
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-  set imgX [image width photosOrigPic]
-  set imgY [image height photosOrigPic]
+  set imgX [image width $origPic]
+  set imgY [image height $origPic]
 
-  image create photo resizePic
+  image create photo resizeCanvPic
 
   #Display original pic in largest possible size
   set maxX [expr $screenX - 200]
@@ -25,13 +32,13 @@ proc openResizeWindow {} {
     set imgY [expr $imgY / 2]
   }
 
-puts $reductionFactor
+#puts $reductionFactor
 
-  resizePic copy photosOrigPic -subsample $reductionFactor
+  resizeCanvPic copy $origPic -subsample $reductionFactor
 
   #Create canvas with pic
   canvas .resizePhoto.resizePhotoCanv -bg lightblue
-  .resizePhoto.resizePhotoCanv create image 0 0 -image resizePic -anchor nw -tags {img mv}
+  .resizePhoto.resizePhotoCanv create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
 
   #Create title & buttons
   set okButton {set ::Modal.Result [doResize .resizePhoto.resizePhotoCanv]}
@@ -52,8 +59,8 @@ puts $reductionFactor
 
   set screenFactor [expr $screenX. / $screenY]
   set imgXYFactor [expr $imgX. / $imgY]
-  set canvImgX [image width resizePic]
-  set canvImgY [image height resizePic]
+  set canvImgX [image width resizeCanvPic]
+  set canvImgY [image height resizeCanvPic]
 
   #do Höhe schneiden
   if {$imgXYFactor < $screenFactor} {

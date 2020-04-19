@@ -1,8 +1,10 @@
-# ~/Biblepix/prog/src/share/imgTools.tcl
+# ~/Biblepix/prog/src/pic/ImgTools.tcl
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18apr20
+# Updated: 19apr20 pv
+
+#TODO pv change pic names to something reasonable - what's cutPic anyway Joel????
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -103,6 +105,8 @@ return
 #Theory: 
 ##wenn HG überwiegend dunkelblau, fontcolor-> silver
 ##wenn HG überwiegend dunkelgrün, fontcolor-> gold
+
+#TODO don't change colour, but only shades of colour (brighter/darker)
 proc changeFontColour {} {
   if {$rgb::avBrightness <= 100 &&
   [expr $rgb::maxCol - $rgb::minCol] > 70} {
@@ -157,12 +161,20 @@ proc setPngFileName {fileName} {
   return $fileName
 }
 
+
+
+
+
+
+
 # doResize
 ## organises all resizing processes
 ## called by addPic
 proc doResize {canv} {
   set origX [image width photosOrigPic]
   set origY [image height photosOrigPic]
+  
+  #TODO besser mit winfo, falls fenster überdeckt ...
   set canvX [lindex [$canv conf -width] end]
   set canvY [lindex [$canv conf -height] end]
   lassign [$canv bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
@@ -185,23 +197,35 @@ proc doResize {canv} {
   }
 }
 
+
+
+
 proc processResize {cutImg} {
   global dirlist picPath
 
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
 
-  NewsHandler::QueryNews "$::resizingPic" orange  
-  set finalImage [resizePic $cutImg $screenX $screenY]
-  
-  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
-  $finalImage write $targetPicPath -format PNG
+  NewsHandler::QueryNews "$::resizingPic" orange
+
+
+#TODO vorläufig bleibt's in cutOrigPic - no saving!  
+  #set finalImage [resizePic $cutImg $screenX $screenY]
+  image create photo cutOrigPic
+  resizePic $cutImg $screenX $screenY cutOrigPic
+
+#  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
+#  $finalImage write $targetPicPath -format PNG
 
   image delete $cutImg
-  image delete $finalImage
+#image delete $finalImage
 
-  NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
+#  NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
+
 } ;#END doResize
+
+
+
 
 
 # trimPic
@@ -395,6 +419,7 @@ proc resizePic {src newx newy {dest ""} } {
     incr ny
   }
   update
-
+  
+  puts $dest
   return $dest
 } ;#END resizePic

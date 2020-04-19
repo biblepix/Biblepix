@@ -2,8 +2,8 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 30mch20
-set version "3.1"
+# Updated: 19apr20 pv
+set version "3.2"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
@@ -34,7 +34,10 @@ array set dirlist "
   fontdir [file join $progdir font]
   imgdir [file join $rootdir TodaysPicture]
   maildir [file join $srcdir sig]
+  
+  #TODO change to MyPhotos
   photosDir [file join $rootdir Photos]
+  
   picdir [file join $srcdir pic]
   progdir [file join $rootdir prog]
   piddir [file join $progdir pid]
@@ -103,7 +106,7 @@ array set FilePaths "
   Http [file join $sharedir http.tcl]
   HttpMock [file join $sharedir httpMock.tcl]
   JList [file join $sharedir JList.tcl]
-  ImgTools [file join $sharedir imgTools.tcl]
+  ImgTools [file join $picdir ImgTools.tcl]
   LoadConfig [file join $sharedir LoadConfig.tcl]
   TwdTools [file join $sharedir TwdTools.tcl]
   Uninstall [file join $savedir uninstall.tcl]
