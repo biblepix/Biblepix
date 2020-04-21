@@ -246,7 +246,7 @@ proc Show.Modal {win args} {
   return ${::Modal.Result}
 }
 
-if { [info exists Debug] && $Debug && [info exists Mock] && $Mock} {
+if { [info exists Debug] && $Debug && [info exists Httpmock] && $Httmock} {
   proc sourceHTTP {} {
     source $::Http
     source $::HttpMock

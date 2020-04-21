@@ -174,7 +174,7 @@ proc doResize {canv} {
   set origX [image width photosOrigPic]
   set origY [image height photosOrigPic]
   
-#TODO besser mit winfo, falls fenster überdeckt ...
+  #TODO besser mit winfo, falls fenster überdeckt ...
   set canvX [lindex [$canv conf -width] end]
   set canvY [lindex [$canv conf -height] end]
   lassign [$canv bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
@@ -194,7 +194,6 @@ proc doResize {canv} {
   ResizeHandler::QueryResize $cutImg
   after idle {
     ResizeHandler::Run
-    #openReposWin
   }
 }
 
@@ -207,19 +206,14 @@ proc processResize {cutImg} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
 
-  NewsHandler::QueryNews "$::resizingPic" orange
-
-
-#TODO vorläufig bleibt's in cutOrigPic - no saving!  
+  NewsHandler::QueryNews "$::resizingPic" orange  
   set finalImage [resizePic $cutImg $screenX $screenY]
-  image create photo cutOrigPic
-  #resizePic $cutImg $screenX $screenY cutOrigPic
+  
+#  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
+#  $finalImage write $targetPicPath -format PNG
 
-  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
-  $finalImage write $targetPicPath -format PNG
-
-#  image delete $cutImg
-#image delete $finalImage
+  image delete $cutImg
+  image delete $finalImage
 
   NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
 
@@ -420,7 +414,6 @@ proc resizePic {src newx newy {dest ""} } {
     incr ny
   }
   update
-  
-  puts $dest
+
   return $dest
 } ;#END resizePic

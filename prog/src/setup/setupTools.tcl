@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18apr20 pv
+# Updated: 21apr20 pv
 
 source $JList
 
@@ -238,6 +238,38 @@ proc setManText {lang} {
 ##### C A N V A S   M O V E   P R O C S #################################
 #########################################################################
 
+# createMovingTextBox
+## Creates textbox with TW text on canvas $c
+## Called by SetupDesktop & SetupResizePhoto
+proc createMovingTextBox {c} {
+  global marginleft margintop textPosFactor fontcolor fontsize fontfamily fontweight setupTwdText
+
+  #Verkleinerungsfaktor für textposition window
+  set displayFactor 2
+  
+  set screenx [winfo screenwidth .]
+  set screeny [winfo screenheight .]
+  #set textPosSubwinX [expr $screenx/20]
+  #set textPosSubwinY [expr $screeny/30]
+  set x1 [expr $marginleft/$textPosFactor]
+  set y1 [expr $margintop/$textPosFactor]
+ 
+  #Create movingTextFont here, configure later with setCanvasFontSize
+  catch {font create movingTextFont}
+
+  set shadeX [expr $x1 + 1]
+  set shadeY [expr $y1 + 1]
+  set sunX [expr $x1 - 1]
+  set sunY [expr $y1 - 1]
+
+  $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade}
+  $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun}
+  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main}
+  $c itemconf canvTxt -text $setupTwdText
+  $c itemconf canvTxt -font movingTextFont -activefill red
+
+} ;#END createMovingTextBox
+
 # dragCanvasItem
 ##adapted from a proc by ? ...THANKS TO  ...
 ##called by SetupDesktop & setupRespositionText
@@ -248,6 +280,7 @@ proc dragCanvasItem {c item newX newY args} {
 
   #test margins before moving
   if {![info exists args]} {set args ""}
+  
   if [checkItemInside $c $item $xDiff $yDiff $args] {
     $c move $item $xDiff $yDiff
   }
@@ -298,64 +331,29 @@ proc checkItemInside {c item xDiff yDiff args} {
     set y [expr $y + $yDiff]
     
     if {$x < $can(minx)} {
-       
-        puts "minx $can(minx)"
-        return 0
+      return 0
           }
           
     if {$y < $can(miny)} {
-       puts "miny $can(miny)"
-        return 0
+      return 0
     }
     
     if {$x > $can(maxx)} {
-      puts "maxx $can(maxx)"
       return 0
-  
     }
     if {$y > $can(maxy)} {
-         puts "maxy $can(maxy)"
-         return 0
+      return 0
     }
   }
   return 1
   
 } ;#END checkItemInside
 
-# createMovingTextBox
-## Creates textbox with TW text on canvas $c
-## Called by SetupDesktop
-proc createMovingTextBox {c} {
-  global marginleft margintop textPosFactor fontcolor fontsize fontfamily fontweight setupTwdText
-
-  #Verkleinerungsfaktor für textposition window
-  set displayFactor 2
-  
-  set screenx [winfo screenwidth .]
-  set screeny [winfo screenheight .]
-  set textPosSubwinX [expr $screenx/20]
-  set textPosSubwinY [expr $screeny/30]
-  set x1 [expr $marginleft/$textPosFactor]
-  set y1 [expr $margintop/$textPosFactor]
- 
-  #Create movingTextFont here, configure later with setCanvasFontSize
-  font create movingTextFont
-
-  set shadeX [expr $x1 + 1]
-  set shadeY [expr $y1 + 1]
-  set sunX [expr $x1 - 1]
-  set sunY [expr $y1 - 1]
-
-  $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade}
-  $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun}
-  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main}
-  $c itemconf canvTxt -text $setupTwdText
-  $c itemconf canvTxt -font movingTextFont -activefill red
-
-} ;#END createMovingTextBox
 
 
-##### S E T U P P H O T O S   P R O C S ####################################################
+##################################################################################
+##### S E T U P  P H O T O S   P R O C S #########################################
+##################################################################################
 
 proc needsResize {} {
   set screenX [winfo screenwidth .]
@@ -381,7 +379,7 @@ proc addPic {} {
   set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
 
   if { [file exists $targetPicPath] } {
-    NewsHandler::QueryNews $::picSchonDa lightblue
+    NewsHandler::QueryNews $::picSchonDa red
     return
   }
 
