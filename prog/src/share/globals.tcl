@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 19apr20 pv
+# Updated: 22apr20 pv
 set version "3.2"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -246,7 +246,7 @@ proc Show.Modal {win args} {
   return ${::Modal.Result}
 }
 
-if { [info exists Debug] && $Debug && [info exists Httpmock] && $Httmock} {
+if { [info exists Debug] && $Debug && [info exists Httpmock] && $Httpmock} {
   proc sourceHTTP {} {
     source $::Http
     source $::HttpMock
