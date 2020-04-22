@@ -317,7 +317,7 @@ proc checkItemInside {c item xDiff yDiff args} {
   #B) Text (moving Text)
   } elseif {$item == "txt"} {
 
-    lassign [.textposCanv bbox canvTxt] x1 y1 x2 y2
+    lassign [$c bbox canvTxt] x1 y1 x2 y2
     set itemY [expr $y2 - $y1]
     set itemX [expr $x2 - $x1]
 

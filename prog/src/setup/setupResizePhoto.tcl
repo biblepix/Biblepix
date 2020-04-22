@@ -59,6 +59,9 @@ proc openResizeWindow {} {
   
   font conf movingTextFont -size $::fontsize
   
+  puts $c
+  
+  
   $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 30}
   
     .resizePhoto.resizeConfirmBtn conf -text Ok -command {
@@ -69,7 +72,8 @@ proc openResizeWindow {} {
     #TODO threading nötig?
     #$c move ?  -set coords {scanArea resizeCanvPic} - TODO nur beschnittenes Bild!
     
-    set ::Modal.Result [doResize $c]
+    #TODO zuerst Schieben abschliessen
+   # set ::Modal.Result [doResize $c]
   "
   
   
