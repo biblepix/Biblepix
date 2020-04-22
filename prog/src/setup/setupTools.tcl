@@ -245,7 +245,7 @@ proc createMovingTextBox {c} {
   global marginleft margintop textPosFactor fontcolor fontsize fontfamily fontweight setupTwdText
 
   #Verkleinerungsfaktor für textposition window
-  set displayFactor 2
+  #set displayFactor 2
   
   set screenx [winfo screenwidth .]
   set screeny [winfo screenheight .]
@@ -262,9 +262,14 @@ proc createMovingTextBox {c} {
   set sunX [expr $x1 - 1]
   set sunY [expr $y1 - 1]
 
-  $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade}
-  $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun}
-  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main}
+#source $ImgTools
+  set rgb [hex2rgb $fontcolor]
+  set shade [setShade $rgb]
+  set sun [setSun $rgb]
+  
+  $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade} -fill $shade
+  $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun} -fill $sun
+  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main} -fill $fontcolor
   $c itemconf canvTxt -text $setupTwdText
   $c itemconf canvTxt -font movingTextFont -activefill red
 

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 20apr20 pv
+# Updated 22apr20 pv
 
 proc openResizeWindow {} {
   
@@ -32,8 +32,6 @@ proc openResizeWindow {} {
     set imgY [expr $imgY / 2]
   }
 
-#puts $reductionFactor
-
   resizeCanvPic copy $origPic -subsample $reductionFactor
 
   #Create canvas with pic
@@ -42,30 +40,40 @@ proc openResizeWindow {} {
   
   #Create title & buttons
   set cancelButton {set ::Modal.Result "Cancelled"}
-  
+      
   #1. Schritt
-  set okButton "
-    createMovingTextBox $c
-    font conf movingTextFont -size $::fontsize
-    #$c itemconf addtag img mv
+  set okButton "  
+    pack forget $c 
+    pack forget .resizePhoto.resizeCancelBtn
+    pack [label .resizePhoto.verschiebenTxtL -font {TkHeaderFont 20 bold} -text {Verschieben sie den Text nach Wunsch und drücken Sie OK zum Speichern der Position!} -fg red -bg beige -pady 20 -bd 2 -relief sunken] -fill x
+        
     $c dtag img mv
-    $c bind mv <B1-Motion> ;# [list dragCanvasItem %W canvTxt %X %Y]
-    $c itemconf text -fill orange -text {Verschieben sie den Text nach Wunsch und drücken Sie OK zum Speichern der Position}
-    $c raise text
-     
+    #$c dtag img 
+    $c delete text
+    $c delete delbtn
+#    update
+    pack $c
+    #update
+        
+    createMovingTextBox $c
+  
+  font conf movingTextFont -size $::fontsize
+  
+  $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 30}
+  
     .resizePhoto.resizeConfirmBtn conf -text Ok -command {
       #annotatePng
       destroy .resizePhoto
-      } 
-    $c dtag img mv
+    } 
    
     #TODO threading nötig?
-    #.resizePhoto.resizeCanv move ?  -set coords {scanArea resizeCanvPic} - TODO nur beschnittenes Bild!
+    #$c move ?  -set coords {scanArea resizeCanvPic} - TODO nur beschnittenes Bild!
     
     set ::Modal.Result [doResize $c]
   "
   
-  #2. Schritt
+  
+  
   ttk::button .resizePhoto.resizeConfirmBtn -text Ok -command $okButton 
   ttk::button .resizePhoto.resizeCancelBtn -textvar ::cancel -command $cancelButton
     
@@ -89,12 +97,12 @@ proc openResizeWindow {} {
   }
 
   #Set cutting coordinates & configure canvas
-  .resizePhoto.resizeCanv conf -width $canvCutX2 -height $canvCutY2 -bg lightblue -bd 0
-  .resizePhoto.resizeCanv create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill green -text "$::movePicToResize" -tags text
-  .resizePhoto.resizeCanv create window [expr $canvCutX2 - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn
-  .resizePhoto.resizeCanv create window [expr $canvCutX2 - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn
+  $c conf -width $canvCutX2 -height $canvCutY2 -bg lightblue -bd 0
+  $c create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill yellow -text "$::movePicToResize" -tags text
+  $c create window [expr $canvCutX2 - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn -tag okbtn
+  $c create window [expr $canvCutX2 - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn -tag delbtn
   
-  pack .resizePhoto.resizeCanv -side top -fill none
+  pack $c -side top -fill none
   
   #Set bindings
   bind .resizePhoto <Return> $okButton
@@ -104,17 +112,20 @@ proc openResizeWindow {} {
      set ::y %Y
   }
   $c bind mv <B1-Motion> [list dragCanvasItem %W img %X %Y]
-  #$c bind mv <B1-Motion> [list dragCanvasItem %W canvTxt %X %Y]
+  
   
  #TODO  close window later!
 #  Show.Modal .resizePhoto -destroy 1 -onclose $cancelButton
   Show.Modal .resizePhoto -destroy 0 -onclose $cancelButton
   
-} ;#END openResizeWindow
+  
+}
+
+
 
 
 #wird bei OK in resizeWin ZUERST aktiviert
-#c = .resizePhoto.resizeCanv
+#c = $c
 proc copyCutPic {c} {
   global fontcolor
 
