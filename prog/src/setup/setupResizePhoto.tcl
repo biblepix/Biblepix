@@ -44,36 +44,36 @@ proc openResizeWindow {} {
   #1. Schritt
   set okButton "  
     pack forget $c 
+#    $c delete img
+    
+ 
+ #   $c create image 0 0 -image reposCanvPic -anchor nw
+    
     pack forget .resizePhoto.resizeCancelBtn
-    pack [label .resizePhoto.verschiebenTxtL -font {TkHeaderFont 20 bold} -text {Verschieben sie den Text nach Wunsch und drücken Sie OK zum Speichern der Position!} -fg red -bg beige -pady 20 -bd 2 -relief sunken] -fill x
+    pack [label .resizePhoto.verschiebenTxtL -font {TkHeaderFont 20 bold} -text {Verschieben Sie den Text nach Wunsch und drücken Sie OK zum Speichern der Position!} -fg red -bg beige -pady 20 -bd 2 -relief sunken] -fill x
         
+  
     $c dtag img mv
     #$c dtag img 
     $c delete text
     $c delete delbtn
-#    update
+    #update
     pack $c
     #update
         
     createMovingTextBox $c
   
   font conf movingTextFont -size $::fontsize
-  
-  puts $c
-  
-  
-  $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 30}
+    
+  $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}
+  update  
   
     .resizePhoto.resizeConfirmBtn conf -text Ok -command {
-      #annotatePng
+      #TODO annotatePng: store pos * factor (screenX/$imgX)
       destroy .resizePhoto
     } 
    
-    #TODO threading nötig?
-    #$c move ?  -set coords {scanArea resizeCanvPic} - TODO nur beschnittenes Bild!
-    
-    #TODO zuerst Schieben abschliessen
-   # set ::Modal.Result [doResize $c]
+    set ::Modal.Result [doResize $c]
   "
   
   

@@ -2,9 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19apr20 pv
-
-#TODO pv change pic names to something reasonable - what's cutPic anyway Joel????
+# Updated: 22apr20 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -161,12 +159,6 @@ proc setPngFileName {fileName} {
   return $fileName
 }
 
-
-
-
-
-
-
 # doResize
 ## organises all resizing processes
 ## called by addPic
@@ -194,12 +186,8 @@ proc doResize {canv} {
   ResizeHandler::QueryResize $cutImg
   after idle {
     ResizeHandler::Run
-    #openReposWin
   }
 }
-
-
-
 
 proc processResize {cutImg} {
   global dirlist picPath
