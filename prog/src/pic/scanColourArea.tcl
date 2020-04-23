@@ -18,7 +18,7 @@ namespace eval colour {
   # scanRows
   ##scans ...
   ##called by scanArea
-  proc scanArea {img} {
+  proc scanColourArea {img} {
 
   #TODO? furnish these from outside? 
   set colourTol 10

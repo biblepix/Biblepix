@@ -4,7 +4,7 @@
 # Updated 22apr20 pv
 
 proc openResizeWindow {} {
-  
+  global fontsize
   toplevel .resizePhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600
 
   #Check which original to use
@@ -24,7 +24,7 @@ proc openResizeWindow {} {
   #Display original pic in largest possible size
   set maxX [expr $screenX - 200]
   set maxY [expr $screenY - 200]
-  
+  ##Reduktionsfaktor ist Ganzzahl
   set reductionFactor 1
   while { $imgX >= $maxX && $imgY >= $maxY } {
     incr reductionFactor
@@ -32,62 +32,40 @@ proc openResizeWindow {} {
     set imgY [expr $imgY / 2]
   }
 
+  #Copy original pic to canvas
   resizeCanvPic copy $origPic -subsample $reductionFactor
+  set canvImgX [image width resizeCanvPic]
+  set canvImgY [image height resizeCanvPic]
 
   #Create canvas with pic
   set c [canvas .resizePhoto.resizeCanv -bg lightblue]
   $c create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
+ 
+ # $c conf -width $canvImgX -height $canvImgY
+ 
+  #set canvX $canvImgX
+  #set canvY $canvImgY
+  
+  #puts "$canvX $canvImgX"
+  #puts "$canvY $canvImgY"
+  
+  
+  
   
   #Create title & buttons
   set cancelButton {set ::Modal.Result "Cancelled"}
       
   #1. Schritt
-  set okButton "  
-    pack forget $c 
-#    $c delete img
-    
- 
- #   $c create image 0 0 -image reposCanvPic -anchor nw
-    
-    pack forget .resizePhoto.resizeCancelBtn
-    pack [label .resizePhoto.verschiebenTxtL -font {TkHeaderFont 20 bold} -text {Verschieben Sie den Text nach Wunsch und drücken Sie OK zum Speichern der Position!} -fg red -bg beige -pady 20 -bd 2 -relief sunken] -fill x
-        
   
-    $c dtag img mv
-    #$c dtag img 
-    $c delete text
-    $c delete delbtn
-    #update
-    pack $c
-    #update
-        
-    createMovingTextBox $c
-  
-  font conf movingTextFont -size $::fontsize
-    
-  $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}
-  update  
-  
-    .resizePhoto.resizeConfirmBtn conf -text Ok -command {
-      #TODO annotatePng: store pos * factor (screenX/$imgX)
-      destroy .resizePhoto
-    } 
-   
-    set ::Modal.Result [doResize $c]
-  "
-  
-  
-  
-  ttk::button .resizePhoto.resizeConfirmBtn -text Ok -command $okButton 
+  proc reposTextWin {c} {}
+  ttk::button .resizePhoto.resizeConfirmBtn -text Ok
   ttk::button .resizePhoto.resizeCancelBtn -textvar ::cancel -command $cancelButton
     
   pack .resizePhoto.resizeConfirmBtn .resizePhoto.resizeCancelBtn ;#will be repacked into canv window
 
   set screenFactor [expr $screenX. / $screenY]
   set imgXYFactor [expr $imgX. / $imgY]
-  set canvImgX [image width resizeCanvPic]
-  set canvImgY [image height resizeCanvPic]
-
+  
   #do Höhe schneiden - TODO this sucks when pic is correct size!!!!!!!!!!!!!!!!!!!
   if {$imgXYFactor < $screenFactor} {
 #puts Höheschneiden
@@ -105,11 +83,26 @@ proc openResizeWindow {} {
   $c create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill yellow -text "$::movePicToResize" -tags text
   $c create window [expr $canvCutX2 - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn -tag okbtn
   $c create window [expr $canvCutX2 - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn -tag delbtn
-  
+    
   pack $c -side top -fill none
   
+  set canvX [winfo width $c]
+  set canvY [winfo height $c]
+  
+puts "$canvX $canvImgX $canvY $canvImgY"
+  #Establish calculation factor for: a) font size of Canvas pic & 
+  ## b) re-projection of canvas text position to Original pic
+  ##eine Flanke muss identisch sein, das ist der korrekte Faktor
+  set screen2canvFactor 1.5
+  
+  if {$canvX == $canvImgX} {
+    set screen2canvFactor [expr $screenX. / $imgX]
+  } elseif {$canvY == $canvImgY} {
+    set screen2canvFactor [expr $screenY. / $imgY]
+  }
+  
   #Set bindings
-  bind .resizePhoto <Return> $okButton
+  
   bind .resizePhoto <Escape> $cancelButton
   $c bind mv <1> {
      set ::x %X
@@ -123,6 +116,49 @@ proc openResizeWindow {} {
   Show.Modal .resizePhoto -destroy 0 -onclose $cancelButton
   
   
+  proc reposTextWin {c screen2canvFactor} {
+    global fontsize
+  
+    pack forget $c 
+    pack forget .resizePhoto.resizeCancelBtn
+    label .resizePhoto.verschiebenTxtL -font {TkHeaderFont 20 bold} -fg red -bg beige -pady 20 -bd 2 -relief sunken
+    .resizePhoto.verschiebenTxtL conf -text "Verschieben Sie den Text nach Wunsch und drücken Sie OK zum Speichern der Position!"
+    pack .resizePhoto.verschiebenTxtL -fill x 
+    
+    $c dtag img mv
+    $c delete text
+    $c delete delbtn
+    pack $c
+        
+    createMovingTextBox $c
+    font conf movingTextFont -size [expr round($fontsize / $screen2canvFactor)]
+    $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}  
+  
+    .resizePhoto.resizeConfirmBtn conf -text Ok -command {
+        #TODO:  try threading? 
+        # image create photoCanvPicSmall 
+        # photoCanvPicSmall copy photoCanvPic -subsample 2
+        
+        #  set x.y [scanColourArea photoCanvPicSmall]
+        
+        #TODO compute real x + y * factor * small...
+        #  set tint [computeAvBrightness photoCanvPicSmall]
+        
+        #TODO get filename
+        #  processPngComment $file $x $y $tint
+    
+      destroy .resizePhoto
+    } 
+   
+    set ::Modal.Result [doResize $c]
+  
+  }
+  set okButton [reposTextWin $c $screen2canvFactor]
+  
+  bind .resizePhoto <Return> $okButton
+  .resizePhoto.resizeConfirmBtn conf -command $okButton
+  
+  Show.Modal .resizePhoto -destroy 1 -onclose $cancelButton
 }
 
 

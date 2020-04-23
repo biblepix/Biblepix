@@ -1,7 +1,12 @@
-# ~/Biblepix/prog/src/pic/setupAnnotatePng.tcl
-# Sourced by ?
+# ~/Biblepix/prog/src/pic/annotatePng.tcl
+# Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 13apr20
+# Updated 23apr20 pv
+
+
+# evalPngComment
+##evaluates result of readPngComment
+##called by ?BDFPrint?
 proc evalPngComment {file} {
   set T [readPngComment $file]
 
@@ -62,47 +67,40 @@ proc readPngComment {file} {
 ##called by ...
 
 #TODO write 3 keywords with text at 1 go!
-proc writePngComment {file keyword text} {
+#Vorschlag: keyword=BiblePix text="$X $Y $Nuance"
+proc writePngComment {file text} {
 
-    set fh [open $file r+]
+  set keyword "BiblePix"
+  
+  set fh [open $file r+]
+  fconfigure $fh -encoding binary -translation binary -eofchar {}
 
-    fconfigure $fh -encoding binary -translation binary -eofchar {}
-
-    if {[read $fh 8] != "\x89PNG\r\n\x1a\n"} { close $fh; return }
-
-
+  if {[read $fh 8] != "\x89PNG\r\n\x1a\n"} { close $fh; return }
 
     while {[set r [read $fh 8]] != ""} {
 
-        binary scan $r Ia4 len type
+      binary scan $r Ia4 len type
 
-        if {$type ==  "IDAT"} {
-
-            seek $fh -8 current
-
-            set pos [tell $fh]
-
-            set data [read $fh]
-
-            seek $fh $pos start
-
-            set size [binary format I [string length "${keyword}\x00${text}"]]
-
-            puts -nonewline $fh "${size}tEXt${keyword}\x00${text}\x00\x00\x00\x00$data"
-
-            close $fh
-
-            return
-
-        }
-
-        seek $fh [expr {$len + 4}] current
-
+      if {$type ==  "IDAT"} {
+        seek $fh -8 current
+        set pos [tell $fh]
+        set data [read $fh]
+        seek $fh $pos start
+        set size [binary format I [string length "${keyword}\x00${text}"]]
+        puts -nonewline $fh "${size}tEXt${keyword}\x00${text}\x00\x00\x00\x00$data"
+        close $fh
+        return
+      }
+      seek $fh [expr {$len + 4}] current
     }
-
     close $fh
-
     return -code error "no data section found"
+} ;#END writePngComment
 
+# processPngComment
+##called by resizePhoto, after scanning canv pic for colour area & brightness
+proc processPngComment {$file $x $y $tint} {
+  set text "$x $y $tint"
+  writePngComment $file $text
+  return 0
 }
-

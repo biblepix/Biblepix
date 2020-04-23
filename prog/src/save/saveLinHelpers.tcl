@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1apr20
+# Updated: 22apr20 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -1091,9 +1091,9 @@ proc setLinDesktopPicturesDir {} {
   
   #General Ima(ge) | Bil(der) etc.
   } elseif {
-      ![catch {glob -directory $HOME Im*} result] ||
-      ![catch {glob -directory $HOME Pict*} result] ||
-      ![catch {glob -directory $HOME Bil*} result] } {
+      ![catch {glob -type d -directory $HOME Im*} result] ||
+      ![catch {glob -type d -directory $HOME Pict*} result] ||
+      ![catch {glob -type d -directory $HOME Bil*} result] } {
       
     set DesktopPicturesDir $result
       
