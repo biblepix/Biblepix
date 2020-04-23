@@ -1,13 +1,18 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 22apr20 pv
+# Updated 23apr20 pv
 
 proc openResizeWindow {} {
+
+  #Create toplevel window w/canvas & pic
   global fontsize
   toplevel .resizePhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600
+  image create photo resizeCanvPic
+  set c [canvas .resizePhoto.resizeCanv -bg lightblue]
+  $c create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
 
-  #Check which original to use
+  #Check which original pic to use
   if [catch {image inuse rotateOrigPic}] {
     set origPic photosOrigPic
   } else {
@@ -18,8 +23,6 @@ proc openResizeWindow {} {
   set screenY [winfo screenheight .]
   set imgX [image width $origPic]
   set imgY [image height $origPic]
-
-  image create photo resizeCanvPic
 
   #Display original pic in largest possible size
   set maxX [expr $screenX - 200]
@@ -36,31 +39,15 @@ proc openResizeWindow {} {
   resizeCanvPic copy $origPic -subsample $reductionFactor
   set canvImgX [image width resizeCanvPic]
   set canvImgY [image height resizeCanvPic]
+  
+       
+  # P h a s e  1  (Resizing window)
 
-  #Create canvas with pic
-  set c [canvas .resizePhoto.resizeCanv -bg lightblue]
-  $c create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
- 
- # $c conf -width $canvImgX -height $canvImgY
- 
-  #set canvX $canvImgX
-  #set canvY $canvImgY
-  
-  #puts "$canvX $canvImgX"
-  #puts "$canvY $canvImgY"
-  
-  
-  
-  
   #Create title & buttons
   set cancelButton {set ::Modal.Result "Cancelled"}
-      
-  #1. Schritt
   
-  proc reposTextWin {c} {}
   ttk::button .resizePhoto.resizeConfirmBtn -text Ok
   ttk::button .resizePhoto.resizeCancelBtn -textvar ::cancel -command $cancelButton
-    
   pack .resizePhoto.resizeConfirmBtn .resizePhoto.resizeCancelBtn ;#will be repacked into canv window
 
   set screenFactor [expr $screenX. / $screenY]
@@ -68,26 +55,29 @@ proc openResizeWindow {} {
   
   #do Höhe schneiden - TODO this sucks when pic is correct size!!!!!!!!!!!!!!!!!!!
   if {$imgXYFactor < $screenFactor} {
-#puts Höheschneiden
+
     set canvCutX2 $canvImgX
     set canvCutY2 [expr round($canvImgX / $screenFactor)]
 
   } else {
-#puts Tiefeschneiden
+
     set canvCutX2 [expr round($canvImgY / $screenFactor)]
     set canvCutY2 $canvImgY
   }
 
+
   #Set cutting coordinates & configure canvas
-  $c conf -width $canvCutX2 -height $canvCutY2 -bg lightblue -bd 0
+  $c conf -width $canvCutX2 -height $canvCutY2
   $c create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill yellow -text "$::movePicToResize" -tags text
   $c create window [expr $canvCutX2 - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn -tag okbtn
   $c create window [expr $canvCutX2 - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn -tag delbtn
     
   pack $c -side top -fill none
   
-  set canvX [winfo width $c]
-  set canvY [winfo height $c]
+  set canvX [lindex [$c conf -width ] end]
+  set canvY [lindex [$c conf -height] end]
+  
+  
   
 puts "$canvX $canvImgX $canvY $canvImgY"
   #Establish calculation factor for: a) font size of Canvas pic & 
@@ -111,91 +101,112 @@ puts "$canvX $canvImgX $canvY $canvImgY"
   $c bind mv <B1-Motion> [list dragCanvasItem %W img %X %Y]
   
   
- #TODO  close window later!
-#  Show.Modal .resizePhoto -destroy 1 -onclose $cancelButton
+  # P h a s e  2  (text repositioning Window)
+  
+  .resizePhoto.resizeConfirmBtn conf -command "reposTextWin $c $screen2canvFactor"
+  bind .resizePhoto <Return> .resizePhoto.resizeConfirmBtn
+    
+  #TODO Joel help: close window later!
   Show.Modal .resizePhoto -destroy 0 -onclose $cancelButton
-  
-  
-  proc reposTextWin {c screen2canvFactor} {
-    global fontsize
-  
-    pack forget $c 
-    pack forget .resizePhoto.resizeCancelBtn
-    label .resizePhoto.verschiebenTxtL -font {TkHeaderFont 20 bold} -fg red -bg beige -pady 20 -bd 2 -relief sunken
-    .resizePhoto.verschiebenTxtL conf -text "Verschieben Sie den Text nach Wunsch und drücken Sie OK zum Speichern der Position!"
-    pack .resizePhoto.verschiebenTxtL -fill x 
-    
-    $c dtag img mv
-    $c delete text
-    $c delete delbtn
-    pack $c
-        
-    createMovingTextBox $c
-    font conf movingTextFont -size [expr round($fontsize / $screen2canvFactor)]
-    $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}  
-  
-    .resizePhoto.resizeConfirmBtn conf -text Ok -command {
-        #TODO:  try threading? 
-        # image create photoCanvPicSmall 
-        # photoCanvPicSmall copy photoCanvPic -subsample 2
-        
-        #  set x.y [scanColourArea photoCanvPicSmall]
-        
-        #TODO compute real x + y * factor * small...
-        #  set tint [computeAvBrightness photoCanvPicSmall]
-        
-        #TODO get filename
-        #  processPngComment $file $x $y $tint
-    
-      destroy .resizePhoto
-    } 
-   
-    set ::Modal.Result [doResize $c]
-  
-  }
-  set okButton [reposTextWin $c $screen2canvFactor]
-  
-  bind .resizePhoto <Return> $okButton
-  .resizePhoto.resizeConfirmBtn conf -command $okButton
-  
-  Show.Modal .resizePhoto -destroy 1 -onclose $cancelButton
-}
 
+} ;#END openResizeWindow
 
+proc reposTextWin {c screen2canvFactor} {
+  global fontsize
 
-
-#wird bei OK in resizeWin ZUERST aktiviert
-#c = $c
-proc copyCutPic {c} {
-  global fontcolor
-
-  lassign [$c bbox img] x1 y1 x2 y2
-  textposCanvPic blank
-  textposCanvPic copy resizeCanvPic -from $x1 $y1 $x2 $y2 -subsample 2
-
+  pack forget $c 
+  pack forget .resizePhoto.resizeCancelBtn
+  label .resizePhoto.verschiebenTxtL -font {TkHeaderFont 20 bold} -fg red -bg beige -pady 20 -bd 2 -relief sunken
+  .resizePhoto.verschiebenTxtL conf -text "Verschieben Sie den Text nach Wunsch und drücken Sie OK zum Speichern der Position!"
+  pack .resizePhoto.verschiebenTxtL -fill x 
+  
+  $c dtag img mv
+  $c delete text
+  $c delete delbtn
+  pack $c
+      
   createMovingTextBox $c
-  $c bind mv <1> {
-     set ::x %X
-     set ::y %Y
-  }
-#  button .reposOKBtn -text "Abspeichern" -command {}
-#  pack .reposOKBtn
-#  $c create window 300 500 -window .reposOKBtn 
+  font conf movingTextFont -size [expr round($fontsize / $screen2canvFactor)]
+  $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}  
 
-#TODO move
-  tk_messageBox -type ok -message "Sie haben 5 Sekunden, um die vorgeschlagene Textposition zu verändern.\nDanach werden die Daten automatisch gespeichert."
+  .resizePhoto.resizeConfirmBtn conf -text Ok -command "processPngInfo $c" 
   
-  set sec 0
-  while {$sec < 6000} {
-    after 700
-    $c itemconf txt -fill red
-    after 300
-    $c itemconf txt -fill $fontcolor
-    incr sec 1000
-  }
 
-  annotatePng cutOrigPic 
+ 
+  set ::Modal.Result [doResize $c]
+  
 }
+
+# processPngInfo
+##called by open resizeConfBtn (Phase 2)
+proc processPngInfo {c} {
+  #TODO include new vars in Globals:
+  set AnnotatePng $::picdir/annotatePng.tcl
+  set ScanColourArea $::picdir/scanColourArea.tcl
+  source $AnnotatePng   
+  source $ScanColourArea
+  
+  lassign [$c bbox img] imgX1 imgY1 imgX2 imgY2
+  #set canvX1 0
+  #set canvY1 0
+  set canvX [lindex [$c conf -width] end]
+  set canvY [lindex [$c conf -height] end]
+  
+  
+  #TODO move this to main proc!
+  #Bildausschnitt berechnen
+    
+  ##Set Idealzustand: Bild == Canvas 
+  set cutX1 0
+  set cutY1 0
+  set cutX2 $canvX
+  set cutY2 $canvY
+  
+  ##Breite ungleich
+  if {$imgX2 > $canvX} {
+    ##nach links verschoben
+    if {$imgX1 < 0} {
+      set cutX1 [expr $imgX1 - ($imgX1 + $imgX1) ]
+      set cutX2 [expr $imgX2 - $cutX1]
+    ##nach rechts verschoben
+    } else {
+      set cutX1 0
+      set cutX2 $canvX
+    }
+    
+  ##Höhe ungleich
+  } elseif {$imgY2 > $canvY} {
+    ##nach oben verschoben
+    if {$imgY1 < 0} {
+      set cutY1 [expr $imgY1 - ($imgY1 + $imgY1) ]
+      set cutY2 [expr $imgY2 - $cutY1]
+    ##nach unten verschoben
+    } else {
+      set cutY1 0
+      set cutY2 $canvY
+    }
+  
+  ##Alles gleich      
+  } else {
+    puts "No need for resizing."
+    Return 1
+  }
+  
+  #Bild verkleinern zum raschen Berechnen
+  image create photo resizeCanvSmallPic      
+  resizeCanvSmallPic copy resizeCanvPic -subsample 2 -from $cutX1 $cutY1 $cutX2 $cutY2
+  
+  #  set x.y [scanColourArea photoCanvPicSmall]
+  #TODO compute real x1 + y1 * (factor + 1) (for smallpic)
+  
+  #  set tint [computeAvBrightness photoCanvPicSmall]
+  
+  #TODO get filename
+  #  processPngComment $file $x $y $tint
+
+  destroy .resizePhoto
+}
+
 
 namespace eval ResizeHandler {
   namespace export QueryResize
