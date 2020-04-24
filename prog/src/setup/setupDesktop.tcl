@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated Easter 21apr20 pv
+# Updated 24apr20 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -141,9 +141,10 @@ label .textposTxt -textvar textpos -font TkCaptionFont
 #2. Create TextPos Canvas
 set textPosFactor 3 ;#Verkleinerungsfaktor gegenüber real font size
 
-image create photo textposOrigPic -file [getRandomPhoto]
+#TODO WHERE is photosOrigPic? - clarify names!!!
+image create photo photosOrigPic -file [getRandomPhoto]
 image create photo textposCanvPic
-textposCanvPic copy textposOrigPic -subsample $textPosFactor -shrink
+textposCanvPic copy photosOrigPic -subsample $textPosFactor -shrink
 set screeny [winfo screenheight .]
 .textposCanv conf -width [image width textposCanvPic] -height [expr $screeny/$textPosFactor]
 .textposCanv create image 0 0 -image textposCanvPic -anchor nw

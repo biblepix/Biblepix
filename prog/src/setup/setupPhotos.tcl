@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 17apr20 pv
+# Updated 24apr20 pv
 
 set fileJList ""
 
@@ -55,9 +55,7 @@ button .addBtn -textvar f6.add -bg lightgreen -activebackground gold -command {a
 button .delBtn -textvar f6.del -bg orange -activebackground red -command {delPic}
 
 #TODO Testing
-ttk::button .rotateBtn -textvar rotatePic -command "source $setupdir/setupRotate.tcl"
-set rotatePic "Bild drehen"
-
-#pack .rotateBtn -in .photosF.mainf.right.unten -side right
+ttk::button .rotateBtn -textvar rotatepic -command "source $setupdir/setupRotate.tcl"
+set rotatepic "Bild drehen"
 
 set fileJList [doCollect .imgCanvas]

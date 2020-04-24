@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21apr20 pv
+# Updated: 24apr20 pv
 
 source $JList
 
@@ -388,15 +388,18 @@ proc addPic {} {
     return
   }
 
+  #A) wrong size: open resizeWindow > reposWindow
   if [needsResize] {
     source $::SetupResizePhoto
-    openResizeWindow
+    openResizeWindow $targetPicPath
+    
+  #B) right size: save & open reposWindow for PNG processing 
   } else {
+  
     photosOrigPic write $targetPicPath -format PNG
+    openReposWindow $targetPicPath
     NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
   }
-  
-#addRotate
   
 } ;#END addPic
 

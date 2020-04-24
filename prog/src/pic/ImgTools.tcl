@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22apr20 pv
+# Updated: 24apr20 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -198,16 +198,14 @@ proc processResize {cutImg} {
   NewsHandler::QueryNews "$::resizingPic" orange
 
 
-#TODO vorläufig bleibt's in cutOrigPic - no saving!  
+  #Save finalImage, copy to cutOrigPic for further processing
   set finalImage [resizePic $cutImg $screenX $screenY]
   image create photo cutOrigPic
-  #resizePic $cutImg $screenX $screenY cutOrigPic
-
+  cutOrigPic copy $finalImage
+  
   set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
   $finalImage write $targetPicPath -format PNG
-
-#  image delete $cutImg
-#image delete $finalImage
+  image delete $finalImage
 
   NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
 
