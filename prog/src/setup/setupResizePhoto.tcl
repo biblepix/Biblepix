@@ -187,7 +187,8 @@ proc processPngInfo {c targetPicPath} {
   
   #TODO move this to main proc?
   #Bildausschnitt berechnen
-    
+  #TODO nicht nötig, wenn wir cutOrigPic nehmen und verkleinern (s.u.)!
+proc redundant? {} { 
   ##Set Idealzustand: Bild == Canvas 
   set cutX1 0
   set cutY1 0
@@ -223,18 +224,24 @@ proc processPngInfo {c targetPicPath} {
     puts "No need for resizing."
     Return 1
   }
-  
+}
   #Bild verkleinern zum raschen Berechnen
   image create photo resizeCanvSmallPic      
-  
-  #TODO which option? - if B works, we don't need cutOrigPic from doResize!
   resizeCanvSmallPic copy cutOrigPic -subsample [incr ::reductionFactor] 
   #OR?
  # b) resizeCanvSmallPic copy resizeCanvPic -subsample 2 -from $cutX1 $cutY1 $cutX2 $cutY2
 
-  # 1. TODO compute real x1 + y1 * (factor + 1) (for smallpic)  
-  #  set x.y [scanColourArea photoCanvPicSmall]
-  
+  # 1. Scan colour area , compute real x1 + y1 * reductionFactor
+  set textPos [scanColourArea photoCanvPicSmall]
+  if {!$textPos} {
+    set x $marginleft
+    set y $margintop          
+  } else {
+    lassign textPos x y
+    set x [expr $x * $::reductionFactor]
+    set y [expr $y * $::reductionFactor]
+  }
+    
   # 2. set tint [computeAvBrightness resizeCanvSmallPic]
    
   # 3. writePngComment $targetPicPath $x $y $tint
