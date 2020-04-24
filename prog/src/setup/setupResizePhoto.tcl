@@ -34,7 +34,8 @@ proc openResizeWindow {targetPicPath} {
     set imgX [expr $imgX / 2]
     set imgY [expr $imgY / 2]
   }
-
+  set ::reductionFactor $reductionFactor
+  
   #Copy original pic to canvas
   resizeCanvPic copy $origPic -subsample $reductionFactor
   set canvImgX [image width resizeCanvPic]
@@ -227,14 +228,14 @@ proc processPngInfo {c targetPicPath} {
   image create photo resizeCanvSmallPic      
   
   #TODO which option? - if B works, we don't need cutOrigPic from doResize!
-# a)  resizeCanvSmallPic copy cutOrigPic -subsample [expr ?$factor + 1] 
+  resizeCanvSmallPic copy cutOrigPic -subsample [incr ::reductionFactor] 
   #OR?
  # b) resizeCanvSmallPic copy resizeCanvPic -subsample 2 -from $cutX1 $cutY1 $cutX2 $cutY2
 
   # 1. TODO compute real x1 + y1 * (factor + 1) (for smallpic)  
   #  set x.y [scanColourArea photoCanvPicSmall]
   
-  # 2. set tint [computeAvBrightness photoCanvPicSmall]
+  # 2. set tint [computeAvBrightness resizeCanvSmallPic]
    
   # 3. writePngComment $targetPicPath $x $y $tint
 
