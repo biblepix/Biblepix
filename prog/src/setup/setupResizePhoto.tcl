@@ -232,6 +232,8 @@ proc redundant? {} {
  # b) resizeCanvSmallPic copy resizeCanvPic -subsample 2 -from $cutX1 $cutY1 $cutX2 $cutY2
 
   # 1. Scan colour area , compute real x1 + y1 * reductionFactor
+    source $::picdir/scanColourArea.tcl
+
   set textPos [scanColourArea photoCanvPicSmall]
   if {!$textPos} {
     set x $marginleft
@@ -249,6 +251,7 @@ proc redundant? {} {
   #   ? NewsHandler::QueryNews "[copiedPicMsg $targetPicPath]" lightblue
  
   destroy .resizePhoto .reposPhoto
+    
     
 } ;#END processPngInfo
 

@@ -34,94 +34,127 @@ namespace eval colour {
     set begY $margin
     set endY [expr $imgY - $margin]
     set prevxPos [expr $begX - 1]    
-    #min.width of area should be ¼ of pic
+    
+    #min.width of area should be ¼ of pic -TODO Move to evaluation proc!
     set xMinArea [expr $imgX / 4]
     
     #pretend prevC array & prevX for 1st run & LNL (list number per row)
     array set prevCArr {r 0 g 0 b 0}
-    
-    #Run through rows of limited height area
-    for {set yPos $begY} {$yPos < $endY} {incr yPos} {
-    
-        #set first time prevC (=identical with curC)
-        set c [$img get $begX $begY]
-        set r [lindex $c 0]
-        set g [lindex $c 1]
-        set b [lindex $c 2]
-        array set prevC "r $r g $g b $b"
+#    lassign [$img get $xPos $yPos] r g b
+#    array set prevCArr "r $r g $g b $b"
         
-      #Run through pixels of limited row width
+    #Run through rows of row height
+    for {set yPos $begY} {$yPos < $endY} {incr yPos} {
+        
+      #Run through pixels of row width
       for {set xPos $begX} {$xPos < $endX} {incr xPos} {
       
         #Get current rgb
-        set c [$img get $xPos $yPos]
-        set r [lindex $c 0]
-        set g [lindex $c 1]
-        set b [lindex $c 2]
+        lassign [$img get $xPos $yPos] r g b
         array set curCArr "r $r g $g b $b"
   
         #Compare current rgb with previous      
-        set maxr [expr max($curC(r),$prevC(r))]
-        set minr [expr min($curC(r),$prevC(r))]  
-        set maxg [expr max($curC(g),$prevC(g))]
-        set ming [expr min($curC(g),$prevC(g))]
-        set maxb [expr max($curC(b),$prevC(b))]
-        set minb [expr min($curC(b),$prevC(b))]
+        set maxr [expr max($curCArr(r) , $prevCArr(r))]
+        set minr [expr min($curCArr(r) , $prevCArr(r))]
+        set maxg [expr max($curCArr(g) , $prevCArr(g))]
+        set ming [expr min($curCArr(g) , $prevCArr(g))]
+        set maxb [expr max($curCArr(b) , $prevCArr(b))]
+        set minb [expr min($curCArr(b) , $prevCArr(b))]
       
-       #Add consecutive pixelPositions to Matchlist(s) per row  
+        #Add consecutive pixelPositions to 1 matchlist per row  
         set diffr [expr $maxr - $minr]
         set diffg [expr $maxg - $ming]
         set diffb [expr $maxb - $minb]
+        array set prevCArr "r $r g $g b $b"   
+        set prevxPos $xPos   
         
-      if {
+        #add xPos to 1 matchlist per row if matching 
+        if {
+          
+          $diffr < $colourTol &&
+          $diffg < $colourTol &&
+          $diffb < $colourTol
+                   
+        } {
+     
+          lappend [namespace current]::$yPos $xPos
         
-        $diffr < $colourTol &&
-        $diffg < $colourTol &&
-        $diffb < $colourTol
-                 
-      } {
-      
-        lappend [namespace current]::matchlist${yPos} $xPos
+        #skip non-matching
+        } else {
         
-#        lappend brightL [calcMean $r $g $b]
-    
-        set prevxPos $xPos       
-        array set prevCArr "r $r g $g b $b"
-
-      #skip non-matching
-      } else {
-      
-      #  lappend [namespace current]::matchlist${yPos} .
-
-      } ;#End if match 
+          puts "$xPos not matching"
+        
+        } ;#End if match 
             
  
        
-          #Eliminate too short lists
-#          if {[llength rowMatchList${matchlistNo}] < $xMinArea} {
-#          
-#            puts "zu schmal"
-##            unset rowMatchList${ML}
-##    continue      
-#          }
-
- #       } ;#End matchList loop
+      #Eliminate too short lists - TODO Moved to evaluation prog
                     
                     
       } ;#END x loop
       
-      #Append brightness code: N(ormal) / L(ight) / D(ark) at end of each matchrow
-      set brightCode [setBrightCode prevCArr]
-      append [namespace current]::matchlist${yPos} $brightCode
+      
+    #Append brightness code: N(ormal) / L(ight) / D(ark) at end of each matchrow
+    if [array exists prevCArr] {
+      set brightCode [setBrightnessCode prevCArr]
+      lappend [namespace current]::$yPos $brightCode
+    }   
+    
+    #Testing
+    
+puts $[namespace current]::$yPos
+
         
     } ;#END y loop
      
   } ;# END scanColourArea
 
-
 } ;#END ::colour namespace
 
+# evalRowlist
+##scan xPos's of a pixel row for consecutive areas & ... 
+proc evalRowlist {rowNo} {
+  set prev [expr [lindex $rowNo 0] - 1]
+  set minwidth ...
+  
+  proc scan {begPos} {
+    while {$e == [incr prev]} {
+      puts $e
+      #do what?
+      lappend $e curL
+    }
+  
+  }  
+  
+  set begPos [lindex $rowNo 0]
+  
+  foreach e $rowNo {
+    
+    scan $begPos
+    
+    set length [llength $curL]
+    
+    while {$length < $minwidth} {
+        
+      set begPos [lindex $curL 0]
+      set endPos [lindex $curL end]
+      array set ranges "$begPos $endPos"
+    
+      set newbegPos [lindex $curL end]
+    
+      unset curL
+      {runScanFrom newbegPos}  
+    }
+    
+    
+  }
+    
 
+  
+}
+
+
+#TODO to be replaced by above
 proc evalRowlists {img} {
 
   set minwidth [expr [image width $img] / 4]
@@ -139,6 +172,7 @@ proc evalRowlists {img} {
       incr prevX
     }
   }
+  
   
   
   #get consecutive area(s) per row & extract 1st + last pos

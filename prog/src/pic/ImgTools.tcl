@@ -16,12 +16,12 @@ if [catch {package require Img} ] {
 #  return [expr round($average)]
 #} #TODO ersetzt durch :
 
-calcAverage {list} {
+proc calcAverage {list} {
   foreach n $list {
     incr sum $n
   }
-  set mean [expr $sum / [llength $list]]
-  return $mean
+  set avg [expr $sum / [llength $list]]
+  return $avg
 }
 
 #called by setShade + setSun
@@ -114,8 +114,8 @@ return
 ##calculates average brightness of last pixel in matchrow
 ##Normalwert zwischen 70 und 100
 ##called by scanColourArea after each run of x loop
-proc setBrightCode {pixArr} {
-  upvar pixArr myArr
+proc setBrightnessCode {pixArr} {
+  upvar $pixArr myArr
   set avCol [expr ($myArr(r) + $myArr(g) + $myArr(b)) / 3]
   
   set brightCode "N"
@@ -124,6 +124,10 @@ proc setBrightCode {pixArr} {
   
   return $brightCode
 }
+
+
+
+
 
 # changeFontColour - TODO just testing
 #TODO: to be implemented in above! - MAY NOT BE NECESSARY!!!
