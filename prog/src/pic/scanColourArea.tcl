@@ -1,3 +1,5 @@
+# Updated 27apr20 pv
+
 #TODO move scanArea & scanRow to Setup>Photos>addPic !!!
 catch {namespace delete colour}
 
@@ -36,7 +38,7 @@ namespace eval colour {
     set xMinArea [expr $imgX / 4]
     
     #pretend prevC array & prevX for 1st run & LNL (list number per row)
-    array set prevC {r 0 g 0 b 0}
+    array set prevCArr {r 0 g 0 b 0}
     
     #Run through rows of limited height area
     for {set yPos $begY} {$yPos < $endY} {incr yPos} {
@@ -56,37 +58,21 @@ namespace eval colour {
         set r [lindex $c 0]
         set g [lindex $c 1]
         set b [lindex $c 2]
-        array set curC "r $r g $g b $b"
+        array set curCArr "r $r g $g b $b"
   
         #Compare current rgb with previous      
         set maxr [expr max($curC(r),$prevC(r))]
-        set minr [expr min($curC(r),$prevC(r))]
-        
-#  puts "maxr $maxr minr $minr"
-        
+        set minr [expr min($curC(r),$prevC(r))]  
         set maxg [expr max($curC(g),$prevC(g))]
         set ming [expr min($curC(g),$prevC(g))]
         set maxb [expr max($curC(b),$prevC(b))]
         set minb [expr min($curC(b),$prevC(b))]
       
-        #B) if equal OR within tolerance && consecutive, move coords to simL
-#          
-  puts "A $prevxPos $xPos"
-  
-     #Add consecutive pixelPositions to Matchlist(s) per row
-
-#     for {set matchlistNo 1} {$matchlistNo < 10} {incr matchlistNo} {
-       
-   
-#   if {$prevxPos == [expr $xPos - 1]} {
-
-   #puts GIRDIK2
-    set diffr [expr $maxr - $minr]
-    set diffg [expr $maxg - $ming]
-    set diffb [expr $maxb - $minb]
-    
-  puts "$diffr $diffg $diffb"
-    
+       #Add consecutive pixelPositions to Matchlist(s) per row  
+        set diffr [expr $maxr - $minr]
+        set diffg [expr $maxg - $ming]
+        set diffb [expr $maxb - $minb]
+        
       if {
         
         $diffr < $colourTol &&
@@ -96,18 +82,19 @@ namespace eval colour {
       } {
       
         lappend [namespace current]::matchlist${yPos} $xPos
+        
+#        lappend brightL [calcMean $r $g $b]
+    
+        set prevxPos $xPos       
+        array set prevCArr "r $r g $g b $b"
 
-  #  puts "GIRDIK3 $rowMatchList${matchlistNo}"
-      
-              set prevxPos $xPos       
-              array set prevC "r $r g $g b $b"
-
+      #skip non-matching
       } else {
       
-        lappend [namespace current]::matchlist${yPos} .
-      } ;#End if2 
+      #  lappend [namespace current]::matchlist${yPos} .
+
+      } ;#End if match 
             
-    #     } ;#End if1
  
        
           #Eliminate too short lists
@@ -122,6 +109,10 @@ namespace eval colour {
                     
                     
       } ;#END x loop
+      
+      #Append brightness code: N(ormal) / L(ight) / D(ark) at end of each matchrow
+      set brightCode [setBrightCode prevCArr]
+      append [namespace current]::matchlist${yPos} $brightCode
         
     } ;#END y loop
      
@@ -131,50 +122,81 @@ namespace eval colour {
 } ;#END ::colour namespace
 
 
-proc evalRowlists {} {
+proc evalRowlists {img} {
+
+  set minwidth [expr [image width $img] / 4]
   
-  set minXwidth [expr [image width resizeCanvSmallPic] / 4]
+  #TODO Move outside?
+  proc createRowmatch {matchNo} {
+  
+  #TODO get first matching after first run! -put into namespace!
+    if [info exists $endPos] {set prevX $endPos} {set prevX 0}
+
+    while { [expr $curX - $prevX] == 1} { 
+
+      lappend rowmatch${matchNo} [lindex $curlist $curX]
+      incr curX
+      incr prevX
+    }
+  }
+  
   
   #get consecutive area(s) per row & extract 1st + last pos
-  foreach Rowlist [lsort [info vars colour::matchlist*]] {
+  foreach rowlist [lsort [info vars colour::matchlist*]] {
+    
     #scan rowlist
-    set i 0
-    while {![string is digit] [lindex $rowlist $i]} {
-      incr i
-    }
-    set begPos [lindex $rowlist $i]
-    regexp {(matchlist)(.*)} $Rowlist {\2} yBeg
+    set prevX 0
+    set curX 1
     
-    while {[string is digit] [lindex $rowlist $i]} {
-      incr i
-    }
-    set endPos [lindex $rowlist $i]
-  
-  lappend [namespace current]::begPosList $begPos
-  lappend [namespace current]::endPosList $endPos
-  
-  
-  }
-  
-  if {[info exists [namespace current]::begPosList] &&
-      [info exists [namespace current]::endPosList] } {
-  
-    set avXBeg [mean [namespace current]::begPosList]
-    set avXEnd [mean [namespace current]::endPosList]
+    #only count consecutive pixels
+    #1st run
+    set matchNo 1
+    createRowmatch $matchNo
+        
+    #TODO Put into namespace!
+    set begPos [lindex $rowmatch 0]
+    set endPos [lindex $rowmatch end]
     
-    if {[expr $avXEnd - $avXBeg] > $minXwidth} {
+    #delete sequence if too short
+    #2nd and following run
+    while {[expr $endPos - $begPos] < $minwidth} {
+    
+      unset rowmatch${matchNo}
+      incr matchNo
+      createRowmatch $matchNo
+    }
+    
+   
+    #set begPos [lindex $rowlist $i]
+    if {info exists ?any_rowmatch?} {
+    
+    #TODO get rid of regexp, change name to digit!
+      regexp {(matchlist)(.*)} $rowlist {\2} yBeg
+    
+      lappend [namespace current]::begPosList $begPos
+      lappend [namespace current]::endPosList $endPos
+  
+    }
+  
+    if {[info exists [namespace current]::begPosList] &&
+        [info exists [namespace current]::endPosList] } {
+    
+      set avXBeg [mean [namespace current]::begPosList]
+      set avXEnd [mean [namespace current]::endPosList]
       
-      #Return text postion x + y
-      puts "Found suitable text area at $avXbeg $yBeg"
-      return "$avXBeg $yBeg"
-  
-    } else {
+      if {[expr $avXEnd - $avXBeg] > $minXwidth} {
+        
+        #Return text postion x + y
+        puts "Found suitable text area at $avXbeg $yBeg"
+        return "$avXBeg $yBeg"
     
-      puts "No suitable area found."
-      return 0
+      } else {
+      
+        puts "No suitable area found."
+        return 0
+      }
     }
-  }
-  
+  } ;#END foreach  
 } ;#END evalRowlists
 
 

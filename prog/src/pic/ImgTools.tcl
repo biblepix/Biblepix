@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24apr20 pv
+# Updated: 27apr20 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -10,10 +10,18 @@ if [catch {package require Img} ] {
   exit
 }
 
-proc mean {rgbList} {
-  namespace path {::tcl::mathop ::tcl::mathfunc}
-  set average [/ [+ {*}$rgbList] [double [llength $rgbList]]]
-  return [expr round($average)]
+#proc mean {rgbList} {
+#  namespace path {::tcl::mathop ::tcl::mathfunc}
+#  set average [/ [+ {*}$rgbList] [double [llength $rgbList]]]
+#  return [expr round($average)]
+#} #TODO ersetzt durch :
+
+calcAverage {list} {
+  foreach n $list {
+    incr sum $n
+  }
+  set mean [expr $sum / [llength $list]]
+  return $mean
 }
 
 #called by setShade + setSun
@@ -31,13 +39,17 @@ proc hex2rgb {hex} {
   return $rgb
 }
 
+
+
 # computeAvColours
 ##fetches R G B from a section & computes avarages into ::rgb namespace
-##called by BdfPrint - TODO: still testing!!!
+##called by BdfPrint - TODO: still testing!!! - not needed now, included in scanColourArea!
 proc computeAvColours {img} {
   global marginleft margintop RtL
   #no. of pixels to be skipped
   set skip 5
+
+  package require math
 
   set imgX [image width $img]
   set imgY [image height $img]
@@ -68,10 +80,10 @@ puts "Done computing pixels"
 return
 
   #Compute avarage colours
-  set avR [mean $R]
-  set avG [mean $G]
-  set avB [mean $B]
-  set avBri [mean [list $avR $avG $avB]]
+  set avR [calcAverage $R]
+  set avG [calcAverage $G]
+  set avB [calcAverage $B]
+  set avBri [calcAverage [list $avR $avG $avB]]
 #puts "avR $avR"
 #puts "avG $avG"
 #puts "avB $avB"
@@ -97,6 +109,21 @@ return
 
 } ;#END computeAvColours
 
+
+# setBrightCode - returns N(ormal) / L(ight) / D(ark)
+##calculates average brightness of last pixel in matchrow
+##Normalwert zwischen 70 und 100
+##called by scanColourArea after each run of x loop
+proc setBrightCode {pixArr} {
+  upvar pixArr myArr
+  set avCol [expr ($myArr(r) + $myArr(g) + $myArr(b)) / 3]
+  
+  set brightCode "N"
+  if {$avCol < 70}  {set brightCode "D"}
+  if {$avCol > 100} {set brightCode "L"}
+  
+  return $brightCode
+}
 
 # changeFontColour - TODO just testing
 #TODO: to be implemented in above! - MAY NOT BE NECESSARY!!!
