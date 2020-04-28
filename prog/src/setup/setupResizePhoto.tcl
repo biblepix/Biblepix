@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 24apr20 pv
+# Updated 28apr20 pv
 
 proc openResizeWindow {targetPicPath} {
 
@@ -101,7 +101,7 @@ proc openResizeWindow {targetPicPath} {
   
   # P h a s e  2  (text repositioning Window)
   
-  .resizePhoto.resizeConfirmBtn conf -command "reposText $c $screen2canvFactor $targetPicPath"
+  .resizePhoto.resizeConfirmBtn conf -command "setupReposTextWin $c $screen2canvFactor $targetPicPath"
   bind .resizePhoto <Return> .resizePhoto.resizeConfirmBtn
     
   #TODO Joel help: close window later!
@@ -126,21 +126,27 @@ proc openReposWindow {targetPicPath} {
     set origPic rotateOrigPic
   }
 
+  
 ...
 ?recalculate screen2canvasFactor?
 ...
 #Redraw window
-reposText $c $screen2canvFactor
+setupReposTextWin $c $screen2canvFactor $targetPicPath
 
 #process & save
 processPngInfo $c $targetPicPath
 
+
+#Redraw text & button
+$w.confirmBtn conf -state normal
+$w.moveTxtL conf -text "Verschieben Sie den Text nach Wunsch und drücken Sie OK zum Speichern der Position und Helligkeit."
+
 } ;#END openReposWindow
 
-# reposText
+# setupReposTextWin
 ##either redraws existing window or creates one 
 ##called by openResizeWindow & openReposWindow
-proc reposText {c screen2canvFactor targetPicPath} {
+proc setupReposTextWin {c screen2canvFactor targetPicPath} {
   global fontsize
 
   if {$c == ".resizePhoto.resizeCanv"} {
@@ -166,7 +172,10 @@ proc reposText {c screen2canvFactor targetPicPath} {
   $w.resizeConfirmBtn conf -text Ok -command "processPngInfo $c $targetPicPath" 
   
   set ::Modal.Result [doResize $c]  
-}
+  
+  
+
+} ;#END setupReposTextWin
 
 # processPngInfo
 ##called by open resizeConfBtn (Phase 2)
@@ -178,29 +187,92 @@ proc processPngInfo {c targetPicPath} {
   source $AnnotatePng   
   source $ScanColourArea
   
+  set w .reposPhoto
+  set canvPic [lindex [$c itemcget img -image] end]
+  set smallPic reposCanvSmallPic 
+  #Disable controls while reposCanvSmallPic is being processed
+  
+  $c itemconf mv -state disabled
+  $w.resizeConfirmBtn conf -state disabled
+  $w.moveTxtL conf -fg grey -font 18 -text "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..." 
+
+  #Bild verkleinern zum raschen Berechnen
+  image create photo $smallPic
+  #resizeCanvSmallPic copy cutOrigPic -subsample [incr ::reductionFactor] 
+  #OR?
+ # b) 
+  lassign [cutCanvasPic $c] x1 y1 x2 y2
+  $smallPic copy $canvPic -subsample 2 -from $x1 $y1 $x2 $y2 
+   
+  
+  # 1. Scan colour area , compute real x1 + y1 * reductionFactor
+  #source $::picdir/scanColourArea.tcl
+  
+  # lassign [scanColourArea $smallPic] x y tint
+
+  #reactivate button & text
+  after idle
+  $c itemconf mv -state normal
+  $w.resizeConfirmBtn conf -state normal
+  $w.moveTxtL conf -fg grey -font "TkHeaderFont 20 bold" -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position!" 
+  
+  if {!$x} {
+    set x $marginleft
+    set y $margintop          
+  } else {
+    lassign textPos x y
+    $c move text $x $y
+    
+  }
+    
+     
+  # 2. writePngComment $targetPicPath $x $y $tint
+  #TODO recompute correct x + y by using all factors!!!!    
+    set x [expr $x * $::reductionFactor]
+    set y [expr $y * $::reductionFactor]
+    
+  
+  #   ? NewsHandler::QueryNews "[copiedPicMsg $targetPicPath]" lightblue
+ 
+  destroy .resizePhoto .reposPhoto
+    
+    
+} ;#END processPngInfo
+
+
+# cutCanvPic
+##berechnet reposCanvPic Bildausschnitt für Kopieren nach reposCanvSmallPic
+##called by processPngInfo
+proc cutCanvasPic {c} { 
+  
   lassign [$c bbox img] imgX1 imgY1 imgX2 imgY2
-  #set canvX1 0
-  #set canvY1 0
-  set canvX [lindex [$c conf -width] end]
-  set canvY [lindex [$c conf -height] end]
   
-  
-  #TODO move this to main proc?
-  #Bildausschnitt berechnen
-  #TODO nicht nötig, wenn wir cutOrigPic nehmen und verkleinern (s.u.)!
-proc redundant? {} { 
-  ##Set Idealzustand: Bild == Canvas 
+  set canvX [winfo width $c]
+  set canvY [winfo height $c]
   set cutX1 0
   set cutY1 0
   set cutX2 $canvX
   set cutY2 $canvY
   
+  ##alles gleich
+  if {$imgX2 == $canvX &&
+      $imgY2 == $canvY
+  } {
+    puts "No need for resizing."
+    Return 0
+  }
+  
+#TODO Bildbreite ist um 2 px zu breit!!!
+
   ##Breite ungleich
   if {$imgX2 > $canvX} {
     ##nach links verschoben
     if {$imgX1 < 0} {
       set cutX1 [expr $imgX1 - ($imgX1 + $imgX1) ]
-      set cutX2 [expr $imgX2 - $cutX1]
+
+#      set cutX2 [expr $imgX2 - $cutX1]
+set cutX2 [expr $canvX + $cutX2]
+
     ##nach rechts verschoben
     } else {
       set cutX1 0
@@ -212,49 +284,21 @@ proc redundant? {} {
     ##nach oben verschoben
     if {$imgY1 < 0} {
       set cutY1 [expr $imgY1 - ($imgY1 + $imgY1) ]
-      set cutY2 [expr $imgY2 - $cutY1]
+#      set cutY2 [expr $imgY2 - $cutY1]
+set cutY2 [expr $canvY + $cutY1]
+
     ##nach unten verschoben
     } else {
       set cutY1 0
       set cutY2 $canvY
     }
   
-  ##Alles gleich      
-  } else {
-    puts "No need for resizing."
-    Return 1
   }
-}
-  #Bild verkleinern zum raschen Berechnen
-  image create photo resizeCanvSmallPic      
-  resizeCanvSmallPic copy cutOrigPic -subsample [incr ::reductionFactor] 
-  #OR?
- # b) resizeCanvSmallPic copy resizeCanvPic -subsample 2 -from $cutX1 $cutY1 $cutX2 $cutY2
-
-  # 1. Scan colour area , compute real x1 + y1 * reductionFactor
-    source $::picdir/scanColourArea.tcl
-
-  set textPos [scanColourArea photoCanvPicSmall]
-  if {!$textPos} {
-    set x $marginleft
-    set y $margintop          
-  } else {
-    lassign textPos x y
-    set x [expr $x * $::reductionFactor]
-    set y [expr $y * $::reductionFactor]
-  }
-    
-  # 2. set tint [computeAvBrightness resizeCanvSmallPic]
-   
-  # 3. writePngComment $targetPicPath $x $y $tint
-
-  #   ? NewsHandler::QueryNews "[copiedPicMsg $targetPicPath]" lightblue
- 
-  destroy .resizePhoto .reposPhoto
-    
-    
-} ;#END processPngInfo
-
+  
+  return "$cutX1 $cutY1 $cutX2 $cutY2"
+  
+  
+} ;#END cutCanvPic
 
 namespace eval ResizeHandler {
   namespace export QueryResize

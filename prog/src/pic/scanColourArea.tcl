@@ -111,26 +111,27 @@ puts $[namespace current]::$yPos
 
 } ;#END ::colour namespace
 
+
 # evalRowlist
 ##scan xPos's of a pixel row for consecutive areas & ... 
-proc evalRowlist {rowNo} {
+proc evalXposRowlist {rowNo} {
+  
   set prev [expr [lindex $rowNo 0] - 1]
-  set minwidth ...
+  set minwidth [expr [image width reposCanvSmallPic] / 4]
+  set xPos [lindex $rowNo 0]
   
-  proc scan {begPos} {
-    while {$e == [incr prev]} {
-      puts $e
+  proc scanRow {xPos} {  
+    while {$xPos == [incr prev]} {
+      puts $xPos
       #do what?
-      lappend $e curL
+      lappend $xPos curL
     }
+  }
   
-  }  
   
-  set begPos [lindex $rowNo 0]
-  
-  foreach e $rowNo {
+  foreach xPos $rowNo {
     
-    scan $begPos
+    scanRow $xPos
     
     set length [llength $curL]
     
@@ -146,12 +147,13 @@ proc evalRowlist {rowNo} {
       {runScanFrom newbegPos}  
     }
     
-    
   }
     
+} ;#END evalRowlist
 
-  
-}
+##evaluate matching pix ranges from 'ranges' array
+##called by evalRowlist?
+proc ?evalRanges? {} {}
 
 
 #TODO to be replaced by above
@@ -231,6 +233,8 @@ proc evalRowlists {img} {
       }
     }
   } ;#END foreach  
+  
+  #TODO who gives out tint for processPngInfo?
 } ;#END evalRowlists
 
 
