@@ -246,9 +246,10 @@ proc processPngInfo {c targetPicPath} {
 proc cutCanvasPic {c} { 
   
   lassign [$c bbox img] imgX1 imgY1 imgX2 imgY2
-  
-  set canvX [winfo width $c]
-  set canvY [winfo height $c]
+
+  set canvX [lindex [$c conf -width] end]
+  set canvY [lindex [$c conf -height] end]
+
   set cutX1 0
   set cutY1 0
   set cutX2 $canvX
@@ -262,16 +263,14 @@ proc cutCanvasPic {c} {
     Return 0
   }
   
-#TODO Bildbreite ist um 2 px zu breit!!!
 
   ##Breite ungleich
   if {$imgX2 > $canvX} {
-    ##nach links verschoben
+  
+    puts "Breite verschieben"
     if {$imgX1 < 0} {
       set cutX1 [expr $imgX1 - ($imgX1 + $imgX1) ]
-
-#      set cutX2 [expr $imgX2 - $cutX1]
-set cutX2 [expr $canvX + $cutX2]
+      set cutX2 [expr $canvX + $cutX1]
 
     ##nach rechts verschoben
     } else {
@@ -281,11 +280,11 @@ set cutX2 [expr $canvX + $cutX2]
     
   ##Höhe ungleich
   } elseif {$imgY2 > $canvY} {
-    ##nach oben verschoben
+  
+    puts "Höhe verschieben"
     if {$imgY1 < 0} {
       set cutY1 [expr $imgY1 - ($imgY1 + $imgY1) ]
-#      set cutY2 [expr $imgY2 - $cutY1]
-set cutY2 [expr $canvY + $cutY1]
+      set cutY2 [expr $canvY + $cutY1]
 
     ##nach unten verschoben
     } else {
