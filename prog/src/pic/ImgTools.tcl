@@ -110,19 +110,19 @@ return
 } ;#END computeAvColours
 
 
-# setBrightCode - returns N(ormal) / L(ight) / D(ark)
-##calculates average brightness of last pixel in matchrow
-##Normalwert zwischen 70 und 100
+# setLumCode - returns 1(dark) / 2(normal) / 3(light)
+##calculates average luminance of a pixel colour array
+##TODO Normalwert zwischen 70 und 100 -wo festlegen?
 ##called by scanColourArea after each run of x loop
-proc setBrightnessCode {pixArr} {
+proc setLumCode {pixArr} {
   upvar $pixArr myArr
   set avCol [expr ($myArr(r) + $myArr(g) + $myArr(b)) / 3]
   
-  set brightCode "N"
-  if {$avCol < 70}  {set brightCode "D"}
-  if {$avCol > 100} {set brightCode "L"}
+  set lumCode "2"
+  if {$avCol < 70}  {set lumCode "1"}
+  if {$avCol > 100} {set lumCode "3"}
   
-  return $brightCode
+  return $lumCode
 }
 
 

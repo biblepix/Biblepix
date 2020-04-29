@@ -1,25 +1,12 @@
-# Updated 27apr20 pv
+# Updated 29apr20 pv
 
 #TODO move scanArea & scanRow to Setup>Photos>addPic !!!
 catch {namespace delete colour}
 
 namespace eval colour {
 
-
-
-  # scanArea - SCHON EINGEBAUT!
   ##scans image by desired height
   ##runs scanRow for each line
-#  proc scanArea {img imgY} {
-#    for {set y 1} {$y < $imgY} {incr y} {
-#      scanRow $img $y
-# puts "Scanning $y..."
-#    }
-#  }
-  
-  # scanRows
-  ##scans ...
-  ##called by scanArea
   proc scanColourArea {img} {
 
   #TODO? furnish these from outside? 
@@ -40,8 +27,6 @@ namespace eval colour {
     
     #pretend prevC array & prevX for 1st run & LNL (list number per row)
     array set prevCArr {r 0 g 0 b 0}
-#    lassign [$img get $xPos $yPos] r g b
-#    array set prevCArr "r $r g $g b $b"
         
     #Run through rows of row height
     for {set yPos $begY} {$yPos < $endY} {incr yPos} {
@@ -65,43 +50,33 @@ namespace eval colour {
         set diffr [expr $maxr - $minr]
         set diffg [expr $maxg - $ming]
         set diffb [expr $maxb - $minb]
+ 
         array set prevCArr "r $r g $g b $b"   
-        set prevxPos $xPos   
-        
-        #add xPos to 1 matchlist per row if matching 
+        set lumCode [setLumCode prevCArr]
+
+        set prevxPos $xPos 
+                                  
+        #add 0 in front of xPos if not matching
         if {
           
-          $diffr < $colourTol &&
-          $diffg < $colourTol &&
-          $diffb < $colourTol
-                   
+          $diffr > $colourTol ||
+          $diffg > $colourTol ||
+          $diffb > $colourTol
+                 
         } {
-     
-          lappend [namespace current]::$yPos $xPos
+      
+          set xPos 0$xPos
+         
+        }
         
-        #skip non-matching
-        } else {
+        #add xPos + luminance to match array    
+        array set [namespace current]::$yPos "$xPos $lumCode"        
         
-          puts "$xPos not matching"
-        
-        } ;#End if match 
-            
- 
-       
-      #Eliminate too short lists - TODO Moved to evaluation prog
-                    
+        #strip xPos of preceding 0 for next run
+        set xPos [string trimleft $xPos 0]
                     
       } ;#END x loop
       
-      
-    #Append brightness code: N(ormal) / L(ight) / D(ark) at end of each matchrow
-    if [array exists prevCArr] {
-      set brightCode [setBrightnessCode prevCArr]
-      lappend [namespace current]::$yPos $brightCode
-    }   
-    
-    #Testing
-    
 puts $[namespace current]::$yPos
 
         
@@ -109,51 +84,81 @@ puts $[namespace current]::$yPos
      
   } ;# END scanColourArea
 
+
+  # evalRowlist
+  ##scan xPos's of a pixel row for consecutive areas & ... 
+  proc evalRowlist {img rowNo} {
+    
+    #A). skip 0 digit positions for colour maches
+    foreach e [lsort -dictionary $rowNo] {
+      if {[string index $e 0] != 0} {
+        puts $e
+        doWhateverNeedsTOBEdone
+      }
+    }
+   
+    
+    set prev [expr [lindex $rowNo 0] - 1]
+    set minwidth [expr [image width $img] / 4]
+    set xPos [lindex $rowNo 0]
+    
+    proc scanRow {xPos} {  
+      while {$xPos == [incr prev]} {
+        puts $xPos
+        #do what?
+        lappend $xPos curL
+      }
+    }
+    
+    proc getAvBrightness {} {
+#      regexp -all -inline {[DNB]} $colour::${rowNo}
+    
+    }
+    
+    foreach xPos $rowNo {
+      
+      scanRow $xPos
+      
+      set length [llength $curL]
+      
+      while {$length < $minwidth} {
+          
+        set begPos [lindex $curL 0]
+        set endPos [lindex $curL end]
+        array set ranges "$begPos $endPos"
+      
+        set newbegPos [lindex $curL end]
+      
+        unset curL
+        {runScanFrom newbegPos}  
+      }
+      
+    }
+      
+  } ;#END evalRowlist
+
+  ##evaluate matching pix ranges from 'ranges' array
+  ##called by evalRowlist?
+  proc ?evalRanges? {} {
+
+#TODO how to collect D B N values - change back to numbers instead????
+    #B). collect av colour for $marginleft/$marginright area
+    
+    array get colour::$topmargin $leftmargin
+    array get colour::$topmargin $leftmargin+1 usw.
+    
+    array get colour::$topmargin+1 usw.
+
+
+  }
+
 } ;#END ::colour namespace
 
 
-# evalRowlist
-##scan xPos's of a pixel row for consecutive areas & ... 
-proc evalXposRowlist {rowNo} {
-  
-  set prev [expr [lindex $rowNo 0] - 1]
-  set minwidth [expr [image width reposCanvSmallPic] / 4]
-  set xPos [lindex $rowNo 0]
-  
-  proc scanRow {xPos} {  
-    while {$xPos == [incr prev]} {
-      puts $xPos
-      #do what?
-      lappend $xPos curL
-    }
-  }
-  
-  
-  foreach xPos $rowNo {
-    
-    scanRow $xPos
-    
-    set length [llength $curL]
-    
-    while {$length < $minwidth} {
-        
-      set begPos [lindex $curL 0]
-      set endPos [lindex $curL end]
-      array set ranges "$begPos $endPos"
-    
-      set newbegPos [lindex $curL end]
-    
-      unset curL
-      {runScanFrom newbegPos}  
-    }
-    
-  }
-    
-} ;#END evalRowlist
 
-##evaluate matching pix ranges from 'ranges' array
-##called by evalRowlist?
-proc ?evalRanges? {} {}
+########################################################################
+############ O B S O L E T E ###########################################
+########################################################################
 
 
 #TODO to be replaced by above
@@ -178,7 +183,7 @@ proc evalRowlists {img} {
   
   
   #get consecutive area(s) per row & extract 1st + last pos
-  foreach rowlist [lsort [info vars colour::matchlist*]] {
+  foreach rowlist [lsort [info vars colour::*]] {
     
     #scan rowlist
     set prevX 0
@@ -235,6 +240,8 @@ proc evalRowlists {img} {
   } ;#END foreach  
   
   #TODO who gives out tint for processPngInfo?
+  #TODO provide tint for standard area if return=0
+  
 } ;#END evalRowlists
 
 
