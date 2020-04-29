@@ -202,7 +202,7 @@ proc processPngInfo {c targetPicPath} {
   #OR?
  # b) 
   lassign [cutCanvasPic $c] x1 y1 x2 y2
-  $smallPic copy $canvPic -subsample 2 -from $x1 $y1 $x2 $y2 
+  $smallPic copy $canvPic -subsample 3 -from $x1 $y1 $x2 $y2 
    
   
   # 1. Scan colour area , compute real x1 + y1 * reductionFactor
