@@ -34,10 +34,7 @@ array set dirlist "
   fontdir [file join $progdir font]
   imgdir [file join $rootdir TodaysPicture]
   maildir [file join $srcdir sig]
-  
-  #TODO change to MyPhotos
-  photosDir [file join $rootdir Photos]
-  
+  photosDir [file join $rootdir Photos] 
   picdir [file join $srcdir pic]
   progdir [file join $rootdir prog]
   piddir [file join $progdir pid]
