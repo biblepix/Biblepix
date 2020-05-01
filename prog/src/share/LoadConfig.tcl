@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 31mch20
+# Updated: 1may20
 
 #Source Config and LoadConfig for defaults
 if { [catch {source $Config}] } {
@@ -27,6 +27,9 @@ if { ![info exists lang] } {
     }
     if {[info exists syslangCode] && $syslangCode == "de"} {
       set lang de
+    }
+    if {![info exists DesktopPicturesDir]} {
+      set DesktopPicturesDir $HOME
     }
   }
 }

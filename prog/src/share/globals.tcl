@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 22apr20 pv
+# Updated: 1may20 pv
 set version "3.2"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -214,9 +214,7 @@ set shadefactor 0.6
 #Bildformate & DesktopPicturesDir
 if {$platform == "unix"} {
   set HOME $env(HOME)
-  #TODO: DesktopPicturesDir changes with languages, reset in Save > Config as $linuxDesktopPicturesDir
-  #make switch in LoadConfig !!!
-  set DesktopPicturesDir $HOME 
+  #DesktopPicturesDir changes with languages > variable in Config & switch in LoadConfig
   set types {
     { {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
   }
