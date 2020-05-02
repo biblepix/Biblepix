@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 4mch20
+# Updated 1may20
 
 #Statusbar
 frame .internationalF.f0 -padx $px
@@ -10,7 +10,7 @@ label .internationalF.status -textvar status -font bpfont1 -height 1 -bg $bg -re
 pack .internationalF.status -in .internationalF.f0 -fill x
 
 #Refresh button
-button .internationalF.refbtn -textvariable refresh -bg orange -activebackground orange -command {set status [getRemoteTWDFileList]}
+button .internationalF.refbtn -textvar refresh -bg orange -activebackground orange -command {set status [getRemoteTWDFileList]}
 pack .internationalF.refbtn -side bottom -fill x -padx $px
 
 #Title
