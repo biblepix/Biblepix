@@ -56,7 +56,7 @@ namespace eval colour {
         set diffb [expr $maxb - $minb]
  
         array set prevCArr "r $r g $g b $b"   
-        set lumCode [setLumCode prevCArr]
+        set lumCode [setLuminanceCode prevCArr]
 
         set prevxPos $xPos 
                                   
@@ -108,10 +108,7 @@ puts $[namespace current]::$yPos
       }
     }
 
-    #set rowL array list & rowtotal
-    foreach arr [lsort -dictionary [info vars colour::*]] {
-      lappend rowL [namespace tail $arr]
-    }
+    set rowL [getMatchingRowlist]
     set rowtot [llength $rowL]
  
     #Begin main Y loop
@@ -152,7 +149,17 @@ puts $[namespace current]::$yPos
   
   } ;#END evalRowlist
   
-      
+  
+  # getMatchingRowlist
+  ##set rowL array list & rowtotal?
+  ##called by evalRowlist + getAvLuminance
+  proc getMatchingRowlists {} {
+    foreach arr [lsort -dictionary [info vars colour::*]] {
+      lappend rowL [namespace tail $arr]
+      return $rowL
+    }
+  }
+
   proc chooseLongestRange {} {    
       #choose longest range
       if [array exists ranges] {
@@ -173,6 +180,40 @@ puts $[namespace current]::$yPos
     
   }
   
+  # setAvLuminance
+  ##sets average luminance values of pixel arrays of 
+  ##A) selected colour area / 
+  ##B) margintop+marginleft + 200 pixels in each direction
+  ##called by ?
+  proc getAvLuminance {} {
+    global margintop marginleft
+    
+    #TODO Make sure 0... values are excluded!
+    set rowlist [getMatchingRowlists]
+     
+    #A) TODO same as B - but define margintop and lmarginleft as starting point 
+    #TODO I think you should resort to the already calculated matching ranges for this!
+    if {$rowlist == ""} {
+    
+      return ? ?
+    }
+    
+    #B)  
+    foreach rowArr $rowlist {
+      #get pixel array per row
+      set arrNames [array names colour::$rowArr]
+      
+      foreach pixArr $arrNames {
+        lappend lumL [lindex [array get pixArr] 1]
+      }
+    }
+    
+    set avLuminance [calcAverage $lumL]
+    return $avLuminance
+    
+  }
+  
+  #TODO OBSOLETE, code is in pixel arrays!
   proc setTint {marginleft margintop} {
       #B). scan 0 digit positions for tint
     set begY $colour::$margintop

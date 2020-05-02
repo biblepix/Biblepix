@@ -208,7 +208,7 @@ proc processPngInfo {c targetPicPath} {
   # 1. Scan colour area , compute real x1 + y1 * reductionFactor
   #source $::picdir/scanColourArea.tcl
   
-  # lassign [scanColourArea $smallPic] x y tint
+  # lassign [scanColourArea $smallPic] x y luminance
 
   #reactivate button & text
   after idle
@@ -226,7 +226,7 @@ proc processPngInfo {c targetPicPath} {
   }
     
      
-  # 2. writePngComment $targetPicPath $x $y $tint
+  # 2. writePngComment $targetPicPath $x $y $luminance
   #TODO recompute correct x + y by using all factors!!!!    
     set x [expr $x * $::reductionFactor]
     set y [expr $y * $::reductionFactor]

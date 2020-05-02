@@ -110,11 +110,13 @@ return
 } ;#END computeAvColours
 
 
+
+#TODO OBSOLETE, the code is already in nthe row pixel arrays!
 # setLumCode - returns 1(dark) / 2(normal) / 3(light)
 ##calculates average luminance of a pixel colour array
 ##TODO Normalwert zwischen 70 und 100 -wo festlegen?
 ##called by scanColourArea after each run of x loop
-proc setLumCode {pixArr} {
+proc setLuminanceCode {pixArr} {
   upvar $pixArr myArr
   set avCol [expr ($myArr(r) + $myArr(g) + $myArr(b)) / 3]
   
