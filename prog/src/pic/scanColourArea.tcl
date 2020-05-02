@@ -1,6 +1,10 @@
-# Updated 29apr20 pv
+# ~/Biblepix/prog/src/pic/scanColourArea.tcl
+# Determines suitable even-coloured text area & colour tint for text
+# Sourced by SetupResizePhoto 
+# Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
+# Updated 30apr20 pv
 
-#TODO move scanArea & scanRow to Setup>Photos>addPic !!!
+#TODO :uncomment:
 #catch {namespace delete colour}
 
 namespace eval colour {
@@ -84,68 +88,72 @@ puts $[namespace current]::$yPos
      
   } ;# END scanColourArea
 
-
-#To get a proper list of row arrays in ::colour - there must be a place to use it!!!!
-# foreach row [lsort -dictionary [info vars colour::*]] {puts [namespace tail $row]}
-##careful there is 1 non-digit variable > put somewhere else!
-
+    
   # evalRowlist
   ##scan xPos's of a pixel row for consecutive areas & ... 
   proc evalRowlist {img rowNo} {
   
-    proc scanRange {L xPos} {
-  puts $xPos
-      set prevPos [expr $xPos - 1]
-  puts $prevPos
-  
-      while {$xPos == [incr prevPos]} {
-  
-        lappend [namespace current]::curL $xPos
-        
-        set prevPos $xPos
+    set minwidth [expr [image width $img] / 4]
+    
+    #scan till next break
+    proc scanRanges {xPos prevxPos} {
+      while {[expr $xPos - $prevxPos] == 1} { 
+        lappend matchL $xPos
+        incr prevxPos
+      }
+      if [info exists matchL] {
+        return $matchL
+      } else {
+        return 0
       }
     }
-    
-    proc getAvBrightness {} {
-      #A of matching ranges
-      #B of 0 rows, starting from $marginleft $margintop, up to 200? rows
-    
+
+    #set rowL array list & rowtotal
+    foreach arr [lsort -dictionary [info vars colour::*]] {
+      lappend rowL [namespace tail $arr]
     }
-
-
-   #A) Get matching ranges for up to 200 rows
-    
-    set prev [expr [lindex $rowNo 0] - 1]
-    set minwidth [expr [image width $img] / 4]
-    #set xPos [lindex $rowNo 0]
-    
-    set rangesL [lsort -dictionary [array names colour::$rowNo]]
-    
-    
-    set xPos [lindex $rangesL 0]
-    set rowtot [llength $rangesL]
-    
-    for {set rowNo 1} {$rowNo < $rowtot} {incr rowNo} {
-    
+    set rowtot [llength $rowL]
+ 
+    #Begin main Y loop
+    for {set rowNo [lindex $rowtot 0]} {$rowNo < $rowTot} {incr $rowNo} {
       
-      
-      while {$xPos < $rowtot} {
-        #scan till next break
+      set rowLength [llength [array names [namespace current::$rowNo]]] 
+      set xPos [lindex $rowL 0]
+      set prevPos [expr $xPos - 1]
         
-        scanRange $rangesL $xPos
-        set rangeLength [llength $colour::curL]
+      #Begin main X loop
+      for {set xTot $rowLength} {$xPos < $xTot} {incr xPos} {
       
-        if {$rangeLength >= $minwidth} {
-            
-          set begPos [lindex $colour::curL 0]
-          set endPos [lindex $colour::curL end]
-          array set ranges "$begPos $endPos"
+        set scanRes [scanRanges $xPos $prevxPos]
         
-          set xPos [lindex $colour::curL end]
-          unset color::curL
+        #add pixpos to matchlist if consecutive
+        if {[expr $xPos - $prevxPos] == 1} { 
+          lappend matchL $xPos
+          incr prevxPos
         }
-      }    
+        
+        set scanRes [scanRanges $xPos $prevxPos]       
+        
+      } ;#END for x
+
+      #Find consecutive matches in row & take largest
+      if [info exists matchL] {
+        findRanges $matchL
+        unset matchL
+       }
+
+       
+    } ;#END for y
+
+      #TODO set margintop/marginleft colour tint if no ranges found
+      if ![info exists colour::matchArr] {
+        setTint $marginleft $margintop
+      }
+  
+  } ;#END evalRowlist
+  
       
+  proc chooseLongestRange {} {    
       #choose longest range
       if [array exists ranges] {
         foreach name [array names ranges] {
@@ -162,11 +170,15 @@ puts $[namespace current]::$yPos
     
       set longestRange [expr max($rangeLengthList)]
       
-    } ;#END for
     
+  }
+  
+  proc setTint {marginleft margintop} {
+      #B). scan 0 digit positions for tint
+    set begY $colour::$margintop
+    set begX [array names colour::margintop $marginleft]
+    #TODO move 200 in each direction, getting average luminance (1-3)
     
-    
-    #B). scan 0 digit positions for tint
     foreach e [lsort -dictionary $rowNo] {
       if {[string index $e 0] != 0} {
         puts $e
@@ -174,226 +186,46 @@ puts $[namespace current]::$yPos
       }
     }
 
-      
-  } ;#END evalRowlist
+  }    
 
-
-
-  ##evaluate matching pix ranges from 'ranges' array
-  ##called by evalRowlist?
-  proc ?evalRanges? {} {
-
-#TODO how to collect D B N values - change back to numbers instead????
-    #B). collect av colour for $marginleft/$marginright area
+  # findRanges
+  ##finds any suitable colour area(s) per matchList
+  ##puts result in colour::matchArr
+  ##called by evalRowlist after each X run        
+  proc findRanges {matchL} {
     
-    array get colour::$topmargin $leftmargin
-    array get colour::$topmargin $leftmargin+1 usw.
+    set end [llength $matchL]
+    set startIndex [lindex $matchL 0]
     
-    array get colour::$topmargin+1 usw.
-
-
+    while {$startIndex < $end} {
+      set endIndex [findRange $matchL $startIndex]
+      array set colour::matchArr "$startIndex $endIndex"
+      set startIndex [incr endIndex]
+    }
   }
+
+  # findRange
+  ##finds any subsequent range chunk per matchList
+  ##called by findRanges 
+  proc findRange {matchL startIndex} {
+
+    set end [llength $matchL]
+    set previous $startIndex
+    set current [incr [lindex startIndex]]
+    set currentIndex [incr startIndex]
+    
+    while {[expr $current – $previous] == 1 && $currentIndex < $end} {
+      incr currentIndex
+      set previous $current
+      set current [lindex $currentIndex]
+    }
+
+    return $currentIndex
+  }
+
 
 } ;#END ::colour namespace
 
 
 
-########################################################################
-############ O B S O L E T E ###########################################
-########################################################################
 
-
-#TODO to be replaced by above
-proc evalQQQRowlists {img} {
-
-  set minwidth [expr [image width $img] / 4]
-  
-  #TODO Move outside?
-  proc createRowmatch {matchNo} {
-  
-  #TODO get first matching after first run! -put into namespace!
-    if [info exists $endPos] {set prevX $endPos} {set prevX 0}
-
-    while { [expr $curX - $prevX] == 1} { 
-
-      lappend rowmatch${matchNo} [lindex $curlist $curX]
-      incr curX
-      incr prevX
-    }
-  }
-  
-  
-  
-  #get consecutive area(s) per row & extract 1st + last pos
-  foreach rowlist [lsort [info vars colour::*]] {
-    
-    #scan rowlist
-    set prevX 0
-    set curX 1
-    
-    #only count consecutive pixels
-    #1st run
-    set matchNo 1
-    createRowmatch $matchNo
-        
-    #TODO Put into namespace!
-    set begPos [lindex $rowmatch 0]
-    set endPos [lindex $rowmatch end]
-    
-    #delete sequence if too short
-    #2nd and following run
-    while {[expr $endPos - $begPos] < $minwidth} {
-    
-      unset rowmatch${matchNo}
-      incr matchNo
-      createRowmatch $matchNo
-    }
-    
-   
-    #set begPos [lindex $rowlist $i]
-    if {info exists ?any_rowmatch?} {
-    
-    #TODO get rid of regexp, change name to digit!
-      regexp {(matchlist)(.*)} $rowlist {\2} yBeg
-    
-      lappend [namespace current]::begPosList $begPos
-      lappend [namespace current]::endPosList $endPos
-  
-    }
-  
-    if {[info exists [namespace current]::begPosList] &&
-        [info exists [namespace current]::endPosList] } {
-    
-      set avXBeg [mean [namespace current]::begPosList]
-      set avXEnd [mean [namespace current]::endPosList]
-      
-      if {[expr $avXEnd - $avXBeg] > $minXwidth} {
-        
-        #Return text postion x + y
-        puts "Found suitable text area at $avXbeg $yBeg"
-        return "$avXBeg $yBeg"
-    
-      } else {
-      
-        puts "No suitable area found."
-        return 0
-      }
-    }
-  } ;#END foreach  
-  
-  #TODO who gives out tint for processPngInfo?
-  #TODO provide tint for standard area if return=0
-  
-} ;#END evalRowlists
-
-
-# scanSimlist
-##scans simlist for fake sections (with spaces over $spacetol pixels) 
-proc scanList {simlist spacetol} {
-  
-  set prev 0
-  
-  foreach cur $simlist {
-    
-    if {[expr $cur - $prev] > $spacetol } {
-      continue
-  
-    } else {
-      
-      lappend $simlist_ok $cur   
-    }
-  }
-} ;#END scanSimlist
-
-
-# determineSimilarColourArea
-##evaluates $simlist_ok lists for suitably large areas (minwidth=? / maxheight=?)
-proc determineSimilarColourArea {img minwidth minheight} {
-
-  if ! [array exists colour::sim.0] {
-    puts "No similar colours array found!"
-    return 1
-  }
-
-  #Compare first and last positions of rows
-  foreach simlist [info vars colour::simlist.*] {
-    set beg [lindex $simlist 0]
-    set end [lindex $simlist end]
-    
-    lappend $beg beginlist
-    lappend $end endlist
-  
-
-  }
- 
- #Compute average start positions   
-  foreach pos $beginlist {
-    incr beginTotal $pos
-    incr beginCount
-  }
-  set beginAverage [expr $beginTotal / $beginCount]
-    
-  #Compute average end positions
-
-
-#A) Eliminate fake ranges with a min. of ?500? consecutive pixels     
-
-#B) List consecutive rows from A)
-  
-  
-  #C Return coords
-  set x1 ... ...
-  lappend area $x1 $y1 $x2 $y2
-  return $area
-
-} ;#END determineSimilarColourArea
-
-# tagPhoto
-##tags photo name with preceding ° (=no area found) OR °+[X1 Y1 in HEX]° (=area found)
-##this way BiblePix can know if (old) picture has been scanned yet
-##called by ?above to indicate text area for photo
-proc tagPhoto {imgname {args}} {
-  
-  append tag °
-
-  if [info exists args] {
-    set coord $args
-    set coordHex [binary encode hex $coord]
-    append tag + $coordHex °
-  }
-
-  append newname $tag $imgname  
-  return $newname
-}
-
-# getPhotoScancode
-##scans photo name for scan code
-##called by ?getRandomPhoto?
-proc getPhotoScancode {imgname} {
-  
-  #Check scan status (gibt 0 aus wenn da)
-  if ![string first ° $imgname] {
-    catch {string last ° $imgname} res
-    
-    ##A) Scanned, no area found
-    if {$res == 0} {
-      puts "Bild gescannt. Kein Bereich."
-      set returncode "scanned"
-      
-    ##B) Scanned, special area found
-    } else {
-      
-      set coordHex [string range 1 $res-1]
-      set coords [binary decode hex $coordHex]
-      set returncode $coords
-    }
-  
-  ##C) Not scanned
-  } else {
-    
-    set returncode "unscanned"
-  
-  }
-  
-  return $returncode
-}
