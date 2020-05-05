@@ -2,10 +2,17 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 30apr20 pv
+# Updated 5may20 pv
 
 #TODO :uncomment:
 #catch {namespace delete colour}
+
+#FOR TESTING
+image create photo xs
+source $ImgTools
+set c .resizePhoto.resizeCanv
+lassign [getCanvSection $c] x1 y1 x2 y2
+xs copy resizeCanvPic -subsample 3 -from $x1 $y1 $x2 $y2 
 
 namespace eval colour {
 
@@ -95,18 +102,18 @@ puts $[namespace current]::$yPos
   
     set minwidth [expr [image width $img] / 4]
     
-    #scan till next break
-    proc scanRanges {xPos prevxPos} {
-      while {[expr $xPos - $prevxPos] == 1} { 
-        lappend matchL $xPos
-        incr prevxPos
-      }
-      if [info exists matchL] {
-        return $matchL
-      } else {
-        return 0
-      }
-    }
+#    #scan till next break -TODO to be replaced by findRange/findRanges
+#    proc scanRanges {xPos prevxPos} {
+#      while {[expr $xPos - $prevxPos] == 1} { 
+#        lappend matchL $xPos
+#        incr prevxPos
+#      }
+#      if [info exists matchL] {
+#        return $matchL
+#      } else {
+#        return 0
+#      }
+#    }
 
     set rowL [getMatchingRowlist]
     set rowtot [llength $rowL]
@@ -152,12 +159,12 @@ puts $[namespace current]::$yPos
   
   # getMatchingRowlist
   ##set rowL array list & rowtotal?
-  ##called by evalRowlist + getAvLuminance
-  proc getMatchingRowlists {} {
-    foreach arr [lsort -dictionary [info vars colour::*]] {
+  ##called by evalRowlist + ?getAvLuminance
+  proc sortRowlists {} {
+    foreach arr [lsort -dictionary [info vars [namespace current]::*]] {
       lappend rowL [namespace tail $arr]
-      return $rowL
     }
+    return $rowL
   }
 
   proc chooseLongestRange {} {    
@@ -180,6 +187,7 @@ puts $[namespace current]::$yPos
     
   }
   
+  #TODO run this only after area coords are clear, will be much easier to program!
   # setAvLuminance
   ##sets average luminance values of pixel arrays of 
   ##A) selected colour area / 
@@ -192,7 +200,7 @@ puts $[namespace current]::$yPos
     set rowlist [getMatchingRowlists]
      
     #A) TODO same as B - but define margintop and lmarginleft as starting point 
-    #TODO I think you should resort to the already calculated matching ranges for this!
+    #TODO I think you should resort to the already calculated matching ranges for this! s.o.
     if {$rowlist == ""} {
     
       return ? ?
@@ -213,34 +221,20 @@ puts $[namespace current]::$yPos
     
   }
   
-  #TODO OBSOLETE, code is in pixel arrays!
-  proc setTint {marginleft margintop} {
-      #B). scan 0 digit positions for tint
-    set begY $colour::$margintop
-    set begX [array names colour::margintop $marginleft]
-    #TODO move 200 in each direction, getting average luminance (1-3)
     
-    foreach e [lsort -dictionary $rowNo] {
-      if {[string index $e 0] != 0} {
-        puts $e
-        doWhateverNeedsTOBEdone
-      }
-    }
-
-  }    
 
   # findRanges
-  ##finds any suitable colour area(s) per matchList
+  ##finds any suitable colour area(s) per row matchList
   ##puts result in colour::matchArr
-  ##called by evalRowlist after each X run        
+  ##called by evalRowlist ?after each X run?    
   proc findRanges {matchL} {
     
     set end [llength $matchL]
     set startIndex [lindex $matchL 0]
-    
-    while {$startIndex < $end} {
-      set endIndex [findRange $matchL $startIndex]
-      array set colour::matchArr "$startIndex $endIndex"
+    #scan through indeces, excluding non-matching 0.. digits
+    while {$startIndex < $end && [string index $startIndex 0] != 0} {
+      set endIndex [findRange $matchL $startIndex $end]
+      array set [namespace current]::matchArr "$startIndex $endIndex"
       set startIndex [incr endIndex]
     }
   }
@@ -248,14 +242,16 @@ puts $[namespace current]::$yPos
   # findRange
   ##finds any subsequent range chunk per matchList
   ##called by findRanges 
-  proc findRange {matchL startIndex} {
+  proc findRange {matchL startIndex end} {
 
-    set end [llength $matchL]
+
+#TODO warum zählt er immer 3 und dann Schluss?
+#    set end [llength $matchL]
     set previous $startIndex
     set current [incr [lindex startIndex]]
     set currentIndex [incr startIndex]
     
-    while {[expr $current – $previous] == 1 && $currentIndex < $end} {
+    while {[expr $current - $previous] == 1 && $currentIndex < $end} {
       incr currentIndex
       set previous $current
       set current [lindex $currentIndex]

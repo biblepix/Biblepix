@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 28apr20 pv
+# Updated 5may20 pv
 
 proc openResizeWindow {targetPicPath} {
 
@@ -239,65 +239,6 @@ proc processPngInfo {c targetPicPath} {
     
 } ;#END processPngInfo
 
-
-# cutCanvPic
-##berechnet reposCanvPic Bildausschnitt für Kopieren nach reposCanvSmallPic
-##called by processPngInfo
-proc cutCanvasPic {c} { 
-  
-  lassign [$c bbox img] imgX1 imgY1 imgX2 imgY2
-
-  set canvX [lindex [$c conf -width] end]
-  set canvY [lindex [$c conf -height] end]
-
-  set cutX1 0
-  set cutY1 0
-  set cutX2 $canvX
-  set cutY2 $canvY
-  
-  ##alles gleich
-  if {$imgX2 == $canvX &&
-      $imgY2 == $canvY
-  } {
-    puts "No need for resizing."
-    Return 0
-  }
-  
-
-  ##Breite ungleich
-  if {$imgX2 > $canvX} {
-  
-    puts "Breite verschieben"
-    if {$imgX1 < 0} {
-      set cutX1 [expr $imgX1 - ($imgX1 + $imgX1) ]
-      set cutX2 [expr $canvX + $cutX1]
-
-    ##nach rechts verschoben
-    } else {
-      set cutX1 0
-      set cutX2 $canvX
-    }
-    
-  ##Höhe ungleich
-  } elseif {$imgY2 > $canvY} {
-  
-    puts "Höhe verschieben"
-    if {$imgY1 < 0} {
-      set cutY1 [expr $imgY1 - ($imgY1 + $imgY1) ]
-      set cutY2 [expr $canvY + $cutY1]
-
-    ##nach unten verschoben
-    } else {
-      set cutY1 0
-      set cutY2 $canvY
-    }
-  
-  }
-  
-  return "$cutX1 $cutY1 $cutX2 $cutY2"
-  
-  
-} ;#END cutCanvPic
 
 namespace eval ResizeHandler {
   namespace export QueryResize
