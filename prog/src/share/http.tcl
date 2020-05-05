@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26mch20
+# Updated: 5may20 pv
 
 package require http
 
@@ -258,6 +258,8 @@ proc listRemoteTWDFiles {lBox} {
   }
 }
 
+# getRemoteTWDFileList
+#......
 proc getRemoteTWDFileList {} {
   if { [catch testHttpCon Error] } {
     .internationalF.status conf -bg red
