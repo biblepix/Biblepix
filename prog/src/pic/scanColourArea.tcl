@@ -2,12 +2,12 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 5may20 pv
+# Updated 7may20 pv
 
 #TODO :uncomment:
 #catch {namespace delete colour}
 
-#FOR TESTING
+#TODO FOR TESTING
 image create photo xs
 source $ImgTools
 set c .resizePhoto.resizeCanv
@@ -32,9 +32,6 @@ namespace eval colour {
     set begY $margin
     set endY [expr $imgY - $margin]
     set prevxPos [expr $begX - 1]    
-    
-    #min.width of area should be ¼ of pic -TODO Move to evaluation proc!
-    set xMinArea [expr $imgX / 4]
     
     #pretend prevC array & prevX for 1st run & LNL (list number per row)
     array set prevCArr {r 0 g 0 b 0}
@@ -219,7 +216,7 @@ puts $[namespace current]::$yPos
     set avLuminance [calcAverage $lumL]
     return $avLuminance
     
-  }
+  } ;#END getAvLuminance
   
     
 
@@ -228,13 +225,20 @@ puts $[namespace current]::$yPos
   ##puts result in colour::matchArr
   ##called by evalRowlist ?after each X run?    
   proc findRanges {matchL} {
-    
+  
+  #TODO Testing - nur für 1 Reihe, dann brauchen wir Longest für alle Reihen!!!! 
+    array unset ::matchArr
     set end [llength $matchL]
-    set startIndex [lindex $matchL 0]
+    
+    #TODO warum krieg ich 010 ?
+    set startIndex [string trimleft [lindex $matchL 0] 0]
+    
     #scan through indeces, excluding non-matching 0.. digits
-    while {$startIndex < $end && [string index $startIndex 0] != 0} {
+    while {$startIndex < $end } {
       set endIndex [findRange $matchL $startIndex $end]
-      array set [namespace current]::matchArr "$startIndex $endIndex"
+puts $endIndex      
+      
+      array set ::matchArr "Beg $startIndex End $endIndex"
       set startIndex [incr endIndex]
     }
   }
@@ -244,17 +248,24 @@ puts $[namespace current]::$yPos
   ##called by findRanges 
   proc findRange {matchL startIndex end} {
 
-
-#TODO warum zählt er immer 3 und dann Schluss?
-#    set end [llength $matchL]
-    set previous $startIndex
-    set current [incr [lindex startIndex]]
+    set prevIndex $startIndex
+    set currentArr [incr [lindex $startIndex]]
     set currentIndex [incr startIndex]
     
-    while {[expr $current - $previous] == 1 && $currentIndex < $end} {
-      incr currentIndex
-      set previous $current
-      set current [lindex $currentIndex]
+    #Conditions for adding to currentIndex: 
+    #A: index before end / B: array doesn't start with 0 / C: difference to previous index is 1
+    while {
+      $currentIndex < $end &&
+      [string index $currentArr 0] != 0 &&
+      [expr $currentIndex - $prevIndex] == 1
+
+    } {
+puts yesh
+
+      set prevIndex $currentIndex
+      
+      set currentArr [incr [lindex $currentIndex]]
+ #incr currentIndex
     }
 
     return $currentIndex

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/pic/annotatePng.tcl
 # Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 23apr20 pv
+# Updated 15may20 pv
 
 
 # evalPngComment
@@ -99,8 +99,8 @@ proc writePngComment {file text} {
 
 # processPngComment
 ##called by resizePhoto, after scanning canv pic for colour area & brightness
-proc processPngComment {$file $x $y $tint} {
-  set text "$x $y $tint"
+proc processPngComment {file x y luminacy} {
+  set text "$x $y $luminacy"
   writePngComment $file $text
   return 0
 }

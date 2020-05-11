@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 5may20 pv
+# Updated 11may20 pv
 
 proc openResizeWindow {targetPicPath} {
 
@@ -54,7 +54,24 @@ proc openResizeWindow {targetPicPath} {
   set screenFactor [expr $screenX. / $screenY]
   set imgXYFactor [expr $imgX. / $imgY]
   
+  
   #do Höhe schneiden - TODO this sucks when pic is correct size!!!!!!!!!!!!!!!!!!!
+  if {$imgXYFactor == $screenFactor} {
+    puts nichtszutun
+    #TODO save photosOrigPic to $picPath
+    NewsHandler::QueryResult "Bild $picPath unverändert nach $MyPhotos kopiert." green
+    
+    #TODO Automate scanning for luminacy in unchanged pics
+    set x $marginleft
+    set y $margintop
+    set luminacy [???]
+    processPngComment $picPath $x $y $luminacy
+    
+    destroy .resizePhoto
+    return 0
+  }
+  
+  #TODO verify factors mess!    
   if {$imgXYFactor < $screenFactor} {
 
     set canvCutX2 $canvImgX
