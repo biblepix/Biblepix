@@ -250,28 +250,36 @@ proc setPngFileName {fileName} {
 
 # doResize
 ## organises all resizing processes
-## called by addPic
-proc doResize {canv} {
-  set origX [image width photosOrigPic]
-  set origY [image height photosOrigPic]
+##canvas scale factor is an integer of photosOrigPic / rotateOrigPic
+## called by setupReposTextWin
+proc doResize {pic canvScaleFactor cutX1 cutY1 cutX2 cutY2} {
+
+#  if [catch {image inuse rotateOrigPic}] {
+#    set origPic photosOrigPic
+#  } {
+#    set origPic rotateOrigPic
+#  }
+#  set origX [image width $origPic]
+#  set origY [image height $origPic]
+#  
+#  set canvX [lindex [$canv conf -width] end]
+#  set canvY [lindex [$canv conf -height] end]
+#  lassign [$canv bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
+#  
+#  set scale [expr $origX. / $canvX]
+#  if {[expr $canvY. * $scale] > $origY} {
+#    set scale [expr $origY. / $canvY]
+#  }
+#  
+#  set cutX1 [expr int($canvPicX1 * -1 * $scale)]
+#  set cutY1 [expr int($canvPicY1 * -1 * $scale)]
+#  set cutX2 [expr int($canvX * $scale + $cutX1)]
+#  set cutY2 [expr int($canvY * $scale + $cutY1)]
   
-#TODO besser mit winfo, falls fenster überdeckt ...
-  set canvX [lindex [$canv conf -width] end]
-  set canvY [lindex [$canv conf -height] end]
-  lassign [$canv bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
+  #Cut orig pic to right dimensions
+  set cutImg [trimPic $pic $cutX1 $cutY1 $cutX2 $cutY2]
   
-  set scale [expr $origX. / $canvX]
-  if {[expr $canvY. * $scale] > $origY} {
-    set scale [expr $origY. / $canvY]
-  }
-  
-  set cutX1 [expr int($canvPicX1 * -1 * $scale)]
-  set cutY1 [expr int($canvPicY1 * -1 * $scale)]
-  set cutX2 [expr int($canvX * $scale + $cutX1)]
-  set cutY2 [expr int($canvY * $scale + $cutY1)]
-  
-  set cutImg [trimPic photosOrigPic $cutX1 $cutY1 $cutX2 $cutY2]
-  
+  #Send orig cut pic to final resize
   ResizeHandler::QueryResize $cutImg
   after idle {
     ResizeHandler::Run

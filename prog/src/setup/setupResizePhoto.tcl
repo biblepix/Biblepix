@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 11may20 pv
+# Updated 12may20 pv
 
 proc openResizeWindow {targetPicPath} {
 
@@ -17,6 +17,7 @@ proc openResizeWindow {targetPicPath} {
     set origPic photosOrigPic
   } else {
     set origPic rotateOrigPic
+  #  image delete photosOrigPic
   }
 
   set screenX [winfo screenwidth .]
@@ -55,13 +56,16 @@ proc openResizeWindow {targetPicPath} {
   set imgXYFactor [expr $imgX. / $imgY]
   
   
-  #do Höhe schneiden - TODO this sucks when pic is correct size!!!!!!!!!!!!!!!!!!!
+  #A) Pic is correct size
+  
   if {$imgXYFactor == $screenFactor} {
-    puts nichtszutun
-    #TODO save photosOrigPic to $picPath
-    NewsHandler::QueryResult "Bild $picPath unverändert nach $MyPhotos kopiert." green
     
-    #TODO Automate scanning for luminacy in unchanged pics
+    #1. Save origPic 
+    $origPic write $targetPicPath -format png
+    image delete $origPic 
+    NewsHandler::QueryResult "Bild [file tail $targetPicPath] unverändert nach $photosDir kopiert." lightgreen
+    
+    #2. Add PNG info - TODO Automate scanning for luminacy in unchanged pics
     set x $marginleft
     set y $margintop
     set luminacy [???]
@@ -71,7 +75,9 @@ proc openResizeWindow {targetPicPath} {
     return 0
   }
   
-  #TODO verify factors mess!    
+  #B) Pic needs resizing
+      
+      #?S
   if {$imgXYFactor < $screenFactor} {
 
     set canvCutX2 $canvImgX
@@ -95,6 +101,10 @@ proc openResizeWindow {targetPicPath} {
   set canvX [lindex [$c conf -width ] end]
   set canvY [lindex [$c conf -height] end]
   
+  
+  
+  
+  
 
 
   #TODO Establish calculation factor for: a) font size of Canvas pic & 
@@ -102,11 +112,23 @@ proc openResizeWindow {targetPicPath} {
   ##eine Flanke muss identisch sein, das ist der korrekte Faktor
   set screen2canvFactor 1.5
   
+  #TODO diese Berechnung wird nochmals in doResize vorgenommen! > global var? / >dort lassen?
+  #IST DIESE RECHNUNG FALSCH???????????????????
   if {$canvX == $canvImgX} {
     set screen2canvFactor [expr $screenX. / $imgX]
   } elseif {$canvY == $canvImgY} {
     set screen2canvFactor [expr $screenY. / $imgY]
   }
+  #TODO Check this instaed:
+  set scale [expr $origX. / $canvX]
+  if {[expr $canvY. * $scale] > $origY} {
+    set scale [expr $origY. / $canvY]
+  }
+  
+  
+  
+  
+  
   
   #Set bindings
   bind .resizePhoto <Escape> $cancelButton
@@ -118,6 +140,7 @@ proc openResizeWindow {targetPicPath} {
   
   # P h a s e  2  (text repositioning Window)
   
+  #Confirm button launches doResize & sets up repositioning window
   .resizePhoto.resizeConfirmBtn conf -command "setupReposTextWin $c $screen2canvFactor $targetPicPath"
   bind .resizePhoto <Return> .resizePhoto.resizeConfirmBtn
     
@@ -165,7 +188,10 @@ $w.moveTxtL conf -text "Verschieben Sie den Text nach Wunsch und drücken Sie OK
 ##called by openResizeWindow & openReposWindow
 proc setupReposTextWin {c screen2canvFactor targetPicPath} {
   global fontsize
-
+  
+  #Start resizing in the background
+  set ::Modal.Result [doResize $c]  
+  
   if {$c == ".resizePhoto.resizeCanv"} {
     set w .resizePhoto
     pack forget $c 
@@ -188,7 +214,7 @@ proc setupReposTextWin {c screen2canvFactor targetPicPath} {
   catch {button $w.resizeConfirmBtn}
   $w.resizeConfirmBtn conf -text Ok -command "processPngInfo $c $targetPicPath" 
   
-  set ::Modal.Result [doResize $c]  
+
   
   
 
@@ -218,7 +244,7 @@ proc processPngInfo {c targetPicPath} {
   #resizeCanvSmallPic copy cutOrigPic -subsample [incr ::reductionFactor] 
   #OR?
  # b) 
-  lassign [cutCanvasPic $c] x1 y1 x2 y2
+  lassign [getCanvSection $c] x1 y1 x2 y2
   $smallPic copy $canvPic -subsample 3 -from $x1 $y1 $x2 $y2 
    
   
