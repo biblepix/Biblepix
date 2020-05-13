@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5may20 pv
+# Updated: 13may20 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -252,34 +252,32 @@ proc setPngFileName {fileName} {
 ## organises all resizing processes
 ##canvas scale factor is an integer of photosOrigPic / rotateOrigPic
 ## called by setupReposTextWin
-proc doResize {pic canvScaleFactor cutX1 cutY1 cutX2 cutY2} {
+proc doResize {c origPic scaleFactor} {
 
-#  if [catch {image inuse rotateOrigPic}] {
-#    set origPic photosOrigPic
-#  } {
-#    set origPic rotateOrigPic
-#  }
-#  set origX [image width $origPic]
-#  set origY [image height $origPic]
-#  
-#  set canvX [lindex [$canv conf -width] end]
-#  set canvY [lindex [$canv conf -height] end]
-#  lassign [$canv bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
+ 
+
+puts $scaleFactor
+  set canvX [lindex [$c conf -width] end]
+  set canvY [lindex [$c conf -height] end]
+  
+  lassign [$c bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
 #  
 #  set scale [expr $origX. / $canvX]
 #  if {[expr $canvY. * $scale] > $origY} {
 #    set scale [expr $origY. / $canvY]
 #  }
 #  
-#  set cutX1 [expr int($canvPicX1 * -1 * $scale)]
-#  set cutY1 [expr int($canvPicY1 * -1 * $scale)]
-#  set cutX2 [expr int($canvX * $scale + $cutX1)]
-#  set cutY2 [expr int($canvY * $scale + $cutY1)]
+  #set cutX1 [expr int($canvPicX1 * -1 * $scaleFactor)]
+  #set cutY1 [expr int($canvPicY1 * -1 * $scaleFactor)]
+  set cutX1 [expr int($canvPicX1 * $scaleFactor)]
+  set cutY1 [expr int($canvPicY1 * $scaleFactor)]
+  set cutX2 [expr int($canvPicX2 * $scaleFactor + $cutX1)]
+  set cutY2 [expr int($canvPicY2 * $scaleFactor + $cutY1)]
   
-  #Cut orig pic to right dimensions
-  set cutImg [trimPic $pic $cutX1 $cutY1 $cutX2 $cutY2]
+  #1.Cut orig pic to right dimensions
+  set cutImg [trimPic $origPic $cutX1 $cutY1 $cutX2 $cutY2]
   
-  #Send orig cut pic to final resize
+  #2.Send cut pic to final resizing
   ResizeHandler::QueryResize $cutImg
   after idle {
     ResizeHandler::Run

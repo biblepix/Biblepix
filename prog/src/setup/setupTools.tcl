@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24apr20 pv
+# Updated: 13may20 pv
 
 source $JList
 
@@ -360,12 +360,15 @@ proc checkItemInside {c item xDiff yDiff args} {
 ##### S E T U P  P H O T O S   P R O C S #########################################
 ##################################################################################
 
-proc needsResize {} {
+# needsResize
+##called by addPic
+##compares photosOrigPic OR rotateOrigPic with screen dimensions
+proc needsResize {pic} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
 
-  set imgX [image width photosOrigPic]
-  set imgY [image height photosOrigPic]
+  set imgX [image width $pic]
+  set imgY [image height $pic]
 
   #Compare img dimensions with screen dimensions
   if {$screenX == $imgX && $screenY == $imgY} {
@@ -379,25 +382,35 @@ proc needsResize {} {
 # adds new Picture to BiblePix Photo collection
 # setzt Funktion 'photosOrigPic' voraus und leitet Subprozesse ein
 proc addPic {} {
-  global picPath dirlist
+  global picPath dirlist setupdir
+  
+  #TODO add file path to Globals
+  source $setupdir/setupResizePhoto.tcl
 
   set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
-
+  #Check which original pic to use
+  if [catch {image inuse rotateOrigPic}] {
+    set origPic photosOrigPic
+  } else {
+    set origPic rotateOrigPic
+  }
+  
   if { [file exists $targetPicPath] } {
     NewsHandler::QueryNews $::picSchonDa red
     return
   }
 
   #A) wrong size: open resizeWindow > reposWindow
-  if [needsResize] {
-    source $::SetupResizePhoto
+  if [needsResize $origPic] {
+  
     openResizeWindow $targetPicPath
     
   #B) right size: save & open reposWindow for PNG processing 
   } else {
   
-    photosOrigPic write $targetPicPath -format PNG
+    $origPic write $targetPicPath -format PNG
     openReposWindow $targetPicPath
+    image delete $origPic
     NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
   }
   
