@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 24apr20 pv
+# Updated 14may20 pv
 
 set fileJList ""
 
@@ -51,11 +51,11 @@ canvas .imgCanvas -width $canvX -height $canvY
 pack .imgCanvas -in .photosF.mainf.right.bild -side left
 
 label .picPath -textvar picPath
-button .addBtn -textvar f6.add -bg lightgreen -activebackground gold -command {addPic}
-button .delBtn -textvar f6.del -bg orange -activebackground red -command {delPic}
+button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic}
+button .delBtn -textvar f6.del -activebackground red -command {delPic}
 
 #TODO Testing
-ttk::button .rotateBtn -textvar rotatepic -command "source $setupdir/setupRotate.tcl"
+button .rotateBtn -activebackground orange -textvar rotatepic -command "source $setupdir/setupRotate.tcl"
 set rotatepic "Bild drehen"
 
 set fileJList [doCollect .imgCanvas]

@@ -1,9 +1,9 @@
-# ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
+ # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 13may20 pv
+# Updated 14may20 pv
 
-proc openResizeWindow {targetPicPath} {
+proc openResizeWindow {} {
 
   #Create toplevel window w/canvas & pic
   global fontsize
@@ -17,9 +17,8 @@ proc openResizeWindow {targetPicPath} {
     set origPic photosOrigPic
   } else {
     set origPic rotateOrigPic
-  #  image delete photosOrigPic
   }
-
+  
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
   set imgX [image width $origPic]
@@ -36,7 +35,9 @@ proc openResizeWindow {targetPicPath} {
     set imgX [expr $imgX / 2]
     set imgY [expr $imgY / 2]
   }
-  #set ::reductionFactor $reductionFactor
+  
+  #export scaleFactor to 'addpic' namespace
+  set addpic::scaleFactor $scaleFactor
   
   #Copy original pic to canvas
   resizeCanvPic copy $origPic -subsample $scaleFactor
@@ -57,15 +58,15 @@ proc openResizeWindow {targetPicPath} {
   set screenFactor [expr $screenX. / $screenY]
   set origImgFactor [expr $imgX. / $imgY]
   
-  set bildname [file tail $targetPicPath]
+  set bildname [file tail $addpic::targetPicPath]
   
   #A) Pic is correct size
      
   if {$imgX == $screenX && $imgY == $screenY} {
       
-    #1. Save origPic 
-    $origPic write $targetPicPath -format png
-    image delete $origPic 
+    #1. Save origPic -TODO is this done by addPic???
+    $origPic write $addpic::targetPicPath -format png
+    image delete $addpic::origPic
     NewsHandler::QueryNews "Bild $bildname wird unverändert nach $photosDir kopiert." lightgreen
     
             #2. Add PNG info - TODO Automate scanning for luminacy in unchanged pics
@@ -80,9 +81,8 @@ proc openResizeWindow {targetPicPath} {
 
    #B) Pic needs resizing
   } else {
-  
-#    lassign [getCanvSection $c] x1 y1 x2 y2
-    doResize $c $origPic $scaleFactor
+ 
+    doResize $c
     NewsHandler::QueryNews "Bildgrösse von $bildname wird für den Bildschirm angepast." orange
         
   }
@@ -160,8 +160,8 @@ proc openResizeWindow {targetPicPath} {
   
   #Confirm button launches doResize & sets up repositioning window
   .resizePhoto.resizeConfirmBtn conf -command "
-    set ::Modal.Result [doResize $c $origPic $scaleFactor]
-    setupReposTextWin $c $origPic $scaleFactor $targetPicPath
+    set ::Modal.Result [doResize $c]
+    setupReposTextWin $c
   "
   
   bind .resizePhoto <Return> .resizePhoto.resizeConfirmBtn
@@ -174,29 +174,21 @@ proc openResizeWindow {targetPicPath} {
 # openReposWindow
 ##opens new toplevel window if .resizePhoto doesn't exist
 ##called by addPic if ![needsResize]
-proc openReposWindow {targetPicPath scaleFactor} {
+proc openReposWindow {} {
   global fontsize
   toplevel .reposPhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600
   image create photo reposCanvPic
   set c [canvas .reposPhoto.reposCanv -bg lightblue]
   $c create image 0 0 -image reposCanvPic -anchor nw -tags {img mv}
 
-  #Check which original pic to use
-  if [catch {image inuse rotateOrigPic}] {
-    set origPic photosOrigPic
-  } else {
-    set origPic rotateOrigPic
-  }
-
-  
 #Redraw window
-setupReposTextWin $c $origPic $scaleFactor $targetPicPath
+setupReposTextWin $c
 
 #process & save
 #processPngInfo $c $targetPicPath
 
 #Redraw text & button
-$w.confirmBtn conf -state normal -command "processPngInfo $c $targetPicPath"
+$w.confirmBtn conf -state normal -command "processPngInfo $c $addpic::targetPicPath"
 $w.moveTxtL conf -text "Verschieben Sie den Text nach Wunsch und drücken Sie OK zum Speichern der Position und Helligkeit."
 
 } ;#END openReposWindow
@@ -204,7 +196,7 @@ $w.moveTxtL conf -text "Verschieben Sie den Text nach Wunsch und drücken Sie OK
 # setupReposTextWin
 ##either redraws existing window or creates one 
 ##called by openResizeWindow & openReposWindow
-proc setupReposTextWin {c origPic scaleFactor targetPicPath} {
+proc setupReposTextWin {c} {
   global fontsize
   
   #Start resizing in the background - TODO happens before resizeWin OK button is pressed !!!
@@ -226,19 +218,17 @@ proc setupReposTextWin {c origPic scaleFactor targetPicPath} {
   pack $c
        
   createMovingTextBox $c
-  font conf movingTextFont -size [expr round($fontsize / $scaleFactor)]
+  font conf movingTextFont -size [expr round($fontsize / $addpic::scaleFactor)]
   $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}  
 
   catch {button $w.resizeConfirmBtn}
-  $w.resizeConfirmBtn conf -text Ok -command "processPngInfo $c $targetPicPath" 
+  $w.resizeConfirmBtn conf -text Ok -command "processPngInfo $c $addpic::targetPicPath" 
   
- 
- 
 } ;#END setupReposTextWin
 
 # processPngInfo
 ##called by open resizeConfBtn (Phase 2)
-proc processPngInfo {c targetPicPath} {
+proc processPngInfo {c} {
 
   #TODO include new vars in Globals:
   set AnnotatePng $::picdir/annotatePng.tcl
@@ -287,8 +277,8 @@ proc processPngInfo {c targetPicPath} {
      
   # 2. writePngComment $targetPicPath $x $y $luminance
   #TODO recompute correct x + y by using all factors!!!!    
-    set x [expr $x * $::reductionFactor]
-    set y [expr $y * $::reductionFactor]
+  #  set x [expr $x * $::reductionFactor]
+  #  set y [expr $y * $::reductionFactor]
     
   
   #   ? NewsHandler::QueryNews "[copiedPicMsg $targetPicPath]" lightblue

@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 13may20 pv
+# Updated: 14may20 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -252,13 +252,12 @@ proc setPngFileName {fileName} {
 ## organises all resizing processes
 ##canvas scale factor is an integer of photosOrigPic / rotateOrigPic
 ## called by setupReposTextWin
-proc doResize {c origPic scaleFactor} {
+proc doResize {c} {
 
- 
-
-puts $scaleFactor
   set canvX [lindex [$c conf -width] end]
   set canvY [lindex [$c conf -height] end]
+  set scaleFactor $addpic::scaleFactor
+  set origPic $addpic::origPic
   
   lassign [$c bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
 #  
