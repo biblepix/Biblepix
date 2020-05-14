@@ -357,7 +357,7 @@ proc checkItemInside {c item xDiff yDiff args} {
 
 
 ##################################################################################
-##### S E T U P  P H O T O S   P R O C S #########################################
+##### S E T U P   P H O T O S   P R O C S #########################################
 ##################################################################################
 
 # needsResize
@@ -404,8 +404,8 @@ proc addPic {} {
   
   #export targetPicPath + scaleFactor + origPic to 'addpic' namespace
   namespace eval addpic {}
-    set addpic::targetPicPath $targetPicPath
-    set addpic::origPic $origPic
+  set addpic::targetPicPath $targetPicPath
+  set addpic::origPic $origPic
   
   #A) wrong size: open resizeWindow > reposWindow
   if [needsResize $origPic] {

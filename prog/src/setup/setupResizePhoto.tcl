@@ -4,14 +4,14 @@
 # Updated 14may20 pv
 
 proc openResizeWindow {} {
-
-  #Create toplevel window w/canvas & pic
   global fontsize
-  toplevel .resizePhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600
+  
+  #Create toplevel window w/canvas & pic
+  set w [toplevel .resizePhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
+  set c [canvas $w.resizeCanv -bg lightblue]
   image create photo resizeCanvPic
-  set c [canvas .resizePhoto.resizeCanv -bg lightblue]
   $c create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
-
+  
   #Check which original pic to use
   if [catch {image inuse rotateOrigPic}] {
     set origPic photosOrigPic
@@ -62,12 +62,12 @@ proc openResizeWindow {} {
   
   #A) Pic is correct size
      
-  if {$imgX == $screenX && $imgY == $screenY} {
-      
-    #1. Save origPic -TODO is this done by addPic???
-    $origPic write $addpic::targetPicPath -format png
-    image delete $addpic::origPic
-    NewsHandler::QueryNews "Bild $bildname wird unverändert nach $photosDir kopiert." lightgreen
+#  if {$imgX == $screenX && $imgY == $screenY} {
+#      
+#    #1. Save origPic -TODO is this done by addPic???
+#    $origPic write $addpic::targetPicPath -format png
+#    image delete $addpic::origPic
+#    NewsHandler::QueryNews "Bild $bildname wird unverändert nach $photosDir kopiert." lightgreen
     
             #2. Add PNG info - TODO Automate scanning for luminacy in unchanged pics
    #THIS IS CRAP - PASS TO reposWin !!!!!!!!!!!!!!!!!!!! 
@@ -80,12 +80,13 @@ proc openResizeWindow {} {
 #    return 0
 
    #B) Pic needs resizing
-  } else {
+#  } 
  
-    doResize $c
-    NewsHandler::QueryNews "Bildgrösse von $bildname wird für den Bildschirm angepast." orange
+  .resizePhoto.resizeConfirmBtn conf -command "doResize $c ; destroy .resizePhoto"
+  
+#    NewsHandler::QueryNews "Bildgrösse von $bildname wird für den Bildschirm angepast." orange
         
-  }
+  
         
         #TODO openReposWin here ?
     NewsHandler::QueryNews "Bestimmen Sie bitte noch die gewünschte Textposition." lightgreen
@@ -94,29 +95,32 @@ proc openResizeWindow {} {
         
 #        
 #        
-#      #CUT HEIGHT
-#  if {$origImgFactor < $screenFactor} {
+      #CUT HEIGHT
+  if {$origImgFactor < $screenFactor} {
 
-#    set canvCutX2 $canvImgX
-#    set canvCutY2 [expr round($canvImgX / $screenFactor)]
-#      #CUT WIDTH
-#  } else {
+    set canvCutX2 $canvImgX
+    set canvCutY2 [expr round($canvImgX / $screenFactor)]
+      #CUT WIDTH
+  } else {
 
-#    set canvCutX2 [expr round($canvImgY / $screenFactor)]
-#    set canvCutY2 $canvImgY
-#  }
+    set canvCutX2 [expr round($canvImgY / $screenFactor)]
+    set canvCutY2 $canvImgY
+  }
+
+  #Set cutting coordinates & configure canvas
+  $c conf -width $canvCutX2 -height $canvCutY2
 
 
-#  #Set cutting coordinates & configure canvas
-#  $c conf -width $canvCutX2 -height $canvCutY2
-#  $c create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill yellow -text "$::movePicToResize" -tags text
-#  $c create window [expr $canvCutX2 - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn -tag okbtn
-#  $c create window [expr $canvCutX2 - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn -tag delbtn
+
+  $c create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill yellow -text "$::movePicToResize" -tags text
+  $c create window [expr $canvCutX2 - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn -tag okbtn
+  $c create window [expr $canvCutX2 - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn -tag delbtn
 #    
-#  pack $c -side top -fill none
+  pack $c -side top -fill none
+
 #  
-#  set canvX [lindex [$c conf -width ] end]
-#  set canvY [lindex [$c conf -height] end]
+#set canvX [lindex [$c conf -width ] end]
+# set canvY [lindex [$c conf -height] end]
 #  
 #  
 #  
@@ -198,10 +202,7 @@ $w.moveTxtL conf -text "Verschieben Sie den Text nach Wunsch und drücken Sie OK
 ##called by openResizeWindow & openReposWindow
 proc setupReposTextWin {c} {
   global fontsize
-  
-  #Start resizing in the background - TODO happens before resizeWin OK button is pressed !!!
-#  set ::Modal.Result [doResize $c $origPic $scaleFactor]
-  
+   
   if {$c == ".resizePhoto.resizeCanv"} {
     set w .resizePhoto
     pack forget $c 
@@ -212,8 +213,7 @@ proc setupReposTextWin {c} {
 
   } else {set w .reposPhoto}
   
-  label $w.moveTxtL -font {TkHeaderFont 20 bold} -fg red -bg beige -pady 20 -bd 2 -relief sunken
-  $w.moveTxtL conf -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position!"
+  label $w.moveTxtL -font {TkHeaderFont 20 bold} -fg red -bg beige -pady 20 -bd 2 -relief sunken -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position und des Helligkeitswerts."
   pack $w.moveTxtL -fill x 
   pack $c
        
