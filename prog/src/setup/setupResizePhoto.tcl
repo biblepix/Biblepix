@@ -92,30 +92,27 @@ proc openResizeWindow {} {
     NewsHandler::QueryNews "Bestimmen Sie bitte noch die gewünschte Textposition." lightgreen
    # openReposWindow
         
+puts "IF $origImgFactor"
+puts "SF $screenFactor" 
         
-#        
-#        
-      #CUT HEIGHT
+  #CUT HEIGHT
   if {$origImgFactor < $screenFactor} {
-
+    puts "Cutting height.."
     set canvCutX2 $canvImgX
-    set canvCutY2 [expr round($canvImgX / $screenFactor)]
-      #CUT WIDTH
-  } else {
-
-    set canvCutX2 [expr round($canvImgY / $screenFactor)]
+    set canvCutY2 [expr round($canvImgY / $screenFactor)]
+  #CUT WIDTH
+  } elseif {$origImgFactor > $screenFactor} {
+    puts "Cutting width.."
+    set canvCutX2 [expr round($canvImgX / $screenFactor)]
     set canvCutY2 $canvImgY
   }
 
   #Set cutting coordinates & configure canvas
   $c conf -width $canvCutX2 -height $canvCutY2
 
-
-
   $c create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill yellow -text "$::movePicToResize" -tags text
   $c create window [expr $canvCutX2 - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn -tag okbtn
   $c create window [expr $canvCutX2 - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn -tag delbtn
-#    
   pack $c -side top -fill none
 
 #  
@@ -174,6 +171,7 @@ proc openResizeWindow {} {
   Show.Modal .resizePhoto -destroy 0 -onclose $cancelButton
 
 } ;#END openResizeWindow
+
 
 # openReposWindow
 ##opens new toplevel window if .resizePhoto doesn't exist
