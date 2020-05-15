@@ -2,7 +2,7 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 7may20 pv
+# Updated 15may20 pv
 
 #TODO :uncomment:
 #catch {namespace delete colour}
@@ -31,68 +31,51 @@ namespace eval colour {
     set endX [expr $imgX - $margin]
     set begY $margin
     set endY [expr $imgY - $margin]
-    set prevxPos [expr $begX - 1]    
-    
+
     #pretend prevC array & prevX for 1st run & LNL (list number per row)
     array set prevCArr {r 0 g 0 b 0}
-        
+
     #Run through rows of row height
     for {set yPos $begY} {$yPos < $endY} {incr yPos} {
-        
+
       #Run through pixels of row width
       for {set xPos $begX} {$xPos < $endX} {incr xPos} {
-      
+
         #Get current rgb
         lassign [$img get $xPos $yPos] r g b
         array set curCArr "r $r g $g b $b"
-  
-        #Compare current rgb with previous      
-        set maxr [expr max($curCArr(r) , $prevCArr(r))]
-        set minr [expr min($curCArr(r) , $prevCArr(r))]
-        set maxg [expr max($curCArr(g) , $prevCArr(g))]
-        set ming [expr min($curCArr(g) , $prevCArr(g))]
-        set maxb [expr max($curCArr(b) , $prevCArr(b))]
-        set minb [expr min($curCArr(b) , $prevCArr(b))]
-      
-        #Add consecutive pixelPositions to 1 matchlist per row  
-        set diffr [expr $maxr - $minr]
-        set diffg [expr $maxg - $ming]
-        set diffb [expr $maxb - $minb]
- 
-        array set prevCArr "r $r g $g b $b"   
+
+        #Compare current rgb with previous
+        set diffr [expr abs([expr $curCArr(r) - $prevCArr(r)])]
+        set diffg [expr abs([expr $curCArr(g) - $prevCArr(g)])]
+        set diffb [expr abs([expr $curCArr(b) - $prevCArr(b)])]
+
+        array set prevCArr "r $r g $g b $b"
+
+#TODO ev. separater Durchgang für gefundenen Bereich (Performance?)
+        #Add consecutive pixelPositions to 1 matchlist per row
         set lumCode [setLuminanceCode prevCArr]
 
-        set prevxPos $xPos 
-                                  
         #add 0 in front of xPos if not matching
-        if {
-          
-          $diffr > $colourTol ||
-          $diffg > $colourTol ||
-          $diffb > $colourTol
-                 
+        if { $diffr > $colourTol ||
+             $diffg > $colourTol ||
+             $diffb > $colourTol
         } {
-      
-          set xPos 0$xPos
-         
+          set xPosValue 0$xPos
+        } else {
+          set xPosValue $xPos
         }
-        
-        #add xPos + luminance to match array    
-        array set [namespace current]::$yPos "$xPos $lumCode"        
-        
-        #strip xPos of preceding 0 for next run
-        set xPos [string trimleft $xPos 0]
+
+        #add xPosValue + luminance to match array
+        array set [namespace current]::$yPos "$xPosValue $lumCode"
                     
       } ;#END x loop
-      
+
 puts $[namespace current]::$yPos
 
-        
     } ;#END y loop
-     
   } ;# END scanColourArea
 
-    
   # evalRowlist
   ##scan xPos's of a pixel row for consecutive areas & ... 
   proc evalRowlist {img rowNo} {
@@ -154,6 +137,7 @@ puts $[namespace current]::$yPos
   } ;#END evalRowlist
   
   
+
   # getMatchingRowlist
   ##set rowL array list & rowtotal?
   ##called by evalRowlist + ?getAvLuminance
@@ -164,7 +148,7 @@ puts $[namespace current]::$yPos
     return $rowL
   }
 
-  proc chooseLongestRange {} {    
+  proc chooseLongestRange {} {
       #choose longest range
       if [array exists ranges] {
         foreach name [array names ranges] {
@@ -223,52 +207,51 @@ puts $[namespace current]::$yPos
   # findRanges
   ##finds any suitable colour area(s) per row matchList
   ##puts result in colour::matchArr
-  ##called by evalRowlist ?after each X run?    
-  proc findRanges {matchL} {
+  ##called by evalRowlist ?after each X run?
+  proc findRanges {yPos} {
   
-  #TODO Testing - nur für 1 Reihe, dann brauchen wir Longest für alle Reihen!!!! 
-    array unset ::matchArr
-    set end [llength $matchL]
-    
-    #TODO warum krieg ich 010 ?
-    set startIndex [string trimleft [lindex $matchL 0] 0]
-    
+    set rawMatchL [array names [namespace current]::$yPos]
+    set rawMatchL [lsort $rawMatchL]
+
+    set startIndex 0
+    set end [llength $rawMatchL]
+
+    while {[string index [lindex $rawMatchL $startIndex] 0] == 0} {
+      incr startIndex
+    }
+
     #scan through indeces, excluding non-matching 0.. digits
     while {$startIndex < $end } {
-      set endIndex [findRange $matchL $startIndex $end]
-puts $endIndex      
-      
-      array set ::matchArr "Beg $startIndex End $endIndex"
+      set endIndex [findRange $rawMatchL $startIndex $end]
+puts $endIndex
+
+      lappend matchL "[lindex $rawMatchL $startIndex]-[lindex $rawMatchL $endIndex]"
       set startIndex [incr endIndex]
     }
+    
+    return $matchL
   }
 
   # findRange
   ##finds any subsequent range chunk per matchList
   ##called by findRanges 
-  proc findRange {matchL startIndex end} {
+  proc findRange {rawMatchL currentIndex end} {
 
-    set prevIndex $startIndex
-    set currentArr [incr [lindex $startIndex]]
-    set currentIndex [incr startIndex]
-    
+    set prevValue [lindex $rawMatchL $currentIndex]
+    set currentValue [lindex $rawMatchL [incr currentIndex]]
+
     #Conditions for adding to currentIndex: 
-    #A: index before end / B: array doesn't start with 0 / C: difference to previous index is 1
-    while {
-      $currentIndex < $end &&
-      [string index $currentArr 0] != 0 &&
-      [expr $currentIndex - $prevIndex] == 1
-
+    #A: index before end / B: difference to previous index is 1
+    while {$currentIndex < $end &&
+           [expr $currentValue - $prevValue] == 1
     } {
 puts yesh
 
-      set prevIndex $currentIndex
-      
-      set currentArr [incr [lindex $currentIndex]]
- #incr currentIndex
+      set prevValue $currentValue
+      set currentValue [lindex $rawMatchL [incr currentIndex]]
     }
 
-    return $currentIndex
+    return [expr $currentIndex - 1]
   }
 
 

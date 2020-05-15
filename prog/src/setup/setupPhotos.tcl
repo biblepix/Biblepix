@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 14may20 pv
+# Updated 15may20 jh
 
 set fileJList ""
 
@@ -23,21 +23,14 @@ pack .photosF.mainf.left.t1 -anchor nw -side left -padx {10 40} -pady 40
 
 #Build Photo bar right
 button .photosF.mainf.right.bar.open -width 30 -textvar f6.find -height 1 -command {set fileJList [doOpen $DesktopPicturesDir .imgCanvas]}
-button .photosF.mainf.right.bar.< -text < -height 1 -command {set fileJList [step $fileJList 0 .imgCanvas]}
-button .photosF.mainf.right.bar.> -text > -height 1 -command {set fileJList [step $fileJList 1 .imgCanvas]}
+button .photosF.mainf.right.bar.< -text < -height 1 -command {set fileJList [step $fileJList 1 .imgCanvas]}
+button .photosF.mainf.right.bar.> -text > -height 1 -command {set fileJList [step $fileJList 0 .imgCanvas]}
 button .photosF.mainf.right.bar.collect -textvar f6.show -height 1 -command {set fileJList [doCollect .imgCanvas]}
 
 
-#TODO Joel bitte "Jump to end" und "Jump to beginning" programmieren!
-button .photosF.mainf.right.bar.<< -text << -height 1 -command {set fileJList [lindex $fileJList 0] }
-button .photosF.mainf.right.bar.>> -text >> -height 1 -command {set fileJList [lindex $fileJList end] }
-
-
 pack .photosF.mainf.right.bar.open -side left
-pack .photosF.mainf.right.bar.<< -side left
 pack .photosF.mainf.right.bar.< -side left
 pack .photosF.mainf.right.bar.> -side left
-pack .photosF.mainf.right.bar.>> -side left -fill x 
 
 pack .photosF.mainf.right.bar.collect -side right -fill x
 

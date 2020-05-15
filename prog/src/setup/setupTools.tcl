@@ -450,6 +450,7 @@ proc doOpen {bildordner c} {
 
 proc doCollect {c} {
   set localJList [refreshFileList]
+  set localJList [step $localJList 0 .imgCanvas]
   refreshImg $localJList $c
 
   pack .delBtn .picPath -in .photosF.mainf.right.unten -side left -fill x

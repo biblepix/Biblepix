@@ -273,7 +273,7 @@ proc processPngInfo {c} {
   #TODO include new vars in Globals:
   set AnnotatePng $::picdir/annotatePng.tcl
   set ScanColourArea $::picdir/scanColourArea.tcl
-  source $AnnotatePng   
+  source $AnnotatePng
   source $ScanColourArea
   
   set w .reposPhoto
