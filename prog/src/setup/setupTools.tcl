@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14may20 pv14 Mai 2020 
+# Updated: 15may2020 pv 
  
 source $JList
 
@@ -389,7 +389,6 @@ proc addPic {} {
 
   set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
   
-  
   #Check which original pic to use
   if [catch {image inuse rotateOrigPic}] {
     set origPic photosOrigPic
@@ -428,7 +427,7 @@ proc delPic {} {
   global fileJList picPath
   file delete $picPath
   set fileJList [deleteImg $fileJList .imgCanvas]
-  NewsHandler::QueryNews "[deletedPicMsg $picPath]" red
+  NewsHandler::QueryNews "[deletedPicMsg $picPath]" orange
 }
 
 proc doOpen {bildordner c} {

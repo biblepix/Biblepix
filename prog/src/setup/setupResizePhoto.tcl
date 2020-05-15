@@ -1,7 +1,7 @@
  # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 14may20 pv
+# Updated 15may20 pv
 
 proc openResizeWindow {} {
   global fontsize
@@ -12,52 +12,25 @@ proc openResizeWindow {} {
   image create photo resizeCanvPic
   $c create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
   
-  #Check which original pic to use
-  if [catch {image inuse rotateOrigPic}] {
-    set origPic photosOrigPic
-  } else {
-    set origPic rotateOrigPic
-  }
-  
-  set screenX [winfo screenwidth .]
-  set screenY [winfo screenheight .]
-  set imgX [image width $origPic]
-  set imgY [image height $origPic]
-
-  #Display original pic in largest possible size
-  set maxX [expr $screenX - 200]
-  set maxY [expr $screenY - 200]
-  
-  ##Reduktionsfaktor ist Ganzzahl
-  set scaleFactor 1
-  while { $imgX >= $maxX && $imgY >= $maxY } {
-    incr scaleFactor
-    set imgX [expr $imgX / 2]
-    set imgY [expr $imgY / 2]
-  }
-  
-  #export scaleFactor to 'addpic' namespace
-  set addpic::scaleFactor $scaleFactor
   
   #Copy original pic to canvas
-  resizeCanvPic copy $origPic -subsample $scaleFactor
+  setCanvScaleFactor
+  resizeCanvPic copy $addpic::origPic -subsample $addpic::scaleFactor
   
-  set canvImgX [image width resizeCanvPic]
-  set canvImgY [image height resizeCanvPic]
   
        
   # P h a s e  1  (Resizing window)
 
   #Create title & buttons
   set cancelButton {set ::Modal.Result "Cancelled"}
+  set confirmButton {set ::Modal.Result "doResize $c ; destroy .resizePhoto"}
   
-  ttk::button .resizePhoto.resizeConfirmBtn -text Ok
+  ttk::button .resizePhoto.resizeConfirmBtn -text Ok -command $confirmButton
   ttk::button .resizePhoto.resizeCancelBtn -textvar ::cancel -command $cancelButton
   pack .resizePhoto.resizeConfirmBtn .resizePhoto.resizeCancelBtn ;#will be repacked into canv window
 
-  set screenFactor [expr $screenX. / $screenY]
-  set origImgFactor [expr $imgX. / $imgY]
-  
+
+ 
   set bildname [file tail $addpic::targetPicPath]
   
   #A) Pic is correct size
@@ -82,7 +55,7 @@ proc openResizeWindow {} {
    #B) Pic needs resizing
 #  } 
  
-  .resizePhoto.resizeConfirmBtn conf -command "doResize $c ; destroy .resizePhoto"
+#  .resizePhoto.resizeConfirmBtn conf -command "doResize $c ; destroy .resizePhoto"
   
 #    NewsHandler::QueryNews "Bildgrösse von $bildname wird für den Bildschirm angepast." orange
         
@@ -91,28 +64,15 @@ proc openResizeWindow {} {
         #TODO openReposWin here ?
     NewsHandler::QueryNews "Bestimmen Sie bitte noch die gewünschte Textposition." lightgreen
    # openReposWindow
-        
-puts "IF $origImgFactor"
-puts "SF $screenFactor" 
-        
-  #CUT HEIGHT
-  if {$origImgFactor < $screenFactor} {
-    puts "Cutting height.."
-    set canvCutX2 $canvImgX
-    set canvCutY2 [expr round($canvImgY / $screenFactor)]
-  #CUT WIDTH
-  } elseif {$origImgFactor > $screenFactor} {
-    puts "Cutting width.."
-    set canvCutX2 [expr round($canvImgX / $screenFactor)]
-    set canvCutY2 $canvImgY
-  }
+
 
   #Set cutting coordinates & configure canvas
-  $c conf -width $canvCutX2 -height $canvCutY2
+  lassign [fitPic2Canv $c] cutX cutY
+  $c conf -width $cutX -height $cutY
 
   $c create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill yellow -text "$::movePicToResize" -tags text
-  $c create window [expr $canvCutX2 - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn -tag okbtn
-  $c create window [expr $canvCutX2 - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn -tag delbtn
+  $c create window [expr $cutX - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn -tag okbtn
+  $c create window [expr $cutX - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn -tag delbtn
   pack $c -side top -fill none
 
 #  
@@ -173,25 +133,88 @@ puts "SF $screenFactor"
 } ;#END openResizeWindow
 
 
+proc fitPic2Canv {c} {
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+  set imgX [image width $addpic::origPic]
+  set imgY [image height $addpic::origPic]
+  
+  set canvImgName [lindex [$c itemconf img -image] end]
+  set canvImgX [image width $canvImgName] 
+  set canvImgY [image height $canvImgName]
+  
+  set screenFactor [expr $screenX. / $screenY]
+  set origImgFactor [expr $imgX. / $imgY]        
+  
+  #cut height
+  if {$origImgFactor < $screenFactor} {
+    puts "Cutting height.."
+    set canvCutX2 $canvImgX
+    set canvCutY2 [expr round($canvImgY / $screenFactor)]
+  #cut width
+  } elseif {$origImgFactor > $screenFactor} {
+    puts "Cutting width.."
+    set canvCutX2 [expr round($canvImgX / $screenFactor)]
+    set canvCutY2 $canvImgY
+  #no cutting needed
+  } else  {
+    set canvCutX2 $imgX
+    set canvCutY2 $imgY
+  }
+  
+  return "$canvCutX2 $canvCutY2"
+} ;#END fitPic2Canv
+
+# setCanvScaleFactor
+##sets scale factor in 'addpic' namespace
+##for largest possible display size
+##called by ?addPic & openResizeWindow & openReposWindow
+proc setCanvScaleFactor {} {
+
+  #Check which original pic to use
+  if [catch {image inuse rotateOrigPic}] {
+    set origPic photosOrigPic
+  } else {
+    set origPic rotateOrigPic
+  }
+  
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+  set imgX [image width $origPic]
+  set imgY [image height $origPic]
+
+  set maxX [expr $screenX - 200]
+  set maxY [expr $screenY - 200]
+  
+  ##Reduktionsfaktor ist Ganzzahl
+  set scaleFactor 1
+  while { $imgX >= $maxX && $imgY >= $maxY } {
+    incr scaleFactor
+    set imgX [expr $imgX / 2]
+    set imgY [expr $imgY / 2]
+  }
+  
+  #export scaleFactor to 'addpic' namespace
+  set addpic::scaleFactor $scaleFactor
+
+} ;#END setCanvScaleFactor
+
 # openReposWindow
 ##opens new toplevel window if .resizePhoto doesn't exist
 ##called by addPic if ![needsResize]
 proc openReposWindow {} {
   global fontsize
-  toplevel .reposPhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600
+  set w [toplevel .reposPhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
   image create photo reposCanvPic
   set c [canvas .reposPhoto.reposCanv -bg lightblue]
   $c create image 0 0 -image reposCanvPic -anchor nw -tags {img mv}
-
+  
 #Redraw window
 setupReposTextWin $c
 
 #process & save
 #processPngInfo $c $targetPicPath
 
-#Redraw text & button
-$w.confirmBtn conf -state normal -command "processPngInfo $c $addpic::targetPicPath"
-$w.moveTxtL conf -text "Verschieben Sie den Text nach Wunsch und drücken Sie OK zum Speichern der Position und Helligkeit."
 
 } ;#END openReposWindow
 
@@ -209,18 +232,37 @@ proc setupReposTextWin {c} {
     $c delete text
     $c delete delbtn
 
-  } else {set w .reposPhoto}
+  } else {
+    set w .reposPhoto
+  }
   
   label $w.moveTxtL -font {TkHeaderFont 20 bold} -fg red -bg beige -pady 20 -bd 2 -relief sunken -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position und des Helligkeitswerts."
   pack $w.moveTxtL -fill x 
   pack $c
+  
+  #Copy origPic to reposCanv if resizeCanv wasn't opened
+  if [catch {image inuse resizeCanvPic}] {
+    setCanvScaleFactor
+    reposCanvPic copy $addpic::origPic -subsample $addpic::scaleFactor
+    lassign [fitPic2Canv $c] cutX cutY
+    $c conf -width $cutX -height $cutY
+    #Set bindings
+ #   bind $w <Escape> $cancelButton
+    $c bind mv <1> {
+       set ::x %X
+       set ::y %Y
+    }
+    $c bind mv <B1-Motion> [list dragCanvasItem %W img %X %Y]
+    button $w.confirmBtn -text OK -command "processPngInfo $c"
+    pack $w.confirmBtn -side right
+  }
        
   createMovingTextBox $c
   font conf movingTextFont -size [expr round($fontsize / $addpic::scaleFactor)]
   $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}  
 
   catch {button $w.resizeConfirmBtn}
-  $w.resizeConfirmBtn conf -text Ok -command "processPngInfo $c $addpic::targetPicPath" 
+  $w.resizeConfirmBtn conf -state normal -text Ok -command "processPngInfo $c" 
   
 } ;#END setupReposTextWin
 
