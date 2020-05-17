@@ -2,7 +2,7 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16may20 pv
+# Updated 17may20 pv
 
 #TODO :uncomment:
 #catch {namespace delete colour}
@@ -94,9 +94,9 @@ foreach y [colour::sortRowlists] {findRanges $y}
   # findRanges
   ##finds any suitable colour area(s) per row matchList
   ##puts result in colour::matchArr
-  ##called by evalRowlist ?after each X run?
+  ##called by processPngComment in setupResize
   proc findRanges {img yPos} {
-    set minwidth [expr [image width $img] / 4]
+    set minwidth [expr [image width $img] / 5]
     set rawMatchL [array names [namespace current]::$yPos]
     set rawMatchL [lsort $rawMatchL]
     set startIndex 0
@@ -141,10 +141,18 @@ foreach y [colour::sortRowlists] {findRanges $y}
       append lengthL $length ,
       set longestRange [expr max($lengthL)]
       #save begPos of longest range in final list 
-      lappend [namespace current]::finalRangeList $beg
+      #lappend [namespace current]::finalRangeList $beg
+      lappend finalRangeList $beg
     }
-    unset lengthL lengthsArr
-  }
+    
+    #Return finalRangeList or 0
+    if [info exists finalRangeList] {
+      return $finalRangeList   
+    } else {
+      return 0
+    }
+  
+  } ;#END findRanges
   
   
   # findRange
@@ -156,7 +164,7 @@ foreach y [colour::sortRowlists] {findRanges $y}
     set currentValue [lindex $rawMatchL [incr currentIndex]]
 
     #Conditions for adding to currentIndex: 
-    #A: index before end / B: difference to previous index is 1
+    #A: index before end / B: difference to previous index = 1
     while {$currentIndex < $end &&
            [expr $currentValue - $prevValue] == 1
            
@@ -171,6 +179,15 @@ foreach y [colour::sortRowlists] {findRanges $y}
   }
 
 
+      
+} ;#END ::colour namespace
+
+
+
+#######################################################################
+########## O B S O L E T E ############################################
+#######################################################################
+#NOT NEEDED NOW - OBSOLETE!
   proc chooseLongestRange {} {
       #choose longest range
       if [array exists ranges] {
@@ -189,14 +206,6 @@ foreach y [colour::sortRowlists] {findRanges $y}
       set longestRange [expr max($rangeLengthList)]
    
   }
-      
-} ;#END ::colour namespace
-
-
-
-#######################################################################
-########## O B S O L E T E ############################################
-#######################################################################
 
 
   #TODO run this only after area coords are clear, will be much easier to program!
