@@ -67,6 +67,7 @@ namespace eval colour {
         }
 
         #add xPosValue + luminance to match array
+        #TODO: können wir hier auch einen namensprefix verwenden für die arrays? z.b. ColorAreaLine
         array set [namespace current]::$yPos "$xPosValue $lumCode"
                     
       } ;#END x loop
@@ -121,33 +122,45 @@ foreach y [colour::sortRowlists] {findRanges $y}
         set length [expr $end - $beg]
   
         #put length + begPos in array (name=length)
-        array set [namespace current]::matchArr${yPos} $length $beg 
+        #TODO: ich würde length und beg tauschen, length kann 2mal das gleiche vorkommen beg nicht.
+        array set [namespace current]::matchArr${yPos} $length $beg
         
         set startIndex [incr endIndex]
-      
       }
-      
     }
-    
+
+    # mein Vorschlag:
+    set maxLength 0
+    foreach {$length $beg} [array get [namespace current]::matchArr${yPos}] {
+      if {$length > $maxLength} {
+        set maxLength $length
+        set selectedBeg $beg
+      }
+    }
+    # selectedBeg und maxLength sind jetzt die gesuchten werte.
+
+    #INFO: dass hast du bereits gemacht, kann also gelöscht werden.
     #Chose longest range per line
     foreach rangeLength [array names [namespace current]::matchArr${yPos}] {
        
       if {$rangeLength >= $minwidth} {
         array set lengthsArr $length $beg
-      } 
+      }
     }
 
     foreach length [array names lengthsArr] {
       append lengthL $length ,
+
+      #INFO: besser ausserhalb vom loop, da uns nur das Endergebnis interessiert.
       set longestRange [expr max($lengthL)]
       #save begPos of longest range in final list 
       #lappend [namespace current]::finalRangeList $beg
       lappend finalRangeList $beg
     }
-    
+
     #Return finalRangeList or 0
     if [info exists finalRangeList] {
-      return $finalRangeList   
+      return $finalRangeList
     } else {
       return 0
     }
