@@ -2,7 +2,7 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 17may20 pv
+# Updated 18may20 pv
 
 #TODO :uncomment:
 #catch {namespace delete colour}
@@ -16,6 +16,9 @@
 
 namespace eval colour {
 
+  #Create namespace 'rowlists' for pixel row arrays
+  namespace eval rowlists {}
+  
   ##scans image by desired height
   ##runs scanRow for each line
   proc scanColourArea {img} {
@@ -52,7 +55,7 @@ namespace eval colour {
 
         array set prevCArr "r $r g $g b $b"
 
-#TODO ev. separater Durchgang für gefundenen Bereich (Performance?)
+#TODO ?ev. separater Durchgang für gefundenen Bereich (Performance?)
         #Add consecutive pixelPositions to 1 matchlist per row
         set lumCode [setLuminanceCode prevCArr]
 
@@ -68,40 +71,89 @@ namespace eval colour {
 
         #add xPosValue + luminance to match array
         #TODO: können wir hier auch einen namensprefix verwenden für die arrays? z.b. ColorAreaLine
-        array set [namespace current]::$yPos "$xPosValue $lumCode"
+        array set rowlists::$yPos [list $xPosValue $lumCode]
                     
       } ;#END x loop
 
-puts $[namespace current]::$yPos
+puts [array names [namespace current]::rowlists::$yPos]
 
-foreach y [colour::sortRowlists] {findRanges $y}
+  #TODO this belongs somewhere else!
+  #    foreach y [sortRowlists] {findRanges $y}
 
     } ;#END y loop
   
   } ;# END scanColourArea
 
 
-  # getMatchingRowlist
+  # sortRowlists
   ##set rowL array list & rowtotal?
-  ##called by evalRowlist + ?getAvLuminance
+  ##called by ?resetTextPos+TextColour
   proc sortRowlists {} {
-    foreach arr [lsort -dictionary [info vars [namespace current]::*]] {
-      lappend rowL [namespace tail $arr]
+    namespace eval rowlists {
+      foreach arr [lsort -dictionary [info vars [namespace current]::*]] {
+        lappend colour::rowL [namespace tail $arr]
+      }
+# return $rowL
     }
-    return $rowL
   }
 
+  # doColourScan 
+  ##wraps up all scanning processes
+  ##outputs xPos+yPos+luminance to calling prog
+  ##called by ?
+  proc doColourScan {c} {
+    source $::ImgTools
+     
+    #1. Create small pic for scanning
+    image create photo reposCanvSmallPic
+    lassign [getCanvSection $c] x1 y1 x2 y2
+    reposCanvSmallPic copy resizeCanvPic -subsample 3 -from $x1 $y1 $x2 $y2 
+    
+    #2. run scanColourArea + create colour::rowlists ns
+    scanColourArea
+    
+    #3. run sortRowlists & findRanges + create colour::matchlists ns
+    foreach arr [sortRowlists] {
+        set rowL [namespace tail $arr]
+    }
+    foreach y $rowL {
+      set rangeList [findRanges $y]
+    }  
+    
+    #4. Do some evaluation & return xPos, yPos + luminance
+    if {$rangeList != ""} { ... }
+    
+    
+        
+    #TODO move below to another proc
+      proc otherproc {} {
+        #A) set to new if found
+        #TODO evaluate number of matchlist > write some proc!
+        if [?evalMatchlists] {
+          $c move text ..
+          $c itemconf text -fg ...
+        
+        #B) set to standard if none found
+        } else {
+          $c move text ..
+          $c itemconf text -fg ..
+        }
+      }
+  }
 
   # findRanges
   ##finds any suitable colour area(s) per row matchList
-  ##puts result in colour::matchArr
+  ##puts result in colour::matchlists::$yPos array
   ##called by processPngComment in setupResize
   proc findRanges {img yPos} {
     set minwidth [expr [image width $img] / 5]
-    set rawMatchL [array names [namespace current]::$yPos]
+    set rawMatchL [array names rowlists::$yPos]
     set rawMatchL [lsort $rawMatchL]
     set startIndex 0
     set end [llength $rawMatchL]
+
+    #Create 'matchlists' namespace
+    namespace eval matchlists {}
 
     while {[string index [lindex $rawMatchL $startIndex] 0] == 0} {
       incr startIndex
@@ -110,61 +162,49 @@ foreach y [colour::sortRowlists] {findRanges $y}
     #scan through indices, excluding non-matching 0.. digits
     while {$startIndex < $end } {
       set endIndex [findRange $rawMatchL $startIndex $end]
-#puts $endIndex
-      
       set rangeWidth [expr $endIndex - $startIndex]
+
       if {$rangeWidth >= $minWidth} {
         
-        #lappend [namespace current]::matchL "[lindex $rawMatchL $startIndex]-[lindex $rawMatchL $endIndex]"
         #Create matchArray per line
         set beg [lindex $rawMatchL $startIndex]
         set end [lindex $rawMatchL $endIndex]
         set length [expr $end - $beg]
   
-        #put length + begPos in array (name=length)
-        #TODO: ich würde length und beg tauschen, length kann 2mal das gleiche vorkommen beg nicht.
-        array set [namespace current]::matchArr${yPos} $length $beg
-        
+        #put begPos + length in array
+        array set matchlists::$yPos $beg $length
         set startIndex [incr endIndex]
       }
     }
 
-    # mein Vorschlag:
-    set maxLength 0
-    foreach {$length $beg} [array get [namespace current]::matchArr${yPos}] {
-      if {$length > $maxLength} {
-        set maxLength $length
-        set selectedBeg $beg
+    #Find begPos of longest row
+    if [info exists matchlists::$yPos] {
+      set maxLength 0
+      foreach {beg length} [array get matchlists::$yPos] {
+        if {$length > $maxLength} {
+          set maxLength $length
+          set selectedBeg $beg
+        }
       }
-    }
-    # selectedBeg und maxLength sind jetzt die gesuchten werte.
 
-    #INFO: dass hast du bereits gemacht, kann also gelöscht werden.
-    #Chose longest range per line
-    foreach rangeLength [array names [namespace current]::matchArr${yPos}] {
-       
-      if {$rangeLength >= $minwidth} {
-        array set lengthsArr $length $beg
-      }
-    }
+#    foreach length [array names lengthsArr] {
+#      append lengthL $length ,
 
-    foreach length [array names lengthsArr] {
-      append lengthL $length ,
+#      #INFO: besser ausserhalb vom loop, da uns nur das Endergebnis interessiert.
+#      set longestRange [expr max($lengthL)]
+#      #save begPos of longest range in final list 
+#      #lappend [namespace current]::finalRangeList $beg
+#      lappend finalRangeList $beg
+#    }
 
-      #INFO: besser ausserhalb vom loop, da uns nur das Endergebnis interessiert.
-      set longestRange [expr max($lengthL)]
-      #save begPos of longest range in final list 
-      #lappend [namespace current]::finalRangeList $beg
-      lappend finalRangeList $beg
+      lappend rangeList $selectedBeg    
     }
-
-    #Return finalRangeList or 0
-    if [info exists finalRangeList] {
-      return $finalRangeList
-    } else {
-      return 0
+    
+    #Return rangeList or ""
+    if [info exists rangeList] {
+      return $rangeList
     }
-  
+    
   } ;#END findRanges
   
   
