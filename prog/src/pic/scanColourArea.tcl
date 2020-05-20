@@ -2,7 +2,7 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 19may20 pv
+# Updated 20may20 pv
 
 #Create small pic from resize canv pic
 source $ImgTools
@@ -15,8 +15,8 @@ $img copy resizeCanvPic -subsample 3 -from $x1 $y1 $x2 $y2
 #catch {namespace delete colour}
 
 namespace eval colour {}
-namespace eval colour::rowlists {}
-namespace eval colour::matchlists {}
+namespace eval colour::rowarrays {}
+namespace eval colour::matcharrays {}
 
 #Create vars for small pic -- TODO move some to Globals?
 set colour::img $img  
@@ -24,6 +24,7 @@ set colour::minWidth [expr [image width $img] / 5]
 set colour::maxHeight [expr [image height $img] / 5]
 set colour::colourTol 10
 set colour::margin 10
+set colour::endPos [expr [image width $img] - $margin]
 
 namespace eval colour { 
 
@@ -78,33 +79,149 @@ namespace eval colour {
         }
 
         #add xPosValue + luminance to match array
-        array set rowlists::$yPos [list $xPosValue $lumCode]
+        array set rowarrays::$yPos [list $xPosValue $lumCode]
                     
       } ;#END x loop
 
-#puts [array names [namespace current]::rowlists::$yPos]
-
-  #TODO this belongs somewhere else!
-  #    foreach y [sortRowlists] {findRanges $y}
+#puts [array names [namespace current]::rowarrays::$yPos]
 
     } ;#END y loop
   
   } ;# END scanColourArea
 
 
-  # sortRowlists
-  ##set rowL array list & rowtotal?
-  ##called by ?resetTextPos+TextColour
-  proc sortRowlists {} {
-    namespace eval rowlists {
-      foreach arr [lsort -dictionary [info vars [namespace current]::*]] {
-        lappend colour::rowL [namespace tail $arr]
-      }
-# return $rowL
-    }
-  }
+  
 
-  # doColourScan 
+  
+
+  # findRanges
+  ##finds any suitable colour area(s) per row matchList
+  ##puts result in colour::matcharrays::$yPos array
+  ##called by processPngComment in setupResize
+  proc findRanges {} {
+    global colour::img
+    global colour::minWidth
+    global colour::margin
+    global colour::endPos
+    
+    #get unsorted row list - each yPos has the complete path!
+    set rowL [info vars [namespace current]::rowarrays::*]
+
+    foreach yPos $rowL {
+
+
+#    set yPos $args
+puts $yPos
+    
+      set rawMatchL [array names $yPos]
+      set startIndex 0
+      set end $endPos
+      
+#      #skip 0.. x positions
+#      while {[string index [lindex $rawMatchL $startIndex] 0] == 0} {
+#        incr startIndex
+#      } ;#END y-loop
+
+puts "SI $startIndex"
+        
+      #scan through x indices
+      while {$startIndex < $end && [string is digit $startIndex] } {
+      
+        set endIndex [findRange $yPos $startIndex $end]
+puts $endIndex
+
+if [string is digit $endIndex] {
+        set rangeWidth [expr $endIndex - $startIndex]
+puts $rangeWidth
+
+        if {$rangeWidth >= $minWidth} {
+ puts yesh2         
+          #Create matchArray per line
+#          set beg [lindex $rawMatchL $startIndex]
+#          set end [lindex $rawMatchL $endIndex]
+#puts "Beg $beg"
+#puts "End $end"
+          
+          #put begPos + length in temporary array
+          array set matchArr [list $startIndex $rangeWidth]
+        
+    puts [array get matchArr]
+        }
+      
+      set endIndex [findRange $yPos $startIndex $end]
+      set rangeWidth [expr $endIndex - $startIndex]
+      set startIndex [incr endIndex]
+
+#TODO Bedingung stimmt nicht!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+} else {
+break
+}
+
+      } ;#END while1
+      
+
+      #Find begPos of longest row
+      if [array exists matchArr] {
+puts [  parray matchArr]
+  
+        set maxLength 0
+        foreach {beg length} [array get matchArr] {
+          if {$length > $maxLength} {
+            set maxLength $length
+            set selectedBeg $beg
+          }
+        }
+        
+        #make allMatchesArray with $selected beginnings (to be sorted later)
+        set yPos [namespace tail $yPos]
+        append allMatchesArr [namespace current] :: matcharrays :: $yPos
+        array set $allMatchesArr [list $yPos $selectedBeg]   
+      }
+        
+    } ;#END foreach yPos
+
+    #Put rangeList into matcharrays:: ns
+#    if [info exists rangeList] {
+#      #return $rangeList
+#      set [namespace current]::matcharrays::rangeList $rangeList
+#    }
+
+  } ;#END findRanges
+  
+  
+  # findRange
+  ##finds any subsequent range chunk per matchList
+  ##called by findRanges 
+  proc findRange {yPos currIndex end} {
+
+#    set prevValue [lindex $rawMatchL $currIndex]
+#    set currValue [lindex $rawMatchL [incr currIndex]]
+
+    #Conditions for adding to currentIndex: 
+    #A: index before end / B: difference to previous index = 1
+    for {set xPos $currIndex} {$xPos<$end} {incr xPos} {
+
+    #[expr $currValue - $prevValue] == 1
+      append rowArrNo colour :: rowarrays :: $yPos :: $xPos 
+            
+      if [array exists $rowArrNo] {
+        
+        set currIndex [expr $xPos - 1]
+
+#        set prevValue $currValue
+#        set currValue [lindex $rawMatchL [incr currIndex]]
+      } else {
+      
+        set currIndex F
+      }
+      
+    } ;#END for 
+    
+    return $currIndex
+    
+  } ;#END findRange
+   
+# doColourScan 
   ##wraps up all scanning processes
   ##outputs xPos+yPos+luminance to calling prog
   ##called by ?
@@ -116,11 +233,11 @@ namespace eval colour {
 #    lassign [getCanvSection $c] x1 y1 x2 y2
 #    reposCanvSmallPic copy resizeCanvPic -subsample 3 -from $x1 $y1 $x2 $y2 
     
-    #2. run scanColourArea + create colour::rowlists ns
+    #2. run scanColourArea + create colour::rowarrays ns
     scanColourArea
     
-    #3. run sortRowlists & findRanges + create colour::matchlists ns
-    foreach arr [info vars [array current]::rowlists::*] {
+    #3. run sortrowarrays & findRanges + create colour::matcharrays ns
+    foreach arr [info vars [array current]::rowarrays::*] {
         set rowL [namespace tail $arr]
     }
     foreach y $rowL {
@@ -136,7 +253,7 @@ namespace eval colour {
       proc otherproc {} {
         #A) set to new if found
         #TODO evaluate number of matchlist > write some proc!
-        if [?evalMatchlists] {
+        if [?evalmatcharrays] {
           $c move text ..
           $c itemconf text -fg ...
         
@@ -148,93 +265,6 @@ namespace eval colour {
       }
   }
 
-  # findRanges
-  ##finds any suitable colour area(s) per row matchList
-  ##puts result in colour::matchlists::$yPos array
-  ##called by processPngComment in setupResize
-  proc findRanges {yPos} {
-    global colour::img
-    
-    global colour::minWidth
-        
-    set rawMatchL [array names rowlists::$yPos]
-    set rawMatchL [lsort $rawMatchL]
-
-    set startIndex 0
-    set end [llength $rawMatchL]
-
-    #Scan through yPos array list
-    foreach yPos $rawMatchL {
-    
-      #skip 0.. x positions
-      while {[string index [lindex $rawMatchL $startIndex] 0] == 0} {
-        incr startIndex
-      }
-
-      #scan through x indices
-      while {$startIndex < $end } {
-        set endIndex [findRange $rawMatchL $startIndex $end]
-        set rangeWidth [expr $endIndex - $startIndex]
-
-        if {$rangeWidth >= $minWidth} {
-          
-          #Create matchArray per line
-          set beg [lindex $rawMatchL $startIndex]
-          set end [lindex $rawMatchL $endIndex]
-          set length [expr $end - $beg]
-    
-          #put begPos + length in array
-          array set matchlists::$yPos $beg $length
-          set startIndex [incr endIndex]
-        }
-      }
-
-      #Find begPos of longest row
-      if [info exists matchlists::$yPos] {
-        set maxLength 0
-        foreach {beg length} [array get matchlists::$yPos] {
-          if {$length > $maxLength} {
-            set maxLength $length
-            set selectedBeg $beg
-          }
-        }
-        lappend rangeList $selectedBeg    
-      } 
-    } ;#END foreach yPos   
-
-    #Return rangeList or ""
-    if [info exists rangeList] {
-      return $rangeList
-    }
-
-  } ;#END findRanges
-  
-  
-  # findRange
-  ##finds any subsequent range chunk per matchList
-  ##called by findRanges 
-  proc findRange {rawMatchL currentIndex end} {
-
-    set prevValue [lindex $rawMatchL $currentIndex]
-    set currentValue [lindex $rawMatchL [incr currentIndex]]
-
-    #Conditions for adding to currentIndex: 
-    #A: index before end / B: difference to previous index = 1
-    while {$currentIndex < $end &&
-           [expr $currentValue - $prevValue] == 1
-           
-    } {
-#puts yesh
-
-      set prevValue $currentValue
-      set currentValue [lindex $rawMatchL [incr currentIndex]]
-    }
-
-    return [expr $currentIndex - 1]
-  }
-
-
-      
 } ;#END ::colour namespace
 
 
@@ -242,7 +272,19 @@ namespace eval colour {
 #######################################################################
 ########## O B S O L E T E ############################################
 #######################################################################
-#NOT NEEDED NOW - OBSOLETE!
+
+# sortrowarrays
+  ##set rowL array list & rowtotal?
+  ##called by ?resetTextPos+TextColour
+  proc sortrowarrays {} {
+    namespace eval rowarrays {
+      foreach arr [lsort -dictionary [info vars [namespace current]::*]] {
+        lappend colour::rowL [namespace tail $arr]
+      }
+# return $rowL
+    }
+  }
+
   proc chooseLongestRange {} {
       #choose longest range
       if [array exists ranges] {
@@ -273,7 +315,7 @@ namespace eval colour {
     global margintop marginleft
     
     #TODO Make sure 0... values are excluded!
-    set rowlist [getMatchingRowlists]
+    set rowlist [getMatchingrowarrays]
      
     #A) TODO same as B - but define margintop and lmarginleft as starting point 
     #TODO I think you should resort to the already calculated matching ranges for this! s.o.
