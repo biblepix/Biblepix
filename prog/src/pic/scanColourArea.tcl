@@ -2,7 +2,7 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 20may20 pv
+# Updated 21may20 pv
 
 #Create small pic from resize canv pic
 source $ImgTools
@@ -109,60 +109,38 @@ namespace eval colour {
 
     foreach yPos $rowL {
 
-
-#    set yPos $args
 puts $yPos
     
       set rawMatchL [array names $yPos]
-      set startIndex 0
+      set startIndex $margin
       set end $endPos
-      
-#      #skip 0.. x positions
-#      while {[string index [lindex $rawMatchL $startIndex] 0] == 0} {
-#        incr startIndex
-#      } ;#END y-loop
-
-puts "SI $startIndex"
         
       #scan through x indices
-      while {$startIndex < $end && [string is digit $startIndex] } {
+      while {$startIndex < $end} {
       
         set endIndex [findRange $yPos $startIndex $end]
 puts $endIndex
-
-if [string is digit $endIndex] {
         set rangeWidth [expr $endIndex - $startIndex]
 puts $rangeWidth
 
         if {$rangeWidth >= $minWidth} {
  puts yesh2         
-          #Create matchArray per line
-#          set beg [lindex $rawMatchL $startIndex]
-#          set end [lindex $rawMatchL $endIndex]
-#puts "Beg $beg"
-#puts "End $end"
-          
+         
           #put begPos + length in temporary array
           array set matchArr [list $startIndex $rangeWidth]
         
-    puts [array get matchArr]
+ puts [parray matchArr]
         }
       
-      set endIndex [findRange $yPos $startIndex $end]
-      set rangeWidth [expr $endIndex - $startIndex]
-      set startIndex [incr endIndex]
+        set endIndex [findRange $yPos $startIndex $end]
+        set rangeWidth [expr $endIndex - $startIndex]
+        set startIndex [incr endIndex]
 
-#TODO Bedingung stimmt nicht!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-} else {
-break
-}
-
-      } ;#END while1
+      } ;#END while
       
 
       #Find begPos of longest row
       if [array exists matchArr] {
-puts [  parray matchArr]
   
         set maxLength 0
         foreach {beg length} [array get matchArr] {
@@ -174,17 +152,12 @@ puts [  parray matchArr]
         
         #make allMatchesArray with $selected beginnings (to be sorted later)
         set yPos [namespace tail $yPos]
-        append allMatchesArr [namespace current] :: matcharrays :: $yPos
-        array set $allMatchesArr [list $yPos $selectedBeg]   
+  puts $yPos
+        array set [namespace current]::matcharrays::matchArr [list $yPos $selectedBeg]
+  
       }
         
     } ;#END foreach yPos
-
-    #Put rangeList into matcharrays:: ns
-#    if [info exists rangeList] {
-#      #return $rangeList
-#      set [namespace current]::matcharrays::rangeList $rangeList
-#    }
 
   } ;#END findRanges
   
@@ -212,7 +185,7 @@ puts [  parray matchArr]
 #        set currValue [lindex $rawMatchL [incr currIndex]]
       } else {
       
-        set currIndex F
+        set currIndex $end
       }
       
     } ;#END for 
