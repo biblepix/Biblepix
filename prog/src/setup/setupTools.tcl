@@ -401,10 +401,10 @@ proc addPic {} {
     return 1
   }
   
-  #export targetPicPath + scaleFactor + origPic to 'addpic' namespace
-  namespace eval addpic {}
-  set addpic::targetPicPath $targetPicPath
-  set addpic::origPic $origPic
+  #export targetPicPath + scaleFactor + origPic to 'addpicture' namespace
+  namespace eval addpicture {}
+  set addpicture::targetPicPath $targetPicPath
+  set addpicture::origPic $origPic
   
   #A) wrong size: open resizeWindow > reposWindow
   if [needsResize $origPic] {

@@ -256,8 +256,8 @@ proc doResize {c} {
 
   set canvX [lindex [$c conf -width] end]
   set canvY [lindex [$c conf -height] end]
-  set scaleFactor $addpic::scaleFactor
-  set origPic $addpic::origPic
+  set scaleFactor $addpicture::scaleFactor
+  set origPic $addpicture::origPic
   
   lassign [$c bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
 #  

@@ -15,7 +15,7 @@ proc openResizeWindow {} {
   
   #Copy original pic to canvas
   setCanvScaleFactor
-  resizeCanvPic copy $addpic::origPic -subsample $addpic::scaleFactor
+  resizeCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
   
   
        
@@ -31,15 +31,15 @@ proc openResizeWindow {} {
 
 
  
-  set bildname [file tail $addpic::targetPicPath]
+  set bildname [file tail $addpicture::targetPicPath]
   
   #A) Pic is correct size
      
 #  if {$imgX == $screenX && $imgY == $screenY} {
 #      
 #    #1. Save origPic -TODO is this done by addPic???
-#    $origPic write $addpic::targetPicPath -format png
-#    image delete $addpic::origPic
+#    $origPic write $addpicture::targetPicPath -format png
+#    image delete $addpicture::origPic
 #    NewsHandler::QueryNews "Bild $bildname wird unverändert nach $photosDir kopiert." lightgreen
     
             #2. Add PNG info - TODO Automate scanning for luminacy in unchanged pics
@@ -136,8 +136,8 @@ proc openResizeWindow {} {
 proc fitPic2Canv {c} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-  set imgX [image width $addpic::origPic]
-  set imgY [image height $addpic::origPic]
+  set imgX [image width $addpicture::origPic]
+  set imgY [image height $addpicture::origPic]
   
   set canvImgName [lindex [$c itemconf img -image] end]
   set canvImgX [image width $canvImgName] 
@@ -166,7 +166,7 @@ proc fitPic2Canv {c} {
 } ;#END fitPic2Canv
 
 # setCanvScaleFactor
-##sets scale factor in 'addpic' namespace
+##sets scale factor in 'addpicture' namespace
 ##for largest possible display size
 ##called by ?addPic & openResizeWindow & openReposWindow
 proc setCanvScaleFactor {} {
@@ -194,8 +194,8 @@ proc setCanvScaleFactor {} {
     set imgY [expr $imgY / 2]
   }
   
-  #export scaleFactor to 'addpic' namespace
-  set addpic::scaleFactor $scaleFactor
+  #export scaleFactor to 'addpicture' namespace
+  set addpicture::scaleFactor $scaleFactor
 
 } ;#END setCanvScaleFactor
 
@@ -243,7 +243,7 @@ proc setupReposTextWin {c} {
   #Copy origPic to reposCanv if resizeCanv wasn't opened
   if [catch {image inuse resizeCanvPic}] {
     setCanvScaleFactor
-    reposCanvPic copy $addpic::origPic -subsample $addpic::scaleFactor
+    reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
     lassign [fitPic2Canv $c] cutX cutY
     $c conf -width $cutX -height $cutY
     #Set bindings
@@ -258,7 +258,7 @@ proc setupReposTextWin {c} {
   }
        
   createMovingTextBox $c
-  font conf movingTextFont -size [expr round($fontsize / $addpic::scaleFactor)]
+  font conf movingTextFont -size [expr round($fontsize / $addpicture::scaleFactor)]
   $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}  
 
   catch {button $w.resizeConfirmBtn}
@@ -278,7 +278,7 @@ proc processPngInfo {c} {
   
   set w .reposPhoto
   set canvPic [lindex [$c itemcget img -image] end]
-  set smallPic reposCanvSmallPic 
+  set smallPic reposCanvSmallPic
   #Disable controls while reposCanvSmallPic is being processed
   
   $c itemconf mv -state disabled

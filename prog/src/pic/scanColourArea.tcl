@@ -16,15 +16,18 @@ $img copy resizeCanvPic -subsample 3 -from $x1 $y1 $x2 $y2
 
 namespace eval colour {}
 namespace eval colour::rowarrays {}
-namespace eval colour::matcharrays {}
+namespace eval colour::rowarrays::lum {}
 
 #Create vars for small pic -- TODO move some to Globals?
-set colour::img $img  
+set colour::img $img
+set colour::imgX [image width $img]
+set colour::imgY [image height $img]
 set colour::minWidth [expr [image width $img] / 5]
 set colour::maxHeight [expr [image height $img] / 5]
 set colour::colourTol 10
 set colour::margin 10
-set colour::endPos [expr [image width $img] - $margin]
+
+set colour::realWidth [expr $imgX - (2 * $margin)]
 
 namespace eval colour { 
 
@@ -33,17 +36,15 @@ namespace eval colour {
   ##runs scanRow for each line
   proc scanColourArea {} {
 
-    global colour::img  
+    global colour::img
     global colour::margin
     global colour::colourTol
         
     #Limit scanning area by excluding margins
-    set imgX [image width $img]
-    set imgY [image height $img]
     set begX $margin
-    set endX [expr $imgX - $margin]
+    set endX [expr $colour::imgX - $margin]
     set begY $margin
-    set endY [expr $imgY - $margin]
+    set endY [expr $colour::imgY - $margin]
 
     #pretend prevC array & prevX for 1st run & LNL (list number per row)
     array set prevCArr {r 0 g 0 b 0}
@@ -65,22 +66,23 @@ namespace eval colour {
 
         array set prevCArr "r $r g $g b $b"
 
-        #Add consecutive pixelPositions to 1 matchlist per row
-        set lumCode [setLuminanceCode prevCArr]
-
         #add 0 in front of xPos if not matching
         if { $diffr > $colourTol ||
              $diffg > $colourTol ||
              $diffb > $colourTol
         } {
-          set xPosValue 0$xPos
+          set xPosValue 0
         } else {
-          set xPosValue $xPos
+          set xPosValue 1
         }
 
         #add xPosValue + luminance to match array
-        array set rowarrays::$yPos [list $xPosValue $lumCode]
-                    
+        array set rowarrays::$yPos [list $xPos $xPosValue]
+
+        #Add consecutive pixelPositions to 1 matchlist per row
+        set lumCode [setLuminanceCode prevCArr]
+        array set rowarrays::lum::$yPos [list $xPos $lumCode]
+
       } ;#END x loop
 
 #puts [array names [namespace current]::rowarrays::$yPos]
@@ -88,11 +90,6 @@ namespace eval colour {
     } ;#END y loop
   
   } ;# END scanColourArea
-
-
-  
-
-  
 
   # findRanges
   ##finds any suitable colour area(s) per row matchList
@@ -104,94 +101,69 @@ namespace eval colour {
     global colour::margin
     global colour::endPos
     
-    #get unsorted row list - each yPos has the complete path!
+    #get unsorted row list - each row has the complete path!
     set rowL [info vars [namespace current]::rowarrays::*]
 
-    foreach yPos $rowL {
+    foreach row $rowL {
+puts $row
 
-puts $yPos
-    
-      set rawMatchL [array names $yPos]
-      set startIndex $margin
-      set end $endPos
-        
+      set startIndex 0
+
       #scan through x indices
-      while {$startIndex < $end} {
-      
-        set endIndex [findRange $yPos $startIndex $end]
-puts $endIndex
+      while {$startIndex < $colour::realWidth} {
+
+        set endIndex [findRange $row $startIndex]
         set rangeWidth [expr $endIndex - $startIndex]
-puts $rangeWidth
 
         if {$rangeWidth >= $minWidth} {
- puts yesh2         
+ puts yesh2
          
-          #put begPos + length in temporary array
+          #put startIndex + length in temporary array
           array set matchArr [list $startIndex $rangeWidth]
         
  puts [parray matchArr]
         }
-      
-        set endIndex [findRange $yPos $startIndex $end]
-        set rangeWidth [expr $endIndex - $startIndex]
-        set startIndex [incr endIndex]
 
+        set startIndex [incr endIndex]
       } ;#END while
       
 
-      #Find begPos of longest row
+      #Find startIndex of longest row
       if [array exists matchArr] {
-  
         set maxLength 0
-        foreach {beg length} [array get matchArr] {
+        foreach {startIndex length} [array get matchArr] {
           if {$length > $maxLength} {
             set maxLength $length
-            set selectedBeg $beg
+            set selectedStartIndex $startIndex
           }
         }
         
         #make allMatchesArray with $selected beginnings (to be sorted later)
-        set yPos [namespace tail $yPos]
-  puts $yPos
-        array set [namespace current]::matcharrays::matchArr [list $yPos $selectedBeg]
-  
+        set yPos [namespace tail $row]
+        array set [namespace current]::matchArr [list $yPos $selectedBeg]
       }
-        
-    } ;#END foreach yPos
-
+    } ;#END foreach row
   } ;#END findRanges
   
   
   # findRange
   ##finds any subsequent range chunk per matchList
   ##called by findRanges 
-  proc findRange {yPos currIndex end} {
+  proc findRange {row startIndex} {
 
-#    set prevValue [lindex $rawMatchL $currIndex]
-#    set currValue [lindex $rawMatchL [incr currIndex]]
+    set zeroFound 0
+    set currIndex $startIndex
+    while {!$zeroFound && $currIndex < $colour::realWidth} {
+      append rowArrNo $row :: $currIndex
 
-    #Conditions for adding to currentIndex: 
-    #A: index before end / B: difference to previous index = 1
-    for {set xPos $currIndex} {$xPos<$end} {incr xPos} {
-
-    #[expr $currValue - $prevValue] == 1
-      append rowArrNo colour :: rowarrays :: $yPos :: $xPos 
-            
-      if [array exists $rowArrNo] {
-        
-        set currIndex [expr $xPos - 1]
-
-#        set prevValue $currValue
-#        set currValue [lindex $rawMatchL [incr currIndex]]
-      } else {
-      
-        set currIndex $end
+      if ![lindex [array get $row $currIndex] 1] {
+        set zeroFound 1
       }
-      
-    } ;#END for 
-    
+
+      incr currIndex
+    }
+
     return $currIndex
-    
   } ;#END findRange
    
 # doColourScan 
