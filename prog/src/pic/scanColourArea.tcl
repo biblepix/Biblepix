@@ -26,8 +26,7 @@ set colour::minWidth [expr [image width $img] / 5]
 set colour::maxHeight [expr [image height $img] / 5]
 set colour::colourTol 10
 set colour::margin 10
-
-set colour::realWidth [expr $imgX - (2 * $margin)]
+set colour::realWidth [expr $colour::imgX - (2 * $margin)]
 
 namespace eval colour { 
 
