@@ -95,10 +95,7 @@ namespace eval colour {
   ##puts result in colour::matcharrays::$yPos array
   ##called by processPngComment in setupResize
   proc findRanges {} {
-    global colour::img
-    global colour::minWidth
-    global colour::margin
-    global colour::endPos
+    global colour::realWidth
     
     #get unsorted row list - each row has the complete path!
     set rowL [info vars [namespace current]::rowarrays::*]
@@ -136,25 +133,23 @@ puts $row
             set selectedStartIndex $startIndex
           }
         }
-        
+
         #make allMatchesArray with $selected beginnings (to be sorted later)
         set yPos [namespace tail $row]
         array set [namespace current]::matchArr [list $yPos $selectedBeg]
       }
     } ;#END foreach row
   } ;#END findRanges
-  
-  
+
   # findRange
   ##finds any subsequent range chunk per matchList
   ##called by findRanges 
   proc findRange {row startIndex} {
+    global colour::realWidth
 
     set zeroFound 0
     set currIndex $startIndex
     while {!$zeroFound && $currIndex < $colour::realWidth} {
-      append rowArrNo $row :: $currIndex
-
       if ![lindex [array get $row $currIndex] 1] {
         set zeroFound 1
       }
