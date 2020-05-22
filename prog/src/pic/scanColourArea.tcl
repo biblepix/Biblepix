@@ -96,7 +96,8 @@ namespace eval colour {
   ##called by processPngComment in setupResize
   proc findRanges {} {
     global colour::realWidth
-    
+    global colour::minWidth
+       
     #get unsorted row list - each row has the complete path!
     set rowL [info vars [namespace current]::rowarrays::*]
 
@@ -109,6 +110,8 @@ puts $row
       while {$startIndex < $colour::realWidth} {
 
         set endIndex [findRange $row $startIndex]
+      puts "Endindex $endIndex"
+        
         set rangeWidth [expr $endIndex - $startIndex]
 
         if {$rangeWidth >= $minWidth} {
@@ -134,9 +137,9 @@ puts $row
           }
         }
 
-        #make allMatchesArray with $selected beginnings (to be sorted later)
+        #make matchArray with $selected beginnings (to be sorted later)
         set yPos [namespace tail $row]
-        array set [namespace current]::matchArr [list $yPos $selectedBeg]
+        array set [namespace current]::matchArr [list $yPos $selectedStartIndex]
       }
     } ;#END foreach row
   } ;#END findRanges
@@ -149,8 +152,9 @@ puts $row
 
     set zeroFound 0
     set currIndex $startIndex
-    while {!$zeroFound && $currIndex < $colour::realWidth} {
-      if ![lindex [array get $row $currIndex] 1] {
+    
+    while {!$zeroFound && $currIndex < $realWidth} {
+      if {[lindex [array get $row $currIndex] 1] != 1} {
         set zeroFound 1
       }
 
@@ -160,8 +164,9 @@ puts $row
     return $currIndex
   } ;#END findRange
    
+   
 # doColourScan 
-  ##wraps up all scanning processes
+  ##wrapper prog for all scanning processes
   ##outputs xPos+yPos+luminance to calling prog
   ##called by ?
   proc doColourScan {c} {
@@ -174,6 +179,10 @@ puts $row
     
     #2. run scanColourArea + create colour::rowarrays ns
     scanColourArea
+
+#Try this - mit dem chasch schaffe :-)
+set L [lsort -integer [array names colour::matchArr]]
+foreach pos $L {parray colour::matchArr $pos}
     
     #3. run sortrowarrays & findRanges + create colour::matcharrays ns
     foreach arr [info vars [array current]::rowarrays::*] {
