@@ -2,10 +2,10 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 21may20 pv
+# Updated 23may20 pv
 
 #Create small pic from resize canv pic
-source $ImgTools
+source $::ImgTools
 set c .resizePhoto.resizeCanv
 set img [image create photo reposCanvSmallPic]
 lassign [getCanvSection $c] x1 y1 x2 y2
@@ -26,7 +26,7 @@ set colour::minWidth [expr [image width $img] / 5]
 set colour::maxHeight [expr [image height $img] / 5]
 set colour::colourTol 10
 set colour::margin 10
-set colour::realWidth [expr $colour::imgX - (2 * $margin)]
+set colour::realWidth [expr $colour::imgX - (2 * $colour::margin)]
 
 namespace eval colour { 
 
@@ -164,12 +164,16 @@ puts $row
     return $currIndex
   } ;#END findRange
    
+   proc dummyColourScan {} {
+     colour::scanColourArea
+     colour::findRanges
    
+   }
 # doColourScan 
   ##wrapper prog for all scanning processes
   ##outputs xPos+yPos+luminance to calling prog
-  ##called by ?
-  proc doColourScan {c} {
+  ##called by setupReposTextwin
+  proc doColourScan {} {
     source $::ImgTools
      
 #    #1. Create small pic for scanning
@@ -179,10 +183,14 @@ puts $row
     
     #2. run scanColourArea + create colour::rowarrays ns
     scanColourArea
-
+    #3. run findRanges + create colour::matchArr
+    findRanges
+    
+    #4. Evaluate match arrays
+    
 #Try this - mit dem chasch schaffe :-)
 set L [lsort -integer [array names colour::matchArr]]
-foreach pos $L {parray colour::matchArr $pos}
+#foreach pos $L {parray colour::matchArr $pos}
     
     #This is more practical - make consecutive pos list
     foreach yPos $L {
@@ -203,8 +211,9 @@ while {[expr abs($cur - $prev)] < $tol} {
 }
 
 #TODO
-set minHeight ... #Do we have this somewhere ??
+set minHeight 30
 #Verify $absL for suitability (= enough number of lines)
+#35 corresponds to about 1/5 of small pic height
 #If not suitable try again from last $cur pos :-)
 
 

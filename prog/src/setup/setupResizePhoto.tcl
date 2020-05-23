@@ -1,7 +1,7 @@
  # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 15may20 pv
+# Updated 23may20 pv
 
 proc openResizeWindow {} {
   global fontsize
@@ -236,7 +236,8 @@ proc setupReposTextWin {c} {
     set w .reposPhoto
   }
   
-  label $w.moveTxtL -font {TkHeaderFont 20 bold} -fg red -bg beige -pady 20 -bd 2 -relief sunken -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position und des Helligkeitswerts."
+  #Text is set later
+  label $w.moveTxtL -font {TkHeaderFont 20 bold} -fg red -bg beige -pady 20 -bd 2 -relief sunken 
   pack $w.moveTxtL -fill x 
   pack $c
   
@@ -264,6 +265,19 @@ proc setupReposTextWin {c} {
   catch {button $w.resizeConfirmBtn}
   $w.resizeConfirmBtn conf -state normal -text Ok -command "processPngInfo $c" 
   
+  $c itemconf mv -state disabled
+  $w.resizeConfirmBtn conf -state disabled
+  $w.moveTxtL conf -fg grey -font 18 -text "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..." 
+  
+  #TODO? furnish real doColourScan!
+  #after idle 
+  source $::picdir/scanColourArea.tcl
+  colour::dummyColourScan
+  
+  $w.moveTxtL conf -fg orange -bg black -font 18 -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position und des Helligkeitswerts." 
+    $w.resizeConfirmBtn conf -state normal
+    $c itemconf mv -state normal
+  
 } ;#END setupReposTextWin
 
 # processPngInfo
@@ -281,9 +295,12 @@ proc processPngInfo {c} {
   set smallPic reposCanvSmallPic
   #Disable controls while reposCanvSmallPic is being processed
   
+  #TODO moved to setupRepos!!!
   $c itemconf mv -state disabled
   $w.resizeConfirmBtn conf -state disabled
-  $w.moveTxtL conf -fg grey -font 18 -text "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..." 
+  
+  #TODO this may not be necessary!!!
+
 
   #Bild verkleinern zum raschen Berechnen
   image create photo $smallPic
