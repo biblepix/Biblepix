@@ -184,6 +184,32 @@ puts $row
 set L [lsort -integer [array names colour::matchArr]]
 foreach pos $L {parray colour::matchArr $pos}
     
+    #This is more practical - make consecutive pos list
+    foreach yPos $L {
+      lassign [array get colour::matchArr $yPos] name pos
+      lappend posL $pos
+    }
+    
+#Run through posL + check out similar consecutives
+set cur [lindex $posL 0]
+set prev [expr $curr - 1]
+set tol 7
+
+#TODO test!!!!!!!!!!!!!!!!
+while {[expr abs($cur - $prev)] < $tol} {
+  lappend absL $cur
+  set prev $cur
+  incr cur
+}
+
+#TODO
+set minHeight ... #Do we have this somewhere ??
+#Verify $absL for suitability (= enough number of lines)
+#If not suitable try again from last $cur pos :-)
+
+
+
+
     #3. run sortrowarrays & findRanges + create colour::matcharrays ns
     foreach arr [info vars [array current]::rowarrays::*] {
         set rowL [namespace tail $arr]
