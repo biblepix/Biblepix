@@ -34,7 +34,6 @@ namespace eval colour {
   ##scans image by desired height
   ##runs scanRow for each line
   proc scanColourArea {} {
-
     global colour::img
     global colour::margin
     global colour::colourTol
@@ -105,6 +104,7 @@ namespace eval colour {
 puts $row
 
       set startIndex 0
+      array unset matchArr
 
       #scan through x indices
       while {$startIndex < $colour::realWidth} {
@@ -123,7 +123,7 @@ puts $row
  puts [parray matchArr]
         }
 
-        set startIndex [incr endIndex]
+        set startIndex $endIndex
       } ;#END while
       
 
