@@ -164,7 +164,10 @@ puts $row
     return $currIndex
   } ;#END findRange
    
-   proc dummyColourScan {} {
+   proc dummyColourScan {w} {
+   #TODO diese Info erscheint nie!!!!!!!!!!!!!!!!!!!!!
+   #TODO JOEL wie kann ich diese Kommandos im Hintergrund laufen lassen????????????
+   $w.moveTxtL conf -fg orange -bg black -font 18 -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position und des Helligkeitswerts." 
      colour::scanColourArea
      colour::findRanges
    

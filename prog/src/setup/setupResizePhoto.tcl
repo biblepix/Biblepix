@@ -272,9 +272,9 @@ proc setupReposTextWin {c} {
   #TODO? furnish real doColourScan!
   #after idle 
   source $::picdir/scanColourArea.tcl
-  colour::dummyColourScan
+  colour::dummyColourScan $w
   
-  $w.moveTxtL conf -fg orange -bg black -font 18 -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position und des Helligkeitswerts." 
+#  $w.moveTxtL conf -fg orange -bg black -font 18 -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position und des Helligkeitswerts." 
     $w.resizeConfirmBtn conf -state normal
     $c itemconf mv -state normal
   
