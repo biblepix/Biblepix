@@ -1,7 +1,7 @@
  # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 23may20 pv
+# Updated 25may20 pv
 
 proc openResizeWindow {} {
   global fontsize
@@ -33,35 +33,7 @@ proc openResizeWindow {} {
  
   set bildname [file tail $addpicture::targetPicPath]
   
-  #A) Pic is correct size
-     
-#  if {$imgX == $screenX && $imgY == $screenY} {
-#      
-#    #1. Save origPic -TODO is this done by addPic???
-#    $origPic write $addpicture::targetPicPath -format png
-#    image delete $addpicture::origPic
-#    NewsHandler::QueryNews "Bild $bildname wird unverändert nach $photosDir kopiert." lightgreen
-    
-            #2. Add PNG info - TODO Automate scanning for luminacy in unchanged pics
-   #THIS IS CRAP - PASS TO reposWin !!!!!!!!!!!!!!!!!!!! 
-#            set x $marginleft
-#            set y $margintop
-#            set luminacy [???]
-#            processPngComment $picPath $x $y $luminacy
-#            
-#    destroy .resizePhoto
-#    return 0
-
-   #B) Pic needs resizing
-#  } 
- 
-#  .resizePhoto.resizeConfirmBtn conf -command "doResize $c ; destroy .resizePhoto"
-  
-#    NewsHandler::QueryNews "Bildgrösse von $bildname wird für den Bildschirm angepast." orange
-        
-  
-        
-        #TODO openReposWin here ?
+   #TODO openReposWin here ?
     NewsHandler::QueryNews "Bestimmen Sie bitte noch die gewünschte Textposition." lightgreen
    # openReposWindow
 
@@ -74,15 +46,7 @@ proc openResizeWindow {} {
   $c create window [expr $cutX - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn -tag okbtn
   $c create window [expr $cutX - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn -tag delbtn
   pack $c -side top -fill none
-
-#  
-#set canvX [lindex [$c conf -width ] end]
-# set canvY [lindex [$c conf -height] end]
-#  
-#  
-#  
-#  
-#  
+ 
 
 
 #  #TODO Establish calculation factor for: a) font size of Canvas pic & 
@@ -91,24 +55,6 @@ proc openResizeWindow {} {
 #  set screen2canvFactor 1.5
 #  
 
-#  #IST DIESE RECHNUNG FALSCH???????????????????
-#  if {$canvX == $canvImgX} {
-#    set screen2canvFactor [expr $screenX. / $imgX]
-#  } elseif {$canvY == $canvImgY} {
-#    set screen2canvFactor [expr $screenY. / $imgY]
-#  }
-
-#  #TODO Check this instaed:
-#  set scale [expr $origX. / $canvX]
-#  if {[expr $canvY. * $scale] > $origY} {
-#    set scale [expr $origY. / $canvY]
-#  }
-#  
-#  
-#  
-#  
-  
-  
   #Set bindings
   bind .resizePhoto <Escape> $cancelButton
   $c bind mv <1> {

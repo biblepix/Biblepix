@@ -1,8 +1,9 @@
+
 # ~/Biblepix/prog/src/pic/scanColourArea.tcl
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 23may20 pv
+# Updated 25may20 pv
 
 #Create small pic from resize canv pic
 source $::ImgTools
@@ -30,10 +31,10 @@ set colour::realWidth [expr $colour::imgX - (2 * $colour::margin)]
 
 namespace eval colour { 
 
-  # scanColourArea    
-  ##scans image by desired height
-  ##runs scanRow for each line
-  proc scanColourArea {} {
+  # scanImage
+  ##main proc to scan image for similar colour pixels per line
+  ##called by doScanImage
+  proc scanImage {} {
     global colour::img
     global colour::margin
     global colour::colourTol
@@ -74,25 +75,28 @@ namespace eval colour {
           set xPosValue 1
         }
 
-        #add xPosValue + luminance to match array
+        #add xPosValue to rowarrays::yPos match array
         array set rowarrays::$yPos [list $xPos $xPosValue]
 
-        #Add consecutive pixelPositions to 1 matchlist per row
+        #add luminance code to rowarrays::lum::yPos match array
         set lumCode [setLuminanceCode prevCArr]
         array set rowarrays::lum::$yPos [list $xPos $lumCode]
 
       } ;#END x loop
-
-#puts [array names [namespace current]::rowarrays::$yPos]
-
     } ;#END y loop
-  
-  } ;# END scanColourArea
+    
+    #Find matching colour ranges
+    if [findRanges] {
+      return 1
+    } {
+      return 0
+    }
+  } ;# END scanImage
 
   # findRanges
   ##finds any suitable colour area(s) per row matchList
-  ##puts result in colour::matcharrays::$yPos array
-  ##called by processPngComment in setupResize
+  ##puts result in colour::matchArr
+  ##called by scanImage
   proc findRanges {} {
     global colour::realWidth
     global colour::minWidth
@@ -115,7 +119,6 @@ puts $row
         set rangeWidth [expr $endIndex - $startIndex]
 
         if {$rangeWidth >= $minWidth} {
- puts yesh2
          
           #put startIndex + length in temporary array
           array set matchArr [list $startIndex $rangeWidth]
@@ -142,6 +145,13 @@ puts $row
         array set [namespace current]::matchArr [list $yPos $selectedStartIndex]
       }
     } ;#END foreach row
+    
+    if [array exists [namespace current]::matchArr] {
+      return 1
+    } {
+      return 0
+    }
+    
   } ;#END findRanges
 
   # findRange
@@ -149,7 +159,6 @@ puts $row
   ##called by findRanges 
   proc findRange {row startIndex} {
     global colour::realWidth
-
     set zeroFound 0
     set currIndex $startIndex
     
@@ -157,10 +166,8 @@ puts $row
       if {[lindex [array get $row $currIndex] 1] != 1} {
         set zeroFound 1
       }
-
       incr currIndex
     }
-
     return $currIndex
   } ;#END findRange
    
@@ -168,8 +175,8 @@ puts $row
    #TODO diese Info erscheint nie!!!!!!!!!!!!!!!!!!!!!
    #TODO JOEL wie kann ich diese Kommandos im Hintergrund laufen lassen????????????
    $w.moveTxtL conf -fg orange -bg black -font 18 -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position und des Helligkeitswerts." 
-     colour::scanColourArea
-     colour::findRanges
+     colour::scanImage
+#     colour::findRanges
    
    }
 # doColourScan 
@@ -179,17 +186,10 @@ puts $row
   proc doColourScan {} {
     source $::ImgTools
      
-#    #1. Create small pic for scanning
-#    image create photo reposCanvSmallPic
-#    lassign [getCanvSection $c] x1 y1 x2 y2
-#    reposCanvSmallPic copy resizeCanvPic -subsample 3 -from $x1 $y1 $x2 $y2 
+    #1. run scanImage(+findRanges) to create colour::rowarrays::* & colour::matchArr
+    scanImage
     
-    #2. run scanColourArea + create colour::rowarrays ns
-    scanColourArea
-    #3. run findRanges + create colour::matchArr
-    findRanges
-    
-    #4. Evaluate match arrays
+    #2. Evaluate match arrays
     
 #Try this - mit dem chasch schaffe :-)
 set L [lsort -integer [array names colour::matchArr]]
