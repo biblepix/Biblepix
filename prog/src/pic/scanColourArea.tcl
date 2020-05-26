@@ -3,13 +3,13 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 25may20 pv
+# Updated 26may20 pv
 
 #Create small pic from resize canv pic
 source $::ImgTools
 set c .resizePhoto.resizeCanv
 set img [image create photo reposCanvSmallPic]
-lassign [getCanvSection $c] x1 y1 x2 y2
+lassign [grabCanvSection $c] x1 y1 x2 y2
 $img copy resizeCanvPic -subsample 3 -from $x1 $y1 $x2 $y2 
 
 #TODO :uncomment:

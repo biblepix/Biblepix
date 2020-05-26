@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15may2020 pv 
+# Updated: 26may2020 pv 
  
 source $JList
 
@@ -360,24 +360,6 @@ proc checkItemInside {c item xDiff yDiff args} {
 ##### S E T U P   P H O T O S   P R O C S #########################################
 ##################################################################################
 
-# needsResize
-##called by addPic
-##compares photosOrigPic OR rotateOrigPic with screen dimensions
-proc needsResize {pic} {
-  set screenX [winfo screenwidth .]
-  set screenY [winfo screenheight .]
-
-  set imgX [image width $pic]
-  set imgY [image height $pic]
-
-  #Compare img dimensions with screen dimensions
-  if {$screenX == $imgX && $screenY == $imgY} {
-    return 0
-  } else {
-    return 1
-  }
-}
-
 # addPic - called by SetupPhoto
 # adds new Picture to BiblePix Photo collection
 # setzt Funktion 'photosOrigPic' voraus und leitet Subprozesse ein
@@ -386,7 +368,6 @@ proc addPic {} {
   
   #TODO add file path to Globals
   source $setupdir/setupResizePhoto.tcl
-
   set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
   
   #Check which original pic to use
@@ -411,14 +392,15 @@ proc addPic {} {
   
     openResizeWindow
     
-  #B) right size: save & open reposWindow for PNG processing 
+  #B) right size: save pic & open repos window
   } else {
-  
+    ##save pic
+    $origPic write $targetPicPath -format PNG
+    #image delete $origPic - DONT!
+    NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
+    
     openReposWindow
 
-    $origPic write $targetPicPath -format PNG
-    image delete $origPic
-    NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
   }
   
 } ;#END addPic
@@ -429,6 +411,80 @@ proc delPic {} {
   set fileJList [deleteImg $fileJList .imgCanvas]
   NewsHandler::QueryNews "[deletedPicMsg $picPath]" orange
 }
+
+# needsResize
+##compares photosOrigPic OR rotateOrigPic with screen dimensions
+##called by addPic
+proc needsResize {pic} {
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+
+  set imgX [image width $pic]
+  set imgY [image height $pic]
+
+  #Compare img dimensions with screen dimensions
+  if {$screenX == $imgX && $screenY == $imgY} {
+    return 0
+  } else {
+    return 1
+  }
+}
+
+# grabCanvSection
+##berechnet resizeCanvPic Bildausschnitt für Kopieren nach reposCanvSmallPic
+##called by addPic & ?processPngInfo?
+proc grabCanvSection {c} { 
+  
+  lassign [$c bbox img] imgX1 imgY1 imgX2 imgY2
+  set canvX [lindex [$c conf -width] end]
+  set canvY [lindex [$c conf -height] end]
+
+  set cutX1 0
+  set cutY1 0
+  set cutX2 $canvX
+  set cutY2 $canvY
+  
+  ##alles gleich
+  if {$imgX2 == $canvX &&
+      $imgY2 == $canvY
+  } {
+    puts "No need for resizing."
+    Return 0
+  }
+  
+  ##Breite ungleich
+  if {$imgX2 > $canvX} {
+  
+    puts "Breite verschieben"
+    if {$imgX1 < 0} {
+      set cutX1 [expr $imgX1 - ($imgX1 + $imgX1) ]
+      set cutX2 [expr $canvX + $cutX1]
+
+    ##nach rechts verschoben
+    } else {
+      set cutX1 0
+      set cutX2 $canvX
+    }
+    
+  ##Höhe ungleich
+  } elseif {$imgY2 > $canvY} {
+  
+    puts "Höhe verschieben"
+    if {$imgY1 < 0} {
+      set cutY1 [expr $imgY1 - ($imgY1 + $imgY1) ]
+      set cutY2 [expr $canvY + $cutY1]
+
+    ##nach unten verschoben
+    } else {
+      set cutY1 0
+      set cutY2 $canvY
+    }
+  
+  }
+  
+  return "$cutX1 $cutY1 $cutX2 $cutY2"
+  
+} ;#END grabCanvSection
 
 proc doOpen {bildordner c} {
   set localJList [openFileDialog $bildordner]
@@ -648,8 +704,79 @@ proc copyAndResizeSamplePhotos {} {
   } ;#END foreach
 } ;#END copyAndResizeSamplePhotos
 
+# fitPic2Canv
+##fits ill-dimensioned photo into screen-dimensioned canvas, cutting over-dimensioned side
+##called by setupResizePhoto for .resizePhoto.resizeCanv & .reposPhoto.reposCanv
+proc fitPic2Canv {c} {
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+  set imgX [image width $addpicture::origPic]
+  set imgY [image height $addpicture::origPic]
+  
+  set canvImgName [lindex [$c itemconf img -image] end]
+  set canvImgX [image width $canvImgName] 
+  set canvImgY [image height $canvImgName]
 
-##### Procs for SetupWelcome ####################################################
+#TODO get from calling prog  
+  set screenFactor [expr $screenX. / $screenY]
+  set origImgFactor [expr $imgX. / $imgY]        
+  
+  #cut height
+  if {$origImgFactor < $screenFactor} {
+    puts "Cutting height.."
+    set canvCutX2 $canvImgX
+    set canvCutY2 [expr round($canvImgY / $screenFactor)]
+  #cut width
+  } elseif {$origImgFactor > $screenFactor} {
+    puts "Cutting width.."
+    set canvCutX2 [expr round($canvImgX / $screenFactor)]
+    set canvCutY2 $canvImgY
+  #no cutting needed
+  } else  {
+    set canvCutX2 $imgX
+    set canvCutY2 $imgY
+  }
+  
+  return "$canvCutX2 $canvCutY2"
+} ;#END fitPic2Canv
+
+# setpic2CanvScalefactor
+##sets scale factor in 'addpicture' namespace
+##for largest possible display size
+##called by ?addPic & openResizeWindow & openReposWindow
+proc setPic2CanvScalefactor {} {
+
+  #Check which original pic to use
+  if [catch {image inuse rotateOrigPic}] {
+    set origPic photosOrigPic
+  } else {
+    set origPic rotateOrigPic
+  }
+  
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+  set imgX [image width $origPic]
+  set imgY [image height $origPic]
+
+  set maxX [expr $screenX - 200]
+  set maxY [expr $screenY - 200]
+  
+  ##Reduktionsfaktor ist Ganzzahl
+  set scaleFactor 1
+  while { $imgX >= $maxX && $imgY >= $maxY } {
+    incr scaleFactor
+    set imgX [expr $imgX / 2]
+    set imgY [expr $imgY / 2]
+  }
+  
+  #export scaleFactor to 'addpicture' namespace
+  set addpicture::scaleFactor $scaleFactor
+
+} ;#END setPic2CanvScalefactor
+
+################################################################################
+##### P r o c s   f o r   S e t u p W e l c o m e  #############################
+################################################################################
 
 proc fillWidgetWithTodaysTwd {twdWidget} {
   global TwdTools
