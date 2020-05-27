@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26may2020 pv 
+# Updated: 27may2020 pv 
  
 source $JList
 
@@ -705,7 +705,7 @@ proc copyAndResizeSamplePhotos {} {
 } ;#END copyAndResizeSamplePhotos
 
 # fitPic2Canv
-##fits ill-dimensioned photo into screen-dimensioned canvas, cutting over-dimensioned side
+##fits ill-dimensioned photo into screen-dimensioned canvas, hiding over-dimensioned side
 ##called by setupResizePhoto for .resizePhoto.resizeCanv & .reposPhoto.reposCanv
 proc fitPic2Canv {c} {
   set screenX [winfo screenwidth .]
@@ -713,31 +713,36 @@ proc fitPic2Canv {c} {
   set imgX [image width $addpicture::origPic]
   set imgY [image height $addpicture::origPic]
   
+  #TODO nur canvas hat korrekte Dimensionen
   set canvImgName [lindex [$c itemconf img -image] end]
+  
   set canvImgX [image width $canvImgName] 
   set canvImgY [image height $canvImgName]
 
-#TODO get from calling prog  
   set screenFactor [expr $screenX. / $screenY]
   set origImgFactor [expr $imgX. / $imgY]        
   
-  #cut height
+  $c conf 
+  ##zu hoch
   if {$origImgFactor < $screenFactor} {
     puts "Cutting height.."
-    set canvCutX2 $canvImgX
-    set canvCutY2 [expr round($canvImgY / $screenFactor)]
-  #cut width
+    set canvCutY [expr round($canvImgX / $screenFactor)]
+    set canvCutX [expr round($canvCutY * $screenFactor)]
+   
+  ##zu breit
   } elseif {$origImgFactor > $screenFactor} {
     puts "Cutting width.."
-    set canvCutX2 [expr round($canvImgX / $screenFactor)]
-    set canvCutY2 $canvImgY
-  #no cutting needed
+    set canvCutX [expr round($canvImgX / $screenFactor)]
+    set canvCutY $canvImgY
+    
+  ##no cutting needed
   } else  {
-    set canvCutX2 $imgX
-    set canvCutY2 $imgY
+    set canvCutX $imgX
+    set canvCutY $imgY
   }
   
-  return "$canvCutX2 $canvCutY2"
+  return "$canvCutX $canvCutY"
+
 } ;#END fitPic2Canv
 
 # setpic2CanvScalefactor
