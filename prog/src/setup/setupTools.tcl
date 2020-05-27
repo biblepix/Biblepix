@@ -256,6 +256,7 @@ proc createMovingTextBox {c} {
  
   #Create movingTextFont here, configure later with setCanvasFontSize
   catch {font create movingTextFont}
+  catch {font create movingTextReposFont}
 
   set shadeX [expr $x1 + 1]
   set shadeY [expr $y1 + 1]

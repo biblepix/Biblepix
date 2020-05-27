@@ -29,8 +29,6 @@ proc openResizeWindow {} {
 
   set bildname [file tail $addpicture::targetPicPath]
 
-
-#TODO Geht nicht bei zu breiten Bildern!
   #Set cutting coordinates & configure canvas
   lassign [fitPic2Canv $c] cutX cutY
   $c conf -width $cutX -height $cutY
@@ -40,14 +38,6 @@ proc openResizeWindow {} {
   $c create window [expr $cutX - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn -tag delbtn
   pack $c -side top -fill none
  
-
-
-#  #TODO Establish calculation factor for: a) font size of Canvas pic & 
-#  ## b) re-projection of canvas text position to Original pic
-#  ##eine Flanke muss identisch sein, das ist der korrekte Faktor
-#  set screen2canvFactor 1.5
-#  
-
   #Set bindings
   bind .resizePhoto <Escape> $cancelButton
   $c bind mv <1> {
@@ -61,13 +51,16 @@ proc openResizeWindow {} {
   #Confirm button launches doResize & sets up repositioning window
   .resizePhoto.resizeConfirmBtn conf -command "
     set ::Modal.Result [doResize $c]
-    setupReposTextWin $c
+
+#TODO adapt!!!!!!!!!!!!!!!!!!!
+
+    openReposWindow
   "
   
   bind .resizePhoto <Return> .resizePhoto.resizeConfirmBtn
     
   #TODO Joel help: close window later!
-  Show.Modal .resizePhoto -destroy 0 -onclose $cancelButton
+  Show.Modal .resizePhoto -destroy 1 -onclose $cancelButton
 
 } ;#END openResizeWindow
 
@@ -85,46 +78,63 @@ proc openReposWindow {} {
   
   #Determine smallest possible scale factor for canvas pic
   setPic2CanvScalefactor
-  
-  #TODO create new font instead!
-  font conf movingTextFont -size [expr round($fontsize / $addpicture::scaleFactor)]
-  
+
   label $w.moveTxtL -font {TkHeaderFont 20 bold} -fg red -bg beige -pady 20 -bd 2 -relief sunken 
   
   $w.moveTxtL conf -fg grey -font 18 -text "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..." 
   pack $w.moveTxtL -fill x 
   pack $c
 
-  
-  
-#Copy origPic to reposCanv if resizeCanv wasn't opened
-  if [catch {image inuse resizeCanvPic}] {
-
-    reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
-    
-    #TODO was läuft hier? what if resizing is not needed?
-    lassign [fitPic2Canv $c] cutX cutY
-    $c conf -width $cutX -height $cutY
-   
-    #Create OK button only!
-    button $w.confirmBtn -text OK -command "processPngInfo $c"
-    
-    #TODO make $c window instead + put on top
+  #Create OK button only!
+  button $w.confirmBtn -text OK -command "processPngInfo $c"
+  #TODO make $c window instead + put on top
     pack $w.confirmBtn -side right
 
+       
+  
     #Set bindings
     $c bind mv <1> {
        set ::x %X
        set ::y %Y
     }
     $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}  
+    
+  #Copy origPic to reposCanv if resizeCanv wasn't opened
+  if [catch {image inuse resizeCanvPic}] {
+
+    reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
+      
+  #Copy origPic to reposCanv if resizeCanv wasn't opened
+  } else {
+    
+     reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
   }
+
+#TODO was läuft hier? what if resizing is not needed?
+    lassign [fitPic2Canv $c] cutX cutY
+    $c conf -width $cutX -height $cutY
+      
+  #TODO geht nicht! Determine moving text font size
+  set imgX [image width reposCanvPic]
+  set screenX [winfo screenwidth .]
+  set fontfactor [expr $screenX / $imgX]
+  set canvFontsize [expr round($::fontsize / $fontfactor)]
+  font conf movingTextReposFont -size $canvFontsize
   
+  #Scan Image
+  source $::picdir/scanColourArea.tcl
+  colour::dummyColourScan $w
+  
+  $w.confirmBtn conf -state normal
+  $c itemconf mv -state normal
   #TODO do we want these here?
-  $c itemconf mv -state disabled
-  $w.confirmBtn conf -state disabled
+  #$c itemconf mv -state disabled
+  #$w.confirmBtn conf -state disabled
   
 } ;#END openReposWindow
+
+
+
 
 
 #TODO OBSOLETE, s.a. - take goodies & scrap!
@@ -174,7 +184,10 @@ proc setupReposTextWin {c} {
   }
        
   createMovingTextBox $c
-  font conf movingTextFont -size [expr round($fontsize / $addpicture::scaleFactor)]
+  
+  #determine proportional font size
+  set faktor [expr $screenX / $imgX]
+  font conf movingTextReposFont -size [expr round($fontsize / $addpicture::scaleFactor) + 5]
   $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}  
 
   catch {button $w.resizeConfirmBtn}
