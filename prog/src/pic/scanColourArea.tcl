@@ -212,25 +212,16 @@ puts $row
         
       if { [array names bucket $pos] != ""} {
         set num [set bucket($pos)]
-        array set bucket [list $pos [incr num]]
       } else {
-        array set bucket [list $pos 1]
+        set num 0
       }
+      
+      array set bucket [list $pos [incr num]]
     }
 
   
     #3. Evaluate bucket with tol = 7 - Compare similar bucket values!
 
-
-    set cur [lindex $posL 0]
-    set prev [expr $cur - 1]
-    set tol 7
-
-    while {[expr abs($cur - $prev)] < $tol} {
-  lappend absL $cur
-  set prev $cur
-  incr cur
-}
 
 #TODO
 set minHeight 30
