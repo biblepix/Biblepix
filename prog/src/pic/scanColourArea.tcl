@@ -3,7 +3,7 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 26may20 pv
+# Updated 30may20 pv
 
 #Create small pic from resize canv pic
 source $::ImgTools
@@ -85,12 +85,6 @@ namespace eval colour {
       } ;#END x loop
     } ;#END y loop
     
-    #Find matching colour ranges
-    if [findRanges] {
-      return 1
-    } {
-      return 0
-    }
   } ;# END scanImage
 
   # findRanges
@@ -189,25 +183,50 @@ puts $row
     #1. run scanImage(+findRanges) to create colour::rowarrays::* & colour::matchArr
     scanImage
     
-    #2. Evaluate match arrays
+    #2. Find matching ranges
     
-#Try this - mit dem chasch schaffe :-)
-set L [lsort -integer [array names colour::matchArr]]
-#foreach pos $L {parray colour::matchArr $pos}
+    #A) none found: use existing margins
+    if ![findRanges] {
+      return 0
+    } 
     
-    #This is more practical - make consecutive pos list
+    #B) ranges found: evaluate line number
+         
+    #Try this - mit dem chasch schaffe :-)
+    set L [lsort -integer [array names colour::matchArr]]
+    
+    ##1. Make consecutive pos list
     foreach yPos $L {
       lassign [array get colour::matchArr $yPos] name pos
       lappend posL $pos
     }
     
-#Run through posL + check out similar consecutives
-set cur [lindex $posL 0]
-set prev [expr $curr - 1]
-set tol 7
+    ##2. Bucket pos list results
+    array set bucket [list [lindex $posL 0] 1]
+    set lastpos [lindex $posL end]
+ 
+    ##append position + num. of matches to bucket array
+    for {set index 0} {$index<$lastpos} {incr index} {
+      
+      set pos [lindex $posL $index]
+        
+      if { [array names bucket $pos] != ""} {
+        set num [set bucket($pos)]
+        array set bucket [list $pos [incr num]]
+      } else {
+        array set bucket [list $pos 1]
+      }
+    }
 
-#TODO test!!!!!!!!!!!!!!!!
-while {[expr abs($cur - $prev)] < $tol} {
+  
+    #3. Evaluate bucket with tol = 7 - Compare similar bucket values!
+
+
+    set cur [lindex $posL 0]
+    set prev [expr $cur - 1]
+    set tol 7
+
+    while {[expr abs($cur - $prev)] < $tol} {
   lappend absL $cur
   set prev $cur
   incr cur
@@ -222,33 +241,34 @@ set minHeight 30
 
 
 
-    #3. run sortrowarrays & findRanges + create colour::matcharrays ns
-    foreach arr [info vars [array current]::rowarrays::*] {
-        set rowL [namespace tail $arr]
-    }
-    foreach y $rowL {
-      set rangeList [findRanges $y]
-    }  
-    
-    #4. Do some evaluation & return xPos, yPos + luminance
-    if {$rangeList != ""} { ... }
-    
-    
-        
-    #TODO move below to another proc
-      proc otherproc {} {
-        #A) set to new if found
-        #TODO evaluate number of matchlist > write some proc!
-        if [?evalmatcharrays] {
-          $c move text ..
-          $c itemconf text -fg ...
-        
-        #B) set to standard if none found
-        } else {
-          $c move text ..
-          $c itemconf text -fg ..
-        }
-      }
+#    #3. run sortrowarrays & findRanges + create colour::matcharrays ns
+#    foreach arr [info vars [array current]::rowarrays::*] {
+#        set rowL [namespace tail $arr]
+#    }
+#    foreach y $rowL {
+#      set rangeList [findRanges $y]
+#    }  
+#    
+#    #4. Do some evaluation & return xPos, yPos + luminance
+#    if {$rangeList != ""} { ... }
+#    
+#    
+#        
+#    #TODO move below to another proc
+#      proc otherproc {} {
+#        #A) set to new if found
+#        #TODO evaluate number of matchlist > write some proc!
+#        if [?evalmatcharrays] {
+#          $c move text ..
+#          $c itemconf text -fg ...
+#        
+#        #B) set to standard if none found
+#        } else {
+#          $c move text ..
+#          $c itemconf text -fg ..
+#        }
+
+      } ;#END doColourScan
   }
 
 } ;#END ::colour namespace

@@ -1,7 +1,7 @@
  # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 26may20 pv
+# Updated 30may20 pv
 
 proc openResizeWindow {} {
   global fontsize
@@ -133,6 +133,63 @@ proc openReposWindow {} {
   
 } ;#END openReposWindow
 
+# processPngInfo
+##called by open resizeConfBtn (Phase 2)
+proc processPngInfo {c} {
+
+  #TODO include new vars in Globals:
+  set AnnotatePng $::picdir/annotatePng.tcl
+  set ScanColourArea $::picdir/scanColourArea.tcl
+  source $AnnotatePng
+  source $ScanColourArea
+  
+  set w .reposPhoto
+  set canvPic [lindex [$c itemcget img -image] end]
+  set smallPic reposCanvSmallPic
+  #Disable controls while reposCanvSmallPic is being processed
+  
+  #TODO moved to setupRepos!!!
+  $c itemconf mv -state disabled
+  $w.resizeConfirmBtn conf -state disabled
+  
+#  lassign [grabCanvSection $c] x1 y1 x2 y2
+#  $smallPic copy $canvPic -subsample 3 -from $x1 $y1 $x2 $y2 
+   
+  
+  # 1. Scan colour area , compute real x1 + y1 * reductionFactor
+  #source $::picdir/scanColourArea.tcl
+  
+  # lassign [scanColourArea $smallPic] x y luminance
+
+  #reactivate button & text
+  after idle
+  $c itemconf mv -state normal
+  $w.resizeConfirmBtn conf -state normal
+  $w.moveTxtL conf -fg grey -font "TkHeaderFont 20 bold" -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position!" 
+  
+  if {!$x} {
+    set x $marginleft
+    set y $margintop          
+  } else {
+    lassign textPos x y
+    $c move text $x $y
+    
+  }
+    
+     
+  # 2. writePngComment $targetPicPath $x $y $luminance
+  #TODO recompute correct x + y by using all factors!!!!    
+  #  set x [expr $x * $::reductionFactor]
+  #  set y [expr $y * $::reductionFactor]
+    
+  
+  #   ? NewsHandler::QueryNews "[copiedPicMsg $targetPicPath]" lightblue
+ 
+  destroy .resizePhoto .reposPhoto
+    
+    
+} ;#END processPngInfo
+
 
 
 
@@ -207,62 +264,6 @@ proc setupReposTextWin {c} {
   
 } ;#END setupReposTextWin
 
-# processPngInfo
-##called by open resizeConfBtn (Phase 2)
-proc processPngInfo {c} {
-
-  #TODO include new vars in Globals:
-  set AnnotatePng $::picdir/annotatePng.tcl
-  set ScanColourArea $::picdir/scanColourArea.tcl
-  source $AnnotatePng
-  source $ScanColourArea
-  
-  set w .reposPhoto
-  set canvPic [lindex [$c itemcget img -image] end]
-  set smallPic reposCanvSmallPic
-  #Disable controls while reposCanvSmallPic is being processed
-  
-  #TODO moved to setupRepos!!!
-  $c itemconf mv -state disabled
-  $w.resizeConfirmBtn conf -state disabled
-  
-#  lassign [grabCanvSection $c] x1 y1 x2 y2
-#  $smallPic copy $canvPic -subsample 3 -from $x1 $y1 $x2 $y2 
-   
-  
-  # 1. Scan colour area , compute real x1 + y1 * reductionFactor
-  #source $::picdir/scanColourArea.tcl
-  
-  # lassign [scanColourArea $smallPic] x y luminance
-
-  #reactivate button & text
-  after idle
-  $c itemconf mv -state normal
-  $w.resizeConfirmBtn conf -state normal
-  $w.moveTxtL conf -fg grey -font "TkHeaderFont 20 bold" -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position!" 
-  
-  if {!$x} {
-    set x $marginleft
-    set y $margintop          
-  } else {
-    lassign textPos x y
-    $c move text $x $y
-    
-  }
-    
-     
-  # 2. writePngComment $targetPicPath $x $y $luminance
-  #TODO recompute correct x + y by using all factors!!!!    
-  #  set x [expr $x * $::reductionFactor]
-  #  set y [expr $y * $::reductionFactor]
-    
-  
-  #   ? NewsHandler::QueryNews "[copiedPicMsg $targetPicPath]" lightblue
- 
-  destroy .resizePhoto .reposPhoto
-    
-    
-} ;#END processPngInfo
 
 
 namespace eval ResizeHandler {
