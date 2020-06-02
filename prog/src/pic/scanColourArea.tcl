@@ -3,7 +3,7 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 30may20 pv
+# Updated 2jun20 pv
 
 #Create small pic from resize canv pic
 source $::ImgTools
@@ -221,10 +221,30 @@ puts $row
 
   
     #3. Evaluate bucket with tol = 7 - Compare similar bucket values!
+    set L1 [lsort [array names bucket]]
 
+    set xposTol 7
+    set minHeight 7
+    set prevpos [expr [lindex $L1 0] - 1]
+    #set lastpos [lindex $L1 end]
+  
+  #TODO Gibt das nur 1 Durchlauf? > findRanges!  
+    foreach xpos $L1 {
+        
+      set curAnzahl $bucket($xpos)
+      set diff [expr $curpos - $prevpos]
+    
+      if {$curAnzahl >= $minHeight && $diff <= $xposTol} {
+      
+        lappend L2 $curpos
+        set prevpos $curpos 
+        incr index
+        set curpos [lindex $L1 $index]
+      
+      }
+    
+    }
 
-#TODO
-set minHeight 30
 #Verify $absL for suitability (= enough number of lines)
 #35 corresponds to about 1/5 of small pic height
 #If not suitable try again from last $cur pos :-)
