@@ -3,7 +3,7 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 2jun20 pv
+# Updated 3jun20 pv
 
 #Create small pic from resize canv pic
 source $::ImgTools
@@ -170,7 +170,7 @@ puts $row
    #TODO JOEL wie kann ich diese Kommandos im Hintergrund laufen lassen????????????
    $w.moveTxtL conf -fg orange -bg black -font 18 -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position und des Helligkeitswerts." 
      colour::scanImage
-#     colour::findRanges
+     after idle {colour::findRanges}
    
    }
 # doColourScan 
@@ -221,18 +221,26 @@ puts $row
 
   
     #3. Evaluate bucket with tol = 7 - Compare similar bucket values!
-    set L1 [lsort [array names bucket]]
+    #Verify list for suitability (= enough number of lines)
+    #35 corresponds to about 1/5 of small pic height
+    set L1 [lsort -integer [array names bucket]]
 
     set xposTol 7
     set minHeight 7
-    set prevpos [expr [lindex $L1 0] - 1]
+    set curpos [lindex $L1 0]
+    set prevpos [expr $curpos - 1]
+
+  puts $prevpos
+    
     #set lastpos [lindex $L1 end]
   
   #TODO Gibt das nur 1 Durchlauf? > findRanges!  
+  #TODO da stimmen some vars nicht!
     foreach xpos $L1 {
         
       set curAnzahl $bucket($xpos)
       set diff [expr $curpos - $prevpos]
+    puts $diff
     
       if {$curAnzahl >= $minHeight && $diff <= $xposTol} {
       
@@ -245,8 +253,7 @@ puts $row
     
     }
 
-#Verify $absL for suitability (= enough number of lines)
-#35 corresponds to about 1/5 of small pic height
+#
 #If not suitable try again from last $cur pos :-)
 
 

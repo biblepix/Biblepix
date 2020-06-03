@@ -1,7 +1,7 @@
  # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 30may20 pv
+# Updated 3jun20 pv
 
 proc openResizeWindow {} {
   global fontsize
@@ -123,7 +123,9 @@ proc openReposWindow {} {
   
   #Scan Image
   source $::picdir/scanColourArea.tcl
-  colour::dummyColourScan $w
+  
+  #TODO gibt noch keine Resultate aus
+  colour::doColourScan $w
   
   $w.confirmBtn conf -state normal
   $c itemconf mv -state normal
