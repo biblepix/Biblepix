@@ -1,9 +1,8 @@
-
 # ~/Biblepix/prog/src/pic/scanColourArea.tcl
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto 
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 3jun20 pv
+# Updated 4jun20 pv
 
 #Create small pic from resize canv pic
 source $::ImgTools
@@ -29,7 +28,7 @@ set colour::colourTol 10
 set colour::margin 10
 set colour::realWidth [expr $colour::imgX - (2 * $colour::margin)]
 
-namespace eval colour { 
+namespace eval colour {
 
   # scanImage
   ##main proc to scan image for similar colour pixels per line
@@ -205,18 +204,19 @@ puts $row
     array set bucket [list [lindex $posL 0] 1]
     set lastpos [lindex $posL end]
  
+ #TODO geht auch noch nicht! -warum?
     ##append position + num. of matches to bucket array
     for {set index 0} {$index<$lastpos} {incr index} {
       
       set pos [lindex $posL $index]
         
       if { [array names bucket $pos] != ""} {
-        set num [set bucket($pos)]
+        set anzahl [set bucket($pos)]
       } else {
-        set num 0
+        set anzahl 0
       }
       
-      array set bucket [list $pos [incr num]]
+      array set bucket [list $pos [incr anzahl]]
     }
 
   
@@ -234,7 +234,7 @@ puts $row
     
     #set lastpos [lindex $L1 end]
   
-  #TODO Gibt das nur 1 Durchlauf? > findRanges!  
+  #TODO nur 1 Durchlauf!  
   #TODO da stimmen some vars nicht!
     foreach xpos $L1 {
         
@@ -253,41 +253,16 @@ puts $row
     
     }
 
-#
-#If not suitable try again from last $cur pos :-)
+    #4. Give out average top & left pos
+    ##top=1st row
+    set rowlist [lsort [info vars colour::rowarrays::*]]
+    set topPos [namespace tail [lindex $rowlist 0]]
+    ##left=average left pos
+    set leftPos [calcAverage $L2]
 
+    return "$topPos $leftPos"
 
-
-
-#    #3. run sortrowarrays & findRanges + create colour::matcharrays ns
-#    foreach arr [info vars [array current]::rowarrays::*] {
-#        set rowL [namespace tail $arr]
-#    }
-#    foreach y $rowL {
-#      set rangeList [findRanges $y]
-#    }  
-#    
-#    #4. Do some evaluation & return xPos, yPos + luminance
-#    if {$rangeList != ""} { ... }
-#    
-#    
-#        
-#    #TODO move below to another proc
-#      proc otherproc {} {
-#        #A) set to new if found
-#        #TODO evaluate number of matchlist > write some proc!
-#        if [?evalmatcharrays] {
-#          $c move text ..
-#          $c itemconf text -fg ...
-#        
-#        #B) set to standard if none found
-#        } else {
-#          $c move text ..
-#          $c itemconf text -fg ..
-#        }
-
-      } ;#END doColourScan
-  }
+  } ;#END doColourScan
 
 } ;#END ::colour namespace
 

@@ -125,7 +125,7 @@ proc openReposWindow {} {
   source $::picdir/scanColourArea.tcl
   
   #TODO gibt noch keine Resultate aus
-  colour::doColourScan $w
+  colour::doColourScan
   
   $w.confirmBtn conf -state normal
   $c itemconf mv -state normal
