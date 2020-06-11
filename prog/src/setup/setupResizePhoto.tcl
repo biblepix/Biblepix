@@ -1,8 +1,11 @@
  # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 3jun20 pv
+# Updated 11jun20 pv
 
+# openResizeWindow
+##opens new toplevel window if [needsResize]
+##called by addPic
 proc openResizeWindow {} {
   global fontsize
   
@@ -21,7 +24,7 @@ proc openResizeWindow {} {
 
   #Create title & buttons
   set cancelButton {set ::Modal.Result "Cancelled"}
-  set confirmButton {set ::Modal.Result "doResize $c ; destroy .resizePhoto"}
+  set confirmButton {set ::Modal.Result "doResize $c"}
   
   ttk::button .resizePhoto.resizeConfirmBtn -text Ok -command $confirmButton
   ttk::button .resizePhoto.resizeCancelBtn -textvar ::cancel -command $cancelButton
@@ -60,7 +63,7 @@ proc openResizeWindow {} {
   bind .resizePhoto <Return> .resizePhoto.resizeConfirmBtn
     
   #TODO Joel help: close window later!
-  Show.Modal .resizePhoto -destroy 1 -onclose $cancelButton
+  Show.Modal .resizePhoto -destroy 0 -onclose $cancelButton
 
 } ;#END openResizeWindow
 
@@ -101,14 +104,18 @@ proc openReposWindow {} {
     
   #Copy origPic to reposCanv if resizeCanv wasn't opened
   if [catch {image inuse resizeCanvPic}] {
-
+  
     reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
       
-  #Copy origPic to reposCanv if resizeCanv wasn't opened
+  #Copy resizeCanvPic to reposCanv
   } else {
-    
-     reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
+  
+    lassign [grabCanvSection .resizePhoto.resizeCanv] x1 y1 x2 y2
+    reposCanvPic copy resizeCanvPic -from $x1 $y1 $x2 $y2
   }
+
+  #Time to close resizePhoto window
+  destroy .resizePhoto
 
 #TODO was läuft hier? what if resizing is not needed?
     lassign [fitPic2Canv $c] cutX cutY

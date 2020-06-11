@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27may2020 pv 
+# Updated: 11jun2020 pv 
  
 source $JList
 
@@ -449,8 +449,8 @@ proc grabCanvSection {c} {
   if {$imgX2 == $canvX &&
       $imgY2 == $canvY
   } {
-    puts "No need for resizing."
-    Return 0
+    puts "No need for cutting."
+    return 0
   }
   
   ##Breite ungleich
