@@ -437,8 +437,8 @@ proc needsResize {pic} {
     
     set screenX [winfo screenwidth .]
     set screenY [winfo screenheight .]
-    set imgX [image width $origPic]
-    set imgY [image height $origPic]
+    set imgX [image width $pic]
+    set imgY [image height $pic]
     set imgFactor [expr $imgX. / $imgY]
     set screenFactor [expr $screenX. / $screenY]
     
