@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 11jun2020 pv 
+# Updated: 13jun2020 pv 
  
 source $JList
 
@@ -388,21 +388,26 @@ proc addPic {} {
   set addpicture::targetPicPath $targetPicPath
   set addpicture::origPic $origPic
   
-  #A) wrong size: open resizeWindow > reposWindow
-  if [needsResize $origPic] {
-  
-    openResizeWindow
-    
-  #B) right size: save pic & open repos window
-  } else {
-    ##save pic
+  set res [needsResize $origPic]
+
+  #A) 0: right dimensions, right size: save pic  
+  if !$res {
     $origPic write $targetPicPath -format PNG
-    #image delete $origPic - DONT!
-    NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
-    
     openReposWindow
 
+  #B) 1: right dimensions, wrong size: open repos window  
+  } elseif {$res == 1} {
+  
+    openReposWindow
+    
+  #C) 2: wrong dimensions, wrong size: open resizeWindow
+  } elseif {$res == 2} {
+  
+    openResizeWindow
+
   }
+  
+  NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
   
 } ;#END addPic
 
@@ -419,15 +424,31 @@ proc delPic {} {
 proc needsResize {pic} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-
   set imgX [image width $pic]
   set imgY [image height $pic]
 
   #Compare img dimensions with screen dimensions
   if {$screenX == $imgX && $screenY == $imgY} {
+  #perfect size
     return 0
+    
+  #>doResize
   } else {
-    return 1
+    
+    set screenX [winfo screenwidth .]
+    set screenY [winfo screenheight .]
+    set imgX [image width $origPic]
+    set imgY [image height $origPic]
+    set imgFactor [expr $imgX. / $imgY]
+    set screenFactor [expr $screenX. / $screenY]
+    
+    ##only even resizing needed > open repos window
+    if {$screenFactor == $imgFactor} {
+      return 1
+    ##cutting + resizing needed > open resize window
+    } else {
+      return 2
+    }
   }
 }
 

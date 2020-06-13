@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 1may20 pv
+# Updated: 13jun20 pv
 set version "3.2"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -103,7 +103,7 @@ array set FilePaths "
   Http [file join $sharedir http.tcl]
   HttpMock [file join $sharedir httpMock.tcl]
   JList [file join $sharedir JList.tcl]
-  ImgTools [file join $picdir ImgTools.tcl]
+  ImgTools [file join $picdir ImageTools.tcl]
   LoadConfig [file join $sharedir LoadConfig.tcl]
   TwdTools [file join $sharedir TwdTools.tcl]
   Uninstall [file join $savedir uninstall.tcl]

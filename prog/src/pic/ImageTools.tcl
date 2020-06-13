@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26may20 pv
+# Updated: 13jun20 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -194,30 +194,39 @@ proc doResize {c} {
   set canvY [lindex [$c conf -height] end]
   set scaleFactor $addpicture::scaleFactor
   set origPic $addpicture::origPic
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+  set imgX [image width $origPic]
+  set imgY [image height $origPic]
+  set imgFactor [expr $imgX. / $imgY]
+  set screenFactor [expr $screenX. / $screenY]
   
-  lassign [$c bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
-#  
-#  set scale [expr $origX. / $canvX]
-#  if {[expr $canvY. * $scale] > $origY} {
-#    set scale [expr $origY. / $canvY]
-#  }
-#  
-  #set cutX1 [expr int($canvPicX1 * -1 * $scaleFactor)]
-  #set cutY1 [expr int($canvPicY1 * -1 * $scaleFactor)]
-  set cutX1 [expr int($canvPicX1 * $scaleFactor)]
-  set cutY1 [expr int($canvPicY1 * $scaleFactor)]
-  set cutX2 [expr int($canvPicX2 * $scaleFactor + $cutX1)]
-  set cutY2 [expr int($canvPicY2 * $scaleFactor + $cutY1)]
+  #A) needs even resizing
+  if {$screenFactor == $imgFactor} {
+    set cutImg $origPic
+
+  #B) needs cutting + resizing
+  } else {
   
-  #1.Cut orig pic to right dimensions
-  set cutImg [trimPic $origPic $cutX1 $cutY1 $cutX2 $cutY2]
+    lassign [$c bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
+
+    set cutX1 [expr int($canvPicX1 * -1 * $scaleFactor)]
+    set cutY1 [expr int($canvPicY1 * -1 * $scaleFactor)]
+    #set cutX1 [expr int($canvPicX1 * $scaleFactor)]
+    #set cutY1 [expr int($canvPicY1 * $scaleFactor)]
+    set cutX2 [expr int($canvPicX2 * $scaleFactor + $cutX1)]
+    set cutY2 [expr int($canvPicY2 * $scaleFactor + $cutY1)]
+    
+    #1.Cut orig pic to right dimensions
+    set cutImg [trimPic $origPic $cutX1 $cutY1 $cutX2 $cutY2]
+  }
   
   #2.Send cut pic to final resizing
   ResizeHandler::QueryResize $cutImg
   after idle {
     ResizeHandler::Run
   }
-}
+} ;#END doResize
 
 proc processResize {cutImg} {
   global dirlist picPath
@@ -239,11 +248,7 @@ proc processResize {cutImg} {
 
   NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
 
-} ;#END doResize
-
-
-
-
+} ;#END processResize
 
 # trimPic
 ## Reduces pic size by cutting 1 or more edges
