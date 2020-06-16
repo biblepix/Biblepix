@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 15may20 jh
+# Updated 16jun20 pv
 
 set fileJList ""
 
@@ -27,11 +27,9 @@ button .photosF.mainf.right.bar.< -text < -height 1 -command {set fileJList [ste
 button .photosF.mainf.right.bar.> -text > -height 1 -command {set fileJList [step $fileJList 0 .imgCanvas]}
 button .photosF.mainf.right.bar.collect -textvar f6.show -height 1 -command {set fileJList [doCollect .imgCanvas]}
 
-
 pack .photosF.mainf.right.bar.open -side left
 pack .photosF.mainf.right.bar.< -side left
 pack .photosF.mainf.right.bar.> -side left
-
 pack .photosF.mainf.right.bar.collect -side right -fill x
 
 #Build Photo canvas right
@@ -43,6 +41,7 @@ set canvY [expr round($canvX/$factor)]
 canvas .imgCanvas -width $canvX -height $canvY
 pack .imgCanvas -in .photosF.mainf.right.bild -side left
 
+#TODO tail picpath var?
 label .picPath -textvar picPath
 button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic}
 button .delBtn -textvar f6.del -activebackground red -command {delPic}
@@ -50,5 +49,12 @@ button .delBtn -textvar f6.del -activebackground red -command {delPic}
 #TODO Testing
 button .rotateBtn -activebackground orange -textvar rotatepic -command "source $setupdir/setupRotate.tcl"
 set rotatepic "Bild drehen"
+
+#TODO Testing Bilderzahl - TODO nur bei "Fotosammlung anzeigen" sichtbar machen
+label .count1 -textvar numPhotos -bg lightgreen
+label .count2 -text Bilder -bg lightgreen
+pack .count2 .count1 -in .photosF.mainf.right.unten -side right
+#TODO Wer führt dieses Kommando aus? - make proc for delPic & addPic!
+set numPhotos [llength [glob $photosDir/*]]
 
 set fileJList [doCollect .imgCanvas]

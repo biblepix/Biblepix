@@ -231,6 +231,9 @@ proc doResize {c} {
   }
 } ;#END doResize
 
+# processResize
+##TODO what does it do?
+##called by ResizeHandler::Run
 proc processResize {cutImg} {
   global dirlist picPath
 
@@ -238,7 +241,6 @@ proc processResize {cutImg} {
   set screenY [winfo screenheight .]
 
   NewsHandler::QueryNews "$::resizingPic" orange
-
 
   #Save finalImage, copy to cutOrigPic for further processing
   set finalImage [resizePic $cutImg $screenX $screenY]
