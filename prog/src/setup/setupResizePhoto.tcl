@@ -114,8 +114,8 @@ proc openReposWindow {} {
     reposCanvPic copy resizeCanvPic -from $x1 $y1 $x2 $y2
   }
 
-  #Time to close resizePhoto window
-  destroy .resizePhoto
+  #TODO Time to close resizePhoto window
+  #destroy .resizePhoto
 
 #TODO was läuft hier? what if resizing is not needed?
     lassign [fitPic2Canv $c] cutX cutY

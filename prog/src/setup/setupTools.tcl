@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 13jun2020 pv 
+# Updated: 16jun2020 pv 
  
 source $JList
 
@@ -378,12 +378,12 @@ proc addPic {} {
     set origPic rotateOrigPic
   }
   
-  if { [file exists $targetPicPath] } {
+  if [file exists $targetPicPath] {
     NewsHandler::QueryNews $::picSchonDa red
     return 1
   }
   
-  #export targetPicPath + scaleFactor + origPic to 'addpicture' namespace
+  #Export targetPicPath + scaleFactor + origPic to 'addpicture' namespace
   namespace eval addpicture {}
   set addpicture::targetPicPath $targetPicPath
   set addpicture::origPic $origPic
