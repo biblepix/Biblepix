@@ -5,6 +5,8 @@
 # Updated: 12may19
 
 setFlags
+sourceHTTP
+source $TwdTools
 
 set setupTwdFileName [getRandomTwdFile]
 if {$setupTwdFileName == ""} {
@@ -53,8 +55,10 @@ if { [info exists Debug] && $Debug } {
 } else {
   catch {source $SetupInternational}
 }
+
 set status "No Internet connexion"
 catch {set status [getRemoteTWDFileList]}
+updateTwd
 
 # 3. Desktop
 if { [info exists Debug] && $Debug } {

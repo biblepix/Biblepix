@@ -265,19 +265,17 @@ proc getRemoteTWDFileList {} {
     .internationalF.status conf -bg red
     set status $::noConnTwd
     puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
-    error $Error
-
   } else {
-   
-    if {![catch {.twdremoteLB}]} {
+    if {![catch {listRemoteTWDFiles .twdremoteLB}]} {
       .internationalF.status conf -bg green
       set status $::connTwd
     } else {
       .internationalF.status conf -bg red
       set status $::noConnTwd
     }
-    return $status
   }
+
+  return $status
 }
 
 proc downloadTWDFiles {} {

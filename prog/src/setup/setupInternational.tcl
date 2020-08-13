@@ -63,5 +63,3 @@ button .downloadB -text Download -command downloadTWDFiles
 pack .internationalF.twdremoteframe -anchor w
 pack .downloadB -in .internationalF.twdremoteframe -side right -fill x
 pack .twdremoteScr .twdremoteLB -in .internationalF.twdremoteframe -side right -fill y
-
-listRemoteTWDFiles .twdremoteLB
