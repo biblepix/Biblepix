@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5may20 pv
+# Updated: 14aug20 pv
 
 package require http
 
@@ -39,8 +39,8 @@ proc runHTTP isInitial {
     }
       
     #Success message (source Texts again for Initial)
-    catch {.if.initialMsg configure -bg green}
-    catch {NewsHandler::QueryNews $::uptodateHttp lightgreen}
+    catch {.if.initialMsg configure -bg lightgreen}
+    catch {NewsHandler::QueryNews $::uptodateHttp bluen}
     catch {set ::ftpStatus $::uptodateHttp}
 
   } ;#end if main condition
@@ -267,7 +267,7 @@ proc getRemoteTWDFileList {} {
     puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
   } else {
     if {![catch {listRemoteTWDFiles .twdremoteLB}]} {
-      .internationalF.status conf -bg green
+      .internationalF.status conf -bg lightgreen
       set status $::connTwd
     } else {
       .internationalF.status conf -bg red
