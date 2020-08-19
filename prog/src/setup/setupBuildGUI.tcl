@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12may19
+# Updated: 19aug20
 
 setFlags
 sourceHTTP
@@ -48,7 +48,7 @@ if { [info exists Debug] && $Debug } {
 } else {
   catch {source $SetupWelcome}
 }
- 
+
 # 2. International
 if { [info exists Debug] && $Debug } {
   source $SetupInternational
@@ -66,7 +66,7 @@ if { [info exists Debug] && $Debug } {
 } else {
   catch {source $SetupDesktop}
 }
- 
+
 #4. E-Mail
 if { [info exists Debug] && $Debug } {
   source $SetupEmail
@@ -85,6 +85,9 @@ if { [info exists Debug] && $Debug } {
     }
   }
 }
+
+#TODO Wer führt dieses Kommando aus? - make proc for delPic & addPic!
+set numPhotos [llength [glob $photosDir/*]]
 
 #6. Terminal
 if {$platform=="unix"} {

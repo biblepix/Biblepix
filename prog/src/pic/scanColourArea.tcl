@@ -1,15 +1,23 @@
 # ~/Biblepix/prog/src/pic/scanColourArea.tcl
 # Determines suitable even-coloured text area & colour tint for text
-# Sourced by SetupResizePhoto 
+# Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 4jun20 pv
+# Updated 19aug20 pv
 
 #Create small pic from resize canv pic
 source $::ImgTools
-set c .resizePhoto.resizeCanv
 set img [image create photo reposCanvSmallPic]
-lassign [grabCanvSection $c] x1 y1 x2 y2
-$img copy resizeCanvPic -subsample 3 -from $x1 $y1 $x2 $y2 
+
+if [winfo exists .resizePhoto.resizeCanv] {
+  set c .resizePhoto.resizeCanv
+  lassign [grabCanvSection $c] x1 y1 x2 y2
+  $img copy resizeCanvPic -from $x1 $y1 $x2 $y2
+
+} else {
+
+  setPic2CanvScalefactor
+  $img copy $addpicture::origPic -subsample $addpicture::scaleFactor
+}
 
 #TODO :uncomment:
 #catch {namespace delete colour}
@@ -37,7 +45,7 @@ namespace eval colour {
     global colour::img
     global colour::margin
     global colour::colourTol
-        
+
     #Limit scanning area by excluding margins
     set begX $margin
     set endX [expr $colour::imgX - $margin]
@@ -83,7 +91,7 @@ namespace eval colour {
 
       } ;#END x loop
     } ;#END y loop
-    
+
   } ;# END scanImage
 
   # findRanges
@@ -93,7 +101,7 @@ namespace eval colour {
   proc findRanges {} {
     global colour::realWidth
     global colour::minWidth
-       
+
     #get unsorted row list - each row has the complete path!
     set rowL [info vars [namespace current]::rowarrays::*]
 
@@ -108,20 +116,20 @@ puts $row
 
         set endIndex [findRange $row $startIndex]
       puts "Endindex $endIndex"
-        
+
         set rangeWidth [expr $endIndex - $startIndex]
 
         if {$rangeWidth >= $minWidth} {
-         
+
           #put startIndex + length in temporary array
           array set matchArr [list $startIndex $rangeWidth]
-        
+
  puts [parray matchArr]
         }
 
         set startIndex $endIndex
       } ;#END while
-      
+
 
       #Find startIndex of longest row
       if [array exists matchArr] {
@@ -138,23 +146,23 @@ puts $row
         array set [namespace current]::matchArr [list $yPos $selectedStartIndex]
       }
     } ;#END foreach row
-    
+
     if [array exists [namespace current]::matchArr] {
       return 1
     } {
       return 0
     }
-    
+
   } ;#END findRanges
 
   # findRange
   ##finds any subsequent range chunk per matchList
-  ##called by findRanges 
+  ##called by findRanges
   proc findRange {row startIndex} {
     global colour::realWidth
     set zeroFound 0
     set currIndex $startIndex
-    
+
     while {!$zeroFound && $currIndex < $realWidth} {
       if {[lindex [array get $row $currIndex] 1] != 1} {
         set zeroFound 1
@@ -163,63 +171,65 @@ puts $row
     }
     return $currIndex
   } ;#END findRange
-   
+
    proc dummyColourScan {w} {
    #TODO diese Info erscheint nie!!!!!!!!!!!!!!!!!!!!!
    #TODO JOEL wie kann ich diese Kommandos im Hintergrund laufen lassen????????????
-   $w.moveTxtL conf -fg orange -bg black -font 18 -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position und des Helligkeitswerts." 
+   $w.moveTxtL conf -fg orange -bg black -font 18 -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position und des Helligkeitswerts."
      colour::scanImage
      after idle {colour::findRanges}
-   
+
    }
-# doColourScan 
+# doColourScan
   ##wrapper prog for all scanning processes
   ##outputs xPos+yPos+luminance to calling prog
   ##called by setupReposTextwin
   proc doColourScan {} {
     source $::ImgTools
-     
+
     #1. run scanImage(+findRanges) to create colour::rowarrays::* & colour::matchArr
     scanImage
-    
+
     #2. Find matching ranges
-    
+
     #A) none found: use existing margins
     if ![findRanges] {
       return 0
-    } 
-    
+    }
+
     #B) ranges found: evaluate line number
-         
+
     #Try this - mit dem chasch schaffe :-)
     set L [lsort -integer [array names colour::matchArr]]
-    
+
     ##1. Make consecutive pos list
     foreach yPos $L {
       lassign [array get colour::matchArr $yPos] name pos
       lappend posL $pos
     }
-    
+
     ##2. Bucket pos list results
     array set bucket [list [lindex $posL 0] 1]
     set lastpos [lindex $posL end]
- 
- #TODO geht auch noch nicht! -warum?
+
+
+
+#TODO geht auch noch nicht! -warum?
     ##append position + num. of matches to bucket array
     for {set index 0} {$index<$lastpos} {incr index} {
-      
+
       set pos [lindex $posL $index]
-        
+
       if { [array names bucket $pos] != ""} {
         set anzahl [set bucket($pos)]
       } else {
         set anzahl 0
       }
-      
+
       array set bucket [list $pos [incr anzahl]]
     }
 
-  
+
     #3. Evaluate bucket with tol = 7 - Compare similar bucket values!
     #Verify list for suitability (= enough number of lines)
     #35 corresponds to about 1/5 of small pic height
@@ -231,26 +241,26 @@ puts $row
     set prevpos [expr $curpos - 1]
 
   puts $prevpos
-    
+
     #set lastpos [lindex $L1 end]
-  
-  #TODO nur 1 Durchlauf!  
-  #TODO da stimmen some vars nicht!
+
+#TODO nur 1 Durchlauf!
+#TODO da stimmen some vars nicht!
     foreach xpos $L1 {
-        
+
       set curAnzahl $bucket($xpos)
       set diff [expr $curpos - $prevpos]
     puts $diff
-    
+
       if {$curAnzahl >= $minHeight && $diff <= $xposTol} {
-      
+
         lappend L2 $curpos
-        set prevpos $curpos 
+        set prevpos $curpos
         incr index
         set curpos [lindex $L1 $index]
-      
+
       }
-    
+
     }
 
     #4. Give out average top & left pos
@@ -290,63 +300,63 @@ puts $row
         foreach name [array names ranges] {
           lassign [array get ranges $name] beg end
           array set matchArr "$name [expr $end - $beg]"
-          
+
         }
       }
       foreach name [array names matchArr] {
         set res [array get matchArr $name]
         append rangeLengthList $res ,
       }
-    
-    
+
+
       set longestRange [expr max($rangeLengthList)]
-   
+
   }
 
 
   #TODO run this only after area coords are clear, will be much easier to program!
   # setAvLuminance
-  ##sets average luminance values of pixel arrays of 
-  ##A) selected colour area / 
+  ##sets average luminance values of pixel arrays of
+  ##A) selected colour area /
   ##B) margintop+marginleft + 200 pixels in each direction
   ##called by ?
   proc getAvLuminance {} {
     global margintop marginleft
-    
+
     #TODO Make sure 0... values are excluded!
     set rowlist [getMatchingrowarrays]
-     
-    #A) TODO same as B - but define margintop and lmarginleft as starting point 
+
+    #A) TODO same as B - but define margintop and lmarginleft as starting point
     #TODO I think you should resort to the already calculated matching ranges for this! s.o.
     if {$rowlist == ""} {
-    
+
       return ? ?
     }
-    
-    #B)  
+
+    #B)
     foreach rowArr $rowlist {
       #get pixel array per row
       set arrNames [array names colour::$rowArr]
-      
+
       foreach pixArr $arrNames {
         lappend lumL [lindex [array get pixArr] 1]
       }
     }
-    
+
     set avLuminance [calcAverage $lumL]
     return $avLuminance
-    
+
   } ;#END getAvLuminance
-  
+
     # evalRowlist
-  ##scan xPos's of a pixel row for consecutive areas & ... 
+  ##scan xPos's of a pixel row for consecutive areas & ...
   proc evalRowlist {img rowNo} {
-  
+
     set minwidth [expr [image width $img] / 4]
-    
+
 #    #scan till next break -TODO to be replaced by findRange/findRanges
 #    proc scanRanges {xPos prevxPos} {
-#      while {[expr $xPos - $prevxPos] == 1} { 
+#      while {[expr $xPos - $prevxPos] == 1} {
 #        lappend matchL $xPos
 #        incr prevxPos
 #      }
@@ -359,27 +369,27 @@ puts $row
 
     set rowL [getMatchingRowlist]
     set rowtot [llength $rowL]
- 
+
     #Begin main Y loop
     for {set rowNo [lindex $rowtot 0]} {$rowNo < $rowTot} {incr $rowNo} {
-      
-      set rowLength [llength [array names [namespace current::$rowNo]]] 
+
+      set rowLength [llength [array names [namespace current::$rowNo]]]
       set xPos [lindex $rowL 0]
       set prevPos [expr $xPos - 1]
-        
+
       #Begin main X loop
       for {set xTot $rowLength} {$xPos < $xTot} {incr xPos} {
-      
+
         set scanRes [scanRanges $xPos $prevxPos]
-        
+
         #add pixpos to matchlist if consecutive
-        if {[expr $xPos - $prevxPos] == 1} { 
+        if {[expr $xPos - $prevxPos] == 1} {
           lappend matchL $xPos
           incr prevxPos
         }
-        
-        set scanRes [scanRanges $xPos $prevxPos]       
-        
+
+        set scanRes [scanRanges $xPos $prevxPos]
+
       } ;#END for x
 
       #Find consecutive matches in row & take largest
@@ -388,15 +398,15 @@ puts $row
         unset matchL
        }
 
-       
+
     } ;#END for y
 
       #TODO set margintop/marginleft colour tint if no ranges found
       if ![info exists colour::matchArr] {
         setTint $marginleft $margintop
       }
-  
+
   } ;#END evalRowlist
-  
-  
+
+
 

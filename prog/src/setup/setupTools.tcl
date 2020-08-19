@@ -1,8 +1,8 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16jun2020 pv 
- 
+# Updated: 19aug20 jh/pv
+
 source $JList
 
 #######################################################################
@@ -81,32 +81,32 @@ proc setCanvasFontSize args {
     #set size in pt as in BDF
     font conf intCanvFont -size $args
     font conf movingTextFont -size [expr round($args / 3) + 3]
-    
+
   } elseif {$args == "bold" || $args == "normal"} {
     font conf intCanvFont -weight $args
     font conf movingTextFont -weight $args
-    
+
   } elseif {$args == "Serif" || $args == "Sans"} {
     font conf intCanvFont -family $args
     font conf movingTextFont -family $args
   }
-  return 0 
+  return 0
 }
 
 # setCanvasFontColour
 ##changes canvas' font's colour
 ##called by SetGUI for inttextCanv & .textposCanv
 proc setCanvasFontColour {c colour} {
-  
+
   set rgb [hex2rgb $colour]
   set shade [setShade $rgb]
   set sun [setSun $rgb]
-  
+
   #A) International Canvas
   $c itemconf main -fill $colour
   $c itemconf sun -fill $sun
   $c itemconf shade -fill $shade
-  
+
   return 0
 }
 
@@ -246,14 +246,14 @@ proc createMovingTextBox {c} {
 
   #Verkleinerungsfaktor für textposition window
   #set displayFactor 2
-  
+
   set screenx [winfo screenwidth .]
   set screeny [winfo screenheight .]
   #set textPosSubwinX [expr $screenx/20]
   #set textPosSubwinY [expr $screeny/30]
   set x1 [expr $marginleft/$textPosFactor]
   set y1 [expr $margintop/$textPosFactor]
- 
+
   #Create movingTextFont here, configure later with setCanvasFontSize
   catch {font create movingTextFont}
   catch {font create movingTextReposFont}
@@ -267,7 +267,7 @@ proc createMovingTextBox {c} {
   set rgb [hex2rgb $fontcolor]
   set shade [setShade $rgb]
   set sun [setSun $rgb]
-  
+
   $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade} -fill $shade
   $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun} -fill $sun
   $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main} -fill $fontcolor
@@ -286,7 +286,7 @@ proc dragCanvasItem {c item newX newY args} {
 
   #test margins before moving
   if {![info exists args]} {set args ""}
-  
+
   if [checkItemInside $c $item $xDiff $yDiff $args] {
     $c move $item $xDiff $yDiff
   }
@@ -296,7 +296,7 @@ proc dragCanvasItem {c item newX newY args} {
 
 # checkItemInside
 ## makes sure movingItem stays inside canvas
-## called by setupResizePhoto (tag: img) & setupDesktop moving text (tag: txt) 
+## called by setupResizePhoto (tag: img) & setupDesktop moving text (tag: txt)
 ## 'args' is for compulsory margin for text item
 proc checkItemInside {c item xDiff yDiff args} {
 
@@ -305,16 +305,16 @@ proc checkItemInside {c item xDiff yDiff args} {
 
   #A) Image (resizePic)
   if {$item == "img"} {
-  
+
     set imgname [lindex [$c itemconf img -image] end]
     set itemX [image width $imgname]
     set itemY [image height $imgname]
-    
+
     set can(maxx) 0
     set can(maxy) 0
     set can(minx) [expr ($canvX - $itemX)]
     set can(miny) [expr ($canvY - $itemY)]
-   
+
   #B) Text (moving Text)
   } elseif {$item == "txt"} {
 
@@ -327,7 +327,7 @@ proc checkItemInside {c item xDiff yDiff args} {
     set can(minx) $args
     set can(miny) $args
   }
-  
+
   #item coords
   set itemPos [$c coords $item]
 
@@ -335,15 +335,15 @@ proc checkItemInside {c item xDiff yDiff args} {
   foreach {x y} $itemPos {
     set x [expr $x + $xDiff]
     set y [expr $y + $yDiff]
-    
+
     if {$x < $can(minx)} {
       return 0
           }
-          
+
     if {$y < $can(miny)} {
       return 0
     }
-    
+
     if {$x > $can(maxx)} {
       return 0
     }
@@ -352,7 +352,7 @@ proc checkItemInside {c item xDiff yDiff args} {
     }
   }
   return 1
-  
+
 } ;#END checkItemInside
 
 
@@ -364,58 +364,67 @@ proc checkItemInside {c item xDiff yDiff args} {
 # addPic - called by SetupPhoto
 # adds new Picture to BiblePix Photo collection
 # setzt Funktion 'photosOrigPic' voraus und leitet Subprozesse ein
-proc addPic {} {
-  global picPath dirlist setupdir
-  
+proc addPic {picPath} {
+  global dirlist setupdir
+
   #TODO add file path to Globals
   source $setupdir/setupResizePhoto.tcl
   set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
-  
+
   #Check which original pic to use
   if [catch {image inuse rotateOrigPic}] {
     set origPic photosOrigPic
   } else {
     set origPic rotateOrigPic
   }
-  
+
   if [file exists $targetPicPath] {
     NewsHandler::QueryNews $::picSchonDa red
     return 1
   }
-  
+
   #Export targetPicPath + scaleFactor + origPic to 'addpicture' namespace
   namespace eval addpicture {}
   set addpicture::targetPicPath $targetPicPath
   set addpicture::origPic $origPic
-  
+
   set res [needsResize $origPic]
 
-  #A) 0: right dimensions, right size: save pic  
+  #A) 0: right dimensions, right size: save pic
   if !$res {
     $origPic write $targetPicPath -format PNG
     openReposWindow
 
-  #B) 1: right dimensions, wrong size: open repos window  
+  #B) 1: right dimensions, wrong size: open repos window
   } elseif {$res == 1} {
-  
+
+
+    #Send pic to final resizing
+    ResizeHandler::QueryResize $origPic
+    after idle {
+      ResizeHandler::Run
+    }
+
     openReposWindow
-    
+
   #C) 2: wrong dimensions, wrong size: open resizeWindow
   } elseif {$res == 2} {
-  
+
     openResizeWindow
 
   }
-  
+
   NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
-  
+  set ::numPhotos [llength [glob $dirlist(photosDir)/*]]
+
 } ;#END addPic
 
 proc delPic {} {
-  global fileJList picPath
+  global dirlist fileJList picPath
   file delete $picPath
   set fileJList [deleteImg $fileJList .imgCanvas]
   NewsHandler::QueryNews "[deletedPicMsg $picPath]" orange
+  set ::numPhotos [llength [glob $dirlist(photosDir)/*]]
 }
 
 # needsResize
@@ -431,17 +440,17 @@ proc needsResize {pic} {
   if {$screenX == $imgX && $screenY == $imgY} {
   #perfect size
     return 0
-    
+
   #>doResize
   } else {
-    
+
     set screenX [winfo screenwidth .]
     set screenY [winfo screenheight .]
     set imgX [image width $pic]
     set imgY [image height $pic]
     set imgFactor [expr $imgX. / $imgY]
     set screenFactor [expr $screenX. / $screenY]
-    
+
     ##only even resizing needed > open repos window
     if {$screenFactor == $imgFactor} {
       return 1
@@ -455,8 +464,8 @@ proc needsResize {pic} {
 # grabCanvSection
 ##berechnet resizeCanvPic Bildausschnitt für Kopieren nach reposCanvSmallPic
 ##called by addPic & ?processPngInfo?
-proc grabCanvSection {c} { 
-  
+proc grabCanvSection {c} {
+
   lassign [$c bbox img] imgX1 imgY1 imgX2 imgY2
   set canvX [lindex [$c conf -width] end]
   set canvY [lindex [$c conf -height] end]
@@ -465,7 +474,7 @@ proc grabCanvSection {c} {
   set cutY1 0
   set cutX2 $canvX
   set cutY2 $canvY
-  
+
   ##alles gleich
   if {$imgX2 == $canvX &&
       $imgY2 == $canvY
@@ -473,10 +482,10 @@ proc grabCanvSection {c} {
     puts "No need for cutting."
     return 0
   }
-  
+
   ##Breite ungleich
   if {$imgX2 > $canvX} {
-  
+
     puts "Breite verschieben"
     if {$imgX1 < 0} {
       set cutX1 [expr $imgX1 - ($imgX1 + $imgX1) ]
@@ -487,10 +496,10 @@ proc grabCanvSection {c} {
       set cutX1 0
       set cutX2 $canvX
     }
-    
+
   ##Höhe ungleich
   } elseif {$imgY2 > $canvY} {
-  
+
     puts "Höhe verschieben"
     if {$imgY1 < 0} {
       set cutY1 [expr $imgY1 - ($imgY1 + $imgY1) ]
@@ -501,11 +510,11 @@ proc grabCanvSection {c} {
       set cutY1 0
       set cutY2 $canvY
     }
-  
+
   }
-  
+
   return "$cutX1 $cutY1 $cutX2 $cutY2"
-  
+
 } ;#END grabCanvSection
 
 proc doOpen {bildordner c} {
@@ -518,11 +527,11 @@ proc doOpen {bildordner c} {
 
   pack .picPath -in .photosF.mainf.right.unten -side left -fill x
   pack .photosF.mainf.right.bar.collect -side right -fill x
-  pack forget .delBtn
+  pack forget .delBtn .photosF.mainf.right.bar.count1 .photosF.mainf.right.bar.count2
 
   #Add Rotate button
   pack .rotateBtn -in .photosF.mainf.right.unten -side right
-  
+
   return $localJList
 }
 
@@ -532,6 +541,7 @@ proc doCollect {c} {
   refreshImg $localJList $c
 
   pack .delBtn .picPath -in .photosF.mainf.right.unten -side left -fill x
+  pack .photosF.mainf.right.bar.count1 .photosF.mainf.right.bar.count2 -side right
   pack forget .addBtn .photosF.mainf.right.bar.collect .rotateBtn
 
   return $localJList
@@ -664,7 +674,7 @@ proc openImg {imgFilePath imgCanvas} {
 
   photosCanvPic copy photosOrigPic -subsample $factor -shrink
   $imgCanvas create image $photosCanvMargin $photosCanvMargin -image photosCanvPic -anchor nw -tag img
-  
+
 }
 
 proc hideImg {imgCanvas} {
@@ -734,35 +744,35 @@ proc fitPic2Canv {c} {
   set screenY [winfo screenheight .]
   set imgX [image width $addpicture::origPic]
   set imgY [image height $addpicture::origPic]
-  
+
   #TODO nur canvas hat korrekte Dimensionen
   set canvImgName [lindex [$c itemconf img -image] end]
-  
-  set canvImgX [image width $canvImgName] 
+
+  set canvImgX [image width $canvImgName]
   set canvImgY [image height $canvImgName]
 
   set screenFactor [expr $screenX. / $screenY]
-  set origImgFactor [expr $imgX. / $imgY]        
-  
-  $c conf 
+  set origImgFactor [expr $imgX. / $imgY]
+
+  $c conf
   ##zu hoch
   if {$origImgFactor < $screenFactor} {
     puts "Cutting height.."
     set canvCutY [expr round($canvImgX / $screenFactor)]
     set canvCutX [expr round($canvCutY * $screenFactor)]
-   
+
   ##zu breit
   } elseif {$origImgFactor > $screenFactor} {
     puts "Cutting width.."
     set canvCutX [expr round($canvImgX / $screenFactor)]
     set canvCutY $canvImgY
-    
+
   ##no cutting needed
   } else  {
     set canvCutX $imgX
     set canvCutY $imgY
   }
-  
+
   return "$canvCutX $canvCutY"
 
 } ;#END fitPic2Canv
@@ -779,7 +789,7 @@ proc setPic2CanvScalefactor {} {
   } else {
     set origPic rotateOrigPic
   }
-  
+
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
   set imgX [image width $origPic]
@@ -787,7 +797,7 @@ proc setPic2CanvScalefactor {} {
 
   set maxX [expr $screenX - 200]
   set maxY [expr $screenY - 200]
-  
+
   ##Reduktionsfaktor ist Ganzzahl
   set scaleFactor 1
   while { $imgX >= $maxX && $imgY >= $maxY } {
@@ -795,7 +805,7 @@ proc setPic2CanvScalefactor {} {
     set imgX [expr $imgX / 2]
     set imgY [expr $imgY / 2]
   }
-  
+
   #export scaleFactor to 'addpicture' namespace
   set addpicture::scaleFactor $scaleFactor
 
@@ -879,7 +889,7 @@ proc deleteOldStuff {} {
   }
   ##list all files in subdirs
   foreach dir $curFolderList {
-    foreach f [glob -nocomplain $dir/*] { 
+    foreach f [glob -nocomplain $dir/*] {
       lappend curFileList $f
     }
   }
@@ -888,13 +898,13 @@ proc deleteOldStuff {} {
     catch {lsearch -exact $latestFileList $path} res
     if {$res == -1 && [file isfile $path]} {
       file delete $path
-      NewsHandler::QueryNews "Deleted obsolete file: $path" red 
+      NewsHandler::QueryNews "Deleted obsolete file: $path" red
     }
-  } 
+  }
 
 
   #########################################
-  # 3. Delete stale fonts 
+  # 3. Delete stale fonts
   #########################################
 
   #1. Get latest font paths from globals
@@ -912,7 +922,7 @@ proc deleteOldStuff {} {
   foreach path $curFontList {
     catch {lsearch -exact $latestFontList $path} res
     if {$res == "-1" && [file isfile $path]} {
-      file delete $path 
+      file delete $path
       NewsHandler::QueryNews "Deled obsolete font file: $path" red
     }
   }

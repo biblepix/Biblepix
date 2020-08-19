@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16jun20 pv
+# Updated 19aug20 pv
 
 set fileJList ""
 
@@ -26,11 +26,12 @@ button .photosF.mainf.right.bar.open -width 30 -textvar f6.find -height 1 -comma
 button .photosF.mainf.right.bar.< -text < -height 1 -command {set fileJList [step $fileJList 1 .imgCanvas]}
 button .photosF.mainf.right.bar.> -text > -height 1 -command {set fileJList [step $fileJList 0 .imgCanvas]}
 button .photosF.mainf.right.bar.collect -textvar f6.show -height 1 -command {set fileJList [doCollect .imgCanvas]}
+label .photosF.mainf.right.bar.count1 -textvar numPhotos -bg lightgreen
+label .photosF.mainf.right.bar.count2 -text "Anzahl Bilder: " -bg lightgreen
 
 pack .photosF.mainf.right.bar.open -side left
 pack .photosF.mainf.right.bar.< -side left
 pack .photosF.mainf.right.bar.> -side left
-pack .photosF.mainf.right.bar.collect -side right -fill x
 
 #Build Photo canvas right
 set screenX [winfo screenwidth .]
@@ -43,18 +44,11 @@ pack .imgCanvas -in .photosF.mainf.right.bild -side left
 
 #TODO tail picpath var?
 label .picPath -textvar picPath
-button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic}
+button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic $picPath}
 button .delBtn -textvar f6.del -activebackground red -command {delPic}
 
 #TODO Testing
 button .rotateBtn -activebackground orange -textvar rotatepic -command "source $setupdir/setupRotate.tcl"
 set rotatepic "Bild drehen"
-
-#TODO Testing Bilderzahl - TODO nur bei "Fotosammlung anzeigen" sichtbar machen
-label .count1 -textvar numPhotos -bg lightgreen
-label .count2 -text Bilder -bg lightgreen
-pack .count2 .count1 -in .photosF.mainf.right.unten -side right
-#TODO Wer führt dieses Kommando aus? - make proc for delPic & addPic!
-set numPhotos [llength [glob $photosDir/*]]
 
 set fileJList [doCollect .imgCanvas]
