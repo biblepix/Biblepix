@@ -739,6 +739,7 @@ proc copyAndResizeSamplePhotos {} {
 # fitPic2Canv
 ##fits ill-dimensioned photo into screen-dimensioned canvas, hiding over-dimensioned side
 ##called by setupResizePhoto for .resizePhoto.resizeCanv & .reposPhoto.reposCanv
+##returns cutX + cutY
 proc fitPic2Canv {c} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
@@ -755,6 +756,7 @@ proc fitPic2Canv {c} {
   set origImgFactor [expr $imgX. / $imgY]
 
   $c conf
+
   ##zu hoch
   if {$origImgFactor < $screenFactor} {
     puts "Cutting height.."

@@ -75,31 +75,33 @@ proc openReposWindow {} {
   image create photo reposCanvPic
 
   set c [canvas .reposPhoto.reposCanv -bg lightblue]
+  pack $c
+  
   $c create image 0 0 -image reposCanvPic -anchor nw -tags {img mv}
-  createMovingTextBox $c
+  #createMovingTextBox $c
 
   #Determine smallest possible scale factor for canvas pic
   setPic2CanvScalefactor
+  $c conf -width 
+  
+  #Create text window on top
+  label $w.moveTxtL -font {TkHeaderFont 20 bold} -fg red -pady 20 -padx 20 -bd 5 -relief raised -text "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..."
+  pack $w.moveTxtL
+  $c create window 5 5 -anchor nw -window $w.moveTxtL
 
-  label $w.moveTxtL -font {TkHeaderFont 20 bold} -fg red -bg beige -pady 20 -bd 2 -relief sunken
-
-  $w.moveTxtL conf -fg grey -font 18 -text "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..."
-  pack $w.moveTxtL -fill x
-  pack $c
-
-  #Create OK button only!
+  #Create ok button on top  
   button $w.confirmBtn -text OK -command "processPngInfo $c"
-  #TODO make $c window instead + put on top
-    pack $w.confirmBtn -side right
-
-
-
-    #Set bindings
-    $c bind mv <1> {
-       set ::x %X
-       set ::y %Y
-    }
-    $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}
+  pack $w.confirmBtn
+ # $c create window 500 500 -window $w.confirmBtn
+    
+    
+    
+  #Set bindings
+  $c bind mv <1> {
+     set ::x %X
+     set ::y %Y
+  }
+  $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}
 
   #Copy origPic to reposCanv if resizeCanv wasn't opened
   if [catch {image inuse resizeCanvPic}] {
@@ -115,16 +117,29 @@ proc openReposWindow {} {
 
   #TODO Time to close resizePhoto window
   #destroy .resizePhoto
-
-#TODO was läuft hier? what if resizing is not needed?
-    lassign [fitPic2Canv $c] cutX cutY
-    $c conf -width $cutX -height $cutY
-
-  #TODO geht nicht! Determine moving text font size
   set imgX [image width reposCanvPic]
-  set screenX [winfo screenwidth .]
-  set fontfactor [expr $screenX / $imgX]
-  set canvFontsize [expr round($::fontsize / $fontfactor)]
+  $c conf -width
+  set imgY [image height reposCanvPic]
+  $c conf -width $imgX -height $imgY
+  createMovingTextBox $c
+  $c create window [expr $imgX - 150] [expr $imgY - 150] -window $w.confirmBtn
+  
+  
+  
+  
+  
+#TODO was läuft hier? what if resizing is not needed?#Create OK button on top (no Esc!)
+  
+  lassign [fitPic2Canv $c] canvX canvY
+  puts "$canvX $canvY"
+  
+
+#TODO geht nicht! Determine moving text font size
+#  set imgX [image width reposCanvPic]
+ # set screenX [winfo screenwidth .]
+  set textposCanvX [winfo width .textposCanv] 
+  set fontfactor [expr round($imgX / $textposCanvX)]
+  set canvFontsize [expr round($::fontsize * $fontfactor)]
   font conf movingTextReposFont -size $canvFontsize
 
   #Scan Image
