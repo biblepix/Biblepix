@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 19aug20 pv
+# Updated 25aug20 pv
 
 # openResizeWindow
 ##opens new toplevel window if [needsResize]
@@ -85,8 +85,8 @@ proc openReposWindow {} {
   $c conf -width 
   
   #Create text window on top
-  label $w.moveTxtL -font {TkHeaderFont 20 bold} -fg red -pady 20 -padx 20 -bd 5 -relief raised -text "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..."
-  pack $w.moveTxtL
+  label $w.moveTxtL -font {TkHeaderFont 20 bold} -fg red -pady 2 -padx 2 -bd 5 -relief raised -text "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..."
+  pack $w.moveTxtL -fill x
   $c create window 5 5 -anchor nw -window $w.moveTxtL
 
   #Create ok button on top  
@@ -123,25 +123,23 @@ proc openReposWindow {} {
   $c conf -width $imgX -height $imgY
   createMovingTextBox $c
   $c create window [expr $imgX - 150] [expr $imgY - 150] -window $w.confirmBtn
-  
-  
-  
-  
+    
   
 #TODO was läuft hier? what if resizing is not needed?#Create OK button on top (no Esc!)
   
   lassign [fitPic2Canv $c] canvX canvY
   puts "$canvX $canvY"
   
-
-#TODO geht nicht! Determine moving text font size
-#  set imgX [image width reposCanvPic]
- # set screenX [winfo screenwidth .]
-  set textposCanvX [winfo width .textposCanv] 
-  set fontfactor [expr round($imgX / $textposCanvX)]
-  set canvFontsize [expr round($::fontsize * $fontfactor)]
-  font conf movingTextReposFont -size $canvFontsize
-
+  #Configure text size - TODO fontfactor stimmt noch nicht!
+   set imgX [image width reposCanvPic]
+   set screenX [winfo screenwidth .]
+   set fontfactor [expr $screenX / $imgX]
+   set canvFontsize [expr round($::fontsize * $fontfactor)]
+   font conf movingTextReposFont -size $canvFontsize
+   
+puts "$fontfactor $canvFontsize"
+   
+   
   #Scan Image
   source $::picdir/scanColourArea.tcl
 
@@ -280,7 +278,7 @@ proc setupReposTextWin {c} {
 
   $c itemconf mv -state disabled
   $w.resizeConfirmBtn conf -state disabled
-  $w.moveTxtL conf -fg grey -font 18 -text "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..."
+  $w.moveTxtL conf -padx 10 -pady 10 -fg grey -font 18 -text "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..."
 
   #TODO? furnish real doColourScan!
   #after idle

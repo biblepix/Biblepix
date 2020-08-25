@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19aug20 jh/pv
+# Updated: 25aug20 jh/pv
 
 source $JList
 
@@ -74,18 +74,20 @@ namespace eval NewsHandler {
 ##########################################################################
 
 # setCanvasFontSize
-##changes canvas font's size||weight||family
-##called by SetupGUI for intTextCanv
+##changes canvas font's size||weight||family on intTextCanv + textposCanv
+##called by SetupDesktop 
 proc setCanvasFontSize args {
+
+  ##size
   if [string is integer $args] {
-    #set size in pt as in BDF
+    #set size in pt as in BDF      
     font conf intCanvFont -size $args
     font conf movingTextFont -size [expr round($args / 3) + 3]
-
+  ##weight
   } elseif {$args == "bold" || $args == "normal"} {
     font conf intCanvFont -weight $args
     font conf movingTextFont -weight $args
-
+  ##family
   } elseif {$args == "Serif" || $args == "Sans"} {
     font conf intCanvFont -family $args
     font conf movingTextFont -family $args
@@ -262,8 +264,6 @@ proc createMovingTextBox {c} {
   set shadeY [expr $y1 + 1]
   set sunX [expr $x1 - 1]
   set sunY [expr $y1 - 1]
-
-#source $ImgTools
   set rgb [hex2rgb $fontcolor]
   set shade [setShade $rgb]
   set sun [setSun $rgb]
@@ -272,8 +272,14 @@ proc createMovingTextBox {c} {
   $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun} -fill $sun
   $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main} -fill $fontcolor
   $c itemconf canvTxt -text $setupTwdText
-  $c itemconf canvTxt -font movingTextFont -activefill red
 
+puts $c
+  if {$c == ".textposCanv"} {
+    $c itemconf canvTxt -font movingTextFont -activefill red
+  } elseif {$c == ".reposPhoto.reposCanv"} {
+    $c itemconf canvTxt -font movingTextReposFont -activefill orange
+  }
+  
 } ;#END createMovingTextBox
 
 # dragCanvasItem
@@ -338,12 +344,10 @@ proc checkItemInside {c item xDiff yDiff args} {
 
     if {$x < $can(minx)} {
       return 0
-          }
-
+    }
     if {$y < $can(miny)} {
       return 0
     }
-
     if {$x > $can(maxx)} {
       return 0
     }
