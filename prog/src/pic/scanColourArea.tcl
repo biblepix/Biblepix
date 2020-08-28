@@ -2,7 +2,7 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 19aug20 pv
+# Updated 25aug20 pv
 
 #Create small pic from resize canv pic
 source $::ImgTools
@@ -172,23 +172,19 @@ puts $row
     return $currIndex
   } ;#END findRange
 
-   proc dummyColourScan {w} {
-   #TODO diese Info erscheint nie!!!!!!!!!!!!!!!!!!!!!
-   #TODO JOEL wie kann ich diese Kommandos im Hintergrund laufen lassen????????????
-   $w.moveTxtL conf -fg orange -bg black -font 18 -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position und des Helligkeitswerts."
-     colour::scanImage
-     after idle {colour::findRanges}
-
-   }
+   
 # doColourScan
   ##wrapper prog for all scanning processes
   ##outputs xPos+yPos+luminance to calling prog
   ##called by setupReposTextwin
   proc doColourScan {} {
-    source $::ImgTools
 
     #1. run scanImage(+findRanges) to create colour::rowarrays::* & colour::matchArr
     scanImage
+#TODO for testing:
+return "ScanImage returns: [info vars rowarrays::*]"
+
+
 
     #2. Find matching ranges
 
@@ -407,6 +403,4 @@ puts $row
       }
 
   } ;#END evalRowlist
-
-
 

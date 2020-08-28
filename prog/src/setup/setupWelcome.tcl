@@ -31,7 +31,7 @@ pack $twdWidget -anchor n
 $twdWidget configure -command {fillWidgetWithTodaysTwd $twdWidget}
 fillWidgetWithTodaysTwd $twdWidget
 
-#Set text2 bottom
+#Set text2 bottom - TODO change "Möglichkeiten" to formatted text widget!!!
 label .welcomeF.fbot.subtit2 -font bpfont2 -textvar welc.subtit2 -padx $px -pady $py
 message .welcomeF.fbot.possibilities1 -textvar welc.txt2 -font bpfont1 -width $tw -justify left -pady 0 -padx $px
 message .welcomeF.fbot.possibilities2 -textvar welc.txt3 -font bpfont1 -width $tw -justify left -pady 0 -padx $px
@@ -42,10 +42,6 @@ if {$platform=="unix"} {
   pack .welcomeF.fbot.possibilities2 -anchor nw
 }
 pack .welcomeF.fbot.possibilities3 -anchor nw
-
-
-#pack .welcomeF.subtit2 .welcomeF.possibilities1 -anchor w
-
 
 #Uninstall button
 pack [frame .welcomeF.uninst] -side bottom -fill x

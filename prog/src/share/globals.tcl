@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 13jun20 pv
+# Updated: 26aug20 pv
 set version "3.2"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -68,6 +68,7 @@ proc makeDirs {} {
 
 #Set FilePaths array
 array set FilePaths "
+  AnnotatePng [file join $picdir annotatePng.tcl]
   Globals [file join $sharedir globals.tcl]
   Http [file join $sharedir http.tcl]
   UpdateInjection [file join $srcdir updateInjection.tcl]
@@ -80,6 +81,7 @@ array set FilePaths "
   BdfPrint [file join $picdir BdfPrint.tcl]
   BdfBidi [file join $sharedir BdfBidi.tcl]
   Image [file join $picdir image.tcl]
+  ScanColourArea [file join $picdir scanColourArea.tcl]
   SetBackgroundChanger [file join $picdir setBackgroundChanger.tcl]
   SetupMainFrame [file join $setupdir setupMainFrame.tcl]
   SetupBuild [file join $setupdir setupBuildGUI.tcl]

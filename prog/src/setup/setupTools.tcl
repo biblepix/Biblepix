@@ -83,14 +83,17 @@ proc setCanvasFontSize args {
     #set size in pt as in BDF      
     font conf intCanvFont -size $args
     font conf movingTextFont -size [expr round($args / 3) + 3]
+    set ::fontsize $args
   ##weight
   } elseif {$args == "bold" || $args == "normal"} {
     font conf intCanvFont -weight $args
     font conf movingTextFont -weight $args
+    set ::fontweight $args
   ##family
   } elseif {$args == "Serif" || $args == "Sans"} {
     font conf intCanvFont -family $args
     font conf movingTextFont -family $args
+    set ::fontfamily $args
   }
   return 0
 }
@@ -109,6 +112,10 @@ proc setCanvasFontColour {c colour} {
   $c itemconf sun -fill $sun
   $c itemconf shade -fill $shade
 
+  set ::fontcolor $colour
+  set ::shade $shade
+  set ::sun $sun
+  
   return 0
 }
 
@@ -298,6 +305,8 @@ proc dragCanvasItem {c item newX newY args} {
   }
   set ::x $newX
   set ::y $newY
+  
+  set ::move 1
 }
 
 # checkItemInside
@@ -396,21 +405,47 @@ proc addPic {picPath} {
 
   #A) 0: right dimensions, right size: save pic
   if !$res {
+  
     $origPic write $targetPicPath -format PNG
-    openReposWindow
-
-  #B) 1: right dimensions, wrong size: open repos window
+    NewsHandler::QueryNews "Bild [file tail $targetPicPath] ist hinzugefügt.\n Wir berechnen nun die ideale Textposition und -helligkeit. Die Position können Sie noch ändern..." lightblue
+    after 2000 openReposWindow
+    
+   
+  #B) 1: right dimensions, wrong size: open reposWindow
   } elseif {$res == 1} {
 
-
     #Send pic to final resizing
-    ResizeHandler::QueryResize $origPic
-    after idle {
-      ResizeHandler::Run
-    }
 
+  #TODO move below commands to separate proc
+  #Prepare ReposWin while other procs (s.u.) are running
+  after 5000 {
     openReposWindow
+    .reposPhoto.moveTxtBtn conf -bg beige -state disabled
+    .reposPhoto.reposCanv itemconf mv -state disabled
+  }
 
+#############################################################
+#TODO Joel das sollte im Hintergrund laufen!!!!!!!!!!!
+  #A) Run Resize (??in backgkround??)
+
+
+  ResizeHandler::QueryResize $addpicture::origPic    
+  ResizeHandler::Run
+
+#############################################################
+    
+  #B) Run Colour scan & disable controls
+ 
+  colour::doColourScan
+
+    #C) Enable reposWin
+    .reposPhoto.moveTxtBtn conf -bg lightblue -state normal
+    .reposPhoto.reposCanv itemconf mv -state normal
+    set ::textpos.wait "Textposition nach Wunsch ändern und dann quittieren!"
+    
+  
+
+#TODO Wer koordiniert das?
   #C) 2: wrong dimensions, wrong size: open resizeWindow
   } elseif {$res == 2} {
 
@@ -418,7 +453,7 @@ proc addPic {picPath} {
 
   }
 
-  NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
+  NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightgreen
   set ::numPhotos [llength [glob $dirlist(photosDir)/*]]
 
 } ;#END addPic

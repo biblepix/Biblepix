@@ -1,14 +1,15 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 25aug20 pv
+# Updated 28aug20 pv
 
 # openResizeWindow
 ##opens new toplevel window if [needsResize]
 ##called by addPic
 proc openResizeWindow {} {
   global fontsize
-
+  image create photo resizeCanvPic
+  
   #Create toplevel window w/canvas & pic
   set w [toplevel .resizePhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
   set c [canvas $w.resizeCanv -bg lightblue]
@@ -71,9 +72,9 @@ proc openResizeWindow {} {
 ##called by addPic if ![needsResize]
 proc openReposWindow {} {
   global fontsize
-  set w [toplevel .reposPhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
   image create photo reposCanvPic
-
+  
+  set w [toplevel .reposPhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
   set c [canvas .reposPhoto.reposCanv -bg lightblue]
   pack $c
   
@@ -84,17 +85,20 @@ proc openReposWindow {} {
   setPic2CanvScalefactor
   $c conf -width 
   
-  #Create text window on top
-  label $w.moveTxtL -font {TkHeaderFont 20 bold} -fg red -pady 2 -padx 2 -bd 5 -relief raised -text "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..."
-  pack $w.moveTxtL -fill x
-  $c create window 5 5 -anchor nw -window $w.moveTxtL
+  #Create text button on top
+  button $w.moveTxtBtn -font {TkHeaderFont 20 bold} -fg red -pady 2 -padx 2 -bd 5 -relief raised -textvar textpos.wait
+  $w.moveTxtBtn conf -command "
+  
+    #TODO compare pngInfo with already computed result & save if nec.
+    destroy $w 
+    NewsHandler::QueryNews {Photo mit Positionsinfo abgespeichert.} lightgreen
+  "
+  pack $w.moveTxtBtn
+  $c create window -15 15 -anchor nw -window $w.moveTxtBtn -tags txtL
 
   #Create ok button on top  
-  button $w.confirmBtn -text OK -command "processPngInfo $c"
-  pack $w.confirmBtn
- # $c create window 500 500 -window $w.confirmBtn
-    
-    
+#  button $w.confirmBtn -text OK -command "processPngInfo $c"
+#  pack $w.confirmBtn
     
   #Set bindings
   $c bind mv <1> {
@@ -122,7 +126,7 @@ proc openReposWindow {} {
   set imgY [image height reposCanvPic]
   $c conf -width $imgX -height $imgY
   createMovingTextBox $c
-  $c create window [expr $imgX - 150] [expr $imgY - 150] -window $w.confirmBtn
+ # $c create window [expr $imgX - 150] [expr $imgY - 150] -window $w.confirmBtn
     
   
 #TODO was läuft hier? what if resizing is not needed?#Create OK button on top (no Esc!)
@@ -130,32 +134,28 @@ proc openReposWindow {} {
   lassign [fitPic2Canv $c] canvX canvY
   puts "$canvX $canvY"
   
-  #Configure text size - TODO fontfactor stimmt noch nicht!
+  #Configure text size
    set imgX [image width reposCanvPic]
    set screenX [winfo screenwidth .]
    set fontfactor [expr $screenX / $imgX]
-   set canvFontsize [expr round($::fontsize * $fontfactor)]
+   set canvFontsize [expr round($::fontsize / $fontfactor)]
    font conf movingTextReposFont -size $canvFontsize
    
-puts "$fontfactor $canvFontsize"
    
-   
-  #Scan Image
-  source $::picdir/scanColourArea.tcl
+  #Scan Image - TODO done in addPic ???
+  source $::ScanColourArea
+  #$c itemconf mv -state disabled
+  #$w.confirmBtn conf -state disabled
+  
+  
+  
+  #worum goht da so laaaaaaaaaaaaaaaaaaang?????????????????????
+  #after idle colour::doColourScan
+ 
+  #.reposPhoto.confirmBtn conf -state normal
+  #.reposPhoto.reposCanv itemconf mv -state normal
 
-  #TODO do we want these here?
-  $c itemconf mv -state disabled
-  $w.confirmBtn conf -state disabled
-
-  after idle {
-    #TODO gibt noch keine Resultate aus
-    #colour::doColourScan
-
-    after 10000 {
-      .reposPhoto.confirmBtn conf -state normal
-      .reposPhoto.reposCanv itemconf mv -state normal
-    }
-  }
+#TODO close window after / vwait okBtn if pos changed???
 
 } ;#END openReposWindow
 
@@ -163,11 +163,8 @@ puts "$fontfactor $canvFontsize"
 ##called by open resizeConfBtn (Phase 2)
 proc processPngInfo {c} {
 
-  #TODO include new vars in Globals:
-  set AnnotatePng $::picdir/annotatePng.tcl
-  set ScanColourArea $::picdir/scanColourArea.tcl
-  source $AnnotatePng
-  source $ScanColourArea
+  source $::AnnotatePng
+#  source $::ScanColourArea
 
   set w .reposPhoto
   set canvPic [lindex [$c itemcget img -image] end]
