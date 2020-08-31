@@ -1,7 +1,9 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 28aug20 pv
+# Updated 31aug20 pv
+
+source $::SetupResizeTools
 
 # openResizeWindow
 ##opens new toplevel window if [needsResize]
@@ -51,19 +53,14 @@ proc openResizeWindow {} {
 
   # P h a s e  2  (text repositioning Window)
 
-  #Confirm button launches doResize & sets up repositioning window
+  #Confirm button launches doResize & sets up repositioning window 
+  ## .resizePhoto destroyed later!
   .resizePhoto.resizeConfirmBtn conf -command "
     set ::Modal.Result [doResize $c]
-
-#TODO adapt!!!!!!!!!!!!!!!!!!!
-
+    #Show.Modal .resizePhoto -destroy 1 -onclose $cancelButton 
     openReposWindow
   "
-
   bind .resizePhoto <Return> .resizePhoto.resizeConfirmBtn
-
-  #TODO Joel help: close window later!
-  Show.Modal .resizePhoto -destroy 0 -onclose $cancelButton
 
 } ;#END openResizeWindow
 
@@ -79,11 +76,21 @@ proc openReposWindow {} {
   pack $c
   
   $c create image 0 0 -image reposCanvPic -anchor nw -tags {img mv}
-  #createMovingTextBox $c
-
+  
   #Determine smallest possible scale factor for canvas pic
   setPic2CanvScalefactor
+  
   $c conf -width 
+  #A.Copy origPic to reposCanv if resizeCanv wasn't opened
+  if [catch {image inuse resizeCanvPic}] {
+    reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
+  #B.Copy resizeCanvPic to reposCanv & destroy any .resizePhoto
+  } else {
+    lassign [grabCanvSection .resizePhoto.resizeCanv] x1 y1 x2 y2
+    reposCanvPic copy resizeCanvPic -from $x1 $y1 $x2 $y2
+    destroy .resizePhoto
+    image delete resizeCanvPic
+  }
   
   #Create text button on top
   button $w.moveTxtBtn -font {TkHeaderFont 20 bold} -fg red -pady 2 -padx 2 -bd 5 -relief raised -textvar textpos.wait
@@ -107,17 +114,7 @@ proc openReposWindow {} {
   }
   $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}
 
-  #Copy origPic to reposCanv if resizeCanv wasn't opened
-  if [catch {image inuse resizeCanvPic}] {
-
-    reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
-
-  #Copy resizeCanvPic to reposCanv
-  } else {
-
-    lassign [grabCanvSection .resizePhoto.resizeCanv] x1 y1 x2 y2
-    reposCanvPic copy resizeCanvPic -from $x1 $y1 $x2 $y2
-  }
+  
 
   #TODO Time to close resizePhoto window
   #destroy .resizePhoto

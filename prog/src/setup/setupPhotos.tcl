@@ -3,6 +3,7 @@
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated 19aug20 pv
 
+#source $SetupResizeTools
 set fileJList ""
 
 #Create title

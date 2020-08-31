@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 26aug20 pv
+# Updated: 31aug20 pv
 set version "3.2"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -92,6 +92,7 @@ array set FilePaths "
   SetupPhotos [file join $setupdir setupPhotos.tcl]
   SetupReadme [file join $setupdir setupReadme.tcl]
   SetupResizePhoto [file join $setupdir setupResizePhoto.tcl]
+  SetupResizeTools [file join $setupdir setupResizeTools.tcl]
   SetupTerminal [file join $setupdir setupTerminal.tcl]
   SetupWelcome [file join $setupdir setupWelcome.tcl]
   SetupTools [file join $setupdir setupTools.tcl]

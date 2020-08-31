@@ -2,7 +2,7 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 25aug20 pv
+# Updated 31aug20 pv
 
 #Create small pic from resize canv pic
 source $::ImgTools
@@ -19,7 +19,7 @@ if [winfo exists .resizePhoto.resizeCanv] {
   $img copy $addpicture::origPic -subsample $addpicture::scaleFactor
 }
 
-#TODO :uncomment:
+#TODO after testing uncomment: !!!!!!!!!!!!!!!!!!
 #catch {namespace delete colour}
 
 namespace eval colour {}
