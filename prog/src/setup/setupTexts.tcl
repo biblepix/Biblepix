@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25aug2020 pv
+# Updated: 1sep2020 pv
 
 proc setTexts {lang} {
   global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -140,22 +140,16 @@ set ::packageRequireTls $packageRequireTls($lang)
   set welcSubtit2(de) "Was sind Ihre Möglichkeiten?"
   set ::welc.subtit2 $welcSubtit2($lang)
 
-  set welcTxt2(en) "* INTERNATIONAL:\tChoose one or several Bible text languages for $dw
-  * DESKTOP:\tGet $dw on your personal background pictures, incl. slide show
-  * PHOTOS:\tOrganise your background pictures for $bp
-  * E-MAIL:\t\tGet $dw added to your e-mail signatures each day"
-  set welcTxt2(de) "* INTERNATIONAL:\tWählen Sie eine oder mehrere Sprachen für den Bibeltext
-  * DESKTOP:\tBetrachten Sie $dw auf Ihren persönlichen Hintergrundbildern
-  * PHOTOS:\tWählen Sie eigene Hintergrundbilder für $bp aus
-  * E-MAIL:\t\tFügen Sie $dw an Ihre E-Mails an"
+  set welcTxt2(en) "° INTERNATIONAL:\tChoose one or several Bible text languages for $dw\n° DESKTOP:\t\tGet $dw on your personal background pictures, incl. slide show\n° PHOTOS:\t\tOrganise your background pictures for $bp\n° E-MAIL:\t\t\tGet $dw added to your e-mail signatures each day"
+  set welcTxt2(de) "° INTERNATIONAL:\tWählen Sie eine oder mehrere Sprachen für den Bibeltext\n° DESKTOP:\t\tBetrachten Sie $dw auf Ihren persönlichen Hintergrundbildern\n° PHOTOS:\t\tWählen Sie eigene Hintergrundbilder für $bp aus\n° E-MAIL:\t\t\tFügen Sie $dw an Ihre E-Mails an"
   set ::welc.txt2 $welcTxt2($lang)
 
-  set welcTxt3(en) "* TERMINAL:\tShow $dw in your Linux terminals"
-  set welcTxt3(de) "* TERMINAL:\tBetrachten Sie $dw in Ihren Linux-Konsolen"
+  set welcTxt3(en) "° TERMINAL:\t\tShow $dw in your Linux terminals"
+  set welcTxt3(de) "° TERMINAL:\t\tBetrachten Sie $dw in Ihren Linux-Konsolen"
   set ::welc.txt3 $welcTxt3($lang)
 
-  set welcTxt4(de) "* MANUAL:\tStudieren Sie das komplette Handbuch von $bp"
-  set welcTxt4(en) "* MANUAL:\tStudy the Complete Guide to the $bp program"
+  set welcTxt4(de) "° MANUAL:\t\tStudieren Sie das komplette Handbuch von $bp"
+  set welcTxt4(en) "° MANUAL:\t\tStudy the Complete Guide to the $bp program"
   set ::welc.txt4 $welcTxt4($lang)
 
   set uninst(en) "Uninstall $bp"

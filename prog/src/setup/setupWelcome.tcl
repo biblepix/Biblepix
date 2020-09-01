@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupWelcome.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated:10may18
+# Updated:1sep20
 
 #Pack flags defined elsewhere
 pack .en .de -in .ftop -side right
@@ -31,7 +31,7 @@ pack $twdWidget -anchor n
 $twdWidget configure -command {fillWidgetWithTodaysTwd $twdWidget}
 fillWidgetWithTodaysTwd $twdWidget
 
-#Set text2 bottom - TODO change "Möglichkeiten" to formatted text widget!!!
+#Set text2 bottom
 label .welcomeF.fbot.subtit2 -font bpfont2 -textvar welc.subtit2 -padx $px -pady $py
 message .welcomeF.fbot.possibilities1 -textvar welc.txt2 -font bpfont1 -width $tw -justify left -pady 0 -padx $px
 message .welcomeF.fbot.possibilities2 -textvar welc.txt3 -font bpfont1 -width $tw -justify left -pady 0 -padx $px

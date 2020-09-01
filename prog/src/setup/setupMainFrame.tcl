@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25mch20
+# Updated: 1sep20
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
@@ -68,7 +68,6 @@ if {![info exists version]} {set version ""}
 label .label -text "BiblePix Version $version"
 pack .label -in .fbottom -side left
 
-# TODO colorieren
 message .news -textvariable news -width [expr $wWidth - 350]
 if {![info exists error] || !$error} {
   NewsHandler::QueryNews "$uptodateHttp" lightgreen
