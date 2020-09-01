@@ -254,6 +254,10 @@ set ::packageRequireTls $packageRequireTls($lang)
   set f6Txt(de) "Hier können Sie beliebig viele Fotos aus Ihrem persönlichen Bildordner in die $bp-Fotosammlung ziehen. Die Fotos sollten im Querformat aufgenommen sein und eine möglichst ebenfarbige Fläche für den Text im oberen Drittel aufweisen (z.B. Himmel). \n\nFalls das Bildformat nicht mit der Bildschirmgrösse übereinstimmt, speichert $bp das Foto im passenden Format im $bp-Fotoordner ab. Das Originalbild bleibt unverändert."
   set ::f6.txt $f6Txt($lang)  
 
+  set f6numPhotosTxt(de) "Anzahl Bilder: "
+  set f6numPhotosTxt(en) "Number of Pictures: "
+  set ::numPhotosTxt $f6numPhotosTxt($lang) 
+
   set f6Add(en) "Add to $bp Photo Collection:"
   set f6Add(de) "Zur $bp-Fotosammlung hinzufügen:"
   set ::f6.add $f6Add($lang)

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 19aug20 pv
+# Updated 1sep20 pv
 
 #source $SetupResizeTools
 set fileJList ""
@@ -27,8 +27,8 @@ button .photosF.mainf.right.bar.open -width 30 -textvar f6.find -height 1 -comma
 button .photosF.mainf.right.bar.< -text < -height 1 -command {set fileJList [step $fileJList 1 .imgCanvas]}
 button .photosF.mainf.right.bar.> -text > -height 1 -command {set fileJList [step $fileJList 0 .imgCanvas]}
 button .photosF.mainf.right.bar.collect -textvar f6.show -height 1 -command {set fileJList [doCollect .imgCanvas]}
-label .photosF.mainf.right.bar.count1 -textvar numPhotos -bg lightgreen
-label .photosF.mainf.right.bar.count2 -text "Anzahl Bilder: " -bg lightgreen
+label .photosF.mainf.right.bar.count1 -textvar numPhotos -bg lightblue
+label .photosF.mainf.right.bar.count2 -textvar numPhotosTxt -bg lightblue
 
 pack .photosF.mainf.right.bar.open -side left
 pack .photosF.mainf.right.bar.< -side left
