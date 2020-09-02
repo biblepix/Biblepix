@@ -2,15 +2,15 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 31mch20
+# Updated: 2sep20
 
 source $TwdTools
 puts "Updating signatures..."
-set twdList [getSigTwdList]
-set twdFile [getRandomTwdFile sig]
-set ::dw [getTodaysTwdSig $twdFile]
+set twdFileList [getSigTwdList]
+#set twdFile [getRandomTwdFile sig]
+#set ::dw [getTodaysTwdSig $twdFile]
 
-foreach twdFileName $twdList {
+foreach twdFileName $twdFileList {
   
   #set endung mit 8 Extrabuchstaben nach Sprache_
   set endung [string range $twdFileName 0 8] 
@@ -29,8 +29,8 @@ foreach twdFileName $twdList {
   }
 
   #Recreate The Word for each file
-  set twdFile [getRandomTwdFile]
-  set dw [getTodaysTwdSig $twdFile]
+ # set twdFile [getRandomTwdFile]
+  set dw [getTodaysTwdSig $twdFileName]
   
   #read the old sigFile
   set sigOld [read $sigFileChan]
@@ -54,6 +54,7 @@ foreach twdFileName $twdList {
   close $sigFileChan
 
   puts "Creating signature for signature-$endung"
+  
 } ;#END main loop
 
 
