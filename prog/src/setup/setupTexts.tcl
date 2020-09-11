@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1sep2020 pv
+# Updated: 10sep2020 pv
 
 proc setTexts {lang} {
   global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -336,8 +336,8 @@ Das Wort: www.biblepix.vollmar.ch
   set f4Btn(de) "$dw zur Anzeige im Terminal erzeugen"
   set ::f4Btn $f4Btn($lang)
 
-  set f4Txt(en) "If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nColours for display etc. may be changed in \n\n\t $dirlist(confdir)/term.conf \n\nNote that for Arabic or Hebrew display, 'mlterm' and 'Konsole' (KDE) are those terminals reported to work with bidirectional text.\n\nFor $dw to be displayed automatically in your terminals, $bp Setup makes an entry in ~/.bash_profile for your convenience."
-  set f4Txt(de) "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDarstellung und Farben können in \n\n\t $dirlist(confdir)/term.conf \n\ngeändert werden.\n\nFür die Darstellung von Hebräisch oder Arabisch kommen nur Terminals wie 'mlterm' oder 'Konsole' (KDE) in Frage. \n\nDamit $dw automatisch im Terminal angezeigt wird, macht das $bp-Setup einen Eintrag in ~/.bash_profile."
+  set f4Txt(en) "If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nColours for display etc. may be changed in \n\n\t $dirlist(confdir)/term.conf \n\nNote that for Arabic or Hebrew display, 'mlterm' and 'Konsole' (KDE) are those terminals reported to work with bidirectional text.\n\nFor $dw to be displayed automatically in your terminals, $bp Setup makes an entry in ~/.bashrc for your convenience."
+  set f4Txt(de) "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDarstellung und Farben können in \n\n\t $dirlist(confdir)/term.conf \n\ngeändert werden.\n\nFür die Darstellung von Hebräisch oder Arabisch kommen nur Terminals wie 'mlterm' oder 'Konsole' (KDE) in Frage. \n\nDamit $dw automatisch im Terminal angezeigt wird, macht das $bp-Setup einen Eintrag in ~/.bashrc."
   set ::f4.txt $f4Txt($lang)
 
   set ::f4.ex  "

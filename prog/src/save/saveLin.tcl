@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/saveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1apr20
+# Updated: 10sep20
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -54,9 +54,14 @@ catch setupKdeActionMenu Error
 # 3 Set up Linux terminal -- TODO? error handling?
 #################################################
 if {$enableterm} {
-  catch setupLinTerminal Error
-  puts "Terminal: $Error"
+  catch {setupLinTerminal} Error
+} else {
+  setupLinTerminal removeBashrcEntry
 }
+
+#Zis isntworking!!!!
+#puts "Terminal: $Error"
+
 
 #Exit if no picture desired
 if {!$enablepic} {

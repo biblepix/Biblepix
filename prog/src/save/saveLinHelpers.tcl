@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22apr20 pv
+# Updated: 11sep20 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -291,23 +291,23 @@ proc setupWestonBackground {} {
 	set fileText [read $chan]
 	close $chan
 
-	if [regexp iblepix $fileText] {
+	if [regexp iblepix $newfileileText] {
 	puts "Nothing to do"		
 	return 1
 	}
 	
 	set chan [file open $westonConfFile w]
 	
-	if [regexp background-image $fileText] {
-		regsub -line {(background-image=)(.*$) $fileText \2$TwdPNG} fileText
-	} elseif [regexp Shell $fileText] {
-		regsub -line {^\[Shell\].*$} $fileText {[Shell]
+	if [regexp background-image $newfileileText] {
+		regsub -line {(background-image=)(.*$) $newfileileText \2$TwdPNG} fileText
+	} elseif [regexp Shell $newfileileText] {
+		regsub -line {^\[Shell\].*$} $newfileileText {[Shell]
 background-image=$TwdPNG} fileText
 	} else {
 		append fileText \n \[Shell\] \n background-image=$TwdPNG \n background-type=scale-crop
 	}
 
-	puts $chan $fileText
+	puts $chan $newfileileText
 	close $chan
 	return 0
 }
@@ -350,14 +350,14 @@ Exec=$Setup
 "
 
   #make .desktop file for GNOME & KDE prog menu
-  set chan [open $LinDesktopFilesDir/$filename w]
+  set chan [open $LinDesktopFilesDir/$newfileilename w]
   puts $chan $desktopText
   close $chan
   
   #make .desktop file for KDE4, if dir exists
   if {$KdeVersion==4} {
     set categories "Education;Graphics"
-    set chan [open $Kde4ServiceDir/$filename w]
+    set chan [open $Kde4ServiceDir/$newfileilename w]
     puts $chan $desktopText
     close $chan
   }
@@ -909,61 +909,90 @@ done
 proc setupLinTerminal {args} {
   global dirlist HOME Terminal
   
-  #Delete any previous/erroneous entries in .bash_profile
-  set f $HOME/.bash_profile
-  if [file exists $f] {
-    set chan [open $f r]
-    set t [read $chan]
+  #OLD STUFF: Delete any previous/erroneous entries in .bash_profile
+  set bashProfile $HOME/.bash_profile
+  if [file exists $bashProfile] {
+    set chan [open $bashProfile r]
+    set bashProfileTxt [read $chan]
     close $chan
-    if [regexp {[Bb]iblepix} $t] {
-      regsub -all -line {^.*iblepix.*$} $t {} t
-      set chan [open $f w]
-      puts $chan $t
+    if [regexp {[Bb]iblepix} $bashProfileTxt] {
+      regsub -all -line {^.*iblepix.*$} $bashProfileTxt {} bashProfileTxt
+      set chan [open $bashProfile w]
+      puts $chan $bashProfileTxt
       close $chan
     }
   }
   
-  #Read out .bashrc
-  set f $HOME/.bashrc
+  ####1. Make entry in ~/.bashrc if missing
+  set bashrc $HOME/.bashrc
   
-  if [file exists $f] {
-    set chan [open $f r]
-    set t [read $chan]
+  if [file exists $bashrc] {
+    set chan [open $bashrc r]
+    set bashrcTxt [read $chan]
     close $chan
+  }
 
-    #If 'args' delete any previous entries 
-    if {$args != "" && $t != ""} {  
-      regsub -all -line {^.*iblepix.*$} $t {} t
-      set chan [open $f w]
-      puts $chan $t
-      close $chan
-      return
+##TODO move to better place
+##TODO empty lines not cleaned!!!!
+proc cleanBlankLines {file} {
+  set chan [open $file r]
+  foreach line [split [read $chan] \n] {
+    if {$line != ""} {
+      lappend cleanList $line
     }
+  }
+  close $chan
+  
+  #foreach line $cleanList [puts $line]
+return $cleanList
+#  return [regsub -all {[{}]} $cleanText {}]
+}
 
-    # Set entry text for .bashrc
-    append bashrcEntry {
-#Biblepix: This line shows The Word each terminal
-} {[ -f } $Terminal { ] && } $Terminal
+  ##1) Delete any previous .bashrc entries if called with 'args' 
+  set listEl 0 
+  if { [info exists args] && $args != "" && [file exists $bashrc] } {  
 
-    if [regexp {[Bb]iblepix} $t] {
+    set bashL [cleanBlankLines $bashrc]
+    for {set elNo [llength $bashL]} {$listEl <= $elNo} {incr listEl} {
+      append bashT [lindex $bashL $listEl] \n
+  }
+#puts $bashTxt
+#    set chan [open $file r]
+#    set bashrcTxt [read $chan]
+#    close $chan
+    ##remove all lines with BiblePpix & all blank lines
+    regsub -all -line {^.*Bible[pP]ix.*$} $bashT {} bashT
+#puts $bashTxt
+    #regsub -all \n $bashTxt {} bashTxt
+    ##write clean text to .bashrc
+    set chan [open $bashrc w]
+    puts $chan $bashT
+    close $chan
     
-      #Ignore if previous entries found
-      puts "Bashrc/Terminal: Nothing to do"
+    puts "Removed BiblePix entry for terminal from .bashrc"
+    return
+  }
+    
+  #B) Ignore if previous .bashrc entries found
+  if { [info exists bashrcTxt] && [regexp {[Bb]ible[Pp]ix} $bashrcTxt] } {   
+    puts "Bashrc/Terminal: Nothing to do"
+    
 
-    } else {
+    
+  #C) Append new entry to .bashrc
+  } else {
 
-      #Append line
-      append t $bashrcEntry
-      set chan [open $f w]
-      puts $chan $t
-      close $chan
+    append bashEntry \n {#BiblePix: This line renews The Word whenever a terminal is opened
+~/Biblepix/prog/src/term/terminal.tcl ; ~/Biblepix/prog/unix/term.sh}
+
+    append bashrcTxt $bashEntry
+    set chan [open $bashrc w]
+    puts $chan $bashrcTxt
+    close $chan
+    puts "Added BiblePix entry for display in terminal to .bashrc"
     }
     
-  } ;#End if file exists
-  
-  
   #### 2. Create Terminal Config file always ###
-  
   set configText {
   #!/bin/sh
   # ~/Biblepix/prog/conf/term.conf
