@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/saveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10sep20
+# Updated: 11sep20
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -55,6 +55,11 @@ catch setupKdeActionMenu Error
 #################################################
 if {$enableterm} {
   catch {setupLinTerminal} Error
+  
+  #TODO Infozeile verschwindet !!!!!!!!!!!!!!!
+  NewsHandler::QueryNews $::terminfo lightblue
+  after 3000
+  
 } else {
   setupLinTerminal removeBashrcEntry
 }

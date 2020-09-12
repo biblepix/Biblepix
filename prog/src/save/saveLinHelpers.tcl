@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 11sep20 pv
+# Updated: 12sep20 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -246,7 +246,7 @@ proc setupSwayBackground args {
   }
 
   #Delete any entry if "args"
-  if {$args!="" && $entryFound} {
+  if {$args != "" && $entryFound} {
     set chan [open $SwayConfFile w]
     regsub -all -line {^.*ible[Pp]ix.*$} $configText {} configText
     puts $chan $configText
@@ -897,19 +897,34 @@ done
 } ;#end setupLinCrontab
 
 
+
+
 ##################################################
 # L I N U X   T E R M I N A L   S E T T E R 
 ##################################################
+##TODO? move to better place
+# cleanBlankLines
+##cleans out empty lines & returns text lines as list
+proc cleanBlankLines {file} {
+  set chan [open $file r]
+  foreach line [split [read $chan] \n] {
+    if {$line != ""} {
+      lappend cleanList $line
+    }
+  }
+  close $chan
+  return $cleanList
+}
 
 # setupLinTerminal
 ## Copies configuration file for Linux terminal to $confdir
 ## Makes entry in .bashrc for 
 ##use 'args' to delete - T O D O > Uninstall !!
 # Called by SetupSaveLin if $enableterm==1
-proc setupLinTerminal {args} {
+proc setupLinTerminal args {
   global dirlist HOME Terminal
   
-  #OLD STUFF: Delete any previous/erroneous entries in .bash_profile
+  #OLD STUFF: Delete any previous=erroneous entries in .bash_profile
   set bashProfile $HOME/.bash_profile
   if [file exists $bashProfile] {
     set chan [open $bashProfile r]
@@ -925,73 +940,57 @@ proc setupLinTerminal {args} {
   
   ####1. Make entry in ~/.bashrc if missing
   set bashrc $HOME/.bashrc
+  set bashrcTxt ""
+  set bashEntry "#BiblePix: This line renews The Word whenever a terminal is opened\n~/Biblepix/prog/src/term/terminal.tcl ; ~/Biblepix/prog/unix/term.sh"
   
+  ##extract any text from .bashrc, cleaning empty lines
   if [file exists $bashrc] {
-    set chan [open $bashrc r]
-    set bashrcTxt [read $chan]
-    close $chan
-  }
-
-##TODO move to better place
-##TODO empty lines not cleaned!!!!
-proc cleanBlankLines {file} {
-  set chan [open $file r]
-  foreach line [split [read $chan] \n] {
-    if {$line != ""} {
-      lappend cleanList $line
+    
+    set bashrcList [cleanBlankLines $bashrc]
+    
+    if { [llength $bashrcList] >0 } {
+      set listEl 0    
+      for {set elNo [llength $bashrcList]} {$listEl <= $elNo} {incr listEl} {
+        append bashrcTxt [lindex $bashrcList $listEl] \n
+      }
     }
   }
-  close $chan
+
+  set save 1
   
-  #foreach line $cleanList [puts $line]
-return $cleanList
-#  return [regsub -all {[{}]} $cleanText {}]
-}
+  ##A) with args: delete any BiblePix entry
+  if {$args != ""} {
+  
+    regsub -all -line {^.*Bible[pP]ix.*$} $bashrcTxt {} bashrcTxt
+    set bashEntry ""
+    set ::terminfo "Removed BiblePix entry for terminal from .bashrc"
 
-  ##1) Delete any previous .bashrc entries if called with 'args' 
-  set listEl 0 
-  if { [info exists args] && $args != "" && [file exists $bashrc] } {  
-
-    set bashL [cleanBlankLines $bashrc]
-    for {set elNo [llength $bashL]} {$listEl <= $elNo} {incr listEl} {
-      append bashT [lindex $bashL $listEl] \n
-  }
-#puts $bashTxt
-#    set chan [open $file r]
-#    set bashrcTxt [read $chan]
-#    close $chan
-    ##remove all lines with BiblePpix & all blank lines
-    regsub -all -line {^.*Bible[pP]ix.*$} $bashT {} bashT
-#puts $bashTxt
-    #regsub -all \n $bashTxt {} bashTxt
-    ##write clean text to .bashrc
-    set chan [open $bashrc w]
-    puts $chan $bashT
-    close $chan
-    
-    puts "Removed BiblePix entry for terminal from .bashrc"
-    return
-  }
-    
-  #B) Ignore if previous .bashrc entries found
-  if { [info exists bashrcTxt] && [regexp {[Bb]ible[Pp]ix} $bashrcTxt] } {   
-    puts "Bashrc/Terminal: Nothing to do"
-    
-
-    
-  #C) Append new entry to .bashrc
+  #B) Ignore if previous entry found  
   } else {
+  
+    if [regexp {[Bb]ible[Pp]ix} $bashrcTxt] {
+      set ::terminfo "BiblePix for terminal: Nothing to do"
+      set save 0
+ 
+  #C) Append new entry to .bashrc
+    } else {
+      set ::terminfo "Added BiblePix entry for display in terminal to .bashrc"
+    }
+  }  
 
-    append bashEntry \n {#BiblePix: This line renews The Word whenever a terminal is opened
-~/Biblepix/prog/src/term/terminal.tcl ; ~/Biblepix/prog/unix/term.sh}
-
-    append bashrcTxt $bashEntry
+  if {$save} {
     set chan [open $bashrc w]
     puts $chan $bashrcTxt
+    puts $chan $bashEntry
     close $chan
-    puts "Added BiblePix entry for display in terminal to .bashrc"
-    }
+  }
+  
+  #TODO this isn't really of any use to users,
+  #Tryed to move this to saveLin, but nothing shows up...
+  #  NewsHandler::QueryNews $::terminfo lightblue
+  puts $::terminfo
     
+  
   #### 2. Create Terminal Config file always ###
   set configText {
   #!/bin/sh
