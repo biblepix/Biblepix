@@ -250,8 +250,8 @@ set ::packageRequireTls $packageRequireTls($lang)
   set f6Tit(de) "Fotos für $bp organisieren"
   set ::f6.tit $f6Tit($lang)
 
-  set f6Txt(en) "Here you can add any suitable photos from your Pictures directory and put them into the $bp photo collection, or remove them from there. The photos should ideally be in landscape format and have a plain-colour surface (e.g. sky) in the top-left area. \n\nIf the size of a photo does not agree with the screen dimensions, $bp will fit it to size and save it to the $bp Photos directory. The original photo remains unchanged."
-  set f6Txt(de) "Hier können Sie beliebig viele Fotos aus Ihrem persönlichen Bildordner in die $bp-Fotosammlung ziehen. Die Fotos sollten im Querformat aufgenommen sein und eine möglichst ebenfarbige Fläche für den Text im oberen Drittel aufweisen (z.B. Himmel). \n\nFalls das Bildformat nicht mit der Bildschirmgrösse übereinstimmt, speichert $bp das Foto im passenden Format im $bp-Fotoordner ab. Das Originalbild bleibt unverändert."
+  set f6Txt(en) "Here you can add any suitable photos from your Pictures directory and put them into the $bp photo collection, or remove them from there. Photos should ideally be in landscape format and have some plain-colour surface for good visibility of the Bible text.\n\nIf the size of a photo does not agree with the screen dimensions, $bp will fit it to size and save it to the $bp Photos directory. The original photo remains unchanged."
+  set f6Txt(de) "Hier können Sie beliebig viele Fotos aus Ihrem persönlichen Bildordner in die $bp-Fotosammlung ziehen. Die Fotos sollten im Querformat aufgenommen sein und möglichst eine ebenfarbige Fläche für gute Lesbarkeit des Bibelspruchs aufweisen.\n\nFalls das Bildformat nicht mit der Bildschirmgrösse übereinstimmt, speichert $bp das Foto im passenden Format im $bp-Fotoordner ab. Das Originalbild bleibt unverändert."
   set ::f6.txt $f6Txt($lang)  
 
   set f6numPhotosTxt(de) "Anzahl Bilder: "
