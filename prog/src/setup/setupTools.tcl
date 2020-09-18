@@ -608,10 +608,10 @@ proc openImg {imgFilePath imgCanvas} {
   #scale photosOrigPic to photosCanvPic
   set imgX [image width photosOrigPic]
   set imgY [image height photosOrigPic]
-  set factor [expr round(($imgX / $photosCanvX)+0.999999)]
+  set factor [expr round(($imgX / $photosCanvX)+0.5)]
 
   if {[expr $imgY / $factor] > $photosCanvY} {
-    set factor [expr round(($imgY / $photosCanvY)+0.999999)]
+    set factor [expr round(($imgY / $photosCanvY)+0.5)]
   }
 
   catch {image delete photosCanvPic}

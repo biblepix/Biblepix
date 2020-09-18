@@ -49,6 +49,7 @@ button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic $pi
 button .delBtn -textvar f6.del -activebackground red -command {delPic}
 
 #TODO Testing
+#TODO pfadvariable in globals
 button .rotateBtn -activebackground orange -textvar rotatepic -command "source $setupdir/setupRotate.tcl"
 set rotatepic "Bild drehen"
 

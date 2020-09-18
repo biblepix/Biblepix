@@ -50,7 +50,7 @@ catch {     $w coords $meter($l) 100 100 $x $y }
 set min $from
 set max $to
      set pos [expr {($v - $min) / ($max - $min)}]
-     updateMeterLine $mC [expr {$pos*0.6+0.2}]
+     updateMeterLine $mC [expr {$pos}]
  }
 
  # Fade over time

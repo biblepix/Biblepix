@@ -11,7 +11,7 @@ set C $T.rotateC
 set mC $T.meterC
 canvas $mC -width 200 -height 110 -borderwidth 2 -relief sunken -bg lightblue
 
-set scale .rotateW.scale
+set scale $T.scale
 
 image create photo rotateCanvPic
 rotateCanvPic copy photosCanvPic
@@ -19,9 +19,10 @@ set im rotateCanvPic
 
 
 #Picture & buttons
-button .rotateW.okBtn -text "Vorschau berechnen" -bg orange -activebackground yellow
-button .rotateW.cancelBtn -text Abbruch -activebackground red -command {catch {destroy .rotateW} ; return 0}
-button .rotateW.saveBtn -text Abspeichern -activebackground lightgreen -command {}
+#TODO texte in textfile schieben
+button $T.okBtn -text "Vorschau berechnen" -bg orange -activebackground yellow
+button $T.cancelBtn -text Abbruch -activebackground red -command {catch {destroy .rotateW} ; return 0}
+button $T.saveBtn -text Abspeichern -activebackground lightgreen -command {}
 
 catch  {  canvas $C -width 600 -height 400 }
 $C create image 20 20 -image $im -anchor nw
@@ -36,6 +37,7 @@ pack [makeMeter] -pady 20
 #pack [scale $s -orient h -length 300 -from -90 -to 90 -variable v]
 pack $scale
 trace add variable v write updateMeter
+set ::v 0
 updateMeterTimer
   
 #Load rotate command
@@ -43,12 +45,17 @@ source $picdir/ImageRotate.tcl
 proc vorschau {} {
   global C im v
   #Reset canvas to original size
+  #$im blank
+  #$im copy photosCanvPic -shrink
+  #$C conf -height [image height $im] -width [image width $im]
+
+#TODO origPic nehmen+rotieren, zwischenspeichern, dann verkleinern für Vorschau
+   
+  set rotatedImg [image_rotate photosCanvPic $v]
+  
   $im blank
-  $im copy photosCanvPic -shrink
-  $C conf -height [image height $im] -width [image width $im]
-  after 1000 
-  image_rotate $im $v
-  after 1000
+  $im copy $rotatedImg 
+  image delete $rotatedImg
   $C conf -height [image height $im] -width [image width $im]
   return 0
 }
