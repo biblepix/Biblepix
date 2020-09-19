@@ -1,7 +1,8 @@
 # ~/Biblepix/prog/src/setup/setupRotate.tcl
 # Creates Rotate toplevel window
-#
-# Updated 3apr20
+# sourced by ?
+# Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
+# Updated: 19sep2020 pv
 
 #Toplevel main window
 set T .rotateW
@@ -16,13 +17,16 @@ set scale $T.scale
 image create photo rotateCanvPic
 rotateCanvPic copy photosCanvPic
 set im rotateCanvPic
-
+set ::v 0
 
 #Picture & buttons
-#TODO texte in textfile schieben
-button $T.okBtn -text "Vorschau berechnen" -bg orange -activebackground yellow
-button $T.cancelBtn -text Abbruch -activebackground red -command {catch {destroy .rotateW} ; return 0}
-button $T.saveBtn -text Abspeichern -activebackground lightgreen -command {}
+button $T.previewBtn -textvar computePreview -bg orange -activebackground yellow -command vorschau
+button $T.cancelBtn -textvar cancel -activebackground red -command {catch {destroy .rotateW} ; return 0}
+
+
+#TODO Move to doRotateOrigPic
+button $T.saveBtn -textvar save -activebackground lightgreen -command {rotateOrigPic photosOrigPic ; catch {destroy .rotateW} ; addPic}
+
 
 catch  {  canvas $C -width 600 -height 400 }
 $C create image 20 20 -image $im -anchor nw
@@ -37,7 +41,6 @@ pack [makeMeter] -pady 20
 #pack [scale $s -orient h -length 300 -from -90 -to 90 -variable v]
 pack $scale
 trace add variable v write updateMeter
-set ::v 0
 updateMeterTimer
   
 #Load rotate command
@@ -50,7 +53,7 @@ proc vorschau {} {
   #$C conf -height [image height $im] -width [image width $im]
 
 #TODO origPic nehmen+rotieren, zwischenspeichern, dann verkleinern für Vorschau
-   
+#TODO move 'vorschau' somewhere else   
   set rotatedImg [image_rotate photosCanvPic $v]
   
   $im blank
@@ -59,7 +62,8 @@ proc vorschau {} {
   $C conf -height [image height $im] -width [image width $im]
   return 0
 }
-.rotateW.okBtn conf -command {vorschau}
+
+
 
 #.rotateW.okBtn conf -command "image_rotate photosCanvPic [$s get]"
 
@@ -70,7 +74,7 @@ proc vorschau {} {
 #"$s cget -from"
 #    (procedure "updateMeter" line 4)
 
-pack .rotateW.okBtn -pady 30
+pack .rotateW.previewBtn -pady 30
 pack .rotateW.cancelBtn .rotateW.saveBtn -side right
 
 #    set im photosCanvPic

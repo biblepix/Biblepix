@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17sep2020 pv
+# Updated: 19sep2020 pv
 
 proc setTexts {lang} {
   global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -20,9 +20,13 @@ proc setTexts {lang} {
   set ::bp $bp
 
   #Buttons
-  set cancel(de) "Schliessen"
+  set cancel(de) "Abbruch"
   set cancel(en) "Cancel"
   set ::cancel $cancel($lang)
+
+  set save(de) "Speichern"
+  set save(en) "Save"
+  set ::save $save($lang)
 
   set saveSettings(de) "Einstellungen speichern"
   set saveSettings(en) "Save settings"
@@ -390,6 +394,11 @@ Example:"
   set noPhotosFound(de) "Im $bp-Fotoordner wurden keine Fotos gefunden. Kopieren Sie bitte einige Bilder in den Ordner."
   set noPhotosFound(en) "No photos were found in the $bp Photos folder. Please copy some pictures into the folder."
   set ::noPhotosFound $noPhotosFound($lang)
+
+  set computePreview(de) "Vorschau berechnen"
+  set computePreview(en) "Compute preview"
+  set ::computePreview $computePreview($lang)
+  
 } ;#END setTexts
 
 proc copiedPicMsg {picPath} {

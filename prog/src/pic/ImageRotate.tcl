@@ -1,11 +1,10 @@
-# Updated 1mch20
-# thanks to Richard Suchenwirth!
+# ~/Biblepix/prog/src/setup/ImageRotate.tcl
+# Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
+# Procs for rotating picture, called by SetupRotate
+# with many thanks to Richard Suchenwirth!
 # from: https://wiki.tcl-lang.org/page/Photo+image+rotation
+# Updated: 19sep2020 pv
 
-#TODO integrate in BiblePix photo manipulation!
-#set C .rotateW.rotateC
-#package require Tk
-#package require Img
 proc makeRotateTopwin {} {
   global picdir C
 
@@ -179,35 +178,14 @@ proc image_rotate {img angle} {
   return $rotatedImg
 }
  
-#TESTING
-#set sample ~/Biblepix/TodaysPicture/theword.png
-#set ::angle 10
-#set ::update 1
-
-proc aggdarilacak {} {
-if {[file tail [info script]] == [file tail $argv0]} {
-    pack [canvas .C -height 160 -width 250]
-    #---assume standard installation paths:
-#    set sample [file join [lindex $auto_path 2] images logo100.gif]
-    set im [image create photo -file $sample]
-    set im2 [image create photo]
-    $im2 copy $im
-    .C create image 50  90 -image $im
-    .C create image 170 90 -image $im2
-    entry .C.e -textvar angle -width 4
-    set angle 99
-    bind .C.e <Return> {
-        $im2 config -width [image width $im] -height [image height $im]
-        $im2 copy $im
-        wm title . [time {image_rotate $im2 $::angle}]
-    }
-    .C create window 5 5 -window .C.e -anchor nw
-    checkbutton .C.cb -text Update -variable update
-#    set ::update 1
-    .C create window 40 5 -window .C.cb -anchor nw
-
-    bind . <Escape> {exec wish $argv0 &; exit}
-}
+# rotateOrigPic
+##called by .rotateW.okBtn
+##Bild wird in Funktion 'rotateOrigPic' geklont zur Weiterbearbeitung in setupResize/setupRepos
+proc rotateOrigPic {img} {
+  global v
+  set rotatedOrigPic [image_rotate $img $v]
+  #Create function from var
+  image create photo rotateOrigPic
+  rotateOrigPic copy $rotatedOrigPic
 }
 
-#addRotate
