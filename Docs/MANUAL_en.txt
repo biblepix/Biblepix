@@ -253,9 +253,9 @@ background pictures will be read and displayed anew each time.
 
 B )  L I N U X   D E S K T O P S
 
-Path to single picture: PNG oder BMP (exact paths see above "The Word on Picture")
+Path to single picture: PNG or BMP (exact paths see above "The Word on Picture")
 Path for slideshow: ~/Biblepix/TodaysPic/
-Pfad für Autostart: s.o. "Installationsort" (Pfad zum Hauptprogramm)
+Path for Autostart: s.a. "Place of installation" (path to main prog)
 
 KDE Plasma
 Autostart: Program menu > System settings > Autostart
@@ -282,12 +282,12 @@ ________________________________________________________________________________
 
 N O T E S   O N   L I N U X   D E S K T O P S
 
-From the plentitude of Linux Desktops BiblePix has considered the most common ones as follows:
+From the plentitude of Linux Desktops, BiblePix has considered the most common ones as follows:
 
 a) X11: KDE/GNOME/XFCE4 : Autostart + Background change fully automatic, in case of problems s.a. 
 
 b) X11: DWM and hopefully many other exotics: 
-	Autostart: not automatic, in ~/.xinitrc or ~/.xsession adad path to main prog
+	Autostart: not automatic, in ~/.xinitrc or ~/.xsession add path to main prog
 	Background change: automatic by BiblePix if 'xloadimage' or 'display' (ImageMagick) is installed 
 
 c) Wayland: (very experimental!)
