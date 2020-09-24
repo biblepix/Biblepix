@@ -179,8 +179,8 @@ werden vom BibelPix-Hauptprogramm automatisch gesteuert.
 SIGNATUR
 BibelPix bietet die Zusatzfunktion "Das Tageswort als E-Mail-Signatur". Diese 
 Funktion kann im Einrichtungsprogramm aktiviert werden. Dann fügt BibelPix einmal 
-täglich für jede installierte Bibeltextdatei das Tageswort an Ihre Signatur(en) an. 
-Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. 
+täglich für die als mailtauglich markierten Sprachen das Tageswort an Ihre Signatur(en)
+an. Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. 
 signature-de_Schlac.txt) im folgenden Ordner gespeichert:
 
 	~/Biblepix/TodaysSignature/
@@ -192,10 +192,14 @@ Ihren Mails erscheint, müssen Sie Ihrem Mail-Programm beibringen, die oben besc
 Dateien zu verwenden (meist unter Einstellungen > Konten/Identitäten > Signatur).
 
 Für E-Mail-Programme, welche Signaturen nur intern verwalten (also keine externen Dateien
-laden können), ist vorläufig Trojitá berücksichtigt. Nutzer von Trojitá müssen das erste Mal
-unter 'IMAP > Settings > General' die gewünschte Identität markieren und im Dialog 'Edit' 
-eine neue Zeile mit dem Ausdruck www.bible2.net anfügen. BibelPix setzt dort künftig 
-'Das Wort' automatisch ein.
+laden können), sind vorläufig Trojitá und Evolution berücksichtigt. Nutzer dieser Programme
+müssen das erste Mal unter 'IMAP > Settings > General' (Trojitá) bzw. 'Einstellungen > Editor'
+(Evolution) die gewünschte Identität markieren und im Dialog 'Edit' eine neue Zeile hinzufügen
+mit dem Ausdruck 
+
+  www.bible2.net
+
+Dort wird künftig 'Das Wort' automatisch eingesetzt.
   
 LINUX-TERMINAL
 Dank diesem Zusatz-Feature ermöglicht BibelPix die Darstellung des Tageswortes in Unix-
@@ -210,7 +214,7 @@ Darstellung und Farben können in
 
 geändert werden. 
 Damit term.sh automatisch ausgeführt wird, macht das Einrichtungsprogramm einen 
-Eintrag in ~/.bash_profile.*****
+Eintrag in ~/.bashrc.*****
 ________________________________________________________________________________
 
 
