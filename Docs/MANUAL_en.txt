@@ -186,8 +186,8 @@ e-mail (usually under Settings > Identities > Signatures).
 
 For e-mail programs that manage signatures only internally (i.e. that cannot load
 external files), BiblePix can handle Trojitá and Evolution for now. First time users
-should go to 'IMAP > Settings > General' (Trojitá) / 'Settings > Editor' (Evolution)
-and mark the desired identity. In the 'Edit' dialog add a new line saying 
+should go to 'IMAP > Settings > General' (Trojitá) / 'Settings > Editor > Signatures' 
+(Evolution) and mark the desired identity. In the 'Edit' dialog add a new line saying 
 
   www.bible2.net
   

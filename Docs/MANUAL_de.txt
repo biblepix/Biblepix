@@ -193,9 +193,9 @@ Dateien zu verwenden (meist unter Einstellungen > Konten/Identitäten > Signatur
 
 Für E-Mail-Programme, welche Signaturen nur intern verwalten (also keine externen Dateien
 laden können), sind vorläufig Trojitá und Evolution berücksichtigt. Nutzer dieser Programme
-müssen das erste Mal unter 'IMAP > Settings > General' (Trojitá) bzw. 'Einstellungen > Editor'
-(Evolution) die gewünschte Identität markieren und im Dialog 'Edit' eine neue Zeile hinzufügen
-mit dem Ausdruck 
+müssen das erste Mal unter 'IMAP > Settings > General' (Trojitá) bzw. 'Einstellungen > Editor
+> Signaturen' (Evolution) die gewünschte Identität markieren und im Dialog 'Edit' eine neue 
+Zeile hinzufügen mit dem Ausdruck 
 
   www.bible2.net
 
