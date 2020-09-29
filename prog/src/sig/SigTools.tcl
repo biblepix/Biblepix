@@ -1,8 +1,87 @@
-# ~/Biblepix/prog/src/sig/sigTrojita.tcl
-# Adds The Word to e-mail signature files once daily
-# Called by Signature if Trojitá IMAP Mailer installed
-# Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30mch20
+# ~/Biblepix/prog/src/sig/sigTools.tcl
+# Procs for Trojitá & Evolution mail clients
+# Called by Signature if any of above found
+# Authors: Peter Vollmar, biblepix.vollmar.ch
+# Updated: 29sep20
+
+# cleanSigfile
+##cleans out old dw & returns original sig text, removing any tailing empty lines
+##called by Signature.tcl
+proc cleanSigfile {sigFile} {
+
+  set sigFileChan [open $sigFile r]
+  chan configure $sigFileChan -encoding utf-8
+  set sigOld [read $sigFileChan]
+  close $sigFileChan
+  
+  #cut out any old verse
+  set startIndex [string first "=====" $sigOld]
+  if {$startIndex == "-1"} {
+    set sigHead $sigOld
+  } else {
+    set sigHead [string replace $sigOld $startIndex end]
+  }
+
+  ##clear any tailing blank lines & return text
+  regsub \n*$ $sigHead {} sigHead
+  return $sigHead
+}
+
+#######################################################################
+# E v o l u t i o n
+#######################################################################
+
+# doSigEvolution
+##checks signature files for DW or trigger present & calls updateSigEvolution
+##called by Signature
+##NOTE: Evolution sig files are in HTML, but it doesn't seem to be bothered about formatting TW
+proc doSigEvolution {} {
+  global env heute
+
+  set evolSigdir [file join $env(HOME) .config evolution signatures]  
+  set triggerRef {(<a href=\"http?:\/\/www\.bible2)(.*a>)}
+  set triggerOldDw {={4}}
+
+  #Check all Evolution sig files for triggers
+  foreach sigFilePath [glob -directory $evolSigdir *] {
+
+    set mtime [clock format [file mtime $sigFilePath] -format %d]
+    set chan [open $sigFilePath r]
+    set t [read $chan]
+    close $chan
+    
+    #1) Check for The Word present & date >>cleanSig
+    if { [regexp $triggerOldDw $t] && $mtime < $heute } {
+      set cleanSig [cleanSigfile $sigFilePath]
+    } 
+    #2) Remove any triggerRef & >>cleanSig
+    if [regexp $triggerRef $t] {
+      regsub $triggerRef $t {} cleanSig
+    }
+ 
+    #3) Update signature if old AND cleanSig exists
+    if [info exists cleanSig] {
+      updateSigEvolution $sigFilePath $cleanSig
+      unset cleanSig
+    }
+  }
+} ;#END doSigEvolution
+
+# updateSigEvolution
+##called by doSigEvolution for each sig file
+proc updateSigEvolution {sigfile cleanSig} {
+
+  set twdFile [getRandomTwdFile sig]
+  set dw [getTodaysTwdSig $twdFile]
+  set chan [open $sigfile w]
+  puts $chan $cleanSig
+  puts $chan \n${dw}
+  close $chan
+}
+
+########################################################################
+# T r o j i t a
+########################################################################
 
 #Set global vars
 set tr {Trojitá}
@@ -16,7 +95,7 @@ set dayOTY [clock format [clock seconds] -format %j]
 ##Adds The Word to any signature(s) in Trojita IMAP mailer
 ##Rewrites Trojita Registry entry once a day
 ##Called by signature.tcl
-proc trojitaSigWin {} {
+proc doSigTrojitaWin {} {
   global tr dayOTY catchword trojitaWinRegpath
   set idPath "$trojitaWinRegpath\\identities"
 
@@ -51,23 +130,23 @@ proc trojitaSigWin {} {
 
 proc trojitaReplaceSigWin {sigtext} {
   global tr catchword startcatch endcatch
-
-  #1. Replace catchword
+  
+  #1. Create dw
+  set twdFile [getRandomTwdFile]
+  set dw [getTodaysTwdSig $twdFile]
+  
+  #2. Replace catchword
   if [regexp $catchword $sigtext] {
     puts "Replacing $tr catchword with The Word..."
-    regsub $catchword $sigtext \n$::dw sigtext 
+    regsub $catchword $sigtext \n$dw sigtext 
     incr ::sigChanged
   
   #2. Replace previous TWD  
   } elseif [regexp $startcatch $sigtext] {
     puts "Renewing The Word for $tr..."
-    regsub $startcatch.*$endcatch $sigtext $::dw sigtext
+    regsub $startcatch.*$endcatch $sigtext $dw sigtext
     incr ::sigChanged
   }
-
-  #3. Create dw for next run
-  set twdFile [getRandomTwdFile]
-  set ::dw [getTodaysTwdSig $twdFile]
 
   return $sigtext
 } ;#END trojitaReplaceSigWin
@@ -79,7 +158,7 @@ proc trojitaReplaceSigWin {sigtext} {
 ##Called by signature.tcl
 ## !CONFIG FILE: Trojita allows for several config files (=profiles) which can be called with the -p option. - Change as needed
 ## !CATCHWORD: FIRST TIME USERS MUST ADD A CATCHWORD at end of each signature text where they want 'The Word' inserted {in Trojita go to >IMAP >Settings >General >"NAMES" >Edit and edit signature text accordingly} !!  
-proc trojitaSigLin {} {
+proc doSigTrojitaLin {} {
   global env heute jahr dw trojitaLinConfFile catchword startcatch tr dayOTY
 
   #Open config file for reading
@@ -214,7 +293,9 @@ proc trojitaReplaceSigLin {sigChunk} {
   return $sigChunk
 } ;#END trojitaReplaceSigLin
 
-# trojitaGetDate
+####### OBSOLETE ####################################################
+
+# trojitaGetDate 
 ##returns any registered date, else 0
 ##called by trojitaSigLin + trojitaSigWin
 proc trojitaGetDate {} {
@@ -289,3 +370,4 @@ proc trojitaSetDate {} {
 
 return "Setting new TWD date in Trojitá"
 } ;#END trojitaSetDate
+

@@ -195,11 +195,11 @@ Für E-Mail-Programme, welche Signaturen nur intern verwalten (also keine extern
 laden können), sind vorläufig Trojitá und Evolution berücksichtigt. Nutzer dieser Programme
 müssen das erste Mal unter 'IMAP > Settings > General' (Trojitá) bzw. 'Einstellungen > Editor
 > Signaturen' (Evolution) die gewünschte Identität markieren und im Dialog 'Edit' eine neue 
-Zeile hinzufügen mit dem Ausdruck 
+Zeile hinzufügen mit dem Ausdruck
 
   www.bible2.net
 
-Dort wird künftig 'Das Wort' automatisch eingesetzt.
+Dort wird künftig 'Das Wort' automatisch eingesetzt. (s. Fussnote zu Evolution******)
   
 LINUX-TERMINAL
 Dank diesem Zusatz-Feature ermöglicht BibelPix die Darstellung des Tageswortes in Unix-
@@ -288,6 +288,7 @@ Wichtig: Einzelbild oder Diaschau wählen!
 Für die Darstellung von Hebräisch oder Arabisch im Terminal kommen nur Terminals 
 wie 'mlterm' oder 'Konsole' (KDE) in Frage, welche bidirektionellen Text richtig anzeigen.
 
+******Evolution Mail client: Signatur als HTML abspeichern!
 ________________________________________________________________________________
 
 

@@ -191,7 +191,7 @@ should go to 'IMAP > Settings > General' (Trojitá) / 'Settings > Editor > Signa
 
   www.bible2.net
   
-Henceforth BiblePix will insert 'The Word' in its place.
+Henceforth BiblePix will insert 'The Word' in its place. (see footnote for Evolution******)
 
 LINUX TERMINAL
 Thanks to this extra feature BiblePix can display The Word in your Linux terminals.
@@ -276,6 +276,8 @@ Important: select either single pic or slideshow!
 *****Arabic and Hebrew text is positioned automatically on the opposite side
 To display such texts in terminals you need programs like 'mlterm' oder 'Konsole' (KDE) 
 which can display bidirectional texts correctly.
+
+******Evolution mail client: save signature file as HTML!
 
 ________________________________________________________________________________
 
