@@ -25,24 +25,22 @@ proc getTWDlist {} {
 ##called by getRandomTwdFile with args = sig
 proc getSigTwdList {} {
   global dirlist jahr sigLanglist
- 
+
   #A) Use only files that match $sigLanglist
   if { [info exists sigLanglist] && $sigLanglist != ""} {
 
     foreach code $sigLanglist {
-      set file [glob -nocomplain -tails -directory $dirlist(twdDir) ${code}*]
+      set file [glob -nocomplain -tails -directory $dirlist(twdDir) ${code}*_$jahr.twd]
         if {$file != ""} {
          lappend twdList $file
        }
     }
-  
-  #B) use all files if no list found  
+
+  #B) use all files if no list found
   } else {
-   
     set twdList [glob -nocomplain -tails -directory $dirlist(twdDir) *_$jahr.twd]
-    
   }
-    
+
   return $twdList
 }
 
@@ -139,7 +137,7 @@ proc updateTwd {} {
       set currentName [lindex [split [file tail $currentFile] "_"] 1]
 
       if {$nextTwdList != ""} {
-        foreach nextFile $nextTwdList{
+        foreach nextFile $nextTwdList {
           if {$currentName == [lindex [split [file tail $nextFile] "_"] 1]} {
             set nextExists 1
           }
@@ -168,7 +166,8 @@ proc updateTwd {} {
 ### T W D   P A R S I N G   T O O L S   ###############################
   
 proc getTWDFileRoot {twdFile} {
-global dirlist
+  global dirlist
+
   set path [file join $dirlist(twdDir) $twdFile]
   set file [open $path]
   chan configure $file -encoding utf-8
@@ -179,7 +178,8 @@ global dirlist
 }
 
 proc parseTwdFileDomDoc {twdFile} {
-global dirlist
+  global dirlist
+
   set path [file join $dirlist(twdDir) $twdFile]
   set file [open $path]
   chan configure $file -encoding utf-8
@@ -189,7 +189,6 @@ global dirlist
 }
 
 proc getDomNodeForToday {domDoc} {
-#  global datum - can change any time!!!
   set datum [clock format [clock seconds] -format %Y-%m-%d]
   set rootDomNode [$domDoc documentElement]
   return [$rootDomNode selectNodes /thewordfile/theword\[@date='$datum'\]]
