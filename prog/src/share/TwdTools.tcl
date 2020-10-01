@@ -117,12 +117,12 @@ proc updateTwd {} {
   }
 
   set onlineDictFileList [::json::json2dict $onlineJsonFileList]
-
+  
   set nextYearAvailable 0
   set nextYear [expr {$::jahr + 1}]
 
-  foreach file $onlineDictFileList {
-    if {[dict get $file "year"] == $nextYear} {
+  foreach onlineDictFile $onlineDictFileList {
+    if {[dict get $onlineDictFile "year"] == $nextYear} {
       set nextYearAvailable 1
       break
     }
@@ -134,7 +134,20 @@ proc updateTwd {} {
 
     foreach currentFile $currentTwdList {
       set nextExists 0
+      set nextOnlineMissing 1
       set currentName [lindex [split [file tail $currentFile] "_"] 1]
+
+      foreach onlineDictFile $onlineDictFileList {
+        if {[dict get $onlineDictFile "year"] == $nextYear \
+         && [dict get $onlineDictFile "bible"] == $currentName} {
+          set nextOnlineMissing 0
+          break
+        }
+      }
+
+      if {$nextOnlineMissing} {
+        continue
+      }
 
       if {$nextTwdList != ""} {
         foreach nextFile $nextTwdList {
