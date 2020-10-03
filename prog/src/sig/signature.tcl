@@ -2,10 +2,13 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 29sep20
-
+# Updated: 3oct20
 source $TwdTools
 source $SigTools
+
+#########################################################################
+# Main process: update sig files for any mail client that can handle them
+#########################################################################
 
 puts "Updating signatures..."
 set twdFileList [getSigTwdList]
@@ -39,6 +42,7 @@ foreach twdFileName $twdFileList {
   
 } ;#END main loop
 
+
 #####################################################################
 ### TROJITA IMAP MAILER 
 #####################################################################
@@ -54,12 +58,12 @@ if {$os=="Windows NT"} {
   if [catch {registry keys $trojitaWinRegpath}] {
     return "No Registry entry for Trojitá found. Exiting."
   }
-	  catch doSigTrojitaWin err
+  catch doSigTrojitaWin err
 
 } elseif {$os=="Linux"} {
 
   if {[auto_execok trojita] == "" || ![file exists $trojitaLinConfFile]} {
-    return "No Trojitá executable / configuration file found. Exiting."
+    return "No Trojitá executable/configuration file found. Exiting."
   }
   catch doSigTrojitaLin err
 }
@@ -68,15 +72,13 @@ if [info exists err] {
   puts $err
 }
 
+
 ###########################################################################
 ### EVOLUTION MAIL CLIENT (only Linux)
 ###########################################################################
 
 #Check presence of Evolution
 if {[auto_execok evolution] != ""} {
-  puts "Updating signatures for Evolution..."
   doSigEvolution
 }
 
-#Clean up global vars
-catch {unset ::sigChanged}
