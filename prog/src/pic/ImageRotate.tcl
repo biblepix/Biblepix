@@ -3,7 +3,7 @@
 # Procs for rotating picture, called by SetupRotate
 # with many thanks to Richard Suchenwirth!
 # from: https://wiki.tcl-lang.org/page/Photo+image+rotation
-# Updated: 19sep2020 pv
+# Updated: 12oct20 pv
 
 proc makeRotateTopwin {} {
   global picdir C
@@ -177,8 +177,75 @@ proc image_rotate {img angle} {
   
   return $rotatedImg
 }
+
+########################################################################
+############# Edge cutting procs #######################################
+########################################################################
+set void {#000000}
+set margin 5 ;#where to start scanning 
+set im rotateCanvPic
+
+# getImgCorners
+##called by cutRotateOrigPic
+proc getImgCorners {} {
+  global margin im
+  set dataL [$im data]
+
+  set leftCorner [scanHorizontal $margin]
+
+  set topRow [lindex $dataL $margin]  
+  set topCorner [scanVertical $topRow $margin]
+
+#TODO geht nicht :-(    
+  return "$topCorner $leftCorner"
+}
+# scanVertical
+##called by getImgCorners
+proc scanVertical {dataL margin} {
+  global void
+  set rowNo 1
+  
+  foreach row $dataL {
+    set colour [lindex $row $margin]
+    if {$colour == $void} { 
+      incr rowNo
+    } else {
+      return $rowNo    
+    }
+  }
+}
+# scanHorizontal
+##called by getImgCorners
+proc scanHorizontal {row} {
+  global void
+  for {set i 0} {$i < [llength $row]} {incr i} {
+    if {[lindex $row $i] != "$void"} {
+      return $i    
+    }
+  }
+}
+proc cutRotateOrigPic {} {
+
+#TODO scale factor!!!!!!!!!!!!!!!!! > (not yet?) in some namespace?
+  lassign [getImgCorners] top left
+
+  set imH [image height $im]
+  set imW [image width $im]
+
+  set x1 $left
+  set y1 $top
+  set x2 [expr $imW - $left]
+  set y2 [expr $imH - $top]
+
+  #Recreate rotateCutPic
+  image create photo rotateCutPic
+  rotateCutPic copy rotateOrigPic -from $x1 $y1 $x2 $y2
+  
+  #TODO prepare for resizeCanv - adapt rule for pic names!!
+}
  
-# rotateOrigPic
+
+# rotateOrigPic - TODO what about above????????????????
 ##called by .rotateW.okBtn
 ##Bild wird in Funktion 'rotateOrigPic' geklont zur Weiterbearbeitung in setupResize/setupRepos
 proc rotateOrigPic {img} {

@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window
 # sourced by ?
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19sep2020 pv
+# Updated: 7oct20 pv
 
 #Toplevel main window
 set T .rotateW
@@ -28,8 +28,8 @@ button $T.cancelBtn -textvar cancel -activebackground red -command {catch {destr
 button $T.saveBtn -textvar save -activebackground lightgreen -command {rotateOrigPic photosOrigPic ; catch {destroy .rotateW} ; addPic}
 
 
-catch  {  canvas $C -width 600 -height 400 }
-$C create image 20 20 -image $im -anchor nw
+catch  {  canvas $C }
+$C create image 20 20 -image $im -anchor nw -tags img
 $C conf -width [image width $im] -height [image height $im]
 pack $C       
 
@@ -52,8 +52,8 @@ proc vorschau {} {
   #$im copy photosCanvPic -shrink
   #$C conf -height [image height $im] -width [image width $im]
 
-#TODO origPic nehmen+rotieren, zwischenspeichern, dann verkleinern für Vorschau
-#TODO move 'vorschau' somewhere else   
+#TODO move 'vorschau' somewhere else 
+#TODO Canvas passt Bildgrösse nicht an!!!!!!!!!!!!!!!!!!  
   set rotatedImg [image_rotate photosCanvPic $v]
   
   $im blank
