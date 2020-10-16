@@ -4,6 +4,9 @@
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 7oct20 pv
 
+#Load rotate command
+source $ImageRotate
+
 #Toplevel main window
 set T .rotateW
 toplevel $T -width 600 -height 400
@@ -43,25 +46,6 @@ pack $scale
 trace add variable v write updateMeter
 updateMeterTimer
   
-#Load rotate command
-source $picdir/ImageRotate.tcl
-proc vorschau {} {
-  global C im v
-  #Reset canvas to original size
-  #$im blank
-  #$im copy photosCanvPic -shrink
-  #$C conf -height [image height $im] -width [image width $im]
-
-#TODO move 'vorschau' somewhere else 
-#TODO Canvas passt Bildgrösse nicht an!!!!!!!!!!!!!!!!!!  
-  set rotatedImg [image_rotate photosCanvPic $v]
-  
-  $im blank
-  $im copy $rotatedImg 
-  image delete $rotatedImg
-  $C conf -height [image height $im] -width [image width $im]
-  return 0
-}
 
 
 

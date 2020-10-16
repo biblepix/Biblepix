@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 31aug20 pv
+# Updated 16oct20 pv
 
 source $::SetupResizeTools
 
@@ -18,9 +18,17 @@ proc openResizeWindow {} {
   $c create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
 
   #Copy original pic to canvas
-  #Determine smallest possible scale factor for canvas pic
+
+  #A) copy rotated+cut pic
+if [image inuse rotateCanvPic] {
+  resizeCanvPic copy rotateCanvPic
+  image delete rotateCanvPic
+    
+#B)  #Determine smallest possible scale factor for canvas pic
+} else {  
   setPic2CanvScalefactor
   resizeCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
+}
 
   # P h a s e  1  (Resizing window)
 
@@ -81,15 +89,22 @@ proc openReposWindow {} {
   setPic2CanvScalefactor
   
   $c conf -width 
-  #A.Copy origPic to reposCanv if resizeCanv wasn't opened
-  if [catch {image inuse resizeCanvPic}] {
-    reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
-  #B.Copy resizeCanvPic to reposCanv & destroy any .resizePhoto
-  } else {
+  
+  #A) Copy rotateCutCanvPic if resize wasn't opened
+  if [image inuse rotateCanvPic] {
+    reposCanvPic copy rotateCanvPic
+    image delete reposCanvPic
+
+  #B) copy resizeCanvPic if existent
+  } elseif [image inuse resizeCanvPic] {
     lassign [grabCanvSection .resizePhoto.resizeCanv] x1 y1 x2 y2
     reposCanvPic copy resizeCanvPic -from $x1 $y1 $x2 $y2
     destroy .resizePhoto
-    image delete resizeCanvPic
+    image delete resizeCanvPic   
+
+  #C) Copy original pic if not resizing/rotating needed - TODO where is scalefactor in this case?
+  } else {
+    reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor    
   }
   
   #Create text button on top

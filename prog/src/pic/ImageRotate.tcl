@@ -1,9 +1,7 @@
 # ~/Biblepix/prog/src/setup/ImageRotate.tcl
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
 # Procs for rotating picture, called by SetupRotate
-# with many thanks to Richard Suchenwirth!
-# from: https://wiki.tcl-lang.org/page/Photo+image+rotation
-# Updated: 12oct20 pv
+# Updated: 16oct20 pv
 
 proc makeRotateTopwin {} {
   global picdir C
@@ -55,8 +53,10 @@ $C create window 5 5 -window $C.e -anchor nw
 
 } ;#END makeRotateTopwin
 
-#.rotateW.okBtn conf -command "image_rotate photosCanvPic $::v"
-
+# image_rotate
+##with many thanks to Richard Suchenwirth!
+##from: https://wiki.tcl-lang.org/page/Photo+image+rotation
+##called by SetupRotate
 proc image_rotate {img angle} {
   global C
   set ::update 0
@@ -191,18 +191,16 @@ proc getImgCorners {} {
   global margin im
   set dataL [$im data]
 
-  set leftCorner [scanHorizontal $margin]
-
-  set topRow [lindex $dataL $margin]  
-  set topCorner [scanVertical $topRow $margin]
+  set leftCorner [scanVertical $dataL]
+  set topCorner [scanHorizontal $dataL]
 
 #TODO geht nicht :-(    
   return "$topCorner $leftCorner"
 }
 # scanVertical
 ##called by getImgCorners
-proc scanVertical {dataL margin} {
-  global void
+proc scanVertical {dataL} {
+  global void margin
   set rowNo 1
   
   foreach row $dataL {
@@ -216,17 +214,21 @@ proc scanVertical {dataL margin} {
 }
 # scanHorizontal
 ##called by getImgCorners
-proc scanHorizontal {row} {
-  global void
+proc scanHorizontal {dataL} {
+  global void margin
+
+  set row [lindex $dataL $margin]  
+
   for {set i 0} {$i < [llength $row]} {incr i} {
     if {[lindex $row $i] != "$void"} {
-      return $i    
+      return $i
     }
   }
 }
-proc cutRotateOrigPic {} {
 
-#TODO scale factor!!!!!!!!!!!!!!!!! > (not yet?) in some namespace?
+proc cutRotateCanvPic {} {
+  set im rotateCanvPic
+  
   lassign [getImgCorners] top left
 
   set imH [image height $im]
@@ -238,15 +240,20 @@ proc cutRotateOrigPic {} {
   set y2 [expr $imH - $top]
 
   #Recreate rotateCutPic
-  image create photo rotateCutPic
-  rotateCutPic copy rotateOrigPic -from $x1 $y1 $x2 $y2
+  image create photo rotateCanvCutPic
+  rotateCanvCutPic copy rotateCanvPic -from $x1 $y1 $x2 $y2
   
-  #TODO prepare for resizeCanv - adapt rule for pic names!!
+  #prepare for setupResize/setupRepos
+  rotateCanvPic blank
+  rotateCanvPic copy rotateCanvCutPic
+  
+#TODO leave for testing
+#  image blank rotateCanvCutPic
 }
  
 
-# rotateOrigPic - TODO what about above????????????????
-##called by .rotateW.okBtn
+# rotateOrigPic - TODO to be used after resize!
+##called by .rotateW.okBtn TODO get !factor!
 ##Bild wird in Funktion 'rotateOrigPic' geklont zur Weiterbearbeitung in setupResize/setupRepos
 proc rotateOrigPic {img} {
   global v
@@ -254,5 +261,26 @@ proc rotateOrigPic {img} {
   #Create function from var
   image create photo rotateOrigPic
   rotateOrigPic copy $rotatedOrigPic
+}
+proc cutRotateOrigPic {} {}
+
+# vorschau
+##called by SetupRotate
+proc vorschau {} {
+  global C im v
+  #Reset canvas to original size
+  #$im blank
+  #$im copy photosCanvPic -shrink
+  #$C conf -height [image height $im] -width [image width $im]
+
+  set rotatedImg [image_rotate photosCanvPic $v]
+  
+  $im blank
+  $im copy $rotatedImg 
+  image delete $rotatedImg
+  
+#TODO why isn't this working?
+  $C conf -height [image height $im] -width [image width $im]
+  return 0
 }
 
