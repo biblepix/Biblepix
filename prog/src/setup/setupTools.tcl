@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 31aug20 jh/pv
+# Updated: 17oct20 jh/pv
 
 source $SetupResizeTools
 source $JList
@@ -14,11 +14,17 @@ proc addPic {picPath} {
   source $::SetupResizePhoto
   set targetPicPath [file join $::photosDir [setPngFileName [file tail $picPath]]]
 
+
+
   #Check which original pic to use
-  if [catch {image inuse rotateOrigPic}] {
-    set origPic photosOrigPic
+  if [image inuse rotateCanvPic] {
+    set rotation 1
+    #TODO this is not needed here!
+#    set origPic [cutRotatedPic rotateOrigPic]
+    
   } else {
-    set origPic rotateOrigPic
+    set rotation 0
+    set origPic photosOrigPic
   }
 
   if [file exists $targetPicPath] {
@@ -30,16 +36,19 @@ proc addPic {picPath} {
   namespace eval addpicture {}
   set addpicture::targetPicPath $targetPicPath
   set addpicture::origPic $origPic
-
   set res [needsResize $origPic]
-
   source $::ScanColourArea
   
   #A) 0: right dimensions, right size: save pic
   if !$res {
-  
-    $origPic write $targetPicPath -format PNG
-    NewsHandler::QueryNews "Bild [file tail $targetPicPath] ist hinzugefügt.\n Wir berechnen nun die ideale Textposition und -helligkeit. Die Position können Sie noch ändern..." lightblue    
+    ##save unless rotated
+    if !$rotation {
+      $origPic write $targetPicPath -format PNG
+      NewsHandler::QueryNews "Bild [file tail $targetPicPath] ist hinzugefügt.  
+    }
+    NewsHandler::QueryNews "Wir berechnen nun die ideale Textposition und -helligkeit. Die Position können Sie noch ändern..." lightblue
+        
+    #Do colour scan
     colour::doColourScan
     after 2000 openReposWindow
    
@@ -48,27 +57,26 @@ proc addPic {picPath} {
 
     #Send pic to final resizing
 
-  #TODO move below commands to separate proc
-  #Prepare ReposWin while other procs (s.u.) are running
-  after 5000 {
-    openReposWindow
-    .reposPhoto.moveTxtBtn conf -bg beige -state disabled
-    .reposPhoto.reposCanv itemconf mv -state disabled
-  }
+    #TODO move below commands to separate proc
+    #Prepare ReposWin while other procs (s.u.) are running
+    after 5000 {
+      openReposWindow
+      .reposPhoto.moveTxtBtn conf -bg beige -state disabled
+      .reposPhoto.reposCanv itemconf mv -state disabled
+    }
 
 #############################################################
 #TODO Joel das sollte im Hintergrund laufen!!!!!!!!!!!
   #A) Run Resize (??in backgkround??)
 
 
-  ResizeHandler::QueryResize $addpicture::origPic    
-  ResizeHandler::Run
+    ResizeHandler::QueryResize $addpicture::origPic    
+    ResizeHandler::Run
 
-#############################################################
-    
-  #B) Run Colour scan & disable controls
- 
-  colour::doColourScan
+  #############################################################
+      
+    #B) Run Colour scan & disable controls
+    colour::doColourScan
 
     #C) Enable reposWin
     .reposPhoto.moveTxtBtn conf -bg lightblue -state normal

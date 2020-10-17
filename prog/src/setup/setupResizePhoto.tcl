@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16oct20 pv
+# Updated 17oct20 pv
 
 source $::SetupResizeTools
 
@@ -20,9 +20,12 @@ proc openResizeWindow {} {
   #Copy original pic to canvas
 
   #A) copy rotated+cut pic
-if [image inuse rotateCanvPic] {
+if [lsearch [image names] rotateCanvPic] {
+
+#TODO geht nicht!!!! - warum ist es noch nicht geschnitten?
+cutRotatedPic rotateCanvPic
   resizeCanvPic copy rotateCanvPic
-  image delete rotateCanvPic
+  #image delete rotateCanvPic
     
 #B)  #Determine smallest possible scale factor for canvas pic
 } else {  
@@ -91,12 +94,12 @@ proc openReposWindow {} {
   $c conf -width 
   
   #A) Copy rotateCutCanvPic if resize wasn't opened
-  if [image inuse rotateCanvPic] {
+  if [lsearch [image names] rotateCanvPic] {
     reposCanvPic copy rotateCanvPic
-    image delete reposCanvPic
+    image delete rotateCanvPic
 
   #B) copy resizeCanvPic if existent
-  } elseif [image inuse resizeCanvPic] {
+  } else {
     lassign [grabCanvSection .resizePhoto.resizeCanv] x1 y1 x2 y2
     reposCanvPic copy resizeCanvPic -from $x1 $y1 $x2 $y2
     destroy .resizePhoto

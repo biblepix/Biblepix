@@ -60,9 +60,7 @@ $C create window 5 5 -window $C.e -anchor nw
 proc image_rotate {img angle} {
   global C
   set ::update 0
-  
   set rotatedImg [image create photo]
-       
   set angle [expr {fmod($angle, 360.0)}]
  
   if {$angle < 0} {set angle [expr {$angle + 360.0}]}
@@ -174,7 +172,7 @@ proc image_rotate {img angle} {
   } else {
     $rotatedImg copy $img
   }
-  
+
   return $rotatedImg
 }
 
@@ -190,13 +188,11 @@ set im rotateCanvPic
 proc getImgCorners {} {
   global margin im
   set dataL [$im data]
-
   set leftCorner [scanVertical $dataL]
   set topCorner [scanHorizontal $dataL]
-
-#TODO geht nicht :-(    
   return "$topCorner $leftCorner"
 }
+
 # scanVertical
 ##called by getImgCorners
 proc scanVertical {dataL} {
@@ -212,6 +208,7 @@ proc scanVertical {dataL} {
     }
   }
 }
+
 # scanHorizontal
 ##called by getImgCorners
 proc scanHorizontal {dataL} {
@@ -225,44 +222,51 @@ proc scanHorizontal {dataL} {
     }
   }
 }
+# cutRotatePic
+##cuts uneven sides & returns as new $im
+##called by ??? for rotateCanvPic & rotateOrigPic
+proc cutRotatedPic {im} {
+  lassign [getImgCorners] x1 y1
+    
+  #Skip cutting if corners are "0 1"
+  if !{$x1} {
+    return "No cutting of edges needed"
+  }
 
-proc cutRotateCanvPic {} {
-  set im rotateCanvPic
-  
-  lassign [getImgCorners] top left
-
+  #Prepare edge points for cutting
   set imH [image height $im]
   set imW [image width $im]
-
-  set x1 $left
-  set y1 $top
-  set x2 [expr $imW - $left]
-  set y2 [expr $imH - $top]
+  set x2 [expr $imW - $x1]
+  set y2 [expr $imH - $y1]
 
   #Recreate rotateCutPic
-  image create photo rotateCanvCutPic
-  rotateCanvCutPic copy rotateCanvPic -from $x1 $y1 $x2 $y2
+  image create photo rotateCutPic
+  rotateCutPic copy $im -from $x1 $y1 $x2 $y2
   
   #prepare for setupResize/setupRepos
-  rotateCanvPic blank
-  rotateCanvPic copy rotateCanvCutPic
-  
-#TODO leave for testing
-#  image blank rotateCanvCutPic
+  $im blank
+  $im copy rotateCutPic
+  image delete rotateCutPic
 }
- 
 
-# rotateOrigPic - TODO to be used after resize!
-##called by .rotateW.okBtn TODO get !factor!
-##Bild wird in Funktion 'rotateOrigPic' geklont zur Weiterbearbeitung in setupResize/setupRepos
-proc rotateOrigPic {img} {
-  global v
-  set rotatedOrigPic [image_rotate $img $v]
-  #Create function from var
-  image create photo rotateOrigPic
-  rotateOrigPic copy $rotatedOrigPic
-}
-proc cutRotateOrigPic {} {}
+
+## rotateOrigPic - TODO OBSOLETE to be used after resize!
+###called by .rotateW.okBtn TODO get !factor!
+###Bild wird in Funktion 'rotateOrigPic' geklont zur Weiterbearbeitung in setupResize/setupRepos
+#proc rotateOrigPic {im} {
+#  global v addpicture::targetPicPath
+#  
+#  set rotatedOrigPic [image_rotate $im $v]
+#  
+#  #Create function from var
+#  image create photo rotateOrigPic
+#  rotateOrigPic copy $rotatedOrigPic
+
+##TODO incorporate cutting here
+#cutRotatedPic $im
+#$im write $targetPicPath -format PNG
+
+#}
 
 # vorschau
 ##called by SetupRotate

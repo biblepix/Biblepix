@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 1sep20 pv
+# Updated 17oct20 pv
 
 #source $SetupResizeTools
 set fileJList ""
@@ -43,14 +43,10 @@ set canvY [expr round($canvX/$factor)]
 canvas .imgCanvas -width $canvX -height $canvY
 pack .imgCanvas -in .photosF.mainf.right.bild -side left
 
-#TODO tail picpath var?
 label .picPath -textvar picPath
 button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic $picPath}
 button .delBtn -textvar f6.del -activebackground red -command {delPic}
-
-#TODO Testing
-#TODO pfadvariable in globals
-button .rotateBtn -activebackground orange -textvar rotatepic -command "source $setupdir/setupRotate.tcl"
+button .rotateBtn -activebackground orange -textvar rotatepic -command "source $SetupRotate"
 set rotatepic "Bild drehen"
 
 set fileJList [doCollect .imgCanvas]

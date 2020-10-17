@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window
 # sourced by ?
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7oct20 pv
+# Updated: 17oct20 pv
 
 #Load rotate command
 source $ImageRotate
@@ -28,8 +28,14 @@ button $T.cancelBtn -textvar cancel -activebackground red -command {catch {destr
 
 
 #TODO Move to doRotateOrigPic
-button $T.saveBtn -textvar save -activebackground lightgreen -command {rotateOrigPic photosOrigPic ; catch {destroy .rotateW} ; addPic}
-
+button $T.saveBtn -text "Weiter" -activebackground lightgreen -command {
+  
+  #TODO kommt später!
+  #rotateOrigPic photosOrigPic ; 
+  catch {destroy .rotateW}
+  ##TODO picpath nicht vorhanden
+  addPic $::picPath
+}
 
 catch  {  canvas $C }
 $C create image 20 20 -image $im -anchor nw -tags img
