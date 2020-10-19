@@ -23,7 +23,7 @@ proc openResizeWindow {} {
 if [lsearch [image names] rotateCanvPic] {
 
 #TODO geht nicht!!!! - warum ist es noch nicht geschnitten?
-cutRotatedPic rotateCanvPic
+cutRotated rotateCanvPic
   resizeCanvPic copy rotateCanvPic
   #image delete rotateCanvPic
     

@@ -180,24 +180,25 @@ proc image_rotate {img angle} {
 ############# Edge cutting procs #######################################
 ########################################################################
 set void {#000000}
-set margin 5 ;#where to start scanning 
+set margin 3 ;#where to start scanning 
 set im rotateCanvPic
+set c .rotateW.rotateC
 
 # getImgCorners
 ##called by cutRotateOrigPic
-proc getImgCorners {} {
-  global margin im
+proc getImgCorners {im} {
+  global margin
   set dataL [$im data]
-  set leftCorner [scanVertical $dataL]
-  set topCorner [scanHorizontal $dataL]
-  return "$topCorner $leftCorner"
+  set v [scanVertical $dataL]
+  set h [scanHorizontal $dataL]
+  return "$h $v"
 }
 
 # scanVertical
 ##called by getImgCorners
 proc scanVertical {dataL} {
   global void margin
-  set rowNo 1
+  set rowNo 0
   
   foreach row $dataL {
     set colour [lindex $row $margin]
@@ -222,31 +223,54 @@ proc scanHorizontal {dataL} {
     }
   }
 }
-# cutRotatePic
+# cutRotated
 ##cuts uneven sides & returns as new $im
 ##called by ??? for rotateCanvPic & rotateOrigPic
-proc cutRotatedPic {im} {
-  lassign [getImgCorners] x1 y1
-    
-  #Skip cutting if corners are "0 1"
-  if !{$x1} {
+proc cutRotated {im} {
+  global c margin
+  
+  #get horizontal & vertical points
+  lassign [getImgCorners $im] h v
+    puts "h:$h v:$v"
+  #Skip cutting if corners are "0 0"
+  if !{$h} {
     return "No cutting of edges needed"
   }
 
   #Prepare edge points for cutting
   set imH [image height $im]
   set imW [image width $im]
-  set x2 [expr $imW - $x1]
-  set y2 [expr $imH - $y1]
 
+#TODO not perfect yet - Joel please help!!!!!!!!!!!
+##Rechtsdrehung
+if {$h < $v} {  
+  set x1 $h
+  set y1 [expr ($imH - $v) /2]
+  set x2 [expr $imW - $h]
+  set y2 $v
+##Linksdrehung
+} {
+  set x1 [expr $imW - $h]
+  set y1 $v
+  set x2 [expr $imW - ($imW - $h)]
+  set y2 [expr $imH - $v]
+}
+
+puts "$x1.$y1 $x2.$y2"
+    
   #Recreate rotateCutPic
   image create photo rotateCutPic
   rotateCutPic copy $im -from $x1 $y1 $x2 $y2
   
   #prepare for setupResize/setupRepos
   $im blank
-  $im copy rotateCutPic
+  $im copy -shrink rotateCutPic
   image delete rotateCutPic
+  
+  #TODO this is a bloody hack!
+  catch {
+  $c conf -width [image width $im] -height [image height $im]
+  }
 }
 
 
