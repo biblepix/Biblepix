@@ -8,22 +8,17 @@ source $JList
 
 # addPic - called by SetupPhoto
 # adds new Picture to BiblePix Photo collection
-# setzt Funktion 'photosOrigPic' voraus und leitet Subprozesse ein
+# setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
+##called by ?
 proc addPic {picPath} {
   global dirlist
   source $::SetupResizePhoto
   set targetPicPath [file join $::photosDir [setPngFileName [file tail $picPath]]]
 
-
-
   #Check which original pic to use
-  if [image inuse rotateCanvPic] {
-    set rotation 1
-    #TODO this is not needed here!
-#    set origPic [cutRotatedPic rotateOrigPic]
-    
+  if {[lsearch [image names] rotateCutPic] != -1} {
+    set origPic rotateCutPic
   } else {
-    set rotation 0
     set origPic photosOrigPic
   }
 
@@ -36,16 +31,14 @@ proc addPic {picPath} {
   namespace eval addpicture {}
   set addpicture::targetPicPath $targetPicPath
   set addpicture::origPic $origPic
-  set res [needsResize $origPic]
+  set resize [needsResize $origPic]
+  
   source $::ScanColourArea
   
   #A) 0: right dimensions, right size: save pic
-  if !$res {
-    ##save unless rotated
-    if !$rotation {
-      $origPic write $targetPicPath -format PNG
-      NewsHandler::QueryNews "Bild [file tail $targetPicPath] ist hinzugefügt.  
-    }
+  if !$resize {
+    $origPic write $targetPicPath -format PNG
+    NewsHandler::QueryNews "Bild [file tail $targetPicPath] ist hinzugefügt.      
     NewsHandler::QueryNews "Wir berechnen nun die ideale Textposition und -helligkeit. Die Position können Sie noch ändern..." lightblue
         
     #Do colour scan
@@ -53,7 +46,7 @@ proc addPic {picPath} {
     after 2000 openReposWindow
    
   #B) 1: right dimensions, wrong size: open reposWindow
-  } elseif {$res == 1} {
+  } elseif {$resize == 1} {
 
     #Send pic to final resizing
 
@@ -87,7 +80,7 @@ proc addPic {picPath} {
 
 #TODO Wer koordiniert das?
   #C) 2: wrong dimensions, wrong size: open resizeWindow
-  } elseif {$res == 2} {
+  } elseif {$resize == 2} {
 
     openResizeWindow
 

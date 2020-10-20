@@ -174,7 +174,8 @@ proc image_rotate {img angle} {
   }
 
   return $rotatedImg
-}
+  
+} ;#END image_rotate
 
 ########################################################################
 ############# Edge cutting procs #######################################
@@ -231,7 +232,8 @@ proc cutRotated {im} {
   
   #get horizontal & vertical points
   lassign [getImgCorners $im] h v
-    puts "h:$h v:$v"
+puts "h:$h v:$v"
+
   #Skip cutting if corners are "0 0"
   if !{$h} {
     return "No cutting of edges needed"
@@ -263,15 +265,16 @@ puts "$x1.$y1 $x2.$y2"
   rotateCutPic copy $im -from $x1 $y1 $x2 $y2
   
   #prepare for setupResize/setupRepos
-  $im blank
-  $im copy -shrink rotateCutPic
-  image delete rotateCutPic
+#  $im blank
+#  $im copy -shrink rotateCutPic
+#  image delete rotateCutPic
   
-  #TODO this is a bloody hack!
-  catch {
-  $c conf -width [image width $im] -height [image height $im]
-  }
-}
+#  #TODO this is a bloody hack!
+#  catch {
+#  $c conf -width [image width $im] -height [image height $im]
+#  }
+  
+} ;#end cutRotated
 
 
 ## rotateOrigPic - TODO OBSOLETE to be used after resize!
@@ -312,3 +315,25 @@ proc vorschau {} {
   return 0
 }
 
+#TODO Joel wie kriegen wir das hin - Winkel wird nicht akzeptiert!
+proc vorschau180 {} {
+  global scale
+  $scale conf -state disabled
+  image_rotate rotateCanvPic 180
+}
+
+# doRotateOrig
+##coordinates rotating & cutting processes
+##creates rotateOrigPic from photosOrigPic
+##called by ...
+##TODO try to run this in background!!!!
+proc doRotateOrig {pic} {
+  global v
+
+  #1.rotate (takes a long time!)
+  set rotated [image_rotate $pic $v]
+  
+  #2.cut >> rotateOrigPic
+  cutRotated $rotated
+
+}

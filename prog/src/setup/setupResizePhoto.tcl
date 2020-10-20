@@ -3,7 +3,10 @@
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated 17oct20 pv
 
-source $::SetupResizeTools
+#TODO Warum geht das nicht? Warum sourcet er Globals nicht?
+#source $SetupResizeTools
+#source $Globals
+source /home/pv/Biblepix/prog/src/setup/setupResizeTools.tcl
 
 # openResizeWindow
 ##opens new toplevel window if [needsResize]
@@ -20,14 +23,22 @@ proc openResizeWindow {} {
   #Copy original pic to canvas
 
   #A) copy rotated+cut pic
-if [lsearch [image names] rotateCanvPic] {
+if {[lsearch [image names] rotateCanvPic] != -1} {
 
 #TODO geht nicht!!!! - warum ist es noch nicht geschnitten?
-cutRotated rotateCanvPic
-  resizeCanvPic copy rotateCanvPic
+
+#TODO: ImageRotate: make sure origRotatePic is in $addpicture:: namespace before running this - no saving yet!
+
+#cutRotated rotateCanvPic
+#  resizeCanvPic copy rotateCanvPic
+ 
   #image delete rotateCanvPic
-    
+#  ?setScaleFactor?
+  setPic2CanvScalefactor
+  resizeCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor   
 #B)  #Determine smallest possible scale factor for canvas pic
+
+
 } else {  
   setPic2CanvScalefactor
   resizeCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
@@ -94,7 +105,7 @@ proc openReposWindow {} {
   $c conf -width 
   
   #A) Copy rotateCutCanvPic if resize wasn't opened
-  if [lsearch [image names] rotateCanvPic] {
+  if {[lsearch [image names] rotateCanvPic] != -1} {
     reposCanvPic copy rotateCanvPic
     image delete rotateCanvPic
 

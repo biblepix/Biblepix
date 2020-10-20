@@ -23,18 +23,28 @@ set im rotateCanvPic
 set ::v 0
 
 #Picture & buttons
-button $T.previewBtn -textvar computePreview -bg orange -activebackground yellow -command vorschau
+button $T.previewBtn -textvar computePreview -bg orange -activebackground yellow -command "vorschau"
 button $T.cancelBtn -textvar cancel -activebackground red -command {catch {destroy .rotateW} ; return 0}
+button $T.180Btn -text "180° Bild auf Kopf" -command "vorschau180"
+#set ::v 180
 
 
 #TODO Move to doRotateOrigPic
-button $T.saveBtn -text "Weiter" -activebackground lightgreen -command {
+button $T.saveBtn -textvar save -activebackground lightgreen -command {
   
   #TODO kommt später!
   #rotateOrigPic photosOrigPic ; 
-  catch {destroy .rotateW}
-  ##TODO picpath nicht vorhanden
-  addPic $::picPath
+  
+  
+  #TODO erscheint nicht!
+  NewsHandler::QueryNews "Rotating original picture; this could take some time..." orange
+
+#  catch {destroy .rotateW}
+  after idle {  doRotateOrig photosOrigPic }
+  
+#TODO why here?
+ addPic $::picPath
+
 }
 
 catch  {  canvas $C }
@@ -54,7 +64,6 @@ updateMeterTimer
   
 
 
-
 #.rotateW.okBtn conf -command "image_rotate photosCanvPic [$s get]"
 
 #TODO!!! - seems to happen after topwindow is closed
@@ -63,7 +72,7 @@ updateMeterTimer
 #    while executing
 #"$s cget -from"
 #    (procedure "updateMeter" line 4)
-
+pack .rotateW.180Btn
 pack .rotateW.previewBtn -pady 30
 pack .rotateW.cancelBtn .rotateW.saveBtn -side right
 
