@@ -6,7 +6,7 @@
 #TODO Warum geht das nicht? Warum sourcet er Globals nicht?
 #source $SetupResizeTools
 #source $Globals
-source /home/pv/Biblepix/prog/src/setup/setupResizeTools.tcl
+#source $env(HOME)/Biblepix/prog/src/setup/setupResizeTools.tcl
 
 # openResizeWindow
 ##opens new toplevel window if [needsResize]
@@ -22,27 +22,10 @@ proc openResizeWindow {} {
 
   #Copy original pic to canvas
 
-  #A) copy rotated+cut pic
-if {[lsearch [image names] rotateCanvPic] != -1} {
-
-#TODO geht nicht!!!! - warum ist es noch nicht geschnitten?
-
-#TODO: ImageRotate: make sure origRotatePic is in $addpicture:: namespace before running this - no saving yet!
-
-#cutRotated rotateCanvPic
-#  resizeCanvPic copy rotateCanvPic
- 
-  #image delete rotateCanvPic
-#  ?setScaleFactor?
+  #A) copy photosOrigPic/rotateCutPic to canvas
   setPic2CanvScalefactor
   resizeCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor   
-#B)  #Determine smallest possible scale factor for canvas pic
 
-
-} else {  
-  setPic2CanvScalefactor
-  resizeCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
-}
 
   # P h a s e  1  (Resizing window)
 
@@ -78,7 +61,8 @@ if {[lsearch [image names] rotateCanvPic] != -1} {
   #Confirm button launches doResize & sets up repositioning window 
   ## .resizePhoto destroyed later!
   .resizePhoto.resizeConfirmBtn conf -command "
-    set ::Modal.Result [doResize $c]
+    $confirmButton
+    #set ::Modal.Result [doResize $c]
     #Show.Modal .resizePhoto -destroy 1 -onclose $cancelButton 
     openReposWindow
   "
@@ -102,24 +86,25 @@ proc openReposWindow {} {
   #Determine smallest possible scale factor for canvas pic
   setPic2CanvScalefactor
   
-  $c conf -width 
-  
-  #A) Copy rotateCutCanvPic if resize wasn't opened
-  if {[lsearch [image names] rotateCanvPic] != -1} {
-    reposCanvPic copy rotateCanvPic
-    image delete rotateCanvPic
+  #$c conf -width 
+  reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
+  image delete $addpicture::origPic
+    
+    ## R E D U N D A N T **
+#  #A) Copy rotateCutCanvPic if resize wasn't opened -TODO NO! we want origCutPic here!
+#  if { [lsearch [image names] rotateCanvPic] != -1} {
+#    reposCanvPic copy rotateCanvPic
+#    image delete rotateCanvPic
 
-  #B) copy resizeCanvPic if existent
-  } else {
-    lassign [grabCanvSection .resizePhoto.resizeCanv] x1 y1 x2 y2
-    reposCanvPic copy resizeCanvPic -from $x1 $y1 $x2 $y2
-    destroy .resizePhoto
-    image delete resizeCanvPic   
+#  #B) copy resizeCanvPic if existent
+#  } else {
+#    lassign [grabCanvSection .resizePhoto.resizeCanv] x1 y1 x2 y2
+#    reposCanvPic copy resizeCanvPic -from $x1 $y1 $x2 $y2
+#    destroy .resizePhoto
+#    image delete resizeCanvPic   
 
-  #C) Copy original pic if not resizing/rotating needed - TODO where is scalefactor in this case?
-  } else {
-    reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor    
-  }
+#  #C) Copy original pic if not resizing/rotating needed 
+#  } 
   
   #Create text button on top
   button $w.moveTxtBtn -font {TkHeaderFont 20 bold} -fg red -pady 2 -padx 2 -bd 5 -relief raised -textvar textpos.wait
@@ -168,19 +153,10 @@ proc openReposWindow {} {
    font conf movingTextReposFont -size $canvFontsize
    
    
-  #Scan Image - TODO done in addPic ???
-  source $::ScanColourArea
-  #$c itemconf mv -state disabled
-  #$w.confirmBtn conf -state disabled
-  
-  
-  
-  #worum goht da so laaaaaaaaaaaaaaaaaaang?????????????????????
+  #TODO initiate Scan Image in background
+  #source $::ScanColourArea
   #after idle colour::doColourScan
  
-  #.reposPhoto.confirmBtn conf -state normal
-  #.reposPhoto.reposCanv itemconf mv -state normal
-
 #TODO close window after / vwait okBtn if pos changed???
 
 } ;#END openReposWindow

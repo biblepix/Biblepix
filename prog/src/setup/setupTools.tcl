@@ -10,30 +10,34 @@ source $JList
 # adds new Picture to BiblePix Photo collection
 # setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
 ##called by ?
-proc addPic {picPath} {
+proc addPic {origPicPath} {
   global dirlist
   source $::SetupResizePhoto
-  set targetPicPath [file join $::photosDir [setPngFileName [file tail $picPath]]]
-
-  #Check which original pic to use
-  if {[lsearch [image names] rotateCutPic] != -1} {
-    set origPic rotateCutPic
-  } else {
-    set origPic photosOrigPic
-  }
-
+  source $::SetupResizeTools
+  
+  #Set path & exit if already there
+  set targetPicPath [file join $::photosDir [setPngFileName [file tail $origPicPath]]]
   if [file exists $targetPicPath] {
     NewsHandler::QueryNews $::picSchonDa red
     return 1
   }
+  
+  #Check which original pic to use & set vars in ::addpicture
+  if { [lsearch [image names] rotateCutPic] != -1} {
+    set origPic rotateCutPic
+  } else {
+    set origPic photosOrigPic
+  }
+  
+  #TODO Testing
+puts $origPic
 
-  #Export targetPicPath + scaleFactor + origPic to 'addpicture' namespace
   namespace eval addpicture {}
   set addpicture::targetPicPath $targetPicPath
   set addpicture::origPic $origPic
-  set resize [needsResize $origPic]
   
-  source $::ScanColourArea
+  #Check if needs resizing
+  set resize [needsResize $origPic]
   
   #A) 0: right dimensions, right size: save pic
   if !$resize {
@@ -41,8 +45,8 @@ proc addPic {picPath} {
     NewsHandler::QueryNews "Bild [file tail $targetPicPath] ist hinzugefügt.      
     NewsHandler::QueryNews "Wir berechnen nun die ideale Textposition und -helligkeit. Die Position können Sie noch ändern..." lightblue
         
-    #Do colour scan
-    colour::doColourScan
+    #Do colour scan -TODO No! Done in reposWindow
+    #colour::doColourScan
     after 2000 openReposWindow
    
   #B) 1: right dimensions, wrong size: open reposWindow
@@ -69,26 +73,21 @@ proc addPic {picPath} {
   #############################################################
       
     #B) Run Colour scan & disable controls
-    colour::doColourScan
+#    colour::doColourScan
 
     #C) Enable reposWin
     .reposPhoto.moveTxtBtn conf -bg lightblue -state normal
     .reposPhoto.reposCanv itemconf mv -state normal
     set ::textpos.wait "Textposition nach Wunsch ändern und dann quittieren!"
     
-  
-
-#TODO Wer koordiniert das?
   #C) 2: wrong dimensions, wrong size: open resizeWindow
   } elseif {$resize == 2} {
-
     openResizeWindow
-
   }
 
-  NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightgreen
+  NewsHandler::QueryNews "[copiedPicMsg $origPicPath]" lightgreen
   set ::numPhotos [llength [glob $dirlist(photosDir)/*]]
-
+  
 } ;#END addPic
 
 proc delPic {} {

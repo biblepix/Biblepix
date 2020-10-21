@@ -31,20 +31,11 @@ button $T.180Btn -text "180° Bild auf Kopf" -command "vorschau180"
 
 #TODO Move to doRotateOrigPic
 button $T.saveBtn -textvar save -activebackground lightgreen -command {
-  
-  #TODO kommt später!
-  #rotateOrigPic photosOrigPic ; 
-  
-  
   #TODO erscheint nicht!
   NewsHandler::QueryNews "Rotating original picture; this could take some time..." orange
-
-#  catch {destroy .rotateW}
-  after idle {  doRotateOrig photosOrigPic }
   
-#TODO why here?
- addPic $::picPath
-
+  doRotateOrig photosOrigPic 
+#  addPic $::picPath
 }
 
 catch  {  canvas $C }
