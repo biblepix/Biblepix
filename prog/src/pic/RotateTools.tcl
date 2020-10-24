@@ -1,31 +1,29 @@
-# ~/Biblepix/prog/src/setup/ImageRotate.tcl
+# ~/Biblepix/prog/src/setup/RotateTools.tcl
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
 # Procs for rotating picture, called by SetupRotate
 # Updated: 16oct20 pv
 
 proc makeRotateTopwin {} {
-  global picdir C
+  global ImageAngle C RotateTools
 
-#Picture & buttons
-      source $picdir/ImageRotate.tcl
+  #Picture & buttons
+  toplevel .rotateW -width 600 -height 400
 
-      toplevel .rotateW -width 600 -height 400
- 
-      button .rotateW.okBtn -text "Vorschau berechnen"
-      button .rotateW.cancelBtn -text Abbruch -command {destroy .rotateW; return 0}
-      
-      set angle 1
-      button .rotateW.saveBtn -text Abspeichern -command "image_rotate photosOrigPic $angle"
-           
-     catch  {  canvas $C -width 600 -height 400}
-      $C create image 0 0 -image photosCanvPic -anchor nw
-      
-     
+  button .rotateW.okBtn -text "Vorschau berechnen"
+  button .rotateW.cancelBtn -text Abbruch -command {destroy .rotateW; return 0}
+
+  set angle 1
+  button .rotateW.saveBtn -text Abspeichern -command "image_rotate photosOrigPic $angle"
+
+  catch  {  canvas $C -width 600 -height 400}
+  $C create image 0 0 -image photosCanvPic -anchor nw
+
   #Meter
-  source $picdir/ImageAngle.tcl      
+  source $ImageAngle
   pack .rotateW.rotateC .rotateW.okBtn .rotateW.cancelBtn .rotateW.saveBtn
   pack [makeMeter]
-  #scale
+  
+  #Scale
   pack [scale $s -orient h -length 300 -from -90 -to 90 -variable v]
   trace variable v w updateMeter
   updateMeterTimer
@@ -34,22 +32,23 @@ proc makeRotateTopwin {} {
     set im2 [image create photo]
     $im2 copy $im
     set C .rotateW.rotateC
-    
-$C create image 50  90 -image $im
-$C create image 170 90 -image $im2
-entry $C.e -textvar angle -width 4
+
+  $C create image 50  90 -image $im
+  $C create image 170 90 -image $im2
+  entry $C.e -textvar angle -width 4
     set angle 99
     bind $C.e <Return> {
-        $im2 config -width [image width $im] -height [image height $im]
-        $im2 copy $im
-        wm title . [time {image_rotate $im2 $::angle}]
+      $im2 config -width [image width $im] -height [image height $im]
+      $im2 copy $im
+      wm title . [time {image_rotate $im2 $::angle}]
     }
-$C create window 5 5 -window $C.e -anchor nw
-    checkbutton $C.cb -text Update -variable update
-    set ::update 1
-    $C create window 40 5 -window $C.cb -anchor nw
 
-    bind . <Escape> {exec wish $argv0 &; exit}
+  $C create window 5 5 -window $C.e -anchor nw
+  checkbutton $C.cb -text Update -variable update
+  set ::update 1
+  $C create window 40 5 -window $C.cb -anchor nw
+
+  bind . <Escape> {exec wish $argv0 &; exit}
 
 } ;#END makeRotateTopwin
 
@@ -224,6 +223,7 @@ proc scanHorizontal {dataL} {
     }
   }
 }
+
 # cutRotated
 ##cuts uneven sides & returns as new $im
 ##called by ??? for rotateCanvPic & rotateOrigPic
@@ -243,23 +243,23 @@ puts "h:$h v:$v"
   set imH [image height $im]
   set imW [image width $im]
 
-#TODO not perfect yet - Joel please help!!!!!!!!!!!
-##Rechtsdrehung
-if {$h < $v} {  
-  set x1 $h
-  set y1 [expr ($imH - $v) /2]
-  set x2 [expr $imW - $h]
-  set y2 $v
-##Linksdrehung
-} {
-  set x1 [expr $imW - $h]
-  set y1 $v
-  set x2 [expr $imW - ($imW - $h)]
-  set y2 [expr $imH - $v]
-}
+  #TODO not perfect yet - Joel please help!!!!!!!!!!!
+  if {$h < $v} {
+    ##Rechtsdrehung
+    set x1 $h
+    set y1 [expr ($imH - $v) /2]
+    set x2 [expr $imW - $h]
+    set y2 $v
+  } {
+    ##Linksdrehung
+    set x1 [expr $imW - $h]
+    set y1 $v
+    set x2 [expr $imW - ($imW - $h)]
+    set y2 [expr $imH - $v]
+  }
 
 puts "$x1.$y1 $x2.$y2"
-    
+
   #Recreate rotateCutPic
   image create photo rotateCutPic
   rotateCutPic copy $im -from $x1 $y1 $x2 $y2
@@ -273,7 +273,7 @@ puts "$x1.$y1 $x2.$y2"
 #  catch {
 #  $c conf -width [image width $im] -height [image height $im]
 #  }
-  
+
 } ;#end cutRotated
 
 
@@ -307,7 +307,7 @@ proc vorschau {} {
   set rotatedImg [image_rotate photosCanvPic $v]
   
   $im blank
-  $im copy $rotatedImg 
+  $im copy $rotatedImg
   image delete $rotatedImg
   
 #TODO why isn't this working?
@@ -317,9 +317,11 @@ proc vorschau {} {
 
 #TODO Joel wie kriegen wir das hin - Winkel wird nicht akzeptiert!
 proc vorschau180 {} {
-  global scale
-  $scale conf -state disabled
-  image_rotate rotateCanvPic 180
+  set rotatedImg [image_rotate photosCanvPic 180]
+  
+  $im blank
+  $im copy $rotatedImg
+  image delete $rotatedImg
 }
 
 # doRotateOrig
@@ -332,9 +334,10 @@ proc doRotateOrig {pic} {
 
   #1.rotate (takes a long time!)
   set rotated [image_rotate $pic $v]
-  
+
   #2.cut >> rotateCutPic
   cutRotated $rotated
-#3.run addPic
-addPic $::picPath
+
+  #3.run addPic
+  addPic $::picPath
 }

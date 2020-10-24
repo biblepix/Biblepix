@@ -5,7 +5,7 @@
 # Updated: 17oct20 pv
 
 #Load rotate command
-source $ImageRotate
+source $RotateTools
 
 #Toplevel main window
 set T .rotateW
