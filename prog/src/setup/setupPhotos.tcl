@@ -44,7 +44,7 @@ canvas .imgCanvas -width $canvX -height $canvY
 pack .imgCanvas -in .photosF.mainf.right.bild -side left
 
 label .picPath -textvar picPath
-button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic $::picPath}
+button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic photosOrigPic $::picPath}
 button .delBtn -textvar f6.del -activebackground red -command {delPic}
 button .rotateBtn -activebackground orange -textvar rotatepic -command "source $SetupRotate"
 set rotatepic "Bild drehen"

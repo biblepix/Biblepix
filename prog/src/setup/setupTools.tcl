@@ -10,7 +10,7 @@ source $JList
 # adds new Picture to BiblePix Photo collection
 # setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
 ##called by ?
-proc addPic {origPicPath} {
+proc addPic {origPic origPicPath} {
   global dirlist
   source $::SetupResizePhoto
   source $::SetupResizeTools
@@ -21,34 +21,24 @@ proc addPic {origPicPath} {
     NewsHandler::QueryNews $::picSchonDa red
     return 1
   }
-  
-  #Check which original pic to use & set vars in ::addpicture
-  if { [lsearch [image names] rotateCutPic] != -1} {
-    set origPic rotateCutPic
-  } else {
-    set origPic photosOrigPic
-  }
-  
-  #TODO Testing
-puts $origPic
 
   namespace eval addpicture {}
   set addpicture::targetPicPath $targetPicPath
   set addpicture::origPic $origPic
-  
+
   #Check if needs resizing
   set resize [needsResize $origPic]
-  
+
   #A) 0: right dimensions, right size: save pic
   if !$resize {
     $origPic write $targetPicPath -format PNG
-    NewsHandler::QueryNews "Bild [file tail $targetPicPath] ist hinzugefügt.      
+    NewsHandler::QueryNews "Bild [file tail $targetPicPath] ist hinzugefügt."
     NewsHandler::QueryNews "Wir berechnen nun die ideale Textposition und -helligkeit. Die Position können Sie noch ändern..." lightblue
-        
+
     #Do colour scan -TODO No! Done in reposWindow
     #colour::doColourScan
-    after 2000 openReposWindow
-   
+    after 10 openReposWindow
+
   #B) 1: right dimensions, wrong size: open reposWindow
   } elseif {$resize == 1} {
 
@@ -56,22 +46,21 @@ puts $origPic
 
     #TODO move below commands to separate proc
     #Prepare ReposWin while other procs (s.u.) are running
-    after 5000 {
+    after 10 {
       openReposWindow
       .reposPhoto.moveTxtBtn conf -bg beige -state disabled
       .reposPhoto.reposCanv itemconf mv -state disabled
     }
 
-#############################################################
-#TODO Joel das sollte im Hintergrund laufen!!!!!!!!!!!
+  #############################################################
+    #TODO Joel das sollte im Hintergrund laufen!!!!!!!!!!!
   #A) Run Resize (??in backgkround??)
 
-
-    ResizeHandler::QueryResize $addpicture::origPic    
+    ResizeHandler::QueryResize $addpicture::origPic
     ResizeHandler::Run
 
   #############################################################
-      
+
     #B) Run Colour scan & disable controls
 #    colour::doColourScan
 

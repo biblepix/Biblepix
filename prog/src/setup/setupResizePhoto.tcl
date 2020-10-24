@@ -27,8 +27,8 @@ proc openResizeWindow {} {
   
   #TODO zis inno warkin for Rotate
   #resizeCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor   
-#TODO just for testing - $addpicture::origPic should be rotateCutPic by now, donno why this aynt working
-resizeCanvPic copy rotateCutPic -subsample $addpicture::scaleFactor
+  #TODO just for testing - $addpicture::origPic should be rotateCutPic by now, donno why this aynt working
+  resizeCanvPic copy rotateCutPic -subsample $addpicture::scaleFactor
 
   # P h a s e  1  (Resizing window)
 
