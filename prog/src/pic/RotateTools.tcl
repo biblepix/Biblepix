@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/RotateTools.tcl
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
 # Procs for rotating picture, called by SetupRotate
-# Updated: 16oct20 pv
+# Updated: 24oct20
 
 # imageRotate
 ##with many thanks to Richard Suchenwirth!
@@ -127,8 +127,9 @@ proc imageRotate {img angle} {
 } ;#END imageRotate
 
 ########################################################################
-############# Edge cutting procs #######################################
+############# E D G E   C U T T I N G   P R O C S  #####################
 ########################################################################
+
 set void {#000000}
 set offsetMargin 3 ;#where to start scanning
 
@@ -210,7 +211,7 @@ puts "$x1.$y1 $x2.$y2"
   #Recreate rotateCutPic
   set rotateCutPic [image create photo]
   $rotateCutPic copy $im -from $x1 $y1 $x2 $y2
-
+  
   return $rotateCutPic
 
 } ;#end cutRotated
@@ -243,3 +244,53 @@ proc doRotateOrig {pic v} {
 
   return $cutRotatedImage
 }
+
+######################################################
+#### R O T A T E   M E T E R   T O O L S #############
+######################################################
+##### with many thanks to Kevin Kenny! ###############  
+
+# Create a meter 'enabled' canvas
+proc makeMeter {} {
+  global meter angle mC
+        
+  for {set i 0;set j 0} {$i<100} {incr i 5;incr j} {
+    set meter($j) [$mC create line 100 100 10 100 -fill grey$i -width 3 -arrow last]
+    set angle($j) 0
+    $mC lower $meter($j)
+    updateMeterLine $mC 0.2 $j
+  }
+  $mC create arc 10 10 190 190 -start 0 -extent 180 -style arc -outline red -tags arc
+  return $mC
+}
+
+# Draw a meter line (and recurse for lighter ones...)
+proc updateMeterLine {w a {l 0}} {
+  global meter angle pi
+  set oldangle $angle($l)
+  set angle($l) $a
+  set x [expr {100.0 - 90.0*cos($a * $pi)}]
+  set y [expr {100.0 - 90.0*sin($a * $pi)}]
+  catch {     $w coords $meter($l) 100 100 $x $y }
+  incr l
+  if [info exist meter($l)] {
+    catch {updateMeterLine $w $oldangle $l}
+  }
+}
+
+# Convert variable to angle on trace
+proc updateMeter {name1 name2 op} {
+  global C s mC from to
+  upvar #0 $name1 v
+  set min $from 
+  set max $to
+  set pos [expr {($v - $min) / ($max - $min)}]
+  updateMeterLine $mC [expr {$pos}]
+}
+
+# Fade over time
+proc updateMeterTimer {} {
+  global v
+  set v $v
+  after 20 updateMeterTimer
+} 
