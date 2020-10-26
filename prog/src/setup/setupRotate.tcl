@@ -22,16 +22,19 @@ set ::v 0
 #Picture & buttons
 button $T.previewBtn -textvar computePreview -bg orange -activebackground yellow -command {vorschau $im $::v $C}
 button $T.cancelBtn -textvar cancel -activebackground red -command {catch {destroy $T} ; return 0}
-button $T.180Btn -text "180° Bild auf Kopf" -command {vorschau $im 180 $C ; set ::v 180}
+button $T.180Btn -text "180° Bild auf Kopf" -pady 10 -command {vorschau $im 180 $C ; set ::v 180}
 
 #TODO Move to doRotateOrigPic
 button $T.saveBtn -textvar save -activebackground lightgreen -command {
   #TODO erscheint nicht!
-  NewsHandler::QueryNews "Rotating original picture; this could take some time..." orange
+#  NewsHandler::QueryNews "Rotating original picture; this could take some time..." orange
 
-  set rotatedImg [doRotateOrig photosOrigPic $::v]
+#  set rotatedImg [doRotateOrig photosOrigPic $::v]
+  photosCanvPic blank
+  photosCanvPic copy rotateCanvPic -shrink
+  #TODO: set addpicture::origPic here???? (cf. addPic)
   destroy $T
-  addPic $rotatedImg $::picPath
+#  addPic $rotatedImg $::picPath
   }
 
 catch { canvas $C }
@@ -45,6 +48,8 @@ set ::pi 3.1415927 ;# Good enough accuracy for gfx...
 scale .rotateW.scale -orient h -length 300 -from -90 -to 90 -variable v
 set from [$scale cget -from]
 set to [$scale cget -to]
+
+pack $T.180Btn
 pack [makeMeter] -pady 20
 
 #Pack Scale
@@ -53,13 +58,6 @@ trace add variable v write updateMeter
 updateMeterTimer
 
 
-#TODO!!! - seems to happen after topwindow is closed
-#can't set "v": invalid command name "$T.scale"
-#invalid command name "$T.scale"
-#    while executing
-#"$s cget -from"
-#    (procedure "updateMeter" line 4)
-pack $T.180Btn
 pack $T.previewBtn -pady 30
 pack $T.cancelBtn $T.saveBtn -side right
 

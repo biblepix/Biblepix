@@ -10,6 +10,12 @@ source $JList
 # adds new Picture to BiblePix Photo collection
 # setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
 ##called by ?
+
+
+#TODO requires switch for rotateOrigPic !!!
+##d.h. origPic ist entweder photosOrigPic oder rotateCutPic
+
+
 proc addPic {origPic origPicPath} {
   global dirlist
   source $::SetupResizePhoto
