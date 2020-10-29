@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17oct20 jh/pv
+# Updated: 27oct20 pv
 
 source $SetupResizeTools
 source $JList
@@ -9,30 +9,41 @@ source $JList
 # addPic - called by SetupPhoto
 # adds new Picture to BiblePix Photo collection
 # setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
-##called by ?
-
-
-#TODO requires switch for rotateOrigPic !!!
-##d.h. origPic ist entweder photosOrigPic oder rotateCutPic
-
-
+##called by SetupPhotos:addPic Button
 proc addPic {origPic origPicPath} {
-  global dirlist
+  global dirlist v
   source $::SetupResizePhoto
   source $::SetupResizeTools
+  set origPic photosOrigPic
   
   #Set path & exit if already there
   set targetPicPath [file join $::photosDir [setPngFileName [file tail $origPicPath]]]
-  if [file exists $targetPicPath] {
+  namespace eval addpicture {}
+  set addpicture::targetPicPath $targetPicPath
+  set addpicture::origPic $origPic
+     
+  #A) initiate vwait for running doRotateOrig
+  if [info exists addpicture::rotateStatus] {
+    #set origPic rotateOrigPic
+ after 500 {
+   NewsHandler::QueryNews "Bildrotation wird angewandt - bitte haben Sie VIEL Geduld!" orange
+    }
+#    namespace eval addpicture {
+#    upvar $v v }
+#   after 500 
+
+    set addpicture::origPic [doRotateOrig photosOrigPic $v]
+    #vwait addpicture::rotateStatus 
+    NewsHandler::QueryNews "Bildrotation wird angewandt - bitte haben Sie VIEL Geduld!" red
+    
+  #B) exit if pic schon da & no rotation desired
+  } elseif [file exists $targetPicPath] {
     NewsHandler::QueryNews $::picSchonDa red
     return 1
   }
 
-  namespace eval addpicture {}
-  set addpicture::targetPicPath $targetPicPath
-  set addpicture::origPic $origPic
-
   #Check if needs resizing
+  set origPic $addpicture::origPic
   set resize [needsResize $origPic]
 
   #A) 0: right dimensions, right size: save pic

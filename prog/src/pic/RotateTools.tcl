@@ -235,14 +235,17 @@ proc vorschau {im v c} {
 ##creates rotateOrigPic from photosOrigPic
 ##called by ...
 ##TODO try to run this in background!!!!
-proc doRotateOrig {pic v} {
+proc doRotateOrig {pic v} {  
+  namespace eval addpicture {
+  set rotateStatus 1
+  
+  }
+
   #1. rotate (takes a long time!)
-  set rotatedImage [imageRotate $pic $v]
-
-  #2. cut
-  set cutRotatedImage [cutRotated $rotatedImage]
-
-  return $cutRotatedImage
+  set rotPic [imageRotate $pic $v]
+  set addpicture::origPic [cutRotated $rotPic] 
+       
+  return $addpicture::origPic
 }
 
 ######################################################

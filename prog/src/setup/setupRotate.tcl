@@ -20,22 +20,26 @@ set im rotateCanvPic
 set ::v 0
 
 #Picture & buttons
-button $T.previewBtn -textvar computePreview -bg orange -activebackground yellow -command {vorschau $im $::v $C}
+button $T.previewBtn -textvar computePreview -activebackground yellow -command {vorschau $im $::v $C}
 button $T.cancelBtn -textvar cancel -activebackground red -command {catch {destroy $T} ; return 0}
-button $T.180Btn -text "180° Bild auf Kopf" -pady 10 -command {vorschau $im 180 $C ; set ::v 180}
+button $T.90°Btn -text "90° Rotation" -command {vorschau $im 90 $C ; set ::v 90}
+button $T.180°Btn -text "180° Rotation" -command {vorschau $im 180 $C ; set ::v 180}
 
 #TODO Move to doRotateOrigPic
 button $T.saveBtn -textvar save -activebackground lightgreen -command {
-  #TODO erscheint nicht!
-#  NewsHandler::QueryNews "Rotating original picture; this could take some time..." orange
-
-#  set rotatedImg [doRotateOrig photosOrigPic $::v]
+  namespace eval addpicture {
+    set rotateStatus 0
+  }
+  
   photosCanvPic blank
   photosCanvPic copy rotateCanvPic -shrink
-  #TODO: set addpicture::origPic here???? (cf. addPic)
-  destroy $T
-#  addPic $rotatedImg $::picPath
-  }
+  wm forget $T
+  
+#  after idle {
+#    doRotateOrig photosOrigPic $::v
+#  }
+  
+}
 
 catch { canvas $C }
 $C create image 20 20 -image $im -anchor nw -tags img
@@ -49,8 +53,9 @@ scale .rotateW.scale -orient h -length 300 -from -90 -to 90 -variable v
 set from [$scale cget -from]
 set to [$scale cget -to]
 
-pack $T.180Btn
-pack [makeMeter] -pady 20
+pack $T.90°Btn -pady 5
+pack $T.180°Btn
+pack [makeMeter] -pady 10
 
 #Pack Scale
 pack $scale
@@ -58,7 +63,7 @@ trace add variable v write updateMeter
 updateMeterTimer
 
 
-pack $T.previewBtn -pady 30
+pack $T.previewBtn -pady 10
 pack $T.cancelBtn $T.saveBtn -side right
 
 bind $T <Escape> {destroy $T}

@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1sep20
+# Updated: 29oct20
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
@@ -14,17 +14,14 @@ set screenX [winfo screenwidth .]
 set screenY [winfo screenheight .]
 set wWidth [expr round($screenX * 0.9)]
 set wHeight [expr round($screenY * 0.9)]
-
-#if {$screenX < $wWidth} { set wWidth $screenX}
-#if {$screenY < $wHeight} { set wHeight $screenY}
 set wMx [expr ($screenX - $wWidth) / 2]
 set wMy [expr ($screenY - $wHeight) / 2]
-
 set tw [expr $wWidth - 100] ;#text width
 set px 10
 set py 10
 set bg LightGrey
 set fg blue
+
 font create bpfont4 -family TkCaptionFont -size 30 -weight bold
 
 #Create bottom frame
@@ -38,7 +35,7 @@ ttk::notebook .nb -width [expr $wWidth - 50] -height [expr $wHeight - 200]
 pack .nb -fill y -expand true -padx $px -pady $py
 
 #Create Title (LOGO to be created later)
-ttk::label .ftop.titelmitlogo -textvar bpsetup -font bpfont4
+ttk::label .ftop.titelmitlogo -textvar bpsetup -font bpfont4 -padding 5
 pack .ftop.titelmitlogo -side left
 
 #Create notebook Tabs

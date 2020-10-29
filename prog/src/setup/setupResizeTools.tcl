@@ -2,7 +2,7 @@
 # Procs used in Resizing + Repositioning processes
 # called by SetupPhotos
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 31aug20 pv
+# Updated: 28oct20 pv
 
 # needsResize
 ##compares photosOrigPic OR rotateOrigPic with screen dimensions
@@ -146,12 +146,15 @@ proc setPic2CanvScalefactor {} {
 #      
 #  }
   
-  #Check which original pic to use
-  if [catch {image inuse rotateOrigPic}] {
-    set origPic photosOrigPic
-  } else {
-    set origPic rotateOrigPic
-  }
+#  #Check which original pic to use
+#  if [catch {image inuse rotateOrigPic}] {
+#    set origPic photosOrigPic
+#  } else {
+#    set origPic rotateOrigPic
+#  }
+
+#this var is set by addPic
+set origPic $addpicture::origPic
 
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
