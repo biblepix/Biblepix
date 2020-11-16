@@ -395,8 +395,20 @@ Example:"
   set noPhotosFound(en) "No photos were found in the $bp Photos folder. Please copy some pictures into the folder."
   set ::noPhotosFound $noPhotosFound($lang)
 
-  set computePreview(de) "Vorschau berechnen"
-  set computePreview(en) "Compute preview"
+  set rotatePic(de) "Bild drehen"
+  set rotatePic(en) "Rotate picture"
+  set ::rotatePic $rotatePic($lang)
+  
+  set preview90(de) "\u21B7 Vorschau 90° Winkel"
+  set preview90(en) "\u21B7 Preview 90° angle"
+  set ::preview90 $preview90($lang)
+
+  set preview180(de) "\u21BB Vorschau 180° Winkel"
+  set preview180(en) "\u21BB Preview 180° angle"
+  set ::preview180 $preview180($lang)
+  
+  set computePreview(de) "\u21B6 \u21B7 Vorschau beliebiger Winkel"
+  set computePreview(en) "\u21B6 \u21B7 Preview any angle"
   set ::computePreview $computePreview($lang)
   
 } ;#END setTexts

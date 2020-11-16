@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window with scale & meter
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24oct20
+# Updated: 16nov20
 
 source $RotateTools
 
@@ -20,25 +20,27 @@ set im rotateCanvPic
 set ::v 0
 
 #Picture & buttons
-button $T.previewBtn -textvar computePreview -activebackground yellow -command {vorschau $im $::v $C}
+button $T.previewBtn -textvar computePreview -activebackground beige -command {vorschau $im $::v $C}
 button $T.cancelBtn -textvar cancel -activebackground red -command {catch {destroy $T} ; return 0}
-button $T.90°Btn -text "90° Rotation" -command {vorschau $im 90 $C ; set ::v 90}
-button $T.180°Btn -text "180° Rotation" -command {vorschau $im 180 $C ; set ::v 180}
+button $T.90°Btn -textvar preview90 -activebackground beige -command {vorschau $im 90 $C ; set ::v 90}
+button $T.180°Btn -textvar preview180 -activebackground beige -command {vorschau $im 180 $C ; set ::v 180}
 
 #TODO Move to doRotateOrigPic
 button $T.saveBtn -textvar save -activebackground lightgreen -command {
-  namespace eval addpicture {
-    set rotateStatus 0
-  }
-  
+#  namespace eval addpicture {
+#    set rotateStatus 0
+#  }
   photosCanvPic blank
   photosCanvPic copy rotateCanvPic -shrink
-  wm forget $T
   
-#  after idle {
-#    doRotateOrig photosOrigPic $::v
-#  }
-  
+  #TODO geht nicht
+$T.msgL conf -bg beige 
+set ::rotateMsg "Bitte warten Sie einen LANGEN Augenblick..."
+
+  after idle {
+  doRotateOrig photosOrigPic $::v
+  destroy $T
+  }
 }
 
 catch { canvas $C }
@@ -62,8 +64,11 @@ pack $scale
 trace add variable v write updateMeter
 updateMeterTimer
 
+#Create message field
+label $T.msgL -textvar ::rotateMsg -background grey -foreground red -font {TkHeadingFont 16 bold} -anchor n -pady 20 
 
 pack $T.previewBtn -pady 10
+pack $T.msgL -fill x
 pack $T.cancelBtn $T.saveBtn -side right
 
 bind $T <Escape> {destroy $T}
