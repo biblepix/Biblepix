@@ -22,13 +22,16 @@ proc addPic {origPic origPicPath} {
   set addpicture::targetPicPath $targetPicPath
   set addpicture::origPic $origPic
      
+     
+     #TODO big hassle: addPic has nothing to do with Rotate which is a separate process!!!!!!!!!!!
+     
   #A) initiate vwait for running doRotateOrig
   if [info exists addpicture::rotateStatus] {
     #set origPic rotateOrigPic
- after 500 {
-   NewsHandler::QueryNews "Bildrotation wird angewandt - bitte haben Sie VIEL Geduld!" orange
-    }
-#    namespace eval addpicture {
+# after 500 {
+#   NewsHandler::QueryNews "Bildrotation wird angewandt - bitte haben Sie VIEL Geduld!" orange
+#    }
+##    namespace eval addpicture {
 #    upvar $v v }
 #   after 500 
 
@@ -88,6 +91,8 @@ proc addPic {origPic origPicPath} {
     
   #C) 2: wrong dimensions, wrong size: open resizeWindow
   } elseif {$resize == 2} {
+    
+    #TODO add picpath & forget about rotate:: variable! - NOoooooooooooooo!
     openResizeWindow
   }
 

@@ -233,19 +233,18 @@ proc vorschau {im v c} {
 # doRotateOrig
 ##coordinates rotating & cutting processes
 ##creates rotateOrigPic from photosOrigPic
-##called by ...
-##TODO try to run this in background!!!!
+##called by SetupRotate Save button
 proc doRotateOrig {pic v} {  
   namespace eval addpicture {
   set rotateStatus 1
-  
   }
 
   #1. rotate (takes a long time!)
   set rotPic [imageRotate $pic $v]
   set addpicture::origPic [cutRotated $rotPic] 
-       
-  return $addpicture::origPic
+  
+  #2. cut & return
+  return [cutRotated $rotPic]
 }
 
 ######################################################
@@ -259,6 +258,7 @@ proc makeMeter {} {
         
   for {set i 0;set j 0} {$i<100} {incr i 5;incr j} {
     set meter($j) [$mC create line 100 100 10 100 -fill grey$i -width 3 -arrow last]
+  
     set angle($j) 0
     $mC lower $meter($j)
     updateMeterLine $mC 0.2 $j

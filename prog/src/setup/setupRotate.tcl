@@ -21,27 +21,21 @@ set ::v 0
 
 #Picture & buttons
 button $T.previewBtn -textvar computePreview -activebackground beige -command {vorschau $im $::v $C}
-button $T.cancelBtn -textvar cancel -activebackground red -command {catch {destroy $T} ; return 0}
 button $T.90°Btn -textvar preview90 -activebackground beige -command {vorschau $im 90 $C ; set ::v 90}
 button $T.180°Btn -textvar preview180 -activebackground beige -command {vorschau $im 180 $C ; set ::v 180}
 
-#TODO Move to doRotateOrigPic
-button $T.saveBtn -textvar save -activebackground lightgreen -command {
-#  namespace eval addpicture {
-#    set rotateStatus 0
-#  }
-  photosCanvPic blank
-  photosCanvPic copy rotateCanvPic -shrink
-  
-  #TODO geht nicht
-$T.msgL conf -bg beige 
-set ::rotateMsg "Bitte warten Sie einen LANGEN Augenblick..."
+photosCanvPic blank
+photosCanvPic copy rotateCanvPic -shrink
 
-  after idle {
-  doRotateOrig photosOrigPic $::v
-  destroy $T
-  }
+#TODO getting there...
+set cancelBtn {set ::Modal.Result "Cancelled"}
+set confirmBtn {set ::Modal.Result "
+  $T.msgL conf -bg beige -text {Bitte warten Sie einen LANGEN Augenblick...}
+  doRotateOrig photosOrigPic $v"
 }
+button $T.saveBtn -textvar save -activebackground lightgreen -command $confirmBtn
+button $T.cancelBtn -textvar cancel -activebackground red -command $cancelBtn
+
 
 catch { canvas $C }
 $C create image 20 20 -image $im -anchor nw -tags img
@@ -65,7 +59,7 @@ trace add variable v write updateMeter
 updateMeterTimer
 
 #Create message field
-label $T.msgL -textvar ::rotateMsg -background grey -foreground red -font {TkHeadingFont 16 bold} -anchor n -pady 20 
+label $T.msgL -textvar rotateMsg -background silver -foreground red -font {TkHeadingFont 16 bold} -anchor n -pady 20 
 
 pack $T.previewBtn -pady 10
 pack $T.msgL -fill x
@@ -74,3 +68,5 @@ pack $T.cancelBtn $T.saveBtn -side right
 bind $T <Escape> {destroy $T}
 bind $T <Return> "imageRotate photosCanvPic $v; return 0 "
 
+Show.Modal $T -destroy 1 -onclose $cancelBtn 
+Show.Modal $T -destroy 0 -onclose $confirmBtn 
