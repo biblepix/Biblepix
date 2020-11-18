@@ -14,39 +14,25 @@ proc addPic {origPic origPicPath} {
   global dirlist v
   source $::SetupResizePhoto
   source $::SetupResizeTools
-  set origPic photosOrigPic
   
   #Set path & exit if already there
-  set targetPicPath [file join $::photosDir [setPngFileName [file tail $origPicPath]]]
-  namespace eval addpicture {}
-  set addpicture::targetPicPath $targetPicPath
-  set addpicture::origPic $origPic
-     
-     
-     #TODO big hassle: addPic has nothing to do with Rotate which is a separate process!!!!!!!!!!!
-     
-  #A) initiate vwait for running doRotateOrig
-  if [info exists addpicture::rotateStatus] {
-    #set origPic rotateOrigPic
-# after 500 {
-#   NewsHandler::QueryNews "Bildrotation wird angewandt - bitte haben Sie VIEL Geduld!" orange
-#    }
-##    namespace eval addpicture {
-#    upvar $v v }
-#   after 500 
-
-    set addpicture::origPic [doRotateOrig photosOrigPic $v]
-    #vwait addpicture::rotateStatus 
-    NewsHandler::QueryNews "Bildrotation wird angewandt - bitte haben Sie VIEL Geduld!" red
-    
-  #B) exit if pic schon da & no rotation desired
-  } elseif [file exists $targetPicPath] {
+  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $origPicPath]]]
+  
+  if [file exists $targetPicPath] {
     NewsHandler::QueryNews $::picSchonDa red
     return 1
   }
+  
+  #Check presence of rotated origPic
+  if [namespace exists addpicture] {
+    set origPic $addpicture::origPic
+  } {
+    set origPic photosOrigPic
+    namespace eval addpicture {}
+    set addpicture::targetPicPath $targetPicPath
+  }
 
   #Check if needs resizing
-  set origPic $addpicture::origPic
   set resize [needsResize $origPic]
 
   #A) 0: right dimensions, right size: save pic

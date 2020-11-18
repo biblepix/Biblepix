@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19sep2020 pv
+# Updated: 19nov2020 pv
 
 proc setTexts {lang} {
   global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -399,16 +399,16 @@ Example:"
   set rotatePic(en) "Rotate picture"
   set ::rotatePic $rotatePic($lang)
   
-  set preview90(de) "\u21B7 Vorschau 90° Winkel"
-  set preview90(en) "\u21B7 Preview 90° angle"
+  set preview90(de) "\u21B7 Vorschau 90° Drehung"
+  set preview90(en) "\u21B7 Preview 90° rotation"
   set ::preview90 $preview90($lang)
 
-  set preview180(de) "\u21BB Vorschau 180° Winkel"
-  set preview180(en) "\u21BB Preview 180° angle"
+  set preview180(de) "\u21BB Vorschau 180° Drehung"
+  set preview180(en) "\u21BB Preview 180° rotation"
   set ::preview180 $preview180($lang)
   
-  set computePreview(de) "\u21B6 \u21B7 Vorschau beliebiger Winkel"
-  set computePreview(en) "\u21B6 \u21B7 Preview any angle"
+  set computePreview(de) "\u21B6 \u21B7 Vorschau beliebige Drehung"
+  set computePreview(en) "\u21B6 \u21B7 Preview any rotation"
   set ::computePreview $computePreview($lang)
   
 } ;#END setTexts
