@@ -28,13 +28,20 @@ photosCanvPic blank
 photosCanvPic copy rotateCanvPic -shrink
 
 #TODO getting there...
-set cancelBtn {set ::Modal.Result "Cancelled"}
-set confirmBtn {set ::Modal.Result "
-  $T.msgL conf -bg beige -text {Bitte warten Sie einen LANGEN Augenblick...}
-  doRotateOrig photosOrigPic $v"
+set cancelBtnAction {
+  set ::Modal.Result "Cancelled"
+  destroy $T
 }
-button $T.saveBtn -textvar save -activebackground lightgreen -command $confirmBtn
-button $T.cancelBtn -textvar cancel -activebackground red -command $cancelBtn
+
+set confirmBtnAction {
+  set ::Modal.Result "Success"
+  $T.msgL conf -bg beige -text "Bitte warten Sie einen LANGEN Augenblick..."
+  doRotateOrig photosOrigPic $v
+  destroy $T
+}
+
+button $T.saveBtn -textvar save -activebackground lightgreen -command $confirmBtnAction
+button $T.cancelBtn -textvar cancel -activebackground red -command $cancelBtnAction
 
 
 catch { canvas $C }
@@ -68,5 +75,4 @@ pack $T.cancelBtn $T.saveBtn -side right
 bind $T <Escape> {destroy $T}
 bind $T <Return> "imageRotate photosCanvPic $v; return 0 "
 
-Show.Modal $T -destroy 1 -onclose $cancelBtn 
-Show.Modal $T -destroy 0 -onclose $confirmBtn 
+Show.Modal $T -destroy 0 -onclose $cancelBtnAction

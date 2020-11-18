@@ -230,6 +230,32 @@ if {$platform == "unix"} {
   }
 }
 
+  #-----------------------------------------------------------------------------
+  # Show.Modal win ?-onclose script? ?-destroy bool?
+  #
+  # Displays $win as a modal dialog. 
+  #
+  # If -destroy is true then $win is destroyed when the dialog is closed. 
+  # Otherwise the caller must do it. 
+  #
+  # If an -onclose script is provided, it is executed if the user terminates the 
+  # dialog through the window manager (such as clicking on the [X] button on the 
+  # window decoration), and the result of that script is returned. The default 
+  # script does nothing and returns an empty string. 
+  #
+  # Otherwise, the dialog terminates when the global ::Modal.Result is set to a 
+  # value. 
+  #
+  # This proc doesn't play nice if you try to have more than one modal dialog 
+  # active at a time. (Don't do that anyway!)
+  #
+  # Examples:
+  #   -onclose {return cancel}    -->    Show.Modal returns the word 'cancel'
+  #   -onclose {list 1 2 3}       -->    Show.Modal returns the list {1 2 3}
+  #   -onclose {set ::x zap!}     -->    (variations on a theme)
+  #
+  # source: https://wiki.tcl-lang.org/page/Modal+dialogs
+
 proc Show.Modal {win args} {
   set ::Modal.Result {}
   array set options [list -onclose {} -destroy 0 {*}$args]

@@ -62,7 +62,7 @@ proc openResizeWindow {} {
   .resizePhoto.resizeConfirmBtn conf -command "
     $confirmButton
     #set ::Modal.Result [doResize $c]
-    #Show.Modal .resizePhoto -destroy 1 -onclose $cancelButton 
+    #Show.Modal .resizePhoto -destroy 1
     openReposWindow
   "
   bind .resizePhoto <Return> .resizePhoto.resizeConfirmBtn
