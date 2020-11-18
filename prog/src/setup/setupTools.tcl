@@ -30,6 +30,7 @@ proc addPic {origPic origPicPath} {
     set origPic photosOrigPic
     namespace eval addpicture {}
     set addpicture::targetPicPath $targetPicPath
+    set addpicture::origPic $origPic
   }
 
   #Check if needs resizing
@@ -613,11 +614,9 @@ proc openImg {imgFilePath imgCanvas} {
 
   catch {image delete photosCanvPic}
   image create photo photosCanvPic
-
   photosCanvPic copy photosOrigPic -subsample $factor -shrink
   $imgCanvas create image $photosCanvMargin $photosCanvMargin -image photosCanvPic -anchor nw -tag img
-
-}
+} ;#END openImg
 
 proc hideImg {imgCanvas} {
   $imgCanvas delete img

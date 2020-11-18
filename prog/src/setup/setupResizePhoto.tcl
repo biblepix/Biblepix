@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 17oct20 pv
+# Updated 18nov20 pv
 
 #TODO Warum geht das nicht? Warum sourcet er Globals nicht?
 #source $SetupResizeTools
@@ -30,7 +30,7 @@ proc openResizeWindow {} {
 
   #Create title & buttons
   set cancelButton {set ::Modal.Result "Cancelled"}
-  set confirmButton {set ::Modal.Result "doResize $c"}
+  set confirmButton {set ::Modal.Result "doResize .resizePhoto.resizeCanv"}
 
   ttk::button .resizePhoto.resizeConfirmBtn -text Ok -command $confirmButton
   ttk::button .resizePhoto.resizeCancelBtn -textvar ::cancel -command $cancelButton
@@ -87,7 +87,7 @@ proc openReposWindow {} {
   
   #$c conf -width 
   reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
-  image delete $addpicture::origPic
+  #image delete $addpicture::origPic
     
     ## R E D U N D A N T **
 #  #A) Copy rotateCutCanvPic if resize wasn't opened -TODO NO! we want origCutPic here!
@@ -158,6 +158,9 @@ proc openReposWindow {} {
  
 #TODO close window after / vwait okBtn if pos changed???
 
+  #Delete ::addpic if present from Resize
+  catch {namespace delete addpic}
+  
 } ;#END openReposWindow
 
 # processPngInfo
