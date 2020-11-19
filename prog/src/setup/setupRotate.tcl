@@ -2,13 +2,15 @@
 # Creates Rotate toplevel window with scale & meter
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16nov20
+# Updated: 19nov20 pv
 
 source $RotateTools
+namespace eval addpicture {}
 
 #Toplevel main window
 set T .rotateW
 set scale $T.scale
+set mC $T.meterC
 toplevel $T -width 600 -height 400
 set C $T.rotateC
 set mC $T.meterC
@@ -21,8 +23,8 @@ set ::v 0
 
 #Picture & buttons
 button $T.previewBtn -textvar computePreview -activebackground beige -command {vorschau $im $::v $C}
-button $T.90°Btn -textvar preview90 -activebackground beige -command {vorschau $im 90 $C ; set ::v 90}
-button $T.180°Btn -textvar preview180 -activebackground beige -command {vorschau $im 180 $C ; set ::v 180}
+button $T.90°Btn -textvar preview90 -activebackground beige -command {pack forget $T.previewBtn $mC $scale;vorschau $im 90 $C ; set ::v 90}
+button $T.180°Btn -textvar preview180 -activebackground beige -command {pack forget $T.previewBtn $mC $scale;vorschau $im 180 $C ; set ::v 180}
 
 photosCanvPic blank
 photosCanvPic copy rotateCanvPic -shrink
@@ -33,16 +35,24 @@ set cancelBtnAction {
   destroy $T
 }
 
+#Create message field
+label $T.msgL -textvar rotateWait -bg silver -fg silver -font {TkHeadingFont 16 bold} -anchor n -pady 20 
+
 set confirmBtnAction {
-  set ::Modal.Result "Success"
-  $T.msgL conf -bg beige -text "Bitte warten Sie einen LANGEN Augenblick..."
-  doRotateOrig photosOrigPic $v
-  destroy $T
+  #Initiate rotation in background, close window when finished 
+  after 500 "
+    doRotateOrig photosOrigPic $v
+    destroy $T
+  "
+  #Run foreground actions
+  $T.msgL conf -fg red -bg beige
+  photosCanvPic blank
+  photosCanvPic copy rotateCanvPic -shrink
+  set ::Modal.Result "Success"  
 }
 
 button $T.saveBtn -textvar save -activebackground lightgreen -command $confirmBtnAction
 button $T.cancelBtn -textvar cancel -activebackground red -command $cancelBtnAction
-
 
 catch { canvas $C }
 $C create image 20 20 -image $im -anchor nw -tags img
@@ -50,7 +60,7 @@ $C conf -width [image width $im] -height [image height $im]
 pack $C
 
 #Create Meter
-set mC .rotateW.meterC
+#set mC .rotateW.meterC
 set ::pi 3.1415927 ;# Good enough accuracy for gfx...
 scale .rotateW.scale -orient h -length 300 -from -90 -to 90 -variable v
 set from [$scale cget -from]
@@ -64,9 +74,6 @@ pack [makeMeter] -pady 10
 pack $scale
 trace add variable v write updateMeter
 updateMeterTimer
-
-#Create message field
-label $T.msgL -textvar rotateMsg -background silver -foreground red -font {TkHeadingFont 16 bold} -anchor n -pady 20 
 
 pack $T.previewBtn -pady 10
 pack $T.msgL -fill x

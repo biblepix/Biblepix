@@ -411,6 +411,10 @@ Example:"
   set computePreview(en) "\u21B6 \u21B7 Preview any rotation"
   set ::computePreview $computePreview($lang)
   
+  set rotateWait(de) "Bitte warten Sie, bis die Drehung am Originalbild abgeschlossen ist..."
+  set rotateWait(en) "Please wait while rotating original picture..."
+  set ::rotateWait $rotateWait($lang)
+  
 } ;#END setTexts
 
 proc copiedPicMsg {picPath} {
