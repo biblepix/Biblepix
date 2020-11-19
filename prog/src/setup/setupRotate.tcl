@@ -22,9 +22,9 @@ set im rotateCanvPic
 set ::v 0
 
 #Picture & buttons
-button $T.previewBtn -textvar computePreview -activebackground beige -command {vorschau $im $::v $C}
-button $T.90°Btn -textvar preview90 -activebackground beige -command {pack forget $T.previewBtn $mC $scale;vorschau $im 90 $C ; set ::v 90}
-button $T.180°Btn -textvar preview180 -activebackground beige -command {pack forget $T.previewBtn $mC $scale;vorschau $im 180 $C ; set ::v 180}
+button $T.previewBtn -textvar computePreview -activebackground beige -command {vorschau $im $::v $C;pack $mC $scale}
+button $T.90°Btn -textvar preview90 -activebackground beige -command {pack forget $mC $scale;vorschau $im 90 $C ; set ::v 90}
+button $T.180°Btn -textvar preview180 -activebackground beige -command {pack forget $mC $scale;vorschau $im 180 $C ; set ::v 180}
 
 photosCanvPic blank
 photosCanvPic copy rotateCanvPic -shrink
