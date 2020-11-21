@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 18nov20 pv
+# Updated 21nov20 pv
 
 #TODO Warum geht das nicht? Warum sourcet er Globals nicht?
 #source $SetupResizeTools
@@ -29,13 +29,20 @@ proc openResizeWindow {} {
   # P h a s e  1  (Resizing window)
 
   #Create title & buttons
-  set cancelButton {set ::Modal.Result "Cancelled"}
-  set confirmButton {set ::Modal.Result "doResize .resizePhoto.resizeCanv"}
+  set cancelBtnAction {
+    set ::Modal.Result "Cancelled"
+    destroy .resizePhoto
+  }
+  set confirmBtnAction {
+    doResize .resizePhoto.resizeCanv
+    openReposWindow
+    set ::Modal.Result "Success"
+    destroy .resizePhoto
+  }
 
-  ttk::button .resizePhoto.resizeConfirmBtn -text Ok -command $confirmButton
-  ttk::button .resizePhoto.resizeCancelBtn -textvar ::cancel -command $cancelButton
-  pack .resizePhoto.resizeConfirmBtn .resizePhoto.resizeCancelBtn ;#will be repacked into canv window
-
+  ttk::button $w.confirmBtn -text Ok -command $confirmBtnAction
+  ttk::button $w.cancelBtn -textvar ::cancel -command $cancelBtnAction
+  pack $w.confirmBtn $w.cancelBtn ;#will be repacked into canv window
   set bildname [file tail $addpicture::targetPicPath]
 
   #Set cutting coordinates & configure canvas
@@ -43,29 +50,19 @@ proc openResizeWindow {} {
   $c conf -width $cutX -height $cutY
 
   $c create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill yellow -text "$::movePicToResize" -tags text
-  $c create window [expr $cutX - 150] 50 -anchor ne -window .resizePhoto.resizeConfirmBtn -tag okbtn
-  $c create window [expr $cutX - 80] 50 -anchor ne -window .resizePhoto.resizeCancelBtn -tag delbtn
+  $c create window [expr $cutX - 150] 50 -anchor ne -window $w.confirmBtn -tag okbtn
+  $c create window [expr $cutX - 80] 50 -anchor ne -window $w.cancelBtn -tag delbtn
   pack $c -side top -fill none
 
   #Set bindings
-  bind .resizePhoto <Escape> $cancelButton
   $c bind mv <1> {
      set ::x %X
      set ::y %Y
   }
   $c bind mv <B1-Motion> [list dragCanvasItem %W img %X %Y]
-
-  # P h a s e  2  (text repositioning Window)
-
-  #Confirm button launches doResize & sets up repositioning window 
-  ## .resizePhoto destroyed later!
-  .resizePhoto.resizeConfirmBtn conf -command "
-    $confirmButton
-    #set ::Modal.Result [doResize $c]
-    #Show.Modal .resizePhoto -destroy 1
-    openReposWindow
-  "
-  bind .resizePhoto <Return> .resizePhoto.resizeConfirmBtn
+  bind $w <Return> $confirmBtnAction
+  bind $w <Escape> $cancelBtnAction
+  Show.Modal $w -destroy 0 -onclose $cancelBtnAction
 
 } ;#END openResizeWindow
 

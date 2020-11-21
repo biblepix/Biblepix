@@ -25,7 +25,9 @@ proc addPic {origPic origPicPath} {
   #a) DETERMINE IF ORIGINAL PICTURE WAS ROTATED
   ## & POPULATE addpicture namespace
   if { ![info exists addpicture::rotated] || !$addpicture::rotated} {
-    set addpicture::curPic photosOrigPic
+    namespace eval addpicture {
+      set curPic photosOrigPic
+    }
   }
   set addpicture::targetPicPath $targetPicPath
   set origPic $addpicture::curPic

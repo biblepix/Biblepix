@@ -26,30 +26,28 @@ set ::v 0
 button $T.previewBtn -textvar computePreview -activebackground beige -command {vorschau $im $::v $C;pack $mC $scale}
 button $T.90°Btn -textvar preview90 -activebackground beige -command {pack forget $mC $scale;vorschau $im 90 $C ; set ::v 90}
 button $T.180°Btn -textvar preview180 -activebackground beige -command {pack forget $mC $scale;vorschau $im 180 $C ; set ::v 180}
+#Create message field
+label $T.msgL -textvar rotateWait -bg silver -fg silver -font {TkHeadingFont 16 bold} -anchor n -pady 20 
 
 photosCanvPic blank
 photosCanvPic copy rotateCanvPic -shrink
 
-#TODO getting there...
 set cancelBtnAction {
   set ::Modal.Result "Cancelled"
-  destroy $T
+  destroy $::T
 }
-
-#Create message field
-label $T.msgL -textvar rotateWait -bg silver -fg silver -font {TkHeadingFont 16 bold} -anchor n -pady 20 
-
 set confirmBtnAction {
   #Initiate rotation in background, close window when finished 
-  after 500 "
-    doRotateOrig photosOrigPic $v
-    destroy $T
-  "
+  after 500 {
+    doRotateOrig photosOrigPic $::v
+    destroy $::T
+  }
+  
   #Run foreground actions
-  $T.msgL conf -fg red -bg beige
+  $T.msgL conf -fg red -bg beige -bd 5
   photosCanvPic blank
   photosCanvPic copy rotateCanvPic -shrink
-  set ::Modal.Result "Success"  
+  set ::Modal.Result "Success"
 }
 
 button $T.saveBtn -textvar save -activebackground lightgreen -command $confirmBtnAction
@@ -80,7 +78,6 @@ pack $T.previewBtn -pady 10
 pack $T.msgL -fill x
 pack $T.cancelBtn $T.saveBtn -side right
 
-bind $T <Escape> {destroy $T}
-bind $T <Return> "imageRotate photosCanvPic $v; return 0 "
-
+bind $T <Escape> $cancelBtnAction
+bind $T <Return> $confirmBtnAction
 Show.Modal $T -destroy 0 -onclose $cancelBtnAction
