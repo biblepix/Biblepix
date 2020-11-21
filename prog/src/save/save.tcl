@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 18apr20 pv 
+# Updated : 21nov20 pv 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $dirlist(twdDir)/*$jahr.twd}] } {
@@ -75,12 +75,15 @@ puts $chan "set fontweight $fontweight"
 puts $chan "set marginleft $marginleftstatus"
 puts $chan "set margintop $margintopstatus"
 
-if {$Debug || $Httpmock} {
-  puts $chan "
-# These variables enable Debugging Mode / Mocking Http for testing:
-set Debug $Debug
-set Httpmock $Httpmock"
+#Leave Debugging Mode/Mocking Http on 1 for testing, otherwise set to 0
+if ![info exists Debug] {
+  set Debug 0
 }
+if ![info exists Httpmock] {
+  set Httpmock 0
+}
+puts $chan "set Debug $Debug"
+puts $chan "set Httmock $Httpmock"
 
 #3.Write Linux vars to $Config
 if {$os == "Linux"} {
