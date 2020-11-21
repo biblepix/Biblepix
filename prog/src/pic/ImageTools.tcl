@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Called by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16jun20 pv
+# Updated: 21nov20 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -232,7 +232,7 @@ proc doResize {c} {
 } ;#END doResize
 
 # processResize
-##TODO what does it do?
+##resizes $cutpic , (re)saves to disk & rewrites addpicture::curPic var
 ##called by ResizeHandler::Run
 proc processResize {cutImg} {
   global dirlist picPath
@@ -246,9 +246,11 @@ proc processResize {cutImg} {
   set finalImage [resizePic $cutImg $screenX $screenY]
   image create photo cutOrigPic
   cutOrigPic copy $finalImage
+  ##update addpicture current pic var
+  set addpicture::curPic $finalImage
   
-  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
-  $finalImage write $targetPicPath -format PNG
+#  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
+  $finalImage write $addpicture::targetPicPath -format PNG
   image delete $finalImage
 
   NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue

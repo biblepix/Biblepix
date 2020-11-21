@@ -75,48 +75,35 @@ proc openReposWindow {} {
   
   set w [toplevel .reposPhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
   set c [canvas .reposPhoto.reposCanv -bg lightblue]
-  pack $c
-  
   $c create image 0 0 -image reposCanvPic -anchor nw -tags {img mv}
-  
+  pack $c
+    
   #Determine smallest possible scale factor for canvas pic
   setPic2CanvScalefactor
-  
-  #$c conf -width 
   reposCanvPic copy $addpicture::curPic -subsample $addpicture::scaleFactor
-  #image delete $addpicture::curPic
-    
-    ## R E D U N D A N T **
-#  #A) Copy rotateCutCanvPic if resize wasn't opened -TODO NO! we want origCutPic here!
-#  if { [lsearch [image names] rotateCanvPic] != -1} {
-#    reposCanvPic copy rotateCanvPic
-#    image delete rotateCanvPic
-
-#  #B) copy resizeCanvPic if existent
-#  } else {
-#    lassign [grabCanvSection .resizePhoto.resizeCanv] x1 y1 x2 y2
-#    reposCanvPic copy resizeCanvPic -from $x1 $y1 $x2 $y2
-#    destroy .resizePhoto
-#    image delete resizeCanvPic   
-
-#  #C) Copy original pic if not resizing/rotating needed 
-#  } 
+  
+  set cancelBtnAction {
+    set ::Modal.Result "Cancelled"
+    file delete $addpicture::targetPicPath
+    namespace delete addpicture
+    destroy .reposPhoto
+  }
+  
+  set confirmBtnAction {
+    set ::Modal.Result "Success"
+    processPngInfo .reposPhoto.reposCanv
+    NewsHandler::QueryNews {Photo mit Positionsinfo abgespeichert.} lightgreen
+    file delete $addpicture::targetPicPath
+    namespace delete addpicture
+    destroy .reposPhoto
+  }
   
   #Create text button on top
-  button $w.moveTxtBtn -font {TkHeaderFont 20 bold} -fg red -pady 2 -padx 2 -bd 5 -relief raised -textvar textpos.wait
-  $w.moveTxtBtn conf -command "
-  
-    #TODO compare pngInfo with already computed result & save if nec.
-    destroy $w 
-    NewsHandler::QueryNews {Photo mit Positionsinfo abgespeichert.} lightgreen
-  "
-  pack $w.moveTxtBtn
-  $c create window -15 15 -anchor nw -window $w.moveTxtBtn -tags txtL
+  set btn [button $w.moveTxtBtn -font {TkHeaderFont 20 bold} -fg red -pady 2 -padx 2]
+  $btn conf -command $confirmBtnAction -bd 5 -relief raised -textvar textpos.wait
+  pack $btn
+  $c create window -15 15 -anchor nw -window $btn -tags txtL
 
-  #Create ok button on top  
-#  button $w.confirmBtn -text OK -command "processPngInfo $c"
-#  pack $w.confirmBtn
-    
   #Set bindings
   $c bind mv <1> {
      set ::x %X
@@ -124,39 +111,29 @@ proc openReposWindow {} {
   }
   $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}
 
-  
-
-  #TODO Time to close resizePhoto window
-  #destroy .resizePhoto
   set imgX [image width reposCanvPic]
-  $c conf -width
   set imgY [image height reposCanvPic]
   $c conf -width $imgX -height $imgY
   createMovingTextBox $c
- # $c create window [expr $imgX - 150] [expr $imgY - 150] -window $w.confirmBtn
-    
-  
-#TODO was läuft hier? what if resizing is not needed?#Create OK button on top (no Esc!)
-  
   lassign [fitPic2Canv $c] canvX canvY
-  puts "$canvX $canvY"
+puts "$canvX $canvY"
   
   #Configure text size
-   set imgX [image width reposCanvPic]
    set screenX [winfo screenwidth .]
    set fontfactor [expr $screenX / $imgX]
    set canvFontsize [expr round($::fontsize / $fontfactor)]
    font conf movingTextReposFont -size $canvFontsize
    
    
-  #TODO initiate Scan Image in background
-  #source $::ScanColourArea
-  #after idle colour::doColourScan
- 
-#TODO close window after / vwait okBtn if pos changed???
+#TODO initiate Scan Image in background
+#source $::ScanColourArea
+#after idle colour::doColourScan
+ #TODO das muss woanders hin
+ #   $c itemconf mv txtL -state disabled
 
-  #Delete ::addpic if present from Resize
-  catch {namespace delete addpic}
+  bind $w <Return> $confirmBtnAction
+  bind $w <Escape> $cancelBtnAction
+  Show.Modal $w -destroy 0 -onclose $cancelBtnAction
   
 } ;#END openReposWindow
 
@@ -172,9 +149,6 @@ proc processPngInfo {c} {
   set smallPic reposCanvSmallPic
   #Disable controls while reposCanvSmallPic is being processed
 
-  #TODO moved to setupRepos!!!
-  $c itemconf mv -state disabled
-  $w.resizeConfirmBtn conf -state disabled
 
 #  lassign [grabCanvSection $c] x1 y1 x2 y2
 #  $smallPic copy $canvPic -subsample 3 -from $x1 $y1 $x2 $y2
@@ -186,11 +160,11 @@ proc processPngInfo {c} {
   # lassign [scanColourArea $smallPic] x y luminance
 
   #reactivate button & text
-  after idle
-  $c itemconf mv -state normal
-  $w.resizeConfirmBtn conf -state normal
-  $w.moveTxtL conf -fg grey -font "TkHeaderFont 20 bold" -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position!"
-
+  after 500 { 
+    $::c itemconf mv -state normal
+    $::w.confirmBtn conf -state normal
+    $::w.moveTxtL conf -fg grey -font "TkHeaderFont 20 bold" -text "Verschieben Sie den Mustertext nach Wunsch und drücken Sie OK zum Speichern der Position!"
+  }
   if {!$x} {
     set x $marginleft
     set y $margintop
@@ -209,7 +183,7 @@ proc processPngInfo {c} {
 
   #   ? NewsHandler::QueryNews "[copiedPicMsg $targetPicPath]" lightblue
 
-  destroy .resizePhoto .reposPhoto
+  #destroy .resizePhoto .reposPhoto
 
 
 } ;#END processPngInfo
@@ -289,8 +263,9 @@ proc setupReposTextWin {c} {
 } ;#END setupReposTextWin
 
 
-
+#TODO move to setupTools / ImageTools / SetupResizeTools ???
 namespace eval ResizeHandler {
+ #TODO Joel export ist nicht nötig, wenn Prog mit namespace-Pfad aufgerufen wird
   namespace export QueryResize
   namespace export Run
 
