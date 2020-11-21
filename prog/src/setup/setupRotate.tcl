@@ -2,10 +2,10 @@
 # Creates Rotate toplevel window with scale & meter
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19nov20 pv
+# Updated: 21nov20 pv
 
 source $RotateTools
-namespace eval addpicture {}
+#namespace eval addpicture {}
 
 #Toplevel main window
 set T .rotateW
@@ -16,6 +16,7 @@ set C $T.rotateC
 set mC $T.meterC
 canvas $mC -width 200 -height 110 -borderwidth 2 -relief sunken -bg lightblue
 
+#Copy photosCanvPic to rotateCanv
 image create photo rotateCanvPic
 rotateCanvPic copy photosCanvPic
 set im rotateCanvPic

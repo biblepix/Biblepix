@@ -14,31 +14,26 @@ proc addPic {origPic origPicPath} {
   global dirlist v
   source $::SetupResizePhoto
   source $::SetupResizeTools
-  
+
   #Set path & exit if already there
   set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $origPicPath]]]
-  
   if [file exists $targetPicPath] {
     NewsHandler::QueryNews $::picSchonDa red
     return 1
   }
 
-  #Check presence of rotated origPic
-  if [namespace exists addpicture] {
-    set origPic $addpicture::origPic
-  } {
-    set origPic photosOrigPic
-    namespace eval addpicture {}
-    set addpicture::origPic $origPic
+  #a) DETERMINE IF ORIGINAL PICTURE WAS ROTATED
+  ## & POPULATE addpicture namespace
+  if { ![info exists addpicture::rotated] || !$addpicture::rotated} {
+    set addpicture::curPic photosOrigPic
   }
-
-#TODO jesch balagan 'im origPic!!!
- 
-  #Check if needs resizing
   set addpicture::targetPicPath $targetPicPath
+  set origPic $addpicture::curPic
+  
+  #B) DETERMINE NEED FOR RESIZING
   set resize [needsResize $origPic]
 
-  #A) 0: right dimensions, right size: save pic
+  #B): right dimensions, right size: save pic
   if !$resize {
     $origPic write $targetPicPath -format PNG
     NewsHandler::QueryNews "Bild [file tail $targetPicPath] ist hinzugefügt."
@@ -65,7 +60,7 @@ proc addPic {origPic origPicPath} {
     #TODO Joel das sollte im Hintergrund laufen!!!!!!!!!!!
   #A) Run Resize (??in backgkround??)
 
-    ResizeHandler::QueryResize $addpicture::origPic
+    ResizeHandler::QueryResize $addpicture::curPic
     ResizeHandler::Run
 
   #############################################################

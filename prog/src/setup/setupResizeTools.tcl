@@ -101,8 +101,8 @@ proc grabCanvSection {c} {
 proc fitPic2Canv {c} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-  set imgX [image width $addpicture::origPic]
-  set imgY [image height $addpicture::origPic]
+  set imgX [image width $addpicture::curPic]
+  set imgY [image height $addpicture::curPic]
 
   #TODO nur canvas hat korrekte Dimensionen
   set canvImgName [lindex [$c itemconf img -image] end]
@@ -154,7 +154,7 @@ proc setPic2CanvScalefactor {} {
 #  }
 
 #this var is set by addPic
-set origPic $addpicture::origPic
+set origPic $addpicture::curPic
 
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]

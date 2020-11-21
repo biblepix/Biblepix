@@ -9,7 +9,7 @@ source $::ImgTools
 set img [image create photo reposCanvSmallPic]
 
 #TODO move to openResizeCanv?
-#Better work from addpicture::origPic?
+#Better work from addpicture::curPic?
 if [winfo exists .resizePhoto.resizeCanv] {
   set c .resizePhoto.resizeCanv
   lassign [grabCanvSection $c] x1 y1 x2 y2
@@ -18,7 +18,7 @@ if [winfo exists .resizePhoto.resizeCanv] {
 } else {
 
   #setPic2CanvScalefactor - schon von addPic gemacht
-  $img copy $addpicture::origPic -subsample $addpicture::scaleFactor
+  $img copy $addpicture::curPic -subsample $addpicture::scaleFactor
 }
 
 #TODO after testing uncomment: !!!!!!!!!!!!!!!!!!

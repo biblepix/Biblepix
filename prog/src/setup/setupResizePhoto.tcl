@@ -22,9 +22,9 @@ proc openResizeWindow {} {
 
   #Copy original pic to canvas
 
-  #A) copy addpicture::origPic to canvas
+  #A) copy addpicture::curPic to canvas
   setPic2CanvScalefactor 
-  resizeCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
+  resizeCanvPic copy $addpicture::curPic -subsample $addpicture::scaleFactor
 
   # P h a s e  1  (Resizing window)
 
@@ -86,8 +86,8 @@ proc openReposWindow {} {
   setPic2CanvScalefactor
   
   #$c conf -width 
-  reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
-  #image delete $addpicture::origPic
+  reposCanvPic copy $addpicture::curPic -subsample $addpicture::scaleFactor
+  #image delete $addpicture::curPic
     
     ## R E D U N D A N T **
 #  #A) Copy rotateCutCanvPic if resize wasn't opened -TODO NO! we want origCutPic here!
@@ -250,7 +250,7 @@ proc setupReposTextWin {c} {
   #Copy origPic to reposCanv if resizeCanv wasn't opened
   if [catch {image inuse resizeCanvPic}] {
 
-    reposCanvPic copy $addpicture::origPic -subsample $addpicture::scaleFactor
+    reposCanvPic copy $addpicture::curPic -subsample $addpicture::scaleFactor
 
     #TODO was läuft hier? what if resizing is not needed?
     lassign [fitPic2Canv $c] cutX cutY

@@ -235,16 +235,20 @@ proc vorschau {im v c} {
 ##creates rotateOrigPic from photosOrigPic
 ##called by SetupRotate Save button
 proc doRotateOrig {pic v} {  
-#  namespace eval addpicture {
-#  set rotateStatus 1
-#  }
-
-  #1. rotate (takes a long time!)
-  set rotPic [imageRotate $pic $v]
-  set addpicture::origPic [cutRotated $rotPic] 
   
-  #2. cut & return
-  #return [cutRotated $rotPic]
+  #1. rotate (takes a long time!)
+
+  namespace eval addpicture {
+    set rotated 1
+  }
+  
+  #2. reset rotateOrigPic for addPic
+  set rotPic [imageRotate $pic $v]  
+  set addpicture::curPic [cutRotated $rotPic] 
+  
+  #2
+  #3. cut & return
+#  return [cutRotated $rotPic]
 }
 
 ######################################################

@@ -193,7 +193,7 @@ proc doResize {c} {
   set canvX [lindex [$c conf -width] end]
   set canvY [lindex [$c conf -height] end]
   set scaleFactor $addpicture::scaleFactor
-  set origPic $addpicture::origPic
+  set origPic $addpicture::curPic
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
   set imgX [image width $origPic]
