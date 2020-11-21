@@ -22,18 +22,20 @@ proc addPic {origPic origPicPath} {
     NewsHandler::QueryNews $::picSchonDa red
     return 1
   }
-  
+
   #Check presence of rotated origPic
   if [namespace exists addpicture] {
     set origPic $addpicture::origPic
   } {
     set origPic photosOrigPic
     namespace eval addpicture {}
-    set addpicture::targetPicPath $targetPicPath
     set addpicture::origPic $origPic
   }
 
+#TODO jesch balagan 'im origPic!!!
+ 
   #Check if needs resizing
+  set addpicture::targetPicPath $targetPicPath
   set resize [needsResize $origPic]
 
   #A) 0: right dimensions, right size: save pic
