@@ -286,7 +286,8 @@ Wichtig: Einzelbild oder Diaschau wählen!
  
 *****Arabischer und hebräischer Text wird automatisch auf der Gegenseite positioniert
 Für die Darstellung von Hebräisch oder Arabisch im Terminal kommen nur Terminals 
-wie 'mlterm' oder 'Konsole' (KDE) in Frage, welche bidirektionellen Text richtig anzeigen.
+wie 'mlterm', 'Konsole' (KDE), gnome-terminal oder xfce4-terminal in Frage, 
+welche bidirektionellen Text richtig anzeigen.
 
 ******Evolution Mail client: Signatur als HTML abspeichern!
 ________________________________________________________________________________

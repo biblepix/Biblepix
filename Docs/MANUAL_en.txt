@@ -274,8 +274,8 @@ Important: select either single pic or slideshow!
 
  
 *****Arabic and Hebrew text is positioned automatically on the opposite side
-To display such texts in terminals you need programs like 'mlterm' oder 'Konsole' (KDE) 
-which can display bidirectional texts correctly.
+To display such texts in terminals you need programs like 'mlterm', 'gnome-terminal', 'xfce4-terminal' 
+or 'Konsole' (KDE) which can display bidirectional text correctly.
 
 ******Evolution mail client: save signature file as HTML!
 
