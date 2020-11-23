@@ -87,9 +87,8 @@ proc openReposWindow {} {
   }
   set confirmBtnAction {
     set ::Modal.Result "Success"
-    
+
     lassign [.reposPhoto.reposCanv coords txt] x y
-#TODO Photo noch nicht da!
     processPngComment $addpicture::targetPicPath $x $y
     
     NewsHandler::QueryNews "Photo mit Positionsinfo abgespeichert" lightgreen
@@ -141,4 +140,7 @@ puts "$canvX $canvY"
   Show.Modal $w -destroy 0 -onclose $cancelBtnAction
   
 } ;#END openReposWindow
+
+#TODO warum hier?
+#   processPngComment $addpicture::targetPicPath $x $y
 

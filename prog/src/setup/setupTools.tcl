@@ -32,58 +32,52 @@ proc addPic {origPic origPicPath} {
   set addpicture::targetPicPath $targetPicPath
   set origPic $addpicture::curPic
   
-  #B) DETERMINE NEED FOR RESIZING
+  # B) DETERMINE NEED FOR RESIZING 
+  ## expect 0 / even / uneven
   set resize [needsResize $origPic]
+  
+  
+  #a): right dimensions, right size: save pic
+  if {$resize == 0} {
 
-  #B): right dimensions, right size: save pic
-  if !$resize {
-    $origPic write $targetPicPath -format PNG
-    NewsHandler::QueryNews "Bild [file tail $targetPicPath] ist hinzugefügt."
+    savePic
+    after 3000 openReposWindow
+    NewsHandler::QueryNews "[copiedPicMsg $origPicPath]" lightgreen
     NewsHandler::QueryNews "Wir berechnen nun die ideale Textposition und -helligkeit. Die Position können Sie noch ändern..." lightblue
+    
+  #b) right dimensions, wrong size: open reposWindow
+  } elseif {$resize == "even"} {
 
-    #Do colour scan -TODO No! Done in reposWindow
-    #colour::doColourScan
-    after 10 openReposWindow
 
-  #B) 1: right dimensions, wrong size: open reposWindow
-  } elseif {$resize == 1} {
+    #???savePic
+    #TODO why not doResize here??????????????????? check doResize Vs. ResizeHandler!!!!!
 
-    #Send pic to final resizing
-
-    #Prepare ReposWin while other procs (s.u.) are running
-    after 10 {
-      openReposWindow
+    after idle {
+      ResizeHandler::QueryResize $addpicture::curPic
+      ResizeHandler::Run
     }
+    openReposWindow
 
-  #############################################################
-    #TODO Joel das sollte im Hintergrund laufen!!!!!!!!!!!
-  #A) Run Resize (??in backgkround??)
-
-    ResizeHandler::QueryResize $addpicture::curPic
-    ResizeHandler::Run
-
-  #############################################################
-
-    #B) Run Colour scan & disable controls
-#    colour::doColourScan
-
-    #C) Enable reposWin
-    .reposPhoto.moveTxtBtn conf -bg lightblue -state normal
-    .reposPhoto.reposCanv itemconf mv -state normal
-    set ::textpos.wait "Textposition nach Wunsch ändern und dann quittieren!"
+  #c) wrong dimensions, wrong size: open resizeWindow
+  } elseif {$resize == "uneven"} {
     
-  #C) 2: wrong dimensions, wrong size: open resizeWindow
-  } elseif {$resize == 2} {
-    
-    #TODO add picpath & forget about rotate:: variable! - NOoooooooooooooo!
     openResizeWindow
+    #TODO who does the saving here?
   }
 
-  NewsHandler::QueryNews "[copiedPicMsg $origPicPath]" lightgreen
   set ::numPhotos [llength [glob $dirlist(photosDir)/*]]
   
 } ;#END addPic
 
+# savePic
+##writes addpicture::curPic to destination
+##called by addPic
+proc savePic {} {
+  global addpicture::curPic 
+  global addpicture::targetPicPath
+  $curPic write $targetPicPath -format PNG
+}
+  
 proc delPic {} {
   global dirlist fileJList picPath
   file delete $picPath

@@ -30,10 +30,10 @@ proc needsResize {pic} {
 
     ##only even resizing needed > open repos window
     if {$screenFactor == $imgFactor} {
-      return 1
+      return even
     ##cutting + resizing needed > open resize window
     } else {
-      return 2
+      return uneven
     }
   }
 } ;#END needsResize
