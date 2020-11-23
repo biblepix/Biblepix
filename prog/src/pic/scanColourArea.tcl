@@ -2,24 +2,11 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 21oct20 pv
+# Updated 23nov20 pv
 
 #Create small pic from resize canv pic
 source $::ImgTools
 set img [image create photo reposCanvSmallPic]
-
-#TODO move to openResizeCanv?
-#Better work from addpicture::curPic?
-if [winfo exists .resizePhoto.resizeCanv] {
-  set c .resizePhoto.resizeCanv
-  lassign [grabCanvSection $c] x1 y1 x2 y2
-  $img copy resizeCanvPic -from $x1 $y1 $x2 $y2
-
-} else {
-
-  #setPic2CanvScalefactor - schon von addPic gemacht
-  $img copy $addpicture::curPic -subsample $addpicture::scaleFactor
-}
 
 #TODO after testing uncomment: !!!!!!!!!!!!!!!!!!
 #catch {namespace delete colour}
@@ -181,8 +168,19 @@ puts $row
   ##called by setupReposTextwin
   proc doColourScan {} {
 
+  set w .reposPhoto
+  
+  #Disable window controls while working
+  $w.reposCanv itemconf mv -state disabled
+  $w.moveTxtBtn conf -state disabled
+
+#TODO testing
+return 1
+
     #1. run scanImage(+findRanges) to create colour::rowarrays::* & colour::matchArr
     scanImage
+
+
 #TODO for testing:
 return "ScanImage returns: [info vars rowarrays::*]"
 
@@ -267,6 +265,10 @@ return "ScanImage returns: [info vars rowarrays::*]"
     set topPos [namespace tail [lindex $rowlist 0]]
     ##left=average left pos
     set leftPos [calcAverage $L2]
+
+  #Reenable window controls
+  $w.reposCanv itemconf mv -state normal
+  $w.moveTxtBtn conf -state normal
 
     return "$topPos $leftPos"
 

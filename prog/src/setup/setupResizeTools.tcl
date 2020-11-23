@@ -2,7 +2,7 @@
 # Procs used in Resizing + Repositioning processes
 # called by SetupPhotos
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28oct20 pv
+# Updated: 23nov20 pv
 
 # needsResize
 ##compares photosOrigPic OR rotateOrigPic with screen dimensions
@@ -177,3 +177,45 @@ set origPic $addpicture::curPic
 
 } ;#END setPic2CanvScalefactor
 
+
+#setupResizeHandler
+##called by SetupResize
+namespace eval ResizeHandler {
+ #TODO Joel export ist nicht nötig, wenn Prog mit namespace-Pfad aufgerufen wird
+  namespace export QueryResize
+  namespace export Run
+
+  variable queryCutImgJList ""
+  variable counter 0
+  variable isRunning 0
+
+  proc QueryResize {cutImg} {
+    variable queryCutImgJList
+    variable counter
+    set queryCutImgJList [jappend $queryCutImgJList $cutImg]
+    incr counter
+  }
+
+  proc Run {} {
+    variable queryCutImgJList
+    variable counter
+    variable isRunning
+
+    if {$counter > 0} {
+      if {!$isRunning} {
+        set isRunning 1
+        set cutImg [jlfirst $queryCutImgJList]
+        set queryCutImgJList [jlremovefirst $queryCutImgJList]
+        incr counter -1
+        processResize $cutImg
+        ResizeHandler::FinishRun
+      }
+    }
+  }
+
+  proc FinishRun {} {
+    variable isRunning
+    set isRunning 0
+    ResizeHandler::Run
+  }
+}

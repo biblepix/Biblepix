@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27oct20 pv
+# Updated: 23nov20 pv
 
 source $SetupResizeTools
 source $JList
@@ -50,12 +50,9 @@ proc addPic {origPic origPicPath} {
 
     #Send pic to final resizing
 
-    #TODO move below commands to separate proc
     #Prepare ReposWin while other procs (s.u.) are running
     after 10 {
       openReposWindow
-      .reposPhoto.moveTxtBtn conf -bg beige -state disabled
-      .reposPhoto.reposCanv itemconf mv -state disabled
     }
 
   #############################################################
