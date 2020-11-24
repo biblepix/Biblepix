@@ -15,12 +15,15 @@ proc addPic {origPic origPicPath} {
   source $::SetupResizePhoto
   source $::SetupResizeTools
 
+  namespace eval addpicture {}
+    
   #Set path & exit if already there
   set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $origPicPath]]]
   if [file exists $targetPicPath] {
     NewsHandler::QueryNews $::picSchonDa red
     return 1
   }
+  set addpicture::targetPicPath $targetPicPath
 
   #a) DETERMINE IF ORIGINAL PICTURE WAS ROTATED
   ## & POPULATE addpicture namespace
@@ -28,41 +31,39 @@ proc addPic {origPic origPicPath} {
     namespace eval addpicture {
       set curPic photosOrigPic
     }
+  } else {
+    set addpicture::curPic $origPic
   }
-  set addpicture::targetPicPath $targetPicPath
-  set origPic $addpicture::curPic
+  set curPic $addpicture::curPic
   
   # B) DETERMINE NEED FOR RESIZING 
   ## expect 0 / even / uneven
-  set resize [needsResize $origPic]
+  set resize [needsResize $curPic]
   
   
   #a): right dimensions, right size: save pic
   if {$resize == 0} {
 
+#TODO isn't this somewhere in doResize?
     savePic
+    
     after 3000 openReposWindow
     NewsHandler::QueryNews "[copiedPicMsg $origPicPath]" lightgreen
     NewsHandler::QueryNews "Wir berechnen nun die ideale Textposition und -helligkeit. Die Position können Sie noch ändern..." lightblue
     
-  #b) right dimensions, wrong size: open reposWindow
+  #b) right dimensions, wrong size: start resizing & open reposWindow
   } elseif {$resize == "even"} {
 
+#    NewsHandler::QueryNews "Resizing original pic..." orange  
+    ResizeHandler::QueryResize $curPic 
+    ResizeHandler::Run
 
-    #???savePic
-    #TODO why not doResize here??????????????????? check doResize Vs. ResizeHandler!!!!!
-
-    after idle {
-      ResizeHandler::QueryResize $addpicture::curPic
-      ResizeHandler::Run
-    }
-    openReposWindow
-
-  #c) wrong dimensions, wrong size: open resizeWindow
-  } elseif {$resize == "uneven"} {
+    after 3000 openReposWindow
     
-    openResizeWindow
-    #TODO who does the saving here?
+  #c) open resize window, resize later
+  } else {
+  
+    after 3000 openResizeWindow
   }
 
   set ::numPhotos [llength [glob $dirlist(photosDir)/*]]

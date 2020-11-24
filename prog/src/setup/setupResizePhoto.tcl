@@ -30,13 +30,21 @@ proc openResizeWindow {} {
   set cancelBtnAction {
     set ::Modal.Result "Cancelled"
     NewsHandler::QueryNews "Bild nicht gespeichert" red
-    destroy .resizePhoto
+    #destroy .resizePhoto
   }
   set confirmBtnAction {
+    
+ 
+ 
+ 
     doResize .resizePhoto.resizeCanv
-    openReposWindow
+ 
+ #TODO trying in    
+#    vwait addpicture::resizedPic
+#    openReposWindow $addpicture::resizedPic
+    
     set ::Modal.Result "Success"
-    destroy .resizePhoto
+    #destroy .resizePhoto
   }
 
   ttk::button $w.confirmBtn -text Ok -command $confirmBtnAction
@@ -61,14 +69,14 @@ proc openResizeWindow {} {
   $c bind mv <B1-Motion> [list dragCanvasItem %W img %X %Y]
   bind $w <Return> $confirmBtnAction
   bind $w <Escape> $cancelBtnAction
-  Show.Modal $w -destroy 0 -onclose $cancelBtnAction
+  Show.Modal $w -destroy 1 -onclose $cancelBtnAction
 
 } ;#END openResizeWindow
 
 # openReposWindow
 ##opens new toplevel window if .resizePhoto doesn't exist
-##called by addPic if ![needsResize]
-proc openReposWindow {} {
+##called by addPic ?????????if ![needsResize]??????????????
+proc openReposWindow {pic} {
   global fontsize
   image create photo reposCanvPic
 
@@ -83,7 +91,7 @@ proc openReposWindow {} {
     NewsHandler::QueryNews "Bild nicht gespeichert" red
     file delete $addpicture::targetPicPath
     namespace delete addpicture
-    destroy .reposPhoto
+    #destroy .reposPhoto
   }
   set confirmBtnAction {
     set ::Modal.Result "Success"
@@ -93,8 +101,8 @@ proc openReposWindow {} {
     
     NewsHandler::QueryNews "Photo mit Positionsinfo abgespeichert" lightgreen
     file delete $addpicture::targetPicPath
-    namespace delete addpicture
-    destroy .reposPhoto
+   # namespace delete addpicture
+    #destroy .reposPhoto
   }
 
   #Create text button on top & disable
@@ -105,13 +113,16 @@ proc openReposWindow {} {
   
   #Start scanning in background
   after idle {
-    colour::doColourScan
+#    colour::doColourScan
   }
 
   #Determine smallest possible scale factor for canvas pic
   setPic2CanvScalefactor
-  reposCanvPic copy $addpicture::curPic -subsample $addpicture::scaleFactor
-  
+
+
+#TODO geschnittenes Bild noch nicht da!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  reposCanvPic copy $pic -subsample $addpicture::scaleFactor
+
   #Set bindings
   $c bind mv <1> {
      set ::x %X
@@ -137,7 +148,7 @@ puts "$canvX $canvY"
    
   bind $w <Return> $confirmBtnAction
   bind $w <Escape> $cancelBtnAction
-  Show.Modal $w -destroy 0 -onclose $cancelBtnAction
+  Show.Modal $w -destroy 1 -onclose $cancelBtnAction
   
 } ;#END openReposWindow
 

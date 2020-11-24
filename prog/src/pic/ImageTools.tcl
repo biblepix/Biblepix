@@ -98,7 +98,6 @@ return
   #Delete colour lists
   catch {unset R G B}
 
-
 } ;#END computeAvColours
 
 
@@ -186,56 +185,56 @@ proc setPngFileName {fileName} {
 
 # doResize
 ## organises all resizing processes
-##canvas scale factor is an integer of photosOrigPic / rotateOrigPic
 ## called by openResizeWindow
 proc doResize {c} {
+  global addpicture::scaleFactor
+  global addpicture::curPic
 
-  set canvX [lindex [$c conf -width] end]
-  set canvY [lindex [$c conf -height] end]
-  set scaleFactor $addpicture::scaleFactor
-  set origPic $addpicture::curPic
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-  set imgX [image width $origPic]
-  set imgY [image height $origPic]
-  set imgFactor [expr $imgX. / $imgY]
   set screenFactor [expr $screenX. / $screenY]
+
+  set imgX [image width $curPic]
+  set imgY [image height $curPic]
+  set imgFactor [expr $imgX. / $imgY]
   
   #A) needs even resizing
   if {$screenFactor == $imgFactor} {
-    set cutImg $origPic
+    set cutImg $curPic
 
   #B) needs cutting + resizing
   } else {
-  
-#   lassign [grabCanvSection $c] cutX1 cutY1 cutX2 cutY2
   
     lassign [$c bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
     set cutX1 [expr int($canvPicX1 * -1 * $scaleFactor)]
     set cutY1 [expr int($canvPicY1 * -1 * $scaleFactor)]
     set cutX2 [expr int($canvPicX2 * $scaleFactor + $cutX1)]
     set cutY2 [expr int($canvPicY2 * $scaleFactor + $cutY1)]
+    set cutImg [trimPic $curPic $cutX1 $cutY1 $cutX2 $cutY2]
+  
+  #unsetting needed for openReposWindow
+#    namespace eval addpicture {
+#      unset curPic
+#    }
 
-#puts "canvY: $canvPicY1 $canvPicY2"
-#puts "cutY:  $cutY1 $cutY2"
- 
-    #1.Cut orig pic to right dimensions
-#    set cutImg [trimPic $origPic [expr $cutX1 * -1 * $scaleFactor] [expr $cutY1 * -1 * $scaleFactor] [expr $cutX2 * $scaleFactor] [expr $cutY2 * $scaleFactor] ]
-    set cutImg [trimPic $origPic $cutX1 $cutY1 $cutX2 $cutY2]
   }
   
-  #2.Send cut pic to final resizing
+
+  # Send (cut) pic to final resizing
   ResizeHandler::QueryResize $cutImg
   after idle {
     ResizeHandler::Run
   }
+  
 } ;#END doResize
 
 # processResize
 ##resizes $cutpic , (re)saves to disk & rewrites addpicture::curPic var
 ##called by ResizeHandler::Run
 proc processResize {cutImg} {
-  global dirlist picPath
+  global dirlist picPath SetupResizePhoto
+
+source $SetupResizePhoto
 
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
@@ -244,14 +243,27 @@ proc processResize {cutImg} {
 
   #Save finalImage, copy to cutOrigPic for further processing
   set finalImage [resizePic $cutImg $screenX $screenY]
+
+
+
+#TODO try this instead  of openResizeWindow
+openReposWindow $finalImage
+return 
+
+
   image create photo cutOrigPic
   cutOrigPic copy $finalImage
+
   ##update addpicture current pic var
   set addpicture::curPic $finalImage
+
+# set new var for vwait in SetupResizePhoto
+  set addpicture::resizedPic $finalImage
   
-#  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $picPath]]]
   $finalImage write $addpicture::targetPicPath -format PNG
-  image delete $finalImage
+
+#TODO WHY THIS?
+#  image delete $finalImage
 
   NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
 
