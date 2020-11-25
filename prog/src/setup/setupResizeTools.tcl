@@ -1,8 +1,8 @@
 # ~/Biblepix/prog/src/setup/setupResizeTools.tcl
 # Procs used in Resizing + Repositioning processes
-# called by SetupPhotos
+# sourced by SetupPhotos & ???
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 23nov20 pv
+# Updated: 25nov20 pv
 
 # needsResize
 ##compares photosOrigPic OR rotateOrigPic with screen dimensions
@@ -219,3 +219,89 @@ namespace eval ResizeHandler {
     ResizeHandler::Run
   }
 }
+
+# doResize
+## organises all resizing processes
+## called by openResizeWindow
+proc doResize {c} {
+  global addpicture::scaleFactor
+  global addpicture::curPic
+
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+  set screenFactor [expr $screenX. / $screenY]
+
+  set imgX [image width $curPic]
+  set imgY [image height $curPic]
+  set imgFactor [expr $imgX. / $imgY]
+  
+  #A) needs even resizing
+  if {$screenFactor == $imgFactor} {
+    set cutImg $curPic
+
+  #B) needs cutting + resizing
+  } else {
+  
+    lassign [$c bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
+    set cutX1 [expr int($canvPicX1 * -1 * $scaleFactor)]
+    set cutY1 [expr int($canvPicY1 * -1 * $scaleFactor)]
+    set cutX2 [expr int($canvPicX2 * $scaleFactor + $cutX1)]
+    set cutY2 [expr int($canvPicY2 * $scaleFactor + $cutY1)]
+    set cutImg [trimPic $curPic $cutX1 $cutY1 $cutX2 $cutY2]
+  
+  #unsetting needed for openReposWindow
+#    namespace eval addpicture {
+#      unset curPic
+#    }
+
+  }
+  
+
+  # Send (cut) pic to final resizing
+  ResizeHandler::QueryResize $cutImg
+  after idle {
+    ResizeHandler::Run
+  }
+  
+} ;#END doResize
+
+# processResize
+##resizes $cutpic , (re)saves to disk & rewrites addpicture::curPic var
+##called by ResizeHandler::Run
+proc processResize {cutImg} {
+  global dirlist picPath SetupResizePhoto
+
+source $SetupResizePhoto
+
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+
+  NewsHandler::QueryNews "$::resizingPic" orange
+
+  #Save finalImage, copy to cutOrigPic for further processing
+  set finalImage [resizePic $cutImg $screenX $screenY]
+
+
+
+#TODO try this is great - but thy is the canvas pic so small?
+openReposWindow $finalImage
+return 
+
+
+  image create photo cutOrigPic
+  cutOrigPic copy $finalImage
+
+  ##update addpicture current pic var
+  set addpicture::curPic $finalImage
+
+# set new var for vwait in SetupResizePhoto
+  set addpicture::resizedPic $finalImage
+  
+  $finalImage write $addpicture::targetPicPath -format PNG
+
+#TODO WHY THIS?
+#  image delete $finalImage
+
+  NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
+
+} ;#END processResize

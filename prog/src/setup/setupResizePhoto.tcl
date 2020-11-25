@@ -1,12 +1,14 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 21nov20 pv
+# Updated 25nov20 pv
 
 #TODO Warum geht das nicht? Warum sourcet er Globals nicht?
 #source $SetupResizeTools
 #source $Globals
 #source $env(HOME)/Biblepix/prog/src/setup/setupResizeTools.tcl
+
+#TODO should these be called by another lowlevel prog?
 source $::ScanColourArea
 source $::AnnotatePng
   
@@ -15,16 +17,16 @@ source $::AnnotatePng
 ##called by addPic
 proc openResizeWindow {} {
   global fontsize
+
+  #Copy addpicture::curPic to canvas
   image create photo resizeCanvPic
-  
+  setPic2CanvScalefactor 
+  resizeCanvPic copy $addpicture::curPic -subsample $addpicture::scaleFactor
+
   #Create toplevel window w/canvas & pic
   set w [toplevel .resizePhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
   set c [canvas $w.resizeCanv -bg lightblue]
   $c create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
-
-  #A) copy addpicture::curPic to canvas
-  setPic2CanvScalefactor 
-  resizeCanvPic copy $addpicture::curPic -subsample $addpicture::scaleFactor
 
   #Create title & buttons
   set cancelBtnAction {
@@ -33,16 +35,7 @@ proc openResizeWindow {} {
     #destroy .resizePhoto
   }
   set confirmBtnAction {
-    
- 
- 
- 
     doResize .resizePhoto.resizeCanv
- 
- #TODO trying in    
-#    vwait addpicture::resizedPic
-#    openReposWindow $addpicture::resizedPic
-    
     set ::Modal.Result "Success"
     #destroy .resizePhoto
   }

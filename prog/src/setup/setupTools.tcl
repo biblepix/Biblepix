@@ -10,7 +10,8 @@ source $JList
 # adds new Picture to BiblePix Photo collection
 # setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
 ##called by SetupPhotos:addPic Button
-proc addPic {origPic origPicPath} {
+proc addPic {origPicPath} {
+  
   global dirlist v
   source $::SetupResizePhoto
   source $::SetupResizeTools
@@ -23,20 +24,20 @@ proc addPic {origPic origPicPath} {
     NewsHandler::QueryNews $::picSchonDa red
     return 1
   }
+  
+  #A) POPULATE ::addpicture namespace
   set addpicture::targetPicPath $targetPicPath
 
-  #a) DETERMINE IF ORIGINAL PICTURE WAS ROTATED
-  ## & POPULATE addpicture namespace
-  if { ![info exists addpicture::rotated] || !$addpicture::rotated} {
-    namespace eval addpicture {
-      set curPic photosOrigPic
-    }
+  #determine DETERMINE IF ORIGINAL PICTURE WAS ROTATED
+  if { [info exists addpicture::rotated] && $addpicture::rotated} {
+    set curPic $addpicture::curPic
   } else {
-    set addpicture::curPic $origPic
+    set curPic photosOrigPic
+    set addpicture::curPic photosOrigPic
   }
-  set curPic $addpicture::curPic
   
-  # B) DETERMINE NEED FOR RESIZING 
+  #B) DETERMINE NEED FOR RESIZING 
+
   ## expect 0 / even / uneven
   set resize [needsResize $curPic]
   
@@ -44,10 +45,10 @@ proc addPic {origPic origPicPath} {
   #a): right dimensions, right size: save pic
   if {$resize == 0} {
 
-#TODO isn't this somewhere in doResize?
-    savePic
+    $curPic write $targetPicPath -format PNG
     
     after 3000 openReposWindow
+
     NewsHandler::QueryNews "[copiedPicMsg $origPicPath]" lightgreen
     NewsHandler::QueryNews "Wir berechnen nun die ideale Textposition und -helligkeit. Die Position können Sie noch ändern..." lightblue
     
