@@ -33,11 +33,13 @@ proc openResizeWindow {} {
     set ::Modal.Result "Cancelled"
     NewsHandler::QueryNews "Bild nicht gespeichert" red
     #destroy .resizePhoto
+    namespace delete addpicture
   }
   set confirmBtnAction {
     doResize .resizePhoto.resizeCanv
     set ::Modal.Result "Success"
     #destroy .resizePhoto
+    namespace delete addpicture
   }
 
   ttk::button $w.confirmBtn -text Ok -command $confirmBtnAction
@@ -94,7 +96,7 @@ proc openReposWindow {pic} {
     
     NewsHandler::QueryNews "Photo mit Positionsinfo abgespeichert" lightgreen
     file delete $addpicture::targetPicPath
-   # namespace delete addpicture
+    namespace delete addpicture
     #destroy .reposPhoto
   }
 
@@ -110,10 +112,9 @@ proc openReposWindow {pic} {
   }
 
   #Determine smallest possible scale factor for canvas pic
-  setPic2CanvScalefactor
-
-
-#TODO geschnittenes Bild noch nicht da!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  if ![info exists addpicture::scaleFactor] {
+    setPic2CanvScalefactor
+  }
   reposCanvPic copy $pic -subsample $addpicture::scaleFactor
 
   #Set bindings

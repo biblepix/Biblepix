@@ -45,26 +45,27 @@ proc addPic {origPicPath} {
   #a): right dimensions, right size: save pic
   if {$resize == 0} {
 
-    $curPic write $targetPicPath -format PNG
+savePic
     
-    after 3000 openReposWindow
+after 300    openReposWindow $curPic
 
     NewsHandler::QueryNews "[copiedPicMsg $origPicPath]" lightgreen
     NewsHandler::QueryNews "Wir berechnen nun die ideale Textposition und -helligkeit. Die Position können Sie noch ändern..." lightblue
     
   #b) right dimensions, wrong size: start resizing & open reposWindow
   } elseif {$resize == "even"} {
-
-#    NewsHandler::QueryNews "Resizing original pic..." orange  
+  
+    savePic
+   
     ResizeHandler::QueryResize $curPic 
     ResizeHandler::Run
 
-    after 3000 openReposWindow
+    after 3000 openReposWindow $curPic
     
   #c) open resize window, resize later
   } else {
   
-    after 3000 openResizeWindow
+ openResizeWindow
   }
 
   set ::numPhotos [llength [glob $dirlist(photosDir)/*]]
