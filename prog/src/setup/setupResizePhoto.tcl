@@ -20,7 +20,9 @@ proc openResizeWindow {} {
 
   #Copy addpicture::curPic to canvas
   image create photo resizeCanvPic
-  setPic2CanvScalefactor 
+  if ![info exists addpicture::scaleFactor] {
+    setPic2CanvScalefactor
+  }
   resizeCanvPic copy $addpicture::curPic -subsample $addpicture::scaleFactor
 
   #Create toplevel window w/canvas & pic
@@ -33,13 +35,13 @@ proc openResizeWindow {} {
     set ::Modal.Result "Cancelled"
     NewsHandler::QueryNews "Bild nicht gespeichert" red
     #destroy .resizePhoto
-    namespace delete addpicture
+    #namespace delete addpicture
   }
   set confirmBtnAction {
     doResize .resizePhoto.resizeCanv
     set ::Modal.Result "Success"
     #destroy .resizePhoto
-    namespace delete addpicture
+    #namespace delete addpicture
   }
 
   ttk::button $w.confirmBtn -text Ok -command $confirmBtnAction
@@ -83,9 +85,9 @@ proc openReposWindow {pic} {
 #Define button actions
   set cancelBtnAction {
     set ::Modal.Result "Cancelled"
-    NewsHandler::QueryNews "Bild nicht gespeichert" red
+    NewsHandler::QueryNews "$::reposNotSaved" red
     file delete $addpicture::targetPicPath
-    namespace delete addpicture
+    #namespace delete addpicture
     #destroy .reposPhoto
   }
   set confirmBtnAction {
@@ -94,9 +96,9 @@ proc openReposWindow {pic} {
     lassign [.reposPhoto.reposCanv coords txt] x y
     processPngComment $addpicture::targetPicPath $x $y
     
-    NewsHandler::QueryNews "Photo mit Positionsinfo abgespeichert" lightgreen
+    NewsHandler::QueryNews "$::reposSaved" lightgreen
     file delete $addpicture::targetPicPath
-    namespace delete addpicture
+    #namespace delete addpicture
     #destroy .reposPhoto
   }
 

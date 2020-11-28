@@ -391,6 +391,14 @@ Example:"
   set ::winRegisterProb $winRegisterProb($lang)
 
   #PHOTOS
+  set reposSaved(de) "Bild mit Positionsinfo gespeichert."
+  set reposSaved(en) "Picture saved with text position info."
+  set ::reposSaved $reposSaved($lang) 
+
+  set reposNotSaved(de) "Bild nicht gespeichert."
+  set reposNotSaved(en) "Picture not saved."
+  set ::reposNotSaved $reposNotSaved($lang)
+
   set noPhotosFound(de) "Im $bp-Fotoordner wurden keine Fotos gefunden. Kopieren Sie bitte einige Bilder in den Ordner."
   set noPhotosFound(en) "No photos were found in the $bp Photos folder. Please copy some pictures into the folder."
   set ::noPhotosFound $noPhotosFound($lang)

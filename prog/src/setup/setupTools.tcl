@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 23nov20 pv
+# Updated: 28nov20 pv
 
 source $SetupResizeTools
 source $JList
@@ -16,8 +16,6 @@ proc addPic {origPicPath} {
   source $::SetupResizePhoto
   source $::SetupResizeTools
 
-  namespace eval addpicture {}
-    
   #Set path & exit if already there
   set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $origPicPath]]]
   if [file exists $targetPicPath] {
@@ -25,10 +23,11 @@ proc addPic {origPicPath} {
     return 1
   }
   
-  #A) POPULATE ::addpicture namespace
+  #POPULATE ::addpicture namespace
+  namespace eval addpicture {}
   set addpicture::targetPicPath $targetPicPath
 
-  #determine DETERMINE IF ORIGINAL PICTURE WAS ROTATED
+  #DETERMINE ROTATION STATUS
   if { [info exists addpicture::rotated] && $addpicture::rotated} {
     set curPic $addpicture::curPic
   } else {
@@ -36,36 +35,31 @@ proc addPic {origPicPath} {
     set addpicture::curPic photosOrigPic
   }
   
-  #B) DETERMINE NEED FOR RESIZING 
+  #DETERMINE NEED FOR RESIZING 
 
   ## expect 0 / even / uneven
   set resize [needsResize $curPic]
   
-  
   #a): right dimensions, right size: save pic
   if {$resize == 0} {
 
-savePic
-    
-after 300    openReposWindow $curPic
-
+    savePic
+    after 300 openReposWindow $curPic
     NewsHandler::QueryNews "[copiedPicMsg $origPicPath]" lightgreen
-    NewsHandler::QueryNews "Wir berechnen nun die ideale Textposition und -helligkeit. Die Position können Sie noch ändern..." lightblue
+    NewsHandler::QueryNews $::textpos.wait orange
     
   #b) right dimensions, wrong size: start resizing & open reposWindow
   } elseif {$resize == "even"} {
-  
+    
     savePic
-   
+    after 3000 openReposWindow $curPic
     ResizeHandler::QueryResize $curPic 
     ResizeHandler::Run
-
-    after 3000 openReposWindow $curPic
     
   #c) open resize window, resize later
   } else {
   
- openResizeWindow
+    openResizeWindow
   }
 
   set ::numPhotos [llength [glob $dirlist(photosDir)/*]]
