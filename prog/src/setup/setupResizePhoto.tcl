@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 25nov20 pv
+# Updated 31nov20 pv
 
 #TODO Warum geht das nicht? Warum sourcet er Globals nicht?
 #source $SetupResizeTools
@@ -34,14 +34,11 @@ proc openResizeWindow {} {
   set cancelBtnAction {
     set ::Modal.Result "Cancelled"
     NewsHandler::QueryNews "Bild nicht gespeichert" red
-    #destroy .resizePhoto
-    #namespace delete addpicture
+    namespace delete addpicture
   }
   set confirmBtnAction {
     doResize .resizePhoto.resizeCanv
     set ::Modal.Result "Success"
-    #destroy .resizePhoto
-    #namespace delete addpicture
   }
 
   ttk::button $w.confirmBtn -text Ok -command $confirmBtnAction
@@ -82,24 +79,19 @@ proc openReposWindow {pic} {
   $c create image 0 0 -image reposCanvPic -anchor nw -tags {img mv}
   pack $c
 
-#Define button actions
+  #Define button actions
   set cancelBtnAction {
     set ::Modal.Result "Cancelled"
     NewsHandler::QueryNews "$::reposNotSaved" red
-    file delete $addpicture::targetPicPath
-    #namespace delete addpicture
-    #destroy .reposPhoto
+    #file delete $addpicture::targetPicPath
+    namespace delete addpicture
   }
   set confirmBtnAction {
     set ::Modal.Result "Success"
-
     lassign [.reposPhoto.reposCanv coords txt] x y
     processPngComment $addpicture::targetPicPath $x $y
-    
     NewsHandler::QueryNews "$::reposSaved" lightgreen
-    file delete $addpicture::targetPicPath
-    #namespace delete addpicture
-    #destroy .reposPhoto
+    #file delete $addpicture::targetPicPath
   }
 
   #Create text button on top & disable
@@ -107,11 +99,10 @@ proc openReposWindow {pic} {
   $btn conf -command $confirmBtnAction -bd 5 -relief raised -textvar textpos.wait
   pack $btn
   $c create window -15 15 -anchor nw -window $btn
+  $w.reposCanv itemconf mv -state disabled
+  $w.moveTxtBtn conf -state disabled
   
-  #Start scanning in background
-  after idle {
-#    colour::doColourScan
-  }
+  
 
   #Determine smallest possible scale factor for canvas pic
   if ![info exists addpicture::scaleFactor] {
@@ -144,6 +135,15 @@ puts "$canvX $canvY"
    
   bind $w <Return> $confirmBtnAction
   bind $w <Escape> $cancelBtnAction
+
+#Start colour scanning in background - TODO Set back to after idle once colourscan is working!
+  after 5000 {
+    colour::doColourScan
+     .reposPhoto.reposCanv itemconf mv -state normal
+     .reposPhoto.moveTxtBtn conf -state normal -bg orange -fg black
+     set textpos.wait "Sie können nun selber verschieben und dann abspeichern."
+  }
+
   Show.Modal $w -destroy 1 -onclose $cancelBtnAction
   
 } ;#END openReposWindow

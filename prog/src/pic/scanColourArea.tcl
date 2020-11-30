@@ -2,7 +2,7 @@
 # Determines suitable even-coloured text area & colour tint for text
 # Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 23nov20 pv
+# Updated 31nov20 pv
 
 #Create small pic from resize canv pic
 source $::ImgTools
@@ -168,21 +168,13 @@ puts $row
   ##called by setupReposTextwin
   proc doColourScan {} {
 
-  set w .reposPhoto
-  
-  #Disable window controls while working
-  $w.reposCanv itemconf mv -state disabled
-  $w.moveTxtBtn conf -state disabled
-
-#TODO testing
-return 1
 
     #1. run scanImage(+findRanges) to create colour::rowarrays::* & colour::matchArr
     scanImage
-
+return 1
 
 #TODO for testing:
-return "ScanImage returns: [info vars rowarrays::*]"
+#return "ScanImage returns: [info vars rowarrays::*]"
 
 
 
