@@ -6,14 +6,21 @@
 
 # evalPngComment
 ##evaluates result of readPngComment
+##returns X Y and L(uminance)
 ##called by ?BDFPrint?
 proc evalPngComment {file} {
   set T [readPngComment $file]
-
-#TODO? get rid of non-pertaining bits of info
-  lassign $T {} x y lum
-
-  return "$x $y $lum"
+  
+  #Check keyword & exit if missing
+  if ![regexp BiblePix $T] {
+    return -code error "No BiblePix data found"
+  }
+  #Extract X, Y and L from data string
+  set X [string range [regexp -inline {X[0-9]*} $T] 1 end]
+  set Y [string range [regexp -inline {Y[0-9]*} $T] 1 end]
+  set L [string index [regexp -inline {L[0-9]} $T] 1]
+  
+  return "$X $Y $L"
 }
 
 ##################################################################
@@ -63,7 +70,7 @@ proc readPngComment {file} {
 #Vorschlag: keyword=BiblePix text="$X $Y $Nuance"
 proc writePngComment {file text} {
 
-  set keyword "BiblePix:"
+  set keyword "BiblePix"
   
   set fh [open $file r+]
   fconfigure $fh -encoding binary -translation binary -eofchar {}
@@ -92,6 +99,7 @@ proc writePngComment {file text} {
 
 # processPngComment
 ##called by reposPhoto OK btn
+##Keyword added by writePngComment
 ## ?colour scanning must have completed for brightness?
 proc processPngComment {file x y} {
   set realX [expr $x * $addpicture::scaleFactor]
@@ -101,8 +109,8 @@ proc processPngComment {file x y} {
   if [catch {set luminacy $colour::luminacy}] { 
     set luminacy 2
   }
-  
-  set text "$realX $realY $luminacy"
+  #Text format: X1345 Y1234 L(1-3)
+  set text "X${realX} Y${realY} L${luminacy}"
   writePngComment $file $text
   return 0
 }
