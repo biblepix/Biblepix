@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 31nov20 pv
+# Updated 1dec20 pv
 
 #TODO Warum geht das nicht? Warum sourcet er Globals nicht?
 #source $SetupResizeTools
@@ -88,8 +88,10 @@ proc openReposWindow {pic} {
   }
   set confirmBtnAction {
     set ::Modal.Result "Success"
+    
     lassign [.reposPhoto.reposCanv coords txt] x y
     processPngComment $addpicture::targetPicPath $x $y
+    
     NewsHandler::QueryNews "$::reposSaved" lightgreen
     #file delete $addpicture::targetPicPath
   }
@@ -130,7 +132,11 @@ puts "$canvX $canvY"
   #Configure text size
    set screenX [winfo screenwidth .]
    set fontfactor [expr $screenX / $imgX]
-   set canvFontsize [expr round($::fontsize / $fontfactor)]
+   if !$fontfactor {
+     set canvFontsize $::fontsize
+   } {
+     set canvFontsize [expr round($::fontsize / $fontfactor)]
+   }
    font conf movingTextReposFont -size $canvFontsize
    
   bind $w <Return> $confirmBtnAction
@@ -147,7 +153,4 @@ puts "$canvX $canvY"
   Show.Modal $w -destroy 1 -onclose $cancelBtnAction
   
 } ;#END openReposWindow
-
-#TODO warum hier?
-#   processPngComment $addpicture::targetPicPath $x $y
 

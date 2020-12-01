@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/pic/annotatePng.tcl
 # Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 23nov20 pv
+# Updated 1dec20 pv
 
 
 # evalPngComment
@@ -10,18 +10,10 @@
 proc evalPngComment {file} {
   set T [readPngComment $file]
 
-#TODO get list indexes of x / y / b (=brightness)
-#TODO get rid of non-pertaining bits of info
+#TODO? get rid of non-pertaining bits of info
+  lassign $T {} x y lum
 
-#To set text bits into vars:
-  set [lindex $T 0] [lindex $T 1]
-
-#To process vars  >> PrintBdf??
-  namespace eval somenamespace {}
-  set somenamespace::x $x
-  set somenamespace::y $y
-  set somenamespace::b $b
-
+  return "$x $y $lum"
 }
 
 ##################################################################
@@ -57,6 +49,7 @@ proc readPngComment {file} {
         seek $fh 4 current
     }
     close $fh
+    
     return $text
 }
 
@@ -64,13 +57,13 @@ proc readPngComment {file} {
 # writePngComment
 ##adapted from: https://wiki.tcl-lang.org/page/Reading+PNG+Comments
 ##reads the comment blocks from a PNG file. This functionality is also present in the tcllib png module.
-##called by ...
+##called by processPngComment
 
 #TODO write 3 keywords with text at 1 go!
 #Vorschlag: keyword=BiblePix text="$X $Y $Nuance"
 proc writePngComment {file text} {
 
-  set keyword "BiblePix"
+  set keyword "BiblePix:"
   
   set fh [open $file r+]
   fconfigure $fh -encoding binary -translation binary -eofchar {}
@@ -98,16 +91,16 @@ proc writePngComment {file text} {
 } ;#END writePngComment
 
 # processPngComment
-##called by resizePhoto, after scanning canv pic for colour area & brightness
+##called by reposPhoto OK btn
+## ?colour scanning must have completed for brightness?
 proc processPngComment {file x y} {
   set realX [expr $x * $addpicture::scaleFactor]
   set realY [expr $y * $addpicture::scaleFactor]
   
-  #TODO incorporate in scanColourArea!
-  #set luminacy $colour::luminacy
-  
-  #TODO for testing:
-  set luminacy 2
+  #TODO does this make sense?
+  if [catch {set luminacy $colour::luminacy}] { 
+    set luminacy 2
+  }
   
   set text "$realX $realY $luminacy"
   writePngComment $file $text
