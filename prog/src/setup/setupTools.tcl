@@ -40,7 +40,7 @@ proc addPic {origPicPath} {
   ## expect 0 / even / uneven
   set resize [needsResize $curPic]
   
-  #a): right dimensions, right size: save pic
+  #A): right dimensions, right size: save pic
   if {$resize == 0} {
 
     savePic
@@ -48,15 +48,21 @@ proc addPic {origPicPath} {
     NewsHandler::QueryNews "[copiedPicMsg $origPicPath]" lightgreen
     NewsHandler::QueryNews $::textpos.wait orange
     
-  #b) right dimensions, wrong size: start resizing & open reposWindow
+  #B) right dimensions, wrong size: start resizing & open reposWindow
   } elseif {$resize == "even"} {
     
-    savePic
-    after 3000 openReposWindow $curPic
-    ResizeHandler::QueryResize $curPic 
-    ResizeHandler::Run
+#TODO Joel: dein ResizeHandler legt das Bild nicht ab!
+#    ResizeHandler::QueryResize $curPic 
+#    ResizeHandler::Run
+
+set screenX [winfo screenwidth .]
+set screenY [winfo screenheight .]
+NewsHandler::QueryNews "Resizing... wait a moment..." orange
+    set newpic [resizePic $curPic $screenX $screenY]
+    $newpic write $targetPicPath -format PNG
+    openReposWindow $curPic
     
-  #c) open resize window, resize later
+  #C) open resize window, resize later
   } else {
   
     openResizeWindow

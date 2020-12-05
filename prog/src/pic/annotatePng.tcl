@@ -18,7 +18,7 @@ proc evalPngComment {file} {
   #Extract X, Y and L from data string
   set X [string range [regexp -inline {X[0-9]*} $T] 1 end]
   set Y [string range [regexp -inline {Y[0-9]*} $T] 1 end]
-  set L [string index [regexp -inline {L[0-9]} $T] 1]
+  set L [string index [regexp -inline {L[0-9]} $T] end]
   
   return "$X $Y $L"
 }
