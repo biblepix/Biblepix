@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 3oct20
+# Updated: 27dec20
 source $TwdTools
 source $SigTools
 
@@ -19,7 +19,11 @@ foreach twdFileName $twdFileList {
   set endung [string range $twdFileName 0 8] 
   set sigFile [file join $sigdir signature-$endung.txt]
   
-  #check date, skip if today's and not empty
+  #check presence of file
+  if ![file exists $sigFile] {
+    close [open $sigFile w]
+  }
+  #check date, skip if today's & not empty
   set dateidatum [clock format [file mtime $sigFile] -format %d]
   if {$heute == $dateidatum && [file size $sigFile] != 0} {
     puts " [file tail $sigFile] is up-to-date"

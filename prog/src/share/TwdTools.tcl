@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 2sep20
+# Updated 27dec20
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -28,20 +28,23 @@ proc getSigTwdList {} {
 
   #A) Use only files that match $sigLanglist
   if { [info exists sigLanglist] && $sigLanglist != ""} {
-
+  
+    ##get all twdfiles related to $lang
     foreach code $sigLanglist {
-      set file [glob -nocomplain -tails -directory $dirlist(twdDir) ${code}*_$jahr.twd]
-        if {$file != ""} {
-         lappend twdList $file
-       }
+      foreach item [glob -nocomplain -tails -directory $dirlist(twdDir) ${code}*_$jahr.twd] {
+        lappend twdL $item
+      }
     }
-
+  
   #B) use all files if no list found
   } else {
-    set twdList [glob -nocomplain -tails -directory $dirlist(twdDir) *_$jahr.twd]
-  }
 
-  return $twdList
+    foreach item [glob -nocomplain -tails -directory $dirlist(twdDir) *_$jahr.twd] {
+      lappend twdL $item
+    }
+  }
+  
+  return $twdL
 }
 
 #R a n d o m i z e r s
@@ -175,8 +178,9 @@ proc updateTwd {} {
   }
 }
 
-
-### T W D   P A R S I N G   T O O L S   ###############################
+#####################################################################
+### T W D   P A R S I N G   T O O L S   #############################
+#####################################################################
   
 proc getTWDFileRoot {twdFile} {
   global dirlist
