@@ -102,6 +102,7 @@ if {$platform=="windows"} {
   return
 }
 
+#Determine running Linux desktop
 set runningDesktop [detectRunningLinuxDesktop]
 
 #Set Sway Background
@@ -113,7 +114,7 @@ if {$runningDesktop == 4} {
   }
   return
   
-#Skip Gnome / KDE + XFCE4
+#Skip Gnome / KDE / XFCE4
 } elseif {
     $runningDesktop == 1 || 
     $runningDesktop == 2 ||

@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12sep20 pv
+# Updated: 28dec20 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -566,25 +566,64 @@ proc setupKde5Bg {Kde5ConfFile kread kwrite} {
 } ;#END setupKde5Bg
 
 # setupXfceBackground
-##configures XFCE4 single pic or slideshow - TODO: >update MANPAGE!!!!!!!!!
-### configFile hierarchy: 
-  #<channel name="xfce4-desktop" ...>
-  #<property name="backdrop" type="empty">
-  #  <property name="screen0" type="empty">
-  #    <property name="monitor0" type="empty">
-  #      <property name="image-path"..."/>
-#xfconf-query syntax für neue 'property':
-# xfconf-query -c -p* -n -t -s
-# * ganzer (neuer) Pfad
-##########################################
-
+##Change settings with tDom parser
+##called by SaveLin
 proc setupXfceBackground {} {
-  global slideshow
-
-  #Exit if xfconf-query not found
-  if {[auto_execok xfconf-query] == ""} {
+  global slideshow xfce4ConfigFile TwdPng 
+  package require tdom
+  
+  #Exit if XML not found
+  if ![file exists $xfce4ConfigFile] {
     return 1
   }
+  
+  #Parse config XML
+  set chan [open $xfce4ConfigFile]
+  set txt [read $chan]
+  close $chan
+  set root [dom parse $txt]
+  set doc [$root documentElement]
+
+  #list required property nodes
+  set lastimgL [$doc selectNodes //property\[@name='last-image'\]]
+  set cycleL [$doc selectNodes //property\[@name='backdrop-cycle-enable'\]]
+  set timerL [$doc selectNodes //property\[@name='backdrop-cycle-timer'\]]
+  set randomL [$doc selectNodes //property\[@name='backdrop-cycle-random-order'\]]
+  set styleL [$doc selectNodes //property\[@name='image-style'\]]
+
+  #Set required parameters
+  foreach node $lastimgL {
+    $node setAttribute value $TwdPng
+  }
+  ##set single or cycle 
+  if $slideshow {set slid 1} {set slid 0}
+  foreach node $cycleL {
+    $node setAttribute value $slid
+  }
+  ##the following only take effect if $slid = 1
+  foreach node $timerL {
+    $node setAttribute value $slideshow
+  }
+  foreach node $randomL {
+    $node setAttribute value 1
+  }
+  foreach node $styleL {
+    $node setAttribute value 1
+  }
+
+  #Save changed config XML
+  set chan [open $xfce4ConfigFile w]
+  puts $chan [$root asXML]
+  close $chan
+
+} ;#END setupXfceBackground
+
+
+##TODO OBSOLETE!
+proc setupXfceBackground-OLD {} {
+  global slideshow
+
+  
   
   #Check monitor name, exit if no XFCE installation found
   set desktopXmlTree [exec xfconf-query -c xfce4-desktop -l]
@@ -730,7 +769,7 @@ puts "Ad hena azaranu 1"
     return 1
   }
   
-} ;#END setXfceBackground
+} ;#END setupXfceBackground-OLD
 
 
 # setupGnomeBackground - TODO: das funktioniert nicht mit return!
@@ -777,12 +816,14 @@ proc reloadKdeDesktop {} {
 ##Rereads XFCE4 Desktop configuration
 ##Called by SetupSaveLin after changing config files
 proc reloadXfceDesktop {} {
-  if {[auto_execok xfdesktop-setting?] != ""} {
-    exec xfdesktop-settings
+  ##1) try reloading xfce4 settings
+  if {[auto_execok xfdesktop-settings] != ""} {
+    catch {exec xfdesktop-settings}
     tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "Testing XFCE reload" -parent .
-    exec killall xfdesktop-settings
+    catch {exec killall xfdesktop-settings}
   }
-  xfdesktop --reload
+  ##2) try reloading xfce4 desktop
+  catch {exec xfdesktop --reload}
 }
 
 ######################################
