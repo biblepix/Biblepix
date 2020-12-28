@@ -2,14 +2,14 @@
 # Procs for Trojitá & Evolution mail clients
 # Called by Signature if any of above found
 # Authors: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 27dec20
+# Updated: 22dec20
 
 #Set global vars
 set tr {Trojitá}
 set ev {Evolution}
 set evolSigdir [file join $env(HOME) .config evolution signatures]
 set catchword {www.bible2.net}
-set startcatch {={4}}
+set startcatch {=====}
 set endcatch {bible2.net]}
 set datecatch {twdDate=}
 set dayOTY [clock format [clock seconds] -format %j]
@@ -18,18 +18,35 @@ set nosigfound "Signatures up-to-date. If you expected something else, add a lin
 set addednum 0
 set addedsig "Added The Word to $::addednum signature(s)."
 
+# checkSigPresent
+##returns 0 or 1
+##called by Signature
+proc checkSigPresent {sigFile} {
+  global startcatch
+  
+  set chan [open $sigFile r]
+  set sigtext [read $chan]
+  close $chan
+  
+  if [regexp $startcatch $sigtext] {
+    return 1
+  }
+  return 0
+}
+
 # cleanSigfile
 ##cleans out old dw & returns original sig text, removing any tailing empty lines
-##called by Signature.tcl
+##called by Signature
 proc cleanSigfile {sigFile} {
+  global startcatch
 
-  set sigFileChan [open $sigFile r]
-  chan configure $sigFileChan -encoding utf-8
-  set sigOld [read $sigFileChan]
-  close $sigFileChan
-  
+  set chan [open $sigFile r]
+  chan configure $chan -encoding utf-8
+  set sigOld [read $chan]
+  close $chan
+
   #cut out any old verse
-  set startIndex [string first "=====" $sigOld]
+  set startIndex [string first $startcatch $sigOld]
   if {$startIndex == "-1"} {
     set sigHead $sigOld
   } else {

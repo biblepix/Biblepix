@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 27dec20
+# Updated: 28dec20
 source $TwdTools
 source $SigTools
 
@@ -23,27 +23,26 @@ foreach twdFileName $twdFileList {
   if ![file exists $sigFile] {
     close [open $sigFile w]
   }
-  #check date, skip if today's & not empty
+  #check date, skip if today's & sig present
   set dateidatum [clock format [file mtime $sigFile] -format %d]
-  if {$heute == $dateidatum && [file size $sigFile] != 0} {
+
+  if {$heute == $dateidatum && [checkSigPresent $sigFile] } {
     puts " [file tail $sigFile] is up-to-date"
     continue
   }
 
   #Recreate The Word for each file
   set dw [getTodaysTwdSig $twdFileName]
-  set twdPath [file join $twdDir $twdFileName]
-  set cleanSig [cleanSigfile $twdPath]
+  set sigPath [file join $sigdir $sigFile]
+  set cleanSig [cleanSigfile $sigPath]
 
   #Write new sig to file
-  set sigPath [file join $sigdir $sigFile]
   set chan [open $sigPath w]
   puts $chan $cleanSig 
   puts $chan \n${dw}
   close $chan
   
   puts "Created signature for signature-$endung"
-  
 } ;#END main loop
 
 
