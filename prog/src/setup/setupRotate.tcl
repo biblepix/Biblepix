@@ -23,19 +23,17 @@ set im rotateCanvPic
 set ::v 0
 
 #Picture & buttons
-button $T.previewBtn -textvar computePreview -activebackground beige -command {vorschau $im $::v $C;pack $mC $scale}
-button $T.90°Btn -textvar preview90 -activebackground beige -command {pack forget $mC $scale;vorschau $im 90 $C ; set ::v 90}
-button $T.180°Btn -textvar preview180 -activebackground beige -command {pack forget $mC $scale;vorschau $im 180 $C ; set ::v 180}
+button $T.previewBtn -textvar computePreview -activebackground beige -command {vorschau $im $::v $C; pack $mC $scale}
+button $T.90°Btn -textvar preview90 -activebackground beige -command {pack forget $mC $scale; vorschau $im 90 $C; set ::v 90}
+button $T.180°Btn -textvar preview180 -activebackground beige -command {pack forget $mC $scale; vorschau $im 180 $C; set ::v 180}
 #Create message field
 label $T.msgL -textvar rotateWait -bg silver -fg silver -font {TkHeadingFont 16 bold} -anchor n -pady 20 
-
-photosCanvPic blank
-photosCanvPic copy rotateCanvPic -shrink
 
 set cancelBtnAction {
   set ::Modal.Result "Cancelled"
   destroy $::T
 }
+
 set confirmBtnAction {
   #Initiate rotation in background, close window when finished 
   after 500 {
@@ -54,7 +52,7 @@ button $T.saveBtn -textvar save -activebackground lightgreen -command $confirmBt
 button $T.cancelBtn -textvar cancel -activebackground red -command $cancelBtnAction
 
 catch { canvas $C }
-$C create image 20 20 -image $im -anchor nw -tags img
+$C create image 6 6 -image $im -anchor nw -tags img
 $C conf -width [image width $im] -height [image height $im]
 pack $C
 

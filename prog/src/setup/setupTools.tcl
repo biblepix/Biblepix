@@ -80,7 +80,7 @@ proc savePic {} {
   global addpicture::targetPicPath
   $curPic write $targetPicPath -format PNG
 }
-  
+
 proc delPic {} {
   global dirlist fileJList picPath
   file delete $picPath
@@ -452,6 +452,9 @@ proc checkItemInside {c item xDiff yDiff args} {
 
 } ;#END checkItemInside
 
+##########################################################################
+###### P r o c s   f o r   S e t u p P h o t o s #########################
+##########################################################################
 
 proc doOpen {bildordner c} {
   set localJList [openFileDialog $bildordner]
@@ -586,29 +589,24 @@ proc refreshImg {localJList c} {
 #Creates functions 'photosOrigPic' and 'photosCanvPic'
 ##to be processed by all other progs (no vars!)
 proc openImg {imgFilePath imgCanvas} {
-
-  set screenX [winfo screenwidth .]
-  set screenY [winfo screenheight .]
-  set factor [expr $screenX./$screenY]
-  set photosCanvMargin 6
-  set photosCanvX 650
-  set photosCanvY [expr round($photosCanvX/$factor)]
-
   image create photo photosOrigPic -file $imgFilePath
 
+  set cavWidth [lindex [$imgCanvas configure -width] end]
+  set cavHeight [lindex [$imgCanvas configure -height] end]
+  
   #scale photosOrigPic to photosCanvPic
   set imgX [image width photosOrigPic]
   set imgY [image height photosOrigPic]
-  set factor [expr round(($imgX / $photosCanvX)+0.5)]
+  set factor [expr int(ceil($imgX. / $cavWidth))]
 
-  if {[expr $imgY / $factor] > $photosCanvY} {
-    set factor [expr round(($imgY / $photosCanvY)+0.5)]
+  if {[expr $imgY / $factor] > $cavHeight} {
+    set factor [expr int(ceil($imgY. / $cavHeight))]
   }
 
   catch {image delete photosCanvPic}
   image create photo photosCanvPic
   photosCanvPic copy photosOrigPic -subsample $factor -shrink
-  $imgCanvas create image $photosCanvMargin $photosCanvMargin -image photosCanvPic -anchor nw -tag img
+  $imgCanvas create image 0 0 -image photosCanvPic -anchor nw -tag img
 } ;#END openImg
 
 proc hideImg {imgCanvas} {

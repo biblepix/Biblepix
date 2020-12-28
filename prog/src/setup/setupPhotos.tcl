@@ -15,7 +15,7 @@ pack [frame .photosF.mainf] -expand false -fill x
 pack [frame .photosF.mainf.left] -side left -expand false -anchor nw
 pack [frame .photosF.mainf.right] -side right -expand true
 pack [frame .photosF.mainf.right.bar] -anchor w -fill x
-pack [frame .photosF.mainf.right.unten -pady 7]  -side bottom -anchor nw -fill both
+pack [frame .photosF.mainf.right.unten -pady 7] -side bottom -anchor nw -fill both
 pack [frame .photosF.mainf.right.bild -relief sunken -bd 3] -anchor e -pady 3 -expand 1 -fill x
 
 #Create Text left
@@ -37,9 +37,12 @@ pack .photosF.mainf.right.bar.> -side left
 #Build Photo canvas right
 set screenX [winfo screenwidth .]
 set screenY [winfo screenheight .]
-set factor [expr $screenX./$screenY]
-set canvX 650
-set canvY [expr round($canvX/$factor)]
+set maxCanvX [expr round([winfo width .] / 1.5)]
+set factor [expr int(ceil($screenX / $maxCanvX.))]
+
+set canvX [expr round($screenX / $factor)]
+set canvY [expr round($screenY / $factor)]
+
 canvas .imgCanvas -width $canvX -height $canvY
 pack .imgCanvas -in .photosF.mainf.right.bild -side left
 

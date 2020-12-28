@@ -12,7 +12,7 @@ source $TwdTools
 #Set general X vars & Main Window width
 set screenX [winfo screenwidth .]
 set screenY [winfo screenheight .]
-set wWidth [expr round($screenX * 0.9)]
+set wWidth [expr min(round($screenX * 0.9), 1920)]
 set wHeight [expr round($screenY * 0.9)]
 set wMx [expr ($screenX - $wWidth) / 2]
 set wMy [expr ($screenY - $wHeight) / 2]
