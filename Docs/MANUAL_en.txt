@@ -170,7 +170,7 @@ Setup program (for Hebrew and Arabic see footnote*****).
 Displaying the background image as well switching images (in case of slideshow activated) 
 are managed by the BiblePix main program. 
 
-SIGNATURE
+EMAIL SIGNATURE
 BiblePix has an extended feature called "Add The Word to your e-mail signatures".
 If this is activated in the Setup, BiblePix will add The Word to your signature(s) 
 once a day on the basis of any installed Bible text files. The signature files are 

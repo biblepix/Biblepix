@@ -176,7 +176,7 @@ ebenso die Position des Textes auf dem Bild (Hebräisch und Arabisch s. Anm.****
 Die Darstellung als Desktop-Hintergrundbild sowie der Bildwechsel (bei Diaschau) 
 werden vom BibelPix-Hauptprogramm automatisch gesteuert. 
 
-SIGNATUR
+EMAIL-SIGNATUR
 BibelPix bietet die Zusatzfunktion "Das Tageswort als E-Mail-Signatur". Diese 
 Funktion kann im Einrichtungsprogramm aktiviert werden. Dann fügt BibelPix einmal 
 täglich für die als mailtauglich markierten Sprachen das Tageswort an Ihre Signatur(en)
