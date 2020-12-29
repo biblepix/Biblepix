@@ -568,17 +568,17 @@ proc setupKde5Bg {Kde5ConfFile kread kwrite} {
 # setupXfceBackground
 ##Change settings with tDom parser
 ##called by SaveLin
-proc setupXfceBackground {} {
-  global slideshow xfce4ConfigFile TwdPng 
+proc setupXfce4Background {} {
+  global slideshow Xfce4ConfigFile TwdPNG
   package require tdom
   
   #Exit if XML not found
-  if ![file exists $xfce4ConfigFile] {
+  if ![file exists $Xfce4ConfigFile] {
     return 1
   }
   
   #Parse config XML
-  set chan [open $xfce4ConfigFile]
+  set chan [open $Xfce4ConfigFile]
   set txt [read $chan]
   close $chan
   set root [dom parse $txt]
@@ -593,7 +593,7 @@ proc setupXfceBackground {} {
 
   #Set required parameters
   foreach node $lastimgL {
-    $node setAttribute value $TwdPng
+    $node setAttribute value $TwdPNG
   }
   ##set single or cycle 
   if $slideshow {set slid 1} {set slid 0}
@@ -612,7 +612,7 @@ proc setupXfceBackground {} {
   }
 
   #Save changed config XML
-  set chan [open $xfce4ConfigFile w]
+  set chan [open $Xfce4ConfigFile w]
   puts $chan [$root asXML]
   close $chan
 

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/saveLin.tcl
 # Sourced by SetupSave
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 11sep20
+# Updated: 28dec20
 
 source $SetupSaveLinHelpers
 source $SetupTools
@@ -82,7 +82,7 @@ tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linCh
 
 set GnomeErr [setupGnomeBackground]
 set KdeErr   [setupKdeBackground]
-set XfceErr  [setupXfceBackground]
+set XfceErr  [setupXfce4Background]
 
 #Create OK message for each successful desktop configuration
 if {$GnomeErr==0} {
