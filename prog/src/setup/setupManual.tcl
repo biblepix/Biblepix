@@ -1,8 +1,8 @@
-# ~/Biblepix/prog/src/share/setupReadme.tcl
+# ~/Biblepix/prog/src/setup/setupManual.tcl
 # Loads README according to language setting
 # Sourced by imgtools.tcl (bind flag button) &
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9dec18
+# Updated: 29dec20
 
 #Create text widget & scrollbar
 scrollbar .manualF.scroll -orient vertical -command {.manualF.man yview}

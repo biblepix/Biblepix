@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19aug20
+# Updated: 29dec20 pv
 
 setFlags
 sourceHTTP
@@ -98,9 +98,9 @@ if {$platform=="unix"} {
   }
 }
 
-#7. Readme
+#7. Manual
 if { [info exists Debug] && $Debug } {
-  source $SetupReadme
+  source $SetupManual
 } else {
-  catch {source $SetupReadme}
+  catch {source $SetupManual}
 }
