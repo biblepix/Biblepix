@@ -2,7 +2,7 @@
 # Procs for Trojitá & Evolution mail clients
 # Called by Signature if any of above found
 # Authors: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 22dec20
+# Updated: 29dec20
 
 #Set global vars
 set tr {Trojitá}
@@ -14,9 +14,9 @@ set endcatch {bible2.net]}
 set datecatch {twdDate=}
 set dayOTY [clock format [clock seconds] -format %j]
 set triggerRef {(<a href=\"http?:\/\/www\.bible2)(.*a>)}
-set nosigfound "Signatures up-to-date. If you expected something else, add a line saying $catchword where you want The Word."
+set nosigfoundT "Signatures up-to-date. If you expected something else, add a line saying $catchword where you want The Word."
 set addednum 0
-set addedsig "Added The Word to $::addednum signature(s)."
+set addedsigT "Added The Word to $::addednum signature(s)."
 
 # checkSigPresent
 ##returns 0 or 1
@@ -67,7 +67,7 @@ proc cleanSigfile {sigFile} {
 ##called by Signature
 ##NOTE: Evolution sig files are in HTML, but it doesn't seem to be bothered about formatting TW
 proc doSigEvolution {} {
-  global env dayOTY catchword ev nosigfound evolSigdir triggerRef startcatch
+  global env dayOTY addedsigT catchword ev nosigfoundT evolSigdir triggerRef startcatch
 
   #Check all Evolution sig files for triggers
   foreach sigFilePath [glob -directory $evolSigdir *] {
@@ -95,9 +95,9 @@ proc doSigEvolution {} {
   }
   
   if $::addednum {
-    puts "$ev: $addedsig $::addednum"
+    puts "$ev: $addedsigT $::addednum"
   } else {
-    puts "$ev: $nosigfound"
+    puts "$ev: $nosigfoundT"
   }
   
   set ::addednum 0
@@ -126,7 +126,7 @@ proc updateSigEvolution {sigfile cleanSig} {
 ##Rewrites Trojita Registry entry once a day
 ##Called by signature.tcl
 proc doSigTrojitaWin {} {
-  global tr dayOTY catchword trojitaWinRegpath
+  global tr dayOTY catchword trojitaWinRegpath addedsigT
   set idPath "$trojitaWinRegpath\\identities"
 
   #1. 1st run: check catchword present & replace with Twd
@@ -149,6 +149,7 @@ proc doSigTrojitaWin {} {
 	  set sigtext [registry get $idPath\\$id signature]
 	  set newSig [trojitaReplaceSigWin $sigtext]
     registry set $idPath\\$id signature $newSig
+    puts "$tr: $addedSigT $::addednum"
   }
 
   #4. Reset date if sig changed (var from trojitaReplaceSigWin) - OBSOLETE, has no effect now
@@ -164,7 +165,7 @@ proc trojitaReplaceSigWin {sigtext} {
   global tr catchword startcatch endcatch
   
   #1. Create dw
-  set twdFile [getRandomTwdFile]
+  set twdFile [getRandomTwdFile sig]
   set dw [getTodaysTwdSig $twdFile]
   
   #2. Replace catchword
@@ -188,10 +189,13 @@ proc trojitaReplaceSigWin {sigtext} {
 ##Adds The Word to any signature(s) in Trojita IMAP mailer
 ##Rewrites 'trojita.conf' once a day
 ##Called by signature.tcl
+############################### INFO TODO put in Manpage! ########################################################################
 ## !CONFIG FILE: Trojita allows for several config files (=profiles) which can be called with the -p option. - Change as needed
-## !CATCHWORD: FIRST TIME USERS MUST ADD A CATCHWORD at end of each signature text where they want 'The Word' inserted {in Trojita go to >IMAP >Settings >General >"NAMES" >Edit and edit signature text accordingly} !!  
+## !CATCHWORD: FIRST TIME USERS MUST ADD A CATCHWORD at end of each signature text where they want 'The Word' inserted {in Trojita 
+## go to >IMAP >Settings >General >"NAMES" >Edit and edit signature text accordingly} !!
+##################################################################################################################################  
 proc doSigTrojitaLin {} {
-  global env heute jahr dw nosigfound trojitaLinConfFile catchword startcatch tr dayOTY
+  global env heute jahr nosigfoundT addedsigT trojitaLinConfFile catchword startcatch tr dayOTY
 
   #Open config file for reading
   set chan [open $trojitaLinConfFile r]
@@ -219,7 +223,7 @@ proc doSigTrojitaLin {} {
   }
 
   if {!$catchwordPresent && !$twdPresent} {
-    return "$tr: $nosigfound"
+    return "$tr: $nosigfoundT"
   }
 
   # # #  A C T I O N S
@@ -236,14 +240,14 @@ proc doSigTrojitaLin {} {
     ##3.Save new date
     trojitaSetDate
 
-    return "$tr: $addedsig $::addednum"
+    return "$tr: $addedsigT $::addednum"
 
   #2. Check date & exit if todays - OBSOLETE????????, see above
   } elseif $twdPresent {
     
     set twdDate [trojitaGetDate]
     if {$twdDate==$dayOTY} {
-      return "$tr: $nosigfound"
+      return "$tr: $nosigfoundT"
     } 
   }
 
@@ -257,7 +261,7 @@ proc doSigTrojitaLin {} {
     set chan [open $trojitaLinConfFile w]
     puts $chan $confNeuText
     close $chan
-    puts "$tr $addedsig $::addednum"
+    puts "$tr $addedsigT $::addednum"
 
     #5. save date
     trojitaSetDate
@@ -265,7 +269,7 @@ proc doSigTrojitaLin {} {
   
   set ::addednum 0
 
-} ;#END trojitaSigLin
+} ;#END doSigTrojitaLin
 
 # trojitaReplaceSigLin
 ##Determines number of ID's in sigChunk
@@ -274,8 +278,15 @@ proc doSigTrojitaLin {} {
 proc trojitaReplaceSigLin {sigChunk} {
   global catchword startcatch endcatch tr
 
-  #Get The Word in Hex format for Linux
-  set dwhex [getTwdHex $::dw]
+
+
+
+  #Get fist TWD - TODO is this needed?
+  set file [getRandomTwdFile sig]
+  set dwsig [getTodaysTwdSig $file]    
+  set dwhex [getTwdHex $dwsig]
+
+
 
   #get start & end positions
   set idNo 1
@@ -320,9 +331,9 @@ proc trojitaReplaceSigLin {sigChunk} {
       incr ::addednum
 
       #Get new Twd for next signature
-      set file [getRandomTwdFile]
-      set dw [getTodaysTwdSig $file]    
-      set dwhex [getTwdHex $dw]
+      set file [getRandomTwdFile sig]
+      set dwsig [getTodaysTwdSig $file]    
+      set dwhex [getTwdHex $dwsig]
     }
   } ;#END main loop
 

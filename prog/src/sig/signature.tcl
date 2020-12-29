@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 28dec20
+# Updated: 29dec20
 source $TwdTools
 source $SigTools
 
@@ -11,7 +11,7 @@ source $SigTools
 #########################################################################
 
 puts "Updating signatures..."
-set twdFileList [getSigTwdList]
+set twdFileList [getTwdSigList]
 
 foreach twdFileName $twdFileList {
   
@@ -32,14 +32,14 @@ foreach twdFileName $twdFileList {
   }
 
   #Recreate The Word for each file
-  set dw [getTodaysTwdSig $twdFileName]
+  set ::dwsig [getTodaysTwdSig $twdFileName]
   set sigPath [file join $sigdir $sigFile]
   set cleanSig [cleanSigfile $sigPath]
 
   #Write new sig to file
   set chan [open $sigPath w]
   puts $chan $cleanSig 
-  puts $chan \n${dw}
+  puts $chan \n${::dwsig}
   close $chan
   
   puts "Created signature for signature-$endung"
