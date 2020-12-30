@@ -126,7 +126,7 @@ if {$runningDesktop==2} {
   puts "reloadKde $Error"
   
 } elseif {$runningDesktop==3} {
-  catch reloadXfceDesktop Error
+  catch reloadXfce4Desktop Error
   puts "runningDesktop $Error"
 }
 
