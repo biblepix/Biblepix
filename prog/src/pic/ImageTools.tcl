@@ -2,7 +2,25 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25nov20 pv
+# Updated: 29dec20 pv
+
+proc getRandomBMP {} {
+  #Ausgabe ohne Pfad
+  set bmplist [getBMPlist]
+  set randIndex [expr {int(rand()*[llength $bmplist])}]
+  return [lindex $bmplist $randIndex]
+}
+
+proc getRandomPhotoPath	 {} {
+  #Ausgabe JPG/PNG mit Pfad
+  global platform dirlist
+  if {$platform=="unix"} {
+    set imglist [glob -nocomplain -directory $dirlist(photosDir) *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
+  } elseif {$platform=="windows"} {
+    set imglist [glob -nocomplain -directory $dirlist(photosDir) *.jpg *.jpeg *.png]
+  }
+  return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ] 
+}
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -33,73 +51,6 @@ proc hex2rgb {hex} {
   return $rgb
 }
 
-# computeAvColours
-##fetches R G B from a section & computes avarages into ::rgb namespace
-##called by BdfPrint - TODO: still testing!!! - not needed now, included in scanColourArea!
-proc computeAvColours {img} {
-  global marginleft margintop RtL
-  #no. of pixels to be skipped
-  set skip 5
-
-  package require math
-
-  set imgX [image width $img]
-  set imgY [image height $img]
-  set x1 $marginleft
-  set y1 $margintop
-  set x2 [expr $imgX / 3]
-  set y2 [expr $imgY / 3]
-
-  if $RtL {
-    set x2 [expr $imgX - $marginleft]
-    set x1 [expr $x2 - ($imgX / 3)]
-  }    
-
-puts "Computing pixels..."
-
-    for {set x $x1} {$x<$x2} {incr x $skip} {
-
-      for {set y $y1} {$y<$y2} {incr y $skip} {
-        
-        lassign [$img get $x $y] r g b
-        lappend R $r
-        lappend G $g
-        lappend B $b
-      }
-    }
-puts "Done computing pixels"
-#zisisnt workin, donno why...
-return
-
-  #Compute avarage colours
-  set avR [calcAverage $R]
-  set avG [calcAverage $G]
-  set avB [calcAverage $B]
-  set avBri [calcAverage [list $avR $avG $avB]]
-#puts "avR $avR"
-#puts "avG $avG"
-#puts "avB $avB"
-
-  #Export vars to ::rgb namespace
-  catch {namespace delete rgb}
-  namespace eval rgb {}
-  set rgb::avRed $avR
-  set rgb::avGreen $avG
-  set rgb::avBlue $avB
-  set rgb::avBrightness $avBri
-
-  #Compute strong colour
-  namespace path {::tcl::mathfunc}
-  set rgb::maxCol [max $avR $avG $avB]
-  set rgb::minCol [min $avR $avG $avB]
-
-#puts "strongCol $rgb::maxCol"
-
-  #Delete colour lists
-  catch {unset R G B}
-
-} ;#END computeAvColours
-
 
 
 #TODO OBSOLETE, the code is already in nthe row pixel arrays!
@@ -118,30 +69,6 @@ proc setLuminanceCode {pixArr} {
   return $lumCode
 }
 
-# changeFontColour - TODO just testing
-#TODO: to be implemented in above! - MAY NOT BE NECESSARY!!!
-#Theory: 
-##wenn HG überwiegend dunkelblau, fontcolor-> silver
-##wenn HG überwiegend dunkelgrün, fontcolor-> gold
-
-#TODO don't change colour, but only shades of colour (brighter/darker)
-proc changeFontColour {} {
-  if {$rgb::avBrightness <= 100 &&
-  [expr $rgb::maxCol - $rgb::minCol] > 70} {
-  #puts "Not resetting colour."
-    return 0
-  }
-
-  if {$rgb::maxCol == $rgb::avBlue} {
-    set newFontcolortext silver
-  } elseif {$rgb::maxCol == $rgb::avGreen} {
-    set newFontcolortext gold
-  }
-
-  set rgb::fontcolortext $newFontcolortext
-  puts "Changed font colour to $fontcolortext"
-  return 1
-}
 
 proc setShade {rgb} {
 #called by ??? - now in Setup, var saved to Config!!! ????

@@ -13,7 +13,7 @@ proc evalPngComment {file} {
   
   #Check keyword & exit if missing
   if ![regexp BiblePix $T] {
-    return -code error "No BiblePix data found"
+    return -code error 0
   }
   #Extract X, Y and L from data string
   set X [string range [regexp -inline {X[0-9]*} $T] 1 end]
@@ -32,34 +32,38 @@ proc evalPngComment {file} {
 #adapted from: https://wiki.tcl-lang.org/page/Writing+PNG+Comments
 ##reads the comment blocks from a PNG file. This functionality is also present in the tcllib png module.
 ##currently only supports uncompressed comments. Does not attempt to verify checksum.
-##called by ...
+##returns "X Y L" or 0
+##called by Image
 proc readPngComment {file} {
-    set fh [open $file r]
-    fconfigure $fh -encoding binary -translation binary -eofchar {}
-    if {[read $fh 8] != "\x89PNG\r\n\x1a\n"} { close $fh; return }
-    set text {}
+  set fh [open $file r]
+  fconfigure $fh -encoding binary -translation binary -eofchar {}
+  if {[read $fh 8] != "\x89PNG\r\n\x1a\n"} { close $fh; return }
+  set text {}
 
-    while {[set r [read $fh 8]] != ""} {
-        binary scan $r Ia4 len type
-        set r [read $fh $len]
-        if {[eof $fh]} { close $fh; return }
-        if {$type == "tEXt"} {
-            lappend text [split $r \x00]
-        } elseif {$type == "iTXt"} {
-            set keyword [lindex [split $r \x00] 0]
-            set r [string range $r [expr {[string length $keyword] + 1}] end]
-            binary scan $r cc comp method
-            if {$comp == 0} {
-                lappend text [linsert [split [string range $r 2 end] \x00] 0 $keyword]
-            }
-        }
-        seek $fh 4 current
-    }
-    close $fh
-    
+  while {[set r [read $fh 8]] != ""} {
+      binary scan $r Ia4 len type
+      set r [read $fh $len]
+      if {[eof $fh]} { close $fh; return }
+      if {$type == "tEXt"} {
+          lappend text [split $r \x00]
+      } elseif {$type == "iTXt"} {
+          set keyword [lindex [split $r \x00] 0]
+          set r [string range $r [expr {[string length $keyword] + 1}] end]
+          binary scan $r cc comp method
+          if {$comp == 0} {
+              lappend text [linsert [split [string range $r 2 end] \x00] 0 $keyword]
+          }
+      }
+      seek $fh 4 current
+  }
+  close $fh
+  
+  if {$text != ""} {
     return $text
+  } {
+    return 0
+  }
 }
-
 
 # writePngComment
 ##adapted from: https://wiki.tcl-lang.org/page/Reading+PNG+Comments
