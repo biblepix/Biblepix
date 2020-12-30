@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28dec20 pv
+# Updated: 30dec20 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -42,7 +42,8 @@ set Kde4ServiceDir ~/.kde/share/kde4/services
 
 #Wayland/Sway
 set SwayConfFile $LinConfDir/sway/config
-
+#XFCE4
+set Xfce4ConfFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
 
 # 1  M E N U   E N T R Y   .DESKTOP   F I L E 
 
@@ -55,7 +56,6 @@ set Kde4DesktopFile $KdeConfDir/share/kde4/services/biblepixSetup.desktop
 ## C) MENU ENTRY RIGHTCLICK FILE (works only for some Plasma 5 versions of Konqueror/Dolphin?)
 set Kde5DesktopActionFile $LinDesktopFilesDir/biblepixSetupAction.desktop
 
-
 # 3 Autostart files
 ##this is obsolete:
 set Kde4AutostartDir $KdeDir/Autostart
@@ -63,10 +63,6 @@ set Kde4AutostartFile $Kde4AutostartDir/biblepix.desktop
 set LinAutostartDir $LinConfDir/autostart
 file mkdir $LinAutostartDir
 set LinAutostartFile $LinAutostartDir/biblepix.desktop
-
-#TODO: move to?
-set Xfce4ConfigFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
-
 
 # formatLinuxExecutables
 ## 1 Check first line of Linux executables for correct 'env' path
@@ -569,208 +565,49 @@ proc setupKde5Bg {Kde5ConfFile kread kwrite} {
 ##Change settings with tDom parser
 ##called by SaveLin
 proc setupXfce4Background {} {
-  global slideshow Xfce4ConfigFile TwdPNG
+  global Xfce4ConfFile TwdPNG
   package require tdom
   
+  puts "Changing Xfce4 background picture..."
+  
   #Exit if XML not found
-  if ![file exists $Xfce4ConfigFile] {
+  if ![file exists $Xfce4ConfFile] {
     return 1
   }
   
   #Parse config XML
-  set chan [open $Xfce4ConfigFile]
+  set chan [open $Xfce4ConfFile]
   set txt [read $chan]
   close $chan
   set root [dom parse $txt]
   set doc [$root documentElement]
 
-  #list required property nodes
+  #List required property nodes
   set lastimgL [$doc selectNodes //property\[@name='last-image'\]]
-  set cycleL [$doc selectNodes //property\[@name='backdrop-cycle-enable'\]]
-  set timerL [$doc selectNodes //property\[@name='backdrop-cycle-timer'\]]
-  set randomL [$doc selectNodes //property\[@name='backdrop-cycle-random-order'\]]
   set styleL [$doc selectNodes //property\[@name='image-style'\]]
+
+##################################################################################################
+#WICHTIG: these may not be present, but ARE UNNECESSARY - Xfce4 reloads picture when changed by BP
+#  set cycleL [$doc selectNodes //property\[@name='backdrop-cycle-enable'\]]
+#  set timerL [$doc selectNodes //property\[@name='backdrop-cycle-timer'\]]
+#  set randomL [$doc selectNodes //property\[@name='backdrop-cycle-random-order'\]]
+##################################################################################################
 
   #Set required parameters
   foreach node $lastimgL {
     $node setAttribute value $TwdPNG
   }
-  ##set single or cycle 
-  if $slideshow {set slid 1} {set slid 0}
-  foreach node $cycleL {
-    $node setAttribute value $slid
-  }
-  ##the following only take effect if $slid = 1
-  foreach node $timerL {
-    $node setAttribute value $slideshow
-  }
-  foreach node $randomL {
-    $node setAttribute value 1
-  }
+  ##styles: 1=centered / 5=scaled
   foreach node $styleL {
     $node setAttribute value 1
   }
 
   #Save changed config XML
-  set chan [open $Xfce4ConfigFile w]
+  set chan [open $Xfce4ConfFile w]
   puts $chan [$root asXML]
   close $chan
-
-} ;#END setupXfceBackground
-
-
-##TODO OBSOLETE!
-proc setupXfceBackground-OLD {} {
-  global slideshow
-
   
-  
-  #Check monitor name, exit if no XFCE installation found
-  set desktopXmlTree [exec xfconf-query -c xfce4-desktop -l]
-  if {$desktopXmlTree == ""} {
-    return 1
-  }
-  
-  #Our 'channel' is actually an XML file found in .config/xfce4/xfconf/xfce-perchannel-xml/
-  set channel "xfce4-desktop"
-  puts "Configuring XFCE background image..."
-
-  #This rewrites backdrop.list for old Xfce4 installations
-  ##not used now
-  if {$slideshow} {
-    set backdropDir ~/.config/xfce4/desktop
-    file mkdir $backdropDir
-    set backdropList $backdropDir/backdrop.list
-    set chan [open $backdropList w]
-    puts $chan {# xfce backdrop list}
-    puts $chan "$::TwdBMP\n$::TwdPNG"
-    close $chan
-    file attributes $backdropList -permissions 00644
-    set monPicPath $backdropList
-    set cycleEnableValue true
-  } else {
-    set monPicPath $::TwdBMP
-    set cycleEnableValue false
-  }
-
-
- #Set monitoring - no Luck, holds up everything!
-#exec xfconf-query -c xfce4-desktop -m
-#DIESE PFADE SIND IMMER DA:
-##  A) /backdrop/screen?/monitor?/workspace[0-3]/last-image
-##  B) /backdrop/screen?/monitor?/image-path
-    
-#xfconf-query -c xfce4-desktop -l >
-#/backdrop/screen0/monitor0/image-path NEEDED? [path]
-#/backdrop/screen0/monitor0/workspace0/backdrop-cycle-enable NEEDED true
-#/backdrop/screen0/monitor0/workspace0/backdrop-cycle-timer NEEDED int
-
-# xfconf-query 'set' = set property if existent
-# xfconf-query 'create' = create property
-
-  if [regexp {monitor0} $desktopXmlTree] {
-    set monitorName "monitor"
-  } else {
-    regexp -line {(backdrop/screen0/)(.*)(/.*$)} $desktopXmlTree var1 monitorName var3
-  }
-
-  #1. Scan through 4 screeens & monitors
-  ##NOTE: Never seen more than screen0 , but 4 each is a reasonable compromise.
-  for {set s 0} {$s<5} {incr s} {
-    for {set m 0} {$m<5} {incr m} {
-
-      #This key was added in new inst., not needed here:
-#      set CycleTimerPeriodMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-period
-      set ImgMonPath /backdrop/screen$s/${monitorName}${m}/image-path
-
-      if [catch {exec xfconf-query -c $channel -p $ImgMonPath}] {
-      
-        continue
-      
-      } else {
-      
-        puts "Setting $ImgMonPath"
-        
-        #A: MONITOR SECTION
-
-        ##most of this is only needed for old inst.
-        #must set single img path even if slideshow?
-        ##old inst. needs path to backdrop.list!
-        #imgStyle seems to be: 1==centred
-        #imgShow seems to be needed for old inst. 
-        
-        set ImgStyleMonPath /backdrop/screen$s/$monitorName$m/image-style
-        set ImgShowMonPath /backdrop/screen$s/$monitorName$m/image-show
-        
-        #these are needed here for old inst., and also in the screen section below for the new!!
-        set LastImgMonPath /backdrop/screen$s/$monitorName$m/last-image
-        set CycleEnableMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-enable
-        set CycleTimerMonPath /backdrop/screen$s/$monitorName$m/backdrop-cycle-timer
-        
-        #Old inst. has only minutes ; set type to 'uint', timer to >1 minute
-        set minutes [expr max($slideshow/60, 1)]
-        puts "minutes: $minutes"
-
-        exec xfconf-query -c $channel -p $ImgMonPath -n -t string -s $monPicPath
-        
-        exec xfconf-query -c $channel -p $ImgStyleMonPath -n -t int -s 1
-        exec xfconf-query -c $channel -p $ImgShowMonPath -n -t bool -s true
-        exec xfconf-query -c $channel -p $LastImgMonPath -n -t string -s $::TwdBMP        
-        exec xfconf-query -c $channel -p $CycleEnableMonPath -n -t bool -s $cycleEnableValue
-        exec xfconf-query -c $channel -p $CycleTimerMonPath -n -t uint -s $minutes
-        #exec xfconf-query -c $channel -p $CycleTimerPeriodMonPath -n -t int -s 1
-        
-        #this makes no sense.... TODO!
-        
-        set ctrlBit 1
-      }
-
-puts "Ad hena azaranu 1"
-
-      #B: WORKSPACE SECTION
-      
-      ## Scan through 9 workspaces! (w) 
-      #NOTE1: any number of ws's can be added, but standard is 4.
-      #NOTE2: old inst. doesn't seem to respect workspaces, 
-      # >> put all information in the /screen0/monitor0 main section for now
-      for {set w 0} {$w<10} {incr w} {
-      
-        #check if workspace exists, else skip
-        set LastImgWsPath /backdrop/screen$s/$monitorName$m/workspace$w/last-image
-        if [catch {exec xfconf-query -c xfce4-desktop -p $LastImgWsPath}] {
-
-          continue
-          
-        } else {
-
-          puts "Setting $LastImgWsPath"
-          
-          set CycleEnableWsPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-enable
-          set CycleTimerWsPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-timer
-          set CycleTimerPeriodWsPath /backdrop/screen$s/$monitorName$m/workspace$w/backdrop-cycle-period
-          set ImgStyleWsPath /backdrop/screen$s/$monitorName$m/workspace$w/image-style
-          
-          exec xfconf-query -c $channel -p $LastImgWsPath -n -t string -s $::TwdBMP
-          exec xfconf-query -c $channel -p $CycleEnableWsPath -n -t bool -s $cycleEnableValue
-          exec xfconf-query -c $channel -p $CycleTimerWsPath -n -t uint -s $slideshow
-          exec xfconf-query -c $channel -p $CycleTimerPeriodWsPath -n -t int -s 0
-          exec xfconf-query -c $channel -p $ImgStyleWsPath -n -t int -s 1
-        }
-      } ;#END for3
-    } ;#END for2
-  } ;#END for1
-    puts "Ad hena azaranu 2"
-
-#TODO: this dunnot work!
-  if [info exists ctrlBit] {
-      return 0
-  } {
-    puts NoLuckSettingXfce
-    return 1
-  }
-  
-} ;#END setupXfceBackground-OLD
-
+} ;#END setupXfce4Background
 
 # setupGnomeBackground - TODO: das funktioniert nicht mit return!
 ##configures Gnome single pic
@@ -797,7 +634,7 @@ proc setupGnomeBackground {} {
 
 ########## R E L O A D   D E S K T O P S  ##########################
 
-# reloadKdeDesktop - TODO: DONT BOTZHER!!
+# reloadKdeDesktop - TODO: DONT BOZER!!
 ##Rereads all .desktop and XML files
 ##Called by SetupSaveLin after changing config files
 proc reloadKdeDesktop {} {
@@ -815,14 +652,8 @@ proc reloadKdeDesktop {} {
 # reloadXfceDesktop
 ##Rereads XFCE4 Desktop configuration
 ##Called by SetupSaveLin after changing config files
-proc reloadXfceDesktop {} {
-  ##1) try reloading xfce4 settings
-  if {[auto_execok xfdesktop-settings] != ""} {
-    catch {exec xfdesktop-settings}
-    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "Testing XFCE reload" -parent .
-    catch {exec killall xfdesktop-settings}
-  }
-  ##2) try reloading xfce4 desktop
+proc reloadXfce4Desktop {} {
+  tk_messageBox -type yesno -icon info -title "BiblePix Installation" -message "Reload XFCE4 desktop settings" -parent .
   catch {exec xfdesktop --reload}
 }
 
