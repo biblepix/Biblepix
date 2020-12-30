@@ -119,7 +119,7 @@ proc trimPic {pic x1 y1 x2 y2} {
 # resizePic
 ## TODOS: CHANGE NAME? MOVE TO BACKGROUND!!!!
 ## called for even-sided resizing, after cutting
-proc resizePic {src newx newy {dest ""} } { 
+proc resizePic {src newx newy} { 
 
  #  Decsription:  Copies a source image to a destination
  #   image and resizes it using linear interpolation
@@ -127,7 +127,6 @@ proc resizePic {src newx newy {dest ""} } {
  #  Parameters:   newx   - Width of new image
  #                newy   - Height of new image
  #                src    - Source image
- #                dest   - Destination image (optional)
  #
  #  Returns:      destination image
  #  Author: David Easton, wiki.tcl.tk, 2004 - God bless you David, you have saved us a lot of trouble!
@@ -137,10 +136,8 @@ proc resizePic {src newx newy {dest ""} } {
   set mx [image width $src]
   set my [image height $src]
 
-  if { "$dest" == ""} {
-    set dest [image create photo]
-  }
-  
+  set dest [image create photo]
+
   $dest configure -width $newx -height $newy
 
   # Check if we can just zoom using -zoom option on copy

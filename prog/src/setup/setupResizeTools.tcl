@@ -2,7 +2,7 @@
 # Procs used in Resizing + Repositioning processes
 # sourced by SetupPhotos & ???
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25nov20 pv
+# Updated: 30dec20 jh
 
 # needsResize
 ##compares photosOrigPic OR rotateOrigPic with screen dimensions
@@ -94,137 +94,88 @@ proc grabCanvSection {c} {
 
 } ;#END grabCanvSection
 
-# fitPic2Canv
-##fits ill-dimensioned photo into screen-dimensioned canvas, hiding over-dimensioned side
+# getCanvSizeFromPic
+## return the size of the canvas in ratio to screensize
 ##called by setupResizePhoto for .resizePhoto.resizeCanv & .reposPhoto.reposCanv
-##returns cutX + cutY
-proc fitPic2Canv {c} {
+##returns canvX + canvY
+proc getCanvSizeFromPic {pic} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-  set imgX [image width $addpicture::curPic]
-  set imgY [image height $addpicture::curPic]
-
-  #TODO nur canvas hat korrekte Dimensionen
-  set canvImgName [lindex [$c itemconf img -image] end]
-
-  set canvImgX [image width $canvImgName]
-  set canvImgY [image height $canvImgName]
-
   set screenFactor [expr $screenX. / $screenY]
-  set origImgFactor [expr $imgX. / $imgY]
 
-  $c conf
+  set imgX [image width $pic]
+  set imgY [image height $pic]
+  set imgFactor [expr $imgX. / $imgY]
 
   ##zu hoch
-  if {$origImgFactor < $screenFactor} {
+  if {$imgFactor < $screenFactor} {
     puts "Cutting height.."
-    set canvCutY [expr round($canvImgX / $screenFactor)]
-    set canvCutX [expr round($canvCutY * $screenFactor)]
+    set canvX $imgX
+    set canvY [expr round($imgX / $screenFactor)]
 
   ##zu breit
-  } elseif {$origImgFactor > $screenFactor} {
+  } elseif {$imgFactor > $screenFactor} {
     puts "Cutting width.."
-    set canvCutX [expr round($canvImgX / $screenFactor)]
-    set canvCutY $canvImgY
+    set canvX [expr round($imgY * $screenFactor)]
+    set canvY $imgY
 
   ##no cutting needed
   } else  {
-    set canvCutX $imgX
-    set canvCutY $imgY
+    set canvX $imgX
+    set canvY $imgY
   }
 
-  return "$canvCutX $canvCutY"
+  return "$canvX $canvY"
 
-} ;#END fitPic2Canv
+} ;#END getCanvSizeFromPic
 
-# setpic2CanvScalefactor
-##sets scale factor in 'addpicture' namespace
-##for largest possible display size
-##called by ?addPic & openResizeWindow & openReposWindow
-proc setPic2CanvScalefactor {} {
-#  if ![namespace exists addpicture] {
-#      
-#  }
-  
-#  #Check which original pic to use
-#  if [catch {image inuse rotateOrigPic}] {
-#    set origPic photosOrigPic
-#  } else {
-#    set origPic rotateOrigPic
-#  }
-
-#this var is set by addPic
-set origPic $addpicture::curPic
-
+proc getResizeScalefactor {} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-  set imgX [image width $origPic]
-  set imgY [image height $origPic]
+  set maxCanvX [expr round([winfo width .] / 2.5)]
+  set factor [expr floor($screenX. / $maxCanvX)]
 
-  set maxX [expr $screenX - 200]
-  set maxY [expr $screenY - 200]
+  set canvX [expr round($screenX / $factor)]
+  set canvY [expr round($screenY / $factor)]
 
-  ##Reduktionsfaktor ist Ganzzahl
-  set scaleFactor 1
-  while { $imgX >= $maxX && $imgY >= $maxY } {
-    incr scaleFactor
-    set imgX [expr $imgX / 2]
-    set imgY [expr $imgY / 2]
+  set imgX [image width $addpicture::curPic]
+  set imgY [image height $addpicture::curPic]
+
+  set factor [expr int(floor($imgX. / $canvX))]
+
+  if {[expr $imgY / $factor] < $canvY} {
+    set factor [expr int(floor($imgY. / $canvY))]
   }
+  
+  return $factor
+}
 
-  #export scaleFactor to 'addpicture' namespace
-  set addpicture::scaleFactor $scaleFactor
+proc getReposScalefactor {} {
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+  set maxCanvX [expr round([winfo width .] / 1.5)]
+  set factor [expr ceil($screenX. / $maxCanvX)]
 
-} ;#END setPic2CanvScalefactor
+  set canvX [expr round($screenX / $factor)]
+  set canvY [expr round($screenY / $factor)]
 
+  set imgX [image width $addpicture::curPic]
+  set imgY [image height $addpicture::curPic]
 
-#setupResizeHandler
-##called by SetupResize
-namespace eval ResizeHandler {
- #TODO Joel export ist nicht nötig, wenn Prog mit namespace-Pfad aufgerufen wird
-  namespace export QueryResize
-  namespace export Run
+  set factor [expr int(ceil($imgX. / $canvX))]
 
-  variable queryCutImgJList ""
-  variable counter 0
-  variable isRunning 0
-
-  proc QueryResize {cutImg} {
-    variable queryCutImgJList
-    variable counter
-    set queryCutImgJList [jappend $queryCutImgJList $cutImg]
-    incr counter
+  if {[expr $imgY / $factor] > $canvY} {
+    set factor [expr int(ceil($imgY. / $canvY))]
   }
-
-  proc Run {} {
-    variable queryCutImgJList
-    variable counter
-    variable isRunning
-
-    if {$counter > 0} {
-      if {!$isRunning} {
-        set isRunning 1
-        set cutImg [jlfirst $queryCutImgJList]
-        set queryCutImgJList [jlremovefirst $queryCutImgJList]
-        incr counter -1
-        processResize $cutImg
-        ResizeHandler::FinishRun
-      }
-    }
-  }
-
-  proc FinishRun {} {
-    variable isRunning
-    set isRunning 0
-    ResizeHandler::Run
-  }
+  
+  return $factor
 }
 
 # doResize
 ## organises all resizing processes
 ## called by openResizeWindow
-proc doResize {c} {
-  global addpicture::scaleFactor
+proc doResize {canv scaleFactor} {
+  global dirlist picPath
   global addpicture::curPic
 
   set screenX [winfo screenwidth .]
@@ -234,6 +185,9 @@ proc doResize {c} {
   set imgX [image width $curPic]
   set imgY [image height $curPic]
   set imgFactor [expr $imgX. / $imgY]
+
+  set canvX [lindex [$canv conf -width] end]
+  set canvY [lindex [$canv conf -height] end]
   
   #A) needs even resizing
   if {$screenFactor == $imgFactor} {
@@ -242,66 +196,33 @@ proc doResize {c} {
   #B) needs cutting + resizing
   } else {
   
-    lassign [$c bbox img] canvPicX1 canvPicY1 canvPicX2 canvPicY2
-    set cutX1 [expr int($canvPicX1 * -1 * $scaleFactor)]
-    set cutY1 [expr int($canvPicY1 * -1 * $scaleFactor)]
-    set cutX2 [expr int($canvPicX2 * $scaleFactor + $cutX1)]
-    set cutY2 [expr int($canvPicY2 * $scaleFactor + $cutY1)]
+    lassign [$canv bbox img] canvPicX1 canvPicY1
+    set cutX1 [expr int(max(($canvPicX1 * -1 * $scaleFactor), 0))]
+    set cutY1 [expr int(max(($canvPicY1 * -1 * $scaleFactor), 0))]
+    set cutX2 [expr int(min(($canvX * $scaleFactor + $cutX1), $imgX))]
+    set cutY2 [expr int(min(($canvY * $scaleFactor + $cutY1), $imgY))]
+
+    puts cutting
+    puts "$canvPicX1, $canvPicY1"
+    puts "$cutX1, $cutY1, $cutX2, $cutY2"
+
     set cutImg [trimPic $curPic $cutX1 $cutY1 $cutX2 $cutY2]
-  
-  #unsetting needed for openReposWindow
-#    namespace eval addpicture {
-#      unset curPic
-#    }
-
   }
-  
-
-  # Send (cut) pic to final resizing
-  ResizeHandler::QueryResize $cutImg
-  after idle {
-    ResizeHandler::Run
-  }
-  
-} ;#END doResize
-
-# processResize
-##resizes $cutpic , (re)saves to disk & rewrites addpicture::curPic var
-##called by ResizeHandler::Run
-proc processResize {cutImg} {
-  global dirlist picPath SetupResizePhoto
-
-source $SetupResizePhoto
 
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
 
   NewsHandler::QueryNews "$::resizingPic" orange
 
-  #Save finalImage, copy to cutOrigPic for further processing
   set finalImage [resizePic $cutImg $screenX $screenY]
 
-
-
-#TODO try this is great - but thy is the canvas pic so small?
-openReposWindow $finalImage
-return 
-
-
-  image create photo cutOrigPic
-  cutOrigPic copy $finalImage
-
   ##update addpicture current pic var
+  image delete $addpicture::curPic
   set addpicture::curPic $finalImage
 
-# set new var for vwait in SetupResizePhoto
-  set addpicture::resizedPic $finalImage
-  
   $finalImage write $addpicture::targetPicPath -format PNG
 
-#TODO WHY THIS?
-#  image delete $finalImage
-
   NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
-
+  
+  return $finalImage
 } ;#END processResize

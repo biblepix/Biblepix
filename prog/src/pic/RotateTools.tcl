@@ -8,7 +8,6 @@
 ##from: https://wiki.tcl-lang.org/page/Photo+image+rotation
 ##called by SetupRotate
 proc imageRotate {img angle} {
-  global C
   set ::update 0
   set rotatedImg [image create photo]
   set angle [expr {fmod($angle, 360.0)}]
@@ -282,7 +281,7 @@ proc updateMeterLine {w a {l 0}} {
 
 # Convert variable to angle on trace
 proc updateMeter {name1 name2 op} {
-  global C s mC from to
+  global mC from to
   upvar #0 $name1 v
   set min $from 
   set max $to

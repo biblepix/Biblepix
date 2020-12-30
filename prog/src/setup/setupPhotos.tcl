@@ -38,7 +38,7 @@ pack .photosF.mainf.right.bar.> -side left
 set screenX [winfo screenwidth .]
 set screenY [winfo screenheight .]
 set maxCanvX [expr round([winfo width .] / 1.5)]
-set factor [expr int(ceil($screenX / $maxCanvX.))]
+set factor [expr ceil($screenX. / $maxCanvX)]
 
 set canvX [expr round($screenX / $factor)]
 set canvY [expr round($screenY / $factor)]
@@ -48,7 +48,7 @@ pack .imgCanvas -in .photosF.mainf.right.bild -side left
 
 label .picPath -textvar picPath
 button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic $::picPath}
-button .delBtn -textvar f6.del -activebackground red -command {delPic}
+button .delBtn -textvar f6.del -activebackground red -command {delPic .imgCanvas}
 button .rotateBtn -activebackground orange -textvar rotatePic -command {source $::SetupRotate}
 
 set fileJList [doCollect .imgCanvas]

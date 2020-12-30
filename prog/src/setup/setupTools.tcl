@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28nov20 pv
+# Updated: 30dec20 jh
 
 source $SetupResizeTools
 source $JList
@@ -28,63 +28,53 @@ proc addPic {origPicPath} {
   set addpicture::targetPicPath $targetPicPath
 
   #DETERMINE ROTATION STATUS
-  if { [info exists addpicture::rotated] && $addpicture::rotated} {
-    set curPic $addpicture::curPic
-  } else {
-    set curPic photosOrigPic
+  if { ![info exists addpicture::rotated] || !$addpicture::rotated} {
     set addpicture::curPic photosOrigPic
   }
-  
+
   #DETERMINE NEED FOR RESIZING 
 
   ## expect 0 / even / uneven
-  set resize [needsResize $curPic]
+  set resize [needsResize $addpicture::curPic]
   
   #A): right dimensions, right size: save pic
   if {$resize == 0} {
 
-    savePic
-    after 300 openReposWindow $curPic
+    $addpicture::curPic write $targetPicPath -format PNG
+
     NewsHandler::QueryNews "[copiedPicMsg $origPicPath]" lightgreen
-    NewsHandler::QueryNews $::textpos.wait orange
-    
+
+    openReposWindow $addpicture::curPic
+
   #B) right dimensions, wrong size: start resizing & open reposWindow
   } elseif {$resize == "even"} {
-    
-#TODO Joel: dein ResizeHandler legt das Bild nicht ab!
-#    ResizeHandler::QueryResize $curPic 
-#    ResizeHandler::Run
 
-set screenX [winfo screenwidth .]
-set screenY [winfo screenheight .]
-NewsHandler::QueryNews "Resizing... wait a moment..." orange
-    set newpic [resizePic $curPic $screenX $screenY]
+    set screenX [winfo screenwidth .]
+    set screenY [winfo screenheight .]
+    NewsHandler::QueryNews "Resizing... wait a moment..." orange
+
+    set newpic [resizePic $addpicture::curPic $screenX $screenY]
+    catch {image delete $addpicture::curPic}
+    set addpicture::curPic $newpic
+
     $newpic write $targetPicPath -format PNG
-    openReposWindow $curPic
-    
+    NewsHandler::QueryNews "[copiedPicMsg $origPicPath]" lightblue
+
+    openReposWindow $newpic
+
   #C) open resize window, resize later
   } else {
-  
+
     openResizeWindow
   }
 
   set ::numPhotos [llength [glob $dirlist(photosDir)/*]]
-  
 } ;#END addPic
 
-# savePic
-##writes addpicture::curPic to destination
-##called by addPic
-proc savePic {} {
-  global addpicture::curPic 
-  global addpicture::targetPicPath
-  $curPic write $targetPicPath -format PNG
-}
-
-proc delPic {} {
+proc delPic {c} {
   global dirlist fileJList picPath
   file delete $picPath
-  set fileJList [deleteImg $fileJList .imgCanvas]
+  set fileJList [deleteImg $fileJList $c]
   NewsHandler::QueryNews "[deletedPicMsg $picPath]" orange
   set ::numPhotos [llength [glob $dirlist(photosDir)/*]]
 }
@@ -591,16 +581,16 @@ proc refreshImg {localJList c} {
 proc openImg {imgFilePath imgCanvas} {
   image create photo photosOrigPic -file $imgFilePath
 
-  set cavWidth [lindex [$imgCanvas configure -width] end]
-  set cavHeight [lindex [$imgCanvas configure -height] end]
+  set canvX [lindex [$imgCanvas configure -width] end]
+  set canvY [lindex [$imgCanvas configure -height] end]
   
   #scale photosOrigPic to photosCanvPic
   set imgX [image width photosOrigPic]
   set imgY [image height photosOrigPic]
-  set factor [expr int(ceil($imgX. / $cavWidth))]
+  set factor [expr int(ceil($imgX. / $canvX))]
 
-  if {[expr $imgY / $factor] > $cavHeight} {
-    set factor [expr int(ceil($imgY. / $cavHeight))]
+  if {[expr $imgY / $factor] > $canvY} {
+    set factor [expr int(ceil($imgY. / $canvY))]
   }
 
   catch {image delete photosCanvPic}
