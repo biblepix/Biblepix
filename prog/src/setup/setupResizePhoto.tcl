@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 1dec20 pv
+# Updated 30dec20 jh
 
 #TODO Warum geht das nicht? Warum sourcet er Globals nicht?
 #source $SetupResizeTools
@@ -18,27 +18,40 @@ source $::AnnotatePng
 proc openResizeWindow {} {
   global fontsize
 
+  set margin 10
+
+  namespace eval resizePic {}
+
   #Copy addpicture::curPic to canvas
-  image create photo resizeCanvPic
-  if ![info exists addpicture::scaleFactor] {
-    setPic2CanvScalefactor
-  }
-  resizeCanvPic copy $addpicture::curPic -subsample $addpicture::scaleFactor
+  set resizeCanvPic [image create photo]
+
+  set resizePic::scaleFactor [getResizeScalefactor]
+  $resizeCanvPic copy $addpicture::curPic -subsample $resizePic::scaleFactor
+
+  lassign [getCanvSizeFromPic $resizeCanvPic] canvX canvY
+  set winX [expr $canvX + 2*$margin]
+  set winY [expr $canvY + 2*$margin]
 
   #Create toplevel window w/canvas & pic
-  set w [toplevel .resizePhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
-  set c [canvas $w.resizeCanv -bg lightblue]
-  $c create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
+  set w [toplevel .resizePhoto -bg lightblue -padx $margin -pady $margin -height $winX -width $winY]
+  set resizePic::c [canvas $w.resizeCanv -bg lightblue -height $canvY -width $canvX]
+  $resizePic::c create image 0 0 -image $resizeCanvPic -anchor nw -tags {img mv}
 
   #Create title & buttons
   set cancelBtnAction {
     set ::Modal.Result "Cancelled"
     NewsHandler::QueryNews "Bild nicht gespeichert" red
+    catch {image delete $addpicture::curPic}
+    namespace delete resizePic
     namespace delete addpicture
   }
+
   set confirmBtnAction {
-    doResize .resizePhoto.resizeCanv
+    set img [doResize $resizePic::c $resizePic::scaleFactor]
+    namespace delete resizePic
     set ::Modal.Result "Success"
+
+    openReposWindow $img
   }
 
   ttk::button $w.confirmBtn -text Ok -command $confirmBtnAction
@@ -46,21 +59,17 @@ proc openResizeWindow {} {
   pack $w.confirmBtn $w.cancelBtn ;#will be repacked into canv window
   set bildname [file tail $addpicture::targetPicPath]
 
-  #Set cutting coordinates & configure canvas
-  lassign [fitPic2Canv $c] cutX cutY
-  $c conf -width $cutX -height $cutY
-
-  $c create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill yellow -text "$::movePicToResize" -tags text
-  $c create window [expr $cutX - 150] 50 -anchor ne -window $w.confirmBtn -tag okbtn
-  $c create window [expr $cutX - 80] 50 -anchor ne -window $w.cancelBtn -tag delbtn
-  pack $c -side top -fill none
+  $resizePic::c create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill yellow -text "$::movePicToResize" -tags text
+  $resizePic::c create window [expr $canvX - 150] 50 -anchor ne -window $w.confirmBtn -tag okbtn
+  $resizePic::c create window [expr $canvX - 80] 50 -anchor ne -window $w.cancelBtn -tag delbtn
+  pack $resizePic::c -side top -fill none
 
   #Set bindings
-  $c bind mv <1> {
+  $resizePic::c bind mv <1> {
      set ::x %X
      set ::y %Y
   }
-  $c bind mv <B1-Motion> [list dragCanvasItem %W img %X %Y]
+  $resizePic::c bind mv <B1-Motion> [list dragCanvasItem %W img %X %Y]
   bind $w <Return> $confirmBtnAction
   bind $w <Escape> $cancelBtnAction
   Show.Modal $w -destroy 1 -onclose $cancelBtnAction
@@ -72,62 +81,65 @@ proc openResizeWindow {} {
 ##called by addPic ?????????if ![needsResize]??????????????
 proc openReposWindow {pic} {
   global fontsize
-  image create photo reposCanvPic
 
-  set w [toplevel .reposPhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
-  set c [canvas .reposPhoto.reposCanv -bg lightblue]
-  $c create image 0 0 -image reposCanvPic -anchor nw -tags {img mv}
-  pack $c
+  namespace eval reposPic {}
+  set reposCanvPic [image create photo]
+
+  NewsHandler::QueryNews $::textpos.wait orange
+
+  set reposPic::w [toplevel .reposPhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
+  set reposPic::canv [canvas $reposPic::w.reposCanv -bg lightblue]
+  $reposPic::canv create image 0 0 -image $reposCanvPic -anchor nw -tags {img mv}
+  pack $reposPic::canv
+
+  set reposPic::scaleFactor [getReposScalefactor]
+  $reposCanvPic copy $pic -subsample $reposPic::scaleFactor
 
   #Define button actions
   set cancelBtnAction {
     set ::Modal.Result "Cancelled"
     NewsHandler::QueryNews "$::reposNotSaved" red
-    #file delete $addpicture::targetPicPath
+    file delete $addpicture::targetPicPath
+    catch {image delete $addpicture::curPic}
+    namespace delete reposPic
     namespace delete addpicture
   }
+
   set confirmBtnAction {
     set ::Modal.Result "Success"
     
-    lassign [.reposPhoto.reposCanv coords txt] x y
+    lassign [$reposPic::canv coords txt] x y
+    set x [expr $x * $reposPic::scaleFactor]
+    set y [expr $y * $reposPic::scaleFactor]
     processPngComment $addpicture::targetPicPath $x $y
     
     NewsHandler::QueryNews "$::reposSaved" lightgreen
-    #file delete $addpicture::targetPicPath
+    catch {image delete $addpicture::curPic}
+    namespace delete reposPic
+    namespace delete addpicture
   }
 
   #Create text button on top & disable
-  set btn [button $w.moveTxtBtn -font {TkHeaderFont 20 bold} -fg red -pady 2 -padx 2]
+  set btn [button $reposPic::w.moveTxtBtn -font {TkHeaderFont 20 bold} -fg red -pady 2 -padx 2]
   $btn conf -command $confirmBtnAction -bd 5 -relief raised -textvar textpos.wait
   pack $btn
-  $c create window -15 15 -anchor nw -window $btn
-  $w.reposCanv itemconf mv -state disabled
-  $w.moveTxtBtn conf -state disabled
-  
-  
-
-  #Determine smallest possible scale factor for canvas pic
-  if ![info exists addpicture::scaleFactor] {
-    setPic2CanvScalefactor
-  }
-  reposCanvPic copy $pic -subsample $addpicture::scaleFactor
+  $reposPic::canv create window -15 15 -anchor nw -window $btn
+  $reposPic::canv itemconf mv -state disabled
+  $reposPic::w.moveTxtBtn conf -state disabled
 
   #Set bindings
-  $c bind mv <1> {
+  $reposPic::canv bind mv <1> {
      set ::x %X
      set ::y %Y
   }
-  $c bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}
+  $reposPic::canv bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}
 
-  set imgX [image width reposCanvPic]
-  set imgY [image height reposCanvPic]
-  $c conf -width $imgX -height $imgY
+  set imgX [image width $reposCanvPic]
+  set imgY [image height $reposCanvPic]
+  $reposPic::canv conf -width $imgX -height $imgY
 
   #Creaste moving text  & disable for now
-  createMovingTextBox $c
-      
-  lassign [fitPic2Canv $c] canvX canvY
-puts "$canvX $canvY"
+  createMovingTextBox $reposPic::canv
   
   #Configure text size
    set screenX [winfo screenwidth .]
@@ -139,18 +151,18 @@ puts "$canvX $canvY"
    }
    font conf movingTextReposFont -size $canvFontsize
    
-  bind $w <Return> $confirmBtnAction
-  bind $w <Escape> $cancelBtnAction
+  bind $reposPic::w <Return> $confirmBtnAction
+  bind $reposPic::w <Escape> $cancelBtnAction
 
 #Start colour scanning in background - TODO Set back to after idle once colourscan is working!
-  after 5000 {
+  after idle {
     colour::doColourScan
-     .reposPhoto.reposCanv itemconf mv -state normal
-     .reposPhoto.moveTxtBtn conf -state normal -bg orange -fg black
+     $reposPic::canv itemconf mv -state normal
+     $reposPic::w.moveTxtBtn conf -state normal -bg orange -fg black
      set textpos.wait "Sie können nun selber verschieben und dann abspeichern."
   }
 
-  Show.Modal $w -destroy 1 -onclose $cancelBtnAction
+  Show.Modal $reposPic::w -destroy 1 -onclose $cancelBtnAction
   
 } ;#END openReposWindow
 

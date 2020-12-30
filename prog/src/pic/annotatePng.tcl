@@ -102,15 +102,13 @@ proc writePngComment {file text} {
 ##Keyword added by writePngComment
 ## ?colour scanning must have completed for brightness?
 proc processPngComment {file x y} {
-  set realX [expr $x * $addpicture::scaleFactor]
-  set realY [expr $y * $addpicture::scaleFactor]
-  
+
   #TODO does this make sense?
   if [catch {set luminacy $colour::luminacy}] { 
     set luminacy 2
   }
   #Text format: X1345 Y1234 L(1-3)
-  set text "X${realX} Y${realY} L${luminacy}"
+  set text "X${x} Y${y} L${luminacy}"
   writePngComment $file $text
   return 0
 }
