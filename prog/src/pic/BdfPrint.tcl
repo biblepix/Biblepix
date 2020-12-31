@@ -2,18 +2,15 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 14apr20
+# Updated: 29dec20
 
-#1. SET BASIC VARS
 source $TwdTools
 source $BdfTools
-source $ImgTools
+#source $ImgTools
 
 set TwdLang [getTwdLang $::TwdFileName]
 set ::RtL [isRtL $TwdLang]
-
 puts "Loading BdfPrint"
-puts "TwdLang: $TwdLang"
 
 #2. SOURCE FONTS INTO NAMESPACES
 
@@ -73,40 +70,39 @@ if {$TwdLang == "zh"} {
 puts "Finished loading fonts"
 
 # 3. LAUNCH PRINTING & SAVE IMAGE
-set img hgbild
-
 
 #Compute avarage colours of text section
 puts "Computing colours..."
-#TODO outsource > computeColours.tcl >> move to Setup!
-#TODO move TODO[getSimilarColourArea] & [computeAvColours] from imgtools.tcl > into above
-#TODO prog hangs here but donno why
-##may be a problem with the namespace in below proc
-#catch {computeAvColours hgbild}
-#puts "Brightness: $rgb::avBrightness"
 
 #Compute sun & shade
-source $Globals
 set rgb [hex2rgb $fontcolor]
 set sun [setSun $rgb]
 set shade [setShade $rgb]
-puts "Fontcolor1: $fontcolor"
-puts "Sun: $sun"
 
-#TODO move this into Setup proc >> see above
-#Use shade for fontcolour & reset shade if $avBrightness exceeds $maxBrightness
-##leave sun alone
-#if {[info exists rgb::avBrightness] && $rgb::avBrightness >= $brightnessThreshold} {
-#  set fontcolor $shade
-#  set rgb [hex2rgb $fontcolor]
-#  set shade [setShade $rgb]
-###comments for testing:
-#  puts "Fontcolor2: $fontcolor"
-#  puts "MaxCol: $rgb::maxCol"
-#  puts "MinCol: $rgb::minCol"
-#}
+#A) PNG info present:
+if [info exists colour::luminacy] {
+  if {$colour::luminacy == 1} {
+    set colour::shade $rgb
+    set colour::rgb $sun
+    set colour::sun [setSun $sun]
+  } elseif {$colour::luminacy == 2} {
+    set colour::rgb $rgb
+    set colour::shade $shade
+    set colour::sun $sun  
+  } elseif {$colour::luminacy == 3} {
+    set colour::sun $rgb
+    set colour::rgb $shade
+    set colour::shade [setShade $shade]
+  }
 
-set finalImg [printTwd $TwdFileName $img]
+#B) No PNG info found:
+} else {
+  set colour::rgb $rgb
+  set colour::shade $shade
+  set colour::sun $sun  
+}
+
+set finalImg [printTwd $TwdFileName hgbild]
 
 if {$platform=="windows"} {  
   $finalImg write $TwdTIF -format TIFF

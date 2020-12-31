@@ -180,37 +180,20 @@ set heute [clock format [clock seconds] -format %d]
 set tab "                              "
 set ind "     "
 
-#Global functions
-proc uniqkey {} {
-  set key   [ expr { pow(2,31) + [ clock clicks ] } ]
-  set key   [ string range $key end-8 end-3 ]
-  set key   [ clock seconds ]$key
-  return $key
-}
 
-proc sleep { ms } {
-  set uniq [ uniqkey ]
-  set ::__sleep__tmp__$uniq 0
-  after $ms set ::__sleep__tmp__$uniq 1
-  vwait ::__sleep__tmp__$uniq
-  unset ::__sleep__tmp__$uniq
-}
+# Define font colours & colour computing values
+#set gold {#FF6300}
+array set gold    {r 255 g 155 b 0}
+#set silver #c0c0c0
+array set silver  {r 192 g 192 b 192}
+#set blue #00bfff
+array set blue    {r 0 g 190 b 255}
+#set green #3cb978
+array set green   {r 60 g 185 b 120}
 
-#Define font colours & colour computing values
+#TODO where is this used?
+#set brightnessThreshold 170
 
-#TODO why are changes not respected???
-#set gold #ff9b00
-#set gold #ffd700
-#set gold #daa520
-#set gold #ff8c00
-#set gold #ffa500 ;#should be orange!
-
-set gold {#FF6300}
-
-set silver #c0c0c0
-set blue #00bfff
-set green #3cb978
-set brightnessThreshold 170
 set sunfactor 1.8
 set shadefactor 0.6
 
@@ -273,6 +256,7 @@ proc Show.Modal {win args} {
   return ${::Modal.Result}
 }
 
+#Debug & HttpMock
 if { [info exists Debug] && $Debug && [info exists Httpmock] && $Httpmock} {
   proc sourceHTTP {} {
     source $::Http
@@ -282,6 +266,21 @@ if { [info exists Debug] && $Debug && [info exists Httpmock] && $Httpmock} {
   proc sourceHTTP {} {
     source $::Http
   }
+}
+
+#Global functions
+proc uniqkey {} {
+  set key   [ expr { pow(2,31) + [ clock clicks ] } ]
+  set key   [ string range $key end-8 end-3 ]
+  set key   [ clock seconds ]$key
+  return $key
+}
+proc sleep { ms } {
+  set uniq [ uniqkey ]
+  set ::__sleep__tmp__$uniq 0
+  after $ms set ::__sleep__tmp__$uniq 1
+  vwait ::__sleep__tmp__$uniq
+  unset ::__sleep__tmp__$uniq
 }
 
 catch {source $LoadConfig}

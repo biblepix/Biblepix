@@ -65,26 +65,6 @@ proc getRandomTwdFile args {
   return [lindex $twdlist $randIndex]
 }
 
-proc getRandomBMP {} {
-  #Ausgabe ohne Pfad
-  set bmplist [getBMPlist]
-  set randIndex [expr {int(rand()*[llength $bmplist])}]
-  return [lindex $bmplist $randIndex]
-}
-
-proc getRandomPhoto {} {
-  #Ausgabe JPG/PNG mit Pfad
-  global platform dirlist
-  
-  if {$platform=="unix"} {
-    set imglist [glob -nocomplain -directory $dirlist(photosDir) *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
-  } elseif {$platform=="windows"} {
-    set imglist [glob -nocomplain -directory $dirlist(photosDir) *.jpg *.jpeg *.png]
-  }
-  
-  return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ] 
-}
-
 proc updateTwd {} {
   package require json
   source $::Http

@@ -2,17 +2,24 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 10may19
+# Updated: 29dec20
 
 # printTwd
 ## Toplevel printing proc
 proc printTwd {TwdFileName img} {
   global marginleft margintop
-
+  
+  #evaluate any existing PNG comment
+  if {[info exists colour::marginleft] && 
+      [info exists colour::margintop]} {
+    set marginleft $colour::marginleft
+    set margintop $colour::margintop
+  }
   parseTwdTextParts $TwdFileName
   set finalImg [printTwdTextParts $marginleft $margintop $img]
-  
-  namespace delete twd
+
+#TODO testing  
+#  namespace delete twd colour
   
   return $finalImg
 }
@@ -154,11 +161,9 @@ proc printTwdTextParts {x y img} {
 ## prints single letter to $img
 ## called by printTextLine
 proc printLetter {letterName img x y} {
-  global sun shade fontcolortext RtL prefix
-  upvar $letterName curLetter
-
-#GET COLOUR FROM- TODO  
-  set color $fontcolortext
+  global colour::rgb colour::sun colour::shade 
+  global RtL prefix
+  upvar $letterName curLetter	
 
   set BBxoff $curLetter(BBxoff)
   set BBx $curLetter(BBx)
@@ -179,7 +184,7 @@ proc printLetter {letterName img x y} {
       
       if {$pxValue != 0} {
         switch $pxValue {
-          1 { set pxColor $color }
+          1 { set pxColor $rgb }
           2 { set pxColor $sun }
           3 { set pxColor $shade }
         }
@@ -191,7 +196,6 @@ proc printLetter {letterName img x y} {
     }
     incr yCur
   }
-  
 } ;#END printLetter
 
 
@@ -200,8 +204,12 @@ proc printLetter {letterName img x y} {
 ## calls printLetter
 ## use 'args' for TAB or IND
 proc printTextLine {textLine x y img args} {
-  global TwdLang marginleft enabletitle RtL BdfBidi prefix
-   
+  global TwdLang enabletitle RtL BdfBidi prefix
+
+  global marginleft
+#TODO will this work? - NO!
+  global colour::marginleft
+  
   set FontAsc "$${prefix}::FontAsc"
   
   #Set tab & ind in pixels - TODO: move to Globals?
@@ -258,7 +266,7 @@ proc printTextLine {textLine x y img args} {
     } else {
       
       array set curLetter [array get print_$encLetter]
-      if {[catch {printLetter curLetter $img $xBase $yBase} error]} {
+      if [catch {printLetter curLetter $img $xBase $yBase} error] {
         puts "could not print letter: $encLetter"
         error $error
         continue

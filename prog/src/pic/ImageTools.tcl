@@ -51,51 +51,26 @@ proc hex2rgb {hex} {
   return $rgb
 }
 
-
-
-#TODO OBSOLETE, the code is already in nthe row pixel arrays!
-# setLumCode - returns 1(dark) / 2(normal) / 3(light)
-##calculates average luminance of a pixel colour array
-##TODO Normalwert zwischen 70 und 100 -wo festlegen?
-##called by scanColourArea after each run of x loop
-proc setLuminanceCode {pixArr} {
-  upvar $pixArr myArr
-  set avCol [expr ($myArr(r) + $myArr(g) + $myArr(b)) / 3]
-  
-  set lumCode "2"
-  if {$avCol < 70}  {set lumCode "1"}
-  if {$avCol > 100} {set lumCode "3"}
-  
-  return $lumCode
-}
-
-
-proc setShade {rgb} {
-#called by ??? - now in Setup, var saved to Config!!! ????
+# setShade
+##reduces r/g/b by $shadefactor, avoiding values below 0
+##called by BdfPrint
+proc setShade {r g b} {
   global shadefactor
-  foreach c [split $rgb] {
-    lappend shadergb [expr {int($shadefactor*$c)}]
-  }
-  #darkness values under 0 don't matter   
-  set shade [rgb2hex $shadergb]
-  return $shade
+  set shadeR [expr max(int($shadefactor*$r),0)]
+  set shadeG [expr max(int($shadefactor*$g),0)]
+  set shadeB [expr max(int($shadefactor*$b),0)]
+  return "$shadeR $shadeG $shadeB"
 }
 
-#called by Hgbild
-proc setSun {rgb} {
+# setSun
+##increases r/g/b by $sunfactor, avoiding values over 255
+##called by BdfPrint
+proc setSun {r g b} {
   global sunfactor
-  foreach c [split $rgb] {
-    lappend sunrgbList [expr {int($sunfactor*$c)}]
-  }
-
-  #avoid brightness values over 255
-  foreach i $sunrgbList {
-    if {$i>255} {set i 255}
-    lappend sunrgb $i
-  }
-  
-  set sun [rgb2hex $sunrgb]
-  return $sun
+  set sunR [expr min(int($sunfactor*$r),255)]
+  set sunG [expr min(int($sunfactor*$g),255)]
+  set sunB [expr min(int($sunfactor*$b),255)]
+  return "$sunR $sunG $sunB"
 }
 
 proc setPngFileName {fileName} {
