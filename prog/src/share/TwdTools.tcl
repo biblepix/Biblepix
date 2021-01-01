@@ -80,7 +80,7 @@ proc updateTwd {} {
       set oldFileName [lindex [split [file tail $twdFile] "_"] 1]
       set currentExists 0
       foreach otherTwdFile $twdFiles {
-        if {[lindex [split [file tail $otherTwdFile] "_"] 1] == oldFileName \
+        if {[lindex [split [file tail $otherTwdFile] "_"] 1] == $oldFileName \
          && [lindex [split [file tail $otherTwdFile] "_"] 2] == "$::jahr.twd"} {
           set currentExists 1
         }
