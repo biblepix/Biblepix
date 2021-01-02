@@ -2,7 +2,13 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29dec20 pv
+# Updated: 2jan21 pv
+
+#Check for Img package
+if [catch {package require Img} ] {
+  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message $packageRequireImg
+  exit
+}
 
 proc getRandomBMP {} {
   #Ausgabe ohne Pfad
@@ -22,12 +28,6 @@ proc getRandomPhotoPath	 {} {
   return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ] 
 }
 
-#Check for Img package
-if [catch {package require Img} ] {
-  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message $packageRequireImg
-  exit
-}
-
 proc calcAverage {list} {
   foreach n $list {
     incr sum $n
@@ -36,41 +36,61 @@ proc calcAverage {list} {
   return $avg
 }
 
-#called by setShade + setSun
-proc rgb2hex {rgb} {
-  set rgblist [split $rgb]
-  set hex [format "#%02x%02x%02x" [lindex $rgblist 0] [lindex $rgblist 1] [lindex $rgblist 2] ]
+# rgb2hex
+##computes r/g/b into a hex digit
+##called by LoadConfig etc.
+proc rgb2hex {r g b} {
+  #set rgblist [split $rgb]
+  #set hex [format "#%02x%02x%02x" [lindex $rgblist 0] [lindex $rgblist 1] [lindex $rgblist 2] ]
+  set hex [format "#%02x%02x%02x" $r $g $b]
   return $hex
 }
 
 proc hex2rgb {hex} {
-  set rgb [scan $hex "#%2x %2x %2x"]
-  foreach i [split $rgb] {
-    lappend rgblist $i
-  }
-  return $rgb
+
+  lassign [scan $hex "#%2x %2x %2x"] r g b
+#  foreach i [split $rgb] {
+#    lassign 
+#    lappend rgblist $i
+#  }
+  return "$r $g $b"
 }
 
 # setShade
 ##reduces r/g/b by $shadefactor, avoiding values below 0
+##with args = return as hex
 ##called by BdfPrint
-proc setShade {r g b} {
+proc setShade {r g b args} {
   global shadefactor
   set shadeR [expr max(int($shadefactor*$r),0)]
   set shadeG [expr max(int($shadefactor*$g),0)]
   set shadeB [expr max(int($shadefactor*$b),0)]
-  return "$shadeR $shadeG $shadeB"
+  #A) without args return as r g b
+  if {$args == ""} {
+    return "$shadeR $shadeG $shadeB"
+  #B) with args return as hex
+  } else {
+    return [rgb2hex $shadeR $shadeG $shadeB]
+  }
 }
 
 # setSun
-##increases r/g/b by $sunfactor, avoiding values over 255
+##increases r/g/b (or one single colour) by $sunfactor, avoiding values over 255
+##with args = return as hex
 ##called by BdfPrint
-proc setSun {r g b} {
+proc setSun {r g b args} {
   global sunfactor
   set sunR [expr min(int($sunfactor*$r),255)]
   set sunG [expr min(int($sunfactor*$g),255)]
   set sunB [expr min(int($sunfactor*$b),255)]
-  return "$sunR $sunG $sunB"
+  
+  #A) without args return as r g b
+  if {$args == ""} {
+    return "$sunR $sunG $sunB"
+  #B) with args return as hex
+  } else {
+    return [rgb2hex $sunR $sunG $sunB]
+  }
 }
 
 proc setPngFileName {fileName} {

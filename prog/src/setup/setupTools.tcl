@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30dec20 jh
+# Updated: 2jan21 pv
 
 source $SetupResizeTools
 source $JList
@@ -177,9 +177,9 @@ proc setCanvasFontSize args {
 ##called by SetGUI for inttextCanv & .textposCanv
 proc setCanvasFontColour {c colour} {
 
-  set rgb [hex2rgb $colour]
-  set shade [setShade $rgb]
-  set sun [setSun $rgb]
+  lassign [hex2rgb $colour] r g b
+  set shade [setShade $r $g $b ashex]
+  set sun [setSun $r $g $b ashex]
 
   #A) International Canvas
   $c itemconf main -fill $colour
@@ -345,9 +345,9 @@ proc createMovingTextBox {c} {
   set shadeY [expr $y1 + 1]
   set sunX [expr $x1 - 1]
   set sunY [expr $y1 - 1]
-  set rgb [hex2rgb $fontcolor]
-  set shade [setShade $rgb]
-  set sun [setSun $rgb]
+  lassign [hex2rgb $fontcolor] r g b
+  set shade [setShade $r $g $b ashex]
+  set sun [setSun $r $g $b ashex]
 
   $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade} -fill $shade
   $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun} -fill $sun

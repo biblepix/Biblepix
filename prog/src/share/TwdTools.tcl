@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 29dec20
+# Updated 2jan21
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {

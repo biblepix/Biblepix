@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 30dec20
+# Updated 2jan21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -93,9 +93,11 @@ if {$os=="Linux"} {
 set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
 
 source $ImgTools
-set rgb [hex2rgb $fontcolor]
-set shade [setShade $rgb]
-set sun [setSun $rgb]
+
+lassign [hex2rgb $fontcolor] r g b
+set shade [setShade $r $g $b ashex]
+set sun [setSun $r $g $b ashex]
+
 .inttextCanv create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shade -tags {shade txt mv}
 .inttextCanv create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sun -tags {sun txt mv}
 .inttextCanv create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $fontcolor -tags {main txt mv}
