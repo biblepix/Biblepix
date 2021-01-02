@@ -10,6 +10,10 @@ if [catch {package require Img} ] {
   exit
 }
 
+#####################################################################
+################ General procs ######################################
+#####################################################################
+
 proc getRandomBMP {} {
   #Ausgabe ohne Pfad
   set bmplist [getBMPlist]
@@ -28,6 +32,14 @@ proc getRandomPhotoPath	 {} {
   return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ] 
 }
 
+proc setPngFileName {fileName} {
+  set fileExt [file extension $fileName]
+  if {![regexp png|PNG $fileExt]} {
+    set fileName "[file rootname $fileName].png"
+  }
+  return $fileName
+}
+
 proc calcAverage {list} {
   foreach n $list {
     incr sum $n
@@ -35,6 +47,10 @@ proc calcAverage {list} {
   set avg [expr $sum / [llength $list]]
   return $avg
 }
+
+#############################################################
+############### Colour procs ################################
+#############################################################
 
 # rgb2hex
 ##computes r/g/b into a hex digit
@@ -93,13 +109,79 @@ proc setSun {r g b args} {
   }
 }
 
-proc setPngFileName {fileName} {
-  set fileExt [file extension $fileName]
-  if {![regexp png|PNG $fileExt]} {
-    set fileName "[file rootname $fileName].png"
-  }
-  return $fileName
-}
+# getAvAreaColour
+##computes average colour+luminance of a given canvas pic area
+##called by SetupRepos UNTIL AUTOMATED IN SCANCOLOURAREA!
+proc getAvAreaColour {img} {
+
+  #no. of pixels to be skipped
+  set skip 5
+
+#TODO get X and Y from canvas movingText!
+
+  package require math
+
+  set imgX [image width $img]
+  set imgY [image height $img]
+  set x1 $marginleft
+  set y1 $margintop
+  set x2 [expr $imgX / 3]
+  set y2 [expr $imgY / 3]
+
+#  if $RtL {
+#    set x2 [expr $imgX - $marginleft]
+#    set x1 [expr $x2 - ($imgX / 3)]
+#  }    
+
+puts "Computing pixels..."
+
+    for {set x $x1} {$x<$x2} {incr x $skip} {
+
+      for {set y $y1} {$y<$y2} {incr y $skip} {
+        
+        lassign [$img get $x $y] r g b
+        lappend R $r
+        lappend G $g
+        lappend B $b
+      }
+    }
+puts "Done computing pixels"
+#zisisnt workin, donno why...
+return
+
+  #Compute avarage colours
+  set avR [calcAverage $R]
+  set avG [calcAverage $G]
+  set avB [calcAverage $B]
+  set avBri [calcAverage [list $avR $avG $avB]]
+#puts "avR $avR"
+#puts "avG $avG"
+#puts "avB $avB"
+
+  #Export vars to ::rgb namespace
+  catch {namespace delete rgb}
+  namespace eval rgb {}
+  set rgb::avRed $avR
+  set rgb::avGreen $avG
+  set rgb::avBlue $avB
+  set rgb::avBrightness $avBri
+
+  #Compute strong colour
+  namespace path {::tcl::mathfunc}
+  set rgb::maxCol [max $avR $avG $avB]
+  set rgb::minCol [min $avR $avG $avB]
+
+#puts "strongCol $rgb::maxCol"
+
+  #Delete colour lists
+  catch {unset R G B}
+
+} ;#END computeAvColours
+
+
+################################################################
+################# Cutting procs ################################
+################################################################
 
 # trimPic
 ## Reduces pic size by cutting 1 or more edges
