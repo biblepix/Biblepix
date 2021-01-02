@@ -217,32 +217,34 @@ puts "$x1.$y1 $x2.$y2"
 
 # vorschau
 ##called by SetupRotate
-proc vorschau {im v c} {
-  set rotatedImg [imageRotate photosCanvPic $v]
-  
+proc vorschau {im angle canv} {
+  puts vorschau:$angle
+
+  set rotatedImg [imageRotate photosCanvPic $angle]
+
   $im blank
   $im copy $rotatedImg
   image delete $rotatedImg
-  
-#TODO why isn't this working?
-  $c conf -height [image height $im] -width [image width $im]
-  return 0
+
+  catch {$canv conf -height [image height $im] -width [image width $im]}
 }
 
 # doRotateOrig
 ##coordinates rotating & cutting processes
 ##creates rotateOrigPic from photosOrigPic
 ##called by SetupRotate Save button
-proc doRotateOrig {pic v} {
+proc doRotateOrig {pic angle} {
   namespace eval addpicture {
     set rotated 1
   }
 
+  puts orig:$angle
+
   #1. rotate (takes a long time!)
-  set rotPic [imageRotate $pic $v]
+  set rotPic [imageRotate $pic $angle]
 
   #2. cut and save
-  set addpicture::curPic [cutRotated $rotPic]
+  set addpicture::curPic $rotPic
 }
 
 ######################################################
@@ -253,30 +255,22 @@ proc doRotateOrig {pic v} {
 # Create a meter 'enabled' canvas
 proc makeMeter {} {
   global meter angle mC
-        
-  for {set i 0;set j 0} {$i<100} {incr i 5;incr j} {
-    set meter($j) [$mC create line 100 100 10 100 -fill grey$i -width 3 -arrow last]
   
-    set angle($j) 0
-    $mC lower $meter($j)
-    updateMeterLine $mC 0.2 $j
-  }
+  set meter [$mC create line 100 100 10 100 -fill black -width 3 -arrow last]
+
+  $mC lower $meter
+  updateMeterLine $mC 0.5
+  
   $mC create arc 10 10 190 190 -start 0 -extent 180 -style arc -outline red -tags arc
   return $mC
 }
 
-# Draw a meter line (and recurse for lighter ones...)
-proc updateMeterLine {w a {l 0}} {
-  global meter angle pi
-  set oldangle $angle($l)
-  set angle($l) $a
+# Draw a meter line
+proc updateMeterLine {w a} {
+  global meter pi
   set x [expr {100.0 - 90.0*cos($a * $pi)}]
   set y [expr {100.0 - 90.0*sin($a * $pi)}]
-  catch {     $w coords $meter($l) 100 100 $x $y }
-  incr l
-  if [info exist meter($l)] {
-    catch {updateMeterLine $w $oldangle $l}
-  }
+  catch { $w coords $meter 100 100 $x $y }
 }
 
 # Convert variable to angle on trace
@@ -289,9 +283,7 @@ proc updateMeter {name1 name2 op} {
   updateMeterLine $mC [expr {$pos}]
 }
 
-# Fade over time
-proc updateMeterTimer {} {
-  global v
-  set v $v
-  after 20 updateMeterTimer
-} 
+proc updateAngle {name1 name2 op} {
+  upvar #0 $name1 v
+  set rotatePic::angle $v
+}

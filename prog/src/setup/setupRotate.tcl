@@ -18,17 +18,18 @@ canvas $mC -width 200 -height 110 -borderwidth 2 -relief sunken -bg lightblue
 #Copy photosCanvPic to rotateCanv
 set rotatePic::rotateCanvPic [image create photo]
 $rotatePic::rotateCanvPic copy photosCanvPic
+set rotatePic::angle 0
 set ::v 0
 
 #Picture & buttons
 button $rotatePic::T.previewBtn -textvar computePreview -activebackground beige \
- -command {vorschau $rotatePic::rotateCanvPic $::v $canv; pack $mC $scale}
+ -command {vorschau $rotatePic::rotateCanvPic $rotatePic::angle $canv; pack $mC $scale}
  
 button $rotatePic::T.90°Btn -textvar preview90 -activebackground beige \
--command {pack forget $mC $scale; vorschau $rotatePic::rotateCanvPic 90 $canv; set ::v 90}
+-command {pack forget $mC $scale; vorschau $rotatePic::rotateCanvPic 90 $canv; set rotatePic::angle 90}
 
 button $rotatePic::T.180°Btn -textvar preview180 -activebackground beige \
--command {pack forget $mC $scale; vorschau $rotatePic::rotateCanvPic 180 $canv; set ::v 180}
+-command {pack forget $mC $scale; vorschau $rotatePic::rotateCanvPic 180 $canv; set rotatePic::angle 180}
 
 #Create message field
 label $rotatePic::T.msgL -textvar rotateWait -bg silver -fg silver -font {TkHeadingFont 16 bold} -anchor n -pady 20 
@@ -42,13 +43,13 @@ set cancelBtnAction {
 
 set confirmBtnAction {
   #Initiate rotation in background, close window when finished 
-  after 500 {
-    doRotateOrig photosOrigPic $::v
+  after idle {
+    doRotateOrig photosOrigPic $rotatePic::angle
     destroy $rotatePic::T
     namespace delete rotatePic
   }
 
-  vorschau $rotatePic::rotateCanvPic $::v $canv
+  vorschau $rotatePic::rotateCanvPic $rotatePic::angle $canv
 
   #Run foreground actions
   $rotatePic::T.msgL conf -fg red -bg beige -bd 5
@@ -80,7 +81,7 @@ pack [makeMeter] -pady 10
 #Pack Scale
 pack $scale
 trace add variable v write updateMeter
-updateMeterTimer
+trace add variable v write updateAngle
 
 pack $rotatePic::T.previewBtn -pady 10
 pack $rotatePic::T.msgL -fill x

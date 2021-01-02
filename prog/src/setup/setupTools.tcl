@@ -446,9 +446,9 @@ proc checkItemInside {c item xDiff yDiff args} {
 ###### P r o c s   f o r   S e t u p P h o t o s #########################
 ##########################################################################
 
-proc doOpen {bildordner c} {
+proc doOpen {bildordner canv} {
   set localJList [openFileDialog $bildordner]
-  refreshImg $localJList $c
+  refreshImg $localJList $canv
 
   if {$localJList != ""} {
     pack .addBtn -in .photosF.mainf.right.unten -side left -fill x
@@ -464,10 +464,10 @@ proc doOpen {bildordner c} {
   return $localJList
 }
 
-proc doCollect {c} {
+proc doCollect {canv} {
   set localJList [refreshFileList]
-  set localJList [step $localJList 0 .imgCanvas]
-  refreshImg $localJList $c
+  set localJList [step $localJList 0 $canv]
+  refreshImg $localJList $canv
 
   pack .delBtn .picPath -in .photosF.mainf.right.unten -side left -fill x
   pack .photosF.mainf.right.bar.count1 .photosF.mainf.right.bar.count2 -side right
@@ -476,9 +476,9 @@ proc doCollect {c} {
   return $localJList
 }
 
-proc step {localJList fwd c} {
+proc step {localJList fwd canv} {
   set localJList [jlstep $localJList $fwd]
-  refreshImg $localJList $c
+  refreshImg $localJList $canv
 
   return $localJList
 }
@@ -562,15 +562,25 @@ proc refreshFileList {} {
   return $localJList
 }
 
-proc refreshImg {localJList c} {
+proc refreshImg {localJList canv} {
   global picPath
+
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+  set maxCanvX [expr round([winfo width .] / 1.5)]
+  set factor [expr ceil($screenX. / $maxCanvX)]
+
+  set canvX [expr round($screenX / $factor)]
+  set canvY [expr round($screenY / $factor)]
+
+  $canv conf -width $canvX -height $canvY
 
   set fn ""
   if {$localJList != ""} {
     set fn [jlfirst $localJList]
-    openImg $fn $c
+    openImg $fn $canv
     } else {
-      hideImg $c
+      hideImg $canv
   }
   set picPath $fn
 }
@@ -603,11 +613,11 @@ proc hideImg {imgCanvas} {
   $imgCanvas delete img
 }
 
-proc deleteImg {localJList c} {
+proc deleteImg {localJList canv} {
   global imgName
 
   set localJList [jlremovefirst $localJList]
-  refreshImg $localJList $c
+  refreshImg $localJList $canv
 
   if {$localJList == ""} {
     pack forget .delBtn

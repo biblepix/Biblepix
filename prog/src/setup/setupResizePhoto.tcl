@@ -23,31 +23,31 @@ proc openResizeWindow {} {
   namespace eval resizePic {}
 
   #Copy addpicture::curPic to canvas
-  set resizeCanvPic [image create photo]
+  set resizePic::resizeCanvPic [image create photo]
 
   set resizePic::scaleFactor [getResizeScalefactor]
-  $resizeCanvPic copy $addpicture::curPic -subsample $resizePic::scaleFactor
+  $resizePic::resizeCanvPic copy $addpicture::curPic -subsample $resizePic::scaleFactor
 
-  lassign [getCanvSizeFromPic $resizeCanvPic] canvX canvY
+  lassign [getCanvSizeFromPic $resizePic::resizeCanvPic] canvX canvY
   set winX [expr $canvX + 2*$margin]
   set winY [expr $canvY + 2*$margin]
 
   #Create toplevel window w/canvas & pic
   set w [toplevel .resizePhoto -bg lightblue -padx $margin -pady $margin -height $winX -width $winY]
   set resizePic::c [canvas $w.resizeCanv -bg lightblue -height $canvY -width $canvX]
-  $resizePic::c create image 0 0 -image $resizeCanvPic -anchor nw -tags {img mv}
+  $resizePic::c create image 0 0 -image $resizePic::resizeCanvPic -anchor nw -tags {img mv}
 
   #Create title & buttons
   set cancelBtnAction {
     set ::Modal.Result "Cancelled"
     NewsHandler::QueryNews "Bild nicht gespeichert" red
-    catch {image delete $addpicture::curPic}
+    catch {image delete $resizePic::resizeCanvPic}
     namespace delete resizePic
-    namespace delete addpicture
   }
 
   set confirmBtnAction {
     set img [doResize $resizePic::c $resizePic::scaleFactor]
+    catch {image delete $resizePic::resizeCanvPic}
     namespace delete resizePic
     set ::Modal.Result "Success"
 
@@ -83,24 +83,24 @@ proc openReposWindow {pic} {
   global fontsize
 
   namespace eval reposPic {}
-  set reposCanvPic [image create photo]
+  set reposPic::reposCanvPic [image create photo]
 
   NewsHandler::QueryNews $::textpos.wait orange
 
   set reposPic::w [toplevel .reposPhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
   set reposPic::canv [canvas $reposPic::w.reposCanv -bg lightblue]
-  $reposPic::canv create image 0 0 -image $reposCanvPic -anchor nw -tags {img mv}
+  $reposPic::canv create image 0 0 -image $reposPic::reposCanvPic -anchor nw -tags {img mv}
   pack $reposPic::canv
 
   set reposPic::scaleFactor [getReposScalefactor]
-  $reposCanvPic copy $pic -subsample $reposPic::scaleFactor
+  $reposPic::reposCanvPic copy $pic -subsample $reposPic::scaleFactor
 
   #Define button actions
   set cancelBtnAction {
     set ::Modal.Result "Cancelled"
     NewsHandler::QueryNews "$::reposNotSaved" red
     file delete $addpicture::targetPicPath
-    catch {image delete $addpicture::curPic}
+    catch {image delete $reposPic::reposCanvPic}
     namespace delete reposPic
     namespace delete addpicture
   }
@@ -115,6 +115,7 @@ proc openReposWindow {pic} {
     
     NewsHandler::QueryNews "$::reposSaved" lightgreen
     catch {image delete $addpicture::curPic}
+    catch {image delete $reposPic::reposCanvPic}
     namespace delete reposPic
     namespace delete addpicture
   }

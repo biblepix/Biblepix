@@ -35,15 +35,7 @@ pack .photosF.mainf.right.bar.< -side left
 pack .photosF.mainf.right.bar.> -side left
 
 #Build Photo canvas right
-set screenX [winfo screenwidth .]
-set screenY [winfo screenheight .]
-set maxCanvX [expr round([winfo width .] / 1.5)]
-set factor [expr ceil($screenX. / $maxCanvX)]
-
-set canvX [expr round($screenX / $factor)]
-set canvY [expr round($screenY / $factor)]
-
-canvas .imgCanvas -width $canvX -height $canvY
+canvas .imgCanvas
 pack .imgCanvas -in .photosF.mainf.right.bild -side left
 
 label .picPath -textvar picPath
