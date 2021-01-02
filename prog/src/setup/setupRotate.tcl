@@ -43,6 +43,8 @@ set cancelBtnAction {
 
 set confirmBtnAction {
   #Initiate rotation in background, close window when finished 
+#TODO warum wird Text nicht angezeigt?
+update
   after idle {
     doRotateOrig photosOrigPic $rotatePic::angle
     destroy $rotatePic::T
@@ -68,7 +70,6 @@ $canv conf -width [image width $rotatePic::rotateCanvPic] -height [image height 
 pack $canv
 
 #Create Meter
-#set mC .rotateW.meterC
 set ::pi 3.1415927 ;# Good enough accuracy for gfx...
 scale .rotateW.scale -orient h -length 300 -from -90 -to 90 -variable v
 set from [$scale cget -from]
