@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 1jan21 pv
+# Updated: 2jan21 pv
 
 #Source Config and LoadConfig for defaults
 if { [catch {source $Config}] } {
@@ -64,7 +64,7 @@ if {![info exists fontweight]} {
 }
 #Set fontcolortext
 if {![info exists fontcolortext]} {
-  set fontcolortext gold
+  set fontcolortext Gold
 }
 #Set marginleft
 if {![info exists marginleft]} {
@@ -90,12 +90,14 @@ proc rgb2hex {r g b} {
   return $hex
 }
 
-if {$fontcolortext == "gold"} {
+if {$fontcolortext == "Gold"} {
   set fontcolor [rgb2hex $gold(r) $gold(g) $gold(b)]
-} elseif {$fontcolortext == "green"} {
+} elseif {$fontcolortext == "Green"} {
   set fontcolor [rgb2hex $green(r) $green(g) $green(b)]
-} elseif {$fontcolortext == "silver"} {
+} elseif {$fontcolortext == "Silver"} {
   set fontcolor [rgb2hex $silver(r) $silver(g) $silver(b)]
+} elseif {$fontcolortext == "Black"} {
+  set fontcolor [rgb2hex $black(r) $black(g) $black(b)]  
 ##blue or undefined:
 } else {
   set fontcolor [rgb2hex $blue(r) $blue(g) $blue(b)]

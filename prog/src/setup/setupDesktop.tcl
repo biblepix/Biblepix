@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 2jan21 pv
+# Updated 3jan21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -104,11 +104,17 @@ set sun [setSun $r $g $b ashex]
 
 #1. Fontcolour spinbox
 message .fontcolorTxt -width 150 -textvar f2.farbe -font widgetFont
-spinbox .fontcolorSpin -width 12 -values {blue green gold silver} 
+spinbox .fontcolorSpin -width 12 -values {Blue Green Gold Silver Black}
+##make hex vars from colour names (to be reset in spinbox command)
+set Blue  [rgb2hex $blue(r) $blue(g) $blue(b)] 
+set Green [rgb2hex $green(r) $green(g) $green(b)]
+set Gold  [rgb2hex $gold(r) $gold(g) $gold(b)] 
+set Silver [rgb2hex $silver(r) $silver(g) $silver(b)] 
+set Black [rgb2hex $black(r) $black(g) $black(b)] 
+
 .fontcolorSpin conf -bg $fontcolor -fg white -font TkCaptionFont
 .fontcolorSpin set $fontcolortext
-
-.fontcolorSpin configure -command {
+.fontcolorSpin conf -command {
   %W conf -bg [set %s]
   setCanvasFontColour .textposCanv [set %s]
   setCanvasFontColour .inttextCanv [set %s]

@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 29dec20 pv
+# Updated: 2jan21 pv
 set version "3.2"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -181,19 +181,13 @@ set tab "                              "
 set ind "     "
 
 
-# Define font colours & colour computing values
-#set gold {#FF6300}
+#Define font colour arrays
+array set black   {r 6 g 6 b 6}
 array set gold    {r 255 g 155 b 0}
-#set silver #c0c0c0
 array set silver  {r 192 g 192 b 192}
-#set blue #00bfff
 array set blue    {r 0 g 190 b 255}
-#set green #3cb978
 array set green   {r 60 g 185 b 120}
-
-#TODO where is this used?
-#set brightnessThreshold 170
-
+#Define colour computing values
 set sunfactor 1.8
 set shadefactor 0.6
 
