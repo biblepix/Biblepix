@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 30dec20 jh
+# Updated 3jan21 pv
 
 #TODO Warum geht das nicht? Warum sourcet er Globals nicht?
 #source $SetupResizeTools
@@ -135,8 +135,8 @@ proc openReposWindow {pic} {
   }
   $reposPic::canv bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}
 
-  set imgX [image width $reposCanvPic]
-  set imgY [image height $reposCanvPic]
+  set imgX [image width reposCanvPic]
+  set imgY [image height reposCanvPic]
   $reposPic::canv conf -width $imgX -height $imgY
 
   #Creaste moving text  & disable for now
