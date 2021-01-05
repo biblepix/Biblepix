@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 29dec20
+# Updated: 4jan21 pv
 
 # printTwd
 ## Toplevel printing proc
@@ -161,7 +161,7 @@ proc printTwdTextParts {x y img} {
 ## prints single letter to $img
 ## called by printTextLine
 proc printLetter {letterName img x y} {
-  global colour::rgb colour::sun colour::shade 
+  global colour::regHex colour::sunHex colour::shaHex 
   global RtL prefix
   upvar $letterName curLetter	
 
@@ -184,9 +184,9 @@ proc printLetter {letterName img x y} {
       
       if {$pxValue != 0} {
         switch $pxValue {
-          1 { set pxColor $rgb }
-          2 { set pxColor $sun }
-          3 { set pxColor $shade }
+          1 { set pxColor $regHex }
+          2 { set pxColor $sunHex }
+          3 { set pxColor $shaHex }
         }
         
       if { $xCur <0 } {set xCur 1 } 

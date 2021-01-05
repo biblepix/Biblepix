@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jan21 pv
+# Updated: 5jan21 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -52,60 +52,60 @@ proc calcAverage {list} {
 ############### Colour procs ################################
 #############################################################
 
+#TODO needs testing!
 # rgb2hex
-##computes r/g/b into a hex digit
+##computes r/g/b array into a hex digit
 ##called by LoadConfig etc.
-proc rgb2hex {r g b} {
-  #set rgblist [split $rgb]
-  #set hex [format "#%02x%02x%02x" [lindex $rgblist 0] [lindex $rgblist 1] [lindex $rgblist 2] ]
-  set hex [format "#%02x%02x%02x" $r $g $b]
+proc rgb2hex {arrname} {
+  upvar $arrname myarr
+  set hex [format "#%02x%02x%02x" $myarr(r) $myarr(g) $myarr(b)]
   return $hex
 }
 
 proc hex2rgb {hex} {
-
   lassign [scan $hex "#%2x %2x %2x"] r g b
-#  foreach i [split $rgb] {
-#    lassign 
-#    lappend rgblist $i
-#  }
   return "$r $g $b"
 }
 
 # setShade
-##reduces r/g/b by $shadefactor, avoiding values below 0
+##reduces colour array's r/g/b by $shadefactor, avoiding values below 0
 ##with args = return as hex
 ##called by BdfPrint
-proc setShade {r g b args} {
+proc setShade {arrname args} {
   global shadefactor
-  set shadeR [expr max(int($shadefactor*$r),0)]
-  set shadeG [expr max(int($shadefactor*$g),0)]
-  set shadeB [expr max(int($shadefactor*$b),0)]
+  upvar $arrname myarr
+  set shadeR [expr max(int($shadefactor*$myarr(r)),0)]
+  set shadeG [expr max(int($shadefactor*$myarr(g)),0)]
+  set shadeB [expr max(int($shadefactor*$myarr(b)),0)]
+
   #A) without args return as r g b
   if {$args == ""} {
     return "$shadeR $shadeG $shadeB"
   #B) with args return as hex
   } else {
-    return [rgb2hex $shadeR $shadeG $shadeB]
+    array set myarr "r $shadeR g $shadeG b $shadeB"
+    return [rgb2hex myarr]
   }
 }
 
 # setSun
-##increases r/g/b (or one single colour) by $sunfactor, avoiding values over 255
+##increases colour array's r/g/b by $sunfactor, avoiding values over 255
 ##with args = return as hex
 ##called by BdfPrint
-proc setSun {r g b args} {
+proc setSun {arrname args} {
   global sunfactor
-  set sunR [expr min(int($sunfactor*$r),255)]
-  set sunG [expr min(int($sunfactor*$g),255)]
-  set sunB [expr min(int($sunfactor*$b),255)]
+  upvar $arrname myarr
+  set sunR [expr min(int($sunfactor*$myarr(r)),255)]
+  set sunG [expr min(int($sunfactor*$myarr(g)),255)]
+  set sunB [expr min(int($sunfactor*$myarr(b)),255)]
   
   #A) without args return as r g b
   if {$args == ""} {
     return "$sunR $sunG $sunB"
   #B) with args return as hex
   } else {
-    return [rgb2hex $sunR $sunG $sunB]
+    array set myarr "r $sunR g $sunG b $sunB"
+    return [rgb2hex myarr]
   }
 }
 

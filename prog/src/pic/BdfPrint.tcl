@@ -2,17 +2,17 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 29dec20
-
+# Updated: 5jan21
 source $TwdTools
 source $BdfTools
-#source $ImgTools
-
+source $ImgTools
 set TwdLang [getTwdLang $::TwdFileName]
 set ::RtL [isRtL $TwdLang]
 puts "Loading BdfPrint"
 
-#2. SOURCE FONTS INTO NAMESPACES
+# SOURCE FONTS INTO NAMESPACES
+#TODO testing: - why is this not loaded by Globals????????????
+source $LoadConfig
 
 ##Chinese: (regular_24)
 if {$TwdLang == "zh"} {
@@ -22,7 +22,6 @@ if {$TwdLang == "zh"} {
       source -encoding utf-8 $BdfFontPaths(ChinaFont)
     }
   }
-
 ##Thai: (regular_20)
 } elseif {$TwdLang == "th"} {
   set ::prefix T
@@ -31,8 +30,7 @@ if {$TwdLang == "zh"} {
       source -encoding utf-8 $BdfFontPaths(ThaiFont)
     }
   }
-
-## All else: Regular / Bold / Italic
+##All else: Regular / Bold / Italic
 } else {
 
   if {$fontweight == "bold"} {
@@ -43,16 +41,16 @@ if {$TwdLang == "zh"} {
 
   if {! [namespace exists R] && $fontweight != "bold"} {
     namespace eval R {
-      puts "sourcing $BdfFontPaths($fontName)"
-      source -encoding utf-8 $BdfFontPaths($fontName)
+      puts "sourcing $BdfFontPaths($fontname)"
+      source -encoding utf-8 $BdfFontPaths($fontname)
     }
   }
   
   #Source Italic for all except Asian
   if {! [namespace exists I]} {
     namespace eval I {
-      puts "sourcing $BdfFontPaths($fontNameItalic)"
-      source -encoding utf-8 $BdfFontPaths($fontNameItalic)
+      puts "sourcing $BdfFontPaths($fontnameItalic)"
+      source -encoding utf-8 $BdfFontPaths($fontnameItalic)
     }
   }
   
@@ -60,48 +58,75 @@ if {$TwdLang == "zh"} {
   if {$enabletitle || $fontweight == "bold"} { 
     if {! [namespace exists B]} {
       namespace eval B {
-        puts "sourcing $BdfFontPaths($fontNameBold)"
-        source -encoding utf-8 $BdfFontPaths($fontNameBold)
+        puts "sourcing $BdfFontPaths($fontnameBold)"
+        source -encoding utf-8 $BdfFontPaths($fontnameBold)
       }
     }
   }
 } ;#END source fonts
 
-puts "Finished loading fonts"
+
 
 # 3. LAUNCH PRINTING & SAVE IMAGE
 
 #Compute avarage colours of text section
 puts "Computing colours..."
+namespace eval colour {}
 
-#Compute sun & shade
-set rgb [hex2rgb $fontcolor]
-set sun [setSun $rgb]
-set shade [setShade $rgb]
+#Compute sun & shade arrays
+##set regArr, copying fontcolour array
+set curArrname [string tolower $fontcolortext 0]
+array set regArr [array get $curArrname]
+set regHex [rgb2hex regArr]
+set sunHex [setSun regArr hex]
+set shaHex [setShade regArr hex] 
 
-#A) PNG info present:
-if [info exists colour::luminacy] {
+#TODO these need reworking (s. from line 110)
+#A) If PNG info present
+if [info exists colour::Luminacy] {
+
+  ##copy arrays in shifted order & export to ::colour NS
   if {$colour::luminacy == 1} {
-    set colour::shade $rgb
-    set colour::rgb $sun
-    set colour::sun [setSun $sun]
-  } elseif {$colour::luminacy == 2} {
-    set colour::rgb $rgb
-    set colour::shade $shade
-    set colour::sun $sun  
-  } elseif {$colour::luminacy == 3} {
-    set colour::sun $rgb
-    set colour::rgb $shade
-    set colour::shade [setShade $shade]
+
+    array set colour::shaArr [array get regArr]
+    array set colour::regArr [array get sunArr]
+    lassign [setSun sunArr] sunR sunG sunB
+    array set colour::sunArr "r $sunR g $sunG b $sunB"
+
+  } elseif {$colour::Luminacy == 2} {  
+    array set colour::regArr [array get regArr]
+    array set colour::shaArr [array get shaArr]
+    array set colour::sunArr [array get sunArr]
+    
+  } elseif {$colour::Luminacy == 3} {
+    array set colour::sunArr [array get regArr]
+    array set colour::regArr [array get shaArr]
+    lassign [setShade shaArr] shadeR shadeG shadeB
+    array set colour::shaArr "r $shadeR g $shadeG b $shadeB"
   }
+  
 
-#B) No PNG info found:
+#B) If no PNG info found: export above standards to ::colour NS
 } else {
-  set colour::rgb $rgb
-  set colour::shade $shade
-  set colour::sun $sun  
+  
+  #Set hex vars for Bdf Print
+  set colour::regHex $regHex
+  set colour::sunHex $sunHex
+  set colour::shaHex $shaHex
+#  set reg [rgb2hex regArr]
+#  set sun [rgb2hex sunArr]
+#  set sha [rgb2hex shaArr]
+  
+#  array set colour::regArr [array get regArr]
+#  array set colour::shaArr [array get shaArr]
+#  array set colour::sunArr [array get sunArr]
 }
+return "$regHex $sunHex $shaHex"
 
+
+
+
+puts "Printing TWD text..."
 set finalImg [printTwd $TwdFileName hgbild]
 
 if {$platform=="windows"} {  
