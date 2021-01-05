@@ -10,9 +10,7 @@ set TwdLang [getTwdLang $::TwdFileName]
 set ::RtL [isRtL $TwdLang]
 puts "Loading BdfPrint"
 
-# SOURCE FONTS INTO NAMESPACES
-#TODO testing: - why is this not loaded by Globals????????????
-source $LoadConfig
+# S O U R C E   F O N T S   I N T O   N A M E S P A C E S
 
 ##Chinese: (regular_24)
 if {$TwdLang == "zh"} {
@@ -67,64 +65,44 @@ if {$TwdLang == "zh"} {
 
 
 
-# 3. LAUNCH PRINTING & SAVE IMAGE
+# L A U N C H   P R I N T I N G  &  S A V E   I M A G E
 
 #Compute avarage colours of text section
 puts "Computing colours..."
 namespace eval colour {}
 
-#Compute sun & shade arrays
-##set regArr, copying fontcolour array
+#Compute reg/sun/shade hex & export to ::colour NS
 set curArrname [string tolower $fontcolortext 0]
 array set regArr [array get $curArrname]
 set regHex [rgb2hex regArr]
+##set sun rgb & hex
+lassign [setSun regArr] sunR sunG sunB
+array set sunArr "r $sunR g $sunG b $sunB"
 set sunHex [setSun regArr hex]
-set shaHex [setShade regArr hex] 
+##set shade rgb & hex
+lassign [setShade regArr] shaR shaG shaB
+array set shaArr "r $shaR g $shaG b $shaB"
+set shaHex [setShade regArr hex]
 
-#TODO these need reworking (s. from line 110)
-#A) If PNG info present
+##Export general colour hex values (=PNG value 2)
+set colour::regHex $regHex
+set colour::sunHex $sunHex
+set colour::shaHex $shaHex
+
+#Reset if PNG lumiance info differs from 2
 if [info exists colour::Luminacy] {
-
-  ##copy arrays in shifted order & export to ::colour NS
+  ##1) dark bg: increase font colour luminance
   if {$colour::luminacy == 1} {
-
-    array set colour::shaArr [array get regArr]
-    array set colour::regArr [array get sunArr]
-    lassign [setSun sunArr] sunR sunG sunB
-    array set colour::sunArr "r $sunR g $sunG b $sunB"
-
-  } elseif {$colour::Luminacy == 2} {  
-    array set colour::regArr [array get regArr]
-    array set colour::shaArr [array get shaArr]
-    array set colour::sunArr [array get sunArr]
-    
+    set colour::regHex $sunHex
+    set colour::shaHex $regHex
+    set colour::sunHex [setSun sunArr ashex]
+  ##2) bright bg: reduce font colour luminance
   } elseif {$colour::Luminacy == 3} {
-    array set colour::sunArr [array get regArr]
-    array set colour::regArr [array get shaArr]
-    lassign [setShade shaArr] shadeR shadeG shadeB
-    array set colour::shaArr "r $shadeR g $shadeG b $shadeB"
+    set colour::regHex $shaHex
+    set colour::sunHex $regHex
+    set colour::shaHex [setShade shaArr ashex]
   }
-  
-
-#B) If no PNG info found: export above standards to ::colour NS
-} else {
-  
-  #Set hex vars for Bdf Print
-  set colour::regHex $regHex
-  set colour::sunHex $sunHex
-  set colour::shaHex $shaHex
-#  set reg [rgb2hex regArr]
-#  set sun [rgb2hex sunArr]
-#  set sha [rgb2hex shaArr]
-  
-#  array set colour::regArr [array get regArr]
-#  array set colour::shaArr [array get shaArr]
-#  array set colour::sunArr [array get sunArr]
 }
-return "$regHex $sunHex $shaHex"
-
-
-
 
 puts "Printing TWD text..."
 set finalImg [printTwd $TwdFileName hgbild]

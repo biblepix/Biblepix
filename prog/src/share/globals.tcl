@@ -180,8 +180,7 @@ set heute [clock format [clock seconds] -format %d]
 set tab "                              "
 set ind "     "
 
-
-#Define font colour arrays
+#Define font colour rgb arrays
 array set black   {r 6 g 6 b 6}
 array set gold    {r 255 g 155 b 0}
 array set silver  {r 192 g 192 b 192}

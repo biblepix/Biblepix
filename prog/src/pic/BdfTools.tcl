@@ -161,7 +161,9 @@ proc printTwdTextParts {x y img} {
 ## prints single letter to $img
 ## called by printTextLine
 proc printLetter {letterName img x y} {
-  global colour::regHex colour::sunHex colour::shaHex 
+  global colour::regHex 
+  global colour::sunHex 
+  global colour::shaHex 
   global RtL prefix
   upvar $letterName curLetter	
 
