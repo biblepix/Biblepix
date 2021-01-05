@@ -135,8 +135,8 @@ proc openReposWindow {pic} {
   }
   $reposPic::canv bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}
 
-  set imgX [image width reposCanvPic]
-  set imgY [image height reposCanvPic]
+  set imgX [image width $reposPic::reposCanvPic]
+  set imgY [image height $reposPic::reposCanvPic]
   $reposPic::canv conf -width $imgX -height $imgY
 
   #Creaste moving text  & disable for now
