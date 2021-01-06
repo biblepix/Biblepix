@@ -181,11 +181,11 @@ set tab "                              "
 set ind "     "
 
 #Define font colour rgb arrays
-array set black   {r 6 g 6 b 6}
-array set gold    {r 255 g 155 b 0}
-array set silver  {r 192 g 192 b 192}
-array set blue    {r 0 g 190 b 255}
-array set green   {r 60 g 185 b 120}
+array set BlackArr   {r 6 g 6 b 6}
+array set GoldArr    {r 255 g 155 b 0}
+array set SilverArr  {r 192 g 192 b 192}
+array set BlueArr    {r 0 g 190 b 255}
+array set GreenArr   {r 60 g 185 b 120}
 #Define colour computing values
 set sunfactor 1.8
 set shadefactor 0.6

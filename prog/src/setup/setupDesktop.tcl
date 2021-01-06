@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 3jan21 pv
+# Updated 6jan21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -95,12 +95,11 @@ set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
 source $ImgTools
 
 
-#TODO get this right!
-set regArrname [string tolower $fontcolortext 0]
-set shadeHex [setShade $regArrname ashex]
-set sunHex [setSun $regArrname ashex]
+#Get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
+set shaHex [setShade ${fontcolortext}Arr ashex]
+set sunHex [setSun ${fontcolortext}Arr ashex]
 
-.inttextCanv create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shadeHex -tags {shade txt mv}
+.inttextCanv create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shaHex -tags {shade txt mv}
 .inttextCanv create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sunHex -tags {sun txt mv}
 .inttextCanv create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $fontcolorHex -tags {main txt mv}
 
@@ -108,11 +107,11 @@ set sunHex [setSun $regArrname ashex]
 message .fontcolorTxt -width 150 -textvar f2.farbe -font widgetFont
 spinbox .fontcolorSpin -width 12 -values {Blue Green Gold Silver Black}
 ##make hex vars from colour names (to be reset in spinbox command)
-set Blue   [rgb2hex blue] 
-set Green  [rgb2hex green]
-set Gold   [rgb2hex gold] 
-set Silver [rgb2hex silver] 
-set Black  [rgb2hex black] 
+set Blue   [rgb2hex BlueArr]
+set Green  [rgb2hex GreenArr]
+set Gold   [rgb2hex GoldArr] 
+set Silver [rgb2hex SilverArr] 
+set Black  [rgb2hex BlackArr] 
 
 .fontcolorSpin conf -bg $fontcolorHex -fg white -font TkCaptionFont
 .fontcolorSpin set $fontcolortext
@@ -176,7 +175,7 @@ set margin 15
 setCanvasFontSize $fontsize
 
 
-setCanvasFontColour .textposCanv $fontcolor
+setCanvasFontColour .textposCanv $fontcolorHex
 #Footnote
 label .textposFN -width 50 -font "Serif 10" -textvar ::textposFN
 
