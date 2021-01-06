@@ -94,25 +94,27 @@ set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
 
 source $ImgTools
 
-lassign [hex2rgb $fontcolor] r g b
-set shade [setShade $r $g $b ashex]
-set sun [setSun $r $g $b ashex]
 
-.inttextCanv create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shade -tags {shade txt mv}
-.inttextCanv create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sun -tags {sun txt mv}
-.inttextCanv create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $fontcolor -tags {main txt mv}
+#TODO get this right!
+set regArrname [string tolower $fontcolortext 0]
+set shadeHex [setShade $regArrname ashex]
+set sunHex [setSun $regArrname ashex]
+
+.inttextCanv create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shadeHex -tags {shade txt mv}
+.inttextCanv create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sunHex -tags {sun txt mv}
+.inttextCanv create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $fontcolorHex -tags {main txt mv}
 
 #1. Fontcolour spinbox
 message .fontcolorTxt -width 150 -textvar f2.farbe -font widgetFont
 spinbox .fontcolorSpin -width 12 -values {Blue Green Gold Silver Black}
 ##make hex vars from colour names (to be reset in spinbox command)
-set Blue  [rgb2hex $blue(r) $blue(g) $blue(b)] 
-set Green [rgb2hex $green(r) $green(g) $green(b)]
-set Gold  [rgb2hex $gold(r) $gold(g) $gold(b)] 
-set Silver [rgb2hex $silver(r) $silver(g) $silver(b)] 
-set Black [rgb2hex $black(r) $black(g) $black(b)] 
+set Blue   [rgb2hex blue] 
+set Green  [rgb2hex green]
+set Gold   [rgb2hex gold] 
+set Silver [rgb2hex silver] 
+set Black  [rgb2hex black] 
 
-.fontcolorSpin conf -bg $fontcolor -fg white -font TkCaptionFont
+.fontcolorSpin conf -bg $fontcolorHex -fg white -font TkCaptionFont
 .fontcolorSpin set $fontcolortext
 .fontcolorSpin conf -command {
   %W conf -bg [set %s]

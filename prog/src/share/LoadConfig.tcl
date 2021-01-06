@@ -86,20 +86,8 @@ if {![info exists Httpmock]} {
 #Set current font colour in hex for GUI
 ##getting fontcolortext from Config & extracting rgb from array
 array set colArr [array get [string tolower $fontcolortext 0]]
-set fontcolourHex [format "#%02x%02x%02x" $colArr(r) $colArr(g) $colArr(b)]
-
-#if {$fontcolortext == "Gold"} {
-#  set fontcolor [rgb2hex $gold(r) $gold(g) $gold(b)]
-#} elseif {$fontcolortext == "Green"} {
-#  set fontcolor [rgb2hex $green(r) $green(g) $green(b)]
-#} elseif {$fontcolortext == "Silver"} {
-#  set fontcolor [rgb2hex $silver(r) $silver(g) $silver(b)]
-#} elseif {$fontcolortext == "Black"} {
-#  set fontcolor [rgb2hex $black(r) $black(g) $black(b)]  
-###blue or undefined:
-#} else {
-#  set fontcolor [rgb2hex $blue(r) $blue(g) $blue(b)]
-#}
+set fontcolorHex [format "#%02x%02x%02x" $colArr(r) $colArr(g) $colArr(b)]
+set fontcolor $fontcolorHex
 
 #Define current font name from Config
 if {$fontfamily=="Sans"} {

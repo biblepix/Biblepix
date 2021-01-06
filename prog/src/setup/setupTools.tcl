@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jan21 pv
+# Updated: 6jan21 pv
 
 source $SetupResizeTools
 source $JList
@@ -151,7 +151,6 @@ namespace eval NewsHandler {
 ##changes canvas font's size||weight||family on intTextCanv + textposCanv
 ##called by SetupDesktop 
 proc setCanvasFontSize args {
-
   ##size
   if [string is integer $args] {
     #set size in pt as in BDF      
@@ -173,22 +172,24 @@ proc setCanvasFontSize args {
 }
 
 # setCanvasFontColour
-##changes canvas' font's colour
+##changes canvas' font's colour in Hex
 ##called by SetGUI for inttextCanv & .textposCanv
-proc setCanvasFontColour {c colour} {
+proc setCanvasFontColour {c fontcolorHex} {
+  #revert regular font colour to rgb array
+  lassign [hex2rgb $fontcolorHex] regR regG regB
+  array set fontcolArr "r $regR g $regG b $regB"
+  #compute sun & shade
+  set shadeHex [setShade fontcolArr ashex]
+  set sunHex [setSun fontcolArr ashex]
 
-  lassign [hex2rgb $colour] r g b
-  set shade [setShade $r $g $b ashex]
-  set sun [setSun $r $g $b ashex]
+  #fill International Canvas
+  $c itemconf main -fill $fontcolorHex
+  $c itemconf sun -fill $sunHex
+  $c itemconf shade -fill $shadeHex
 
-  #A) International Canvas
-  $c itemconf main -fill $colour
-  $c itemconf sun -fill $sun
-  $c itemconf shade -fill $shade
-
-  set ::fontcolor $colour
-  set ::shade $shade
-  set ::sun $sun
+#  set ::fontcolorHex $colour
+#  set ::shadeHex $shade
+#  set ::sunHex $sun
   
   return 0
 }
@@ -325,7 +326,7 @@ proc setManText {lang} {
 ## Creates textbox with TW text on canvas $c
 ## Called by SetupDesktop & SetupResizePhoto
 proc createMovingTextBox {c} {
-  global marginleft margintop textPosFactor fontcolor fontsize fontfamily fontweight setupTwdText
+  global marginleft margintop textPosFactor fontcolorHex fontsize fontfamily fontweight setupTwdText
 
   #Verkleinerungsfaktor für textposition window
   #set displayFactor 2
@@ -345,22 +346,22 @@ proc createMovingTextBox {c} {
   set shadeY [expr $y1 + 1]
   set sunX [expr $x1 - 1]
   set sunY [expr $y1 - 1]
-  lassign [hex2rgb $fontcolor] r g b
-  set shade [setShade $r $g $b ashex]
-  set sun [setSun $r $g $b ashex]
+  
+  lassign [hex2rgb $fontcolorHex] regR regG regB
+  array set fontcolArr "r $regR g $regG b $regB"
+  set shadeHex [setShade fontcolArr ashex]
+  set sunHex   [setSun fontcolArr ashex]
 
-  $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade} -fill $shade
-  $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun} -fill $sun
-  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main} -fill $fontcolor
+  $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade} -fill $shadeHex
+  $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun} -fill $sunHex
+  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main} -fill $fontcolorHex
   $c itemconf canvTxt -text $setupTwdText
 
-puts $c
   if {$c == ".textposCanv"} {
     $c itemconf canvTxt -font movingTextFont -activefill red
   } elseif {$c == ".reposPhoto.reposCanv"} {
     $c itemconf canvTxt -font movingTextReposFont -activefill orange
   }
-  
 } ;#END createMovingTextBox
 
 # dragCanvasItem
