@@ -24,17 +24,16 @@ set ::v 0
 #Picture & buttons
 button $rotatePic::T.previewBtn -textvar computePreview -activebackground beige \
  -command {vorschau $rotatePic::rotateCanvPic $rotatePic::angle $canv; pack $mC $scale}
- 
 button $rotatePic::T.90°Btn -textvar preview90 -activebackground beige \
 -command {pack forget $mC $scale; vorschau $rotatePic::rotateCanvPic 90 $canv; set rotatePic::angle 90}
-
 button $rotatePic::T.180°Btn -textvar preview180 -activebackground beige \
 -command {pack forget $mC $scale; vorschau $rotatePic::rotateCanvPic 180 $canv; set rotatePic::angle 180}
 
-#Create message field
-label $rotatePic::T.msgL -textvar rotateWait -bg silver -fg silver -font {TkHeadingFont 16 bold} -anchor n -pady 20 
+#Create message field to be packed by confirmBtn action
+set msgL $rotatePic::T.msgL
+message $msgL -width 1000 -text rotateWait -bg silver -fg silver -font {TkHeadingFont 16 bold} -anchor w -justify left -pady 20 
 
-set cancelBtnAction {
+set cancelBtnAction {	
   set ::Modal.Result "Cancelled"
   image delete $rotatePic::rotateCanvPic
   destroy $rotatePic::T
@@ -42,9 +41,9 @@ set cancelBtnAction {
 }
 
 set confirmBtnAction {
+  #Create message window on top
+  tk_messageBox -type ok -message $rotateWait
   #Initiate rotation in background, close window when finished 
-#TODO warum wird Text nicht angezeigt?
-update
   after idle {
     doRotateOrig photosOrigPic $rotatePic::angle
     destroy $rotatePic::T
