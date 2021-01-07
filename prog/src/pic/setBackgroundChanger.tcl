@@ -2,7 +2,7 @@
 # Searches system for current Desktop manager, gives out appropriate BG changing command
 # Called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 13sep18
+# Updated: 7jan21
 
 ########################################################################
 # WINDOWS: accepts command through RUNDLL32.EXE - a bit buggy still...
@@ -10,6 +10,7 @@
 # GNOME: needs no image changer, detects image change
 # KDE: needs to be preconfigured (in setupSave)
 # XFCE4: needs to be preconfigured (in setupSave)
+# Other (Linux) desktops: error "command not found" 
 ##########################################################################
 
 
@@ -138,3 +139,9 @@ if {[auto_execok display] != ""} {
   }
   return
 }
+
+#All other desktops:
+proc setBg {} {
+  return "Cannot set background."
+}
+
