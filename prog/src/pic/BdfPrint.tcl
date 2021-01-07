@@ -64,45 +64,65 @@ if {$TwdLang == "zh"} {
 } ;#END source fonts
 
 
-
-# L A U N C H   P R I N T I N G  &  S A V E   I M A G E
+# 2) C O M P U T E   C O L O U R S   A N D   M A R G I N S
 
 #Compute avarage colours of text section
 puts "Computing colours..."
-namespace eval colour {}
+
+namespace eval colour {
 
 #Compute reg/sun/shade hex & export to ::colour NS
-set curArrname [string tolower $fontcolortext 0]
-array set regArr [array get $curArrname]
+array set regArr [array get ${::fontcolortext}Arr]
 set regHex [rgb2hex regArr]
+#set shaHex [setShade regArr ashex]
+#set sunHex [setSun regArr ashex]
+
 ##set sun rgb & hex
 lassign [setSun regArr] sunR sunG sunB
 array set sunArr "r $sunR g $sunG b $sunB"
 set sunHex [setSun regArr hex]
+
 ##set shade rgb & hex
 lassign [setShade regArr] shaR shaG shaB
 array set shaArr "r $shaR g $shaG b $shaB"
 set shaHex [setShade regArr hex]
 
 ##Export general colour hex values (=PNG value 2)
-set colour::regHex $regHex
-set colour::sunHex $sunHex
-set colour::shaHex $shaHex
+#set colour::regHex $regHex
+#set colour::sunHex $sunHex
+#set colour::shaHex $shaHex
 
-#Reset if PNG lumiance info differs from 2
-if [info exists colour::Luminacy] {
-  ##1) dark bg: increase font colour luminance
-  if {$colour::luminacy == 1} {
-    set colour::regHex $sunHex
-    set colour::shaHex $regHex
-    set colour::sunHex [setSun sunArr ashex]
-  ##2) bright bg: reduce font colour luminance
-  } elseif {$colour::Luminacy == 3} {
-    set colour::regHex $shaHex
-    set colour::sunHex $regHex
-    set colour::shaHex [setShade shaArr ashex]
+  #Reset if PNG lumiance info differs from 2
+  if [info exists pnginfo(Lum)] {
+
+    ##1) dark bg: increase font colour luminance
+    if {$pnginfo(Lum) == 1} {
+      set regHex $sunHex
+      set shaHex $regHex
+      set sunHex [setSun ::sunArr ashex]
+      
+    ##2) bright bg: reduce font colour luminance
+    } elseif {$pnginfo(Lum) == 3} {
+      set regHex $shaHex
+      set sunHex $regHex
+      set shaHex [setShade ::shaArr ashex]
+    }
   }
-}
+
+  #Get marginleft & margintop from pnginfo OR from Config
+  if { [info exists pnginfo(X)] && [info exists pnginfo(Y)] } {
+    set marginleft $pnginfo(X)
+    set margintop  $pnginfo(Y)
+  } else {
+    variable marginleft $::marginleft
+    variable margintop $::margintop
+  }
+puts $marginleft
+puts $margintop
+} ;#END namespace colour
+
+
+# 3)  I N I T I A L I S E   P R I N T I N G
 
 puts "Printing TWD text..."
 set finalImg [printTwd $TwdFileName hgbild]

@@ -6,11 +6,10 @@
 
 # evalPngComment
 ##evaluates result of readPngComment
-##returns X Y and L(uminance)
-##called by ?BDFPrint?
+##returns Marginleft & Marginright & Luminacy as array
+##called by Image 
 proc evalPngComment {file} {
   set T [readPngComment $file]
-  
   #Check keyword & exit if missing
   if ![regexp BiblePix $T] {
     return -code error 0
@@ -19,8 +18,8 @@ proc evalPngComment {file} {
   set X [string range [regexp -inline {X[0-9]*} $T] 1 end]
   set Y [string range [regexp -inline {Y[0-9]*} $T] 1 end]
   set L [string index [regexp -inline {L[0-9]} $T] end]
-  
-  return "$X $Y $L"
+  #return as array
+  return "Marginleft $X Margintop $Y Luminacy $L"
 }
 
 ##################################################################

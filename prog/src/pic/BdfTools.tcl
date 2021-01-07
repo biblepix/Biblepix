@@ -7,20 +7,8 @@
 # printTwd
 ## Toplevel printing proc
 proc printTwd {TwdFileName img} {
-  global marginleft margintop
-  
-  #evaluate any existing PNG comment
-  if {[info exists colour::marginleft] && 
-      [info exists colour::margintop]} {
-    set marginleft $colour::marginleft
-    set margintop $colour::margintop
-  }
   parseTwdTextParts $TwdFileName
-  set finalImg [printTwdTextParts $marginleft $margintop $img]
-
-#TODO testing  
-#  namespace delete twd colour
-  
+  set finalImg [printTwdTextParts $colour::marginleft $colour::margintop $img]
   return $finalImg
 }
 
@@ -97,7 +85,6 @@ proc parseTwdTextParts {TwdFileName} {
 ## called by printTwd
 proc printTwdTextParts {x y img} {
   global enabletitle TwdLang
-#  global title text1 text2 ref1 ref2 intro1 intro2
   
   #Sort out markRefngs for Italic & Bold
   if {$TwdLang == "th" || $TwdLang == "zh" } {
@@ -207,9 +194,6 @@ proc printLetter {letterName img x y} {
 ## use 'args' for TAB or IND
 proc printTextLine {textLine x y img args} {
   global TwdLang enabletitle RtL BdfBidi prefix
-
-  global marginleft
-#TODO will this work? - NO!
   global colour::marginleft
   
   set FontAsc "$${prefix}::FontAsc"

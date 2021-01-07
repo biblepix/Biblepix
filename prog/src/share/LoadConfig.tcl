@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 2jan21 pv
+# Updated: 6jan21 pv
 
 #Source Config and LoadConfig for defaults
 if { [catch {source $Config}] } {
@@ -85,9 +85,8 @@ if {![info exists Httpmock]} {
 
 #Set current font colour in hex for GUI
 ##getting fontcolortext from Config & extracting rgb from array
-array set colArr [array get [string tolower $fontcolortext 0]]
-set fontcolorHex [format "#%02x%02x%02x" $colArr(r) $colArr(g) $colArr(b)]
-set fontcolor $fontcolorHex
+array set fontcolArr [array get ${fontcolortext}Arr]
+set fontcolorHex [format "#%02x%02x%02x" $fontcolArr(r) $fontcolArr(g) $fontcolArr(b)]
 
 #Define current font name from Config
 if {$fontfamily=="Sans"} {

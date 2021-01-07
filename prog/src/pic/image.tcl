@@ -1,19 +1,20 @@
 # ~/Biblepix/progs/src/pic/image.tcl
 # Initiates BdfPrint, called by biblepix.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 29dec20
+# Updated 7jan21 pv
 
 source $ImgTools
 source $AnnotatePng
 namespace eval colour {}
-  
+package require Tk
+    
 #Load Img/tkimg (part of ActiveTcl, Linux distros need to install separately)
 if [catch {package require Img}] {
-  package require Tk
   source -encoding utf-8 $Texts
   setTexts $lang
-  tk_messageBox -title BiblePix -type ok -icon error -message $packageRequireImg
-  exit
+  if [catch {tk_messageBox -title BiblePix -type ok -icon error -message $packageRequireImg} {
+    return -error "Packages Tk and Img cannot be loaded. Exiting."
+  }
 }
 
 #Hide Tk window as not needed
@@ -25,11 +26,13 @@ wm withdraw .
 set picPath [getRandomPhotoPath]
 image create photo hgbild -file $picPath
 
-#TODO this blocks any further processing!!!!!!!!!!!!!!!!!!
-#Extract any info from PNG & export to ::colour ns
-#if {[readPngComment $picPath] != ""} {
-#  lassign [evalPngComment $picPath] colour::marginleft colour::margintop colour::luminacy
-#}
+#Extract any info from PNG & export as pngInfo array to ::colour namespace
+puts "Reading PNG info from [file tail $picPath] ..."
+if {[readPngComment $picPath] == 0} {
+  puts " No PNG info found!"
+} else {
+  array set colour::pnginfo "[split [evalPngComment $picPath]]" 
+}
 
 #Printing   B D F 
 puts "Creating BDF picture..."
