@@ -86,7 +86,7 @@ set confirmBtnAction {
   set res [tk_messageBox -type yesno -message $rotateWait]
   if {$res == "no"} {
     allsetnormal
-    return Abbruch
+    return
   }
   #Initiate rotation in background, close window when finished 
   after idle {
