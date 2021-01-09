@@ -1,92 +1,137 @@
 # ~/Biblepix/prog/src/setup/setupRotate.tcl
-# Creates Rotate toplevel window with scale & meter
+# Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30dec20 jh
+# Updated: 9jan21 pv
 
 source $RotateTools
-namespace eval rotatePic {}
+namespace eval rotatepic {}
 
-#Toplevel main window
-set rotatePic::T .rotateW
-set scale $rotatePic::T.scale
-set mC $rotatePic::T.meterC
-set canv $rotatePic::T.rotateC
-toplevel $rotatePic::T -width 600 -height 400
+#Create top window with 3 frames
+set rotatepic::W [toplevel .rotateW -width 600 -height 400]
+set F1 [frame ${rotatepic::W}.topF]
+set F2 [frame ${rotatepic::W}.midF -bg green -bd 5]
+set F3 [frame ${rotatepic::W}.botF -bg green3 -bd 5]
+pack $F1 $F2 $F3 -fill x -anchor n
+
+#Create widget vars
+set scale $F3.scale
+set mC $F3.meter
+set canv  $F1.rotateC
+set 90Btn $F2.90Btn
+set 180Btn $F2.180Btn
+set anyBtn $F3.anyBtn
+
+#Create photo canvas & copy over photosCanvPic
 canvas $mC -width 200 -height 110 -borderwidth 2 -relief sunken -bg lightblue
-
-#Copy photosCanvPic to rotateCanv
-set rotatePic::rotateCanvPic [image create photo]
-$rotatePic::rotateCanvPic copy photosCanvPic
-set rotatePic::angle 0
+set rotatepic::rotateCanvPic [image create photo]
+$rotatepic::rotateCanvPic copy photosCanvPic
+set rotatepic::angle 0
 set ::v 0
 
-#Picture & buttons
-button $rotatePic::T.previewBtn -textvar computePreview -activebackground beige \
- -command {vorschau $rotatePic::rotateCanvPic $rotatePic::angle $canv; pack $mC $scale}
-button $rotatePic::T.90°Btn -textvar preview90 -activebackground beige \
--command {pack forget $mC $scale; vorschau $rotatePic::rotateCanvPic 90 $canv; set rotatePic::angle 90}
-button $rotatePic::T.180°Btn -textvar preview180 -activebackground beige \
--command {pack forget $mC $scale; vorschau $rotatePic::rotateCanvPic 180 $canv; set rotatePic::angle 180}
+#F1: Picture & 2 buttons
+proc 90-180setnormal {} {
+  $::90Btn conf -state normal
+  $::180Btn conf -state normal
+  $::anyBtn conf -state disabled
+  $::mC conf -bg silver
+  $::scale conf -state disabled
+  $::F3 conf -bg silver
+}
+proc anysetnormal {} {
+  $::anyBtn conf -state normal
+  $::mC conf -bg lightblue
+  $::scale conf -state normal
+  $::F2 conf -bg silver 
+  $::90Btn conf -state disabled
+  $::180Btn conf -state disabled
+}
+proc allsetnormal {} {
+  $::F2 conf -bg green
+  $::F3 conf -bg green3
+  $::anyBtn conf -state normal
+  $::90Btn conf -state normal
+  $::180Btn conf -state normal
+  $::mC conf -bg lightblue
+  $::scale conf -state normal
+}
 
-#Create message field to be packed by confirmBtn action
-set msgL $rotatePic::T.msgL
-message $msgL -width 1000 -text rotateWait -bg silver -fg silver -font {TkHeadingFont 16 bold} -anchor w -justify left -pady 20 
+button $anyBtn -textvar computePreview -activebackground beige \
+ -command {
+ anysetnormal
+ vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
+ }
+button $90Btn -textvar preview90 -activebackground beige \
+-command {
+  90-180setnormal
+  vorschau $rotatepic::rotateCanvPic 90 $canv
+  set rotatepic::angle 90
+  }
+button $180Btn -textvar preview180 -activebackground beige \
+-command {
+  90-180setnormal
+  vorschau $rotatepic::rotateCanvPic 180 $canv
+  set rotatepic::angle 180
+  }
 
 set cancelBtnAction {	
   set ::Modal.Result "Cancelled"
-  image delete $rotatePic::rotateCanvPic
-  destroy $rotatePic::T
-  namespace delete rotatePic
+  image delete $rotatepic::rotateCanvPic
+  destroy $rotatepic::W
+  namespace delete rotatepic
 }
 
 set confirmBtnAction {
   #Create message window on top
-  tk_messageBox -type ok -message $rotateWait
+  set res [tk_messageBox -type yesno -message $rotateWait]
+  if {$res == "no"} {
+    allsetnormal
+    return Abbruch
+  }
   #Initiate rotation in background, close window when finished 
   after idle {
-    doRotateOrig photosOrigPic $rotatePic::angle
-    destroy $rotatePic::T
-    namespace delete rotatePic
+    doRotateOrig photosOrigPic $rotatepic::angle
+    destroy $rotatepic::W
+    namespace delete rotatepic
   }
 
-  vorschau $rotatePic::rotateCanvPic $rotatePic::angle $canv
+  vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
 
   #Run foreground actions
-  $rotatePic::T.msgL conf -fg red -bg beige -bd 5
   photosCanvPic blank
-  photosCanvPic copy $rotatePic::rotateCanvPic -shrink
-  image delete $rotatePic::rotateCanvPic
+  photosCanvPic copy $rotatepic::rotateCanvPic -shrink
+  image delete $rotatepic::rotateCanvPic
   set ::Modal.Result "Success"
 }
 
-button $rotatePic::T.saveBtn -textvar save -activebackground lightgreen -command $confirmBtnAction
-button $rotatePic::T.cancelBtn -textvar cancel -activebackground red -command $cancelBtnAction
+set saveBtn $rotatepic::W.saveBtn
+set cancelBtn $rotatepic::W.cancelBtn
+button $saveBtn -textvar save -activebackground lightgreen -command $confirmBtnAction
+button $cancelBtn -textvar cancel -activebackground red -command $cancelBtnAction
 
 catch { canvas $canv }
-$canv create image 6 6 -image $rotatePic::rotateCanvPic -anchor nw -tags img
-$canv conf -width [image width $rotatePic::rotateCanvPic] -height [image height $rotatePic::rotateCanvPic]
-pack $canv
+$canv create image 6 6 -image $rotatepic::rotateCanvPic -anchor nw -tags img
+$canv conf -width [image width $rotatepic::rotateCanvPic] -height [image height $rotatepic::rotateCanvPic]
+pack $canv -in $F1
 
-#Create Meter
+#Create scale
 set ::pi 3.1415927 ;# Good enough accuracy for gfx...
-scale .rotateW.scale -orient h -length 300 -from -90 -to 90 -variable v
+scale $scale -orient h -length 300 -from -90 -to 90 -variable v
 set from [$scale cget -from]
 set to [$scale cget -to]
 
-pack $rotatePic::T.90°Btn -pady 5
-pack $rotatePic::T.180°Btn
+#Create meter
+#set meter [makeMeter]
 pack [makeMeter] -pady 10
-
-#Pack Scale
 pack $scale
 trace add variable v write updateMeter
 trace add variable v write updateAngle
 
-pack $rotatePic::T.previewBtn -pady 10
-pack $rotatePic::T.msgL -fill x
-pack $rotatePic::T.cancelBtn $rotatePic::T.saveBtn -side right
-
-bind $rotatePic::T <Escape> $cancelBtnAction
-bind $rotatePic::T <Return> $confirmBtnAction
-Show.Modal $rotatePic::T -destroy 0 -onclose $cancelBtnAction
+#Pack all
+pack $90Btn -pady 5 -side left -expand 1
+pack $180Btn -side left -expand 1
+pack $anyBtn -pady 10
+pack $cancelBtn $saveBtn -side right
+bind $rotatepic::W <Escape> $cancelBtnAction
+bind $rotatepic::W <Return> $confirmBtnAction
+Show.Modal $rotatepic::W -destroy 0 -onclose $cancelBtnAction

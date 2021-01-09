@@ -35,15 +35,14 @@ pack .desktopF.leftF.baslik -anchor w
 pack $imgyesnoBtn -side top -anchor w
 pack .desktopF.leftF.intro -anchor nw
 
-
 # F I L L   R I G H T
-canvas .textposCanv -bg lightgrey -borderwidth 1
+set c [canvas .textposCanv -bg lightgrey -borderwidth 1]
 
 #3. ShowDate checkbutton
 checkbutton .showdateBtn -textvar f2.introline -variable enabletitle
 .showdateBtn configure -command {
   if {$setupTwdFileName != ""} {
-    .textposCanv itemconf mv -text [getTodaysTwdText $setupTwdFileName]
+    $c itemconf mv -text [getTodaysTwdText $setupTwdFileName]
   }
 }
 
@@ -117,7 +116,7 @@ set Black  [rgb2hex BlackArr]
 .fontcolorSpin set $fontcolortext
 .fontcolorSpin conf -command {
   %W conf -bg [set %s]
-  setCanvasFontColour .textposCanv [set %s]
+  setCanvasFontColour $c [set %s]
   setCanvasFontColour .inttextCanv [set %s]
 }
 
@@ -149,33 +148,35 @@ label .textposTxt -textvar textpos -font TkCaptionFont
 
 #2. Create TextPos Canvas
 set textPosFactor 3 ;#Verkleinerungsfaktor gegenüber real font size
-
-#TODO WHERE is photosOrigPic? - clarify names!!!
 image create photo photosOrigPic -file [getRandomPhotoPath]
 image create photo textposCanvPic
 textposCanvPic copy photosOrigPic -subsample $textPosFactor -shrink
 set screeny [winfo screenheight .]
-.textposCanv conf -width [image width textposCanvPic] -height [expr $screeny/$textPosFactor]
-.textposCanv create image 0 0 -image textposCanvPic -anchor nw
+$c conf -width [image width textposCanvPic] -height [expr $screeny/$textPosFactor]
+$c create image 0 0 -image textposCanvPic -anchor nw
 
-createMovingTextBox .textposCanv
-
-.textposCanv bind mv <1> {
-     set ::x %X
-     set ::y %Y
- }
+#Copy margins to ::colour, to be changed later
+namespace eval colour {
+  variable marginleft $::marginleft
+  variable margintop $::margintop
+}
+createMovingTextBox $c
+$c bind mv <1> {
+  set ::x %X
+  set ::y %Y
+}
  
 #set up dragging item
-lassign [.textposCanv bbox canvTxt] x1 y1 x2 y2
+lassign [$c bbox canvTxt] x1 y1 x2 y2
 set itemW [expr $y2 - $y1]
 puts "itemW $itemW"
 set margin 15
 #set font in pixels
-.textposCanv bind mv <Button1-Motion> [list dragCanvasItem %W txt %X %Y $margin]
+$c bind mv <Button1-Motion> [list dragCanvasItem %W txt %X %Y $margin]
 setCanvasFontSize $fontsize
 
 
-setCanvasFontColour .textposCanv $fontcolorHex
+setCanvasFontColour $c $fontcolorHex
 #Footnote
 label .textposFN -width 50 -font "Serif 10" -textvar ::textposFN
 
@@ -195,5 +196,5 @@ pack .fontweightBtn .fontsizeSpin .fontsizeTxt -in .rbot1F.2F -side right -ancho
 
 #Bottom 2
 pack .textposTxt -in .rbot2F -pady 7
-pack .textposCanv -in .rbot2F -fill y
+pack $c -in .rbot2F -fill y
 pack .textposFN -in .rbot2F -fill x

@@ -326,22 +326,19 @@ proc setManText {lang} {
 ## Creates textbox with TW text on canvas $c
 ## Called by SetupDesktop & SetupResizePhoto
 proc createMovingTextBox {c} {
-  global marginleft margintop textPosFactor fontcolorHex fontsize fontfamily fontweight setupTwdText
+  global FilePaths
+  global textPosFactor fontcolorHex fontsize fontfamily fontweight setupTwdText
+  global colour::marginleft 
+  global colour::margintop
 
-  #Verkleinerungsfaktor für textposition window
-  #set displayFactor 2
-
-  set screenx [winfo screenwidth .]
-  set screeny [winfo screenheight .]
-  #set textPosSubwinX [expr $screenx/20]
-  #set textPosSubwinY [expr $screeny/30]
-  set x1 [expr $marginleft/$textPosFactor]
-  set y1 [expr $margintop/$textPosFactor]
-
-  #Create movingTextFont here, configure later with setCanvasFontSize
+  #Create movingTextFont here, to be configured later (setCanvFontSize)
   catch {font create movingTextFont}
   catch {font create movingTextReposFont}
 
+  set screenx [winfo screenwidth .]
+  set screeny [winfo screenheight .]
+  set x1 [expr $marginleft/$textPosFactor]
+  set y1 [expr $margintop/$textPosFactor]
   set shadeX [expr $x1 + 1]
   set shadeY [expr $y1 + 1]
   set sunX [expr $x1 - 1]
@@ -351,11 +348,36 @@ proc createMovingTextBox {c} {
   array set fontcolArr "r $regR g $regG b $regB"
   set shadeHex [setShade fontcolArr ashex]
   set sunHex   [setSun fontcolArr ashex]
-
+  
+  #Fill with medium colours (area luminance code = 2)
   $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade} -fill $shadeHex
   $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun} -fill $sunHex
   $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main} -fill $fontcolorHex
   $c itemconf canvTxt -text $setupTwdText
+
+proc TESTscanLum {} { 
+  #TODO das gehört nicht hierhin - muss bei Save Btn kommen!!!!!!!!
+  #TODO adapt getAvLuminance to change font colours directly!
+  #Compute text area's luminacy % change font colours accordingly
+  lassign [$c bbox canvTxt] x1 y1 x2 y2
+  source $FilePaths(ScanColourArea)
+  set lum [getAvLuminance x1 y1 x2 y2]
+
+  if {$lum == 3} {
+  #reduce colours by 0.6
+    set regHex
+    set shaHex
+    set sunHex
+  } elseif {$lum == 1} {
+  #increase colours by 1.8
+    set regHex
+    set shaHex
+    set sunHex
+}
+  $c itemconf main -fill $regtHex
+  $c itemconf shade -fill $shaHex
+  $c itemconf sun -fill $sunHex
+}
 
   if {$c == ".textposCanv"} {
     $c itemconf canvTxt -font movingTextFont -activefill red

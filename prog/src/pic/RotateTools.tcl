@@ -285,5 +285,5 @@ proc updateMeter {name1 name2 op} {
 
 proc updateAngle {name1 name2 op} {
   upvar #0 $name1 v
-  set rotatePic::angle $v
+  set rotatepic::angle $v
 }

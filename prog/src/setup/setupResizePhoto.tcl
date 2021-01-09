@@ -3,11 +3,6 @@
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated 3jan21 pv
 
-#TODO Warum geht das nicht? Warum sourcet er Globals nicht?
-#source $SetupResizeTools
-#source $Globals
-#source $env(HOME)/Biblepix/prog/src/setup/setupResizeTools.tcl
-
 #TODO should these be called by another lowlevel prog?
 source $::ScanColourArea
 source $::AnnotatePng
@@ -17,14 +12,11 @@ source $::AnnotatePng
 ##called by addPic
 proc openResizeWindow {} {
   global fontsize
-
   set margin 10
-
   namespace eval resizePic {}
 
   #Copy addpicture::curPic to canvas
   set resizePic::resizeCanvPic [image create photo]
-
   set resizePic::scaleFactor [getResizeScalefactor]
   $resizePic::resizeCanvPic copy $addpicture::curPic -subsample $resizePic::scaleFactor
 
@@ -81,7 +73,6 @@ proc openResizeWindow {} {
 ##called by addPic ?????????if ![needsResize]??????????????
 proc openReposWindow {pic} {
   global fontsize
-
   namespace eval reposPic {}
   set reposPic::reposCanvPic [image create photo]
 
@@ -139,7 +130,7 @@ proc openReposWindow {pic} {
   set imgY [image height $reposPic::reposCanvPic]
   $reposPic::canv conf -width $imgX -height $imgY
 
-  #Creaste moving text  & disable for now
+  #Creaste moving text (with positon & luminance)
   createMovingTextBox $reposPic::canv
   
   #Configure text size
@@ -155,9 +146,9 @@ proc openReposWindow {pic} {
   bind $reposPic::w <Return> $confirmBtnAction
   bind $reposPic::w <Escape> $cancelBtnAction
 
-#Start colour scanning in background - TODO Set back to after idle once colourscan is working!
+  #Start colour scanning in background - TODO Set back to after idle once colourscan is working!
   after idle {
-    colour::doColourScan
+#    colour::doColourScan
      $reposPic::canv itemconf mv -state normal
      $reposPic::w.moveTxtBtn conf -state normal -bg orange -fg black
      set textpos.wait "Sie können nun selber verschieben und dann abspeichern."
