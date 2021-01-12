@@ -13,7 +13,8 @@ set Globals "[file join $srcdir share globals.tcl]"
 source $Globals
 source $TwdTools
 
-updateTwd
+#TODO testing
+catch updateTwd
 
 #Set TwdFileName for the 1st time, else run Setup
 if [catch {set twdfile [getRandomTwdFile]}] {

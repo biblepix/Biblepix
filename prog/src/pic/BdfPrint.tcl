@@ -2,13 +2,12 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 5jan21
+# Updated: 11jan21
 source $TwdTools
 source $BdfTools
 source $ImgTools
-set TwdLang [getTwdLang $::TwdFileName]
-set ::RtL [isRtL $TwdLang]
-puts "Loading BdfPrint"
+set TwdLang [getTwdLang $TwdFileName]
+set RtL [isRtL $TwdLang]
 
 # S O U R C E   F O N T S   I N T O   N A M E S P A C E S
 
@@ -71,38 +70,33 @@ puts "Computing colours..."
 
 namespace eval colour {
 
-#Compute reg/sun/shade hex & export to ::colour NS
-array set regArr [array get ${::fontcolortext}Arr]
-set regHex [rgb2hex regArr]
-#set shaHex [setShade regArr ashex]
-#set sunHex [setSun regArr ashex]
+  #Compute reg/sun/shade hex & export to ::colour NS
+  array set regArr [array get ${::fontcolortext}Arr]
+  set regHex [rgb2hex regArr]
+  #set shaHex [setShade regArr ashex]
+  #set sunHex [setSun regArr ashex]
 
-##set sun rgb & hex
-lassign [setSun regArr] sunR sunG sunB
-array set sunArr "r $sunR g $sunG b $sunB"
-set sunHex [setSun regArr hex]
+  ##set sun rgb & hex
+  lassign [setSun regArr] sunR sunG sunB
+  array set sunArr "r $sunR g $sunG b $sunB"
+  set sunHex [setSun regArr hex]
 
-##set shade rgb & hex
-lassign [setShade regArr] shaR shaG shaB
-array set shaArr "r $shaR g $shaG b $shaB"
-set shaHex [setShade regArr hex]
-
-##Export general colour hex values (=PNG value 2)
-#set colour::regHex $regHex
-#set colour::sunHex $sunHex
-#set colour::shaHex $shaHex
+  ##set shade rgb & hex
+  lassign [setShade regArr] shaR shaG shaB
+  array set shaArr "r $shaR g $shaG b $shaB"
+  set shaHex [setShade regArr hex]
 
   #Reset if PNG lumiance info differs from 2
-  if [info exists pnginfo(Lum)] {
+  if [info exists pnginfo(Luminacy)] {
 
     ##1) dark bg: increase font colour luminance
-    if {$pnginfo(Lum) == 1} {
+    if {$pnginfo(Luminacy) == 1} {
       set regHex $sunHex
       set shaHex $regHex
       set sunHex [setSun ::sunArr ashex]
       
     ##2) bright bg: reduce font colour luminance
-    } elseif {$pnginfo(Lum) == 3} {
+    } elseif {$pnginfo(Luminacy) == 3} {
       set regHex $shaHex
       set sunHex $regHex
       set shaHex [setShade ::shaArr ashex]
@@ -110,16 +104,22 @@ set shaHex [setShade regArr hex]
   }
 
   #Get marginleft & margintop from pnginfo OR from Config
-  if { [info exists pnginfo(X)] && [info exists pnginfo(Y)] } {
-    set marginleft $pnginfo(X)
-    set margintop  $pnginfo(Y)
+  if { [info exists pnginfo(Marginleft)] && [info exists pnginfo(Margintop)] } {
+    set marginleft $pnginfo(Marginleft)
+    set margintop  $pnginfo(Margintop)
   } else {
     variable marginleft $::marginleft
     variable margintop $::margintop
   }
-puts $marginleft
-puts $margintop
+
 } ;#END namespace colour
+
+#TODO for testing
+catch {parray colour::pnginfo} err
+puts $err
+puts $colour::regHex 
+puts $colour::sunHex 
+puts $colour::shaHex
 
 
 # 3)  I N I T I A L I S E   P R I N T I N G

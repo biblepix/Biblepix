@@ -31,7 +31,11 @@ puts "Reading PNG info from [file tail $picPath] ..."
 if {[readPngComment $picPath] == 0} {
   puts " No PNG info found!"
 } else {
-  array set colour::pnginfo "[split [evalPngComment $picPath]]" 
+
+  namespace eval colour {
+    variable picPath $::picPath
+    array set pnginfo "[split [evalPngComment $picPath]]"
+  } 
 }
 
 #Printing   B D F 

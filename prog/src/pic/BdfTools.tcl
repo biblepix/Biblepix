@@ -2,13 +2,16 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 4jan21 pv
+# Updated: 11jan21 pv
 
 # printTwd
-## Toplevel printing proc
+##Toplevel printing proc
+##called by BdfPrint
 proc printTwd {TwdFileName img} {
+  global colour::marginleft
+  global colour::margintop
   parseTwdTextParts $TwdFileName
-  set finalImg [printTwdTextParts $colour::marginleft $colour::margintop $img]
+  set finalImg [printTwdTextParts $marginleft $margintop $img]
   return $finalImg
 }
 
@@ -189,12 +192,13 @@ proc printLetter {letterName img x y} {
 
 
 # printTextLine - prints 1 line of text to $img
-## Called by printTwd
 ## calls printLetter
 ## use 'args' for TAB or IND
+## Called by printTwd
 proc printTextLine {textLine x y img args} {
   global TwdLang enabletitle RtL BdfBidi prefix
   global colour::marginleft
+  global colour::sunHex colour::regHex colour::shaHex
   
   set FontAsc "$${prefix}::FontAsc"
   
@@ -214,7 +218,10 @@ proc printTextLine {textLine x y img args} {
     set imgW [image width $img]
     set textLine [bidi $textLine $TwdLang]
     set operator -
-    set xBase [expr $imgW - ($marginleft) - $x]
+    #Move text to right side only if png info not found 
+    if ![info exists colour::pngInfo] { 
+      set xBase [expr $imgW - ($marginleft) - $x]
+    }
     
   } else {
     set operator +
