@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 11jan21
+# Updated: 13jan21
 source $TwdTools
 source $BdfTools
 source $ImgTools
@@ -103,10 +103,11 @@ namespace eval colour {
     }
   }
 
-  #Get marginleft & margintop from pnginfo OR from Config
+  #Get marginleft & margintop from pnginfo OR from Config 
+  ##using 'variable' (and not 'set') seems to be mandatory for namespace
   if { [info exists pnginfo(Marginleft)] && [info exists pnginfo(Margintop)] } {
-    set marginleft $pnginfo(Marginleft)
-    set margintop  $pnginfo(Margintop)
+    variable marginleft $pnginfo(Marginleft)
+    variable margintop  $pnginfo(Margintop)
   } else {
     variable marginleft $::marginleft
     variable margintop $::margintop

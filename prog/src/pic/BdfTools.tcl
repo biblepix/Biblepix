@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 11jan21 pv
+# Updated: 13jan21 pv
 
 # printTwd
 ##Toplevel printing proc
@@ -22,7 +22,7 @@ proc parseTwdTextParts {TwdFileName} {
 
   namespace eval twd {
     
-    global TwdFileName
+    variable TwdFileName $::TwdFileName
     set TwdLang [getTwdLang $TwdFileName]
 
     #A: SET TWD NODE NAMES
