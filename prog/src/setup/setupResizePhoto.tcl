@@ -99,6 +99,12 @@ proc openReposWindow {pic} {
   set confirmBtnAction {
     set ::Modal.Result "Success"
     
+    #TODO Hintergrundton berechnen
+    
+    
+    
+    
+    #PNG info
     lassign [$reposPic::canv coords txt] x y
     set x [expr $x * $reposPic::scaleFactor]
     set y [expr $y * $reposPic::scaleFactor]
