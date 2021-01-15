@@ -147,6 +147,8 @@ BiblePix provides a few sample pictures which are scaled to screen size and copi
 to the BiblePix Photo directory at first installation. However in the Setup program
 you can add your own photos. These too are resized, if necessary, and copied over.
 Original photos remain untouched.
+From version 3.3, both the desired text position and the luminance of the text
+colour are registered when adding a photo.
 
 THE WORD ON PICTURE
 The centre-piece of BiblePix is projecting The Word onto a background image. 

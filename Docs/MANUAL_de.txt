@@ -149,7 +149,10 @@ BibelPix liefert einige Musterbilder mit, die bei der Erstinstallation auf die
 Bildschirmgrösse zugeschnitten und in den BibelPix-Fotoordner kopiert werden. 
 Das Einrichtungsprogramm bietet jedoch die Möglichkeit, eigene Fotos hinzuzufügen. 
 Diese werden, wenn nötig, ebenfalls skaliert und kopiert. Die Originalfotos bleiben
-unberührt.
+unberührt. 
+Ab Version 3.3 wird beim Hinzufügen eines Bildes die gewünschte Textposition sowie
+die Helligkeit der Schriftfarbe mit gespeichert.
+
 
 WORT AUF BILD
 Das Kernstück von BibelPix ist die Projektion des täglichen Bibelspruchs auf ein
