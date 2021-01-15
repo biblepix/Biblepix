@@ -189,6 +189,7 @@ array set GreenArr   {r 60 g 185 b 120}
 #Define colour computing values
 set sunfactor 1.8
 set shadefactor 0.6
+set lumThreshold 85
 
 #Bildformate & DesktopPicturesDir
 if {$platform == "unix"} {

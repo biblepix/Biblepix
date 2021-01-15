@@ -109,6 +109,103 @@ proc setSun {arrname args} {
   }
 }
 
+
+
+##called by BdfPrint & SetupRepos
+
+namespace eval colour {
+
+  variable lumThreshold $::lumThreshold
+  
+  proc getAvLuminance {c textitem} {
+    global pnginfo lumThreshold
+    
+    #get image name from canvas
+    set img [lindex [$c itemconf img -image] end]
+    
+    #A) for Biblepix/BdfPrint: check if pnginfo exists & return
+    if [info exists pnginfo] {
+      set lum $pnginfo(Luminacy)
+      return $lum
+    }
+  
+    #B) For Setup: compute text area luminacy
+    lassign [$c bbox $textitem] x1 y1 x2 y2
+    set skip 2
+    set leftmost $x1
+    set rightmost $x2
+    set topmost $y1
+    set botmost $y2 
+
+    #scan given canvas area
+    puts "Scanning text area for luminance..."
+    for {set yPos $topmost} {$yPos < $botmost} {incr yPos $skip} {
+    
+      for {set xPos $leftmost} {$xPos < $rightmost} {incr xPos $skip} {
+        #add up r+g+b to sumTotal, dividing sum by 3 for each rgb
+#puts "$yPos $xPos"
+        lassign [$img get $xPos $yPos] r g b
+        incr sumTotal [expr int($r + $g + $b)]
+        incr numColours 3
+      }
+    }
+    
+    set avLum [expr int($sumTotal / $numColours)]
+
+    ##very dark
+    if {$avLum <= $lumThreshold} {
+      set lum 1
+    ##very bright
+    } elseif {$avLum >= [expr $lumThreshold * 2]} {
+      set lum 3
+    ##normal
+    } else {
+      set lum 2
+    }
+
+    return $lum
+    
+  } ;#END getAvLuminance
+ 
+ ##called by ?setFontColour?
+ proc determineFontColours {lum} {
+  #Normalfall
+  array set regArr [array get ${::fontcolortext}Arr]
+  if {$lum == 2} {
+    lassign [setShade regArr] shaR shaG shaB
+    lassign [setSun regArr] sunR sunG sunB
+    array set shaArr [r $shaR g $shaG b $shaB]
+    array set sunArr [r $sunR g $sunG b $sunB]
+    
+    #Normalfall (lum==2)  
+    set regHex [rgb2hex regArr]
+    set sunHex [rgb2hex sunArr]
+    set shaHex [rgb2hex shaArr]
+
+  } elseif {$lum == 3} {
+    set sunHex $regHex
+    set regHex $shaHex
+    set shaHex [setShade shaArr ashex]
+    
+  } elseif {$lum == 1} {
+    set shaHex $regHex
+    set regHex $sunHex
+    set sunHex [setSun sunArr ashex]
+  }
+  
+  return $regHex $sunHex $shaHex
+  }
+  
+  
+  #TODO >separate proc! ist schon in ?setFontColour?
+  #Adapt canvas font luminacy
+#  $c itemconf main -fill $regHex
+#  $c itemconf shade -fill $shaHex
+#  $c itemconf sun -fill $sunHex
+  
+} ;#END colour namespace
+
+##MEJUTAR.....................
 # getAvAreaColour
 ##computes average colour+luminance of a given canvas pic area
 ##called by SetupRepos UNTIL AUTOMATED IN SCANCOLOURAREA!

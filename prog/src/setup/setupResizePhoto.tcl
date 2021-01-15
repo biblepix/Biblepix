@@ -157,7 +157,7 @@ proc openReposWindow {pic} {
 #    colour::doColourScan
      $reposPic::canv itemconf mv -state normal
      $reposPic::w.moveTxtBtn conf -state normal -bg orange -fg black
-     set textpos.wait "Sie können nun selber verschieben und dann abspeichern."
+     set textpos.wait "Passen Sie die Textposition nach Wunsch an und quittieren Sie mit OK."
   }
 
   Show.Modal $reposPic::w -destroy 1 -onclose $cancelBtnAction

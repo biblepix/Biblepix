@@ -364,60 +364,7 @@ proc TESTscanLum {} {
   source $FilePaths(ScanColourArea)
   set lum [getAvLuminance $x1 $y1 $x2 $y2]
 
-proc setCanvFontColours {c item} { 
-  lassign [$c bbox $item] x1 y1 x2 y2
-   
-#scan area
-set skip 5
-set leftmost $x1
-set rightmost $x2
-set topmost $y1
-set botmost $y2 
-
-for {set yPos $topmost} {$yPos < $botmost} {incr yPos} {
-  for {set xPos $leftmost} {$xPos < $rightmost} {incr xPos} {
-      #add r g b to SUMTOT
-      lassign [$img get $xPos $yPos] r g b
-      
-      incr SUMTOT [expr int($r + $g + $b)]
-      incr numCol 3
-  }
-#TODO skip nötig?
-}
-
-#compute av luminance
-set avLum [expr int($SUMTOT / $numCol)]
-#TODO ?proc for 1-3
-#TODO below is copied from BdfPrint...
-#Normalfall
-  array set regArr [array get ${::fontcolortext}Arr]
-  lassign [setShade regArr] shaR shaG shaB
-  lassign [setSun regArr] sunR sunG sunB
-  array set shaArr [r $shaR g $shaG b $shaB]
-  array set sunArr [r $sunR g $sunG b $sunB]
-  
-  #Normalfall (lum==2)  
-  set regHex [rgb2hex regArr]
-  set sunHex [rgb2hex sunArr]
-  set shaHex [rgb2hex shaArr]
-
-  if {$avLum == 3} {
-    set sunHex $regHex
-    set regHex $shaHex
-    set shaHex [setShade shaArr ashex]
-    
-  } elseif {$avLum == 1} {
-    set shaHex $regHex
-    set regHex $sunHex
-    set sunHex [setSun sunArr ashex]
-  }
-  
-  #Adapt canvas font luminacy
-  $c itemconf main -fill $regHex
-  $c itemconf shade -fill $shaHex
-  $c itemconf sun -fill $sunHex
-}
-} ;#END setCanvFontcols
+} 
 
   if {$c == ".textposCanv"} {
     $c itemconf canvTxt -font movingTextFont -activefill red

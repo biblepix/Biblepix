@@ -2,7 +2,7 @@
 # Procs used in Resizing + Repositioning processes
 # sourced by SetupPhotos & ???
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30dec20 jh
+# Updated: 15jan21 pv
 
 # needsResize
 ##compares photosOrigPic OR rotateOrigPic with screen dimensions
@@ -96,8 +96,8 @@ proc grabCanvSection {c} {
 
 # getCanvSizeFromPic
 ## return the size of the canvas in ratio to screensize
-##called by setupResizePhoto for .resizePhoto.resizeCanv & .reposPhoto.reposCanv
 ##returns canvX + canvY
+##called by setupResizePhoto for resizeCanv & reposCanv
 proc getCanvSizeFromPic {pic} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
@@ -105,6 +105,8 @@ proc getCanvSizeFromPic {pic} {
 
   set imgX [image width $pic]
   set imgY [image height $pic]
+
+puts "$imgX $imgY"
   set imgFactor [expr $imgX. / $imgY]
 
   ##zu hoch
@@ -142,8 +144,7 @@ proc getResizeScalefactor {} {
   set imgY [image height $addpicture::curPic]
 
   set factor [expr int(floor($imgX. / $canvX))]
-
-  if {[expr $imgY / $factor] < $canvY} {
+  if {$factor > 0 && [expr $imgY / $factor] < $canvY} {
     set factor [expr int(floor($imgY. / $canvY))]
   }
   
@@ -164,7 +165,7 @@ proc getReposScalefactor {} {
 
   set factor [expr int(ceil($imgX. / $canvX))]
 
-  if {[expr $imgY / $factor] > $canvY} {
+  if {$factor > 0 && [expr $imgY / $factor] > $canvY} {
     set factor [expr int(ceil($imgY. / $canvY))]
   }
   
