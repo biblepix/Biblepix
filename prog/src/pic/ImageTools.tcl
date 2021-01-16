@@ -2,13 +2,14 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5jan21 pv
+# Updated: 16jan21 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
   tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message $packageRequireImg
   exit
 }
+
 
 #####################################################################
 ################ General procs ######################################
@@ -21,7 +22,7 @@ proc getRandomBMP {} {
   return [lindex $bmplist $randIndex]
 }
 
-proc getRandomPhotoPath	 {} {
+proc getRandomPhotoPath	{} {
   #Ausgabe JPG/PNG mit Pfad
   global platform dirlist
   if {$platform=="unix"} {
@@ -52,7 +53,6 @@ proc calcAverage {list} {
 ############### Colour procs ################################
 #############################################################
 
-#TODO needs testing!
 # rgb2hex
 ##computes r/g/b array into a hex digit
 ##called by LoadConfig etc.
@@ -61,7 +61,6 @@ proc rgb2hex {arrname} {
   set hex [format "#%02x%02x%02x" $myarr(r) $myarr(g) $myarr(b)]
   return $hex
 }
-
 proc hex2rgb {hex} {
   lassign [scan $hex "#%2x %2x %2x"] r g b
   return "$r $g $b"
@@ -74,6 +73,7 @@ proc hex2rgb {hex} {
 proc setShade {arrname args} {
   global shadefactor
   upvar $arrname myarr
+  
   set shadeR [expr max(int($shadefactor*$myarr(r)),0)]
   set shadeG [expr max(int($shadefactor*$myarr(g)),0)]
   set shadeB [expr max(int($shadefactor*$myarr(b)),0)]
@@ -109,171 +109,90 @@ proc setSun {arrname args} {
   }
 }
 
-
-
+# getAreaLuminacy
+##computes luminance 1-3 for canvas text section
 ##called by BdfPrint & SetupRepos
-
-namespace eval colour {
-
-  variable lumThreshold $::lumThreshold
+proc getAreaLuminacy {c textitem} {
+  global pnginfo lumThreshold
   
-  proc getAvLuminance {c textitem} {
-    global pnginfo lumThreshold
-    
-    #get image name from canvas
-    set img [lindex [$c itemconf img -image] end]
-    
-    #A) for Biblepix/BdfPrint: check if pnginfo exists & return
-    if [info exists pnginfo] {
-      set lum $pnginfo(Luminacy)
-      return $lum
-    }
+  #get image name from canvas
+  set img [lindex [$c itemconf img -image] end]
   
-    #B) For Setup: compute text area luminacy
-    lassign [$c bbox $textitem] x1 y1 x2 y2
-    set skip 2
-    set leftmost $x1
-    set rightmost $x2
-    set topmost $y1
-    set botmost $y2 
-
-    #scan given canvas area
-    puts "Scanning text area for luminance..."
-    for {set yPos $topmost} {$yPos < $botmost} {incr yPos $skip} {
-    
-      for {set xPos $leftmost} {$xPos < $rightmost} {incr xPos $skip} {
-        #add up r+g+b to sumTotal, dividing sum by 3 for each rgb
-#puts "$yPos $xPos"
-        lassign [$img get $xPos $yPos] r g b
-        incr sumTotal [expr int($r + $g + $b)]
-        incr numColours 3
-      }
-    }
-    
-    set avLum [expr int($sumTotal / $numColours)]
-
-    ##very dark
-    if {$avLum <= $lumThreshold} {
-      set lum 1
-    ##very bright
-    } elseif {$avLum >= [expr $lumThreshold * 2]} {
-      set lum 3
-    ##normal
-    } else {
-      set lum 2
-    }
-
+  #A) for Biblepix/BdfPrint: check if pnginfo exists & return
+  if [info exists pnginfo] {
+    set lum $pnginfo(Luminacy)
     return $lum
-    
-  } ;#END getAvLuminance
- 
- ##called by ?setFontColour?
- proc determineFontColours {lum} {
-  #Normalfall
-  array set regArr [array get ${::fontcolortext}Arr]
-  if {$lum == 2} {
-    lassign [setShade regArr] shaR shaG shaB
-    lassign [setSun regArr] sunR sunG sunB
-    array set shaArr [r $shaR g $shaG b $shaB]
-    array set sunArr [r $sunR g $sunG b $sunB]
-    
-    #Normalfall (lum==2)  
-    set regHex [rgb2hex regArr]
-    set sunHex [rgb2hex sunArr]
-    set shaHex [rgb2hex shaArr]
+  }
 
-  } elseif {$lum == 3} {
+  #B) For Setup: compute text area luminacy
+  puts "Scanning text area for luminance..."
+  lassign [$c bbox $textitem] x1 y1 x2 y2
+  set skip 2
+  set leftmost $x1
+  set rightmost $x2
+  set topmost $y1
+  set botmost $y2 
+
+  #scan given canvas area
+  for {set yPos $topmost} {$yPos < $botmost} {incr yPos $skip} {
+  
+    for {set xPos $leftmost} {$xPos < $rightmost} {incr xPos $skip} {
+      #add up r+g+b to sumTotal, dividing sum by 3 for each rgb
+      lassign [$img get $xPos $yPos] r g b
+      incr sumTotal [expr int($r + $g + $b)]
+      incr numColours 3
+    }
+  }
+  set avLum [expr int($sumTotal / $numColours)]
+
+  ##very dark
+  if {$avLum <= $lumThreshold} {
+    set lum 1
+  ##very bright
+  } elseif {$avLum >= [expr $lumThreshold * 2]} {
+    set lum 3
+  ##normal
+  } else {
+    set lum 2
+  }
+
+  return $lum
+} ;#END getAreaLuminacy
+ 
+# setFontShades
+##computes font shades according to luminance of background colour 
+##returns 3 hex values: reg/sun/shade
+##called by setCanvasFontColour
+proc setFontShades {fontcolortext lum} {
+  global BlackArr BlueArr GreenArr SilverArr GoldArr
+  
+  #1)Determine colour arrays
+#  set arrName [join $fontcolortext Arr]
+#  array set regArr [array get $arrName]
+  array set regArr [array get ${fontcolortext}Arr]
+  lassign [setShade regArr] shaR shaG shaB
+  lassign [setSun regArr] sunR sunG sunB
+  array set shaArr "r $shaR g $shaG b $shaB"
+  array set sunArr "r $sunR g $sunG b $sunB"
+  
+  #2)Compute hex values
+  ##Normalfall (=lum 2)  
+  set regHex [rgb2hex regArr]
+  set sunHex [rgb2hex sunArr]
+  set shaHex [rgb2hex shaArr]
+  ##Hell
+  if {$lum == 3} {
     set sunHex $regHex
     set regHex $shaHex
     set shaHex [setShade shaArr ashex]
-    
+  ##Dunkel
   } elseif {$lum == 1} {
     set shaHex $regHex
     set regHex $sunHex
     set sunHex [setSun sunArr ashex]
   }
-  
-  return $regHex $sunHex $shaHex
-  }
-  
-  
-  #TODO >separate proc! ist schon in ?setFontColour?
-  #Adapt canvas font luminacy
-#  $c itemconf main -fill $regHex
-#  $c itemconf shade -fill $shaHex
-#  $c itemconf sun -fill $sunHex
-  
-} ;#END colour namespace
-
-##MEJUTAR.....................
-# getAvAreaColour
-##computes average colour+luminance of a given canvas pic area
-##called by SetupRepos UNTIL AUTOMATED IN SCANCOLOURAREA!
-proc getAvAreaColour {img} {
-
-  #no. of pixels to be skipped
-  set skip 5
-
-#TODO get X and Y from canvas movingText!
-
-  package require math
-
-  set imgX [image width $img]
-  set imgY [image height $img]
-  set x1 $marginleft
-  set y1 $margintop
-  set x2 [expr $imgX / 3]
-  set y2 [expr $imgY / 3]
-
-#  if $RtL {
-#    set x2 [expr $imgX - $marginleft]
-#    set x1 [expr $x2 - ($imgX / 3)]
-#  }    
-
-puts "Computing pixels..."
-
-    for {set x $x1} {$x<$x2} {incr x $skip} {
-
-      for {set y $y1} {$y<$y2} {incr y $skip} {
-        
-        lassign [$img get $x $y] r g b
-        lappend R $r
-        lappend G $g
-        lappend B $b
-      }
-    }
-puts "Done computing pixels"
-#zisisnt workin, donno why...
-return
-
-  #Compute avarage colours
-  set avR [calcAverage $R]
-  set avG [calcAverage $G]
-  set avB [calcAverage $B]
-  set avBri [calcAverage [list $avR $avG $avB]]
-#puts "avR $avR"
-#puts "avG $avG"
-#puts "avB $avB"
-
-  #Export vars to ::rgb namespace
-  catch {namespace delete rgb}
-  namespace eval rgb {}
-  set rgb::avRed $avR
-  set rgb::avGreen $avG
-  set rgb::avBlue $avB
-  set rgb::avBrightness $avBri
-
-  #Compute strong colour
-  namespace path {::tcl::mathfunc}
-  set rgb::maxCol [max $avR $avG $avB]
-  set rgb::minCol [min $avR $avG $avB]
-
-#puts "strongCol $rgb::maxCol"
-
-  #Delete colour lists
-  catch {unset R G B}
-
-} ;#END computeAvColours
+  return "$regHex $sunHex $shaHex"
+}
 
 
 ################################################################

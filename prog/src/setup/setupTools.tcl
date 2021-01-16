@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6jan21 pv
+# Updated: 16jan21 pv
 
 source $SetupResizeTools
 source $JList
@@ -147,52 +147,6 @@ namespace eval NewsHandler {
 ###### P r o c s   f o r   S e t u p G U I   +   S e t u p D e s k t o p #
 ##########################################################################
 
-# setCanvasFontSize
-##changes canvas font's size||weight||family on intTextCanv + textposCanv
-##called by SetupDesktop 
-proc setCanvasFontSize args {
-  ##size
-  if [string is integer $args] {
-    #set size in pt as in BDF      
-    font conf intCanvFont -size $args
-    font conf movingTextFont -size [expr round($args / 3) + 3]
-    set ::fontsize $args
-  ##weight
-  } elseif {$args == "bold" || $args == "normal"} {
-    font conf intCanvFont -weight $args
-    font conf movingTextFont -weight $args
-    set ::fontweight $args
-  ##family
-  } elseif {$args == "Serif" || $args == "Sans"} {
-    font conf intCanvFont -family $args
-    font conf movingTextFont -family $args
-    set ::fontfamily $args
-  }
-  return 0
-}
-
-# setCanvasFontColour
-##changes canvas' font's colour in Hex
-##called by SetGUI for inttextCanv & .textposCanv
-proc setCanvasFontColour {c fontcolorHex} {
-  #revert regular font colour to rgb array
-  lassign [hex2rgb $fontcolorHex] regR regG regB
-  array set fontcolArr "r $regR g $regG b $regB"
-  #compute sun & shade
-  set shadeHex [setShade fontcolArr ashex]
-  set sunHex [setSun fontcolArr ashex]
-
-  #fill International Canvas
-  $c itemconf main -fill $fontcolorHex
-  $c itemconf sun -fill $sunHex
-  $c itemconf shade -fill $shadeHex
-
-#  set ::fontcolorHex $colour
-#  set ::shadeHex $shade
-#  set ::sunHex $sun
-  
-  return 0
-}
 
 # Grey out all spinboxes if !$enablepic
 proc setSpinState {imgyesState} {
@@ -355,17 +309,6 @@ proc createMovingTextBox {c} {
   $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main} -fill $fontcolorHex
   $c itemconf canvTxt -text $setupTwdText
 
-proc TESTscanLum {} { 
-  #TODO das gehört nicht hierhin - muss bei Save Btn kommen!!!!!!!!
-  #TODO adapt getAvLuminance to change font colours directly!
-  
-  #Compute text area's luminacy % change font colours accordingly
-  lassign [$c bbox canvTxt] x1 y1 x2 y2
-  source $FilePaths(ScanColourArea)
-  set lum [getAvLuminance $x1 $y1 $x2 $y2]
-
-} 
-
   if {$c == ".textposCanv"} {
     $c itemconf canvTxt -font movingTextFont -activefill red
   } elseif {$c == ".reposPhoto.reposCanv"} {
@@ -377,7 +320,6 @@ proc TESTscanLum {} {
 ##adapted from a proc by ? ...THANKS TO  ...
 ##called by SetupDesktop & setupRespositionText
 proc dragCanvasItem {c item newX newY args} {
-
   set xDiff [expr {$newX - $::x}]
   set yDiff [expr {$newY - $::y}]
 
@@ -398,7 +340,6 @@ proc dragCanvasItem {c item newX newY args} {
 ## called by setupResizePhoto (tag: img) & setupDesktop moving text (tag: txt)
 ## 'args' is for compulsory margin for text item
 proc checkItemInside {c item xDiff yDiff args} {
-
   set canvX [lindex [$c conf -width] end]
   set canvY [lindex [$c conf -height] end]
 
@@ -451,6 +392,7 @@ proc checkItemInside {c item xDiff yDiff args} {
   return 1
 
 } ;#END checkItemInside
+
 
 ##########################################################################
 ###### P r o c s   f o r   S e t u p P h o t o s #########################
@@ -667,7 +609,6 @@ proc copyAndResizeSamplePhotos {} {
     if {$screenX == $imgX && $screenY == $imgY} {
       puts "Copying $fileName unchanged"
       file copy $origJpgPath $newJpgPath
-
     #else resize & save as PNG
     } else {
 

@@ -2,7 +2,7 @@
 # Procs used in Resizing + Repositioning processes
 # sourced by SetupPhotos & ???
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15jan21 pv
+# Updated: 16jan21 pv
 
 # needsResize
 ##compares photosOrigPic OR rotateOrigPic with screen dimensions
@@ -42,7 +42,6 @@ proc needsResize {pic} {
 ##berechnet resizeCanvPic Bildausschnitt für Kopieren nach reposCanvSmallPic
 ##called by addPic & ?processPngInfo?
 proc grabCanvSection {c} {
-
   lassign [$c bbox img] imgX1 imgY1 imgX2 imgY2
   set canvX [lindex [$c conf -width] end]
   set canvY [lindex [$c conf -height] end]
@@ -87,11 +86,8 @@ proc grabCanvSection {c} {
       set cutY1 0
       set cutY2 $canvY
     }
-
   }
-
   return "$cutX1 $cutY1 $cutX2 $cutY2"
-
 } ;#END grabCanvSection
 
 # getCanvSizeFromPic
@@ -106,7 +102,7 @@ proc getCanvSizeFromPic {pic} {
   set imgX [image width $pic]
   set imgY [image height $pic]
 
-puts "$imgX $imgY"
+#puts "$imgX $imgY"
   set imgFactor [expr $imgX. / $imgY]
 
   ##zu hoch
@@ -128,8 +124,53 @@ puts "$imgX $imgY"
   }
 
   return "$canvX $canvY"
-
 } ;#END getCanvSizeFromPic
+
+# setCanvasFontSize
+##changes canvas font's size||weight||family on intTextCanv + textposCanv
+##called by SetupDesktop 
+proc setCanvasFontSize args {
+  ##size
+  if [string is integer $args] {
+    #set size in pt as in BDF      
+    font conf intCanvFont -size $args
+    font conf movingTextFont -size [expr round($args / 3) + 3]
+    set ::fontsize $args
+  ##weight
+  } elseif {$args == "bold" || $args == "normal"} {
+    font conf intCanvFont -weight $args
+    font conf movingTextFont -weight $args
+    set ::fontweight $args
+  ##family
+  } elseif {$args == "Serif" || $args == "Sans"} {
+    font conf intCanvFont -family $args
+    font conf movingTextFont -family $args
+    set ::fontfamily $args
+  }
+  return 0
+}
+
+# setCanvasFontColour
+##changes canvas' font's colour in Hex
+##shades got from setFontShades
+##args = luminacy, as needed for textPosCanv
+##called by SetupDesktop for inttextCanv & SetupResize for .textposCanv
+proc setCanvasFontColour {c fontcolortext args} {
+  #set luminance = 2 if no args
+  if {$args == ""} {
+    set lum 2
+  } {
+    set lum $args
+  }
+  lassign [setFontShades $fontcolortext $lum] regHex sunHex shaHex
+
+  #fill canvas colours
+  $c itemconf main -fill $regHex
+  $c itemconf sun -fill $sunHex
+  $c itemconf shade -fill $shaHex
+  
+  return 0
+}
 
 proc getResizeScalefactor {} {
   set screenX [winfo screenwidth .]
@@ -147,7 +188,6 @@ proc getResizeScalefactor {} {
   if {$factor > 0 && [expr $imgY / $factor] < $canvY} {
     set factor [expr int(floor($imgY. / $canvY))]
   }
-  
   return $factor
 }
 
@@ -168,7 +208,6 @@ proc getReposScalefactor {} {
   if {$factor > 0 && [expr $imgY / $factor] > $canvY} {
     set factor [expr int(ceil($imgY. / $canvY))]
   }
-  
   return $factor
 }
 

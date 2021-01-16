@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 6jan21 pv
+# Updated 16jan21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -102,6 +102,7 @@ set sunHex [setSun ${fontcolortext}Arr ashex]
 .inttextCanv create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sunHex -tags {sun txt mv}
 .inttextCanv create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $fontcolorHex -tags {main txt mv}
 
+
 #1. Fontcolour spinbox
 message .fontcolorTxt -width 150 -textvar f2.farbe -font widgetFont
 spinbox .fontcolorSpin -width 12 -values {Blue Green Gold Silver Black}
@@ -116,8 +117,11 @@ set Black  [rgb2hex BlackArr]
 .fontcolorSpin set $fontcolortext
 .fontcolorSpin conf -command {
   %W conf -bg [set %s]
-  setCanvasFontColour $c [set %s]
-  setCanvasFontColour .inttextCanv [set %s]
+  set fontArrname ""
+  append fontArrname %s Arr
+  set fontHex [rgb2hex $fontArrname]
+  setCanvasFontColour $c %s
+  setCanvasFontColour .inttextCanv %s
 }
 
 #set Fontsize spinbox
@@ -174,9 +178,8 @@ set margin 15
 #set font in pixels
 $c bind mv <Button1-Motion> [list dragCanvasItem %W txt %X %Y $margin]
 setCanvasFontSize $fontsize
+setCanvasFontColour $c $fontcolortext
 
-
-setCanvasFontColour $c $fontcolorHex
 #Footnote
 label .textposFN -width 50 -font "Serif 10" -textvar ::textposFN
 

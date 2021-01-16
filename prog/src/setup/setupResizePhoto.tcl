@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 3jan21 pv
+# Updated 16jan21 pv
 
 #TODO should these be called by another lowlevel prog?
 source $::ScanColourArea
@@ -72,7 +72,7 @@ proc openResizeWindow {} {
 ##opens new toplevel window if .resizePhoto doesn't exist
 ##called by addPic ?????????if ![needsResize]??????????????
 proc openReposWindow {pic} {
-  global fontsize
+  global fontsize fontcolortext
   namespace eval reposPic {}
   set reposPic::reposCanvPic [image create photo]
 
@@ -99,11 +99,11 @@ proc openReposWindow {pic} {
   set confirmBtnAction {
     set ::Modal.Result "Success"
     
-    #TODO Hintergrundton berechnen
-    
-    
-    
-    
+    #Hintergrundton berechnen
+    #source $SetupResizeTools
+    set lum [getAreaLuminacy $c canvTxt]
+    setCanvasFontColour $c $fontcolortext $lum
+
     #PNG info
     lassign [$reposPic::canv coords txt] x y
     set x [expr $x * $reposPic::scaleFactor]
