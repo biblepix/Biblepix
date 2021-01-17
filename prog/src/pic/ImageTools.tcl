@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16jan21 pv
+# Updated: 17jan21 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -107,23 +107,57 @@ proc setSun {arrname args} {
   }
 }
 # setBdfFontcolour
-##uses above procs & exports hex values to ::colour NS
+##uses above procs, exporting hex values to ::colour NS
 ##called by BdfPrint
 proc setBdfFontcolours {fontcolortext} {
   ##get font array from fontcolortext
   append fontArrname $fontcolortext Arr
   global $fontArrname
+  global colour::pnginfo
   array set regArr [array get $fontArrname]
+  
   ##export vars to ::colour
   namespace eval colour {
     variable regHex
     variable sunHex
     variable shaHex
+    variable pnginfo
   }
-  set colour::regHex [rgb2hex regArr]
-  set colour::sunHex [setSun regArr ashex]
-  set colour::shaHex [setSun regArr ashex]
+
+  #Set normal hex values (lum=2)
+  set regHex [rgb2hex regArr]
+  set sunHex [setSun regArr ashex]
+  set shaHex [setShade regArr ashex]
+
+  #Reset if PNG luminance info differs from 2
+  if [info exists pnginfo(Luminacy)] {
+
+    ##1) dark bg: increase font colour luminance
+    if {$pnginfo(Luminacy) == 1} {
+      set regHex $sunHex
+      set shaHex $regHex
+      
+      lassign [setSun regArr] sunR sunG sunB
+      array set sunArr [r $sunR g $sunG b $sunB]
+      set sunHex [setSun sunArr ashex]
+      
+    ##2) bright bg: reduce font colour luminance
+    } elseif {$pnginfo(Luminacy) == 3} {
+    
+      set regHex $shaHex
+      set sunHex $regHex
+      
+      lassign [setShade regArr] shaR shaG shaB
+      array set shaArr [r $shaR g $shaG b $shaB]
+      set shaHex [setShade shaArr ashex]
+    }
+  }
+  #Export to ::colour NS
+  set colour::regHex $regHex
+  set colour::sunHex $sunHex
+  set colour::shaHex $shaHex
 }
+
 # getAreaLuminacy
 ##computes luminance 1-3 for canvas text section
 ##called by BdfPrint & SetupRepos

@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 13jan21
+# Updated: 17jan21 pv
 source $TwdTools
 source $BdfTools
 source $ImgTools
@@ -70,30 +70,12 @@ puts "Computing colours..."
 
 namespace eval colour {
 
-  #Compute reg/sun/shade hex & export to ::colour NS
+  #Set hex font shades
   variable fontcolortext $::fontcolortext
   setBdfFontcolours $fontcolortext
   
-  #Reset if PNG luminance info differs from 2
-  if [info exists pnginfo(Luminacy)] {
-
-    ##1) dark bg: increase font colour luminance
-    if {$pnginfo(Luminacy) == 1} {
-      set regHex $sunHex
-      set shaHex $regHex
-      set sunHex [setSun ::sunArr ashex]
-      
-    ##2) bright bg: reduce font colour luminance
-    } elseif {$pnginfo(Luminacy) == 3} {
-      set regHex $shaHex
-      set sunHex $regHex
-      set shaHex [setShade ::shaArr ashex]
-    }
-  }
-
-
-  #Get marginleft & margintop from pnginfo OR from Config 
-  ##using 'variable' (and not 'set') seems to be mandatory for namespace
+  #Set marginleft & margintop from pnginfo OR from Config 
+  ##using 'variable' (and not 'set') seems mandatory for namespace
   if { [info exists pnginfo(Marginleft)] && [info exists pnginfo(Margintop)] } {
     variable marginleft $pnginfo(Marginleft)
     variable margintop  $pnginfo(Margintop)
@@ -103,13 +85,6 @@ namespace eval colour {
   }
 
 } ;#END namespace colour
-
-#TODO for testing
-catch {parray colour::pnginfo} err
-puts $err
-puts $colour::regHex 
-puts $colour::sunHex 
-puts $colour::shaHex
 
 
 # 3)  I N I T I A L I S E   P R I N T I N G
