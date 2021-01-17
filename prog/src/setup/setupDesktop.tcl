@@ -91,6 +91,7 @@ if {$os=="Linux"} {
 
 set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
 
+#TODO wozu?
 source $ImgTools
 
 

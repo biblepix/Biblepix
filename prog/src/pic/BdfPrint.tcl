@@ -71,22 +71,10 @@ puts "Computing colours..."
 namespace eval colour {
 
   #Compute reg/sun/shade hex & export to ::colour NS
-  array set regArr [array get ${::fontcolortext}Arr]
-  set regHex [rgb2hex regArr]
-  #set shaHex [setShade regArr ashex]
-  #set sunHex [setSun regArr ashex]
-
-  ##set sun rgb & hex
-  lassign [setSun regArr] sunR sunG sunB
-  array set sunArr "r $sunR g $sunG b $sunB"
-  set sunHex [setSun regArr hex]
-
-  ##set shade rgb & hex
-  lassign [setShade regArr] shaR shaG shaB
-  array set shaArr "r $shaR g $shaG b $shaB"
-  set shaHex [setShade regArr hex]
-
-  #Reset if PNG lumiance info differs from 2
+  variable fontcolortext $::fontcolortext
+  setBdfFontcolours $fontcolortext
+  
+  #Reset if PNG luminance info differs from 2
   if [info exists pnginfo(Luminacy)] {
 
     ##1) dark bg: increase font colour luminance
@@ -102,6 +90,7 @@ namespace eval colour {
       set shaHex [setShade ::shaArr ashex]
     }
   }
+
 
   #Get marginleft & margintop from pnginfo OR from Config 
   ##using 'variable' (and not 'set') seems to be mandatory for namespace

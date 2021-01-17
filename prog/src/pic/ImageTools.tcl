@@ -65,7 +65,6 @@ proc hex2rgb {hex} {
   lassign [scan $hex "#%2x %2x %2x"] r g b
   return "$r $g $b"
 }
-
 # setShade
 ##reduces colour array's r/g/b by $shadefactor, avoiding values below 0
 ##with args = return as hex
@@ -87,7 +86,6 @@ proc setShade {arrname args} {
     return [rgb2hex myarr]
   }
 }
-
 # setSun
 ##increases colour array's r/g/b by $sunfactor, avoiding values over 255
 ##with args = return as hex
@@ -108,7 +106,24 @@ proc setSun {arrname args} {
     return [rgb2hex myarr]
   }
 }
-
+# setBdfFontcolour
+##uses above procs & exports hex values to ::colour NS
+##called by BdfPrint
+proc setBdfFontcolours {fontcolortext} {
+  ##get font array from fontcolortext
+  append fontArrname $fontcolortext Arr
+  global $fontArrname
+  array set regArr [array get $fontArrname]
+  ##export vars to ::colour
+  namespace eval colour {
+    variable regHex
+    variable sunHex
+    variable shaHex
+  }
+  set colour::regHex [rgb2hex regArr]
+  set colour::sunHex [setSun regArr ashex]
+  set colour::shaHex [setSun regArr ashex]
+}
 # getAreaLuminacy
 ##computes luminance 1-3 for canvas text section
 ##called by BdfPrint & SetupRepos
@@ -135,7 +150,6 @@ proc getAreaLuminacy {c textitem} {
 
   #scan given canvas area
   for {set yPos $topmost} {$yPos < $botmost} {incr yPos $skip} {
-  
     for {set xPos $leftmost} {$xPos < $rightmost} {incr xPos $skip} {
       #add up r+g+b to sumTotal, dividing sum by 3 for each rgb
       lassign [$img get $xPos $yPos] r g b
@@ -176,20 +190,20 @@ proc setFontShades {fontcolortext lum} {
   array set sunArr "r $sunR g $sunG b $sunB"
   
   #2)Compute hex values
-  ##Normalfall (=lum 2)  
+  ##Normal (=lum 2)  
   set regHex [rgb2hex regArr]
   set sunHex [rgb2hex sunArr]
   set shaHex [rgb2hex shaArr]
+  ##Dunkel
+  if {$lum == 1} {
+    set shaHex $regHex
+    set regHex $sunHex
+    set shaHex [setSun sunArr ashex]
   ##Hell
-  if {$lum == 3} {
+  } elseif {$lum == 3} {
     set sunHex $regHex
     set regHex $shaHex
     set shaHex [setShade shaArr ashex]
-  ##Dunkel
-  } elseif {$lum == 1} {
-    set shaHex $regHex
-    set regHex $sunHex
-    set sunHex [setSun sunArr ashex]
   }
   return "$regHex $sunHex $shaHex"
 }
