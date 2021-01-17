@@ -138,7 +138,7 @@ proc setBdfFontcolours {fontcolortext} {
       set shaHex $regHex
       
       lassign [setSun regArr] sunR sunG sunB
-      array set sunArr [r $sunR g $sunG b $sunB]
+      array set sunArr "r $sunR g $sunG b $sunB"
       set sunHex [setSun sunArr ashex]
       
     ##2) bright bg: reduce font colour luminance
@@ -148,7 +148,7 @@ proc setBdfFontcolours {fontcolortext} {
       set sunHex $regHex
       
       lassign [setShade regArr] shaR shaG shaB
-      array set shaArr [r $shaR g $shaG b $shaB]
+      array set shaArr "r $shaR g $shaG b $shaB"
       set shaHex [setShade shaArr ashex]
     }
   }

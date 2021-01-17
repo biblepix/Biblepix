@@ -1,10 +1,10 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16jan21 pv
+# Updated 17jan21 pv
 
 #TODO should these be called by another lowlevel prog?
-source $::ScanColourArea
+#source $::ScanColourArea
 source $::AnnotatePng
   
 # openResizeWindow
@@ -99,20 +99,20 @@ proc openReposWindow {pic} {
   set confirmBtnAction {
     set ::Modal.Result "Success"
     
-    #Hintergrundton berechnen
-    #source $SetupResizeTools
-    set lum [getAreaLuminacy $c canvTxt]
-    setCanvasFontColour $c $fontcolortext $lum
+    #Compute background luminacy & set font shades
+    set lum [getAreaLuminacy $reposPic::canv canvTxt]
+    setCanvasFontColour $reposPic::canv $fontcolortext $lum
 
-    #PNG info
+    #Process PNG info
     lassign [$reposPic::canv coords txt] x y
     set x [expr $x * $reposPic::scaleFactor]
     set y [expr $y * $reposPic::scaleFactor]
-    processPngComment $addpicture::targetPicPath $x $y
+    processPngComment $addpicture::targetPicPath $x $y $lum
     
     NewsHandler::QueryNews "$::reposSaved" lightgreen
-    catch {image delete $addpicture::curPic}
-    catch {image delete $reposPic::reposCanvPic}
+#TODO Joel was ist mit diesen var geschehen?
+#    catch {image delete $addpicture::curPic}
+#    catch {image delete $reposPic::reposCanvPic}
     namespace delete reposPic
     namespace delete addpicture
   }
