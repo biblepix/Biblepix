@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 13jan21 pv
+# Updated: 19jan21 pv
 
 # printTwd
 ##Toplevel printing proc
@@ -157,6 +157,9 @@ proc printLetter {letterName img x y} {
   global RtL prefix
   upvar $letterName curLetter	
 
+  set imgW [image width $img]
+  set imgH [image height $img]
+
   set BBxoff $curLetter(BBxoff)
   set BBx $curLetter(BBx)
 
@@ -169,6 +172,7 @@ proc printLetter {letterName img x y} {
 
   set yCur $yLetter
   set pixelLines $curLetter(BITMAP)
+  
   foreach pxLine $pixelLines {
     set xCur $xLetter
     for {set i 0} {$i < $curLetter(BBx)} {incr i} {
@@ -180,13 +184,16 @@ proc printLetter {letterName img x y} {
           2 { set pxColor $sunHex }
           3 { set pxColor $shaHex }
         }
-        
-      if { $xCur <0 } {set xCur 1 } 
+         
+      #A) Truncate text (break loop) if it exceeds image width or height
+      if {$xCur >= $imgW || $yCur >= $imgH} {break}
+      #B) else put colour pixel
+      if {$xCur <0} {set xCur 1} 
         $img put $pxColor -to $xCur $yCur
       }
       incr xCur
-    }
-    incr yCur
+    }  
+  incr yCur
   }
 } ;#END printLetter
 
