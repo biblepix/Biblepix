@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 2jan21 pv
+# Updated: 21jan21 pv
 set version "3.2"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -182,14 +182,27 @@ set ind "     "
 
 #Define font colour rgb arrays
 array set BlackArr   {r 6 g 6 b 6}
-array set GoldArr    {r 255 g 155 b 0}
+array set GoldArr    {r 255 g 215 b 0}
 array set SilverArr  {r 192 g 192 b 192}
 array set BlueArr    {r 0 g 190 b 255}
 array set GreenArr   {r 60 g 185 b 120}
-#Define colour computing values
-set sunfactor 1.8
-set shadefactor 0.6
-set lumThreshold 85
+#array set GreenArr {r 0 g 150 b 0}
+
+#TODO Neuer Versuch mit Hex!
+#set Blue #00beff
+#set Black #464646
+#set Silver #c0c0c0
+#set Gold #ffd700
+#set Green #3cb978
+
+#Define colour computing values for above mean colours
+set sunFactor 0.5
+set shadeFactor -0.35
+#these define where a background should be considered "dark" or "bright"
+##and by what factor font shades should yet be adjusted up or down
+set lumThreshold 90
+set darknessFactor 1.15
+set brightnessFactor 0.55
 
 #Bildformate & DesktopPicturesDir
 if {$platform == "unix"} {

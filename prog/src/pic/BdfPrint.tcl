@@ -70,9 +70,9 @@ puts "Computing colours..."
 
 namespace eval colour {
 
-  #Set hex font shades
+  #Set hex font shades, including luminance info if it exists 
   variable fontcolortext $::fontcolortext
-  setBdfFontcolours $fontcolortext
+  setFontShades $fontcolortext
   
   #Set marginleft & margintop from pnginfo OR from Config 
   ##using 'variable' (and not 'set') seems mandatory for namespace
