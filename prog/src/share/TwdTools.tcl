@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 2jan21
+# Updated 18jan21
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -289,6 +289,9 @@ proc getTwdLang {TwdFileName} {
   return [string range $TwdFileName 0 1]
 }
 
+# isRtL
+##checks if TwdLang is RtL (Hebrew or Arabic script)
+##called by BdfPrint
 proc isRtL {TwdLang} {
   if {
   $TwdLang == "he" ||
@@ -299,7 +302,9 @@ proc isRtL {TwdLang} {
     return 0
   }
 }
-
+# isArabicScript
+##checks if TwdLang is Arabic script (including Arabic+Urdu+Farsi)
+##called by isRtL
 proc isArabicScript {TwdLang} {
   if {
   $TwdLang == "ar" || 

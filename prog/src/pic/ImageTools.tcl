@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 23jan21 pv
+# Updated: 26jan21 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -231,7 +231,7 @@ puts adhena2
 ##computes luminance 1-3 for canvas text section
 ##called by BdfPrint & SetupRepos
 proc getAreaLuminacy {c textitem} {
-  global pnginfo lumThreshold
+  global pnginfo brightThreshold darkThreshold
   
   #get image name from canvas
   set img [lindex [$c itemconf img -image] end]
@@ -263,10 +263,10 @@ proc getAreaLuminacy {c textitem} {
   set avLum [expr int($sumTotal / $numColours)]
 
   ##very dark
-  if {$avLum <= $lumThreshold} {
+  if {$avLum <= $darkThreshold} {
     set lum 1
   ##very bright
-  } elseif {$avLum >= [expr $lumThreshold * 2]} {
+  } elseif {$avLum >= $brightThreshold} {
     set lum 3
   ##normal
   } else {
@@ -283,7 +283,10 @@ proc getAreaLuminacy {c textitem} {
 proc setFontShades {fontcolortext} {
   global BlackArr BlueArr GreenArr SilverArr GoldArr
   global sunFactor shadeFactor
-  global darknessFactor brightnessFactor
+  
+#global darkFactor brightFactor - TODO testing
+ set darkFactor $shadeFactor
+ set brightFactor $sunFactor
     
   #1)Determine colour arrays
   array set regArr [array get ${fontcolortext}Arr]
@@ -299,15 +302,15 @@ proc setFontShades {fontcolortext} {
     set lum $colour::pnginfo(Luminacy)
     puts "Luminacy: $lum"
     
-    if {$lum == 1} {
-      set shaHex [gradient $shaHex $darknessFactor]
-      set regHex [gradient $regHex $darknessFactor]
-      set sunHex [gradient $sunHex $darknessFactor]
+    if {$lum == 3} {
+      set shaHex [gradient $shaHex $darkFactor]
+      set regHex [gradient $regHex $darkFactor]
+      set sunHex [gradient $sunHex $darkFactor]
     ##bright
-    } elseif {$lum == 3} {
-      set sunHex [gradient $sunHex $brightnessFactor]
-      set regHex [gradient $regHex $brightnessFactor]
-      set shaHex [gradient $shaHex $brightnessFactor]
+    } elseif {$lum == 1} {
+      set sunHex [gradient $sunHex $brightFactor]
+      set regHex [gradient $regHex $brightFactor]
+      set shaHex [gradient $shaHex $brightFactor]
     }
   }
   

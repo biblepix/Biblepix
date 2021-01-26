@@ -96,9 +96,11 @@ source $ImgTools
 
 
 #Get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
-set shaHex [setShade ${fontcolortext}Arr ashex]
-set sunHex [setSun ${fontcolortext}Arr ashex]
+#set shaHex [setShade ${fontcolortext}Arr ashex]
+#set sunHex [setSun ${fontcolortext}Arr ashex]
+lassign [setFontShades $fontcolortext] fontcolorHex sunHex shaHex
 
+#TODO use proc isntead! - it's somewhere...........! [setCanvasFontColour $c ?]
 .inttextCanv create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shaHex -tags {shade txt mv}
 .inttextCanv create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sunHex -tags {sun txt mv}
 .inttextCanv create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $fontcolorHex -tags {main txt mv}
@@ -108,19 +110,19 @@ set sunHex [setSun ${fontcolortext}Arr ashex]
 message .fontcolorTxt -width 150 -textvar f2.farbe -font widgetFont
 spinbox .fontcolorSpin -width 12 -values {Blue Green Gold Silver Black}
 ##make hex vars from colour names (to be reset in spinbox command)
-set Blue   [rgb2hex BlueArr]
-set Green  [rgb2hex GreenArr]
-set Gold   [rgb2hex GoldArr] 
-set Silver [rgb2hex SilverArr] 
-set Black  [rgb2hex BlackArr] 
+#set Blue   [rgb2hex BlueArr]
+#set Green  [rgb2hex GreenArr]
+#set Gold   [rgb2hex GoldArr] 
+#set Silver [rgb2hex SilverArr] 
+#set Black  [rgb2hex BlackArr] 
 
 .fontcolorSpin conf -bg $fontcolorHex -fg white -font TkCaptionFont
 .fontcolorSpin set $fontcolortext
 .fontcolorSpin conf -command {
   %W conf -bg [set %s]
-  set fontArrname ""
-  append fontArrname %s Arr
-  set fontHex [rgb2hex $fontArrname]
+#  set fontArrname ""
+#  append fontArrname %s Arr
+#  set fontHex [rgb2hex $fontArrname]
   setCanvasFontColour $c %s
   setCanvasFontColour .inttextCanv %s
 }
