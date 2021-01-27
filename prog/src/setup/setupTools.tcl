@@ -297,16 +297,12 @@ proc createMovingTextBox {c} {
   set shadeY [expr $y1 + 1]
   set sunX [expr $x1 - 1]
   set sunY [expr $y1 - 1]
-  
-  lassign [hex2rgb $fontcolorHex] regR regG regB
-  array set fontcolArr "r $regR g $regG b $regB"
-  set shadeHex [setShade fontcolArr ashex]
-  set sunHex   [setSun fontcolArr ashex]
-  
+
   #Fill with medium colours (area luminance code = 2)
-  $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade} -fill $shadeHex
+  lassign [setFontShades $c] regHex sunHex shaHex
+  $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade} -fill $shaHex
   $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun} -fill $sunHex
-  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main} -fill $fontcolorHex
+  $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main} -fill $regHex
   $c itemconf canvTxt -text $setupTwdText
 
   if {$c == ".textposCanv"} {

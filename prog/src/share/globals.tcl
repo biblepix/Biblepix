@@ -197,10 +197,6 @@ set shadeFactor -0.35
 set darkThreshold 90
 set brightThreshold 200
 
-#TODO testing : using sun/shadeFactors instead
-#set darkFactor -0.35
-#set brightFactor 0.50
-
 #Bildformate & DesktopPicturesDir
 if {$platform == "unix"} {
   set HOME $env(HOME)

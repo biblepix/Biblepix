@@ -54,15 +54,13 @@ proc calcAverage {list} {
 #############################################################
 
 # gradient - Abstufungen einer Standardfarbe von 100% (weiss) bis 0% (schwarz) 
-##darkens or brightens a given RGB hex value by $factor (0.1 - 1.0) 
+##shadeens or sunens a given RGB hex value by $factor (0.1 - 1.0) 
 ##Copied from https://wiki.tcl-lang.org/page/Making+color+gradients
 ##with many thanks and God's blessings to Blaise Montandon
 ##called by setSun & setShade
 proc gradient {rgbhex factor {window .}} {
-
   #this does the same as lassign [winfo...] r g b
   foreach {r g b} [winfo rgb $window $rgbhex] {break}
-
   ### Figure out color depth and number of bytes to use in
   ### the final result.
   if {($r > 255) || ($g > 255) || ($b > 255)} {
@@ -72,7 +70,6 @@ proc gradient {rgbhex factor {window .}} {
       set max 255
       set len 2
   }
-
   ### Compute new red value by incrementing the existing
   ### value by a value that gets it closer to either 0 (black)
   ### or $max (white)
@@ -99,139 +96,187 @@ proc gradient {rgbhex factor {window .}} {
 
   ### Return the new rgb string
   return $rgbhex
-
 } ;#END gradient
 
 # rgb2hex
 ##computes r/g/b array into a hex digit
 ##called by LoadConfig etc.
 proc rgb2hex {arrname} {
+#  global BlackArr BlueArr GoldArr SilverArr GreenArr
   upvar $arrname myarr
-  
-#puts $arrname
-#parray myarr
-#puts [array get myarr r]
-#puts [array get myarr g]
-#puts [array get myarr b]
-  set hex [format "#%02x%02x%02x" $myarr(r) $myarr(g) $myarr(b)]
+puts [parray myarr]
+puts [array get myarr]
+puts $myarr(r)
+puts $myarr(g)
+puts $myarr(b)
 
+  set hex [format "#%02x%02x%02x" $myarr(r) $myarr(g) $myarr(b)]
   return $hex
 }
+
 proc hex2rgb {hex} {
   lassign [scan $hex "#%2x %2x %2x"] r g b
   return "$r $g $b"
 }
-# setShade
-##reduces colour array's r/g/b by $shadefactor, avoiding values below 0
-##with args = return as hex
-##called by BdfPrint
-proc setShade {arrname args} {
-  global shadefactor
-  upvar $arrname myarr
-  set hex [rgb2hex myarr]
-  set shaHex [gradient $hex $shadefactor]
-puts "computing shaHex..."
-return $shaHex
 
+# setFontShades
+##computes font shades according to luminance of background colour 
+##returns 3 hex values: reg/sun/shade
+##called by setCanvasFontColour & BdfPrint & createMovingTextBox
+proc setFontShades {fontcolortext} {
+  global BlackArr BlueArr GreenArr SilverArr GoldArr
+  global sunFactor shadeFactor
+   
+   
+   #TODO שלי מזל
+  #1)Determine colour arrays
+  array set myarr [array get ${fontcolortext}Arr]
+  set regHex [rgb2hex myarr]
+  set sunHex [gradient $regHex $sunFactor]
+  set shaHex [gradient $regHex $shadeFactor]
 
-
-#  set shadeR [expr max(int($shadefactor*$myarr(r)),0)]
-#  set shadeG [expr max(int($shadefactor*$myarr(g)),0)]
-#  set shadeB [expr max(int($shadefactor*$myarr(b)),0)]
-
-  #A) without args return as r g b
-  if {$args == ""} {
-    return "$shadeR $shadeG $shadeB"
-  #B) with args return as hex
-  } else {
-    array set myarr "r $shadeR g $shadeG b $shadeB"
-    return [rgb2hex myarr]
+  #Reset if PNG luminance info differs from 2
+  if [info exists colour::pnginfo(Luminacy)] {
+    set lum $colour::pnginfo(Luminacy)
+    puts "Luminacy: $lum"
+    
+    if {$lum == 3} {
+      set shaHex [gradient $shaHex $shadeFactor]
+      set regHex [gradient $regHex $shadeFactor]
+      set sunHex [gradient $sunHex $shadeFactor]
+    ##sun
+    } elseif {$lum == 1} {
+      set sunHex [gradient $sunHex $sunFactor]
+      set regHex [gradient $regHex $sunFactor]
+      set shaHex [gradient $shaHex $sunFactor]
+    }
   }
-}
-# setSun
-##increases colour array's r/g/b by $sunfactor, avoiding values over 255
-##with args = return as hex
-##called by BdfPrint
-proc setSun {arrname args} {
-  global sunfactor
-  upvar $arrname myarr
-  set hex [rgb2hex myarr]
-  set sunHex [gradient $hex $sunfactor]
-puts "Computing sunHex..."
-return $sunHex
-
-#  set sunR [expr min(int($sunfactor*$myarr(r)),255)]
-#  set sunG [expr min(int($sunfactor*$myarr(g)),255)]
-#  set sunB [expr min(int($sunfactor*$myarr(b)),255)]
-  
-  #A) without args return as r g b
-  if {$args == ""} {
-    return "$sunR $sunG $sunB"
-  #B) with args return as hex
-  } else {
-    array set myarr "r $sunR g $sunG b $sunB"
-    return [rgb2hex myarr]
-  }
-}
-# setBdfFontcolour - TODO OBSOLETE!!!!!!!!!!!!!!
-##uses above procs, exporting hex values to ::colour NS
-##called by BdfPrint
-proc setBdfFontcolours {fontcolortext} {
-  ##get font array from fontcolortext
-  append fontArrname $fontcolortext Arr
-  global $fontArrname
-  global colour::pnginfo
-  array set regArr [array get $fontArrname]
-  
-  ##export vars to ::colour
+  #export to ::colour namespace (for BdfPrint)
   namespace eval colour {
     variable regHex
     variable sunHex
     variable shaHex
-    variable pnginfo
   }
-
-  #Set normal hex values (lum=2)
-  set regHex [rgb2hex regArr]
-  set sunHex [setSun regArr ashex]
-  set shaHex [setShade regArr ashex]
-puts adhena1
-
-  #Reset if PNG luminance info differs from 2
-  if [info exists pnginfo(Luminacy)] {
-
-    ##1) dark bg: increase font colour luminance
-    if {$pnginfo(Luminacy) == 1} {
-      set regHex $sunHex
-      set shaHex $regHex
-      
-      lassign [setSun regArr] sunR sunG sunB
-      array set sunArr "r $sunR g $sunG b $sunB"
-      set sunHex [setSun sunArr ashex]
-      
-    ##2) bright bg: reduce font colour luminance
-    } elseif {$pnginfo(Luminacy) == 3} {
-    
-      set regHex $shaHex
-      set sunHex $regHex
-      
-      lassign [setShade regArr] shaR shaG shaB
-      array set shaArr "r $shaR g $shaG b $shaB"
-      set shaHex [setShade shaArr ashex]
-    }
-  }
-  #Export to ::colour NS
   set colour::regHex $regHex
   set colour::sunHex $sunHex
   set colour::shaHex $shaHex
-puts adhena2
-}
+  #return for calling prog (canvas)
+  return "$regHex $sunHex $shaHex"
+
+} ;#END setFontShades
+
+
+## setShade
+###reduces colour array's r/g/b by $shadefactor, avoiding values below 0
+###with args = return as hex
+###called by BdfPrint
+#proc setShade {arrname args} {
+#  global shadefactor
+#  upvar $arrname myarr
+#  set hex [rgb2hex myarr]
+#  set shaHex [gradient $hex $shadefactor]
+#puts "computing shaHex..."
+#return $shaHex
+
+
+
+##  set shadeR [expr max(int($shadefactor*$myarr(r)),0)]
+##  set shadeG [expr max(int($shadefactor*$myarr(g)),0)]
+##  set shadeB [expr max(int($shadefactor*$myarr(b)),0)]
+
+#  #A) without args return as r g b
+#  if {$args == ""} {
+#    return "$shadeR $shadeG $shadeB"
+#  #B) with args return as hex
+#  } else {
+#    array set myarr "r $shadeR g $shadeG b $shadeB"
+#    return [rgb2hex myarr]
+#  }
+#}
+## setSun
+###increases colour array's r/g/b by $sunfactor, avoiding values over 255
+###with args = return as hex
+###called by BdfPrint
+#proc setSun {arrname args} {
+#  global sunfactor
+#  upvar $arrname myarr
+#  set hex [rgb2hex myarr]
+#  set sunHex [gradient $hex $sunfactor]
+#puts "Computing sunHex..."
+#return $sunHex
+
+##  set sunR [expr min(int($sunfactor*$myarr(r)),255)]
+##  set sunG [expr min(int($sunfactor*$myarr(g)),255)]
+##  set sunB [expr min(int($sunfactor*$myarr(b)),255)]
+#  
+#  #A) without args return as r g b
+#  if {$args == ""} {
+#    return "$sunR $sunG $sunB"
+#  #B) with args return as hex
+#  } else {
+#    array set myarr "r $sunR g $sunG b $sunB"
+#    return [rgb2hex myarr]
+#  }
+#}
+# setBdfFontcolour - TODO OBSOLETE!!!!!!!!!!!!!!
+##uses above procs, exporting hex values to ::colour NS
+##called by BdfPrint
+#proc setBdfFontcolours {fontcolortext} {
+#  ##get font array from fontcolortext
+#  append fontArrname $fontcolortext Arr
+#  global $fontArrname
+#  global colour::pnginfo
+#  array set regArr [array get $fontArrname]
+#  
+#  ##export vars to ::colour
+#  namespace eval colour {
+#    variable regHex
+#    variable sunHex
+#    variable shaHex
+#    variable pnginfo
+#  }
+
+#  #Set normal hex values (lum=2)
+#  set regHex [rgb2hex regArr]
+#  set sunHex [setSun regArr ashex]
+#  set shaHex [setShade regArr ashex]
+#puts adhena1
+
+#  #Reset if PNG luminance info differs from 2
+#  if [info exists pnginfo(Luminacy)] {
+
+#    ##1) shade bg: increase font colour luminance
+#    if {$pnginfo(Luminacy) == 1} {
+#      set regHex $sunHex
+#      set shaHex $regHex
+#      
+#      lassign [setSun regArr] sunR sunG sunB
+#      array set sunArr "r $sunR g $sunG b $sunB"
+#      set sunHex [setSun sunArr ashex]
+#      
+#    ##2) sun bg: reduce font colour luminance
+#    } elseif {$pnginfo(Luminacy) == 3} {
+#    
+#      set regHex $shaHex
+#      set sunHex $regHex
+#      
+#      lassign [setShade regArr] shaR shaG shaB
+#      array set shaArr "r $shaR g $shaG b $shaB"
+#      set shaHex [setShade shaArr ashex]
+#    }
+#  }
+#  #Export to ::colour NS
+#  set colour::regHex $regHex
+#  set colour::sunHex $sunHex
+#  set colour::shaHex $shaHex
+#puts adhena2
+#}
 
 # getAreaLuminacy
 ##computes luminance 1-3 for canvas text section
 ##called by BdfPrint & SetupRepos
 proc getAreaLuminacy {c textitem} {
-  global pnginfo brightThreshold darkThreshold
+  global pnginfo sunThreshold shadeThreshold
   
   #get image name from canvas
   set img [lindex [$c itemconf img -image] end]
@@ -262,11 +307,11 @@ proc getAreaLuminacy {c textitem} {
   }
   set avLum [expr int($sumTotal / $numColours)]
 
-  ##very dark
-  if {$avLum <= $darkThreshold} {
+  ##very shade
+  if {$avLum <= $shadeThreshold} {
     set lum 1
-  ##very bright
-  } elseif {$avLum >= $brightThreshold} {
+  ##very sun
+  } elseif {$avLum >= $sunThreshold} {
     set lum 3
   ##normal
   } else {
@@ -276,61 +321,6 @@ proc getAreaLuminacy {c textitem} {
   return $lum
 } ;#END getAreaLuminacy
  
-# setFontShades
-##computes font shades according to luminance of background colour 
-##returns 3 hex values: reg/sun/shade
-##called by setCanvasFontColour & BdfPrint
-proc setFontShades {fontcolortext} {
-  global BlackArr BlueArr GreenArr SilverArr GoldArr
-  global sunFactor shadeFactor
-  
-#global darkFactor brightFactor - TODO testing
- set darkFactor $shadeFactor
- set brightFactor $sunFactor
-    
-  #1)Determine colour arrays
-  array set regArr [array get ${fontcolortext}Arr]
-  set regHex [rgb2hex regArr]
-  set sunHex [gradient $regHex $sunFactor]
-  set shaHex [gradient $regHex $shadeFactor]
-#  set sunHex [rgb2hex sunArr]
-#  set shaHex [rgb2hex shaArr]
-  ##dark
-
-  #Reset if PNG luminance info differs from 2
-  if [info exists colour::pnginfo(Luminacy)] {
-    set lum $colour::pnginfo(Luminacy)
-    puts "Luminacy: $lum"
-    
-    if {$lum == 3} {
-      set shaHex [gradient $shaHex $darkFactor]
-      set regHex [gradient $regHex $darkFactor]
-      set sunHex [gradient $sunHex $darkFactor]
-    ##bright
-    } elseif {$lum == 1} {
-      set sunHex [gradient $sunHex $brightFactor]
-      set regHex [gradient $regHex $brightFactor]
-      set shaHex [gradient $shaHex $brightFactor]
-    }
-  }
-  
-  #export to ::colour namespace (for BdfPrint)
-  namespace eval colour {
-    variable regHex
-    variable sunHex
-    variable shaHex
-  }
-  set colour::regHex $regHex
-  set colour::sunHex $sunHex
-  set colour::shaHex $shaHex
-puts $regHex
-puts $sunHex
-puts $shaHex
- 
-  #return for calling prog (for canvas)
-  return "$regHex $sunHex $shaHex"
-
-} ;#END setFontShades
 
 
 ################################################################

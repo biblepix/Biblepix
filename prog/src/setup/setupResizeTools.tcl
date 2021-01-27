@@ -2,7 +2,7 @@
 # Procs used in Resizing + Repositioning processes
 # sourced by SetupPhotos & ???
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16jan21 pv
+# Updated: 27jan21 pv
 
 # needsResize
 ##compares photosOrigPic OR rotateOrigPic with screen dimensions
@@ -162,7 +162,7 @@ proc setCanvasFontColour {c fontcolortext args} {
   } {
     set lum $args
   }
-  lassign [setFontShades $fontcolortext $lum] regHex sunHex shaHex
+  lassign [setFontShades $fontcolortext] regHex sunHex shaHex
 
   #fill canvas colours
   $c itemconf main -fill $regHex

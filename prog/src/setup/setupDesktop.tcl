@@ -98,6 +98,7 @@ source $ImgTools
 #Get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
 #set shaHex [setShade ${fontcolortext}Arr ashex]
 #set sunHex [setSun ${fontcolortext}Arr ashex]
+puts "Computinm fontcolor..."
 lassign [setFontShades $fontcolortext] fontcolorHex sunHex shaHex
 
 #TODO use proc isntead! - it's somewhere...........! [setCanvasFontColour $c ?]
