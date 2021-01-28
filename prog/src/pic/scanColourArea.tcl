@@ -306,14 +306,13 @@ return 1
   }
 
 
-  #TODO run this only after area coords are clear, will be much easier to program!
-  # setAvLuminance
+  # getAvLuminance
   ##sets average luminance values of pixel arrays of
   ##A) selected colour area /
   ##B) margintop+marginleft + 200 pixels in each direction
-  ##called by ?
-  proc getAvLuminance {} {
-    global margintop marginleft
+  ##called by createMovingTextBox & ...
+  proc getAvLuminance {x1 y1 x2 y2} {
+    #global margintop marginleft
 
     #TODO Make sure 0... values are excluded!
     set rowlist [getMatchingrowarrays]

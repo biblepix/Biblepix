@@ -299,7 +299,17 @@ proc createMovingTextBox {c} {
   set sunY [expr $y1 - 1]
 
   #Fill with medium colours (area luminance code = 2)
-  lassign [setFontShades $c] regHex sunHex shaHex
+  #lassign [setFontShades $c] regHex sunHex shaHex
+  
+  
+#  set regHex [rgb2hex myarr] 
+upvar ${::fontcolortext}Arr myarr
+puts [array get myarr]
+ 
+  set regHex [format "#%02x%02x%02x" $myarr(r) $myarr(g) $myarr(b)]
+  set sunHex [gradient $regHex $::sunFactor]
+  set shaHex [gradient $regHex $::shadeFactor]
+  
   $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade} -fill $shaHex
   $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun} -fill $sunHex
   $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main} -fill $regHex

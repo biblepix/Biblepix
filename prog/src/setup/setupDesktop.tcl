@@ -91,14 +91,18 @@ if {$os=="Linux"} {
 
 set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
 
-#TODO wozu?
+
 source $ImgTools
 
 
 #Get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
-#set shaHex [setShade ${fontcolortext}Arr ashex]
-#set sunHex [setSun ${fontcolortext}Arr ashex]
 puts "Computinm fontcolor..."
+
+#set regHex [rgb2hex GreenArr] 
+#set sunHex [gradient $regHex $sunFactor]
+#set shaHex [gradient $regHex $shadeFactor]
+
+
 lassign [setFontShades $fontcolortext] fontcolorHex sunHex shaHex
 
 #TODO use proc isntead! - it's somewhere...........! [setCanvasFontColour $c ?]

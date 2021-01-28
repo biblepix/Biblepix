@@ -103,7 +103,13 @@ proc gradient {rgbhex factor {window .}} {
 ##called by LoadConfig etc.
 proc rgb2hex {arrname} {
 #  global BlackArr BlueArr GoldArr SilverArr GreenArr
-  upvar $arrname myarr
+  set level 1
+  set cmd [upvar $level $arrname myarr]
+  while [catch $cmd] {
+    incr level
+    $cmd
+  }
+  puts "Level $level"
 puts [parray myarr]
 puts [array get myarr]
 puts $myarr(r)
@@ -127,11 +133,17 @@ proc setFontShades {fontcolortext} {
   global BlackArr BlueArr GreenArr SilverArr GoldArr
   global sunFactor shadeFactor
    
-   
-   #TODO שלי מזל
+   proc rgb2hex arrname {
+    upvar $arrname myarr
+    set hex [format "#%02x%02x%02x" $myarr(r) $myarr(g) $myarr(b)]
+    return $hex
+   } 
+
   #1)Determine colour arrays
-  array set myarr [array get ${fontcolortext}Arr]
-  set regHex [rgb2hex myarr]
+  upvar ${fontcolortext}Arr myarr
+puts [array get myarr]
+
+  set regHex [format "#%02x%02x%02x" $myarr(r) $myarr(g) $myarr(b)]
   set sunHex [gradient $regHex $sunFactor]
   set shaHex [gradient $regHex $shadeFactor]
 
