@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26jan21 pv
+# Updated: 28jan21 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -98,7 +98,7 @@ proc gradient {rgbhex factor {window .}} {
   return $rgbhex
 } ;#END gradient
 
-# rgb2hex
+# rgb2hex - OBSOLETE now!
 ##computes r/g/b array into a hex digit
 ##called by LoadConfig etc.
 proc rgb2hex {arrname} {
@@ -130,20 +130,11 @@ proc hex2rgb {hex} {
 ##returns 3 hex values: reg/sun/shade
 ##called by setCanvasFontColour & BdfPrint & createMovingTextBox
 proc setFontShades {fontcolortext} {
-  global BlackArr BlueArr GreenArr SilverArr GoldArr
+  #global BlackArr BlueArr GreenArr SilverArr GoldArr
   global sunFactor shadeFactor
    
-   proc rgb2hex arrname {
-    upvar $arrname myarr
-    set hex [format "#%02x%02x%02x" $myarr(r) $myarr(g) $myarr(b)]
-    return $hex
-   } 
-
   #1)Determine colour arrays
-  upvar ${fontcolortext}Arr myarr
-puts [array get myarr]
-
-  set regHex [format "#%02x%02x%02x" $myarr(r) $myarr(g) $myarr(b)]
+  set regHex [set fontcolortext]
   set sunHex [gradient $regHex $sunFactor]
   set shaHex [gradient $regHex $shadeFactor]
 
@@ -163,15 +154,16 @@ puts [array get myarr]
       set shaHex [gradient $shaHex $sunFactor]
     }
   }
-  #export to ::colour namespace (for BdfPrint)
-  namespace eval colour {
-    variable regHex
-    variable sunHex
-    variable shaHex
-  }
-  set colour::regHex $regHex
-  set colour::sunHex $sunHex
-  set colour::shaHex $shaHex
+
+#  #export to ::colour namespace (for BdfPrint) - TODO not needed now?
+#  namespace eval colour {
+#    variable regHex
+#    variable sunHex
+#    variable shaHex
+#  }
+#  set colour::regHex $regHex
+#  set colour::sunHex $sunHex
+#  set colour::shaHex $shaHex
   #return for calling prog (canvas)
   return "$regHex $sunHex $shaHex"
 

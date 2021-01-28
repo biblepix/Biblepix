@@ -151,9 +151,13 @@ proc printTwdTextParts {x y img} {
 ## prints single letter to $img
 ## called by printTextLine
 proc printLetter {letterName img x y} {
-  global colour::regHex 
+  
+  #TODO  diese Vars werden in BdfPrint gesetzt - brauchen wir sie?
+  #global fontcolortext
+  global colour::regHex
   global colour::sunHex 
-  global colour::shaHex 
+  global colour::shaHex
+   
   global RtL prefix
   upvar $letterName curLetter	
 

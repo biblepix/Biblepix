@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16jan21 pv
+# Updated: 28jan21 pv
 
 source $SetupResizeTools
 source $JList
@@ -280,10 +280,9 @@ proc setManText {lang} {
 ## Creates textbox with TW text on canvas $c
 ## Called by SetupDesktop & SetupResizePhoto
 proc createMovingTextBox {c} {
-  global FilePaths
+  global FilePaths sunFactor shadeFactor fontcolortext
   global textPosFactor fontcolorHex fontsize fontfamily fontweight setupTwdText
-  global colour::marginleft 
-  global colour::margintop
+  global colour::marginleft colour::margintop
 
   #Create movingTextFont here, to be configured later (setCanvFontSize)
   catch {font create movingTextFont}
@@ -299,16 +298,9 @@ proc createMovingTextBox {c} {
   set sunY [expr $y1 - 1]
 
   #Fill with medium colours (area luminance code = 2)
-  #lassign [setFontShades $c] regHex sunHex shaHex
-  
-  
-#  set regHex [rgb2hex myarr] 
-upvar ${::fontcolortext}Arr myarr
-puts [array get myarr]
- 
-  set regHex [format "#%02x%02x%02x" $myarr(r) $myarr(g) $myarr(b)]
-  set sunHex [gradient $regHex $::sunFactor]
-  set shaHex [gradient $regHex $::shadeFactor]
+  set regHex [set fontcolortext]
+  set sunHex [gradient $regHex $sunFactor]
+  set shaHex [gradient $regHex $shadeFactor]
   
   $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade} -fill $shaHex
   $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun} -fill $sunHex

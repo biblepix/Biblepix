@@ -96,30 +96,25 @@ source $ImgTools
 
 
 #Get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
-puts "Computinm fontcolor..."
-
-#set regHex [rgb2hex GreenArr] 
-#set sunHex [gradient $regHex $sunFactor]
-#set shaHex [gradient $regHex $shadeFactor]
+puts "Computing fontcolor..."
 
 
-lassign [setFontShades $fontcolortext] fontcolorHex sunHex shaHex
+#.inttextCanv create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shaHex -tags {shade txt mv}
+#.inttextCanv create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sunHex -tags {sun txt mv}
+#.inttextCanv create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $fontcolorHex -tags {main txt mv}
 
-#TODO use proc isntead! - it's somewhere...........! [setCanvasFontColour $c ?]
-.inttextCanv create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shaHex -tags {shade txt mv}
-.inttextCanv create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sunHex -tags {sun txt mv}
-.inttextCanv create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $fontcolorHex -tags {main txt mv}
-
+setCanvasFontColour $c $fontcolortext
+setCanvasFontColour .inttextCanv $fontcolortext
 
 #1. Fontcolour spinbox
 message .fontcolorTxt -width 150 -textvar f2.farbe -font widgetFont
-spinbox .fontcolorSpin -width 12 -values {Blue Green Gold Silver Black}
+spinbox .fontcolorSpin -width 12 -values $fontcolourL
 ##make hex vars from colour names (to be reset in spinbox command)
-#set Blue   [rgb2hex BlueArr]
-#set Green  [rgb2hex GreenArr]
-#set Gold   [rgb2hex GoldArr] 
-#set Silver [rgb2hex SilverArr] 
-#set Black  [rgb2hex BlackArr] 
+set Blue $colour::Blue
+set Green $colour::Green
+set Gold  $colour::Gold
+set Silver $colour::Silver
+set Black $colour::Black 
 
 .fontcolorSpin conf -bg $fontcolorHex -fg white -font TkCaptionFont
 .fontcolorSpin set $fontcolortext
