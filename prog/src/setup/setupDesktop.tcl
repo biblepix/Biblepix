@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16jan21 pv
+# Updated 29jan21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -36,13 +36,15 @@ pack $imgyesnoBtn -side top -anchor w
 pack .desktopF.leftF.intro -anchor nw
 
 # F I L L   R I G H T
-set c [canvas .textposCanv -bg lightgrey -borderwidth 1]
+##create canvases
+set textposC [canvas .textposCanv -bg lightgrey -borderwidth 1]
+set inttextC [canvas .inttextCanv -width 700 -height 150 -borderwidth 0]
 
 #3. ShowDate checkbutton
 checkbutton .showdateBtn -textvar f2.introline -variable enabletitle
 .showdateBtn configure -command {
   if {$setupTwdFileName != ""} {
-    $c itemconf mv -text [getTodaysTwdText $setupTwdFileName]
+    $textposC itemconf mv -text [getTodaysTwdText $setupTwdFileName]
   }
 }
 
@@ -67,44 +69,33 @@ if {!$slideshow} {
 
 
 #1. Create InternationalText Canvas - Fonts based on System fonts, not Bdf!!!!
-    ## Tcl picks any available Sans or Serif font from the system
-canvas .inttextCanv -width 700 -height 150 -borderwidth 0
+## Tcl picks any available Sans or Serif font from the system
 
 ##create background image
 image create photo intTextBG -file $SetupDesktopPng
-.inttextCanv create image 0 0 -image intTextBG -anchor nw 
+$inttextC create image 0 0 -image intTextBG -anchor nw 
 
 # Set international text
 label .inttextTit -font TkCaptionFont -textvar f2.fontexpl
-
- 
 if {$os=="Linux"} {
   #Unix needs a lot of formatting for Arabic & Hebrew
   puts "Computing Arabic"
   source $BdfBidi
-  
-  #TODO pv: ARABISCH BLOCKIERT ALLES!!!! - vorläufig lassen
   #set f2ar_txt [bidi $f2ar_txt ar revert]
   set f2ar_txt [string reverse $f2ar_txt]
   set f2he_txt [bidi $f2he_txt he revert]
 } 
-
 set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
-
-
-source $ImgTools
-
 
 #Get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
 puts "Computing fontcolor..."
-
-
-#.inttextCanv create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shaHex -tags {shade txt mv}
-#.inttextCanv create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sunHex -tags {sun txt mv}
-#.inttextCanv create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $fontcolorHex -tags {main txt mv}
-
-setCanvasFontColour $c $fontcolortext
-setCanvasFontColour .inttextCanv $fontcolortext
+source $ImgTools
+lassign [setFontShades $fontcolortext] regHex sunHex shaHex
+$inttextC create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shaHex -tags {shade txt mv}
+$inttextC create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sunHex -tags {sun txt mv}
+$inttextC create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $regHex -tags {main txt mv}
+setCanvasFontColour $textposC $fontcolortext
+setCanvasFontColour $inttextC $fontcolortext
 
 #1. Fontcolour spinbox
 message .fontcolorTxt -width 150 -textvar f2.farbe -font widgetFont
@@ -120,11 +111,8 @@ set Black $colour::Black
 .fontcolorSpin set $fontcolortext
 .fontcolorSpin conf -command {
   %W conf -bg [set %s]
-#  set fontArrname ""
-#  append fontArrname %s Arr
-#  set fontHex [rgb2hex $fontArrname]
-  setCanvasFontColour $c %s
-  setCanvasFontColour .inttextCanv %s
+  setCanvasFontColour $textposC %s
+  setCanvasFontColour $inttextC %s
 }
 
 #set Fontsize spinbox
@@ -159,29 +147,29 @@ image create photo photosOrigPic -file [getRandomPhotoPath]
 image create photo textposCanvPic
 textposCanvPic copy photosOrigPic -subsample $textPosFactor -shrink
 set screeny [winfo screenheight .]
-$c conf -width [image width textposCanvPic] -height [expr $screeny/$textPosFactor]
-$c create image 0 0 -image textposCanvPic -anchor nw
+$textposC conf -width [image width textposCanvPic] -height [expr $screeny/$textPosFactor]
+$textposC create image 0 0 -image textposCanvPic -anchor nw
 
 #Copy margins to ::colour, to be changed later
 namespace eval colour {
   variable marginleft $::marginleft
   variable margintop $::margintop
 }
-createMovingTextBox $c
-$c bind mv <1> {
+createMovingTextBox $textposC
+$textposC bind mv <1> {
   set ::x %X
   set ::y %Y
 }
  
 #set up dragging item
-lassign [$c bbox canvTxt] x1 y1 x2 y2
+lassign [$textposC bbox canvTxt] x1 y1 x2 y2
 set itemW [expr $y2 - $y1]
 puts "itemW $itemW"
 set margin 15
 #set font in pixels
-$c bind mv <Button1-Motion> [list dragCanvasItem %W txt %X %Y $margin]
+$textposC bind mv <Button1-Motion> [list dragCanvasItem %W txt %X %Y $margin]
 setCanvasFontSize $fontsize
-setCanvasFontColour $c $fontcolortext
+setCanvasFontColour $textposC $fontcolortext
 
 #Footnote
 label .textposFN -width 50 -font "Serif 10" -textvar ::textposFN
@@ -191,16 +179,11 @@ label .textposFN -width 50 -font "Serif 10" -textvar ::textposFN
 pack .showdateBtn -in .rtopF -anchor w
 pack .slideBtn -in .rtopF -anchor w -side left
 pack .slideSecTxt .slideSpin .slideTxt -in .rtopF -anchor nw -side right
-
-#Bottom 1.1
 pack .inttextTit -in .rbot1F.1F -pady 7
-#Bottom 1.2
-pack .inttextCanv -in .rbot1F.2F -fill x
-
+pack $inttextC -in .rbot1F.2F -fill x
 pack .fontcolorTxt .fontcolorSpin .fontfamilyTxt .fontfamilySpin -in .rbot1F.2F -side left -anchor n
 pack .fontweightBtn .fontsizeSpin .fontsizeTxt -in .rbot1F.2F -side right -anchor n
-
 #Bottom 2
 pack .textposTxt -in .rbot2F -pady 7
-pack $c -in .rbot2F -fill y
+pack $textposC -in .rbot2F -fill y
 pack .textposFN -in .rbot2F -fill x
