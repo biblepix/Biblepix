@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 17jan21 pv
+# Updated: 29jan21 pv
 source $TwdTools
 source $BdfTools
 source $ImgTools

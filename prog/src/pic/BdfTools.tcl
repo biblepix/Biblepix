@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 19jan21 pv
+# Updated: 29jan21 pv
 
 # printTwd
 ##Toplevel printing proc

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 28an21 pv
+# Updated: 29an21 pv
 
 #Source Config and LoadConfig for defaults
 if { [catch {source $Config}] } {
@@ -83,13 +83,12 @@ if {![info exists Httpmock]} {
   set Httpmock 0
 }
 
-#Set colour hex values & export to ::colour namespace - TODO get rid of Hex in colour::colourname!
+#Set colour hex values & export to ::colour namespace
 foreach c $fontcolourL {
   set arrname ${c}Arr
   array set myarr [array get $arrname]
   set hexval [format "#%02x%02x%02x" $myarr(r) $myarr(g) $myarr(b)]
-
-  #export hex values to ::colour namespace
+  ##export hex values to ::colour namespace
   namespace eval colour {
     variable colname $c
     variable val $hexval
