@@ -69,13 +69,13 @@ if {$TwdLang == "zh"} {
 puts "Computing colours..."
 
 namespace eval colour {
-
+##NOTE: using 'variable' (and not 'set') seems mandatory for namespace!
+  
   #Set hex font shades, including luminance info if it exists 
   variable fontcolortext $::fontcolortext
-  setFontShades $fontcolortext
+  lassign [setFontShades $fontcolortext] regHex sunHex shaHex
   
   #Set marginleft & margintop from pnginfo OR from Config 
-  ##using 'variable' (and not 'set') seems mandatory for namespace
   if { [info exists pnginfo(Marginleft)] && [info exists pnginfo(Margintop)] } {
     variable marginleft $pnginfo(Marginleft)
     variable margintop  $pnginfo(Margintop)
