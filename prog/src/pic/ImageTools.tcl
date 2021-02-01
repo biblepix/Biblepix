@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29jan21 pv
+# Updated: 1feb21 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -143,7 +143,7 @@ proc setFontShades {fontcolortext} {
 ##computes luminance 1-3 for canvas text section
 ##called by BdfPrint & SetupRepos
 proc getAreaLuminacy {c textitem} {
-  global pnginfo sunThreshold shadeThreshold
+  global pnginfo brightThreshold darkThreshold
   
   #get image name from canvas
   set img [lindex [$c itemconf img -image] end]
@@ -175,10 +175,10 @@ proc getAreaLuminacy {c textitem} {
   set avLum [expr int($sumTotal / $numColours)]
 
   ##very shade
-  if {$avLum <= $shadeThreshold} {
+  if {$avLum <= $darkThreshold} {
     set lum 1
   ##very sun
-  } elseif {$avLum >= $sunThreshold} {
+  } elseif {$avLum >= $brightThreshold} {
     set lum 3
   ##normal
   } else {
