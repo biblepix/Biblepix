@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 29jan21 pv
+# Updated 1feb21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -113,6 +113,7 @@ set Black $colour::Black
   %W conf -bg [set %s]
   setCanvasFontColour $textposC %s
   setCanvasFontColour $inttextC %s
+  set ::fontcolortext %s
 }
 
 #set Fontsize spinbox
