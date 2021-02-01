@@ -11,6 +11,7 @@ source $::AnnotatePng
 ##opens new toplevel window if [needsResize]
 ##called by addPic
 proc openResizeWindow {} {
+  tk_messageBox -type ok -message $::movePicToResize
   global fontsize
   set margin 10
   namespace eval resizePic {}
@@ -36,13 +37,13 @@ proc openResizeWindow {} {
     catch {image delete $resizePic::resizeCanvPic}
     namespace delete resizePic
   }
-
   set confirmBtnAction {
+    .resizePhoto.confirmBtn conf -state disabled
+    .resizePhoto.cancelBtn  conf -state disabled
     set img [doResize $resizePic::c $resizePic::scaleFactor]
     catch {image delete $resizePic::resizeCanvPic}
     namespace delete resizePic
     set ::Modal.Result "Success"
-
     openReposWindow $img
   }
 
@@ -51,7 +52,6 @@ proc openResizeWindow {} {
   pack $w.confirmBtn $w.cancelBtn ;#will be repacked into canv window
   set bildname [file tail $addpicture::targetPicPath]
 
-  $resizePic::c create text 20 20 -anchor nw -justify center -font "TkCaptionFont 16 bold" -fill red -activefill yellow -text "$::movePicToResize" -tags text
   $resizePic::c create window [expr $canvX - 150] 50 -anchor ne -window $w.confirmBtn -tag okbtn
   $resizePic::c create window [expr $canvX - 80] 50 -anchor ne -window $w.cancelBtn -tag delbtn
   pack $resizePic::c -side top -fill none
@@ -65,19 +65,22 @@ proc openResizeWindow {} {
   bind $w <Return> $confirmBtnAction
   bind $w <Escape> $cancelBtnAction
   Show.Modal $w -destroy 1 -onclose $cancelBtnAction
-
+  
+  NewsHandler::QueryNews $::textposWait orange
 } ;#END openResizeWindow
 
 # openReposWindow
 ##opens new toplevel window if .resizePhoto doesn't exist
 ##called by addPic ?????????if ![needsResize]??????????????
 proc openReposWindow {pic} {
+  catch {destroy .resizePhoto}
+  #TODO falsche textvar
+  tk_messageBox -type ok -message $::textposAdjust
+  
   global fontsize fontcolortext
   namespace eval reposPic {}
+
   set reposPic::reposCanvPic [image create photo]
-
-  NewsHandler::QueryNews $::textpos.wait orange
-
   set reposPic::w [toplevel .reposPhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
   set reposPic::canv [canvas $reposPic::w.reposCanv -bg lightblue]
   $reposPic::canv create image 0 0 -image $reposPic::reposCanvPic -anchor nw -tags {img mv}
@@ -95,33 +98,30 @@ proc openReposWindow {pic} {
     namespace delete reposPic
     namespace delete addpicture
   }
-
   set confirmBtnAction {
     set ::Modal.Result "Success"
-    
     #Compute background luminacy & set font shades
     set lum [getAreaLuminacy $reposPic::canv canvTxt]
     setCanvasFontColour $reposPic::canv $fontcolortext $lum
-
     #Process PNG info
     lassign [$reposPic::canv coords txt] x y
     set x [expr $x * $reposPic::scaleFactor]
     set y [expr $y * $reposPic::scaleFactor]
     processPngComment $addpicture::targetPicPath $x $y $lum
-    
+ 
     NewsHandler::QueryNews "$::reposSaved" lightgreen
-#TODO Joel was ist mit diesen var geschehen?
+#TODO Joel was ist mit diesen vars geschehen?
 #    catch {image delete $addpicture::curPic}
 #    catch {image delete $reposPic::reposCanvPic}
     namespace delete reposPic
     namespace delete addpicture
   }
 
-  #Create text button on top & disable
-  set btn [button $reposPic::w.moveTxtBtn -font {TkHeaderFont 20 bold} -fg red -pady 2 -padx 2]
-  $btn conf -command $confirmBtnAction -bd 5 -relief raised -textvar textpos.wait
-  pack $btn
-  $reposPic::canv create window -15 15 -anchor nw -window $btn
+  set confBtn [button $reposPic::w.moveTxtBtn -command $confirmBtnAction -text OK]
+  set cancBtn [button $reposPic::w.cancelBtn -textvar cancel -command $cancelBtnAction]
+  pack $cancBtn $confBtn -side right
+  
+#  $reposPic::canv create window -15 15 -anchor nw -window $confBtn
   $reposPic::canv itemconf mv -state disabled
   $reposPic::w.moveTxtBtn conf -state disabled
 

@@ -116,9 +116,14 @@ set ::packageRequireTls $packageRequireTls($lang)
     append RtlInfo $RtlAr
   }
 
-  set textpos(en) "Adjust text position *"
-  set textpos(de) "Textposition anpassen *"
-  set ::textpos $textpos($lang)
+#TODO move to Photos texts
+  set textposInfo(en) "Adjust text position *"
+  set textposInfo(de) "Textposition anpassen *"
+  set ::textposInfo $textposInfo($lang)
+
+  set textposAdjust(en) "Please adjust text position for this picture and press OK."
+  set textposAdjust(de) "Verschieben Sie nun die Textposition für dieses Bild nach Wunsch und bestätigen Sie mit OK."
+  set ::textposAdjust $textposAdjust($lang)
 
   set textposFN(en) "* Text positioning can be corrected for individual pictures when adding to the $bp photo collection.\n$RtlInfo"
   set textposFN(de) "* Beim Hinzufügen von Bildern zur $bp-Fotosammlung kann die Textposition individuell angepasst werden.\n$RtlInfo"
@@ -126,7 +131,7 @@ set ::packageRequireTls $packageRequireTls($lang)
   
   set textposWait(en) "Please wait a moment while computing ideal text position and luminance..." 
   set textposWait(de) "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..."
-  set ::textpos.wait $textposWait($lang)
+  set ::textposWait $textposWait($lang)
   
   set welcTit(en) "Welcome to the $bp setup program!"
   set welcTit(de) "Willkommen beim Einrichtungsprogramm von $bp!"
