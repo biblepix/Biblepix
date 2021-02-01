@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 17jan21 pv
+# Updated 1feb21 pv
 
 #TODO should these be called by another lowlevel prog?
 #source $::ScanColourArea
@@ -156,7 +156,7 @@ proc openReposWindow {pic} {
   after idle {
 #    colour::doColourScan
      $reposPic::canv itemconf mv -state normal
-     $reposPic::w.moveTxtBtn conf -state normal -bg orange -fg black
+     $reposPic::w.moveTxtBtn conf -state normal
      set textpos.wait "Passen Sie die Textposition nach Wunsch an und quittieren Sie mit OK."
   }
 
