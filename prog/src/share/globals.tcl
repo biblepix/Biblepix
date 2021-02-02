@@ -187,7 +187,7 @@ array set BlackArr   {r 6 g 6 b 6}
 array set GoldArr    {r 255 g 215 b 0}
 #array set SilverArr  {r 192 g 192 b 192}
 array set SilverArr {r 160 g 160 b 160}
-array set BlueArr    {r 0 g 190 b 255}
+array set BlueArr    {r 0 g 160 b 255}
 array set GreenArr   {r 60 g 185 b 120}
 #array set GreenArr {r 0 g 150 b 0}
 
@@ -196,7 +196,7 @@ set sunFactor 0.5
 set shadeFactor -0.35
 #these define where a background should be considered "dark" or "bright"
 ##and by what factor font shades should yet be adjusted up or down
-set darkThreshold 90
+set darkThreshold 80
 set brightThreshold 200
 
 #Bildformate & DesktopPicturesDir

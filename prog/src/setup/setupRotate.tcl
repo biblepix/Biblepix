@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9jan21 pv
+# Updated: 2feb21 pv
 
 source $RotateTools
 namespace eval rotatepic {}
@@ -10,8 +10,10 @@ namespace eval rotatepic {}
 #Create top window with 3 frames
 set rotatepic::W [toplevel .rotateW -width 600 -height 400]
 set F1 [frame ${rotatepic::W}.topF]
-set F2 [frame ${rotatepic::W}.midF -bg green -bd 5]
-set F3 [frame ${rotatepic::W}.botF -bg green3 -bd 5]
+set col1 [gradient beige -0.2]
+set col2 [gradient beige -0.1]
+set F2 [frame ${rotatepic::W}.midF -bg $col1 -bd 5]
+set F3 [frame ${rotatepic::W}.botF -bg $col2 -bd 5]
 pack $F1 $F2 $F3 -fill x -anchor n
 
 #Create widget vars

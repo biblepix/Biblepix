@@ -1,10 +1,8 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 1feb21 pv
+# Updated 2feb21 pv
 
-#TODO should these be called by another lowlevel prog?
-#source $::ScanColourArea
 source $::AnnotatePng
   
 # openResizeWindow
@@ -65,8 +63,6 @@ proc openResizeWindow {} {
   bind $w <Return> $confirmBtnAction
   bind $w <Escape> $cancelBtnAction
   Show.Modal $w -destroy 1 -onclose $cancelBtnAction
-  
-  NewsHandler::QueryNews $::textposWait orange
 } ;#END openResizeWindow
 
 # openReposWindow

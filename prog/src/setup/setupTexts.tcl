@@ -129,9 +129,9 @@ set ::packageRequireTls $packageRequireTls($lang)
   set textposFN(de) "* Beim Hinzufügen von Bildern zur $bp-Fotosammlung kann die Textposition individuell angepasst werden.\n$RtlInfo"
   set ::textposFN $textposFN($lang)
   
-  set textposWait(en) "Please wait a moment while computing ideal text position and luminance..." 
-  set textposWait(de) "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..."
-  set ::textposWait $textposWait($lang)
+#  set textposWait(en) "Please wait a moment while computing ideal text position and luminance..." 
+#  set textposWait(de) "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..."
+#  set ::textposWait $textposWait($lang)
   
   set welcTit(en) "Welcome to the $bp setup program!"
   set welcTit(de) "Willkommen beim Einrichtungsprogramm von $bp!"
