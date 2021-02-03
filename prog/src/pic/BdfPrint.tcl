@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 29jan21 pv
+# Updated: 3feb21 pv
 source $TwdTools
 source $BdfTools
 source $ImgTools
@@ -73,6 +73,9 @@ namespace eval colour {
   
   #Set hex font shades, including luminance info if it exists 
   variable fontcolortext $::fontcolortext
+  variable regHex
+  variable sunHex
+  variable shaHex
   lassign [setFontShades $fontcolortext] regHex sunHex shaHex
   
   #Set marginleft & margintop from pnginfo OR from Config 
