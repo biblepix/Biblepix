@@ -59,9 +59,27 @@ proc openResizeWindow {} {
      set ::x %X
      set ::y %Y
   }
-  $resizePic::c bind mv <B1-Motion> [list dragCanvasItem %W img %X %Y]
+  
+  set cmd [list dragCanvasItem %W img %X %Y]
+  $resizePic::c bind mv <B1-Motion> $cmd
+
+#TODO try to bind movements to Mousewheel + Arrow keys:
+## But how to define specific steps?????
+#$resizePic::c bind mv <MouseWheel> {%W yview scroll [expr {- (%D)}] units}
+set moveUD {%W yview scroll [expr {-%D/120}] units}
+set moveRL {%W xview scroll [expr {-%D/120}] units}
+
+#$resizePic::c bind mv <MouseWheel> $moveUD
+
+#  $resizePic::c bind mv <Key-Up> $moveUD
+  $resizePic::c bind mv <Key-uparrow> $cmd
+#  $reposPic::canv bind mv <Down>
+#  $reposPic::canv bind mv <Right>
+#  $reposPic::canv bind mv <Left>
+    
   bind $w <Return> $confirmBtnAction
   bind $w <Escape> $cancelBtnAction
+  
   Show.Modal $w -destroy 1 -onclose $cancelBtnAction
 } ;#END openResizeWindow
 
@@ -127,7 +145,7 @@ proc openReposWindow {pic} {
      set ::y %Y
   }
   $reposPic::canv bind mv <B1-Motion> {dragCanvasItem %W txt %X %Y 20}
-
+  
   set imgX [image width $reposPic::reposCanvPic]
   set imgY [image height $reposPic::reposCanvPic]
   $reposPic::canv conf -width $imgX -height $imgY
@@ -150,10 +168,9 @@ proc openReposWindow {pic} {
 
   #Start colour scanning in background - TODO Set back to after idle once colourscan is working!
   after idle {
-#    colour::doColourScan
-     $reposPic::canv itemconf mv -state normal
-     $reposPic::w.moveTxtBtn conf -state normal
-     set textpos.wait "Passen Sie die Textposition nach Wunsch an und quittieren Sie mit OK."
+    $reposPic::canv itemconf mv -state normal
+    $reposPic::w.moveTxtBtn conf -state normal
+    set textpos.wait "Passen Sie die Textposition nach Wunsch an und quittieren Sie mit OK."
   }
 
   Show.Modal $reposPic::w -destroy 1 -onclose $cancelBtnAction
