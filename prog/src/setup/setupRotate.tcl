@@ -6,6 +6,11 @@
 
 source $RotateTools
 namespace eval rotatepic {}
+namespace eval addpicture {}
+
+if {![info exists addpicture::curPic]} {
+  set addpicture::curPic photosOrigPic
+}
 
 #Create top window with 3 frames
 set rotatepic::W [toplevel .rotateW -width 600 -height 400]
@@ -92,7 +97,7 @@ set confirmBtnAction {
   }
   #Initiate rotation in background, close window when finished 
   after idle {
-    doRotateOrig photosOrigPic $rotatepic::angle
+    doRotateOrig $addpicture::curPic $rotatepic::angle
     destroy $rotatepic::W
     namespace delete rotatepic
   }

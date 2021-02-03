@@ -153,10 +153,10 @@ proc printTwdTextParts {x y img} {
 proc printLetter {letterName img x y} {
 
   global colour::regHex
-  global colour::sunHex 
+  global colour::sunHex
   global colour::shaHex
   global RtL prefix
-  upvar $letterName curLetter	
+  upvar $letterName curLetter
 
   set imgW [image width $img]
   set imgH [image height $img]

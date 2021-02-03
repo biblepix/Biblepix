@@ -244,7 +244,7 @@ proc doRotateOrig {pic angle} {
   set rotPic [imageRotate $pic $angle]
 
   #2. cut and save
-  set addpicture::curPic $rotPic
+  set addpicture::curPic [cutRotated $rotPic]
 }
 
 ######################################################
