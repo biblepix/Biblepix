@@ -112,6 +112,7 @@ proc openReposWindow {pic} {
     namespace delete reposPic
     namespace delete addpicture
   }
+
   set confirmBtnAction {
     set ::Modal.Result "Success"
     #Compute background luminacy & set font shades
@@ -122,11 +123,10 @@ proc openReposWindow {pic} {
     set x [expr $x * $reposPic::scaleFactor]
     set y [expr $y * $reposPic::scaleFactor]
     processPngComment $addpicture::targetPicPath $x $y $lum
- 
+
     NewsHandler::QueryNews "$::reposSaved" lightgreen
-#TODO Joel was ist mit diesen vars geschehen?
-#    catch {image delete $addpicture::curPic}
-#    catch {image delete $reposPic::reposCanvPic}
+    catch {image delete $addpicture::curPic}
+    catch {image delete $reposPic::reposCanvPic}
     namespace delete reposPic
     namespace delete addpicture
   }
