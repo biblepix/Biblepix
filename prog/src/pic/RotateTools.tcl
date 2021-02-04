@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/RotateTools.tcl
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
 # Procs for rotating picture, called by SetupRotate
-# Updated: 24oct20
+# Updated: 4feb21
 
 # imageRotate
 ##with many thanks to Richard Suchenwirth!
@@ -79,8 +79,6 @@ proc imageRotate {img angle} {
       set h2  [expr {round(abs($h*cos($a)) + abs($w*sin($a)))}]
       set ym2 [expr {$h2/2.}]
 
-      puts "$angle, $a, $xm, $ym, $w2, $xm2, $h2, $ym2"
-
       set rotatedImgUncut [image create photo]
       $rotatedImgUncut config -width $w2 -height $h2
       for {set i 0} {$i<$h2} {incr i} {
@@ -125,13 +123,13 @@ proc imageRotate {img angle} {
         }
       }
 
-      set dwm [expr abs($w2 - $w) / 2]
-      set dhm [expr abs($h2 - $h) / 2]
+      set dw [expr abs(sin($a) * $h)]
+      set dh [expr abs(sin($a) * $w)]
 
-      set x1 $dwm
-      set y1 $dhm
-      set x2 [expr $w2 - $dwm]
-      set y2 [expr $h2 - $dhm]
+      set x1 [expr round($dw)]
+      set y1 [expr round($dh)]
+      set x2 [expr round($w2 - $dw)]
+      set y2 [expr round($h2 - $dh)]
 
       $rotatedImg config -width [expr $x2 - $x1] -height [expr $y2 - $y1]
       $rotatedImg copy $rotatedImgUncut -from $x1 $y1 $x2 $y2
@@ -195,15 +193,15 @@ proc makeMeter {} {
   $mC lower $meter
   updateMeterLine $mC 0.5
   
-  $mC create arc 10 10 190 190 -start 0 -extent 180 -style arc -outline red -tags arc
+  $mC create arc 10 10 190 190 -start 60 -extent 60 -style arc -outline red -tags arc
   return $mC
 }
 
 # Draw a meter line
 proc updateMeterLine {w a} {
   global meter pi
-  set x [expr {100.0 - 90.0*cos($a * $pi)}]
-  set y [expr {100.0 - 90.0*sin($a * $pi)}]
+  set x [expr {100.0 - 90.0*cos(($a + 1) / 3 * $pi)}]
+  set y [expr {100.0 - 90.0*sin(($a + 1) / 3 * $pi)}]
   catch { $w coords $meter 100 100 $x $y }
 }
 

@@ -49,7 +49,7 @@ proc anysetnormal {} {
   $::anyBtn conf -state normal
   $::mC conf -bg lightblue
   $::scale conf -state normal
-  $::F2 conf -bg silver 
+  $::F2 conf -bg silver
   $::90Btn conf -state disabled
   $::180Btn conf -state disabled
 }
@@ -124,7 +124,7 @@ pack $canv -in $F1
 
 #Create scale
 set ::pi 3.1415927 ;# Good enough accuracy for gfx...
-scale $scale -orient h -length 300 -from -90 -to 90 -variable v
+scale $scale -orient h -length 300 -from -30 -to 30 -variable v
 set from [$scale cget -from]
 set to [$scale cget -to]
 
