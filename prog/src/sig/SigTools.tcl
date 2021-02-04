@@ -2,8 +2,9 @@
 # Procs for Trojitá & Evolution mail clients
 # Called by Signature if any of above found
 # Authors: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 29dec20
+# Updated: 4feb21 pv
 
+ #TODO create sig:: namespace for all these vars & run procs in namespace
 #Set global vars
 set tr {Trojitá}
 set ev {Evolution}
@@ -81,8 +82,10 @@ proc doSigEvolution {} {
     if { [regexp $startcatch $t] && $mtimeDay < $dayOTY } {
       set cleanSig [cleanSigfile $sigFilePath]
     } 
-    #2) Remove any triggerRef & >>cleanSig
-    if [regexp $triggerRef $t] {
+    #2) Remove any catchword/triggerRef & >>cleanSig
+    if [regexp $catchword $t] {
+      regsub $catchword $t {} cleanSig
+    } elseif [regexp $triggerRef $t] {
       regsub $triggerRef $t {} cleanSig
     }
  

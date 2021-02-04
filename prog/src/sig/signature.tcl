@@ -82,6 +82,7 @@ if [info exists err] {
 
 #Check presence of Evolution
 if {[auto_execok evolution] != ""} {
+puts "Evrim bulduk!"
   doSigEvolution
 }
 
