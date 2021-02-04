@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2feb21 pv
+# Updated: 4feb21
 
 source $RotateTools
 namespace eval rotatepic {}
@@ -101,7 +101,7 @@ set confirmBtnAction {
     return 0
   }
   
-  #Initiate rotation in background, close window when finished 
+  #Initiate rotation in background, disable controls, close window when finished
   after idle {
     doRotateOrig $addpicture::curPic $rotatepic::angle
     destroy $rotatepic::W

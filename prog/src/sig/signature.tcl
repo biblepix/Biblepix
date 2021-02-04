@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 29dec20
+# Updated: 29dec20 pv
 source $TwdTools
 source $SigTools
 
@@ -84,4 +84,3 @@ if [info exists err] {
 if {[auto_execok evolution] != ""} {
   doSigEvolution
 }
-

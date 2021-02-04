@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 29jan21 pv
+# Updated: 2feb21 pv
 
 # printTwd
 ##Toplevel printing proc
@@ -11,6 +11,8 @@ proc printTwd {TwdFileName img} {
   global colour::marginleft
   global colour::margintop
   parseTwdTextParts $TwdFileName
+  
+  ##TODO könnte man hier die Zeilenlänge für bidi berechnen????
   set finalImg [printTwdTextParts $marginleft $margintop $img]
   return $finalImg
 }
@@ -88,6 +90,7 @@ proc parseTwdTextParts {TwdFileName} {
 ## called by printTwd
 proc printTwdTextParts {x y img} {
   global enabletitle TwdLang
+puts $TwdLang
   
   #Sort out markRefngs for Italic & Bold
   if {$TwdLang == "th" || $TwdLang == "zh" } {
@@ -151,7 +154,6 @@ proc printTwdTextParts {x y img} {
 ## prints single letter to $img
 ## called by printTextLine
 proc printLetter {letterName img x y} {
-
   global colour::regHex
   global colour::sunHex
   global colour::shaHex
@@ -226,15 +228,26 @@ proc printTextLine {textLine x y img args} {
     set imgW [image width $img]
     set textLine [bidi $textLine $TwdLang]
     set operator -
-    #Move text to right side only if png info not found 
-    if ![info exists colour::pngInfo] { 
+
+#TODO try to avoid this and calculate maxline length instead!
+    #Move text to the right only if png info not found
+    ##make space on the left if leftmargin near border
+    if ![info exists colour::pngInfo] {
+      set screenwidth [winfo screenwidth .]
+      set minmargin [expr $screenwidth/3]
+      if {$marginleft < $minmargin} {
+        set marginleft $minmargin
+      }
       set xBase [expr $imgW - ($marginleft) - $x]
     }
     
   } else {
     set operator +
   }
-  
+puts "marginleft $marginleft"
+
+
+
   #Compute indentations
   if {$args=="IND"} {
     set xBase [expr $xBase $operator $ind]
