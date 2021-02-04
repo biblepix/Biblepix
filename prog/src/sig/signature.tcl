@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 29dec20
+# Updated: 29dec20 pv
 source $TwdTools
 source $SigTools
 
@@ -82,7 +82,5 @@ if [info exists err] {
 
 #Check presence of Evolution
 if {[auto_execok evolution] != ""} {
-puts "Evrim bulduk!"
   doSigEvolution
 }
-
