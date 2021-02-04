@@ -81,7 +81,7 @@ button $180Btn -textvar preview180 -activebackground beige \
   set rotatepic::angle 180
   }
 
-set cancelBtnAction {	
+set cancelBtnAction {
   set ::Modal.Result "Cancelled"
   image delete $rotatepic::rotateCanvPic
   destroy $rotatepic::W
@@ -89,12 +89,18 @@ set cancelBtnAction {
 }
 
 set confirmBtnAction {
+  #Run foreground actions
+  vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
+  photosCanvPic blank
+  photosCanvPic copy $rotatepic::rotateCanvPic -shrink
+
   #Create message window on top
   set res [tk_messageBox -type yesno -message $rotateWait]
   if {$res == "no"} {
     allsetnormal
     return 0
   }
+  
   #Initiate rotation in background, close window when finished 
   after idle {
     doRotateOrig $addpicture::curPic $rotatepic::angle
@@ -102,11 +108,6 @@ set confirmBtnAction {
     namespace delete rotatepic
   }
 
-  vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
-
-  #Run foreground actions
-  photosCanvPic blank
-  photosCanvPic copy $rotatepic::rotateCanvPic -shrink
   image delete $rotatepic::rotateCanvPic
   set ::Modal.Result "Success"
 }

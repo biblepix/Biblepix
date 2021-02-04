@@ -18,6 +18,7 @@ proc imageRotate {img angle} {
     set h [image height $img]
     set buf {}
     if {$angle == 90} {
+
       # This would be easier with lrepeat
       set row {}
       for {set i 0} {$i<$h} {incr i} {
@@ -40,8 +41,10 @@ proc imageRotate {img angle} {
       $rotatedImg config -width $h -height $w
       $rotatedImg put $buf
     } elseif {$angle == 180} {
+    
       $rotatedImg copy $img -subsample -1 -1
     } elseif {$angle == 270} {
+    
       # This would be easier with lrepeat
       set row {}
       for {set i 0} {$i<$h} {incr i} {
@@ -66,6 +69,7 @@ proc imageRotate {img angle} {
       $rotatedImg config -width $h -height $w
       $rotatedImg put $buf
     } else {
+
       set angle [expr 360 - $angle]
       set a   [expr {atan(1)*8*$angle/360.}]
       set xm  [expr {$w/2.}]
@@ -74,7 +78,11 @@ proc imageRotate {img angle} {
       set xm2 [expr {$w2/2.}]
       set h2  [expr {round(abs($h*cos($a)) + abs($w*sin($a)))}]
       set ym2 [expr {$h2/2.}]
-      $rotatedImg config -width $w2 -height $h2
+
+      puts "$angle, $a, $xm, $ym, $w2, $xm2, $h2, $ym2"
+
+      set rotatedImgUncut [image create photo]
+      $rotatedImgUncut config -width $w2 -height $h2
       for {set i 0} {$i<$h2} {incr i} {
         set toX -1
         for {set j 0} {$j<$w2} {incr j} {
@@ -111,11 +119,22 @@ proc imageRotate {img angle} {
         }
 
         if {$toX>=0} {
-          $rotatedImg put [list $buf] -to $toX $i
+          $rotatedImgUncut put [list $buf] -to $toX $i
           set buf {}
           if {$::update} { update }
         }
       }
+
+      set dwm [expr abs($w2 - $w) / 2]
+      set dhm [expr abs($h2 - $h) / 2]
+
+      set x1 $dwm
+      set y1 $dhm
+      set x2 [expr $w2 - $dwm]
+      set y2 [expr $h2 - $dhm]
+
+      $rotatedImg config -width [expr $x2 - $x1] -height [expr $y2 - $y1]
+      $rotatedImg copy $rotatedImgUncut -from $x1 $y1 $x2 $y2
     }
   } else {
     $rotatedImg copy $img
@@ -129,92 +148,6 @@ proc imageRotate {img angle} {
 ############# E D G E   C U T T I N G   P R O C S  #####################
 ########################################################################
 
-set void {#000000}
-set offsetMargin 3 ;#where to start scanning
-
-# getImgCorners
-##called by cutRotateOrigPic
-proc getImgCorners {im} {
-  set dataL [$im data]
-  set v [scanVertical $dataL]
-  set h [scanHorizontal $dataL]
-  return "$h $v"
-}
-
-# scanVertical
-##called by getImgCorners
-proc scanVertical {dataL} {
-  global void offsetMargin
-  set rowNo 0
-  
-  foreach row $dataL {
-    set colour [lindex $row $offsetMargin]
-    if {$colour == $void} {
-      incr rowNo
-    } else {
-      return $rowNo
-    }
-  }
-}
-
-# scanHorizontal
-##called by getImgCorners
-proc scanHorizontal {dataL} {
-  global void offsetMargin
-
-  set row [lindex $dataL $offsetMargin]
-
-  for {set i 0} {$i < [llength $row]} {incr i} {
-    if {[lindex $row $i] != "$void"} {
-      return $i
-    }
-  }
-}
-
-# cutRotated
-##cuts uneven sides & returns as new $im
-##called by ??? for rotateCanvPic & rotateOrigPic
-proc cutRotated {im} {
-  global offsetMargin
-
-  #get horizontal & vertical points
-  lassign [getImgCorners $im] h v
-puts "h:$h v:$v"
-
-  #Skip cutting if corners are "0 0"
-  if !{$h} {
-    return $im
-  }
-
-  #Prepare edge points for cutting
-  set imH [image height $im]
-  set imW [image width $im]
-
-  #TODO not perfect yet - Joel please help!!!!!!!!!!!
-  if {$h < $v} {
-    ##Rechtsdrehung
-    set x1 $h
-    set y1 [expr ($imH - $v) /2]
-    set x2 [expr $imW - $h]
-    set y2 $v
-  } {
-    ##Linksdrehung
-    set x1 [expr $imW - $h]
-    set y1 $v
-    set x2 [expr $imW - ($imW - $h)]
-    set y2 [expr $imH - $v]
-  }
-
-puts "$x1.$y1 $x2.$y2"
-
-  #Recreate rotateCutPic
-  set rotateCutPic [image create photo]
-  $rotateCutPic copy $im -from $x1 $y1 $x2 $y2
-  
-  return $rotateCutPic
-
-} ;#end cutRotated
-
 # vorschau
 ##called by SetupRotate
 proc vorschau {im angle canv} {
@@ -223,6 +156,7 @@ proc vorschau {im angle canv} {
   set rotatedImg [imageRotate photosCanvPic $angle]
 
   $im blank
+  $im config -height [image height $rotatedImg] -width [image width $rotatedImg]
   $im copy $rotatedImg
   image delete $rotatedImg
 
@@ -244,7 +178,7 @@ proc doRotateOrig {pic angle} {
   set rotPic [imageRotate $pic $angle]
 
   #2. cut and save
-  set addpicture::curPic [cutRotated $rotPic]
+  set addpicture::curPic $rotPic
 }
 
 ######################################################
