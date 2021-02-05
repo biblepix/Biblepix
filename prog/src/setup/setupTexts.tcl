@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7jan21 pv
+# Updated: 7feb21 pv
 
 proc setTexts {lang} {
   global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -121,8 +121,8 @@ set ::packageRequireTls $packageRequireTls($lang)
   set textposInfo(de) "Textposition anpassen *"
   set ::textposInfo $textposInfo($lang)
 
-  set textposAdjust(en) "Please adjust text position for this picture and press OK."
-  set textposAdjust(de) "Verschieben Sie nun die Textposition für dieses Bild nach Wunsch und bestätigen Sie mit OK."
+  set textposAdjust(en) "Do you want to adjust the text position for this picture before saving?"
+  set textposAdjust(de) "Wollen Sie vor dem Speichern die Textposition für dieses Bild ändern?"
   set ::textposAdjust $textposAdjust($lang)
 
   set textposFN(en) "* Text positioning can be corrected for individual pictures when adding to the $bp photo collection.\n$RtlInfo"

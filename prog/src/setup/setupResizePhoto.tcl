@@ -88,9 +88,6 @@ set moveRL {%W xview scroll [expr {-%D/120}] units}
 ##called by addPic ?????????if ![needsResize]??????????????
 proc openReposWindow {pic} {
   catch {destroy .resizePhoto}
-  #TODO falsche textvar
-  tk_messageBox -type ok -message $::textposAdjust
-  
   global fontsize fontcolortext
   namespace eval reposPic {}
 
@@ -171,6 +168,14 @@ proc openReposWindow {pic} {
     $reposPic::canv itemconf mv -state normal
     $reposPic::w.moveTxtBtn conf -state normal
     set textpos.wait "Passen Sie die Textposition nach Wunsch an und quittieren Sie mit OK."
+  }
+
+#TODO ...
+  set res [tk_messageBox -type yesno -message $::textposAdjust]
+  if {$res == "no"} {
+  #save only luminance & close window
+  } else {
+  #normaler Ablauf
   }
 
   Show.Modal $reposPic::w -destroy 1 -onclose $cancelBtnAction

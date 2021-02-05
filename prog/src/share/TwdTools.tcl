@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 18jan21
+# Updated 5feb21 pv
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -63,6 +63,14 @@ proc getRandomTwdFile args {
   }
   set randIndex [expr {int(rand()*[llength $twdlist])}]
   return [lindex $twdlist $randIndex]
+}
+
+# getRandomFontcolor
+##called by Image if randomFontcolor = 1
+proc getRandomFontcolor {} {
+  global fontcolourL
+  set randIndex [expr {int(rand()*[llength $fontcolourL])}]
+  return [lindex $fontcolourL $randIndex]
 }
 
 proc updateTwd {} {
