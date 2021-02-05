@@ -14,6 +14,7 @@ proc printTwd {TwdFileName img} {
   
   ##TODO könnte man hier die Zeilenlänge für bidi berechnen????
   set finalImg [printTwdTextParts $marginleft $margintop $img]
+  namespace delete twd
   return $finalImg
 }
 
@@ -79,11 +80,11 @@ proc parseTwdTextParts {TwdFileName} {
     set text2 [$textNode2 asText]
 
     #Clean up all nodes - TODO: nicht nötig? namespace wird sowieso gelöscht!
-    $domDoc delete
+    #$domDoc delete
     
   } ;#END twd:: namespace
 
-} ;#END proc extractTwdTextParts
+} ;#END proc parseTwdTextParts
   
   
 # printTwdTextParts  
@@ -287,9 +288,42 @@ puts "marginleft $marginleft"
       }
       
       set xBase [expr $xBase $operator $curLetter(DWx)]
+      
     }
+    
   } ;#END foreach
   
+  namespace eval twd {
+    variable xBase
+    variable YBase    
+    variable extraW
+    variable extraH
+    set screenW [winfo screenwidth .]
+    set screenH [winfo screenheight .]
+  }
+  
+  set twd::xBase $xBase
+  set twd::yBase $y
+  
+  #Record any extra widths/heights for later correction 
+  ##to be computed before final printing by ...
+  namespace eval twd {
+  
+    ##extra width left
+    if {$xBase < 0} {
+      lappend extraW $xBase      
+    ##extra width right
+    } elseif {$xBase > $screenW} {
+      lappend extraW $xBase
+    ##extra height bottom
+    } elseif {$yBase > $screenH} {
+      lappend extraH $yBase  
+    }
+    
+catch {    puts "Extra height: $extraH"}
+catch {    puts "Extra width: $extraW"}
+  }
+    
   #gibt neue Y-Position für nächste Zeile zurück  
   return [expr $y + $${prefix}::FBBy]
 
