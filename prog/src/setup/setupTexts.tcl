@@ -396,8 +396,8 @@ Example:"
   set ::winRegisterProb $winRegisterProb($lang)
 
   #PHOTOS
-  set reposSaved(de) "Bild mit Positionsinfo gespeichert."
-  set reposSaved(en) "Picture saved with text position info."
+  set reposSaved(de) "Bild mit Info gespeichert."
+  set reposSaved(en) "Picture saved with Info."
   set ::reposSaved $reposSaved($lang) 
 
   set reposNotSaved(de) "Bild nicht gespeichert."
