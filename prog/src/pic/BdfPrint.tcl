@@ -78,6 +78,16 @@ namespace eval colour {
   variable shaHex
   lassign [setFontShades $fontcolortext] regHex sunHex shaHex
   
+  
+  ##TODO special sun+shade for black+white?
+#  if {$fontcolortext == "Black"} {
+#    set sunHex #ffffff
+#    set shaHex #ffffff
+#  }
+#  if {$fontcolortext == "White"} {
+#    set sunHex #000000
+#    set shaHex #000000
+#  }
   #Set marginleft & margintop from pnginfo OR from Config 
   if { [info exists pnginfo(Marginleft)] && [info exists pnginfo(Margintop)] } {
     ##make sure margins are not 0 (as intended if saved without pos info)

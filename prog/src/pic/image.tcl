@@ -26,10 +26,17 @@ wm withdraw .
 set picPath [getRandomPhotoPath]
 image create photo hgbild -file $picPath
 
+puts $fontcolortext
+#get random fontcolour if activated
+if {$enableRandomFontcolor} {
+  set fontcolortext [getRandomFontcolor]
+}
+puts $fontcolortext
+
 #Extract any info from PNG & export as pngInfo array to ::colour namespace
 puts "Reading PNG info from [file tail $picPath] ..."
 if {[readPngComment $picPath] == 0} {
-  puts " No PNG info found!"
+  puts "*No PNG info found!"
 } else {
 
   namespace eval colour {
