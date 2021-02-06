@@ -36,6 +36,7 @@ proc parseTwdTextParts {TwdFileName} {
     ##initiate current vars    
     variable TwdFileName $::TwdFileName
     set TwdLang [getTwdLang $TwdFileName]
+puts $TwdLang
 
     #A: SET TWD NODE NAMES
     
@@ -87,58 +88,6 @@ proc parseTwdTextParts {TwdFileName} {
   } ;#END twd:: namespace
 
 } ;#END proc parseTwdTextParts
-  
-
-# evalMarginErrors
-##evaluates lists created by checkMarginErrors
-##called by printTwdTextParts  
-proc evalMarginErrors {} {
-  
-  checkMarginErrors
-  
-  eval namespace twd {
-    
-    #A) Return 0 0 if none found
-    if [info exists xErrL] {
-      set L [join $xErrL ,]
-      set xErr [expr max($L)]
-  
-    } elseif [info exists yErrL] {
-      set L [join $yErrL ,]
-      set yErr [expr max($L)]
-    } else {
-    
-      return "0 0"
-    }
-  
-    #B) Compute new x & y
-    variable x
-    variable y
-  
-    ##to far left(-) OR right(+) 
-    if [info exists xErr] {
-        
-        set y 0
-        
-      if {$xErr < 0} {
-      
-        set x [expr $x + ($xErr * -1)]     
-      } else {
-      
-        set x [expr $x - ($xErr - $screenW)]
-      }
-         
-    ##too far below(+)
-    } elseif [info exists yErr] {
-      
-      set x 0
-      set y [expr $y - ($yErr - $screenH)] 
-    }
-  
-  } ;#END twd:: namespace
-  
-  return "$twd::x $twd::y"
-}
   
 # printTwdTextParts  
 ## called by printTwd
@@ -258,7 +207,7 @@ proc printLetter {letterName img x y} {
         }
          
       #A) Truncate text (break loop) if it exceeds image width or height
-      if {$xCur >= $imgW || $yCur >= $imgH} {break}
+      #if {$xCur >= $imgW || $yCur >= $imgH} {break}
       #B) else put colour pixel
       if {$xCur <0} {set xCur 1} 
         $img put $pxColor -to $xCur $yCur
@@ -298,7 +247,6 @@ proc printTextLine {textLine x y img args} {
     set textLine [bidi $textLine $TwdLang]
     set operator -
 
-#TODO try to avoid this and calculate maxline length instead!
     #Move text to the right only if png info not found
     ##make space on the left if leftmargin near border
     if ![info exists colour::pngInfo] {
@@ -361,10 +309,9 @@ puts "marginleft $marginleft"
     
   } ;#END foreach
 
-set yBase [expr $y + $${prefix}::FBBy]
+  set yBase [expr $y + $${prefix}::FBBy]
 
-#TODO kafam bozuldu - this is called by evalMarginErrors!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-catchMarginErrors $xBase $yBase
+  catchMarginErrors $xBase $yBase
     
   #gibt neue Y-Position für nächste Zeile zurück  
   return $yBase
@@ -374,16 +321,18 @@ catchMarginErrors $xBase $yBase
 
 # catchMarginErrors
 ##records any extra widths/heights for later correction 
-##called by printTextLine for each line
+##called by printTextLine for each text line
 proc catchMarginErrors {xBase yBase} {
   
   set twd::xBase $xBase
   set twd::yBase $yBase
+puts " X $twd::xBase"
+puts " Y $twd::yBase"
   
   #make lists to be parsed later by evalMarginErrors
   namespace eval twd {
     ##extra width left
-    if {$xBase < 0} {
+    if {$xBase < 10} {
       lappend xErrL $xBase  
     ##extra width right
     } elseif {$xBase > $screenW} {
@@ -392,8 +341,60 @@ proc catchMarginErrors {xBase yBase} {
     } elseif {$yBase > $screenH} {
       lappend yErrL $yBase  
     }
-    
-catch {    puts "Extra height: $extraH"}
-catch {    puts "Extra width: $extraW"}
+puts $screenW 
+puts $screenH    
+catch {    puts "xErrL $xErrL"}
+catch {    puts "yErrL $yErrL"}
   }
+}
+
+# evalMarginErrors
+##evaluates lists created by checkMarginErrors
+##called by printTwdTextParts  
+proc evalMarginErrors {} {
+  
+  namespace eval twd {
+    variable x
+    variable y
+    
+    #A) Return 0 0 if none found
+    if [info exists xErrL] {
+      set L1 [join $xErrL ,]
+      set xErr [expr max($L)]
+    }
+    if [info exists yErrL] {
+      set L2 [join $yErrL ,]
+      set yErr [expr max($L)]
+    }
+
+    
+#TODO THIS INNO WORKIN' YET !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    if {![info exists L1] && ![info exists L2]} { 
+      puts "No margin errors found."
+      return "0 0"
+    }
+  
+    #B) Compute new x & y
+    ##too far left(-) OR right(+) 
+    if [info exists xErr] {
+        set y 0
+        
+      if {$xErr < 0} {
+        set x [expr $x + ($xErr * -1)]     
+      } else {
+        set x [expr $x - ($xErr - $screenW)]
+      }
+         
+    ##too far below(+)
+    } elseif [info exists yErr] {
+      set x 0
+      set y [expr $y - ($yErr - $screenH)] 
+    }
+  
+    catch {unset xErrL yErrL}
+
+  } ;#END twd:: namespace
+ 
+  puts "Some margin errors found."
+  return "$twd::x $twd::y"
 }

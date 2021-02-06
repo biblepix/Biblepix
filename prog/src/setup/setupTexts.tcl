@@ -31,6 +31,10 @@ proc setTexts {lang} {
   set saveSettings(de) "Einstellungen speichern"
   set saveSettings(en) "Save settings"
   set ::saveSettings $saveSettings($lang)
+  
+  set random(en) accidental
+  set random(de) zufällig
+  set ::random $random($lang)
 
   # # # #  M I S S I N G   P A C K A G E  # # # # # # # # # # # #                               
 

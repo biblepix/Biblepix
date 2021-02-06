@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4feb21
+# Updated: 6feb21
 
 source $RotateTools
 namespace eval rotatepic {}
@@ -14,6 +14,9 @@ if {![info exists addpicture::curPic]} {
 
 #Create top window with 3 frames
 set rotatepic::W [toplevel .rotateW -width 600 -height 400]
+catch {tk::PlaceWindow .rotateW center}
+tk::PlaceWindow .rotateW center
+
 set F1 [frame ${rotatepic::W}.topF]
 set col1 [gradient beige -0.2]
 set col2 [gradient beige -0.1]
