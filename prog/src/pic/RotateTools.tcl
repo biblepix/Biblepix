@@ -122,14 +122,21 @@ proc imageRotate {img angle} {
           if {$::update} { update }
         }
       }
+      
+      puts "a: $a, w: $w, h: $h, w2: $w2, h2: $h2"
 
-      set dw [expr abs(sin($a) * $h)]
-      set dh [expr abs(sin($a) * $w)]
+      set w3 [expr ($h * $w) / cos($a) / ($h + $w * abs(tan($a)))]
+      set h3 [expr ($h * $h) / cos($a) / ($h + $w * abs(tan($a)))]
 
-      set x1 [expr round($dw)]
-      set y1 [expr round($dh)]
-      set x2 [expr round($w2 - $dw)]
-      set y2 [expr round($h2 - $dh)]
+      set dw [expr $w2 - $w3]
+      set dh [expr $h2 - $h3]
+
+      set x1 [expr round($dw / 2)]
+      set y1 [expr round($dh / 2)]
+      set x2 [expr round($w2 - ($dw / 2))]
+      set y2 [expr round($h2 - ($dh / 2))]
+
+      puts "w3: $w3, h3: $h3, dw: $dw, dh: $dh, x1: $x1, y1: $y1, x2: $x2, y2: $y2"
 
       $rotatedImg config -width [expr $x2 - $x1] -height [expr $y2 - $y1]
       $rotatedImg copy $rotatedImgUncut -from $x1 $y1 $x2 $y2
