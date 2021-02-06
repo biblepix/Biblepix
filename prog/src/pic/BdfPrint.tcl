@@ -73,6 +73,8 @@ namespace eval colour {
   
   #Set hex font shades, including luminance info if it exists 
   variable fontcolortext $::fontcolortext
+  variable marginleft
+  variable margintop
   variable regHex
   variable sunHex
   variable shaHex
@@ -88,16 +90,18 @@ namespace eval colour {
 #    set sunHex #000000
 #    set shaHex #000000
 #  }
+
   #Set marginleft & margintop from pnginfo OR from Config 
   if { [info exists pnginfo(Marginleft)] && [info exists pnginfo(Margintop)] } {
+    
     ##make sure margins are not 0 (as intended if saved without pos info)
     if { $pnginfo(Marginleft) && $pnginfo(Margintop) } {
-      variable marginleft $pnginfo(Marginleft)
-      variable margintop  $pnginfo(Margintop)
+      set marginleft $pnginfo(Marginleft)
+      set margintop  $pnginfo(Margintop)
     }
   } else {
-    variable marginleft $::marginleft
-    variable margintop $::margintop
+    set marginleft $::marginleft
+    set margintop $::margintop
   }
 
 } ;#END namespace colour
