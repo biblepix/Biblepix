@@ -102,7 +102,7 @@ proc getCanvSizeFromPic {pic} {
   set imgX [image width $pic]
   set imgY [image height $pic]
 
-#puts "$imgX $imgY"
+  puts "$imgX $imgY"
   set imgFactor [expr $imgX. / $imgY]
 
   ##zu hoch
@@ -263,7 +263,6 @@ proc doResize {canv scaleFactor} {
   set finalImage [resizePic $cutImg $screenX $screenY]
 
   ##update addpicture current pic var
-  image delete $addpicture::curPic
   set addpicture::curPic $finalImage
 
   $finalImage write $addpicture::targetPicPath -format PNG

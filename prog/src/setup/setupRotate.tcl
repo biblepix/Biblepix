@@ -64,26 +64,28 @@ proc allsetnormal {} {
 }
 
 button $anyBtn -textvar computePreview -activebackground beige \
- -command {
- anysetnormal
- vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
- }
+-command {
+  anysetnormal
+  vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
+}
+ 
 button $90Btn -textvar preview90 -activebackground beige \
 -command {
   90-180setnormal
   vorschau $rotatepic::rotateCanvPic 90 $canv
   set rotatepic::angle 90
-  }
+}
+
 button $180Btn -textvar preview180 -activebackground beige \
 -command {
   90-180setnormal
   vorschau $rotatepic::rotateCanvPic 180 $canv
   set rotatepic::angle 180
-  }
+}
 
 set cancelBtnAction {
   set ::Modal.Result "Cancelled"
-  image delete $rotatepic::rotateCanvPic
+  catch {image delete $rotatepic::rotateCanvPic}
   destroy $rotatepic::W
   namespace delete rotatepic
 }

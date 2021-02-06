@@ -27,8 +27,7 @@ proc addPic {origPicPath} {
   namespace eval addpicture {}
   set addpicture::targetPicPath $targetPicPath
 
-  #DETERMINE ROTATION STATUS
-  if { ![info exists addpicture::rotated] || !$addpicture::rotated} {
+  if {![info exists addpicture::curPic]} {
     set addpicture::curPic photosOrigPic
   }
 
@@ -54,7 +53,6 @@ proc addPic {origPicPath} {
     NewsHandler::QueryNews "Resizing... wait a moment..." orange
 
     set newpic [resizePic $addpicture::curPic $screenX $screenY]
-    catch {image delete $addpicture::curPic}
     set addpicture::curPic $newpic
 
     $newpic write $targetPicPath -format PNG
@@ -557,6 +555,9 @@ proc openImg {imgFilePath imgCanvas} {
   image create photo photosCanvPic
   photosCanvPic copy photosOrigPic -subsample $factor -shrink
   $imgCanvas create image 0 0 -image photosCanvPic -anchor nw -tag img
+  
+  namespace eval addpicture {}
+  set addpicture::curPic photosOrigPic
 } ;#END openImg
 
 proc hideImg {imgCanvas} {

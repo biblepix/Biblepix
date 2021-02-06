@@ -35,6 +35,7 @@ proc openResizeWindow {} {
     catch {image delete $resizePic::resizeCanvPic}
     namespace delete resizePic
   }
+  
   set confirmBtnAction {
     .resizePhoto.confirmBtn conf -state disabled
     .resizePhoto.cancelBtn  conf -state disabled
@@ -107,7 +108,6 @@ proc openReposWindow {pic} {
     file delete $addpicture::targetPicPath
     catch {image delete $reposPic::reposCanvPic}
     namespace delete reposPic
-    namespace delete addpicture
   }
 
   set confirmBtnAction {
@@ -122,10 +122,8 @@ proc openReposWindow {pic} {
     processPngComment $addpicture::targetPicPath $x $y $lum
 
     NewsHandler::QueryNews "$::reposSaved" lightgreen
-    catch {image delete $addpicture::curPic}
     catch {image delete $reposPic::reposCanvPic}
     namespace delete reposPic
-    namespace delete addpicture
   }
 
   set confBtn [button $reposPic::w.moveTxtBtn -command $confirmBtnAction -text OK]
