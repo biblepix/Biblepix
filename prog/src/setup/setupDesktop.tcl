@@ -102,7 +102,14 @@ message .fontcolorTxt -width 150 -textvar f2.farbe -font widgetFont
 
 foreach colname $fontcolourL {
   set $colname [set colour::${colname}]
-  
+}
+proc setFontcolSpinState {} {
+  global enableRandomFontcolor
+  if $enableRandomFontcolor {
+    .fontcolorSpin conf -state disabled
+  } else {
+    .fontcolorSpin conf -state normal
+  }
 }
 spinbox .fontcolorSpin -width 12 -values $fontcolourL
 .fontcolorSpin conf -bg $fontcolorHex -fg white -font TkCaptionFont
@@ -113,7 +120,7 @@ spinbox .fontcolorSpin -width 12 -values $fontcolourL
   setCanvasFontColour $inttextC %s
   set ::fontcolortext %s
 }
-
+setFontcolSpinState
 
 #set Fontsize spinbox
 message .fontsizeTxt -width 200 -textvar f2.fontsizetext -font widgetFont
@@ -133,14 +140,8 @@ checkbutton .fontweightBtn -width 5 -variable fontweightState -font widgetFont -
 }
 
 #Random fontcolour changae checkbutton
-checkbutton .randomfontcolorChkbtn -padx 15 -anchor w -font widgetFont -variable enableRandomFontcolor -text "zufällig"
-.randomfontcolorChkbtn conf -command {
-  if $enableRandomFontcolor {
-    .fontcolorSpin conf -state disabled
-  } else {
-    .fontcolorSpin conf -state normal
-  }
-}
+checkbutton .randomfontcolorChkbtn -padx 15 -anchor w -font widgetFont -variable enableRandomFontcolor -textvar random
+.randomfontcolorChkbtn conf -command setFontcolSpinState
 
 #set Fontfamily spinbox
 message .fontfamilyTxt -width 200 -textvar f2.fontfamilytext -font widgetFont
