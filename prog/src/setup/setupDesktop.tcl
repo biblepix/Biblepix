@@ -99,16 +99,12 @@ setCanvasFontColour $inttextC $fontcolortext
 
 #1. Fontcolour spinbox
 message .fontcolorTxt -width 150 -textvar f2.farbe -font widgetFont
+
+foreach colname $fontcolourL {
+  set $colname [set colour::${colname}]
+  
+}
 spinbox .fontcolorSpin -width 12 -values $fontcolourL
-
-#TODO use fontcolourL!
-##make hex vars from colour names (to be reset in spinbox command)
-set Blue $colour::Blue
-set Green $colour::Green
-set Gold  $colour::Gold
-set Silver $colour::Silver
-set Black $colour::Black 
-
 .fontcolorSpin conf -bg $fontcolorHex -fg white -font TkCaptionFont
 .fontcolorSpin set $fontcolortext
 .fontcolorSpin conf -command {
@@ -117,6 +113,7 @@ set Black $colour::Black
   setCanvasFontColour $inttextC %s
   set ::fontcolortext %s
 }
+
 
 #set Fontsize spinbox
 message .fontsizeTxt -width 200 -textvar f2.fontsizetext -font widgetFont
