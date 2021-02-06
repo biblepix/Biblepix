@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 2feb21 pv
+# Updated: 6feb21 pv
 
 # printTwd
 ##Toplevel printing proc
@@ -93,9 +93,12 @@ proc parseTwdTextParts {TwdFileName} {
 ##evaluates lists created by checkMarginErrors
 ##called by printTwdTextParts  
 proc evalMarginErrors {} {
+  
   checkMarginErrors
   
   eval namespace twd {
+    
+    #A) Return 0 0 if none found
     if [info exists xErrL] {
       set L [join $xErrL ,]
       set xErr [expr max($L)]
@@ -105,9 +108,10 @@ proc evalMarginErrors {} {
       set yErr [expr max($L)]
     } else {
     
-      return???
+      return "0 0"
     }
   
+    #B) Compute new x & y
     variable x
     variable y
   
@@ -145,11 +149,15 @@ proc printTwdTextParts {x y img} {
   set screenW [winfo screenwidth .]
   set screenH [winfo screenheight .]
 
-
-#TODO move this to evalMarginErrors !
   #1) CORRECT ANY MARGIN ERRORS
-  set ?? [evalMarginErrors]
-  lassign...
+  lassign [evalMarginErrors] newX newY
+  ##accept if values not 0
+  if {$newX} {
+    set x $newX
+    }
+  if {$newY} {
+    set y $newY
+  }
   
   #2) SORT OUT markrefs for Italic & Bold
   if {$TwdLang == "th" || $TwdLang == "zh" } {
@@ -355,6 +363,7 @@ puts "marginleft $marginleft"
 
 set yBase [expr $y + $${prefix}::FBBy]
 
+#TODO kafam bozuldu - this is called by evalMarginErrors!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 catchMarginErrors $xBase $yBase
     
   #gibt neue Y-Position für nächste Zeile zurück  
