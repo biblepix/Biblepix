@@ -1,8 +1,7 @@
 # ~/Biblepix/prog/src/pic/annotatePng.tcl
 # Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 17jan21 pv
-
+# Updated 7feb pv
 
 # evalPngComment
 ##evaluates result of readPngComment
@@ -103,7 +102,6 @@ proc writePngComment {file text} {
 # processPngComment
 ##called by reposPhoto OK btn
 ##Keyword added by writePngComment
-## ?colour scanning must have completed for brightness?
 proc processPngComment {file x y lum} {
   #Text format: X1345 Y1234 L[1-3]
   append text X $x Y $y L $lum

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 2feb21 pv
+# Updated 5feb21 pv
 
 source $::AnnotatePng
   
@@ -88,9 +88,6 @@ set moveRL {%W xview scroll [expr {-%D/120}] units}
 ##called by addPic ?????????if ![needsResize]??????????????
 proc openReposWindow {pic} {
   catch {destroy .resizePhoto}
-  #TODO falsche textvar
-  tk_messageBox -type ok -message $::textposAdjust
-  
   global fontsize fontcolortext
   namespace eval reposPic {}
 
@@ -136,8 +133,8 @@ proc openReposWindow {pic} {
   pack $cancBtn $confBtn -side right
   
 #  $reposPic::canv create window -15 15 -anchor nw -window $confBtn
-  $reposPic::canv itemconf mv -state disabled
-  $reposPic::w.moveTxtBtn conf -state disabled
+#  $reposPic::canv itemconf mv -state disabled
+#  $reposPic::w.moveTxtBtn conf -state disabled
 
   #Set bindings
   $reposPic::canv bind mv <1> {
@@ -166,14 +163,17 @@ proc openReposWindow {pic} {
   bind $reposPic::w <Return> $confirmBtnAction
   bind $reposPic::w <Escape> $cancelBtnAction
 
-  #Start colour scanning in background - TODO Set back to after idle once colourscan is working!
-  after idle {
-    $reposPic::canv itemconf mv -state normal
-    $reposPic::w.moveTxtBtn conf -state normal
-    set textpos.wait "Passen Sie die Textposition nach Wunsch an und quittieren Sie mit OK."
+  #Ask if text should be moved
+  ##if no, set margins to 0 & save & close window
+  set res [tk_messageBox -type yesno -message $::textposAdjust] 
+  if {$res == "no"} {
+    set lum [getAreaLuminacy $reposPic::canv canvTxt]
+    processPngComment $addpicture::targetPicPath 0 0 $lum
+    NewsHandler::QueryNews $::reposSaved lightgreen
+    destroy $reposPic::w
   }
 
-  Show.Modal $reposPic::w -destroy 1 -onclose $cancelBtnAction
+  catch {Show.Modal $reposPic::w -destroy 1 -onclose $cancelBtnAction}
   
 } ;#END openReposWindow
 

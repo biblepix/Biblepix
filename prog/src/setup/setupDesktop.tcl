@@ -100,6 +100,8 @@ setCanvasFontColour $inttextC $fontcolortext
 #1. Fontcolour spinbox
 message .fontcolorTxt -width 150 -textvar f2.farbe -font widgetFont
 spinbox .fontcolorSpin -width 12 -values $fontcolourL
+
+#TODO use fontcolourL!
 ##make hex vars from colour names (to be reset in spinbox command)
 set Blue $colour::Blue
 set Green $colour::Green
@@ -131,6 +133,16 @@ checkbutton .fontweightBtn -width 5 -variable fontweightState -font widgetFont -
     setCanvasFontSize normal
   }
   return 0
+}
+
+#Random fontcolour changae checkbutton
+checkbutton .randomfontcolorChkbtn -padx 15 -anchor w -font widgetFont -variable enableRandomFontcolor -text "zufällig"
+.randomfontcolorChkbtn conf -command {
+  if $enableRandomFontcolor {
+    .fontcolorSpin conf -state disabled
+  } else {
+    .fontcolorSpin conf -state normal
+  }
 }
 
 #set Fontfamily spinbox
@@ -181,10 +193,14 @@ pack .showdateBtn -in .rtopF -anchor w
 pack .slideBtn -in .rtopF -anchor w -side left
 pack .slideSecTxt .slideSpin .slideTxt -in .rtopF -anchor nw -side right
 pack .inttextTit -in .rbot1F.1F -pady 7
-pack $inttextC -in .rbot1F.2F -fill x
-pack .fontcolorTxt .fontcolorSpin .fontfamilyTxt .fontfamilySpin -in .rbot1F.2F -side left -anchor n
-pack .fontweightBtn .fontsizeSpin .fontsizeTxt -in .rbot1F.2F -side right -anchor n
+#TODO center Canvas in frame!
+pack $inttextC -in .rbot1F.2F -fill x -anchor n
+pack .fontcolorTxt .fontcolorSpin .randomfontcolorChkbtn -in .rbot1F.2F -side left -anchor n
+pack .fontweightBtn .fontfamilySpin .fontfamilyTxt .fontsizeSpin .fontsizeTxt -in .rbot1F.2F -side right -anchor n
+
+
 #Bottom 2
 pack .textposTxt -in .rbot2F -pady 7
 pack $textposC -in .rbot2F -fill y
 pack .textposFN -in .rbot2F -fill x
+

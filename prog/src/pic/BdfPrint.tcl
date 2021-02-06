@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 3feb21 pv
+# Updated: 7feb21 pv
 source $TwdTools
 source $BdfTools
 source $ImgTools
@@ -78,10 +78,23 @@ namespace eval colour {
   variable shaHex
   lassign [setFontShades $fontcolortext] regHex sunHex shaHex
   
+  
+  ##TODO special sun+shade for black+white?
+#  if {$fontcolortext == "Black"} {
+#    set sunHex #ffffff
+#    set shaHex #ffffff
+#  }
+#  if {$fontcolortext == "White"} {
+#    set sunHex #000000
+#    set shaHex #000000
+#  }
   #Set marginleft & margintop from pnginfo OR from Config 
   if { [info exists pnginfo(Marginleft)] && [info exists pnginfo(Margintop)] } {
-    variable marginleft $pnginfo(Marginleft)
-    variable margintop  $pnginfo(Margintop)
+    ##make sure margins are not 0 (as intended if saved without pos info)
+    if { $pnginfo(Marginleft) && $pnginfo(Margintop) } {
+      variable marginleft $pnginfo(Marginleft)
+      variable margintop  $pnginfo(Margintop)
+    }
   } else {
     variable marginleft $::marginleft
     variable margintop $::margintop
