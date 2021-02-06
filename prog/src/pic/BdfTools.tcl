@@ -22,9 +22,18 @@ proc printTwd {TwdFileName img} {
 ## prepares Twd nodes in a separate namespace for further processing
 ## called by printTwd
 proc parseTwdTextParts {TwdFileName} {
-
+  
   namespace eval twd {
+    ##initate vars later needed by catchMarginErrors
+    variable xBase
+    variable YBase    
+    variable xErr
+    variable yErr
     
+    set screenW [winfo screenwidth .]
+    set screenH [winfo screenheight .]
+    
+    ##initiate current vars    
     variable TwdFileName $::TwdFileName
     set TwdLang [getTwdLang $TwdFileName]
 
@@ -32,7 +41,6 @@ proc parseTwdTextParts {TwdFileName} {
     
     set domDoc [parseTwdFileDomDoc $TwdFileName]
     set todaysTwdNode [getDomNodeForToday $domDoc]
-    
     set parolNode1 [$todaysTwdNode child 2]
     set parolNode2 [$todaysTwdNode lastChild]
     
@@ -52,8 +60,6 @@ proc parseTwdTextParts {TwdFileName} {
 
     # B: EXTRACT TWD TEXT PARTS
      
-    ##Export text vars to twd:: namespace
-    
     ##title
     set title [$titleNode text]
     ##intros
@@ -78,22 +84,74 @@ proc parseTwdTextParts {TwdFileName} {
     ##extract text including any tagged
     set text1 [$textNode1 asText]
     set text2 [$textNode2 asText]
-
-    #Clean up all nodes - TODO: nicht nötig? namespace wird sowieso gelöscht!
-    #$domDoc delete
-    
   } ;#END twd:: namespace
 
 } ;#END proc parseTwdTextParts
   
+
+# evalMarginErrors
+##evaluates lists created by checkMarginErrors
+##called by printTwdTextParts  
+proc evalMarginErrors {} {
+  checkMarginErrors
+  
+  eval namespace twd {
+    if [info exists xErrL] {
+      set L [join $xErrL ,]
+      set xErr [expr max($L)]
+  
+    } elseif [info exists yErrL] {
+      set L [join $yErrL ,]
+      set yErr [expr max($L)]
+    } else {
+    
+      return???
+    }
+  
+    variable x
+    variable y
+  
+    ##to far left(-) OR right(+) 
+    if [info exists xErr] {
+        
+        set y 0
+        
+      if {$xErr < 0} {
+      
+        set x [expr $x + ($xErr * -1)]     
+      } else {
+      
+        set x [expr $x - ($xErr - $screenW)]
+      }
+         
+    ##too far below(+)
+    } elseif [info exists yErr] {
+      
+      set x 0
+      set y [expr $y - ($yErr - $screenH)] 
+    }
+  
+  } ;#END twd:: namespace
+  
+  return "$twd::x $twd::y"
+}
   
 # printTwdTextParts  
 ## called by printTwd
 proc printTwdTextParts {x y img} {
   global enabletitle TwdLang
-puts $TwdLang
+  global colour::marginleft colour::margintop
+  global twd::xErr twd::yErr
+  set screenW [winfo screenwidth .]
+  set screenH [winfo screenheight .]
+
+
+#TODO move this to evalMarginErrors !
+  #1) CORRECT ANY MARGIN ERRORS
+  set ?? [evalMarginErrors]
+  lassign...
   
-  #Sort out markRefngs for Italic & Bold
+  #2) SORT OUT markrefs for Italic & Bold
   if {$TwdLang == "th" || $TwdLang == "zh" } {
     set markTitle ""
     set markRef ""
@@ -113,6 +171,8 @@ puts $TwdLang
     set markText ~
   }
 
+  #3) START PRINTING
+  
   # 1. Print Title in Bold +...~
   if {$enabletitle} {
     set y [printTextLine ${markTitle}${twd::title} $x $y $img]
@@ -286,45 +346,45 @@ puts "marginleft $marginleft"
         error $error
         continue
       }
-      
+    
       set xBase [expr $xBase $operator $curLetter(DWx)]
-      
+   
     }
     
   } ;#END foreach
-  
-  namespace eval twd {
-    variable xBase
-    variable YBase    
-    variable extraW
-    variable extraH
-    set screenW [winfo screenwidth .]
-    set screenH [winfo screenheight .]
-  }
+
+set yBase [expr $y + $${prefix}::FBBy]
+
+catchMarginErrors $xBase $yBase
+    
+  #gibt neue Y-Position für nächste Zeile zurück  
+  return $yBase
+
+} ;#END printTextLine
+
+
+# catchMarginErrors
+##records any extra widths/heights for later correction 
+##called by printTextLine for each line
+proc catchMarginErrors {xBase yBase} {
   
   set twd::xBase $xBase
-  set twd::yBase $y
+  set twd::yBase $yBase
   
-  #Record any extra widths/heights for later correction 
-  ##to be computed before final printing by ...
+  #make lists to be parsed later by evalMarginErrors
   namespace eval twd {
-  
     ##extra width left
     if {$xBase < 0} {
-      lappend extraW $xBase      
+      lappend xErrL $xBase  
     ##extra width right
     } elseif {$xBase > $screenW} {
-      lappend extraW $xBase
+      lappend xErrL $xBase
     ##extra height bottom
     } elseif {$yBase > $screenH} {
-      lappend extraH $yBase  
+      lappend yErrL $yBase  
     }
     
 catch {    puts "Extra height: $extraH"}
 catch {    puts "Extra width: $extraW"}
   }
-    
-  #gibt neue Y-Position für nächste Zeile zurück  
-  return [expr $y + $${prefix}::FBBy]
-
-} ;#END printTextLine
+}
