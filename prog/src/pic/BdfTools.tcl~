@@ -2,45 +2,44 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 8feb21 pv
+# Updated: 6feb21 pv
 
-namespace eval bdf {
-
-  variable xErrL
-  variable yErrL
-  variable xErr
-  variable yErr
-  variable xBase
-  variable YBase  
-  variable x
-  variable y
+# printTwd
+##Toplevel printing proc
+##called by BdfPrint
+proc printTwd {TwdFileName img} {
+  global colour::marginleft
+  global colour::margintop
+  parseTwdTextParts $TwdFileName
   
-  # printTwd
-  ##Toplevel printing proc
-  ##called by BdfPrint
-  proc printTwd {TwdFileName img} {
-    global colour::marginleft
-    global colour::margintop
+  ##TODO könnte man hier die Zeilenlänge für bidi berechnen????
+  set finalImg [printTwdTextParts $marginleft $margintop $img]
+  namespace delete twd
+  return $finalImg
+}
 
-    parseTwdTextParts $TwdFileName
-    set finalImg [printTwdTextParts $colour::marginleft $colour::margintop $img]
-
-    namespace delete [namespace current]
-    return $finalImg
-  }
-
-  # parseTwdTextParts
-  ## prepares Twd nodes in a separate namespace for further processing
-  ## called by printTwd
-  proc parseTwdTextParts {TwdFileName} {
+# parseTwdTextParts
+## prepares Twd nodes in a separate namespace for further processing
+## called by printTwd
+proc parseTwdTextParts {TwdFileName} {
   
+  namespace eval twd {
+    ##initate vars later needed by catchMarginErrors
+    variable xBase
+    variable YBase    
+    variable xErr
+    variable yErr
+    
     set screenW [winfo screenwidth .]
     set screenH [winfo screenheight .]
     
-   set TwdLang [getTwdLang $TwdFileName]
+    ##initiate current vars    
+    variable TwdFileName $::TwdFileName
+    set TwdLang [getTwdLang $TwdFileName]
 puts $TwdLang
 
     #A: SET TWD NODE NAMES
+    
     set domDoc [parseTwdFileDomDoc $TwdFileName]
     set todaysTwdNode [getDomNodeForToday $domDoc]
     set parolNode1 [$todaysTwdNode child 2]
@@ -86,38 +85,16 @@ puts $TwdLang
     ##extract text including any tagged
     set text1 [$textNode1 asText]
     set text2 [$textNode2 asText]
-        
-    #export text parts to namespace current:
-    if [info exists intro1] {
-     set [namespace current]::intro1 $intro1
-    }
-    if [info exists intro2] {
-      set [namespace current]::intro2 $intro2
-    }
-    if [info exists title] {
-      set [namespace current]::title $title
-    }
-    set [namespace current]::ref1 $ref1
-    set [namespace current]::ref2 $ref2
-    set [namespace current]::text1 $text1
-    set [namespace current]::text2 $text2
-        
-  } ;#END parseTwdTextParts
+  } ;#END twd:: namespace
+
+} ;#END proc parseTwdTextParts
   
 # printTwdTextParts  
 ## called by printTwd
 proc printTwdTextParts {x y img} {
   global enabletitle TwdLang
   global colour::marginleft colour::margintop
-
-  global [namespace current]::title
-  global [namespace current]::intro1
-  global [namespace current]::intro2
-  global [namespace current]::ref1
-  global [namespace current]::ref2
-  global [namespace current]::text1
-  global [namespace current]::text2
-
+  global twd::xErr twd::yErr
   set screenW [winfo screenwidth .]
   set screenH [winfo screenheight .]
 
@@ -152,45 +129,39 @@ proc printTwdTextParts {x y img} {
   }
 
   #3) START PRINTING
-
+  
   # 1. Print Title in Bold +...~
   if {$enabletitle} {
-  #  set y [printTextLine ${markTitle}${twd::title} $x $y $img]
-  set y [printTextLine ${markTitle}${title} $x $y $img]
+    set y [printTextLine ${markTitle}${twd::title} $x $y $img]
   }
   
   #Print intro1 in Italics <...~
   if [info exists twd::intro1] {
-  
-#    set y [printTextLine ${markRef}${twd::intro1} $x $y $img IND]
-set y [printTextLine ${markRef}${intro1} $x $y $img IND]
+    set y [printTextLine ${markRef}${twd::intro1} $x $y $img IND]
   }
   
   #Print text1
-#  set textLines [split $twd::text1 \n]
-set textLines [split $text1 \n]
+  set textLines [split $twd::text1 \n]
   foreach line $textLines {
     set y [printTextLine ${markText}$line $x $y $img IND]
   }
   
   #Print ref1 in Italics
-  set y [printTextLine ${markRef}${ref1} $x $y $img TAB]
+  set y [printTextLine ${markRef}${twd::ref1} $x $y $img TAB]
 
   #Print intro2 in Italics
   if [info exists twd::intro2] {
-    set y [printTextLine ${markRef}${intro2} $x $y $img IND]
+    set y [printTextLine ${markRef}${twd::intro2} $x $y $img IND]
   }
   
   #Print text2
-#  set textLines [split $twd::text2 \n]
-set textLines [split $text2 \n]
+  set textLines [split $twd::text2 \n]
   foreach line $textLines {
     set y [printTextLine ${markText}$line $x $y $img IND]
   }
 
   #Print ref2
-#  set y [printTextLine ${markRef}${twd::ref2}${markText} $x $y $img TAB]
-set y [printTextLine ${markRef}${ref2}${markText} $x $y $img TAB]
+  set y [printTextLine ${markRef}${twd::ref2}${markText} $x $y $img TAB]
 
   return $img
   
@@ -253,7 +224,6 @@ proc printLetter {letterName img x y} {
 ## use 'args' for TAB or IND
 ## Called by printTwd
 proc printTextLine {textLine x y img args} {
-    
   global TwdLang enabletitle RtL BdfBidi prefix
   global colour::marginleft
   global colour::sunHex colour::regHex colour::shaHex
@@ -349,68 +319,58 @@ puts "marginleft $marginleft"
 } ;#END printTextLine
 
 
-  # catchMarginErrors
-  ##records any extra widths/heights for later correction 
-  ##called by printTextLine for each text line
-  proc catchMarginErrors {xBase yBase} {
+# catchMarginErrors
+##records any extra widths/heights for later correction 
+##called by printTextLine for each text line
+proc catchMarginErrors {xBase yBase} {
   
-  #TODO do we need this?
-#  set twd::xBase $xBase
-#  set twd::yBase $yBase
-#puts " X $twd::xBase"
-#puts " Y $twd::yBase"
-    set screenH [winfo screenheight .]
-    set screenW [winfo screenwidth .]
-
-
+  set twd::xBase $xBase
+  set twd::yBase $yBase
+puts " X $twd::xBase"
+puts " Y $twd::yBase"
+  
+  #make lists to be parsed later by evalMarginErrors
+  namespace eval twd {
     ##extra width left
     if {$xBase < 10} {
-      
-      lappend [namespace current]::xErrL $xBase  
-      
+      lappend xErrL $xBase  
     ##extra width right
     } elseif {$xBase > $screenW} {
-    
-      lappend [namespace current]::xErrL $xBase
+      lappend xErrL $xBase
     ##extra height bottom
-    
     } elseif {$yBase > $screenH} {
-    
-      lappend [namespace current]::yErrL $yBase
+      lappend yErrL $yBase  
     }
-    
+puts $screenW 
+puts $screenH    
 catch {    puts "xErrL $xErrL"}
 catch {    puts "yErrL $yErrL"}
+  }
+}
 
-  } ;#END catchMarginErrors
-
-  # evalMarginErrors
-  ##evaluates lists created by checkMarginErrors
-  ##called by printTwdTextParts  
-  proc evalMarginErrors {} {
-    global [namespace current]::xErrL
-    global [namespace current]::yErrL
-
-#    variable x
-#    variable y
+# evalMarginErrors
+##evaluates lists created by checkMarginErrors
+##called by printTwdTextParts  
+proc evalMarginErrors {} {
+  
+  namespace eval twd {
+    variable x
+    variable y
     
-
-#TODO this never wshows up!!!!!!!!!!!!!!!!!
     #A) Return 0 0 if none found
     if [info exists xErrL] {
       set L1 [join $xErrL ,]
       set xErr [expr max($L)]
-puts "xErr $xErr"    
     }
     if [info exists yErrL] {
       set L2 [join $yErrL ,]
       set yErr [expr max($L)]
-puts "yErr $yErr"   
     }
 
-    if { ![info exists yErr] &&
-         ![info exists xErr]} {
-      puts "No margin errors found"
+    
+#TODO THIS INNO WORKIN' YET !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    if {![info exists L1] && ![info exists L2]} { 
+      puts "No margin errors found."
       return "0 0"
     }
   
@@ -433,10 +393,8 @@ puts "yErr $yErr"
   
     catch {unset xErrL yErrL}
 
-    puts "Some margin errors found"
-    
-    return "$x $y"
-    
-  } ;#END evalMarginErrors
-
-} # ;#END bdf:: namespace
+  } ;#END twd:: namespace
+ 
+  puts "Some margin errors found."
+  return "$twd::x $twd::y"
+}

@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 7feb21 pv
+# Updated: 8feb21 pv
 source $TwdTools
 source $BdfTools
 source $ImgTools
@@ -110,7 +110,7 @@ namespace eval colour {
 # 3)  I N I T I A L I S E   P R I N T I N G
 
 puts "Printing TWD text..."
-set finalImg [printTwd $TwdFileName hgbild]
+set finalImg [bdf::printTwd $TwdFileName hgbild]
 
 if {$platform=="windows"} {  
   $finalImg write $TwdTIF -format TIFF
