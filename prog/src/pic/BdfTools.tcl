@@ -19,13 +19,26 @@ namespace eval bdf {
   ##Toplevel printing proc
   ##called by BdfPrint
   proc printTwd {TwdFileName img} {
-    global colour::marginleft
-    global colour::margintop
+    global bdf::marginleft
+    global bdf::margintop
 
     parseTwdTextParts $TwdFileName
-    set finalImg [printTwdTextParts $colour::marginleft $colour::margintop $img]
+     
+    #1) CORRECT ANY MARGIN ERRORS
+    ##accept if values not 0
+    lassign [evalMarginErrors] newX newY
+    if {$newX} {
+      set marginleft $newX
+    }
+    if {$newY} {
+      set marginleft $newY
+    }
+
+    set finalImg [printTwdTextParts $marginleft $margintop $img]
 
     namespace delete [namespace current]
+catch {    namespace delete colour }
+    
     return $finalImg
   }
 
@@ -121,15 +134,15 @@ proc printTwdTextParts {x y img} {
   set screenW [winfo screenwidth .]
   set screenH [winfo screenheight .]
 
-  #1) CORRECT ANY MARGIN ERRORS
-  lassign [evalMarginErrors] newX newY
-  ##accept if values not 0
-  if {$newX} {
-    set x $newX
-    }
-  if {$newY} {
-    set y $newY
-  }
+#  #1) CORRECT ANY MARGIN ERRORS
+#  lassign [evalMarginErrors] newX newY
+#  ##accept if values not 0
+#  if {$newX} {
+#    set x $newX
+#    }
+#  if {$newY} {
+#    set y $newY
+#  }
   
   #2) SORT OUT markrefs for Italic & Bold
   if {$TwdLang == "th" || $TwdLang == "zh" } {
@@ -255,8 +268,11 @@ proc printLetter {letterName img x y} {
 proc printTextLine {textLine x y img args} {
     
   global TwdLang enabletitle RtL BdfBidi prefix
-  global colour::marginleft
-  global colour::sunHex colour::regHex colour::shaHex
+  
+  
+  set marginleft $x
+  set margintop $y
+  
   
   set FontAsc "$${prefix}::FontAsc"
   
@@ -291,9 +307,8 @@ proc printTextLine {textLine x y img args} {
   } else {
     set operator +
   }
-puts "marginleft $marginleft"
 
-
+puts "marginleft $x"
 
   #Compute indentations
   if {$args=="IND"} {

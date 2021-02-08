@@ -73,8 +73,7 @@ namespace eval colour {
   
   #Set hex font shades, including luminance info if it exists 
   variable fontcolortext $::fontcolortext
-  variable marginleft
-  variable margintop
+  
   variable regHex
   variable sunHex
   variable shaHex
@@ -91,20 +90,30 @@ namespace eval colour {
 #    set shaHex #000000
 #  }
 
+
+} ;#END colour:: namespace
+
+
+namespace eval bdf {
+  variable marginleft
+  variable margintop
+
   #Set marginleft & margintop from pnginfo OR from Config 
-  if { [info exists pnginfo(Marginleft)] && [info exists pnginfo(Margintop)] } {
+  if { [info exists colour::pnginfo(Marginleft)] && [info exists colour::pnginfo(Margintop)] } {
     
     ##make sure margins are not 0 (as intended if saved without pos info)
-    if { $pnginfo(Marginleft) && $pnginfo(Margintop) } {
-      set marginleft $pnginfo(Marginleft)
-      set margintop  $pnginfo(Margintop)
+    if { $colour::pnginfo(Marginleft) && $colour::pnginfo(Margintop) } {
+      set marginleft $colour::pnginfo(Marginleft)
+      set margintop  $colour::pnginfo(Margintop)
     }
+    
   } else {
+  
     set marginleft $::marginleft
     set margintop $::margintop
   }
 
-} ;#END namespace colour
+} ;# END bdf:: ns
 
 
 # 3)  I N I T I A L I S E   P R I N T I N G
