@@ -70,7 +70,7 @@ if {![info exists fontcolortext]} {
   set fontcolortext Gold
 }
 if ![info exists enableRandomFontcolor] {
-  set enablaRandomFontcolor 0
+  set enableRandomFontcolor 0
 }
 #Set marginleft
 if {![info exists marginleft]} {
