@@ -93,12 +93,12 @@ namespace eval colour {
 
 } ;#END colour:: namespace
 
-
+#Set new margins if pnginfo found & set previously in colour:: ns
 namespace eval bdf {
   variable marginleft
   variable margintop
 
-  #Set marginleft & margintop from pnginfo OR from Config 
+  #Set margins from pnginfo OR from Config 
   if { [info exists colour::pnginfo(Marginleft)] && [info exists colour::pnginfo(Margintop)] } {
     
     ##make sure margins are not 0 (as intended if saved without pos info)
@@ -106,9 +106,8 @@ namespace eval bdf {
       set marginleft $colour::pnginfo(Marginleft)
       set margintop  $colour::pnginfo(Margintop)
     }
-    
+  ##else take defaults
   } else {
-  
     set marginleft $::marginleft
     set margintop $::margintop
   }
