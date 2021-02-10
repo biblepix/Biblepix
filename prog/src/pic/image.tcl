@@ -1,7 +1,7 @@
 # ~/Biblepix/progs/src/pic/image.tcl
 # Initiates BdfPrint, called by biblepix.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 7jan21 pv
+# Updated 10feb21 pv
 
 source $ImgTools
 source $AnnotatePng
@@ -26,17 +26,16 @@ wm withdraw .
 set picPath [getRandomPhotoPath]
 image create photo hgbild -file $picPath
 
-puts $fontcolortext
 #get random fontcolour if activated
 if {$enableRandomFontcolor} {
   set fontcolortext [getRandomFontcolor]
 }
-puts $fontcolortext
 
-#Extract any info from PNG & export as pngInfo array to ::colour namespace
+#Extract any info from PNG & export pngInfo to ::colour ns
 puts "Reading PNG info from [file tail $picPath] ..."
 if {[readPngComment $picPath] == 0} {
   puts "*No PNG info found!"
+  
 } else {
 
   namespace eval colour {

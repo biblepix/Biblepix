@@ -18,14 +18,16 @@ namespace eval bdf {
   # printTwd
   ##Toplevel printing proc
   ##called by BdfPrint
-  proc printTwd {TwdFileName img} {
-    global bdf::marginleft
-    global bdf::margintop
+  proc printTwd {TwdFileName img marginleft margintop} {
+    #global bdf::marginleft
+    #global bdf::margintop
 
     parseTwdTextParts $TwdFileName
      
     #1) CORRECT ANY MARGIN ERRORS
     ##accept if values not 0
+    
+    
     lassign [evalMarginErrors] newX newY
     if {$newX} {
       set marginleft $newX
@@ -34,6 +36,9 @@ namespace eval bdf {
       set margintop $newY
     }
     set finalImg [printTwdTextParts $marginleft $margintop $img]
+
+#catch {puts xErrL: $bdf::xErrL}
+#catch {puts yErrL: $bdf::yErrL}
 
     namespace delete [namespace current]
     catch {    namespace delete colour }
@@ -383,16 +388,22 @@ catch {    puts "yErrL $yErrL"}
   ##evaluates lists created by checkMarginErrors
   ##called by printTwdTextParts  
   proc evalMarginErrors {} {
-    global [namespace current]::xErrL
-    global [namespace current]::yErrL
-
-#TODO this never wshows up!!!!!!!!!!!!!!!!!
+    puts "Evaluating margin errors..."
+    #global [namespace current]::xErrL
+    #global [namespace current]::yErrL
+    global bdf::xErrL
+    global bdf::yErrL
+    
+#TODO this never shows up!!!!!!!!!!!!!!!!!
     #A) Return 0 0 if none found
+
     if [info exists xErrL] {
+puts $xErrL
       set L1 [join $xErrL ,]
       set xErr [expr max($L)]
-puts "xErr $xErr"    
+return "xErr $xErr"    
     }
+
     if [info exists yErrL] {
       set L2 [join $yErrL ,]
       set yErr [expr max($L)]
@@ -401,13 +412,14 @@ puts "yErr $yErr"
 
     if { ![info exists yErr] &&
          ![info exists xErr] } {
-      puts "No margin errors found"
+puts "No margin errors found"
       return "0 0"
     }
   
     #B) Compute new x & y
     ##too far left(-) OR right(+) 
     if [info exists xErr] {
+        
         set y 0
         
       if {$xErr < 0} {

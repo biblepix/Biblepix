@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 8feb21 pv
+# Updated: 10feb21 pv
 source $TwdTools
 source $BdfTools
 source $ImgTools
@@ -95,39 +95,38 @@ namespace eval colour {
 
 #Set new margins if pnginfo found & set previously in colour:: ns
 namespace eval bdf {
-  variable marginleft
-  variable margintop
+  #import global vars for any case
+  variable $::marginleft marginleft
+  variable $::margintop margintop
 
   #Set margins from pnginfo OR from Config 
-  if { [info exists colour::pnginfo(Marginleft)] && [info exists colour::pnginfo(Margintop)] } {
-    
+  if { [info exists colour::pnginfo(Marginleft)] && 
+       [info exists colour::pnginfo(Margintop)] } {
     ##make sure margins are not 0 (as intended if saved without pos info)
     if { $colour::pnginfo(Marginleft) && $colour::pnginfo(Margintop) } {
       set marginleft $colour::pnginfo(Marginleft)
       set margintop  $colour::pnginfo(Margintop)
     }
-  ##else take defaults
-  } else {
-    set marginleft $::marginleft
-    set margintop $::margintop
   }
 
-} ;# END bdf:: ns
+puts "marginleft $marginleft"
+puts "margintop $margintop"
 
+  # 3)  I N I T I A L I S E   P R I N T I N G
 
-# 3)  I N I T I A L I S E   P R I N T I N G
+  puts "Printing TWD text..."
+  set finalImg [printTwd $TwdFileName hgbild $marginleft $margintop]
 
-puts "Printing TWD text..."
-set finalImg [bdf::printTwd $TwdFileName hgbild]
+  if {$platform=="windows"} {  
+    $finalImg write $TwdTIF -format TIFF
+    puts "Saved new image to:\n $TwdTIF"
+  } elseif {$platform=="unix"} {
+    $finalImg write $TwdBMP -format BMP
+    $finalImg write $TwdPNG -format PNG
+    puts "Saved new images to:\n $TwdBMP\n $TwdPNG"
+  }
 
-if {$platform=="windows"} {  
-  $finalImg write $TwdTIF -format TIFF
-  puts "Saved new image to:\n $TwdTIF"
-} elseif {$platform=="unix"} {
-  $finalImg write $TwdBMP -format BMP
-  $finalImg write $TwdPNG -format PNG
-  puts "Saved new images to:\n $TwdBMP\n $TwdPNG"
-}
+  #Cleanup original and final image
+  image delete $finalImg
 
-#Cleanup original and final image
-image delete $finalImg
+} ;#END bdf:: ns
