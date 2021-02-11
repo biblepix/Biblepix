@@ -70,27 +70,12 @@ puts "Computing colours..."
 
 namespace eval colour {
 ##NOTE: using 'variable' (and not 'set') seems mandatory for namespace!
-  
   #Set hex font shades, including luminance info if it exists 
   variable fontcolortext $::fontcolortext
-  
   variable regHex
   variable sunHex
   variable shaHex
   lassign [setFontShades $fontcolortext] regHex sunHex shaHex
-  
-  
-  ##TODO special sun+shade for black+white?
-#  if {$fontcolortext == "Black"} {
-#    set sunHex #ffffff
-#    set shaHex #ffffff
-#  }
-#  if {$fontcolortext == "White"} {
-#    set sunHex #000000
-#    set shaHex #000000
-#  }
-
-
 } ;#END colour:: namespace
 
 #Set new margins if pnginfo found & set previously in colour:: ns
