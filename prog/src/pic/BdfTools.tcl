@@ -262,8 +262,8 @@ puts $TwdLang
     global TwdLang enabletitle RtL BdfBidi prefix
   
   #TODO why double vars?  
-    set marginleft $x
-    set margintop $y
+#    set marginleft $x
+#    set margintop $y
     
     set FontAsc "$${prefix}::FontAsc"
     
@@ -277,34 +277,29 @@ puts $TwdLang
       set yBase $y
     }
 
-    #Compute xBase for RtL
-    if {$RtL} {
-      source $BdfBidi
-      set imgW [image width $img]
-      set textLine [bidi $textLine $TwdLang]
-      set operator -
-
-
-
-
-
-      #Move RTL text to the right only if png info not found
-      ##make space on the left if leftmargin near border
-      if ![info exists colour::pngInfo] {
-        
-        set screenW [winfo screenwidth .]
-        set minmargin [expr $screenW/3]
-        if {$marginleft < $minmargin} {
-          set marginleft $minmargin
-        }
-        set xBase [expr $imgW - ($marginleft) - $x]
-      }
-      
-    } else {
+    #Set text alignment: 
+    
+    ##for normal text
+    if !$RtL {
       set operator +
+      
+    ##for RtL text
+    } else {
+    
+      ##a) if no png info found, move text to the right - TODO recompute luminacy for new area?!
+      set operator -
+      source $BdfBidi
+      set textLine [bidi $textLine $TwdLang]
+      
+      ##b) if png info sound, leave text in given area (to be corrected later by catchMarginErrors)
+      if ![info exists colour::pngInfo] {
+        set imgW [image width $img]
+        set xBase [expr $imgW - $x]
+      }
     }
 
-  puts "marginleft $x"
+puts "marginleft $x"
+
 
     #Compute indentations
     if {$args=="IND"} {
@@ -391,13 +386,14 @@ catch {    puts "yErrL $yErrL"}
     puts "Evaluating margin errors..."
     #global [namespace current]::xErrL
     #global [namespace current]::yErrL
-    global bdf::xErrL
-    global bdf::yErrL
+    #global bdf::xErrL
+    #global bdf::yErrL
+    
     
 #TODO this never shows up!!!!!!!!!!!!!!!!!
     #A) Return 0 0 if none found
 
-    if [info exists xErrL] {
+    if [info exists xErrL] {upvar $xErrL xErrL
 puts $xErrL
       set L1 [join $xErrL ,]
       set xErr [expr max($L)]
@@ -405,6 +401,7 @@ return "xErr $xErr"
     }
 
     if [info exists yErrL] {
+    upvar $bdf::yErrL yErrL
       set L2 [join $yErrL ,]
       set yErr [expr max($L)]
 puts "yErr $yErr"   
