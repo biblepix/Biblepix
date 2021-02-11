@@ -112,10 +112,11 @@ proc setFontcolSpinState {} {
   }
 }
 spinbox .fontcolorSpin -width 12 -values $fontcolourL
-.fontcolorSpin conf -bg $fontcolorHex -fg white -font TkCaptionFont
+.fontcolorSpin conf -bg [gradient $fontcolorHex $shadeFactor] -fg $fontcolorHex -font TkCaptionFont
 .fontcolorSpin set $fontcolortext
 .fontcolorSpin conf -command {
   %W conf -bg [set %s]
+  %W conf -fg [gradient %s $sunFactor]
   setCanvasFontColour $textposC %s
   setCanvasFontColour $inttextC %s
   set ::fontcolortext %s
