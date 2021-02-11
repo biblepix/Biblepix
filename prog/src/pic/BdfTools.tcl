@@ -279,7 +279,7 @@ puts $TwdLang
 
     #Set text alignment: 
     
-    ##for normal text
+    ##for LTR text
     if !$RtL {
       set operator +
       
@@ -292,6 +292,8 @@ puts $TwdLang
       set textLine [bidi $textLine $TwdLang]
       
       ##b) if png info sound, leave text in given area (to be corrected later by catchMarginErrors)
+      #TODO add text width to margin anyway!! (now Heb. text is placed left of wanted area!)
+      # [expr $marginleft  - $shortestline (=least xBase) ] > instead of only errors, record ALL line lengths!!!!!!!
       if ![info exists colour::pngInfo] {
         set imgW [image width $img]
         set xBase [expr $imgW - $x]
@@ -388,7 +390,8 @@ catch {    puts "yErrL $yErrL"}
     #global [namespace current]::yErrL
     #global bdf::xErrL
     #global bdf::yErrL
-    
+    variable xErrL
+    variable yErrL
     
 #TODO this never shows up!!!!!!!!!!!!!!!!!
     #A) Return 0 0 if none found

@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 10feb21 pv
+# Updated: 11feb21 pv
 source $TwdTools
 source $BdfTools
 source $ImgTools
@@ -64,19 +64,39 @@ if {$TwdLang == "zh"} {
 
 
 # 2) C O M P U T E   C O L O U R S   A N D   M A R G I N S
+puts "Computing colours..."
+puts $fontcolortext
+puts [info vars colour::*]
+
+#puts $colour::Slate
 
 #Compute avarage colours of text section
-puts "Computing colours..."
-
 namespace eval colour {
-##NOTE: using 'variable' (and not 'set') seems mandatory for namespace!
+
+
+  variable fontcolname $::fontcolortext
+  
+  variable Hex [set [namespace current]::fontcolname]
+  set regHex [set $Hex]
+    
+  variable sunHex [gradient $regHex $sunFactor]
+  variable shaHex [gradient $regHex $shadeFactor]
+
+#lassign [setFontShades $Hex] regHex runHex shaHex
+  
   #Set hex font shades, including luminance info if it exists 
-  variable fontcolortext $::fontcolortext
-  variable regHex
-  variable sunHex
-  variable shaHex
-  lassign [setFontShades $fontcolortext] regHex sunHex shaHex
-} ;#END colour:: namespace
+  #variable fontcoltext $::fontcolortext
+  #variable fontcolpath 
+#  append fontcolpath $ colour :: $::fontcolortext
+#  variable fontcolpath $fontcolpath
+
+#puts $fontcolpath
+}
+  #return $colour::regHex
+#  append colpath colour :: $fontcolortext
+#  lassign [setFontShades [set colpath]] colour::regHex colour::sunHex shaHex
+
+ ;#END colour:: namespace
 
 #Set new margins if pnginfo found & set previously in colour:: ns
 namespace eval bdf {
