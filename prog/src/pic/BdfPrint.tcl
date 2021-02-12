@@ -66,9 +66,6 @@ if {$TwdLang == "zh"} {
 # 2) C O M P U T E   C O L O U R S   A N D   M A R G I N S
 puts "Computing colours..."
 puts $fontcolortext
-puts [info vars colour::*]
-
-#puts $colour::Slate
 
 #Compute avarage colours of text section
 namespace eval colour {

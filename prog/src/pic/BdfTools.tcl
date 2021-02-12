@@ -26,8 +26,6 @@ namespace eval bdf {
      
     #1) CORRECT ANY MARGIN ERRORS
     ##accept if values not 0
-    
-    
     lassign [evalMarginErrors] newX newY
     if {$newX} {
       set marginleft $newX
@@ -260,11 +258,6 @@ puts $TwdLang
   proc printTextLine {textLine x y img args} {
       
     global TwdLang enabletitle RtL BdfBidi prefix
-  
-  #TODO why double vars?  
-#    set marginleft $x
-#    set margintop $y
-    
     set FontAsc "$${prefix}::FontAsc"
     
     #Set tab & ind in pixels
@@ -286,7 +279,10 @@ puts $TwdLang
     ##for RtL text
     } else {
     
-      ##a) if no png info found, move text to the right - TODO recompute luminacy for new area?!
+      ##a) if no png info found, move text to the right - 
+      #TODO  1: recompute luminacy for new area?!
+      #TODO 2: get longest line length from evalMargin & move text to the right by its pixels...
+      
       set operator -
       source $BdfBidi
       set textLine [bidi $textLine $TwdLang]
@@ -357,87 +353,137 @@ puts "marginleft $x"
   ##called by printTextLine for each text line
   proc catchMarginErrors {xBase yBase} {
   
-    set screenH [winfo screenheight .]
-    set screenW [winfo screenwidth .]
+ #   set screenH [winfo screenheight .]
+ #   set screenW [winfo screenwidth .]
 
     ##extra width left
-    if {$xBase < 10} {
+ #   if {$xBase < 10} {
       
       lappend [namespace current]::xErrL $xBase  
       
     ##extra width right
-    } elseif {$xBase > $screenW} {
+ #   } elseif {$xBase > $screenW} {
     
-      lappend [namespace current]::xErrL $xBase
+#      lappend [namespace current]::xErrL $xBase
     ##extra height bottom
     
-    } elseif {$yBase > $screenH} {
+  #  } elseif {$yBase > $screenH} {
     
       lappend [namespace current]::yErrL $yBase
-    }
+  #  }
     
-catch {    puts "xErrL $xErrL"}
-catch {    puts "yErrL $yErrL"}
+    puts "xErrL $bdf::xErrL"
+    puts "yErrL $bdf::yErrL"
 
   } ;#END catchMarginErrors
 
   # evalMarginErrors
   ##evaluates lists created by checkMarginErrors
+  ##returns 0/0 or new x/y
   ##called by printTwdTextParts  
-  proc evalMarginErrors {} {
-    puts "Evaluating margin errors..."
-    #global [namespace current]::xErrL
-    #global [namespace current]::yErrL
-    #global bdf::xErrL
-    #global bdf::yErrL
-    variable xErrL
-    variable yErrL
+  proc evalMargins {} {
+    puts "Evaluating margins..."
+
+    set minmarg 15
+    set screenY [winfo screenheight .]
+    set screenX [winfo screenwidth .]
     
-#TODO this never shows up!!!!!!!!!!!!!!!!!
-    #A) Return 0 0 if none found
+    upvar $xErrL xL
+    upvar $yErrL yL
+    upvar $RtL bidi      
 
-    if [info exists xErrL] {upvar $xErrL xErrL
-puts $xErrL
-      set L1 [join $xErrL ,]
-      set xErr [expr max($L)]
-return "xErr $xErr"    
-    }
+    set xL [join $xL ,]
+    set xMax [expr max($xL)]
+    set xMin [expr min($xL)]
+    set xTot [expr $xMax - $xMin]
+    
 
-    if [info exists yErrL] {
-    upvar $bdf::yErrL yErrL
-      set L2 [join $yErrL ,]
-      set yErr [expr max($L)]
-puts "yErr $yErr"   
-    }
-
-    if { ![info exists yErr] &&
-         ![info exists xErr] } {
-puts "No margin errors found"
-      return "0 0"
-    }
-  
-    #B) Compute new x & y
-    ##too far left(-) OR right(+) 
-    if [info exists xErr] {
-        
-        set y 0
-        
-      if {$xErr < 0} {
-        set x [expr $x + ($xErr * -1)]     
-      } else {
-        set x [expr $x - ($xErr - $screenW)]
-      }
-         
-    ##too far below(+)
-    } elseif [info exists yErr] {
+    
+ 
+    set yL [join $yL ,]
+    set yMax [expr max($yL)
+    set yMin [expr min($yL)
+    set yTot [expr $yMax - $yMin]
+    
+    # 1.  W I D T H   E R R O R S
+    ##correct bottom margin err
+ 
+    ##right margin too far right
+    if {$xMax > $screenX} {
+      set x [expr $screenX - ($xMax - $screenX) - $minmarg]
+   ##left margin too far left
+    } elseif {$xMax < 10} {
+    
+       set x [expr $x + ($xMin * -1) + $minmarg] 
+    } else {
+    
       set x 0
-      set y [expr $y - ($yErr - $screenH)] 
     }
-  
-    catch {unset xErrL yErrL}
-
-    puts "Some margin errors found"
     
+    #Get RtL Bidi x pos right
+    if {$bidi} {
+      set x [expr $x + $xTot]
+    }    
+
+    # 2.  H E I G H T   E R R O R S 
+    if {$yMax < $screenY} {
+      set y [expr $margintop - $yTot - $minmarg]
+    } else {
+      set y 0
+    }
+    
+    
+#    
+#    #check for negative results
+#    
+#    
+##TODO this never shows up!!!!!!!!!!!!!!!!!
+#    #A) Return 0 0 if none found
+
+#    if [info exists xErrL] {
+#    upvar $xErrL xErrL
+#puts "xErrL $xErrL"
+
+#      set L1 [join $xErrL ,]
+#      set xErr [expr max($L)]
+#puts "xErr $xErr"    
+#    }
+
+#    if [info exists yErrL] {
+#      upvar yErrL yErrL
+#      set L2 [join $yErrL ,]
+#      set yErr [expr max($L)]
+#puts "yErr $yErr"   
+#    }
+
+#    if { ![info exists yErr] &&
+#         ![info exists xErr] } {
+#puts "No margin errors found"
+#      return "0 0"
+#    }
+#  
+#    #B) Compute new x & y
+#    ##too far left(-) OR right(+) 
+#    if [info exists xErr] {
+#        
+#        set y 0
+#        
+#      if {$xErr < 0} {
+#        set x [expr $x + ($xErr * -1)]     
+#      } else {
+#        set x [expr $x - ($xErr - $screenW)]
+#      }
+#         
+#    ##too far below(+)
+#    } elseif [info exists yErr] {
+#      set x 0
+#      set y [expr $y - ($yErr - $screenH)] 
+#    }
+#  
+#    catch {unset xErrL yErrL}
+
+#    puts "Some margin errors found"
+#    
     return "$x $y"
     
   } ;#END evalMarginErrors
