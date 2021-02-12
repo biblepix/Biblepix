@@ -296,7 +296,7 @@ proc createMovingTextBox {c} {
   set sunY [expr $y1 - 1]
 
   #Fill with medium colours (area luminance code = 2)
-  set regHex [set fontcolortext]
+  set regHex [set colour::$fontcolortext]
   set sunHex [gradient $regHex $sunFactor]
   set shaHex [gradient $regHex $shadeFactor]
   

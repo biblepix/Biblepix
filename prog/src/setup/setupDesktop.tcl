@@ -90,7 +90,14 @@ set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
 #Get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
 puts "Computing fontcolor..."
 source $ImgTools
+
+
+set farbpfad "colour::$fontcolortext"
+set fontcolorHex [set $farbpfad]
+
+#TODO this inna working anymore!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 lassign [setFontShades $fontcolortext] regHex sunHex shaHex
+
 $inttextC create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shaHex -tags {shade txt mv}
 $inttextC create text 9 9 -anchor nw -text $internationalText -font intCanvFont -fill $sunHex -tags {sun txt mv}
 $inttextC create text 10 10 -anchor nw -text $internationalText -font intCanvFont -fill $regHex -tags {main txt mv}
@@ -114,13 +121,15 @@ proc setFontcolSpinState {} {
 spinbox .fontcolorSpin -width 12 -values $fontcolourL
 .fontcolorSpin conf -bg [gradient $fontcolorHex $shadeFactor] -fg $fontcolorHex -font TkCaptionFont
 .fontcolorSpin set $fontcolortext
+
 .fontcolorSpin conf -command {
   set farbpfad [set colour::%s]
   %W conf -bg [gradient $farbpfad $shadeFactor]
   %W conf -fg [gradient $farbpfad $sunFactor]
-  setCanvasFontColour $textposC $farbpfad
-  setCanvasFontColour $inttextC $farbpfad
-  set ::fontcolortext $farbpfad
+
+  setCanvasFontColour $textposC %s
+  setCanvasFontColour $inttextC %s
+  set ::fontcolortext %s
 }
 setFontcolSpinState
 

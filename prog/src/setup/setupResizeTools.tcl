@@ -157,8 +157,10 @@ proc setCanvasFontSize args {
 ##called by SetupDesktop for inttextCanv & SetupResize for .textposCanv
 proc setCanvasFontColour {c fontcolortext args} {
   global sunFactor shadeFactor
-  global colour::${fontcolortext}
-    
+  #global colour::${fontcolortext}
+  # variable colour::$fontcolortext
+   
+   #TODO do we need this? 
   #set luminance = 2 if no args
   if {$args == ""} {
     set lum 2
@@ -166,7 +168,7 @@ proc setCanvasFontColour {c fontcolortext args} {
     set lum $args
   }
   
-  set regHex [set fontcolortext]
+  set regHex [set "colour::$fontcolortext"]
   set sunHex [gradient $regHex $sunFactor]
   set shaHex [gradient $regHex $shadeFactor]
 

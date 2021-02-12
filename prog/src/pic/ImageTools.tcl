@@ -109,11 +109,14 @@ proc hex2rgb {hex} {
 ##returns 3 hex values: reg/sun/shade
 ##called by setCanvasFontColour & BdfPrint & createMovingTextBox
 proc setFontShades {fontcolortext} {
-  #global BlackArr BlueArr GreenArr SilverArr GoldArr
   global sunFactor shadeFactor
+
+  lappend colpath colour:: $fontcolortext
+  variable fontcol $colpath
    
   #1)Determine colour arrays
-  set regHex [set fontcolortext]
+  set regHex [set colour::$fontcolortext]
+  puts $regHex
   set sunHex [gradient $regHex $sunFactor]
   set shaHex [gradient $regHex $shadeFactor]
 
