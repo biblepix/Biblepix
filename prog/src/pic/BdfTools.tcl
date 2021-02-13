@@ -18,19 +18,16 @@ namespace eval bdf {
   ##called by BdfPrint
   proc printTwd {TwdFileName img marginleft margintop} {
 
-set x $marginleft
-set y $margintop
+    set x $marginleft
+    set y $margintop
 
     parseTwdTextParts $TwdFileName
      
-    #1) CORRECT ANY MARGIN ERRORS
-    
-    #TODO Reihenfolge stimmt nicht!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+    #CORRECT ANY MARGIN ERRORS
     set finalImg [printTwdTextParts $x $y $img]
 
-    ##rerun if new coords returned
-    if [string isdigit $finalImg] {
+    ##rerun if new coords returned instead of image
+    if { [string length $finalImg] < 100} {
       lassign $finalImg x y 
       set finalImg [printTwdTextParts $x $y $img]
     }
@@ -179,9 +176,13 @@ puts $TwdLang
     #Print ref2
     set y [printTextLine ${markRef}${ref2}${markText} $x $y $img TAB]
 
+
+#TODO yor x's and y's are in a muddle!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#it's probably evalMargin...
     #EVALUATE MARGIN ERRORS
-    lassign [evalMarginErrors] newX newY
-    
+    lassign [evalMarginErrors $x $y] newX newY
+puts "$x $y"
+puts "$newX $newY"
     ##A) if none, return $img
     if {$newX == $x && $newY == $y} {
       
@@ -337,15 +338,18 @@ puts "marginleft $x"
     set yBase [expr $y + $${prefix}::FBBy]
     
     #catch margin errors
-#    upvar xErrL $[namespace current]::xErrL
-#    lappend xErrL $xBase
+    global [namespace current]::xErrL
+    global [namespace current]::yErrL
+    lappend xErrL $xBase
+    lappend yErrL $yBase
 #    
 #    upvar yErrL $[namespace current]::yErrL 
 #    lappend yErrL $yBase 
     
-    lappend [namespace current]::yErrL $xBase
-    lappend [namespace current]::yErrL $yBase
+#    lappend [namespace current]::yErrL $xBase
+    #lappend [namespace current]::yErrL $yBase
 
+#set [namespace current]::xErrL
     #return new Y position for next line
     return $yBase
 
@@ -354,7 +358,7 @@ puts "marginleft $x"
   # evalMarginErrors
   ##evaluates lists created by checkMarginErrors
   ##returns (un)changed x + y
-  ##called by printTwdTextParts  
+  ##called by printTwd  
   proc evalMarginErrors {x y} {
     puts "Evaluating margin errors..."
 
@@ -364,10 +368,10 @@ puts "marginleft $x"
     
     #global TwdLang
     global RtL
-#    global [namespace current]::xErrL
-    #global [namespace current]::yErrL
-variable myvar "$[namespace current]::xErrL"
-puts $myvar
+    global [namespace current]::xErrL
+    global [namespace current]::yErrL
+    
+#puts [info vars [namespace current]::*]
 
     set xL [join $xErrL ,]
     set xMax [expr max($xL)]
@@ -375,12 +379,14 @@ puts $myvar
     set xTot [expr $xMax - $xMin]
     
     set yL [join $yErrL ,]
-    set yMax [expr max($yL)
-    set yMin [expr min($yL)
+    set yMax [expr max($yL)]
+    set yMin [expr min($yL)]
     set yTot [expr $yMax - $yMin]
     
     # 1.  W I D T H   E R R O R S
     ##correct bottom margin err
+ 
+ #TODO test conditions! - printTwdTextParts is in a hassle!
  
     ##right margin too far right
     if {$xMax > $screenX} {
@@ -396,8 +402,10 @@ puts $myvar
 
     # 2.  H E I G H T   E R R O R S 
     if {$yMax < $screenY} {
-      set y [expr $margintop - $yTot - $minmarg]
+      set y [expr $y - $yTot - $minmarg]
     }
+    
+    #return original or new x + y
     return "$x $y"
     
   } ;#END evalMarginErrors
