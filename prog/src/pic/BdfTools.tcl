@@ -8,8 +8,6 @@ namespace eval bdf {
 
   variable xErrL
   variable yErrL
-  variable xErr
-  variable yErr
   variable xBase
   variable YBase  
   variable x
@@ -19,27 +17,23 @@ namespace eval bdf {
   ##Toplevel printing proc
   ##called by BdfPrint
   proc printTwd {TwdFileName img marginleft margintop} {
-    #global bdf::marginleft
-    #global bdf::margintop
+
+set x $marginleft
+set y $margintop
 
     parseTwdTextParts $TwdFileName
      
     #1) CORRECT ANY MARGIN ERRORS
-    ##accept if values not 0
-    lassign [evalMarginErrors] newX newY
-    if {$newX} {
-      set marginleft $newX
-    }
-    if {$newY} {
-      set margintop $newY
-    }
-    set finalImg [printTwdTextParts $marginleft $margintop $img]
+    
+    #TODO Reihenfolge stimmt nicht!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
 
-#catch {puts xErrL: $bdf::xErrL}
-#catch {puts yErrL: $bdf::yErrL}
+    set finalImg [printTwdTextParts $x $y $img]
+lassign [evalMarginErrors $marginleft $margintop] x y
+set finalImg [printTwdTextParts $x $y $img]
 
     namespace delete [namespace current]
-    catch {    namespace delete colour }
+    catch {namespace delete colour}
     
     return $finalImg
   }
@@ -279,17 +273,12 @@ puts $TwdLang
     ##for RtL text
     } else {
     
-      ##a) if no png info found, move text to the right - 
-      #TODO  1: recompute luminacy for new area?!
-      #TODO 2: get longest line length from evalMargin & move text to the right by its pixels...
-      
+      ##a) if no png info found, move text to the right - #?TODO? recompute luminacy for new area?!
       set operator -
       source $BdfBidi
       set textLine [bidi $textLine $TwdLang]
       
       ##b) if png info sound, leave text in given area (to be corrected later by catchMarginErrors)
-      #TODO add text width to margin anyway!! (now Heb. text is placed left of wanted area!)
-      # [expr $marginleft  - $shortestline (=least xBase) ] > instead of only errors, record ALL line lengths!!!!!!!
       if ![info exists colour::pngInfo] {
         set imgW [image width $img]
         set xBase [expr $imgW - $x]
@@ -297,7 +286,6 @@ puts $TwdLang
     }
 
 puts "marginleft $x"
-
 
     #Compute indentations
     if {$args=="IND"} {
@@ -342,65 +330,46 @@ puts "marginleft $x"
     } ;#END foreach
 
     set yBase [expr $y + $${prefix}::FBBy]
-    catchMarginErrors $xBase $yBase
+    
+    #catch margin errors
+#    upvar xErrL $[namespace current]::xErrL
+#    lappend xErrL $xBase
+#    
+#    upvar yErrL $[namespace current]::yErrL 
+#    lappend yErrL $yBase 
+    
+    lappend [namespace current]::yErrL $xBase
+    lappend [namespace current]::yErrL $yBase
 
-    #gibt neue Y-Position für nächste Zeile zurück  
+    #return new Y position for next line
     return $yBase
+
   } ;#END printTextLine
-
-  # catchMarginErrors
-  ##records any extra widths/heights for later correction 
-  ##called by printTextLine for each text line
-  proc catchMarginErrors {xBase yBase} {
-  
- #   set screenH [winfo screenheight .]
- #   set screenW [winfo screenwidth .]
-
-    ##extra width left
- #   if {$xBase < 10} {
-      
-      lappend [namespace current]::xErrL $xBase  
-      
-    ##extra width right
- #   } elseif {$xBase > $screenW} {
-    
-#      lappend [namespace current]::xErrL $xBase
-    ##extra height bottom
-    
-  #  } elseif {$yBase > $screenH} {
-    
-      lappend [namespace current]::yErrL $yBase
-  #  }
-    
-    puts "xErrL $bdf::xErrL"
-    puts "yErrL $bdf::yErrL"
-
-  } ;#END catchMarginErrors
 
   # evalMarginErrors
   ##evaluates lists created by checkMarginErrors
-  ##returns 0/0 or new x/y
+  ##returns (un)changed x + y
   ##called by printTwdTextParts  
-  proc evalMargins {} {
-    puts "Evaluating margins..."
+  proc evalMarginErrors {x y} {
+    puts "Evaluating margin errors..."
 
     set minmarg 15
     set screenY [winfo screenheight .]
     set screenX [winfo screenwidth .]
     
-    upvar $xErrL xL
-    upvar $yErrL yL
-    upvar $RtL bidi      
+    #global TwdLang
+    global RtL
+#    global [namespace current]::xErrL
+    #global [namespace current]::yErrL
+variable myvar "$[namespace current]::xErrL"
+puts $myvar
 
-    set xL [join $xL ,]
+    set xL [join $xErrL ,]
     set xMax [expr max($xL)]
     set xMin [expr min($xL)]
     set xTot [expr $xMax - $xMin]
     
-
-    
- 
-    set yL [join $yL ,]
+    set yL [join $yErrL ,]
     set yMax [expr max($yL)
     set yMin [expr min($yL)
     set yTot [expr $yMax - $yMin]
@@ -413,79 +382,19 @@ puts "marginleft $x"
       set x [expr $screenX - ($xMax - $screenX) - $minmarg]
    ##left margin too far left
     } elseif {$xMax < 10} {
-    
        set x [expr $x + ($xMin * -1) + $minmarg] 
-    } else {
-    
-      set x 0
     }
-    
     #Get RtL Bidi x pos right
-    if {$bidi} {
+    if {$RtL} {
       set x [expr $x + $xTot]
     }    
 
     # 2.  H E I G H T   E R R O R S 
     if {$yMax < $screenY} {
       set y [expr $margintop - $yTot - $minmarg]
-    } else {
-      set y 0
     }
-    
-    
-#    
-#    #check for negative results
-#    
-#    
-##TODO this never shows up!!!!!!!!!!!!!!!!!
-#    #A) Return 0 0 if none found
-
-#    if [info exists xErrL] {
-#    upvar $xErrL xErrL
-#puts "xErrL $xErrL"
-
-#      set L1 [join $xErrL ,]
-#      set xErr [expr max($L)]
-#puts "xErr $xErr"    
-#    }
-
-#    if [info exists yErrL] {
-#      upvar yErrL yErrL
-#      set L2 [join $yErrL ,]
-#      set yErr [expr max($L)]
-#puts "yErr $yErr"   
-#    }
-
-#    if { ![info exists yErr] &&
-#         ![info exists xErr] } {
-#puts "No margin errors found"
-#      return "0 0"
-#    }
-#  
-#    #B) Compute new x & y
-#    ##too far left(-) OR right(+) 
-#    if [info exists xErr] {
-#        
-#        set y 0
-#        
-#      if {$xErr < 0} {
-#        set x [expr $x + ($xErr * -1)]     
-#      } else {
-#        set x [expr $x - ($xErr - $screenW)]
-#      }
-#         
-#    ##too far below(+)
-#    } elseif [info exists yErr] {
-#      set x 0
-#      set y [expr $y - ($yErr - $screenH)] 
-#    }
-#  
-#    catch {unset xErrL yErrL}
-
-#    puts "Some margin errors found"
-#    
     return "$x $y"
     
   } ;#END evalMarginErrors
 
-} # ;#END bdf:: namespace
+} ;#END bdf:: namespace
