@@ -26,12 +26,15 @@ set y $margintop
     #1) CORRECT ANY MARGIN ERRORS
     
     #TODO Reihenfolge stimmt nicht!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    
 
     set finalImg [printTwdTextParts $x $y $img]
-lassign [evalMarginErrors $marginleft $margintop] x y
-set finalImg [printTwdTextParts $x $y $img]
 
+    ##rerun if new coords returned
+    if [string isdigit $finalImg] {
+      lassign $finalImg x y 
+      set finalImg [printTwdTextParts $x $y $img]
+    }
+    
     namespace delete [namespace current]
     catch {namespace delete colour}
     
@@ -117,7 +120,6 @@ puts $TwdLang
   ## called by printTwd
   proc printTwdTextParts {x y img} {
     global enabletitle TwdLang
-    #global colour::marginleft colour::margintop
     global [namespace current]::title
     global [namespace current]::intro1
     global [namespace current]::intro2
@@ -152,44 +154,47 @@ puts $TwdLang
 
     # 1. Print Title in Bold +...~
     if {$enabletitle} {
-    #  set y [printTextLine ${markTitle}${twd::title} $x $y $img]
-    set y [printTextLine ${markTitle}${title} $x $y $img]
+      set y [printTextLine ${markTitle}${title} $x $y $img]
     }
-    
     #Print intro1 in Italics <...~
     if [info exists twd::intro1] {
-    
-  #    set y [printTextLine ${markRef}${twd::intro1} $x $y $img IND]
-  set y [printTextLine ${markRef}${intro1} $x $y $img IND]
+      set y [printTextLine ${markRef}${intro1} $x $y $img IND]
     }
-    
     #Print text1
-  #  set textLines [split $twd::text1 \n]
-  set textLines [split $text1 \n]
+    set textLines [split $text1 \n]
     foreach line $textLines {
       set y [printTextLine ${markText}$line $x $y $img IND]
     }
-    
     #Print ref1 in Italics
     set y [printTextLine ${markRef}${ref1} $x $y $img TAB]
-
     #Print intro2 in Italics
     if [info exists twd::intro2] {
       set y [printTextLine ${markRef}${intro2} $x $y $img IND]
     }
-    
     #Print text2
-  #  set textLines [split $twd::text2 \n]
-  set textLines [split $text2 \n]
+    set textLines [split $text2 \n]
     foreach line $textLines {
       set y [printTextLine ${markText}$line $x $y $img IND]
     }
-
     #Print ref2
-  #  set y [printTextLine ${markRef}${twd::ref2}${markText} $x $y $img TAB]
-  set y [printTextLine ${markRef}${ref2}${markText} $x $y $img TAB]
+    set y [printTextLine ${markRef}${ref2}${markText} $x $y $img TAB]
 
-    return $img
+    #EVALUATE MARGIN ERRORS
+    lassign [evalMarginErrors] newX newY
+    
+    ##A) if none, return $img
+    if {$newX == $x && $newY == $y} {
+      
+      return $img
+      
+    ##B) if some, return new coords for fresh run of this prog
+    } else {
+
+      if {$newX != $x} {set x $newX} 
+      if {$newY != $y} {set y $newY}
+      
+      return "$x $y"
+    }
     
   } ;#END printTwdTextParts
 
