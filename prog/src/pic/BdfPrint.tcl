@@ -9,6 +9,14 @@ source $ImgTools
 set TwdLang [getTwdLang $TwdFileName]
 set RtL [isRtL $TwdLang]
 
+#TODO
+#while !$RtL {
+#  set TwdFileName [getRandomTwdFile]
+#  set TwdLang [getTwdLang $TwdFileName]
+#  set RtL [isRtL $TwdLang]
+#}
+puts $TwdLang
+
 # S O U R C E   F O N T S   I N T O   N A M E S P A C E S
 
 ##Chinese: (regular_24)
@@ -117,7 +125,9 @@ puts "margintop $margintop"
   # 3)  I N I T I A L I S E   P R I N T I N G
 
   puts "Printing TWD text..."
+
   set finalImg [printTwd $TwdFileName hgbild $marginleft $margintop]
+
 
   if {$platform=="windows"} {  
     $finalImg write $TwdTIF -format TIFF

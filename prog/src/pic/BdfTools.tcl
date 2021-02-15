@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 8feb21 pv
+# Updated: 14feb21 pv
 
 namespace eval bdf {
 
@@ -17,38 +17,76 @@ namespace eval bdf {
   ##Toplevel printing proc
   ##called by BdfPrint
   proc printTwd {TwdFileName img marginleft margintop} {
-
+    global RtL fontcolortext
+    
     set x $marginleft
     set y $margintop
+    #set minmarg 15
 
+    image create photo textbild
     parseTwdTextParts $TwdFileName
-     
-    #CORRECT ANY MARGIN ERRORS
-    set finalImg [printTwdTextParts $x $y $img]
 
-    ##rerun if new coords returned instead of image
-    if { [string length $finalImg] < 100} {
-      lassign $finalImg x y 
-      set finalImg [printTwdTextParts $x $y $img]
-    }
+#TODO testing
+#set hgbildW [image width hgbild]
+#set hgbildH [image height hgbild]
+
+#set textbildW [image width textbild]
+#set textbildH [image height textbild]
+#set reservedW [expr $hgbildW - $marginleft]
+#set reservedH [expr $hgbildH - $margintop]
+
+##TODO geht nicht, erst nachdem Textbild gefüllt! s.u.
+##zu weit unten > Move up
+#if {$reservedH < $textbildH} {
+#  set diff [expr $textbildH - $reservedH]
+#  set margintop [expr $margintop - $diff - $minmarg] 
+#}
+##zu weit links -> move right
+
+##zu weit rechts -> move left
+#if {$reservedW < $textbildW} {
+#  set diff [expr $textbildW - $reservedW]
+#  set marginleft [expr $margintop - $diff - $minmarg] 
+#}
+
+
+#set finalImg hgbild
+     
+#TODO testing
+    set textbild [printTwdTextParts $x $y textbild]
+    textbild write /tmp/textbild.png -format PNG
     
+    if $RtL {
+
+#TODO get vars right!
+      set croppic [cropPic textbild $fontcolortext]
+      hgbild copy croppic -to $marginleft $margintop
+
+      if ![info exists colour::pngInfo(Marginleft)] {
+        set screenW [winfo screenwidth .]
+        set textbildW [image width textbild]
+        set marginleft [expr $screenW - $marginleft - $textbildW]
+      }
+ 
+    }    else {
+        
+      hgbild copy textbild -to $marginleft $margintop
+    }
+
     namespace delete [namespace current]
     catch {namespace delete colour}
     
-    return $finalImg
+    return hgbild
   }
 
   # parseTwdTextParts
   ## prepares Twd nodes in a separate namespace for further processing
   ## called by printTwd
   proc parseTwdTextParts {TwdFileName} {
-  
+    global TwdLang
     set screenW [winfo screenwidth .]
     set screenH [winfo screenheight .]
     
-   set TwdLang [getTwdLang $TwdFileName]
-puts $TwdLang
-
     #A: SET TWD NODE NAMES
     set domDoc [parseTwdFileDomDoc $TwdFileName]
     set todaysTwdNode [getDomNodeForToday $domDoc]
@@ -116,6 +154,13 @@ puts $TwdLang
   # printTwdTextParts  
   ## called by printTwd
   proc printTwdTextParts {x y img} {
+  
+  #TODO testing
+  set x 20
+  set y 20
+  
+    set screenW [winfo screenwidth .]
+    set screenH [winfo screenheight .]
     global enabletitle TwdLang
     global [namespace current]::title
     global [namespace current]::intro1
@@ -124,8 +169,7 @@ puts $TwdLang
     global [namespace current]::ref2
     global [namespace current]::text1
     global [namespace current]::text2
-    set screenW [winfo screenwidth .]
-    set screenH [winfo screenheight .]
+    
     
     #2) SORT OUT markrefs for Italic & Bold
     if {$TwdLang == "th" || $TwdLang == "zh" } {
@@ -154,7 +198,7 @@ puts $TwdLang
       set y [printTextLine ${markTitle}${title} $x $y $img]
     }
     #Print intro1 in Italics <...~
-    if [info exists twd::intro1] {
+    if [info exists intro1] {
       set y [printTextLine ${markRef}${intro1} $x $y $img IND]
     }
     #Print text1
@@ -165,7 +209,7 @@ puts $TwdLang
     #Print ref1 in Italics
     set y [printTextLine ${markRef}${ref1} $x $y $img TAB]
     #Print intro2 in Italics
-    if [info exists twd::intro2] {
+    if [info exists intro2] {
       set y [printTextLine ${markRef}${intro2} $x $y $img IND]
     }
     #Print text2
@@ -180,23 +224,26 @@ puts $TwdLang
 #TODO yor x's and y's are in a muddle!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #it's probably evalMargin...
     #EVALUATE MARGIN ERRORS
-    lassign [evalMarginErrors $x $y] newX newY
-puts "$x $y"
-puts "$newX $newY"
-    ##A) if none, return $img
-    if {$newX == $x && $newY == $y} {
-      
-      return $img
-      
-    ##B) if some, return new coords for fresh run of this prog
-    } else {
+#    lassign [evalMarginErrors $x $y] newX newY
+#puts "$x $y"
+#puts "$newX $newY"
+#    ##A) if none, return $img
+#    if {$newX == $x && $newY == $y} {
+#      
+#      return $img
+#      
+#    ##B) if some, return new coords for fresh run of this prog
+#    } else {
 
-      if {$newX != $x} {set x $newX} 
-      if {$newY != $y} {set y $newY}
-      
-      return "$x $y"
-    }
-    
+#      if {$newX != $x} {set x $newX} 
+#      if {$newY != $y} {set y $newY}
+#      
+#      return "$x $y"
+#    }
+#    
+
+#  testoverlay write /tmp/testoverlay.png -format PNG
+
   } ;#END printTwdTextParts
 
 
@@ -258,9 +305,16 @@ puts "$newX $newY"
   proc printTextLine {textLine x y img args} {
       
     global TwdLang enabletitle RtL BdfBidi prefix
+
+#TODO testing, set vars right!
+set img textbild
+
+if $RtL {
+  $img conf -width 800
+  set x 800
+} 
+
     set FontAsc "$${prefix}::FontAsc"
-    
-    #Set tab & ind in pixels
     set tab 400
     set ind 0
     if {$enabletitle} {set ind 20}
@@ -283,12 +337,13 @@ puts "$newX $newY"
       set operator -
       source $BdfBidi
       set textLine [bidi $textLine $TwdLang]
-      
-      ##b) if png info sound, leave text in given area (to be corrected later by catchMarginErrors)
-      if ![info exists colour::pngInfo] {
-        set imgW [image width $img]
-        set xBase [expr $imgW - $x]
-      }
+    
+    #TODO testing > obsolete  
+#      ##b) if png info sound, leave text in given area (to be corrected later by catchMarginErrors)
+#      if ![info exists colour::pngInfo] {
+#        set imgW [image width $img]
+#        set xBase [expr $imgW - $x]
+#      }
     }
 
 puts "marginleft $x"
@@ -330,26 +385,31 @@ puts "marginleft $x"
           error $error
           continue
         }
-        set xBase [expr $xBase $operator $curLetter(DWx)]     
+        set xBase [expr $xBase $operator $curLetter(DWx)]
+        
+        #TODO testing -nützt nichts
+#        if $RtL { 
+#          $img conf -width [expr $xBase + 5]
+#        }
       }
       
     } ;#END foreach
 
     set yBase [expr $y + $${prefix}::FBBy]
     
-    #catch margin errors
-    global [namespace current]::xErrL
-    global [namespace current]::yErrL
-    lappend xErrL $xBase
-    lappend yErrL $yBase
-#    
-#    upvar yErrL $[namespace current]::yErrL 
-#    lappend yErrL $yBase 
-    
-#    lappend [namespace current]::yErrL $xBase
-    #lappend [namespace current]::yErrL $yBase
 
-#set [namespace current]::xErrL
+    #TODO testing
+    #catch margin errors
+  #  if $RtL {
+  #    global [namespace current]::xErrL
+  #    global [namespace current]::yErrL
+  #    lappend xErrL $xBase
+  #    lappend yErrL $yBase
+  #  }
+#    lappend [namespace current]::yErrL $xBase
+#    lappend [namespace current]::yErrL $yBase
+
+
     #return new Y position for next line
     return $yBase
 
@@ -359,7 +419,7 @@ puts "marginleft $x"
   ##evaluates lists created by checkMarginErrors
   ##returns (un)changed x + y
   ##called by printTwd  
-  proc evalMarginErrors {x y} {
+  proc evalMarginErrors {x} {
     puts "Evaluating margin errors..."
 
     set minmarg 15
@@ -378,6 +438,12 @@ puts "marginleft $x"
     set xMin [expr min($xL)]
     set xTot [expr $xMax - $xMin]
     
+#TODO testing
+return $xMax
+
+
+
+
     set yL [join $yErrL ,]
     set yMax [expr max($yL)]
     set yMin [expr min($yL)]
@@ -411,3 +477,78 @@ puts "marginleft $x"
   } ;#END evalMarginErrors
 
 } ;#END bdf:: namespace
+
+# cropPic2Text
+##cuts image to text width
+##called by printTwd for RtL pictures
+proc cropPic2textwidth {img} {
+
+#  lassign [hex2rgb $fontcol] r g b
+  set imgW [image width $img]
+  set imgH [image height $img]
+puts $imgH
+puts $imgW
+  
+  for {set y 0} {$y < [expr $imgH/10]} {incr y} {
+   
+    for {set x 0} {$x < [expr $imgW/2]} {incr x} {
+
+puts "$y $x"
+
+      set c [$img get $x $y]
+puts "Colour: $c"
+      
+      if {$c != "0 0 0"} {
+        lappend leftmargL $x
+        break
+      }
+    }
+  }
+  
+  
+  puts "LeftmargL $leftmargL"
+  
+  if [info exists leftmargL] {
+    set maxL [join $leftmargL ,]
+    set textW [expr min($maxL)
+  }
+  #crop pic
+  if {$textW > $imgW} {
+    set leftmargin [expr $imgW - $textW] 
+    image create photo newpic
+    newpic copy $img -from $leftmargin 0
+  }
+  
+  return newpic
+} ;#END cropImg
+
+proc cropPic {img fontcolorname} {
+
+  set fontHex [set colour::$fontcolorname]
+puts $fontHex
+set imgW [image width $img]
+
+  #@Data-Variante
+  set dataL [$img data]
+
+  foreach i $dataL {
+    set res [lsearch $i $fontHex]
+    if {$res != "-1"} {
+      lappend margL $res
+    }
+  }
+
+  set margL [join $margL ,]
+  puts $margL
+  set minleft [expr min($margL)]
+puts "Minleft $minleft"
+
+  #Crop pic
+#  set cutleft [expr $imgW - $minleft]
+
+#puts "Margleft $margleft"
+  image create photo croppic
+  croppic copy $img -from $minleft 10  
+    
+#  return $newpic
+} ;#END cropPic
