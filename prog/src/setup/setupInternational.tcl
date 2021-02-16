@@ -52,8 +52,9 @@ pack [frame .internationalF.f3] -anchor w -fill x -padx $px
 pack [frame .twdremoteTitleF -bg beige] -in .internationalF.f3 -fill x -anchor w
 label .twdremote1L -font "SmallCaptionFont 8" -textvar language -font TkFixedFont -bg beige -anchor w -width 20
 label .twdremote2L -font "SmallCaptionFont 8" -textvar year -font TkFixedFont -bg beige -anchor w -width 14
-label .twdremote3L -font "SmallCaptionFont 8" -textvar bibleversion -font TkFixedFont -bg beige -anchor w
-pack .twdremote1L .twdremote2L .twdremote3L -in .twdremoteTitleF -side left
+label .twdremote3L -font "SmallCaptionFont 8" -textvar biblename -font TkFixedFont -bg beige -anchor w -width 59
+label .twdremote4L -font "SmallCaptionFont 8" -textvar bibleversion -font TkFixedFont -bg beige -anchor w
+pack .twdremote1L .twdremote2L .twdremote3L .twdremote4L -in .twdremoteTitleF -side left
 
 #setup remotelist (inserted later by http.tcl)
 frame .internationalF.twdremoteframe -padx $px

@@ -193,6 +193,10 @@ set ::packageRequireTls $packageRequireTls($lang)
   set bibleversion(de) "Bibelausgabe"
   set ::bibleversion $bibleversion($lang)
 
+  set biblename(en) "Bible name"
+  set biblename(de) "Bibelname"
+  set ::biblename $biblename($lang)
+
   set f1Txt(en) "$bp will create $dw in any language or Bible version installed on your computer. If several language files are found, $bp will randomly pick one at each run. Any new language files you select for download (see below) will be downloaded upon clicking the 'Download' button. Pay attention to the year (current or next)!"
   set f1Txt(de) "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien zum Download markieren (s. unten), werden diese heruntergeladen, sobald Sie die Taste 'Download' drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)!"  
   set ::f1.txt $f1Txt($lang)

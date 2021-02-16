@@ -216,38 +216,49 @@ proc listRemoteTWDFiles {lBox} {
 
   #set langlist
   set file [ $root selectNodes {//tr/td[text()="file"]} ]
-    set space { }
-    set spaceSize 21
-    set spaceL [string repeat $space $spaceSize]
+  set space { }
+  set spaceLang 21
+  set spaceName 60
 
   foreach node $file {
-    set jahrN [$node nextSibling]
-    set langN [$jahrN nextSibling]
-    set versionN [[$langN nextSibling] nextSibling]
-    set jahrT [$jahrN text]
-    set langT [$langN text]
-    set ausgabeT [$versionN text]
+    set yearNode [$node nextSibling]
+    set langNode [$yearNode nextSibling]
+    set nameNode [$langNode nextSibling]
+    set versionNode [$nameNode nextSibling]
+    set year [$yearNode text]
+    set lang [$langNode text]
+    set name [$nameNode text]
+    set version [$versionNode text]
 
     #Set RtL languages from right to left, except digits
     ##this should work for all LtR languages, but only tested on Hebrew!
-    set bidiRange [regexp {[\u05D0-\u06FC]} $ausgabeT]
+    set bidiRange [regexp {[\u05D0-\u06FC]} $version]
     if {$platform != "windows" && $bidiRange} {
-      set ausgabeT [string reverse $ausgabeT]
-      set digits [regexp -all -inline {[[:digit:]]+} $ausgabeT]
+      set version [string reverse $version]
+      set digits [regexp -all -inline {[[:digit:]]+} $version]
       foreach zahl $digits {
-        regsub $zahl $ausgabeT [string reverse $zahl] ausgabeT
+        regsub $zahl $version [string reverse $zahl] version
       }
     }
     
     ##start building line
-    append nameline $langT
+    append nameline $lang
     
     ##compute tab lengths for Monospace font
-    for {set i [string length $langT]} {$i < $spaceSize} {incr i} {
+    for {set i [string length $lang]} {$i < $spaceLang} {incr i} {
       append nameline $space
     }
-    
-    append nameline $jahrT [string repeat $space 10] $ausgabeT
+
+    append nameline $year [string repeat $space 10]
+    append nameline $name
+
+    ##compute tab lengths for Monospace font
+    for {set i [string length $name]} {$i < $spaceName} {incr i} {
+      append nameline $space
+    }
+
+    append nameline $version
+
     lappend sortlist $nameline
     unset nameline
   }

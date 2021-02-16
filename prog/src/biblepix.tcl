@@ -14,7 +14,11 @@ source $Globals
 source $TwdTools
 
 #TODO testing
-catch updateTwd
+if { [info exists Debug] && $Debug } {
+  updateTwd
+} else {
+  catch updateTwd
+}
 
 #Set TwdFileName for the 1st time, else run Setup
 if [catch {set twdfile [getRandomTwdFile]}] {
