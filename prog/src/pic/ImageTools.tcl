@@ -2,14 +2,13 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1feb21 pv
+# Updated: 16feb21 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
   tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message $packageRequireImg
   exit
 }
-
 
 #####################################################################
 ################ General procs ######################################
@@ -224,11 +223,40 @@ puts $myarr(b)
 ## Reduces pic size by cutting 1 or more edges
 ## pic must be a function or a variable
 ## called by doResize
-proc trimPic {pic x1 y1 x2 y2} {
+proc trimPic {pic x1 y1 args} {
   set cutPic [image create photo]
+  set x2 ""
+  set y2 ""
+  if {$args != ""} {
+    lassign $args x2 y2
+  }
   $cutPic copy $pic -from $x1 $y1 $x2 $y2 -shrink
   return $cutPic
 }
+
+# cropPic2Textwidth
+##cuts image to text width
+##works on basis of picdata/piclists
+##called by printTwd
+proc cropPic2Textwidth {img fontcolorname} {
+  set fontHex [set colour::$fontcolorname]
+  set dataL [$img data]
+
+  foreach i $dataL {
+    set res [lsearch $i $fontHex]
+    if {$res != "-1"} {
+      lappend margL $res
+    }
+  }
+  set margL [join $margL ,]
+  set minleft [expr min($margL)]
+
+  #Crop pic
+  image create photo croppic
+  croppic copy $img -from $minleft 10  
+
+  return croppic
+} ;#END cropPic2Textwidth
 
 # resizePic
 ## TODOS: CHANGE NAME? MOVE TO BACKGROUND!!!!

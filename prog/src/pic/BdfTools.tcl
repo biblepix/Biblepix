@@ -46,8 +46,8 @@ namespace eval bdf {
     if $RtL {
     
       ##correct RtL left margin: create croppic
-      cropPic textbild $fontcolortext
-      hgbild copy croppic -to $marginleft $margintop
+      set croppic [cropPic2Textwidth textbild $fontcolortext]
+      hgbild copy $croppic -to $marginleft $margintop
       ##check if pngInfo exists & correct further
       if ![info exists colour::pngInfo(Marginleft)] {
         set screenW [winfo screenwidth .]
@@ -371,31 +371,6 @@ namespace eval bdf {
     return $yBase
 
   } ;#END printTextLine
-
-  # cropPic
-  ##cuts image to text width
-  ##works on basis of picdata/piclists
-  ##called by printTwd
-  proc cropPic {img fontcolorname} {
-    set fontHex [set colour::$fontcolorname]
-    set dataL [$img data]
-
-    foreach i $dataL {
-      set res [lsearch $i $fontHex]
-      if {$res != "-1"} {
-        lappend margL $res
-      }
-    }
-
-    set margL [join $margL ,]
-    set minleft [expr min($margL)]
-
-    #Crop pic
-    image create photo croppic
-    croppic copy $img -from $minleft 10  
-      
-  #  return $newpic
-  } ;#END cropPic
 
 } ;#END bdf:: namespace
 
