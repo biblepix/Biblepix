@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 11feb21 pv
+# Updated: 17feb21 jh
 
 proc setTexts {lang} {
   global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -132,10 +132,6 @@ set ::packageRequireTls $packageRequireTls($lang)
   set textposFN(en) "* Text positioning can be corrected for individual pictures when adding to the $bp photo collection.\n$RtlInfo"
   set textposFN(de) "* Beim Hinzufügen von Bildern zur $bp-Fotosammlung kann die Textposition individuell angepasst werden.\n$RtlInfo"
   set ::textposFN $textposFN($lang)
-  
-#  set textposWait(en) "Please wait a moment while computing ideal text position and luminance..." 
-#  set textposWait(de) "Warten Sie einen Augenblick, bis wir die ideale Textposition und -helligkeit berechnet haben..."
-#  set ::textposWait $textposWait($lang)
   
   set welcTit(en) "Welcome to the $bp setup program!"
   set welcTit(de) "Willkommen beim Einrichtungsprogramm von $bp!"
