@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 31mch20
+# Updated 16feb21
 
 label .emailF.t1 -textvar f3.tit -font bpfont3
 pack .emailF.t1 -anchor w
@@ -17,14 +17,17 @@ pack [frame .emailF.topframe.right] -side right -expand 0
 .emailF.topframe.right configure -borderwidth 2 -relief sunken -padx 50 -pady 30 -bg $bg
 
 #List language codes of installed TWD files 
-foreach L [glob -tail -directory $twdDir *.twd] {
+foreach L [glob -tails -directory $twdDir *.twd] {
   lappend langlist $L
 }
 foreach e $langlist {
-  lappend codelist [string range $e 0 1]
+  #files may have been deleted after creating Codelist
+  if [file exists $twdDir/$e] {
+    lappend codelist [string range $e 0 1]
+  }
 }
 set CodeList [lsort -decreasing -unique $codelist]
-puts $CodeList
+
 
 #Lists selected sigLangCB's
 proc updateSelectedList {} {
@@ -63,8 +66,12 @@ foreach code $CodeList {
 ##A) $sigLanglist exists
 if {[info exists sigLanglist] && $sigLanglist != ""} {
   foreach code $sigLanglist {
-    set CB .${code}CB
-    $CB select
+  puts $code
+    if [file exists [glob -nocomplain -directory $twdDir ${code}*]] {
+  puts $code
+      set CB .${code}CB
+      $CB select
+    }
   }
     
 ##B) $sigLanglist not found
