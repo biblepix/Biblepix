@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16feb21
+# Updated 16feb21 pv
 
 label .emailF.t1 -textvar f3.tit -font bpfont3
 pack .emailF.t1 -anchor w
@@ -63,12 +63,10 @@ foreach code $CodeList {
 }
 
 #Preselect language Buttons:
-##A) $sigLanglist exists
+##A) $sigLanglist exists, but files may have been deleted
 if {[info exists sigLanglist] && $sigLanglist != ""} {
   foreach code $sigLanglist {
-  puts $code
     if [file exists [glob -nocomplain -directory $twdDir ${code}*]] {
-  puts $code
       set CB .${code}CB
       $CB select
     }
