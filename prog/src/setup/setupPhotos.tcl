@@ -1,9 +1,8 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 25nov20 pv
+# Updated 18feb21 pv
 
-#source $SetupResizeTools
 set fileJList ""
 
 #Create title
@@ -23,10 +22,10 @@ message .photosF.mainf.left.t1 -textvar f6.txt -font bpfont1 -padx $px -pady $py
 pack .photosF.mainf.left.t1 -anchor nw -side left -padx {10 40} -pady 40
 
 #Build Photo bar right
-button .photosF.mainf.right.bar.open -width 30 -textvar f6.find -height 1 -command {set fileJList [doOpen $DesktopPicturesDir .imgCanvas]}
-button .photosF.mainf.right.bar.< -text < -height 1 -command {set fileJList [step $fileJList 1 .imgCanvas]}
-button .photosF.mainf.right.bar.> -text > -height 1 -command {set fileJList [step $fileJList 0 .imgCanvas]}
-button .photosF.mainf.right.bar.collect -textvar f6.show -height 1 -command {set fileJList [doCollect .imgCanvas]}
+button .photosF.mainf.right.bar.open -width 30 -textvar f6.find -height 1 -command {set fileJList [doOpen $DesktopPicturesDir .photosC]}
+button .photosF.mainf.right.bar.< -text < -height 1 -command {set fileJList [step $fileJList 1 .photosC]}
+button .photosF.mainf.right.bar.> -text > -height 1 -command {set fileJList [step $fileJList 0 .photosC]}
+button .photosF.mainf.right.bar.collect -textvar f6.show -height 1 -command {set fileJList [doCollect .photosC]}
 label .photosF.mainf.right.bar.count1 -textvar numPhotos -bg lightblue
 label .photosF.mainf.right.bar.count2 -textvar numPhotosTxt -bg lightblue
 
@@ -35,12 +34,12 @@ pack .photosF.mainf.right.bar.< -side left
 pack .photosF.mainf.right.bar.> -side left
 
 #Build Photo canvas right
-canvas .imgCanvas
-pack .imgCanvas -in .photosF.mainf.right.bild -side left
+canvas .photosC
+pack .photosC -in .photosF.mainf.right.bild -side left
 
 label .picPath -textvar picPath
 button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic $::picPath}
-button .delBtn -textvar f6.del -activebackground red -command {delPic .imgCanvas}
+button .delBtn -textvar f6.del -activebackground red -command {delPic .photosC}
 button .rotateBtn -activebackground orange -textvar rotatePic -command {source $::SetupRotate}
 
-set fileJList [doCollect .imgCanvas]
+set fileJList [doCollect .photosC]
