@@ -11,62 +11,145 @@ namespace eval bdf {
   variable x
   variable y
   
+  # setupTextpic
+  ##creates & fits textpic to text width
+  ##called by twdPrint
+  proc setupTextpic {textpic} {
+    set minmarg 25
+    global marginleft margintop
+    
+#    image create photo textpic
+#    printTwdTextParts $minmarg $minmarg textpic
+    
+    #Correct right & top margins
+    set screenW [winfo screenwidth .]
+    set screenH [winfo screenheight .]
+    set textpicX [image width $textpic]
+    set textpicY [image height $textpic]
+    set reservedW [expr $screenW - $marginleft]
+    set reservedH [expr $screenH - $margintop]
+    
+    ##zu weit unten -> Move textpic up
+    if {$reservedH < $textpicY} {
+      set diff [expr $textpicY - $reservedH]
+      set margintop [expr $margintop - $diff - $minmarg] 
+    }
+    
+    ##zu weit rechts -> move textpic left
+    if {$reservedW < $textpicX} {
+      set diff [expr $textpicX - $reservedW]
+      set marginleft [expr $marginleft - $diff - $minmarg] 
+    }
+  
+    return "$marginleft $margintop"
+  }
+  
   # printTwd
   ##Toplevel printing proc
   ##called by BdfPrint
   proc printTwd {TwdFileName img marginleft margintop} {
     
     global RtL fontcolortext
+    global colour::pngInfo
+    
     set minmarg 25
-
-    #Create textpic
-    image create photo textbild
-    parseTwdTextParts $TwdFileName
-    set textbild [printTwdTextParts $minmarg $minmarg textbild]
-    
-    #Correct right & top margins
     set screenW [winfo screenwidth .]
-    set screenH [winfo screenheight .]
-    set textpicW [image width textbild]
-    set textpicH [image height textbild]
-    set reservedW [expr $screenW - $marginleft]
-    set reservedH [expr $screenH - $margintop]
-    ##zu weit unten -> Move textpic up
-    if {$reservedH < $textpicH} {
-      set diff [expr $textpicH - $reservedH]
-      set margintop [expr $margintop - $diff - $minmarg] 
-    }
-    ##zu weit rechts -> move textpic left
-    if {$reservedW < $textpicW} {
-      set diff [expr $textpicW - $reservedW]
-      set marginleft [expr $marginleft - $diff - $minmarg] 
-    }
-
-    #Produce final image: copy textpic to hgbild
-    if $RtL {
     
-      ##correct RtL left margin: create croppic
-      set croppic [cropPic2Textwidth textbild $fontcolortext]
-      hgbild copy $croppic -to $marginleft $margintop
-      ##check if pngInfo exists & correct further
-      if ![info exists colour::pngInfo(Marginleft)] {
-        set screenW [winfo screenwidth .]
-        set textbildW [image width textbild]
-        set marginleft [expr $screenW - $marginleft - $textbildW]
-      }
- 
-    } else {
-        
-      hgbild copy textbild -to $marginleft $margintop
+    parseTwdTextParts $TwdFileName
+    
+    image create photo textbild
+    printTwdTextParts $minmarg $minmarg textbild
+
+    set textpicX [image width textbild]
+    set textpicY [image height textbild]
+    
+    lassign [setupTextpic textbild] marginleft margintop
+     
+    #recompute luminance for non-pngInfo pics
+    if ![info exists pngInfo(Luminacy)] {
+      set newLum [getAreaLuminacy hgbild "$marginleft $margintop $textpicX $textpicY"]
+      
+ #TODO this confuses cropPic2Textsize - do we need it after here?
+ #     set colour::pngInfo(Luminacy) $newLum
+      applyChangedLuminacy $marginleft $margintop
     }
+    
+    # R T L   
+        
+    if $RtL {
+      set textpicX [image width textbild]
+  
+      ##A) Crop textbild to text width, create 'croppic' global function
+      cropPic2Textwidth textbild $fontcolortext
+
+      ##B) If no png info found: correct margin to the right
+      if { ![info exists pngInfo(Marginleft)] && $marginleft < [expr $screenW/3] } {
+      
+        #a) align text with right margin
+        set marginleft [expr $screenW - $marginleft - $textpicX]
+      
+        #b) correct text colour if luminacy changed        
+        set curLum $pngInfo(Luminacy)
+        
+        ##check if newLum previously set - TODO where is this read in?
+        if ![info exists newLum] {
+          set newLum [getAreaLuminacy hgbild "$marginleft $margintop $textpicX $textpicY"]
+          set colour::pnginfo(Luminacy) $newLum
+          applyChangedLuminacy $marginleft $margintop
+        }        
+      } ;#END if no png info found 
+    } ;#END if RtL
+      
+    #C) Copy textpic to final image  
+    hgbild copy textbild -to $marginleft $margintop
     
     #Cleanup
     namespace delete [namespace current]
     catch {namespace delete colour}
     #Return pic as function
     return hgbild
-  }
+  
+  } ;#End printTwd
 
+  proc applyChangedLuminacy {marginleft margintop} {
+    global fontcolortext
+    
+    if [catch {set curLum $colour::pngInfo(Luminacy)}] {
+      set curLum 2
+    }
+    
+    set textpicY [image height textbild]
+    
+    if [catch {image inuse croppic}] {
+      set textpicX [image width textbild]
+    } else {
+      set textpicX [image width croppic]
+    }
+              
+    set newLum [getAreaLuminacy hgbild "$marginleft $margintop $textpicX $textpicY"]
+    
+    ##recompute if luminacy changed
+    if {$curLum != $newLum} {
+      
+      lassign [setFontShades $fontcolortext] newReg newSun newSha
+    
+      ##get old shades 
+      set oldReg $colour::regHex
+      set oldSun $colour::regSun
+      set oldSha $colour::regSha      
+      ##replace colours
+      set dataL [croppic data]
+      regsub -all $oldReg $dataL $newReg newData
+      regsub -all $oldSun $dataL $newSun newData
+      regsub -all $oldSha $dataL $newSha newData
+      ##copy new data to croppic
+      croppic blank
+      croppic put $newData        
+      textbild blank
+      textbild copy croppic
+    }
+  } ;#END applyChangedLuminacy
+  
   # parseTwdTextParts
   ## prepares Twd nodes in a separate namespace for further processing
   ## called by printTwd

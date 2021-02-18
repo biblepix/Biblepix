@@ -83,7 +83,6 @@ array set FilePaths "
   Image [file join $picdir image.tcl]
   ImageAngle [file join $picdir ImageAngle.tcl]
   RotateTools [file join $picdir RotateTools.tcl]
-  ScanColourArea [file join $picdir scanColourArea.tcl]
   SetBackgroundChanger [file join $picdir setBackgroundChanger.tcl]
   SetupMainFrame [file join $setupdir setupMainFrame.tcl]
   SetupBuild [file join $setupdir setupBuildGUI.tcl]
@@ -181,9 +180,9 @@ set tab "                              "
 set ind "     "
 
 #Define font colour names 
-set fontcolourL {Brown Blue Gold Green Silver Slate}
+set fontcolourL {Blue Brown Gold Green Silver Slate}
 ##define rgb arrays
-array set BlueArr  {r 0 g 160 b 255}
+array set BlueArr  {r 0 g 145 b 230}
 array set BrownArr {r 150 g 40 b 40}
 array set GoldArr  {r 255 g 215 b 0}
 array set GreenArr {r 60 g 185 b 120}
@@ -196,7 +195,7 @@ set shadeFactor -0.35
 #these define where a background should be considered "dark" or "bright"
 ##and by what factor font shades should yet be adjusted up or down
 set darkThreshold 80
-set brightThreshold 200
+set brightThreshold 180
 
 #Bildformate & DesktopPicturesDir
 if {$platform == "unix"} {

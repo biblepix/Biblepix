@@ -97,7 +97,6 @@ proc gradient {rgbhex factor {window .}} {
   return $rgbhex
 } ;#END gradient
 
-
 proc hex2rgb {hex} {
   lassign [scan $hex "#%2x %2x %2x"] r g b
   return "$r $g $b"
@@ -135,7 +134,11 @@ proc setFontShades {fontcolortext} {
       set shaHex [gradient $shaHex $sunFactor]
     }
   }
-
+  #export hex values to colour:: ns (needed by printTwd)
+  set colour::regHex $regHex
+  set colour::sunHex $sunHex
+  set colour::shaHex $shaHex
+  
   return "$regHex $sunHex $shaHex"
 
 } ;#END setFontShades
@@ -144,37 +147,59 @@ proc setFontShades {fontcolortext} {
 # getAreaLuminacy
 ##computes luminance 1-3 for canvas text section
 ##called by BdfPrint & SetupRepos
-proc getAreaLuminacy {c textitem} {
-  global pnginfo brightThreshold darkThreshold
+proc getAreaLuminacy {c item} {
+  global colour::pnginfo brightThreshold darkThreshold
   
-  #get image name from canvas
-  set img [lindex [$c itemconf img -image] end]
-  
-  #A) for Biblepix/BdfPrint: check if pnginfo exists & return
-  if [info exists pnginfo] {
-    set lum $pnginfo(Luminacy)
-    return $lum
+  #Test if "c" is canvas (with .) or image
+  if {[string index $c 0] == "."} {
+    set object CANVAS
+  } else {
+    set object IMAGE
+    
   }
 
-  #B) For Setup: compute text area luminacy
+  if {$object == "CANVAS"} {
+    #get image name from canvas
+    set img [lindex [$c itemconf img -image] end]
+    #for Biblepix/BdfPrint: check if pnginfo exists & return
+    if [info exists pnginfo(Luminacy)] {
+      set lum $pnginfo(Luminacy)
+      return $lum
+    }
+  } elseif {$object == "IMAGE"} {
+    set img $c
+  }
+  
+  #Prepare scanning
   puts "Scanning text area for luminance..."
-  lassign [$c bbox $textitem] x1 y1 x2 y2
-  set skip 2
+  ##for canvas
+  if {$object == "CANVAS"} { 
+    lassign [$c bbox $item] x1 y1 x2 y2
+    set skip 2
+  ##for image (bigger skip)
+  } elseif {$object == "IMAGE"} {
+    lassign $item x1 y1 x2 y2
+    set skip 6
+  }
   set leftmost $x1
   set rightmost $x2
   set topmost $y1
-  set botmost $y2 
+  set botmost $y2
 
-  #scan given canvas area
+  #scan given canvas/image area
   for {set yPos $topmost} {$yPos < $botmost} {incr yPos $skip} {
     for {set xPos $leftmost} {$xPos < $rightmost} {incr xPos $skip} {
       #add up r+g+b to sumTotal, dividing sum by 3 for each rgb
       lassign [$img get $xPos $yPos] r g b
       incr sumTotal [expr int($r + $g + $b)]
-      incr numColours 3
+      incr numCols 3
     }
   }
-  set avLum [expr int($sumTotal / $numColours)]
+
+  set avLum [expr int($sumTotal / $numCols)]
+
+#TODO neuersuch mit data
+#set data [$img data]
 
   ##very shade
   if {$avLum <= $darkThreshold} {
@@ -186,7 +211,7 @@ proc getAreaLuminacy {c textitem} {
   } else {
     set lum 2
   }
-
+puts "Luminance $lum"
   return $lum
 } ;#END getAreaLuminacy
 
@@ -234,8 +259,12 @@ proc trimPic {pic x1 y1 x2 y2} {
 ##works on basis of image data lists
 ##called by printTwd
 proc cropPic2Textwidth {img fontcolorname} {
-  set fontHex [set colour::$fontcolorname]
+#  set fontHex [set colour::$fontcolorname]
+  set fontHex $colour::regHex
+  
   set dataL [$img data]
+  if {$dataL == ""} { return "Croppic not created" }
+  
   #Detect 1st pixel with fontcolour for each pixel line
   foreach i $dataL {
     set res [lsearch $i $fontHex]
@@ -251,7 +280,7 @@ proc cropPic2Textwidth {img fontcolorname} {
   image create photo croppic
   croppic copy $img -from $minleft 10  
 
-  return croppic
+  return "Created croppic"
 } ;#END cropPic2Textwidth
 
 # resizePic

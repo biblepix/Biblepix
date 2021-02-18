@@ -2,10 +2,11 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 11feb21 pv
+# Updated: 19feb21 pv
 source $TwdTools
 source $BdfTools
 source $ImgTools
+source $Config
 set TwdLang [getTwdLang $TwdFileName]
 set RtL [isRtL $TwdLang]
 puts $TwdLang
@@ -68,28 +69,25 @@ if {$TwdLang == "zh"} {
 puts "Computing colours..."
 puts $fontcolortext
 
-#Compute avarage colours of text section
-namespace eval colour {
+#Compute avarage colours of text section - to be saved in colour:: as regHex sunHex shaHex
+setFontShades $fontcolortext
+
+#namespace eval colour {
 
 
-  variable fontcolname $::fontcolortext
-  
-  variable Hex [set [namespace current]::fontcolname]
-  set regHex [set $Hex]
-    
-  variable sunHex [gradient $regHex $sunFactor]
-  variable shaHex [gradient $regHex $shadeFactor]
+#  variable fontcolname $::fontcolortext
+#  
+#  variable Hex [set [namespace current]::fontcolname]
+#  set regHex [set $Hex]
+#    
+#  variable sunHex [gradient $regHex $sunFactor]
+#  variable shaHex [gradient $regHex $shadeFactor]
 
-#lassign [setFontShades $Hex] regHex runHex shaHex
-  
-  #Set hex font shades, including luminance info if it exists 
-  #variable fontcoltext $::fontcolortext
-  #variable fontcolpath 
-#  append fontcolpath $ colour :: $::fontcolortext
-#  variable fontcolpath $fontcolpath
+##TODO get back to this?
+##lassign [setFontShades $Hex] regHex runHex shaHex
+#  
+#}
 
-#puts $fontcolpath
-}
   #return $colour::regHex
 #  append colpath colour :: $fontcolortext
 #  lassign [setFontShades [set colpath]] colour::regHex colour::sunHex shaHex
@@ -98,13 +96,17 @@ namespace eval colour {
 
 #Set new margins if pnginfo found & set previously in colour:: ns
 namespace eval bdf {
+
+#TODO old globals not 
   #import global vars for any case
+
   variable $::marginleft marginleft
   variable $::margintop margintop
-
+  
   #Set margins from pnginfo OR from Config 
   if { [info exists colour::pnginfo(Marginleft)] && 
        [info exists colour::pnginfo(Margintop)] } {
+  
     ##make sure margins are not 0 (as intended if saved without pos info)
     if { $colour::pnginfo(Marginleft) && $colour::pnginfo(Margintop) } {
       set marginleft $colour::pnginfo(Marginleft)
@@ -112,8 +114,8 @@ namespace eval bdf {
     }
   }
 
-#puts "marginleft $marginleft"
-#puts "margintop $margintop"
+puts "marginleft $marginleft"
+puts "margintop $margintop"
 
   # 3)  I N I T I A L I S E   P R I N T I N G
 

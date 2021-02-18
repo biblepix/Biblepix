@@ -32,7 +32,7 @@ if {$enableRandomFontcolor} {
 }
 
 #Extract any info from PNG & export pngInfo to ::colour ns
-puts "Reading PNG info from [file tail $picPath] ..."
+puts "\nReading PNG info from [file tail $picPath] ..."
 if {[readPngComment $picPath] == 0} {
   puts "*No PNG info found!"
   
@@ -41,9 +41,12 @@ if {[readPngComment $picPath] == 0} {
   namespace eval colour {
     variable picPath $::picPath
     array set pnginfo "[split [evalPngComment $picPath]]"
+    puts "pngLum $pnginfo(Luminacy)"
+    puts "pngLeft $pnginfo(Marginleft)"
+    puts "pngTop $pnginfo(Margintop)"
   } 
 }
 
 #Printing   B D F 
-puts "Creating BDF picture..."
+#puts "Creating BDF picture..."
 source $BdfPrint
