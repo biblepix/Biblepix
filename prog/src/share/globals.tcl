@@ -182,7 +182,9 @@ set ind "     "
 #Define font colour names 
 set fontcolourL {Blue Brown Gold Green Silver Slate}
 ##define rgb arrays
-array set BlueArr  {r 0 g 145 b 230}
+
+#array set BlueArr  {r 0 g 145 b 230}
+array set BlueArr {r 30 g 100 b 244}
 array set BrownArr {r 150 g 40 b 40}
 array set GoldArr  {r 255 g 215 b 0}
 array set GreenArr {r 60 g 185 b 120}
