@@ -146,7 +146,7 @@ proc setFontShades {fontcolortext} {
 
 # getAreaLuminacy
 ##computes luminance 1-3 for canvas text section
-##called by BdfPrint & SetupRepos
+##called by printTwd & SetupRepos
 proc getAreaLuminacy {c item} {
   global colour::pnginfo brightThreshold darkThreshold
   
@@ -154,8 +154,7 @@ proc getAreaLuminacy {c item} {
   if {[string index $c 0] == "."} {
     set object CANVAS
   } else {
-    set object IMAGE
-    
+    set object IMAGE 
   }
 
   if {$object == "CANVAS"} {
@@ -172,6 +171,7 @@ proc getAreaLuminacy {c item} {
   
   #Prepare scanning
   puts "Scanning text area for luminance..."
+
   ##for canvas
   if {$object == "CANVAS"} { 
     lassign [$c bbox $item] x1 y1 x2 y2
@@ -181,26 +181,37 @@ proc getAreaLuminacy {c item} {
     lassign $item x1 y1 x2 y2
     set skip 6
   }
-  set leftmost $x1
-  set rightmost $x2
-  set topmost $y1
-  set botmost $y2
+#  set leftmost $x1
+#  set rightmost $x2
+#  set topmost $y1
+#  set botmost $y2
 
-  #scan given canvas/image area
-  for {set yPos $topmost} {$yPos < $botmost} {incr yPos $skip} {
-    for {set xPos $leftmost} {$xPos < $rightmost} {incr xPos $skip} {
-      #add up r+g+b to sumTotal, dividing sum by 3 for each rgb
-      lassign [$img get $xPos $yPos] r g b
-      incr sumTotal [expr int($r + $g + $b)]
-      incr numCols 3
-    }
-  }
+#  #scan given canvas/image area
+#  for {set yPos $topmost} {$yPos < $botmost} {incr yPos $skip} {
 
-  set avLum [expr int($sumTotal / $numCols)]
+#    for {set xPos $leftmost} {$xPos < $rightmost} {incr xPos $skip} {
+
+#      #add up r+g+b to sumTotal, dividing sum by 3 for each rgb
+#      lassign [$img get $xPos $yPos] r g b
+#      incr sumTotal [expr int($r + $g + $b)]
+#      incr numCols 3
+#    }
+#  }
+
+#  set avLum [expr int($sumTotal / $numCols)]
 
 #TODO neuersuch mit data
-#set data [$img data]
+set dataL [$img data]
 
+foreach row $dataL {
+  foreach pix $row {
+    lassign [hex2rgb $pix] r g b
+    incr avLumL [expr ($r + $g + $b) / 3]
+  }
+}
+
+set avLum [expr $avLumL / [llength $avLumL]]
+   
   ##very shade
   if {$avLum <= $darkThreshold} {
     set lum 1

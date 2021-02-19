@@ -11,6 +11,81 @@ namespace eval bdf {
   variable x
   variable y
   
+  # printTwd
+  ##Toplevel printing proc
+  ##called by BdfPrint
+  proc printTwd {TwdFileName img marginleft margintop} {
+    
+    global RtL fontcolortext
+    global colour::pngInfo
+    
+    set minmarg 25
+    set screenW [winfo screenwidth .]
+    
+    parseTwdTextParts $TwdFileName
+    
+    image create photo textbild
+    printTwdTextParts $minmarg $minmarg textbild
+
+    set textpicX [image width textbild]
+    set textpicY [image height textbild]
+puts $textpicX
+puts $textpicY
+  
+    lassign [setupTextpic textbild] marginleft margintop
+     
+    #recompute luminance for non-pngInfo pics
+    if ![info exists pngInfo(Luminacy)] {
+      set newLum [getAreaLuminacy hgbild "$marginleft $margintop $textpicX $textpicY"]
+      
+ #TODO this confuses cropPic2Textsize - do we need it after here?
+ #     set colour::pngInfo(Luminacy) $newLum
+      applyChangedLuminacy $marginleft $margintop
+      set newLum changed
+    }
+    
+    # R T L   
+        
+    if $RtL {
+      set textpicX [image width textbild]
+  
+      ##A) Crop textbild to text width, create 'croppic' global function
+      cropPic2Textwidth textbild $fontcolortext
+textbild blank
+textbild copy croppic
+
+      ##B) If no png info found: correct margin to the right
+      if { ![info exists pngInfo(Marginleft)] && $marginleft < [expr $screenW/3] } {
+      
+        #a) align text with right margin
+        set marginleft [expr $screenW - $marginleft - $textpicX]
+      
+        #b) correct text colour if luminacy changed        
+      #TODO wozu das?
+        if [info exists pngInfo(Luminacy)] {
+          set curLum $pngInfo(Luminacy)
+        }
+              
+        ##check if newLum previously set - TODO where is this read in?
+        if ![info exists newLum] {
+          set newLum [getAreaLuminacy hgbild "$marginleft $margintop $textpicX $textpicY"]
+          set colour::pnginfo(Luminacy) $newLum
+          applyChangedLuminacy $marginleft $margintop
+        }        
+      } ;#END if no png info found 
+    } ;#END if RtL
+      
+    #C) Copy textpic to final image  
+    hgbild copy textbild -to $marginleft $margintop -compositingrule overlay
+    
+    #Cleanup
+    namespace delete [namespace current]
+    catch {namespace delete colour}
+    #Return pic as function
+    return hgbild
+  
+  } ;#End printTwd
+
   # setupTextpic
   ##creates & fits textpic to text width
   ##called by twdPrint
@@ -43,88 +118,24 @@ namespace eval bdf {
   
     return "$marginleft $margintop"
   }
-  
-  # printTwd
-  ##Toplevel printing proc
-  ##called by BdfPrint
-  proc printTwd {TwdFileName img marginleft margintop} {
-    
-    global RtL fontcolortext
-    global colour::pngInfo
-    
-    set minmarg 25
-    set screenW [winfo screenwidth .]
-    
-    parseTwdTextParts $TwdFileName
-    
-    image create photo textbild
-    printTwdTextParts $minmarg $minmarg textbild
-
-    set textpicX [image width textbild]
-    set textpicY [image height textbild]
-    
-    lassign [setupTextpic textbild] marginleft margintop
-     
-    #recompute luminance for non-pngInfo pics
-    if ![info exists pngInfo(Luminacy)] {
-      set newLum [getAreaLuminacy hgbild "$marginleft $margintop $textpicX $textpicY"]
-      
- #TODO this confuses cropPic2Textsize - do we need it after here?
- #     set colour::pngInfo(Luminacy) $newLum
-      applyChangedLuminacy $marginleft $margintop
-    }
-    
-    # R T L   
-        
-    if $RtL {
-      set textpicX [image width textbild]
-  
-      ##A) Crop textbild to text width, create 'croppic' global function
-      cropPic2Textwidth textbild $fontcolortext
-
-      ##B) If no png info found: correct margin to the right
-      if { ![info exists pngInfo(Marginleft)] && $marginleft < [expr $screenW/3] } {
-      
-        #a) align text with right margin
-        set marginleft [expr $screenW - $marginleft - $textpicX]
-      
-        #b) correct text colour if luminacy changed        
-        set curLum $pngInfo(Luminacy)
-        
-        ##check if newLum previously set - TODO where is this read in?
-        if ![info exists newLum] {
-          set newLum [getAreaLuminacy hgbild "$marginleft $margintop $textpicX $textpicY"]
-          set colour::pnginfo(Luminacy) $newLum
-          applyChangedLuminacy $marginleft $margintop
-        }        
-      } ;#END if no png info found 
-    } ;#END if RtL
-      
-    #C) Copy textpic to final image  
-    hgbild copy textbild -to $marginleft $margintop
-    
-    #Cleanup
-    namespace delete [namespace current]
-    catch {namespace delete colour}
-    #Return pic as function
-    return hgbild
-  
-  } ;#End printTwd
 
   proc applyChangedLuminacy {marginleft margintop} {
-    global fontcolortext
+    global fontcolortext colour::pngInfo
     
-    if [catch {set curLum $colour::pngInfo(Luminacy)}] {
+    #TODO what's the point of this?
+    if [catch {set curLum $pngInfo(Luminacy)}] {
       set curLum 2
     }
     
     set textpicY [image height textbild]
-    
-    if [catch {image inuse croppic}] {
-      set textpicX [image width textbild]
-    } else {
-      set textpicX [image width croppic]
-    }
+    set textpicX [image width  textbild]
+#    if [catch {image inuse croppic}] {
+#      set textpicX [image width textbild]
+#    } else {
+#      set textpicX [image width croppic]
+#    }
+ 
+ #TODO this is called twice by printTWD !!!!!!!!!!!!!!!!!!!!!!!!!!
               
     set newLum [getAreaLuminacy hgbild "$marginleft $margintop $textpicX $textpicY"]
     
@@ -135,18 +146,25 @@ namespace eval bdf {
     
       ##get old shades 
       set oldReg $colour::regHex
-      set oldSun $colour::regSun
-      set oldSha $colour::regSha      
+      set oldSun $colour::sunHex
+      set oldSha $colour::shaHex      
+ 
+ #TODO jesch abalagan
       ##replace colours
-      set dataL [croppic data]
+#      set dataL [croppic data]
+ set dataL [textbild data]
+      
       regsub -all $oldReg $dataL $newReg newData
       regsub -all $oldSun $dataL $newSun newData
       regsub -all $oldSha $dataL $newSha newData
+  
+  
+  #TODO schwarzer hintergrund?!
       ##copy new data to croppic
-      croppic blank
+      image create photo croppic
       croppic put $newData        
       textbild blank
-      textbild copy croppic
+      textbild copy croppic -compositingrule overlay
     }
   } ;#END applyChangedLuminacy
   
