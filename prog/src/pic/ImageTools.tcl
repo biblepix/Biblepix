@@ -150,6 +150,9 @@ proc setFontShades {fontcolortext} {
 proc getAreaLuminacy {c item} {
   global colour::pnginfo brightThreshold darkThreshold
   
+  puts "Scanning area for luminance..."
+puts "Coords: $item"
+  
   #Test if "c" is canvas (with .) or image
   if {[string index $c 0] == "."} {
     set object CANVAS
@@ -166,43 +169,46 @@ proc getAreaLuminacy {c item} {
       return $lum
     }
   } elseif {$object == "IMAGE"} {
-    set img $c
+  
+  #  set img $c
+  set img hgbild
   }
   
-  #Prepare scanning
-  puts "Scanning text area for luminance..."
-
+  # Prepare scanning:
   ##for canvas
   if {$object == "CANVAS"} { 
     lassign [$c bbox $item] x1 y1 x2 y2
     set skip 2
+  
   ##for image (bigger skip)
   } elseif {$object == "IMAGE"} {
     lassign $item x1 y1 x2 y2
     set skip 6
   }
-#  set leftmost $x1
-#  set rightmost $x2
-#  set topmost $y1
-#  set botmost $y2
 
-#  #scan given canvas/image area
-#  for {set yPos $topmost} {$yPos < $botmost} {incr yPos $skip} {
+  #scan given canvas/image area
+  for {set yPos $y1} {$yPos < $y2} {incr yPos $skip} {
 
-#    for {set xPos $leftmost} {$xPos < $rightmost} {incr xPos $skip} {
+    for {set xPos $x1} {$xPos < $x2} {incr xPos $skip} {
 
-#      #add up r+g+b to sumTotal, dividing sum by 3 for each rgb
-#      lassign [$img get $xPos $yPos] r g b
-#      incr sumTotal [expr int($r + $g + $b)]
-#      incr numCols 3
-#    }
-#  }
+      #add up r+g+b to sumTotal, dividing sum by 3 for each rgb
+      lassign [$img get $xPos $yPos] r g b
+      incr sumTotal [expr int($r + $g + $b)]
+#  puts $sumTotal
+      incr numCols 3
+    }
+  }
 
-#  set avLum [expr int($sumTotal / $numCols)]
+  set avLum [expr int($sumTotal / $numCols)]
 
-#TODO neuersuch mit data
+proc dataRange {} {
+#TODO neuersuch mit data - may have more overhead because of hex2rgb!!!!
 set dataL [$img data]
+set yRange [lrange [lindex $dataL $y1] [lindex $dataL $y2] ]
+set xRange [lrange [lindex ... ??? 
 
+set x2
+set y2
 foreach row $dataL {
   foreach pix $row {
     lassign [hex2rgb $pix] r g b
@@ -211,6 +217,7 @@ foreach row $dataL {
 }
 
 set avLum [expr $avLumL / [llength $avLumL]]
+}
    
   ##very shade
   if {$avLum <= $darkThreshold} {
@@ -269,29 +276,37 @@ proc trimPic {pic x1 y1 x2 y2} {
 ##crops image to text width
 ##works on basis of image data lists
 ##called by printTwd
-proc cropPic2Textwidth {img fontcolorname} {
-#  set fontHex [set colour::$fontcolorname]
-  set fontHex $colour::regHex
-  
-  set dataL [$img data]
-  if {$dataL == ""} { return "Croppic not created" }
+proc cropPic2Textwidth {} {
+
+  set fontcolHex $colour::regHex
+puts $fontcolHex
+
+  #read out textbild
+  set dataL [textbild data]
+  if {$dataL == ""} { return "Image not cropped" }
   
   #Detect 1st pixel with fontcolour for each pixel line
   foreach i $dataL {
-    set res [lsearch $i $fontHex]
+    set res [lsearch $i $fontcolHex]
     if {$res != "-1"} {
       lappend margL $res
     }
   }
   ##determine leftmost fontcolour pixel
-  set margL [join $margL ,]
-  set minleft [expr min($margL)]
+  if {[info exists margL] && $margL != ""} {
+    set margL [join $margL ,]
+    set minleft [expr min($margL)]
+  } else {
+    return "Image not cropped"
+  }
 
-  #Crop pic accordingly
-  image create photo croppic
-  croppic copy $img -from $minleft 10  
-
-  return "Created croppic"
+  #Recreate Cropbild
+  image create photo cropbild
+  cropbild copy textbild -from $minleft 10  
+  textbild blank
+  textbild copy cropbild
+  
+#  return "Created croppic"
 } ;#END cropPic2Textwidth
 
 # resizePic

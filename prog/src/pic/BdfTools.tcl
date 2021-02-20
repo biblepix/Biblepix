@@ -24,7 +24,10 @@ namespace eval bdf {
     
     parseTwdTextParts $TwdFileName
     
+    #Create global picture functions
     image create photo textbild
+    image create photo cropbild
+    
     printTwdTextParts $minmarg $minmarg textbild
 
     set textpicX [image width textbild]
@@ -32,27 +35,33 @@ namespace eval bdf {
 puts $textpicX
 puts $textpicY
   
-    lassign [setupTextpic textbild] marginleft margintop
+    lassign [setTextbildCoords $marginleft $margintop] x1 y1
      
     #recompute luminance for non-pngInfo pics
     if ![info exists pngInfo(Luminacy)] {
-      set newLum [getAreaLuminacy hgbild "$marginleft $margintop $textpicX $textpicY"]
+    
+    
+    
+      set x2 [expr $x1 + $textpicX]
+      set y2 [expr $y1 + $textpicY]
       
- #TODO this confuses cropPic2Textsize - do we need it after here?
- #     set colour::pngInfo(Luminacy) $newLum
-      applyChangedLuminacy $marginleft $margintop
+      set newLum [getAreaLuminacy hgbild "$x1 $y1 $x2 $y2"]
+
+     # TODO check later
+#      applyChangedLuminacy "$x1 $y1 $x2 $y2"
       set newLum changed
     }
     
     # R T L   
         
     if $RtL {
-      set textpicX [image width textbild]
+
   
       ##A) Crop textbild to text width, create 'croppic' global function
-      cropPic2Textwidth textbild $fontcolortext
-textbild blank
-textbild copy croppic
+      cropPic2Textwidth
+      
+      #textbild blank
+      #textbild copy croppic
 
       ##B) If no png info found: correct margin to the right
       if { ![info exists pngInfo(Marginleft)] && $marginleft < [expr $screenW/3] } {
@@ -70,7 +79,9 @@ textbild copy croppic
         if ![info exists newLum] {
           set newLum [getAreaLuminacy hgbild "$marginleft $margintop $textpicX $textpicY"]
           set colour::pnginfo(Luminacy) $newLum
-          applyChangedLuminacy $marginleft $margintop
+      
+      #TODO check later
+      #    applyChangedLuminacy $marginleft $margintop
         }        
       } ;#END if no png info found 
     } ;#END if RtL
@@ -87,23 +98,23 @@ textbild copy croppic
   } ;#End printTwd
 
   # setupTextpic
-  ##creates & fits textpic to text width
+  ##fits textbild onto hgbild & 
+  ##returns new marginleft + margintop
   ##called by twdPrint
-  proc setupTextpic {textpic} {
+  proc setTextbildCoords {marginleft margintop} {
     set minmarg 25
-    global marginleft margintop
-    
-#    image create photo textpic
-#    printTwdTextParts $minmarg $minmarg textpic
-    
+  
     #Correct right & top margins
     set screenW [winfo screenwidth .]
     set screenH [winfo screenheight .]
-    set textpicX [image width $textpic]
-    set textpicY [image height $textpic]
+    set textpicX [image width textbild]
+    set textpicY [image height textbild]
     set reservedW [expr $screenW - $marginleft]
     set reservedH [expr $screenH - $margintop]
     
+    
+ #TODO korrigiert rechts+unten NICHT GENUG!!!!!!!!!!!!!!!!!!!!!!
+   
     ##zu weit unten -> Move textpic up
     if {$reservedH < $textpicY} {
       set diff [expr $textpicY - $reservedH]
@@ -162,6 +173,7 @@ textbild copy croppic
   #TODO schwarzer hintergrund?!
       ##copy new data to croppic
       image create photo croppic
+      
       croppic put $newData        
       textbild blank
       textbild copy croppic -compositingrule overlay
