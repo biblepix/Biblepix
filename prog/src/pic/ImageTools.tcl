@@ -273,39 +273,56 @@ proc trimPic {pic x1 y1 x2 y2} {
 }
 
 # cropPic2Textwidth
-##crops image to text width
+##crops RtL image to text width
 ##works on basis of image data lists
 ##called by printTwd
-proc cropPic2Textwidth {} {
-
-  set fontcolHex $colour::regHex
+proc cropPic2Textwidth {fontcolortext} {
+  puts "Cropping text picture..."
+  
+  set fontcolHex [set colour::$fontcolortext]
 puts $fontcolHex
 
   #read out textbild
   set dataL [textbild data]
-  if {$dataL == ""} { return "Image not cropped" }
+  if {$dataL == ""} { return "No data for croppig found" }
   
+##TODO testing
+set chan [open /tmp/dataL w]
+puts $chan "colour::regHex $fontcolHex"
+puts $chan $dataL
+close $chan
+  
+#  set empty {#000000}
   #Detect 1st pixel with fontcolour for each pixel line
-  foreach i $dataL {
-    set res [lsearch $i $fontcolHex]
+  foreach row $dataL {
+  
+    
+    set res [lsearch $row $fontcolHex]
     if {$res != "-1"} {
       lappend margL $res
+      #puts "$res $fontcolHex"
     }
   }
+  
   ##determine leftmost fontcolour pixel
   if {[info exists margL] && $margL != ""} {
     set margL [join $margL ,]
     set minleft [expr min($margL)]
+  puts "Minleft $minleft"
+  
   } else {
     return "Image not cropped"
   }
 
   #Recreate Cropbild
   image create photo cropbild
-  cropbild copy textbild -from $minleft 10  
-  textbild blank
-  textbild copy cropbild
+  cropbild copy textbild -from $minleft 0 [image width textbild] [image height textbild]
+#TODO testing
+cropbild write /tmp/cropbild.ppm
   
+  textbild blank
+  textbild copy cropbild -shrink
+  textbild conf -width [image width cropbild]    
 #  return "Created croppic"
 } ;#END cropPic2Textwidth
 

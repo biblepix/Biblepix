@@ -30,22 +30,37 @@ namespace eval bdf {
     
     printTwdTextParts $minmarg $minmarg textbild
 
-    set textpicX [image width textbild]
-    set textpicY [image height textbild]
-puts $textpicX
-puts $textpicY
+    #Crop pic to text size if RtL
+    if $RtL {
+      cropPic2Textwidth $fontcolortext
+    }
   
-    lassign [setTextbildCoords $marginleft $margintop] x1 y1
-     
+    
+#####################################################################
+puts "xOld $marginleft"
+puts "yOld $margintop"
+  
+  #Reset textbild coords to avoid margin overlapping
+  #TODO zis inno working right!
+    lassign [resetTextpicCoords $marginleft $margintop] x1 y1
+puts "xNeu $x1"
+puts "yNeu $y1 "    
+#####################################################################
+
+
     #recompute luminance for non-pngInfo pics
     if ![info exists pngInfo(Luminacy)] {
     
-    
+      set textpicX [image width textbild]
+      set textpicY [image height textbild]
+puts " textpicX $textpicX"
+puts " textpicY $textpicY"
     
       set x2 [expr $x1 + $textpicX]
       set y2 [expr $y1 + $textpicY]
       
-      set newLum [getAreaLuminacy hgbild "$x1 $y1 $x2 $y2"]
+    #TODO this is called twice!!!!!!!!!!! -COORDS OUT OF RANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]]
 
      # TODO check later
 #      applyChangedLuminacy "$x1 $y1 $x2 $y2"
@@ -58,7 +73,7 @@ puts $textpicY
 
   
       ##A) Crop textbild to text width, create 'croppic' global function
-      cropPic2Textwidth
+     # cropPic2Textwidth
       
       #textbild blank
       #textbild copy croppic
@@ -76,8 +91,10 @@ puts $textpicY
         }
               
         ##check if newLum previously set - TODO where is this read in?
+        
+    #TODO this was called in 48!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if ![info exists newLum] {
-          set newLum [getAreaLuminacy hgbild "$marginleft $margintop $textpicX $textpicY"]
+          set newLum [getAreaLuminacy hgbild "$x1 $y1 $x2 $y2"]
           set colour::pnginfo(Luminacy) $newLum
       
       #TODO check later
@@ -101,34 +118,42 @@ puts $textpicY
   ##fits textbild onto hgbild & 
   ##returns new marginleft + margintop
   ##called by twdPrint
-  proc setTextbildCoords {marginleft margintop} {
+  proc resetTextpicCoords {marginleft margintop} {
     set minmarg 25
   
     #Correct right & top margins
     set screenW [winfo screenwidth .]
     set screenH [winfo screenheight .]
-    set textpicX [image width textbild]
-    set textpicY [image height textbild]
-    set reservedW [expr $screenW - $marginleft]
-    set reservedH [expr $screenH - $margintop]
+    set textpicW [image width textbild]
+    set textpicH [image height textbild]
+    
+    set reservedW [expr $screenW - $marginleft - $minmarg]
+    set reservedH [expr $screenH - $margintop - $minmarg]
+    
     
     
  #TODO korrigiert rechts+unten NICHT GENUG!!!!!!!!!!!!!!!!!!!!!!
    
-    ##zu weit unten -> Move textpic up
-    if {$reservedH < $textpicY} {
-      set diff [expr $textpicY - $reservedH]
-      set margintop [expr $margintop - $diff - $minmarg] 
-    }
     
     ##zu weit rechts -> move textpic left
-    if {$reservedW < $textpicX} {
-      set diff [expr $textpicX - $reservedW]
-      set marginleft [expr $marginleft - $diff - $minmarg] 
+    if {$reservedW < $textpicW} {
+      set diff [expr $textpicW - $reservedW]
+      #set marginleft [expr $screenW - $textpicW - $minmarg]
+      
+      set marginleft [expr $marginleft - $diff] 
     }
-  
+    
+      ##zu weit unten -> Move textpic up
+    if {$reservedH < $textpicH} {
+      set diff [expr $textpicH - $reservedH]
+      set margintop [expr $margintop - $diff] 
+    }
+
     return "$marginleft $margintop"
   }
+  
+  
+  
 
   proc applyChangedLuminacy {marginleft margintop} {
     global fontcolortext colour::pngInfo
@@ -409,8 +434,8 @@ puts $textpicY
 
     #set textpic width for RtL, to be cropped later
     if $RtL {
-      $img conf -width 800
-      set x 800
+      $img conf -width 1000
+      set x 1000
     } 
 
     set FontAsc "$${prefix}::FontAsc"
