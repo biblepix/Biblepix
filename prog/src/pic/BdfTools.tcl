@@ -110,21 +110,16 @@ puts " textpicY $textpicY"
   ##called by twdPrint
   proc resetTextpicCoords {marginleft margintop} {
     set minmarg 25
-  
+
     #Correct right & top margins
     set screenW [winfo screenwidth .]
     set screenH [winfo screenheight .]
     set textpicW [image width textbild]
     set textpicH [image height textbild]
-    
+
     set reservedW [expr $screenW - $marginleft - $minmarg]
     set reservedH [expr $screenH - $margintop - $minmarg]
-    
-    
-    
- #TODO korrigiert rechts+unten NICHT GENUG!!!!!!!!!!!!!!!!!!!!!!
-   
-    
+
     ##zu weit rechts -> move textpic left
     if {$reservedW < $textpicW} {
       set diff [expr $textpicW - $reservedW]
@@ -132,8 +127,8 @@ puts " textpicY $textpicY"
       
       set marginleft [expr $marginleft - $diff] 
     }
-    
-      ##zu weit unten -> Move textpic up
+
+    ##zu weit unten -> Move textpic up
     if {$reservedH < $textpicH} {
       set diff [expr $textpicH - $reservedH]
       set margintop [expr $margintop - $diff] 
@@ -141,9 +136,7 @@ puts " textpicY $textpicY"
 
     return "$marginleft $margintop"
   }
-  
-  
-  
+
 
   proc applyChangedLuminacy {marginleft margintop} {
     global fontcolortext colour::pngInfo
