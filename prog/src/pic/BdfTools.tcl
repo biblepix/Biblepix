@@ -7,7 +7,7 @@
 namespace eval bdf {
 
   variable xBase
-  variable YBase  
+  variable YBase
   variable x
   variable y
   
@@ -15,86 +15,75 @@ namespace eval bdf {
   ##Toplevel printing proc
   ##called by BdfPrint
   proc printTwd {TwdFileName img marginleft margintop} {
-    
+
     global RtL fontcolortext
     global colour::pngInfo
-    
-    set minmarg 25
+
     set screenW [winfo screenwidth .]
-    
+
     parseTwdTextParts $TwdFileName
-    
+
     #Create global picture functions
     image create photo textbild
-    image create photo cropbild
-    
-    printTwdTextParts $minmarg $minmarg textbild
+
+    printTwdTextParts textbild
 
     #Crop pic to text size if RtL
     if $RtL {
       cropPic2Textwidth $fontcolortext
     }
-  
-    
+
+
 #####################################################################
 puts "xOld $marginleft"
 puts "yOld $margintop"
-  
+
   #Reset textbild coords to avoid margin overlapping
   #TODO zis inno working right!
-    lassign [resetTextpicCoords $marginleft $margintop] x1 y1
-puts "xNeu $x1"
-puts "yNeu $y1 "    
+    lassign [resetTextpicCoords $marginleft $margintop] marginleft margintop
+puts "xNeu $marginleft"
+puts "yNeu $margintop"
 #####################################################################
 
+    set textpicX [image width textbild]
+    set textpicY [image height textbild]
+puts " textpicX $textpicX"
+puts " textpicY $textpicY"
+
+    set x2 [expr $marginleft + $textpicX]
+    set y2 [expr $margintop + $textpicY]
 
     #recompute luminance for non-pngInfo pics
     if ![info exists pngInfo(Luminacy)] {
-    
-      set textpicX [image width textbild]
-      set textpicY [image height textbild]
-puts " textpicX $textpicX"
-puts " textpicY $textpicY"
-    
-      set x2 [expr $x1 + $textpicX]
-      set y2 [expr $y1 + $textpicY]
-      
+
     #TODO this is called twice!!!!!!!!!!! -COORDS OUT OF RANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]]
+      set newLum [getAreaLuminacy hgbild [list $marginleft $margintop $x2 $y2]]
 
      # TODO check later
 #      applyChangedLuminacy "$x1 $y1 $x2 $y2"
+# ??? why the overwrite of newLum?
       set newLum changed
     }
-    
-    # R T L   
-        
+
+    # R T L
     if $RtL {
 
-  
-      ##A) Crop textbild to text width, create 'croppic' global function
-     # cropPic2Textwidth
-      
-      #textbild blank
-      #textbild copy croppic
-
-      ##B) If no png info found: correct margin to the right
+      ## If no png info found: correct margin to the right
       if { ![info exists pngInfo(Marginleft)] && $marginleft < [expr $screenW/3] } {
-      
+
         #a) align text with right margin
         set marginleft [expr $screenW - $marginleft - $textpicX]
       
-        #b) correct text colour if luminacy changed        
-      #TODO wozu das?
+        #b) correct text colour if luminacy changed
         if [info exists pngInfo(Luminacy)] {
           set curLum $pngInfo(Luminacy)
         }
-              
+
         ##check if newLum previously set - TODO where is this read in?
         
     #TODO this was called in 48!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if ![info exists newLum] {
-          set newLum [getAreaLuminacy hgbild "$x1 $y1 $x2 $y2"]
+          set newLum [getAreaLuminacy hgbild "$marginleft $margintop $x2 $y2"]
           set colour::pnginfo(Luminacy) $newLum
       
       #TODO check later
@@ -102,16 +91,17 @@ puts " textpicY $textpicY"
         }        
       } ;#END if no png info found 
     } ;#END if RtL
-      
+
+
     #C) Copy textpic to final image  
     hgbild copy textbild -to $marginleft $margintop -compositingrule overlay
-    
+
     #Cleanup
     namespace delete [namespace current]
     catch {namespace delete colour}
     #Return pic as function
     return hgbild
-  
+
   } ;#End printTwd
 
   # setupTextpic
@@ -279,11 +269,9 @@ puts " textpicY $textpicY"
   
   # printTwdTextParts  
   ## called by printTwd
-  proc printTwdTextParts {x y img} {
-  
-  #TODO testing
-  set x 20
-  set y 20
+  proc printTwdTextParts {img} {
+    set x 0
+    set y 0
   
     set screenW [winfo screenwidth .]
     set screenH [winfo screenheight .]
