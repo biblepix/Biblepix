@@ -34,7 +34,7 @@ namespace eval bdf {
     if $RtL {
       cropPic2Textwidth $fontcolortext
     }
-  
+      
     
 #####################################################################
 puts "xOld $marginleft"
@@ -46,7 +46,6 @@ puts "yOld $margintop"
 puts "xNeu $x1"
 puts "yNeu $y1 "    
 #####################################################################
-
 
     #recompute luminance for non-pngInfo pics
     if ![info exists pngInfo(Luminacy)] {
@@ -64,7 +63,7 @@ puts " textpicY $textpicY"
 
      # TODO check later
 #      applyChangedLuminacy "$x1 $y1 $x2 $y2"
-      set newLum changed
+      set newLum 1
     }
     
     # R T L   
@@ -73,7 +72,6 @@ puts " textpicY $textpicY"
 
   
       ##A) Crop textbild to text width, create 'croppic' global function
-     # cropPic2Textwidth
       
       #textbild blank
       #textbild copy croppic
@@ -92,8 +90,8 @@ puts " textpicY $textpicY"
               
         ##check if newLum previously set - TODO where is this read in?
         
-    #TODO this was called in 48!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if ![info exists newLum] {
+
+        if !$newLum {
           set newLum [getAreaLuminacy hgbild "$x1 $y1 $x2 $y2"]
           set colour::pnginfo(Luminacy) $newLum
       
@@ -151,8 +149,6 @@ puts " textpicY $textpicY"
 
     return "$marginleft $margintop"
   }
-  
-  
   
 
   proc applyChangedLuminacy {marginleft margintop} {
