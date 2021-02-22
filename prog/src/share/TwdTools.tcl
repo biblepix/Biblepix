@@ -84,12 +84,13 @@ proc updateTwd {} {
   ##########################################
 
   foreach twdFile $twdFiles {
-    if {[lindex [split [file tail $twdFile] "_"] 2] < "$::jahr.twd"} {
-      set oldFileName [lindex [split [file tail $twdFile] "_"] 1]
+    set fileParts [split [file tail $twdFile] "_"]
+    if {[lindex $fileParts 2] < "$::jahr.twd"} {
+      set oldFileName [lindex $fileParts 1]
       set currentExists 0
       foreach otherTwdFile $twdFiles {
-        if {[lindex [split [file tail $otherTwdFile] "_"] 1] == $oldFileName \
-         && [lindex [split [file tail $otherTwdFile] "_"] 2] == "$::jahr.twd"} {
+        set otherFileParts [split [file tail $otherTwdFile] "_"]
+        if {[lindex $otherFileParts 1] == $oldFileName && [lindex $otherFileParts 2] == "$::jahr.twd"} {
           set currentExists 1
         }
       }
@@ -159,10 +160,17 @@ proc updateTwd {} {
   # Delete old TwdFiles
   ##########################################
 
-  set lastYear [expr {$::jahr - 1}]
   foreach twdFile $twdFiles {
-    if {[lindex [split [file tail $twdFile] "_"] 2] < "$lastYear.twd"} {
-      file delete $twdFile
+    set fileParts [split [file tail $twdFile] "_"]
+    if {[lindex $fileParts 2] < "$::jahr.twd"} {
+      set fileName [lindex $fileParts 1]
+      foreach otherTwdFile $twdFiles {
+        set otherFileParts [split [file tail $otherTwdFile] "_"]
+        if {[lindex $otherFileParts 1] == $fileName && [lindex $otherFileParts 2] == "$::jahr.twd"} {
+          file delete $twdFile
+          break
+        }
+      }
     }
   }
 }
