@@ -278,51 +278,35 @@ proc trimPic {pic x1 y1 x2 y2} {
 ##called by printTwd
 proc cropPic2Textwidth {fontcolortext} {
   puts "Cropping text picture..."
-  
-  set fontcolHex [set colour::$fontcolortext]
-puts $fontcolHex
 
   #read out textbild
   set dataL [textbild data]
   if {$dataL == ""} { return "No data for croppig found" }
   
-##TODO testing
-set chan [open /tmp/dataL w]
-puts $chan "colour::regHex $fontcolHex"
-puts $chan $dataL
-close $chan
-  
-#  set empty {#000000}
-  #Detect 1st pixel with fontcolour for each pixel line
+  #Detect 1st pixel that is not black for each pixel line
+  set minleft [image width textbild]
   foreach row $dataL {
-  
-    
-    set res [lsearch $row $fontcolHex]
-    if {$res != "-1"} {
-      lappend margL $res
-      #puts "$res $fontcolHex"
+    set i 0
+    foreach pixel $row {
+      if {$pixel == {#000000}} {
+        incr i
+        continue
+      } else {
+        set minleft [expr min($i, $minleft)]
+        break
+      }
     }
-  }
-  
-  ##determine leftmost fontcolour pixel
-  if {[info exists margL] && $margL != ""} {
-    set margL [join $margL ,]
-    set minleft [expr min($margL)]
-  puts "Minleft $minleft"
-  
-  } else {
-    return "Image not cropped"
   }
 
   #Recreate Cropbild
-  image create photo cropbild
-  cropbild copy textbild -from $minleft 0 [image width textbild] [image height textbild]
-#TODO testing
-cropbild write /tmp/cropbild.ppm
+  set cropbild [image create photo]
+  $cropbild copy textbild -from $minleft 0 [image width textbild] [image height textbild]
   
   textbild blank
-  textbild copy cropbild -shrink
-  textbild conf -width [image width cropbild]    
+  textbild copy $cropbild -shrink
+  textbild conf -width [image width $cropbild]
+  
+  image delete $cropbild
 #  return "Created croppic"
 } ;#END cropPic2Textwidth
 
