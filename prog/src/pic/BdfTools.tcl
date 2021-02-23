@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 16feb21 pv
+# Updated: 23feb21 
 
 namespace eval bdf {
 
@@ -17,7 +17,7 @@ namespace eval bdf {
   proc printTwd {TwdFileName img marginleft margintop} {
 
     global RtL fontcolortext
-    global colour::pngInfo
+    global colour::pnginfo
 
     set screenW [winfo screenwidth .]
 
@@ -25,7 +25,6 @@ namespace eval bdf {
 
     #Create global picture functions
     image create photo textbild
-
     printTwdTextParts textbild
 
     #Crop pic to text size if RtL
@@ -34,64 +33,54 @@ namespace eval bdf {
     }
 
 
-#####################################################################
 puts "xOld $marginleft"
 puts "yOld $margintop"
 
-  #Reset textbild coords to avoid margin overlapping
-  #TODO zis inno working right!
+    #Reset textbild coords to avoid margin overlapping for all cases
     lassign [resetTextpicCoords $marginleft $margintop] marginleft margintop
+    
 puts "xNeu $marginleft"
 puts "yNeu $margintop"
-#####################################################################
 
     set textpicX [image width textbild]
     set textpicY [image height textbild]
-puts " textpicX $textpicX"
-puts " textpicY $textpicY"
-
     set x2 [expr $marginleft + $textpicX]
     set y2 [expr $margintop + $textpicY]
 
-    #recompute luminance for non-pngInfo pics
-    if ![info exists pngInfo(Luminacy)] {
 
-    #TODO this is called twice!!!!!!!!!!! -COORDS OUT OF RANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      set newLum [getAreaLuminacy hgbild [list $marginleft $margintop $x2 $y2]]
 
-     # TODO check later
-#      applyChangedLuminacy "$x1 $y1 $x2 $y2"
-# ??? why the overwrite of newLum?
-      set newLum changed
-    }
+       #TODO see further down!
+          #recompute luminance for non-pnginfo pics
+          if [info exists pnginfo(Luminacy)] {
+#            set curLum $pnginfo(Luminacy)
+            set lumChanged 0
+ 
+           } elseif !$RtL {
+            set newLum [getAreaLuminacy hgbild [list $marginleft $margintop $x2 $y2]]
+            set lumChanged 1
+          }
 
     # R T L
     if $RtL {
 
-      ## If no png info found: correct margin to the right
-      if { ![info exists pngInfo(Marginleft)] && $marginleft < [expr $screenW/3] } {
-
+      ## If no png info found: correct margin to the right if marginleft is left of centre
+      if { ![info exists pnginfo(Marginleft)] && $marginleft < [expr $screenW/3] } {
         #a) align text with right margin
         set marginleft [expr $screenW - $marginleft - $textpicX]
-      
-        #b) correct text colour if luminacy changed
-        if [info exists pngInfo(Luminacy)] {
-          set curLum $pngInfo(Luminacy)
-        }
-
-        ##check if newLum previously set - TODO where is this read in?
-        
-    #TODO this was called in 48!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if ![info exists newLum] {
-          set newLum [getAreaLuminacy hgbild "$marginleft $margintop $x2 $y2"]
-          set colour::pnginfo(Luminacy) $newLum
-      
-      #TODO check later
-      #    applyChangedLuminacy $marginleft $margintop
-        }        
-      } ;#END if no png info found 
+      }
+      #b) correct text colour if luminacy changed
+      if ![info exists pnginfo(Luminacy)] {
+        set newLum [getAreaLuminacy hgbild [list $marginleft $margintop $x2 $y2]]
+        set lumChanged 1
+      }
     } ;#END if RtL
-
+    
+    ##check luminacy needs changing
+    if $lumChanged {
+#      set newLum [getAreaLuminacy hgbild "$marginleft $margintop $x2 $y2"]
+#      set colour::pnginfo(Luminacy) $newLum
+      applyChangedLuminacy $marginleft $margintop $newLum
+    }
 
     #C) Copy textpic to final image  
     hgbild copy textbild -to $marginleft $margintop -compositingrule overlay
@@ -138,41 +127,26 @@ puts " textpicY $textpicY"
   }
 
 
-  proc applyChangedLuminacy {marginleft margintop} {
-    global fontcolortext colour::pngInfo
-    
-    #TODO what's the point of this?
-    if [catch {set curLum $pngInfo(Luminacy)}] {
-      set curLum 2
-    }
-    
+  proc applyChangedLuminacy {marginleft margintop newLum} {
+    global fontcolortext colour::pnginfo
+            
     set textpicY [image height textbild]
     set textpicX [image width  textbild]
-#    if [catch {image inuse croppic}] {
-#      set textpicX [image width textbild]
-#    } else {
-#      set textpicX [image width croppic]
-#    }
- 
- #TODO this is called twice by printTWD !!!!!!!!!!!!!!!!!!!!!!!!!!
-              
-    set newLum [getAreaLuminacy hgbild "$marginleft $margintop $textpicX $textpicY"]
+    set curLum $pnginfo(Luminacy)
     
     ##recompute if luminacy changed
-    if {$curLum != $newLum} {
+    #if {$curLum != $newLum} {
       
+      puts "Adapting font luminance..."
       lassign [setFontShades $fontcolortext] newReg newSun newSha
     
-      ##get old shades 
+      ##get old shades - TODO check Hex formats!
       set oldReg $colour::regHex
       set oldSun $colour::sunHex
       set oldSha $colour::shaHex      
  
- #TODO jesch abalagan
       ##replace colours
-#      set dataL [croppic data]
- set dataL [textbild data]
-      
+      set dataL [textbild data]
       regsub -all $oldReg $dataL $newReg newData
       regsub -all $oldSun $dataL $newSun newData
       regsub -all $oldSha $dataL $newSha newData
@@ -181,11 +155,10 @@ puts " textpicY $textpicY"
   #TODO schwarzer hintergrund?!
       ##copy new data to croppic
       image create photo croppic
-      
       croppic put $newData        
       textbild blank
       textbild copy croppic -compositingrule overlay
-    }
+    #}
   } ;#END applyChangedLuminacy
   
   # parseTwdTextParts
