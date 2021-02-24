@@ -14,80 +14,73 @@ namespace eval bdf {
   # printTwd
   ##Toplevel printing proc
   ##called by BdfPrint
-  proc printTwd {TwdFileName img marginleft margintop} {
+  proc printTwd {TwdFileName img} {
 
     global RtL fontcolortext
     global colour::pnginfo
+    global bdf::marginleft
+    global bdf::margintop
+    global bdf::luminacy
+    
     set screenW [winfo screenwidth .]
-
-    #a) ..
-    parseTwdTextParts $TwdFileName
-
-    #b) Create global picture functions
+    
+    #Create global picture function
     image create photo textbild
+    
+    #Get text into bdf:: vars & print to textpic
+    parseTwdTextParts $TwdFileName
     printTwdTextParts textbild
 
-    #Crop pic to text size if RtL
+    #Crop pic to text width if RtL
     if $RtL {
       cropPic2Textwidth $fontcolortext
     }
 
-
-puts "xOld $marginleft"
-puts "yOld $margintop"
-
-    #Reset textbild coords to avoid margin overlapping for all cases
+    #Reset textbild coords to avoid margin violation
     lassign [resetTextpicCoords $marginleft $margintop] marginleft margintop
-    
-puts "xNeu $marginleft"
-puts "yNeu $margintop"
-
     set textpicX [image width textbild]
     set textpicY [image height textbild]
     set x2 [expr $marginleft + $textpicX]
     set y2 [expr $margintop + $textpicY]
 
+    #Recompute luminance for non-pnginfo pics, excluding RtL
+    ##if bdf::luminacy is not 0
+    if $luminacy {
+      set lumChanged 0
+     } elseif !$RtL {
+      set newLum [getAreaLuminacy hgbild [list $marginleft $margintop $x2 $y2]]
+      set lumChanged 1
+    }
 
-
-       #TODO see further down!
-          #recompute luminance for non-pnginfo pics
-          if [info exists pnginfo(Luminacy)] {
-#            set curLum $pnginfo(Luminacy)
-            set lumChanged 0
- 
-           } elseif !$RtL {
-            set newLum [getAreaLuminacy hgbild [list $marginleft $margintop $x2 $y2]]
-            set lumChanged 1
-          }
-
-    # R T L
+    #Handle RtL special cases
     if $RtL {
-
-      ## If no png info found: correct margin to the right if marginleft is left of centre
+      ##align text with right margin if marginleft is left of centre & no pnginfo found 
       if { ![info exists pnginfo(Marginleft)] && $marginleft < [expr $screenW/3] } {
-        #a) align text with right margin
         set marginleft [expr $screenW - $marginleft - $textpicX]
       }
-      #b) correct text colour if luminacy changed
-      if ![info exists pnginfo(Luminacy)] {
+     ##if no pnginfo found: check if luminacy changed
+      if !$luminacy {
         set newLum [getAreaLuminacy hgbild [list $marginleft $margintop $x2 $y2]]
         set lumChanged 1
       }
     } ;#END if RtL
     
-    ##check luminacy needs changing
+    #change font shades in case of changed luminacy
     if $lumChanged {
-#      set newLum [getAreaLuminacy hgbild "$marginleft $margintop $x2 $y2"]
-#      set colour::pnginfo(Luminacy) $newLum
       applyChangedLuminacy $marginleft $margintop $newLum
     }
 
-    #C) Copy textpic to final image  
+    #Copy textpic to final image  
     hgbild copy textbild -to $marginleft $margintop -compositingrule overlay
 
     #Cleanup
+    ##colour names must remain in ::colour for next run!
     namespace delete [namespace current]
-    catch {namespace delete colour}
+    namespace eval ::colour {
+      array unset pnginfo
+      unset picPath
+    }
+    
     #Return pic as function
     return hgbild
 
@@ -128,11 +121,12 @@ puts "yNeu $margintop"
 
 
   proc applyChangedLuminacy {marginleft margintop newLum} {
-    global fontcolortext colour::pnginfo
+    global fontcolortext 
+    #colour::pnginfo
             
     set textpicY [image height textbild]
     set textpicX [image width  textbild]
-    set curLum $pnginfo(Luminacy)
+    set curLum $bdf::luminacy
     
     ##recompute if luminacy changed
     #if {$curLum != $newLum} {

@@ -31,21 +31,37 @@ if {$enableRandomFontcolor} {
   set fontcolortext [getRandomFontcolor]
 }
 
+namespace eval bdf {
+    variable marginleft
+    variable margintop
+    variable luminacy
+    source $::Config
+}
+
 #Extract any info from PNG & export pngInfo to ::colour ns
 puts "\nReading PNG info from [file tail $picPath] ..."
+
 if {[readPngComment $picPath] == 0} {
-  puts "*No PNG info found!"
+  puts "*No PNG info found*"
+  
+  set bdf::luminacy 0
+  set bdf::marginleft $marginleft
+  set bdf::margintop $margintop
   
 } else {
 
   namespace eval colour {
     variable picPath $::picPath
-    array set pnginfo "[split [evalPngComment $picPath]]"
-    puts "pngLum $pnginfo(Luminacy)"
-    puts "pngLeft $pnginfo(Marginleft)"
-    puts "pngTop $pnginfo(Margintop)"
-  } 
+    array set pnginfo "[split [evalPngComment $picPath]]"  
+  }
+  
+  set bdf::luminacy $colour::pnginfo(Luminacy)
+  set bdf::marginleft $colour::pnginfo(Marginleft)
+  set bdf::margintop $colour::pnginfo(Margintop)
 }
+    puts "bdfLum  $bdf::luminacy"
+    puts "bdfLeft $bdf::marginleft"
+    puts "bdfTop  $bdf::margintop"
 
 #Printing   B D F 
 #puts "Creating BDF picture..."

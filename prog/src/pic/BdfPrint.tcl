@@ -6,7 +6,7 @@
 source $TwdTools
 source $BdfTools
 source $ImgTools
-#source $Config
+
 set TwdLang [getTwdLang $TwdFileName]
 set RtL [isRtL $TwdLang]
 puts $TwdLang
@@ -73,37 +73,38 @@ puts $fontcolortext
 setFontShades $fontcolortext
 
 #Set new margins if pnginfo found & set previously in colour:: ns
-namespace eval bdf {
+#namespace eval bdf {
 
-  #import global vars for any case
-  source $::Config
-  variable $::marginleft marginleft
-  variable $::margintop margintop
-puts " origLeft $marginleft"
-puts " origTop $margintop  "
+#  #import global vars for non-pnginfo case
+## source $::Config
+#puts "origLeft $marginleft"
+#puts "origTop $margintop"
+#  #variable $::marginleft marginleft
+#  #variable $::margintop margintop
 
-  #Set margins from pnginfo OR from Config 
-  if { [info exists colour::pnginfo(Marginleft)] && 
-       [info exists colour::pnginfo(Margintop)] } {
-  
-    ##make sure margins are not 0 (as intended if saved without pos info)
-    if { $colour::pnginfo(Marginleft) && $colour::pnginfo(Margintop) } {
-      set marginleft $colour::pnginfo(Marginleft)
-      set margintop  $colour::pnginfo(Margintop)
-    }
-puts "pngLeft $marginleft"
-puts "pngTop $margintop"
-
-  }
-
+#  #Set margins from pnginfo OR from Config 
+#  if { [info exists colour::pnginfo(Marginleft)] && 
+#       [info exists colour::pnginfo(Margintop)] } {
+#    ##make sure margins are not 0 (as intended if saved without pos info)
+#    if { $colour::pnginfo(Marginleft) && $colour::pnginfo(Margintop) } {
+#      set marginleft $colour::pnginfo(Marginleft)
+#      set margintop  $colour::pnginfo(Margintop)
+#    }
+#  }
+# 
+#puts "newLeft $marginleft"
+#puts "newTop $margintop"
+#  } ;#END bdf:: ns
 
   # 3)  I N I T I A L I S E   P R I N T I N G
 
+
   puts "Printing TWD text..."
 
-##Print image
-  set finalImg [printTwd $TwdFileName hgbild $marginleft $margintop]
-##Save image
+  ##print image
+  #set finalImg [bdf::printTwd $TwdFileName hgbild $marginleft $margintop]
+  set finalImg [bdf::printTwd $TwdFileName hgbild]
+  ##save image
   if {$platform=="windows"} {  
     $finalImg write $TwdTIF -format TIFF
     puts "Saved new image to:\n $TwdTIF"
@@ -116,4 +117,4 @@ puts "pngTop $margintop"
   #Cleanup original and final image
   image delete $finalImg
 
-} ;#END bdf:: ns
+

@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16feb21 pv
+# Updated: 24feb21 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -94,6 +94,7 @@ proc gradient {rgbhex factor {window .}} {
            [expr {($b>$max)?$max:(($b<0)?0:$b)}]]
 
   ### Return the new rgb string
+  #TODO watch out: number is very big! why?
   return $rgbhex
 } ;#END gradient
 
@@ -151,7 +152,6 @@ proc getAreaLuminacy {c item} {
   global colour::pnginfo brightThreshold darkThreshold
   
   puts "Scanning area for luminance..."
-puts "Coords: $item"
   
   #Test if "c" is canvas (with .) or image
   if {[string index $c 0] == "."} {
@@ -194,30 +194,10 @@ puts "Coords: $item"
       #add up r+g+b to sumTotal, dividing sum by 3 for each rgb
       lassign [$img get $xPos $yPos] r g b
       incr sumTotal [expr int($r + $g + $b)]
-#  puts $sumTotal
       incr numCols 3
     }
   }
-
   set avLum [expr int($sumTotal / $numCols)]
-
-proc dataRange {} {
-#TODO neuersuch mit data - may have more overhead because of hex2rgb!!!!
-set dataL [$img data]
-set yRange [lrange [lindex $dataL $y1] [lindex $dataL $y2] ]
-set xRange [lrange [lindex ... ??? 
-
-set x2
-set y2
-foreach row $dataL {
-  foreach pix $row {
-    lassign [hex2rgb $pix] r g b
-    incr avLumL [expr ($r + $g + $b) / 3]
-  }
-}
-
-set avLum [expr $avLumL / [llength $avLumL]]
-}
    
   ##very shade
   if {$avLum <= $darkThreshold} {
@@ -229,7 +209,7 @@ set avLum [expr $avLumL / [llength $avLumL]]
   } else {
     set lum 2
   }
-puts "Luminance $lum"
+  puts "New luminance $lum"
   return $lum
 } ;#END getAreaLuminacy
 
