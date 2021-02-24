@@ -2,11 +2,11 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 19feb21 pv
+# Updated: 24feb21 pv
 source $TwdTools
 source $BdfTools
 source $ImgTools
-source $Config
+#source $Config
 set TwdLang [getTwdLang $TwdFileName]
 set RtL [isRtL $TwdLang]
 puts $TwdLang
@@ -72,37 +72,16 @@ puts $fontcolortext
 #Compute avarage colours of text section - to be saved in colour:: as regHex sunHex shaHex
 setFontShades $fontcolortext
 
-#namespace eval colour {
-
-
-#  variable fontcolname $::fontcolortext
-#  
-#  variable Hex [set [namespace current]::fontcolname]
-#  set regHex [set $Hex]
-#    
-#  variable sunHex [gradient $regHex $sunFactor]
-#  variable shaHex [gradient $regHex $shadeFactor]
-
-##TODO get back to this?
-##lassign [setFontShades $Hex] regHex runHex shaHex
-#  
-#}
-
-  #return $colour::regHex
-#  append colpath colour :: $fontcolortext
-#  lassign [setFontShades [set colpath]] colour::regHex colour::sunHex shaHex
-
- ;#END colour:: namespace
-
 #Set new margins if pnginfo found & set previously in colour:: ns
 namespace eval bdf {
 
-#TODO old globals not 
   #import global vars for any case
-
+  source $::Config
   variable $::marginleft marginleft
   variable $::margintop margintop
-  
+puts " origLeft $marginleft"
+puts " origTop $margintop  "
+
   #Set margins from pnginfo OR from Config 
   if { [info exists colour::pnginfo(Marginleft)] && 
        [info exists colour::pnginfo(Margintop)] } {
@@ -112,17 +91,19 @@ namespace eval bdf {
       set marginleft $colour::pnginfo(Marginleft)
       set margintop  $colour::pnginfo(Margintop)
     }
+puts "pngLeft $marginleft"
+puts "pngTop $margintop"
+
   }
 
-puts "marginleft $marginleft"
-puts "margintop $margintop"
 
   # 3)  I N I T I A L I S E   P R I N T I N G
 
   puts "Printing TWD text..."
 
+##Print image
   set finalImg [printTwd $TwdFileName hgbild $marginleft $margintop]
-
+##Save image
   if {$platform=="windows"} {  
     $finalImg write $TwdTIF -format TIFF
     puts "Saved new image to:\n $TwdTIF"

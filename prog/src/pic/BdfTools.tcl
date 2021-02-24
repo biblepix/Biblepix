@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 23feb21 
+# Updated: 24feb21 
 
 namespace eval bdf {
 
@@ -18,12 +18,12 @@ namespace eval bdf {
 
     global RtL fontcolortext
     global colour::pnginfo
-
     set screenW [winfo screenwidth .]
 
+    #a) ..
     parseTwdTextParts $TwdFileName
 
-    #Create global picture functions
+    #b) Create global picture functions
     image create photo textbild
     printTwdTextParts textbild
 
@@ -410,7 +410,7 @@ puts "yNeu $margintop"
 
     ##for RtL text
     } else {
-      ##a) if no png info found, move text to the right - #?TODO? recompute luminacy for new area?!
+      ##a) if no png info found, move text to the right
       set operator -
       source $BdfBidi
       set textLine [bidi $textLine $TwdLang]
@@ -465,6 +465,4 @@ puts "yNeu $margintop"
   } ;#END printTextLine
 
 } ;#END bdf:: namespace
-
-
 
