@@ -1,11 +1,11 @@
 # ~/Biblepix/prog/src/pic/annotatePng.tcl
 # Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 7feb pv
+# Updated 25feb pv
 
 # evalPngComment
 ##evaluates result of readPngComment
-##returns Marginleft & Marginright & Luminacy as array
+##returns Marginleft & Marginright & Luminacy as list
 ##called by Image 
 proc evalPngComment {file} {
   set T [readPngComment $file]
@@ -18,7 +18,7 @@ proc evalPngComment {file} {
   set Y [string range [regexp -inline {Y[0-9]*} $T] 1 end]
   set L [string index [regexp -inline {L[0-9]} $T] end]
   #return as array
-  return "Marginleft $X Margintop $Y Luminacy $L"
+  return [list $X $Y $L]
 }
 
 ##################################################################

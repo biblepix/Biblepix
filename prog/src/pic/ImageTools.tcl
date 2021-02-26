@@ -109,32 +109,35 @@ proc hex2rgb {hex} {
 ##called by setCanvasFontColour & BdfPrint & createMovingTextBox
 proc setFontShades {fontcolortext} {
   global sunFactor shadeFactor
+  global lumFactor1 lumFactor3
+  global bdf::luminacy
+  
+#set shadeFactor $lumFactor1
+#set sunFactor $lumFactor3
 
   lappend colpath colour:: $fontcolortext
   variable fontcol $colpath
    
   #1)Determine colour arrays
   set regHex [set colour::$fontcolortext]
-  puts $regHex
+  #puts $regHex
   set sunHex [gradient $regHex $sunFactor]
   set shaHex [gradient $regHex $shadeFactor]
 
   #Reset if PNG luminance info differs from 2
-  if [info exists colour::pnginfo(Luminacy)] {
-    set lum $colour::pnginfo(Luminacy)
-    puts "Luminacy: $lum"
+ # puts "Luminacy: $luminacy"
     
-    if {$lum == 3} {
-      set shaHex [gradient $shaHex $shadeFactor]
-      set regHex [gradient $regHex $shadeFactor]
-      set sunHex [gradient $sunHex $shadeFactor]
-    ##sun
-    } elseif {$lum == 1} {
-      set sunHex [gradient $sunHex $sunFactor]
-      set regHex [gradient $regHex $sunFactor]
-      set shaHex [gradient $shaHex $sunFactor]
-    }
+  if {$luminacy == 3} {
+    set shaHex [gradient $shaHex $lumFactor1]
+    set regHex [gradient $regHex $lumFactor1]
+    set sunHex [gradient $sunHex $lumFactor1]
+  ##sun
+  } elseif {$luminacy == 1} {
+    set sunHex [gradient $sunHex $lumFactor3]
+    set regHex [gradient $regHex $lumFactor3]
+    set shaHex [gradient $shaHex $lumFactor3]
   }
+
   #export hex values to colour:: ns (needed by printTwd)
   set colour::regHex $regHex
   set colour::sunHex $sunHex
@@ -186,7 +189,7 @@ proc getAreaLuminacy {c item} {
     set skip 6
   }
 
-  #scan given canvas/image area
+  #scan given canvas/image area - TODO manchmal ist sumTotal leer - liegts am Skip?
   for {set yPos $y1} {$yPos < $y2} {incr yPos $skip} {
 
     for {set xPos $x1} {$xPos < $x2} {incr xPos $skip} {
@@ -209,6 +212,7 @@ proc getAreaLuminacy {c item} {
   } else {
     set lum 2
   }
+  
   puts "New luminance $lum"
   return $lum
 } ;#END getAreaLuminacy
@@ -259,35 +263,58 @@ proc trimPic {pic x1 y1 x2 y2} {
 proc cropPic2Textwidth {fontcolortext} {
   puts "Cropping text picture..."
 
+  set fontHex [set colour::$fontcolortext]
+  puts $fontHex
+  
   #read out textbild
   set dataL [textbild data]
+ 
+# proc joelstuff {} { 
+#+  set i 0
+#+    foreach pixel $row {
+#+      if {$pixel == {#000000}} {
+#+        incr i
+#+        continue
+#+      } else {
+#+        set minleft [expr min($i, $minleft)]
+#+        break
+#+      }
+#}}
+
+  #puts $dataL
   if {$dataL == ""} { return "No data for croppig found" }
+ 
+  set i 0 
   
-  #Detect 1st pixel that is not black for each pixel line
-  set minleft [image width textbild]
   foreach row $dataL {
-    set i 0
-    foreach pixel $row {
-      if {$pixel == {#000000}} {
-        incr i
-        continue
-      } else {
-        set minleft [expr min($i, $minleft)]
-        break
-      }
+    set minleft [lsearch $row $fontHex]
+    if {$minleft != "-1"} {
+     # set minleft [expr min($i, $minleft)]
+    lappend minleftL $minleft
     }
   }
-
+#  puts $minleftL
+# puts $minleft 
+  set leftL [join $minleftL ,]
+  set minleft [expr min($leftL)]
+  
+puts "minleft $minleft"
   #Recreate Cropbild
-  set cropbild [image create photo]
-  $cropbild copy textbild -from $minleft 0 [image width textbild] [image height textbild]
+  set imgW [image width textbild]
+  set imgH [image height textbild]
+  set reqW [expr $imgW - $minleft]
+  image create photo cropbild -width $reqW  -height $imgH
+
+#TODO geht nich!  
+  cropbild copy textbild -from $minleft 0 $reqW $imgH
   
   textbild blank
-  textbild copy $cropbild -shrink
-  textbild conf -width [image width $cropbild]
+  textbild copy cropbild -shrink
   
-  image delete $cropbild
-#  return "Created croppic"
+#puts [textbild conf -width]
+  
+  #image delete cropbild
+  #return cropbild
 } ;#END cropPic2Textwidth
 
 # resizePic

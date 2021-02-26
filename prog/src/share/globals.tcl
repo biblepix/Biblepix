@@ -194,13 +194,15 @@ array set SilverArr {r 160 g 160 b 160}
 array set SlateArr {r 120 g 120 b 120}
 
 #Define colour computing values for above mean colours
-set sunFactor 0.35
-set shadeFactor -0.35
+set sunFactor 0.45
+set shadeFactor -0.45
 
-#these define where a background should be considered "dark" or "bright"
-##and by what factor font shades should yet be adjusted up or down
+#Thresholds to define where a background should be considered "dark" or "bright"
+##and by what factor font shades should yet be adjusted up or down for changed luminacy (standard=2)
 set darkThreshold 80
 set brightThreshold 180
+set lumFactor1 -0.3
+set lumFactor3 0.3
 
 #Bildformate & DesktopPicturesDir
 if {$platform == "unix"} {

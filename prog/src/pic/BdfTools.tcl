@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 24feb21 
+# Updated: 26feb21 
 
 namespace eval bdf {
 
@@ -16,70 +16,117 @@ namespace eval bdf {
   ##called by BdfPrint
   proc printTwd {TwdFileName img} {
 
-    global RtL fontcolortext
-    global colour::pnginfo
-    global bdf::marginleft
-    global bdf::margintop
+    global ::RtL ::fontcolortext
+    global bdf::pnginfo
+    #global bdf::marginleft
+    #global bdf::margintop
     global bdf::luminacy
-    
     set screenW [winfo screenwidth .]
     
     #Create global picture function
     image create photo textbild
-    
+#textbild put red
+      
     #Get text into bdf:: vars & print to textpic
     parseTwdTextParts $TwdFileName
     printTwdTextParts textbild
 
+#TODO geht nicht, Bild hat 1000!!!!!!!!!!!!!!!!!!!!!
     #Crop pic to text width if RtL
     if $RtL {
       cropPic2Textwidth $fontcolortext
+   #   set textpicW [image width textbild]
+    #  textbild blank
+    #  textbild copy cropbild -shrink
+    }
+    
+    #Set margins to default if no pnginfo found (=0)
+    if { !$bdf::marginleft || !$bdf::margintop} {
+      
+      set marginleft $::marginleft
+      set margintop $::margintop
+      set pngmargins 0
+      set minmarg 15
+    
+puts "marginleft1 $marginleft"
+
     }
 
     #Reset textbild coords to avoid margin violation
-    lassign [resetTextpicCoords $marginleft $margintop] marginleft margintop
-    set textpicX [image width textbild]
-    set textpicY [image height textbild]
-    set x2 [expr $marginleft + $textpicX]
-    set y2 [expr $margintop + $textpicY]
-
+    lassign [resetTextpicCoords $marginleft $margintop] x1 y1
+    
+    set textpicW [image width textbild]
+    set textpicH [image height textbild]
+    set x2 [expr $x1 + $textpicW]
+    set y2 [expr $y1 + $textpicH]
+    
     #Recompute luminance for non-pnginfo pics, excluding RtL
     ##if bdf::luminacy is not 0
     if $luminacy {
       set lumChanged 0
+
      } elseif !$RtL {
-      set newLum [getAreaLuminacy hgbild [list $marginleft $margintop $x2 $y2]]
-      set lumChanged 1
+
+       set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]]
+       set lumChanged 1
     }
 
     #Handle RtL special cases
     if $RtL {
-      ##align text with right margin if marginleft is left of centre & no pnginfo found 
-      if { ![info exists pnginfo(Marginleft)] && $marginleft < [expr $screenW/3] } {
-        set marginleft [expr $screenW - $marginleft - $textpicX]
+    
+      ##align text with right margin if no pnginfo found 
+      if !$pngmargins {
+      
+        ##and if default marginleft is leftish of centre
+        if {$x1 < [expr $screenW/3] } {
+        
+          set x1 [expr $screenW - $textpicW - $minmarg]
+        #  set x1 700
+          
+          set x2 [expr $x1 + $textpicW] 
+        }
+
+
+#puts "marginleft3 $marginleft"
       }
-     ##if no pnginfo found: check if luminacy changed
+
+#array set textpicCoords "x1 $marginleft"
+#array set textpicCoords "y1 $margintop"
+
+#array set textpicCoords "x2 [expr $marginleft + $textpicW]"
+#array set textpicCoords "y2 [expr $margintop + $textpicH]"
+
+#puts "textpicW $textpicW"
+#parray textpicCoords
+#puts [array get textpicCoords]
+
+     ##if lum=0 check if luminacy changed
       if !$luminacy {
-        set newLum [getAreaLuminacy hgbild [list $marginleft $margintop $x2 $y2]]
+      
+      #  set newLum [getAreaLuminacy hgbild [list $textpicCoords(x1) $textpicCoords(y1) $textpicCoords(x2) $textpicCoords(y2)]]
+        set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]]
         set lumChanged 1
       }
+      
     } ;#END if RtL
     
-    #change font shades in case of changed luminacy
+    #in case of changed luminacy rerun printTwdTextParts
     if $lumChanged {
-      applyChangedLuminacy $marginleft $margintop $newLum
+      setFontShades $fontcolortext
+      textbild blank
+      printTwdTextParts textbild
     }
 
+puts $x1
+puts $y1
     #Copy textpic to final image  
-    hgbild copy textbild -to $marginleft $margintop -compositingrule overlay
+#    hgbild copy textbild -to $marginleft $margintop
+    hgbild copy textbild -to $x1 $y1
 
     #Cleanup
     ##colour names must remain in ::colour for next run!
     namespace delete [namespace current]
-    namespace eval ::colour {
-      array unset pnginfo
-      unset picPath
-    }
+    #unset colour::picPath
     
     #Return pic as function
     return hgbild
@@ -119,41 +166,6 @@ namespace eval bdf {
     return "$marginleft $margintop"
   }
 
-
-  proc applyChangedLuminacy {marginleft margintop newLum} {
-    global fontcolortext 
-    #colour::pnginfo
-            
-    set textpicY [image height textbild]
-    set textpicX [image width  textbild]
-    set curLum $bdf::luminacy
-    
-    ##recompute if luminacy changed
-    #if {$curLum != $newLum} {
-      
-      puts "Adapting font luminance..."
-      lassign [setFontShades $fontcolortext] newReg newSun newSha
-    
-      ##get old shades - TODO check Hex formats!
-      set oldReg $colour::regHex
-      set oldSun $colour::sunHex
-      set oldSha $colour::shaHex      
- 
-      ##replace colours
-      set dataL [textbild data]
-      regsub -all $oldReg $dataL $newReg newData
-      regsub -all $oldSun $dataL $newSun newData
-      regsub -all $oldSha $dataL $newSha newData
-  
-  
-  #TODO schwarzer hintergrund?!
-      ##copy new data to croppic
-      image create photo croppic
-      croppic put $newData        
-      textbild blank
-      textbild copy croppic -compositingrule overlay
-    #}
-  } ;#END applyChangedLuminacy
   
   # parseTwdTextParts
   ## prepares Twd nodes in a separate namespace for further processing

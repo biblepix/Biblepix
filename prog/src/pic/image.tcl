@@ -32,37 +32,40 @@ if {$enableRandomFontcolor} {
 }
 
 namespace eval bdf {
-    variable marginleft
-    variable margintop
-    variable luminacy
-    source $::Config
-}
+  variable marginleft
+  variable margintop
+  variable luminacy
+  variable picPath $::picPath
 
-#Extract any info from PNG & export pngInfo to ::colour ns
-puts "\nReading PNG info from [file tail $picPath] ..."
+  source $::Config
 
-if {[readPngComment $picPath] == 0} {
-  puts "*No PNG info found*"
-  
-  set bdf::luminacy 0
-  set bdf::marginleft $marginleft
-  set bdf::margintop $margintop
-  
-} else {
 
-  namespace eval colour {
-    variable picPath $::picPath
-    array set pnginfo "[split [evalPngComment $picPath]]"  
+  #Extract any info from PNG & export pngInfo to ::colour ns
+  puts "\nReading PNG info from [file tail $picPath] ..."
+
+  #A) Use Config values ??later
+  if [catch {evalPngComment $picPath}] {
+    puts "*No PNG info found*"
+    set luminacy 0
+    set marginleft 0
+    set margintop 0
+
+  #B) Use pnginfo values 
+  } else {
+
+    lassign [evalPngComment $picPath] marginleft margintop luminacy  
+    if !$marginleft {
+      set marginleft $::marginleft
+    }
+    if !$margintop {
+      set margintop $::margintop
+    }
   }
-  
-  set bdf::luminacy $colour::pnginfo(Luminacy)
-  set bdf::marginleft $colour::pnginfo(Marginleft)
-  set bdf::margintop $colour::pnginfo(Margintop)
-}
-    puts "bdfLum  $bdf::luminacy"
-    puts "bdfLeft $bdf::marginleft"
-    puts "bdfTop  $bdf::margintop"
 
+puts "bdfLum  $bdf::luminacy"
+puts "bdfLeft $bdf::marginleft"
+puts "bdfTop  $bdf::margintop"
+}
 #Printing   B D F 
 #puts "Creating BDF picture..."
 source $BdfPrint
