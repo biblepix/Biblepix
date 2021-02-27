@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 26feb21 
+# Updated: 27feb21 
 
 namespace eval bdf {
 
@@ -25,19 +25,19 @@ namespace eval bdf {
     
     #Create global picture function
     image create photo textbild
-#textbild put red
       
     #Get text into bdf:: vars & print to textpic
     parseTwdTextParts $TwdFileName
     printTwdTextParts textbild
 
-#TODO geht nicht, Bild hat 1000!!!!!!!!!!!!!!!!!!!!!
+
+
     #Crop pic to text width if RtL
     if $RtL {
-      cropPic2Textwidth $fontcolortext
+     # cropPic2Textwidth $fontcolortext
    #   set textpicW [image width textbild]
-    #  textbild blank
-    #  textbild copy cropbild -shrink
+      cropPic2Textwidth $fontcolortext
+      #textbild copy cropbild -shrink
     }
     
     #Set margins to default if no pnginfo found (=0)
@@ -65,7 +65,7 @@ puts "marginleft1 $marginleft"
     if $luminacy {
       set lumChanged 0
 
-     } elseif !$RtL {
+    } elseif !$RtL {
 
        set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]]
        set lumChanged 1
@@ -80,53 +80,39 @@ puts "marginleft1 $marginleft"
         ##and if default marginleft is leftish of centre
         if {$x1 < [expr $screenW/3] } {
         
-          set x1 [expr $screenW - $textpicW - $minmarg]
-        #  set x1 700
-          
+          set x1 [expr $screenW - $textpicW - $::marginleft]
           set x2 [expr $x1 + $textpicW] 
         }
 
-
-#puts "marginleft3 $marginleft"
-      }
-
-#array set textpicCoords "x1 $marginleft"
-#array set textpicCoords "y1 $margintop"
-
-#array set textpicCoords "x2 [expr $marginleft + $textpicW]"
-#array set textpicCoords "y2 [expr $margintop + $textpicH]"
-
-#puts "textpicW $textpicW"
-#parray textpicCoords
-#puts [array get textpicCoords]
+     }
 
      ##if lum=0 check if luminacy changed
-      if !$luminacy {
-      
-      #  set newLum [getAreaLuminacy hgbild [list $textpicCoords(x1) $textpicCoords(y1) $textpicCoords(x2) $textpicCoords(y2)]]
+      if !$luminacy { 
         set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]]
         set lumChanged 1
       }
       
     } ;#END if RtL
     
+    
+    
     #in case of changed luminacy rerun printTwdTextParts
+#TODO isn'tworking with RTL !!! - WHY?
+  if !$RtL {
     if $lumChanged {
       setFontShades $fontcolortext
-      textbild blank
+      image create photo textbild
+      
       printTwdTextParts textbild
     }
-
+}
 puts $x1
 puts $y1
     #Copy textpic to final image  
-#    hgbild copy textbild -to $marginleft $margintop
-    hgbild copy textbild -to $x1 $y1
+    hgbild copy textbild -to $x1 $y1 -compositingrule overlay
 
     #Cleanup
-    ##colour names must remain in ::colour for next run!
     namespace delete [namespace current]
-    #unset colour::picPath
     
     #Return pic as function
     return hgbild

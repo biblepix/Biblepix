@@ -149,7 +149,7 @@ proc setFontShades {fontcolortext} {
 
 
 # getAreaLuminacy
-##computes luminance 1-3 for canvas text section
+##computes luminance 1-3 for bdf::textpic & canvas text section
 ##called by printTwd & SetupRepos
 proc getAreaLuminacy {c item} {
   global colour::pnginfo brightThreshold darkThreshold
@@ -189,7 +189,7 @@ proc getAreaLuminacy {c item} {
     set skip 6
   }
 
-  #scan given canvas/image area - TODO manchmal ist sumTotal leer - liegts am Skip?
+  #scan given canvas/image area
   for {set yPos $y1} {$yPos < $y2} {incr yPos $skip} {
 
     for {set xPos $x1} {$xPos < $x2} {incr xPos $skip} {
@@ -264,54 +264,36 @@ proc cropPic2Textwidth {fontcolortext} {
   puts "Cropping text picture..."
 
   set fontHex [set colour::$fontcolortext]
-  puts $fontHex
-  
-  #read out textbild
   set dataL [textbild data]
- 
-# proc joelstuff {} { 
-#+  set i 0
-#+    foreach pixel $row {
-#+      if {$pixel == {#000000}} {
-#+        incr i
-#+        continue
-#+      } else {
-#+        set minleft [expr min($i, $minleft)]
-#+        break
-#+      }
-#}}
-
-  #puts $dataL
   if {$dataL == ""} { return "No data for croppig found" }
- 
-  set i 0 
   
+  set minleft 1000 
+
   foreach row $dataL {
-    set minleft [lsearch $row $fontHex]
-    if {$minleft != "-1"} {
-     # set minleft [expr min($i, $minleft)]
-    lappend minleftL $minleft
+    set index [lsearch $row $fontHex]
+    if {$index != "-1"} {
+      set minleft [expr min($index, $minleft)]
     }
   }
-#  puts $minleftL
-# puts $minleft 
-  set leftL [join $minleftL ,]
-  set minleft [expr min($leftL)]
-  
 puts "minleft $minleft"
-  #Recreate Cropbild
+  
+  #Create Cropbild
   set imgW [image width textbild]
   set imgH [image height textbild]
-  set reqW [expr $imgW - $minleft]
-  image create photo cropbild -width $reqW  -height $imgH
+puts "$imgW x $imgH "
 
-#TODO geht nich!  
-  cropbild copy textbild -from $minleft 0 $reqW $imgH
+  image create photo cropbild
+  cropbild copy textbild -from $minleft 0 -shrink
+ 
+  image delete textbild
+  image create photo textbild
+  textbild copy cropbild
+
+cropbild write /tmp/crop.png -format PNG 
+textbild write /tmp/textbild.png -format PNG
   
-  textbild blank
-  textbild copy cropbild -shrink
-  
-#puts [textbild conf -width]
+#  textbild blank
+ # textbild copy cropbild -shrink
   
   #image delete cropbild
   #return cropbild
