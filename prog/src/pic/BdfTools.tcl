@@ -77,8 +77,6 @@ namespace eval bdf {
       
     } ;#END if RtL
     
-    
-    
     #in case of changed luminacy rerun printTwdTextParts
     if $lumChanged {
       setFontShades $fontcolortext
