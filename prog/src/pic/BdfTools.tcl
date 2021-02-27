@@ -15,11 +15,12 @@ namespace eval bdf {
   ##Toplevel printing proc
   ##called by BdfPrint
   proc printTwd {TwdFileName img} {
-
+    ##global vars
     global ::RtL ::fontcolortext
-    global bdf::pnginfo
-    #global bdf::marginleft
-    #global bdf::margintop
+    ##vars set by Image
+    global bdf::marginleft
+    global bdf::margintop
+    global bdf::pngmargins
     global bdf::luminacy
     set screenW [winfo screenwidth .]
     
@@ -30,28 +31,11 @@ namespace eval bdf {
     parseTwdTextParts $TwdFileName
     printTwdTextParts textbild
 
-
-
     #Crop pic to text width if RtL
     if $RtL {
-     # cropPic2Textwidth $fontcolortext
-   #   set textpicW [image width textbild]
       cropPic2Textwidth $fontcolortext
-      #textbild copy cropbild -shrink
     }
     
-    #Set margins to default if no pnginfo found (=0)
-    if { !$bdf::marginleft || !$bdf::margintop} {
-      
-      set marginleft $::marginleft
-      set margintop $::margintop
-      set pngmargins 0
-      set minmarg 15
-    
-puts "marginleft1 $marginleft"
-
-    }
-
     #Reset textbild coords to avoid margin violation
     lassign [resetTextpicCoords $marginleft $margintop] x1 y1
     
@@ -68,6 +52,7 @@ puts "marginleft1 $marginleft"
     } elseif !$RtL {
 
        set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]]
+       set bdf::luminacy $newLum
        set lumChanged 1
     }
 
@@ -75,20 +60,18 @@ puts "marginleft1 $marginleft"
     if $RtL {
     
       ##align text with right margin if no pnginfo found 
-      if !$pngmargins {
-      
+      if !$pngmargins {      
         ##and if default marginleft is leftish of centre
         if {$x1 < [expr $screenW/3] } {
-        
           set x1 [expr $screenW - $textpicW - $::marginleft]
           set x2 [expr $x1 + $textpicW] 
         }
-
      }
 
      ##if lum=0 check if luminacy changed
       if !$luminacy { 
         set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]]
+        set bdf::luminacy $newLum
         set lumChanged 1
       }
       
@@ -97,18 +80,16 @@ puts "marginleft1 $marginleft"
     
     
     #in case of changed luminacy rerun printTwdTextParts
-#TODO isn'tworking with RTL !!! - WHY?
-  if !$RtL {
     if $lumChanged {
       setFontShades $fontcolortext
       image create photo textbild
-      
       printTwdTextParts textbild
+      if $RtL {
+        cropPic2Textwidth $fontcolortext
+     }
     }
-}
-puts $x1
-puts $y1
-    #Copy textpic to final image  
+
+    #Copy textpic to final image - for testing image width use '-comp_rule set'
     hgbild copy textbild -to $x1 $y1 -compositingrule overlay
 
     #Cleanup

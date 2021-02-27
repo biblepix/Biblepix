@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24feb21 pv
+# Updated: 27feb21 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -265,16 +265,20 @@ proc cropPic2Textwidth {fontcolortext} {
 
   set fontHex [set colour::$fontcolortext]
   set dataL [textbild data]
-  if {$dataL == ""} { return "No data for croppig found" }
-  
-  set minleft 1000 
+  if {$dataL == ""} { return "No data for cropping found" }
 
   foreach row $dataL {
     set index [lsearch $row $fontHex]
     if {$index != "-1"} {
-      set minleft [expr min($index, $minleft)]
+      lappend minL $index 
     }
   }
+#TODO testing: this should never happen!
+if ![info exists minL] {
+  return -error 0
+}  
+set minList [join $minL ,]
+set minleft [expr min($minList)]
 puts "minleft $minleft"
   
   #Create Cropbild
@@ -283,20 +287,17 @@ puts "minleft $minleft"
 puts "$imgW x $imgH "
 
   image create photo cropbild
-  cropbild copy textbild -from $minleft 0 -shrink
+  cropbild copy textbild -from $minleft 0
  
   image delete textbild
   image create photo textbild
   textbild copy cropbild
 
-cropbild write /tmp/crop.png -format PNG 
-textbild write /tmp/textbild.png -format PNG
-  
-#  textbild blank
- # textbild copy cropbild -shrink
-  
-  #image delete cropbild
-  #return cropbild
+#TODO testing
+#cropbild write /tmp/cropbild.png -format PNG 
+#textbild write /tmp/textbild.png -format PNG
+    
+  image delete cropbild
 } ;#END cropPic2Textwidth
 
 # resizePic

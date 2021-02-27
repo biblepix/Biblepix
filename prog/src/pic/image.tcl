@@ -1,7 +1,7 @@
 # ~/Biblepix/progs/src/pic/image.tcl
 # Initiates BdfPrint, called by biblepix.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 10feb21 pv
+# Updated 27feb21 pv
 
 source $ImgTools
 source $AnnotatePng
@@ -37,31 +37,36 @@ namespace eval bdf {
   variable luminacy
   variable picPath $::picPath
 
-  source $::Config
-
-
   #Extract any info from PNG & export pngInfo to ::colour ns
   puts "\nReading PNG info from [file tail $picPath] ..."
-
+  set pngmargins 1
+   
   #A) Use Config values ??later
-  if [catch {evalPngComment $picPath}] {
-    puts "*No PNG info found*"
-    set luminacy 0
-    set marginleft 0
-    set margintop 0
-
-  #B) Use pnginfo values 
-  } else {
-
-    lassign [evalPngComment $picPath] marginleft margintop luminacy  
-    if !$marginleft {
-      set marginleft $::marginleft
-    }
-    if !$margintop {
-      set margintop $::margintop
-    }
+  catch {evalPngComment $picPath} res 
+    
+    if {$res == 0} {
+       puts "*No PNG info found*"
+      set luminacy 0
+      
+    source $::Config
+    set marginleft $marginleft
+    set margintop $margintop
+    set pngmargins 0
+    
+    } else {   
+    
+      lassign $res marginleft margintop luminacy  
+      ##margin info may be missing from png!
+      if !$marginleft {
+        puts "*No PNG margin info found!"
+        source $::Config
+        set marginleft $marginleft
+        set margintop $margintop
+        set pngmargins 0  
+      }
+    
   }
-
+  
 puts "bdfLum  $bdf::luminacy"
 puts "bdfLeft $bdf::marginleft"
 puts "bdfTop  $bdf::margintop"
