@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27feb21 pv
+# Updated: 28feb21 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -257,47 +257,41 @@ proc trimPic {pic x1 y1 x2 y2} {
 }
 
 # cropPic2Textwidth
-##crops RtL image to text width
+##crops RtL textbild image to text width
 ##works on basis of image data lists
 ##called by printTwd
-proc cropPic2Textwidth {fontcolortext} {
+proc cropPic2Textwidth {} {
   puts "Cropping text picture..."
 
-  set fontHex [set colour::$fontcolortext]
-  set dataL [textbild data]
+  catch {set dataL [textbild data]}
   if {$dataL == ""} { return "No data for cropping found" }
 
+  #scan datalist for 1st non-black pixel per row  
+  set minleft 1000
+  set null "#000000"
+  
   foreach row $dataL {
-    set index [lsearch $row $fontHex]
-    if {$index != "-1"} {
-      lappend minL $index 
+    set i 0  
+ 
+    foreach pixel $row {
+      if {$pixel == $null} {
+        incr i
+        continue
+      } else {
+        set minleft [expr min($i, $minleft)]
+        break
+      }
     }
   }
-#TODO testing: this should never happen!
-if ![info exists minL] {
-  return -error 0
-}  
-set minList [join $minL ,]
-set minleft [expr min($minList)]
-puts "minleft $minleft"
-  
-  #Create Cropbild
-  set imgW [image width textbild]
-  set imgH [image height textbild]
-puts "$imgW x $imgH "
-
+     
+  #Refill textbild to fit size (!blanking doesn't work)
   image create photo cropbild
   cropbild copy textbild -from $minleft 0
- 
   image delete textbild
   image create photo textbild
   textbild copy cropbild
-
-#TODO testing
-#cropbild write /tmp/cropbild.png -format PNG 
-#textbild write /tmp/textbild.png -format PNG
-    
   image delete cropbild
+
 } ;#END cropPic2Textwidth
 
 # resizePic

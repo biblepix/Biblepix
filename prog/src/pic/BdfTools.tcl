@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 27feb21 
+# Updated: 28feb21 
 
 namespace eval bdf {
 
@@ -33,7 +33,7 @@ namespace eval bdf {
 
     #Crop pic to text width if RtL
     if $RtL {
-      cropPic2Textwidth $fontcolortext
+      cropPic2Textwidth
     }
     
     #Reset textbild coords to avoid margin violation
@@ -83,7 +83,7 @@ namespace eval bdf {
       image create photo textbild
       printTwdTextParts textbild
       if $RtL {
-        cropPic2Textwidth $fontcolortext
+        cropPic2Textwidth
      }
     }
 
