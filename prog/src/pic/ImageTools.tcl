@@ -110,11 +110,14 @@ proc hex2rgb {hex} {
 proc setFontShades {fontcolortext} {
   global sunFactor shadeFactor
   global lumFactor1 lumFactor3
-  global bdf::luminacy
-  
-#set shadeFactor $lumFactor1
-#set sunFactor $lumFactor3
 
+  #Precaution for canvases in Setup
+  if [namespace exists bdf] {
+    global bdf::luminacy
+  } else {
+    set luminacy 2
+  }
+  
   lappend colpath colour:: $fontcolortext
   variable fontcol $colpath
    
@@ -125,8 +128,6 @@ proc setFontShades {fontcolortext} {
   set shaHex [gradient $regHex $shadeFactor]
 
   #Reset if PNG luminance info differs from 2
- # puts "Luminacy: $luminacy"
-    
   if {$luminacy == 3} {
     set shaHex [gradient $shaHex $lumFactor1]
     set regHex [gradient $regHex $lumFactor1]
