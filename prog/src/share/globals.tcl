@@ -190,7 +190,11 @@ set fontcolourL {Blue Brown Gold Green Silver Slate}
 array set BlueArr {r 30 g 100 b 244}
 array set BrownArr {r 150 g 40 b 40}
 array set GoldArr  {r 255 g 215 b 0}
-array set GreenArr {r 60 g 185 b 120}
+
+#array set GreenArr {r 60 g 185 b 120}
+#10% dunkler:
+array set GreenArr {r 54 g 167 b 108}
+
 array set SilverArr {r 160 g 160 b 160}
 array set SlateArr {r 120 g 120 b 120}
 
