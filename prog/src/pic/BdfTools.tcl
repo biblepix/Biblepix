@@ -64,11 +64,14 @@ namespace eval bdf {
         ##and if default marginleft is leftish of centre
         if {$x1 < [expr $screenW/3] } {
           set x1 [expr $screenW - $textpicW - $::marginleft]
-          set x2 [expr $x1 + $textpicW] 
-        }
-     }
+          set x2 [expr $x1 + $textpicW]
+          ##luminacy must be rechecked
+          set luminacy 0
 
-     ##if lum=0 check if luminacy changed
+        }
+      }
+
+      ##if lum=0 check if luminacy changed
       if !$luminacy { 
         set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]]
         set bdf::luminacy $newLum

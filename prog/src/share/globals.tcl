@@ -6,6 +6,7 @@
 
 #set version "3.2"
 set version "4.0."
+
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
@@ -193,7 +194,7 @@ array set GreenArr {r 60 g 185 b 120}
 array set SilverArr {r 160 g 160 b 160}
 array set SlateArr {r 120 g 120 b 120}
 
-#Define colour computing values for above mean colours
+#Define font shade values for above mean colours
 set sunFactor 0.45
 set shadeFactor -0.45
 
@@ -201,8 +202,9 @@ set shadeFactor -0.45
 ##and by what factor font shades should yet be adjusted up or down for changed luminacy (standard=2)
 set darkThreshold 80
 set brightThreshold 180
-set lumFactor1 -0.3
-set lumFactor3 0.3
+## 0 = colour / 0.1-9 = whiter / -0.1-9 = blacker
+set lumFactor1 -0.2
+set lumFactor3 0.2
 
 #Bildformate & DesktopPicturesDir
 if {$platform == "unix"} {
