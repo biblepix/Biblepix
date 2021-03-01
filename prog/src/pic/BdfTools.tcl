@@ -134,7 +134,6 @@ namespace eval bdf {
     return "$marginleft $margintop"
   }
 
-  
   # parseTwdTextParts
   ## prepares Twd nodes in a separate namespace for further processing
   ## called by printTwd
@@ -273,31 +272,6 @@ namespace eval bdf {
     }
     #Print ref2
     set y [printTextLine ${markRef}${ref2}${markText} $x $y $img TAB]
-
-
-#TODO yor x's and y's are in a muddle!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#it's probably evalMargin...
-    #EVALUATE MARGIN ERRORS
-#    lassign [evalMarginErrors $x $y] newX newY
-#puts "$x $y"
-#puts "$newX $newY"
-#    ##A) if none, return $img
-#    if {$newX == $x && $newY == $y} {
-#      
-#      return $img
-#      
-#    ##B) if some, return new coords for fresh run of this prog
-#    } else {
-
-#      if {$newX != $x} {set x $newX} 
-#      if {$newY != $y} {set y $newY}
-#      
-#      return "$x $y"
-#    }
-#    
-
-#  testoverlay write /tmp/testoverlay.png -format PNG
-
   } ;#END printTwdTextParts
 
 
