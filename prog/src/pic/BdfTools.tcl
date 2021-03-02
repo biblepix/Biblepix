@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 28feb21 
+# Updated: 2mch21 
 
 namespace eval bdf {
 
@@ -101,7 +101,7 @@ namespace eval bdf {
 
   } ;#End printTwd
 
-  # setupTextpic
+  # resetTextpicCoords
   ##fits textbild onto hgbild & 
   ##returns new marginleft + margintop
   ##called by twdPrint
@@ -135,7 +135,7 @@ namespace eval bdf {
   }
 
   # parseTwdTextParts
-  ## prepares Twd nodes in a separate namespace for further processing
+  ## prepares Twd nodes for further processing
   ## called by printTwd
   proc parseTwdTextParts {TwdFileName} {
     global TwdLang
