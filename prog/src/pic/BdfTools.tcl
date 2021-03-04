@@ -302,7 +302,7 @@ namespace eval bdf {
     set pixelLines $curLetter(BITMAP)
     
     foreach pxLine $pixelLines {
-      if {yCur < 0} {
+      if {$yCur < 0} {
         incr yCur
         continue
       }
