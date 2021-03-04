@@ -302,26 +302,34 @@ namespace eval bdf {
     set pixelLines $curLetter(BITMAP)
     
     foreach pxLine $pixelLines {
+      if {yCur < 0} {
+        incr yCur
+        continue
+      }
+
       set xCur $xLetter
       for {set i 0} {$i < $curLetter(BBx)} {incr i} {
         set pxValue [string index $pxLine $i]
-        
+
         if {$pxValue != 0} {
           switch $pxValue {
             1 { set pxColor $regHex }
             2 { set pxColor $sunHex }
             3 { set pxColor $shaHex }
           }
-           
-        #A) Truncate text (break loop) if it exceeds image width or height
-        #if {$xCur >= $imgW || $yCur >= $imgH} {break}
-        #B) else put colour pixel
-        if {$xCur <0} {set xCur 1} 
+
+          if {$xCur <0} {
+            set xCur 1
+          }
+
+          # put colour pixel
           $img put $pxColor -to $xCur $yCur
         }
+
         incr xCur
-      }  
-    incr yCur
+      }
+
+      incr yCur
     }
   } ;#END printLetter
 
