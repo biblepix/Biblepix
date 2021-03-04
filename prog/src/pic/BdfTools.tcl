@@ -312,7 +312,7 @@ namespace eval bdf {
             2 { set pxColor $sunHex }
             3 { set pxColor $shaHex }
           }
-           
+
         #A) Truncate text (break loop) if it exceeds image width or height
         #if {$xCur >= $imgW || $yCur >= $imgH} {break}
         #B) else put colour pixel
@@ -397,9 +397,11 @@ namespace eval bdf {
         
         array set curLetter [array get print_$encLetter]
         if [catch {printLetter curLetter $img $xBase $yBase} error] {
-          puts "could not print letter: $encLetter"
-          error $error
-          continue
+
+#TODO for testing Arabic font error:
+          puts "could not print letter: $encLetter $xBase $yBase"
+#          error $error
+#          continue
         }
         set xBase [expr $xBase $operator $curLetter(DWx)]
       }
