@@ -5,7 +5,7 @@
 # Updated: 24feb21 pv
 
 #set version "3.2"
-set version "4.0."
+set version "4.0"
 
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -183,15 +183,12 @@ set tab "                              "
 set ind "     "
 
 #Define font colour names 
-set fontcolourL {Blue Brown Gold Green Silver Slate}
+set fontcolourL {Sky Coffee Gold Grass Silver Slate}
 ##define rgb arrays
-
-#array set BlueArr  {r 0 g 145 b 230}
-array set BlueArr {r 30 g 100 b 244}
-array set BrownArr {r 150 g 40 b 40}
-array set GoldArr  {r 255 g 215 b 0}
-array set GreenArr {r 54 g 167 b 108}
-
+array set SkyArr {r 30 g 100 b 244}
+array set CoffeeArr {r 160 g 105 b 0}
+array set GoldArr  {r 230 g 195 b 0}
+array set GrassArr {r 48 g 150 b 97}
 array set SilverArr {r 160 g 160 b 160}
 array set SlateArr {r 120 g 120 b 120}
 
