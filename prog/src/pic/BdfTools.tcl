@@ -60,7 +60,7 @@ namespace eval bdf {
     if $RtL {
     
       ##align text with right margin if no pnginfo found 
-      if !$pngmargins {      
+      if !$pngmargins {
         ##and if default marginleft is leftish of centre
         if {$x1 < [expr $screenW/3] } {
           set x1 [expr $screenW - $textpicW - $::marginleft]
@@ -222,26 +222,26 @@ namespace eval bdf {
     global [namespace current]::ref2
     global [namespace current]::text1
     global [namespace current]::text2
-    
-    
+
     #2) SORT OUT markrefs for Italic & Bold
+    set markTitle +
+    set markRef <
+    if {$::fontweight == "bold"} {
+      set markText +
+    } else {
+      set markText ~
+    }
+
+    #Arabic has no Italics!
+    if {[isArabicScript $TwdLang]} {
+      set markRef $markText
+    }
+
+    #No marking for Asian
     if {$TwdLang == "th" || $TwdLang == "zh" } {
       set markTitle ""
       set markRef ""
       set markText ""
-    } elseif {[isArabicScript $TwdLang]} {
-      #Arabic has no Italics!
-      set markTitle +
-      set markRef ~
-      set markText ~
-    } elseif {$::fontweight == "bold"} {
-      set markTitle +
-      set markRef <
-      set markText +
-    } else {
-      set markTitle +
-      set markRef <
-      set markText ~
     }
 
     #3) START PRINTING

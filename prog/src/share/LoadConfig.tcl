@@ -112,8 +112,10 @@ if {$fontfamily=="Sans"} {
   set fontFamilyTag "Times"
 }
 if {$fontweight=="bold"} {
+  set fontweightState 1
   set fontWeightTag B
 } else {
+  set fontweightState 0
   set fontWeightTag ""
 }
 set fontname "${fontFamilyTag}${fontWeightTag}${fontsize}"

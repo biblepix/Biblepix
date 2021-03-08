@@ -143,7 +143,7 @@ proc getCanvSizeFromPic {pic} {
 proc setCanvasFontSize args {
   ##size
   if [string is integer $args] {
-    #set size in pt as in BDF      
+    #set size in pt as in BDF
     font conf intCanvFont -size $args
     font conf movingTextFont -size [expr round($args / 3) + 3]
     set ::fontsize $args

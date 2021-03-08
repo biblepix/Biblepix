@@ -190,6 +190,7 @@ set margin 15
 #set font in pixels
 $textposC bind mv <Button1-Motion> [list dragCanvasItem %W txt %X %Y $margin]
 setCanvasFontSize $fontsize
+setCanvasFontSize $fontweight
 setCanvasFontColour $textposC $fontcolortext
 
 #Footnote
