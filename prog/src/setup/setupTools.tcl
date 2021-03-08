@@ -154,8 +154,7 @@ proc setSpinState {imgyesState} {
   } else {
     set com disabled
   }
-  lappend widgetlist .showdateBtn .slideBtn .slideSpin .fontcolorSpin .fontsizeSpin .fontweightBtn .fontfamilySpin
-
+  lappend widgetlist .showdateBtn .slideBtn .slideSpin .fontcolorSpin .fontsizeSpin .fontweightBtn .fontfamilySpin .randomfontcolorCB
   foreach i $widgetlist {
     $i configure -state $com
   }

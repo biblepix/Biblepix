@@ -1,23 +1,29 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 1feb21 pv
+# Updated 8mch21 pv
 
 #Create left & right main frames
-pack [frame .desktopF.leftF] -fill y -side left
-pack [frame .desktopF.rightF] -fill y -side right -pady 5 -padx 5
-#Create right subframes
-pack [frame .rtopF -relief ridge -borderwidth 0]  -in .desktopF.rightF -fill x
-pack [frame .rbot1F -relief ridge -borderwidth 3] -in .desktopF.rightF -pady $py -padx $px -fill x
-pack [frame .rbot1F.1F] -fill x
-pack [frame .rbot1F.2F] -fill x
-pack [frame .rbot2F -relief ridge -borderwidth 3] -in .desktopF.rightF -pady $py -padx $px -fill both
+pack [frame .desktopF.leftF] -fill y -side left -pady $py -padx $px
+pack [frame .desktopF.rightF] -fill y -side right -pady $py -padx $px -expand 1
+
+#Create right top frames
+pack [frame .topMainF1] -in .desktopF.rightF -fill x
+pack [frame .topMainF2 -relief ridge -borderwidth 3 -padx $px -pady $py] -in .desktopF.rightF -fill x
+
+#Create right middle frames
+pack [frame .midMainF -padx $px -pady $py] -in .desktopF.rightF -fill x
+pack [frame .leftF] -in .midMainF -side left
+pack [frame .midF] -in .midMainF -expand 1 -side left
+pack [frame .rightF] -in .midMainF -side right
+
+#Create bottom frame
+pack [frame .botMainF -relief ridge -borderwidth 3] -in .desktopF.rightF -pady $py -padx $px -fill x
 
 ##Create generic Serif or Sans font
 font create intCanvFont -family $fontfamily -size $fontsize -weight $fontweight
-font create widgetFont -family Serif -size 11 -weight normal -slant italic
 
-#F I L L   L E F T 
+# F I L L   L E F T 
 
 #Create title
 label .desktopF.leftF.baslik -textvar f2.tit -font bpfont3
@@ -28,7 +34,7 @@ if {$enablepic} {set imgyesState 1} else {set imgyesState 0}
 set imgyesnoBtn .desktopF.leftF.imgyes
 
 #2. Main text
-message .desktopF.leftF.intro -textvar f2.txt -font bpfont1 -width 500 -padx $px -pady $py -justify left
+message .desktopF.leftF.intro -textvar f2.txt -font bpfont1 -width 700 -padx $px -pady $py -justify left
 
 #P A C K   L E F T 
 pack .desktopF.leftF.baslik -anchor w
@@ -36,6 +42,7 @@ pack $imgyesnoBtn -side top -anchor w
 pack .desktopF.leftF.intro -anchor nw
 
 # F I L L   R I G H T
+
 ##create canvases
 set textposC [canvas .textposCanv -bg lightgrey -borderwidth 1]
 set inttextC [canvas .inttextCanv -width 700 -height 150 -borderwidth 0]
@@ -76,7 +83,8 @@ image create photo intTextBG -file $SetupDesktopPng
 $inttextC create image 0 0 -image intTextBG -anchor nw 
 
 # Set international text
-label .inttextTit -font TkCaptionFont -textvar f2.fontexpl
+label .adjFontT -font TkCaptionFont -textvar f2.fontexpl
+
 if {$os=="Linux"} {
   #Unix needs a lot of formatting for Arabic & Hebrew
   puts "Computing Arabic"
@@ -90,12 +98,6 @@ set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
 #Get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
 puts "Computing fontcolor..."
 source $ImgTools
-
-
-set farbpfad "colour::$fontcolortext"
-set fontcolorHex [set $farbpfad]
-
-#TODO this inna working anymore!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 lassign [setFontShades $fontcolortext] regHex sunHex shaHex
 
 $inttextC create text 11 11 -anchor nw -text $internationalText -font intCanvFont -fill $shaHex -tags {shade txt mv}
@@ -105,8 +107,7 @@ setCanvasFontColour $textposC $fontcolortext
 setCanvasFontColour $inttextC $fontcolortext
 
 #1. Fontcolour spinbox
-message .fontcolorTxt -width 150 -textvar f2.farbe -font widgetFont
-
+message .fontcolorTxt -width 150 -textvar f2.farbe ;#-font widgetFont
 foreach colname $fontcolourL {
   set $colname [set colour::${colname}]
 }
@@ -118,15 +119,13 @@ proc setFontcolSpinState {} {
     .fontcolorSpin conf -state normal
   }
 }
-spinbox .fontcolorSpin -width 12 -values $fontcolourL
-.fontcolorSpin conf -bg [gradient $fontcolorHex $shadeFactor] -fg $fontcolorHex -font TkCaptionFont
+spinbox .fontcolorSpin -width 7 -values $fontcolourL
+.fontcolorSpin conf -bg $regHex -fg white
 .fontcolorSpin set $fontcolortext
 
 .fontcolorSpin conf -command {
-  set farbpfad [set colour::%s]
-  %W conf -bg [gradient $farbpfad $shadeFactor]
-  %W conf -fg [gradient $farbpfad $sunFactor]
-
+  lassign [setFontShades %s] regHex sunHex shaHex
+  %W conf -bg $regHex
   setCanvasFontColour $textposC %s
   setCanvasFontColour $inttextC %s
   set ::fontcolortext %s
@@ -134,13 +133,13 @@ spinbox .fontcolorSpin -width 12 -values $fontcolourL
 setFontcolSpinState
 
 #set Fontsize spinbox
-message .fontsizeTxt -width 200 -textvar f2.fontsizetext -font widgetFont
-spinbox .fontsizeSpin -width 2 -values $fontSizeList -bg lightgrey -font TkCaptionFont 
+message .fontsizeTxt -width 200 -textvar f2.fontsizetext
+spinbox .fontsizeSpin -width 2 -values $fontSizeList -bg lightgrey
 .fontsizeSpin conf -command {setCanvasFontSize %s}
 .fontsizeSpin set $fontsize
 
 #set Fontweight checkbutton
-checkbutton .fontweightBtn -width 5 -variable fontweightState -font widgetFont -textvar f2.fontweight 
+checkbutton .fontweightBtn -variable fontweightState -textvar f2.fontweight 
 .fontweightBtn conf -command {
   if {$fontweightState} {
     setCanvasFontSize bold
@@ -150,18 +149,18 @@ checkbutton .fontweightBtn -width 5 -variable fontweightState -font widgetFont -
   return 0
 }
 
-#Random fontcolour changae checkbutton
-checkbutton .randomfontcolorChkbtn -padx 15 -anchor w -font widgetFont -variable enableRandomFontcolor -textvar random
-.randomfontcolorChkbtn conf -command setFontcolSpinState
+#Random fontcolour change checkbutton
+checkbutton .randomfontcolorCB -anchor w -variable enableRandomFontcolor -textvar random
+.randomfontcolorCB conf -command setFontcolSpinState
 
 #set Fontfamily spinbox
-message .fontfamilyTxt -width 200 -textvar f2.fontfamilytext -font widgetFont
+message .fontfamilyTxt -width 200 -textvar f2.fontfamilytext
 lappend Fontlist Serif Sans
-spinbox .fontfamilySpin -width 12 -font TkCaptionFont -bg lightgrey
+spinbox .fontfamilySpin -width 7 -bg lightgrey
 .fontfamilySpin conf -values $Fontlist -command {setCanvasFontSize %s}
 .fontfamilySpin set $fontfamily
 
-label .textposTxt -textvar textpos -font TkCaptionFont
+label .textposL -textvar textposlabel -font TkCaptionFont
 
 #2. Create TextPos Canvas
 set textPosFactor 3 ;#Verkleinerungsfaktor gegenüber real font size
@@ -197,19 +196,19 @@ setCanvasFontColour $textposC $fontcolortext
 label .textposFN -width 50 -font "Serif 10" -textvar ::textposFN
 
 #P A C K   R I G H T
-#Top right
-pack .showdateBtn -in .rtopF -anchor w
-pack .slideBtn -in .rtopF -anchor w -side left
-pack .slideSecTxt .slideSpin .slideTxt -in .rtopF -anchor nw -side right
-pack .inttextTit -in .rbot1F.1F -pady 7
-#TODO center Canvas in frame!
-pack $inttextC -in .rbot1F.2F -fill x -anchor n
-pack .fontcolorTxt .fontcolorSpin .randomfontcolorChkbtn -in .rbot1F.2F -side left -anchor n
-pack .fontweightBtn .fontfamilySpin .fontfamilyTxt .fontsizeSpin .fontsizeTxt -in .rbot1F.2F -side right -anchor n
+##top
+pack .showdateBtn -in .topMainF1 -anchor w
+pack .slideBtn -in .topMainF1 -anchor w -side left
+pack .slideSecTxt .slideSpin .slideTxt -in .topMainF1 -anchor nw -side right
+pack .adjFontT -in .topMainF2
+pack $inttextC -in .topMainF2 -fill x -anchor n
 
+##middle
 
-#Bottom 2
-pack .textposTxt -in .rbot2F -pady 7
-pack $textposC -in .rbot2F -fill y
-pack .textposFN -in .rbot2F -fill x
-
+pack .fontcolorTxt .fontcolorSpin .randomfontcolorCB -in .leftF -side left
+pack .fontsizeSpin .fontsizeTxt -in .midF -side right
+pack .fontfamilyTxt .fontfamilySpin .fontweightBtn -in .rightF -side left
+##bottom
+pack .textposL -in .botMainF -pady 7
+pack $textposC -in .botMainF -fill y
+pack .textposFN -in .botMainF -fill x

@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17feb21 jh
+# Updated: 8mch21 pv
 
 proc setTexts {lang} {
   global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -120,18 +120,18 @@ set ::packageRequireTls $packageRequireTls($lang)
     append RtlInfo $RtlAr
   }
 
-#TODO move to Photos texts
-  set textposInfo(en) "Adjust text position *"
-  set textposInfo(de) "Textposition anpassen *"
-  set ::textposInfo $textposInfo($lang)
+  set textposlabel(en) "Set general text position"
+  set textposlabel(de) "Textposition bestimmen"
+  set ::textposlabel $textposlabel($lang)
 
   set textposAdjust(en) "Do you want to adjust the text position for this picture before saving?"
   set textposAdjust(de) "Wollen Sie vor dem Speichern die Textposition für dieses Bild ändern?"
   set ::textposAdjust $textposAdjust($lang)
 
-  set textposFN(en) "* Text positioning can be corrected for individual pictures when adding to the $bp photo collection.\n$RtlInfo"
-  set textposFN(de) "* Beim Hinzufügen von Bildern zur $bp-Fotosammlung kann die Textposition individuell angepasst werden.\n$RtlInfo"
-  set ::textposFN $textposFN($lang)
+
+  #set textposFN(en) "\n$RtlInfo"
+  #set textposFN(de) "\n$RtlInfo"
+  set ::textposFN "$RtlInfo"
   
   set welcTit(en) "Welcome to the $bp setup program!"
   set welcTit(de) "Willkommen beim Einrichtungsprogramm von $bp!"
@@ -210,7 +210,7 @@ set ::packageRequireTls $packageRequireTls($lang)
   set ::f2.farbe $f2Farbe($lang)
 
   set f2Slideshow(en) "Enable slide show"
-  set f2Slideshow(de) "Diaschau einrichten"
+  set f2Slideshow(de) "Diaschau aktivieren"
   set ::f2.slideshow $f2Slideshow($lang)
 
   set f2Interval(en) "Slide show interval: "
@@ -254,8 +254,8 @@ set ::packageRequireTls $packageRequireTls($lang)
     set picNo ": '[file tail $TwdTIF]'"
   }
 
-  set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image $picNo will be put in \n\n\t [file nativename $dirlist(imgdir)] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. For only 1 picture per day, unset this feature (see above).\n\nThe Text Position window allows you to put $dw wherever you like on your screen. \n\nThe font size is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters = better contrast).\n\nThe font colour can be accidental or set by you. Note that $bp may adjust colour luminance on the basis of background brightness. This takes effect only after a photo has been added to the $bp collection. \n\n If the new background image fails to appear automatically, please consult the Manual page for a solution."
-  set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild $picNo steht jeweils in \n\n\t [file nativename $dirlist(imgdir)] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine 'Diaschau' mit Wechselbild ein. Soll nur 1 Bild pro Tag angezeigt werden, kann die Diaschau deaktiviert werden (s.o.).\n\nIm Fenster 'Textposition' können Sie $dw an die gewünschte Stelle auf dem Bildschirm verschieben. \n\nDie Schriftgrösse wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, Grösse und Dicke anzupassen (grössere Buchstaben = besserer Kontrast).\n\nDie Schriftfarbe können Sie fest bestimmen oder dem Zufall überlassen. $bp kann zusätzlich eine Farbanpassung  anhand der Hintergrundhelligkeit vornehmen. Dieser Effekt kommt erst nach Speichern neuer Fotos zum Tragen.\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, finden Sie im Manual eine Lösung."
+  set f2Txt(en) "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image $picNo will be put in \n\n\t [file nativename $dirlist(imgdir)] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. For only 1 picture per day, unset this feature (see above).\n\nThe TEXT POSITION window allows you to put $dw wherever you like on your screen. Moreover, when adding a photograph to the $bp photo collection, you can position the text individually. \n\nFONT SIZE is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters = better contrast).\n\nFONT COLOUR can be accidental or set by you. Note that $bp may adjust colour luminance on the basis of background brightness. This takes effect only after a photo has been added to the $bp collection. \n\nShould the new background image fail to appear, please consult the Manual page for a solution."
+  set f2Txt(de) "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild $picNo steht jeweils in \n\n\t [file nativename $dirlist(imgdir)] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine DIASCHAU mit Wechselbild ein. Soll nur 1 Bild pro Tag angezeigt werden, kann die Diaschau deaktiviert werden (s.o.).\n\nIm Fenster TEXTPOSITION können Sie $dw an die gewünschte Stelle auf dem Bildschirm verschieben. Beim Hinzufügen von Bildern kan die Textposition auch individuell bestimmt werden. \n\nDie SCHRIFTGRÖSSE wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, Grösse und Dicke anzupassen (grössere Buchstaben = besserer Kontrast).\n\nDie SCHRIFTFARBE können Sie fest bestimmen oder dem Zufall überlassen. $bp kann zusätzlich eine Farbanpassunganhand der Hintergrundhelligkeit vornehmen. Dieser Effekt kommt erst nach Speichern neuer Fotos zum Tragen.\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, finden Sie im Manual eine Lösung."
   set ::f2.txt $f2Txt($lang)
 
   ### S E T U P   P H O T O S ##############################
