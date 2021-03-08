@@ -183,12 +183,12 @@ set tab "                              "
 set ind "     "
 
 #Define font colour names 
-set fontcolourL {Sky Coffee Gold Grass Silver Slate}
+set fontcolourL {Earth Gold Leaf Sea Silver Slate}
 ##define rgb arrays
-array set SkyArr {r 30 g 100 b 244}
-array set CoffeeArr {r 160 g 105 b 0}
+array set SeaArr {r 30 g 100 b 244}
+array set EarthArr {r 160 g 105 b 0}
 array set GoldArr  {r 230 g 195 b 0}
-array set GrassArr {r 48 g 150 b 97}
+array set LeafArr {r 48 g 150 b 97}
 array set SilverArr {r 160 g 160 b 160}
 array set SlateArr {r 120 g 120 b 120}
 
