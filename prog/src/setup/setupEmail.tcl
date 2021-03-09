@@ -1,20 +1,21 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16feb21 pv
+# Updated 9mch21 pv
 
-label .emailF.t1 -textvar f3.tit -font bpfont3
-pack .emailF.t1 -anchor w
-
+#Create frames & titles
+pack [label .emailF.t1 -textvar f3.tit -font bpfont3] -anchor w
 pack [frame .emailF.titelF -pady 20 -padx 20] -fill x
-
-checkbutton .emailF.titelF.sigyes -textvar f3.btn -variable sigyesState -command {toggleCBstate}
+checkbutton .sigyesnoCB -textvar f3.btn -variable sigyesState -command {toggleCBstate}
 label .emailF.titelF.sprachenL -textvar f3.sprachen -bg lightblue
+pack [frame .emailF.topframe] -fill x
+pack [frame .emailF.topframe.left] -side left
+pack .emailF.titelF.sprachenL -side right
+pack .sigyesnoCB -in .emailF.titelF -anchor w -side left
 
-pack [frame .emailF.topframe] -expand false -fill x
-pack [frame .emailF.topframe.left] -side left -expand false 
-pack [frame .emailF.topframe.right] -side right -expand 0
-.emailF.topframe.right configure -borderwidth 2 -relief sunken -padx 50 -pady 30 -bg $bg
+##mail text frame
+pack [frame .emailF.topframe.right] -side right -padx 100
+.emailF.topframe.right conf -bd 5 -relief sunken -padx 30 -pady 30 -bg $bg
 
 #List language codes of installed TWD files 
 foreach L [glob -tails -directory $twdDir *.twd] {
@@ -27,7 +28,6 @@ foreach e $langlist {
   }
 }
 set CodeList [lsort -decreasing -unique $codelist]
-
 
 #Lists selected sigLangCB's
 proc updateSelectedList {} {
@@ -86,8 +86,6 @@ if {[info exists sigLanglist] && $sigLanglist != ""} {
   }
 }
 
-pack .emailF.titelF.sprachenL -side right
-pack .emailF.titelF.sigyes -anchor w -side left
 
 if {$enablesig==1} {
   set sigyesState 1
@@ -96,7 +94,7 @@ if {$enablesig==1} {
 }
 
 #Create Message
-message .emailF.topframe.left.t2 -font bpfont1  -padx $px -pady $py -textvar f3.txt 
+message .emailF.topframe.left.t2 -font bpfont1 -padx $px -pady $py -textvar f3.txt 
 pack .emailF.topframe.left.t2 -anchor nw
 
 #Create Label 1

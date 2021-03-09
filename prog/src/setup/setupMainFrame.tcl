@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29oct20
+# Updated: 9mch21 pv
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
@@ -39,17 +39,17 @@ ttk::label .ftop.titelmitlogo -textvar bpsetup -font bpfont4 -padding 5
 pack .ftop.titelmitlogo -side left
 
 #Create notebook Tabs
-.nb add [frame .welcomeF -padx $px] -text Welcome
-.nb add [frame .internationalF -padx $px] -text International
-.nb add [frame .desktopF -padx $px] -text Desktop
-.nb add [frame .photosF -padx $px] -text Photos
-.nb add [frame .emailF -padx $px] -text E-Mail
+.nb add [frame .welcomeF -padx $px -pady $py] -text Welcome
+.nb add [frame .internationalF -padx $px -pady $py] -text International
+.nb add [frame .desktopF -padx $px -pady $py] -text Desktop
+.nb add [frame .photosF -padx $px -pady $py] -text Photos
+.nb add [frame .emailF -padx $px -pady $py] -text E-Mail
 
 if {$platform=="unix"} {
-  .nb add [frame .terminalF -padx $px] -text Terminal
+  .nb add [frame .terminalF -padx $px -pady $py] -text Terminal
 }
 
-.nb add [frame .manualF -padx $px] -text Manual
+.nb add [frame .manualF -padx $px -pady $py] -text Manual
 
 #Reposition window to screen top
 if { [winfo y .] > 20 } {

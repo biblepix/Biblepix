@@ -179,9 +179,12 @@ proc setCanvasFontColour {c fontcolortext args} {
     set lum $args
   }
   
-  set regHex [set "colour::$fontcolortext"]
-  set sunHex [gradient $regHex $sunFactor]
-  set shaHex [gradient $regHex $shadeFactor]
+  
+  #TODO use proc...
+  lassign [setFontShades $fontcolortext] regHex sunHex shaHex
+#  set regHex [set "colour::$fontcolortext"]
+#  set sunHex [gradient $regHex $sunFactor]
+#  set shaHex [gradient $regHex $shadeFactor]
 
   #fill canvas colours
   $c itemconf main -fill $regHex

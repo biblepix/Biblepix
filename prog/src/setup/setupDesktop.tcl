@@ -1,23 +1,21 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 8mch21 pv
+# Updated 9mch21 pv
 
 #Create left & right main frames
-pack [frame .desktopF.leftF] -fill y -side left -pady $py -padx $px
-pack [frame .desktopF.rightF] -fill y -side right -pady $py -padx $px -expand 1
+pack [frame .desktopF.leftF] -fill y -side left
+pack [frame .desktopF.rightF] -fill y -side right -expand 1
 
-#Create right top frames
+##Create right top frames
 pack [frame .topMainF1] -in .desktopF.rightF -fill x
 pack [frame .topMainF2 -relief ridge -borderwidth 3 -padx $px -pady $py] -in .desktopF.rightF -fill x
-
-#Create right middle frames
+##Create right middle frames
 pack [frame .midMainF -padx $px -pady $py] -in .desktopF.rightF -fill x
 pack [frame .leftF] -in .midMainF -side left
 pack [frame .midF] -in .midMainF -expand 1 -side left
 pack [frame .rightF] -in .midMainF -side right
-
-#Create bottom frame
+##Create right bottom frame
 pack [frame .botMainF -relief ridge -borderwidth 3] -in .desktopF.rightF -pady $py -padx $px -fill x
 
 ##Create generic Serif or Sans font
@@ -25,21 +23,19 @@ font create intCanvFont -family $fontfamily -size $fontsize -weight $fontweight
 
 # F I L L   L E F T 
 
-#Create title
-label .desktopF.leftF.baslik -textvar f2.tit -font bpfont3
+#Create title + main text
+label .title -textvar f2.tit -font bpfont3
+message .mainTxt -textvar f2.txt -font bpfont1 -width 700 -padx $px -pady $py -justify left
 
-#1. ImageYesno checkbutton 
-checkbutton .desktopF.leftF.imgyes -textvar f2.box -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
+#Create ImageYesno checkbutton 
+checkbutton .imgyesnoCB -textvar f2.box -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
 if {$enablepic} {set imgyesState 1} else {set imgyesState 0}
-set imgyesnoBtn .desktopF.leftF.imgyes
-
-#2. Main text
-message .desktopF.leftF.intro -textvar f2.txt -font bpfont1 -width 700 -padx $px -pady $py -justify left
 
 #P A C K   L E F T 
-pack .desktopF.leftF.baslik -anchor w
-pack $imgyesnoBtn -side top -anchor w
-pack .desktopF.leftF.intro -anchor nw
+pack .title -in .desktopF.leftF -anchor w
+pack .imgyesnoCB -in .desktopF.leftF -side top -anchor w
+pack .mainTxt -in .desktopF.leftF -anchor nw
+
 
 # F I L L   R I G H T
 
@@ -74,9 +70,8 @@ if {!$slideshow} {
   .slideSpin configure -state normal
 }
 
-
 #1. Create InternationalText Canvas - Fonts based on System fonts, not Bdf!!!!
-## Tcl picks any available Sans or Serif font from the system
+## Tk picks any available Sans or Serif font from the system
 
 ##create background image
 image create photo intTextBG -file $SetupDesktopPng
@@ -164,7 +159,8 @@ label .textposL -textvar textposlabel -font TkCaptionFont
 
 #2. Create TextPos Canvas
 set textPosFactor 3 ;#Verkleinerungsfaktor gegenüber real font size
-image create photo photosOrigPic -file [getRandomPhotoPath]
+set picPath [getRandomPhotoPath]
+image create photo photosOrigPic -file $picPath
 image create photo textposCanvPic
 textposCanvPic copy photosOrigPic -subsample $textPosFactor -shrink
 set screeny [winfo screenheight .]
@@ -181,31 +177,30 @@ $textposC bind mv <1> {
   set ::x %X
   set ::y %Y
 }
- 
+
 #set up dragging item
 lassign [$textposC bbox canvTxt] x1 y1 x2 y2
 set itemW [expr $y2 - $y1]
-puts "itemW $itemW"
 set margin 15
+
 #set font in pixels
 $textposC bind mv <Button1-Motion> [list dragCanvasItem %W txt %X %Y $margin]
 setCanvasFontSize $fontsize
 setCanvasFontSize $fontweight
 setCanvasFontColour $textposC $fontcolortext
+#setCanvasFontColour $textposC $fontcolortext $lum
 
-#Footnote
+#Footnote for Arabic+Hebrew text shift (only if found)
 label .textposFN -width 50 -font "Serif 10" -textvar ::textposFN
 
-#P A C K   R I G H T
+# P A C K   R I G H T
 ##top
 pack .showdateBtn -in .topMainF1 -anchor w
 pack .slideBtn -in .topMainF1 -anchor w -side left
 pack .slideSecTxt .slideSpin .slideTxt -in .topMainF1 -anchor nw -side right
 pack .adjFontT -in .topMainF2
 pack $inttextC -in .topMainF2 -fill x -anchor n
-
 ##middle
-
 pack .fontcolorTxt .fontcolorSpin .randomfontcolorCB -in .leftF -side left
 pack .fontsizeSpin .fontsizeTxt -in .midF -side right
 pack .fontfamilyTxt .fontfamilySpin .fontweightBtn -in .rightF -side left
