@@ -71,9 +71,11 @@ namespace eval bidi {
 
 ### P R O C S  ##############################################################
 
-# devowelise
-##clears all vowels from Hebrew (he), Arabic (ar), Urdu (ur) or Persian (fa) text
-##necessary arguments: s = text string / lang = he|ar|ur|fa
+
+
+  # devowelise
+  ##clears all vowels from Hebrew (he), Arabic (ar), Urdu (ur) or Persian (fa) text
+  ##necessary arguments: s = text string / lang = he|ar|ur|fa
   proc devowelise {s lang} {
         
     #return if empty  
@@ -112,7 +114,7 @@ namespace eval bidi {
       regsub -all {א\u05b4מ\u05bc} $s {אמ} s
       #2. Vorsilbe mi- ohne Jod: mem+chirik+?+dagesh -> mem
       regsub -all {\U05DE\U05B4} $s \U05DE s
-      #3. change chirik to yod for Pi'el, excluding Hif'il +Hitpael
+      #3. change chirik to yod for Pi'el, excluding Hif'il+Hitpa'el
       regsub -all {הִ} $s {ה} s
       regsub -all {\U05B4.\U05BC} $s \U05D9& s
       #4. Cholam
@@ -134,147 +136,65 @@ namespace eval bidi {
     # A r a b i c  / U r d u  /  F a r s i
     ##cuts out all vowel signs as common in modern texts
     } elseif {$lang=="ar" || $lang == "ur" || $lang == "fa"} {
-        
-        regsub -all {[\u064B-\u065F]} $s {} s
-
-
-#TODO what's this for??????????????         
-    # Preliminary substitution of special letters:
-    ##lam-alif / lam-alif-hamza_elyon/tahton / lam-alif_madda / ltr marker / rtl marker
-      set s [string map {\u0644\u0627 \uFEFB \u0644\u062f \uFEF7 \u0644\u0625 \uFEF9 \u0644\u062m \uFEF5 \u200e {} \u200f {} } $s]
+       ##eliminate all vowels 
+       regsub -all {[\u064B-\u065F]} $s {} s
+       ##eliminate ltr & rtl markers
+       set s [string map {\u200e} {} {\u200f} {} $s]
+       ##substitute fake lam-alif combinations to true ligatures (=special combined letters):
+       ##lam-alif / lam-alif-hamza_elyon / lam-alif-hamza_tahton / lam-alif_madda 
+       set s [string map {\u0644\u0627 \uFEFB \u0644\u062f \uFEF7 \u0644\u0625 \uFEF9 \u0644\u062m \uFEF5} $s]
     }
-  
-    #Provide reverse text for Setup apps
-    #set s [string reverse $s]
     
-#TODO: Can someone explain why this is needed?
+    #Revert brackets () to fit rtl
     set s [string map {( ) ) (} $s]
   
     return $s
     
   }  ;#END devowelise
-  
 
-#TODO coordinate with bidi::bidi
-  # fixArabic
-  ## Sets correct letter forms
-  ## Assign UTF letter codes & forms:
-  ## 1.Initial / 2.Middle / 3.Final-linked
-  proc fixArabic {s} {
+  # bidi main process
+  ##reverts 
+  ##with args=devowelise
+  proc bidi {s lang args} {
 
+#TODO was ist mit Zahlen und ASCII?
+#run per word also for Heb?
 
-
-  
-  
-  #TODO put below into separate NS?
-
-
-  # formatLetter
-  # Converts an Arabic letter to desired form
-  # Indices: 1=initial 2=middle 3=final-linked
-  ##called by formatWord
-  proc formatLetter {htmcode index} {
-
-#    variable bidi::huruf
-    set newletter ""
-    set lettername ""
-
-
-
-
-    #set lettername if in array
-#    set htmcode [scan $letter %c]
-#          catch { set lettername $bidi::huruf($htmcode) }
-        #set lettername [string index [array get ::huruf $htmcode] end]
-        
-    #set & export array variable
-    variable bidi::$htmcode
-    upvar $bidi::$htmcode harf
-    
-  #puts "
-  #LETTERNAME+INDEX: $lettername $index"
-
-
-    #1.Skip non-letters, leaving $linkinfo empty
-    if {$lettername==""} {
-      set newletter $letter
-
-
-    #2.Reformat letter
-    } else {
-      
-      #set $linkinfo
-      if { [array get harf 0] == "" } {
-        set linkinfo 1
-      } else {
-        set linkinfo 0
-      }
-
-      #skip if form (1) not found in array
-      if { [catch {set newletter $harf($index)}] } {
-        set newletter $letter
-
-      #replace form
-      } else {
-
-        set newletter [string map "$letter $newletter" $letter]
-
-
-      }
-
-    }
-
-
-    #return letter +/- left-linking value
-    lappend fulletter $newletter
-    catch {lappend fulletter $linkinfo}
-
-  #puts "LETTER+INDEX: $fulletter  I$index"
-  #catch {puts "N E W L E T T E R: $newletter"}
-
-    return $fulletter
-
-  } ;#end formatLetter
-
-
-  # formatWord OLD!
-  ##calls formatLetter for each letter of a word
-  ##evaluating letter positions
-  ##called by main proc
-  proc formatWord {word} { 
-
-#    global bidi::huruf
-    
-    set wordlength [string length $word]
-    #Skip if short
-    if {$wordlength<2} { 
-      return $word
-    #Skip if ascii & revert
-    } elseif [string is ascii $word] {
-      return $word
+    #devowelise if 'args'
+    if {$args != ""} {
+      set s [devowelise $s $lang]
     }
     
-   #Make html code list of letters
-   foreach l [split $word {}] {
-     set code [scan $l %c]
+    #split text into lines
+    set linesplit [split $s \n]
 
-     #Add to list if letter code exists     
-     if ![catch {upvar $bidi::$code $code}] {
-}
-if 
-      lappend codeL $code
-     } 
-   }
-   
-   
-   
-   ##with args: eliminate non-letter info (vowels etc.) 
- proc formatArabicWord {word args} {
+    foreach line $linesplit {
 
-#scan from 2nd to 2nd but last, 
-##using middle form after linking, initial form after unlinking letters
-#set endpos [llength $codeL]
-#set prevlinked $code($lettername)
+      #handle Arabic script per word
+      if {$lang != "he"} {
+        foreach word $line {
+          set newword [formatArabicWord $word]
+          lappend newline $newword
+        }
+        set line $newline
+        unset newline
+      }
+
+      #reverse whole line to rtl
+      set revline [string reverse $line]
+      append formattedText $revline \n
+      unset line revline
+
+    } ;#end foreach line
+
+    return $formattedText
+  } ;#END bidi
+  
+   
+  # formatArabicWord
+  ##puts letters of a word into correct form
+  ##called by bidi?
+  proc formatArabicWord {word} {
 
   #Scan word for coded & non-coded characters
   for {set i 0} {$i<=$endpos} {incr i} { 
@@ -321,150 +241,13 @@ if
     
     set prevlinked $curLinked
   }
-  
+
+  #return as ltr:
   return $newword
   
   } ;#END formatArabicWord
   
   
-  
-  
-  if $prevlinked {
-    set pos 2 
-  } else {
-    set pos 1
-  }
-  lappend letterL [set ... $code($pos) ] 
-  set prevlinked $code($lettername) 
-}
-
-#Determine linking bit
-foreach i [array names $htmcode] {
-  if ![string is digit $i] {
-    set leftlinking $htmcode($i)
-  }
-}
- 
-    #1. Set first letter to initial form
-    set firstpos 0
-    
-    set htm_first [lindex $codeL 0]
-    set htm_last [lindex $codeL end]
-    
-    formatLetter $htm_first 1
-    
-    #skip non-letters {" etc.}
-#    while { [array names bidi::huruf $htmfirst] == ""} {
-
-
-#      incr firstpos
-#      set first_letter [string index $word $firstpos]
-#      set htmfirst [scan $first_letter %c]
-#    }
- 
- 
- 
-    set fulletter [formatLetter $first_letter 1]
-    set first_letter [lindex $fulletter 0]
-    set linkinfo [lindex $fulletter 1]
-    set word [string replace $word $firstpos $firstpos $first_letter]
-
-  #puts "\nword w/first: $word"
-
-
-    #2. Set middle part to medium form
-
-    #set full word & misord lengths
-    set midlength [expr $wordlength-1]
-    set last_char [string index $word end]
-    set htmlast [scan $last_char %c]
-
-    #reduce wordlength to exclude last_letter & non-letters
-    while { [array names bidi::huruf $htmlast] == ""} {
-      incr midlength -1
-      set last_char [string index $word $midlength]
-      set htmlast [scan $last_char %c]
-    }
-
-    #scan $misord from 2nd to 2nd-but-last letter
-    for {set letterpos 1} {$letterpos<$midlength} {incr letterpos} {
-      set letter [string index $word $letterpos]
-
-  #puts "LINKINFO-PREV:  $linkinfo"
-      if !$linkinfo {
-        set index 1
-      } else {
-        set index 2
-      }
-
-      set fulletter [formatLetter $letter $index]
-      set newletter [lindex $fulletter 0]
-      
-      #set linkinfo only if real letter
-      if { [lindex $fulletter 1] != ""} {
-        set linkinfo [lindex $fulletter 1]
-        set word [string replace $word $letterpos $letterpos $newletter]
-      }
-
-    } ;#end for
-
-    #3. Set last letter to final form if previous is linking
-
-  #TODO: GEHT NICHT IMMER bei Alif !!! - is linkinfo unset somewhere?
-      if $linkinfo {
-        set last_letter_full [formatLetter $last_char 3]
-        set last_letter [lindex $last_letter_full 0]
-
-  #POSITION BESTIMMEN!!!!!!!!!!!!!!!
-        #set pos [string length $midlength]
-        #Pos stimmt nicht, regsub + string match auch nicht gut...
-        #set word [string replace $word $pos $pos $last_letter]
-        #
-        
-        regsub $last_char $word $last_letter word
-
-  #puts "lastchar: $last_char"
-  #puts "lastletter: $last_letter"
-    }
-  #puts "word w/last: $word"
-
-    } ;#end main
-
-  set linkinfo 0
-
-    return $word
-
-  } ;#end formatWord
-
-
-
-#TODO put below into proc?????????????
-
-# S T A R T  M A I N  P R O C E S S
-
-#split $s into lines
-  set ssplit [split $s \n]
-
-  foreach line $ssplit {
-
-    foreach word $line {
-
-    #Skip digits & pre-reverse if longer than ??????????????
-
-    set newword [formatWord $word]
-    append newline "$newword "
-
-    } ;#end foreach word
-
-  set line $newline\n
-  append sneu $line
-  unset newline
-
-  } ;#end foreach line
-
-return $sneu
-
-} ;#end fixArabic
 
 } ;#END ::bidi ns
 
