@@ -4,7 +4,7 @@
 # ERSETZT BdfBidi !!!
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 9mch21
+# Updated: 13mch21
 
 namespace eval bidi {
 
@@ -71,10 +71,9 @@ namespace eval bidi {
 
 ### P R O C S  ##############################################################
 
-
-
   # devowelise
   ##clears all vowels from Hebrew (he), Arabic (ar), Urdu (ur) or Persian (fa) text
+  ##producing readable modern type text from poetic or religious vowelled text
   ##necessary arguments: s = text string / lang = he|ar|ur|fa
   proc devowelise {s lang} {
         
@@ -152,13 +151,11 @@ namespace eval bidi {
     
   }  ;#END devowelise
 
-  # bidi main process
-  ##reverts 
+  # fixBidi main process
+  ##fixes bi-directional text for Tcl/Tk applications
+  ##usable with Hebrew/Arabic/Farsi/Urdu 
   ##with args=devowelise
-  proc bidi {s lang args} {
-
-#TODO was ist mit Zahlen und ASCII?
-#run per word also for Heb?
+  proc fixBidi {s lang args} {
 
     #devowelise if 'args'
     if {$args != ""} {
@@ -169,85 +166,92 @@ namespace eval bidi {
     set linesplit [split $s \n]
 
     foreach line $linesplit {
-
-      #handle Arabic script per word
-      if {$lang != "he"} {
-        foreach word $line {
+     
+      #handle Arabic + Hebrew text per word
+      foreach word $line {
+        
+        #skip if ASCII
+        if [string is ascii $word] {
+          lappend newline $word  
+        
+        #leave Hebrew alone
+        } elseif {$lang == "he"} {
+          set newword $word
+        
+        #format Arabic word
+        } else {
           set newword [formatArabicWord $word]
-          lappend newline $newword
         }
-        set line $newline
-        unset newline
+          
+        #reverse bidi word for all languages
+        lappend newline [string reverse $newword]
       }
-
-      #reverse whole line to rtl
-      set revline [string reverse $line]
-      append formattedText $revline \n
-      unset line revline
-
+        
+      append newtext $newline \n
+      unset newline      
+    
     } ;#end foreach line
 
-    return $formattedText
-  } ;#END bidi
+    return $newtext
+    
+  } ;#END fixBidi
   
    
   # formatArabicWord
   ##puts letters of a word into correct form
-  ##called by bidi?
+  ##called by fixBidi
   proc formatArabicWord {word} {
 
-  #Scan word for coded & non-coded characters
-  for {set i 0} {$i<=$endpos} {incr i} { 
-    
-    set char [lindex $letterL $i]
-    set htmcode [scan $letter %c]
-    
-    #skip non-letter items if $args
-    if ![info exists ::bidi::$htmcode] {
-      if {$args == ""} {
-        append letterL $char
+    #Scan word for coded & non-coded characters
+    for {set i 0} {$i<=$endpos} {incr i} { 
+      
+      set char [lindex $letterL $i]
+      set htmcode [scan $letter %c]
+      
+      #skip non-letter items if $args
+      if ![info exists ::bidi::$htmcode] {
+        if {$args == ""} {
+          append letterL $char
+        } else {
+          continue
+        }
+      
+      #upvar htmcode array    
       } else {
-        continue
+        upvar $bidi::$htmcode mycode
       }
-    
-    #upvar htmcode array    
-    } else {
-      upvar $bidi::$htmcode mycode
-    }
-    
-    #scan array for letter name, form & linked info
-    set curLinked $mycode(l)
-  
-    #set 1st letter form
-    if {$i == 0} {
-      append newword [set \u$htmcode(i)]
       
-    #set final letter form  
-    } elseif {$i == $endpos} { 
+      #scan array for letter name, form & linked info
+      set curLinked $mycode(l)
+    
+      #set 1st letter form
+      if {$i == 0} {
+        append newword [set \u$htmcode(i)]
+        
+      #set final letter form  
+      } elseif {$i == $endpos} { 
+        
+        if $prevlinked {
+          set char [set \u$codename(f)]
+        } else { 
+          set char [set \u$codename(i)]
+        }
+        append newword $char
+
+      #set middle forms (unlinking letters have only 1 form)
+      } else {
+        
+        append newword [set \u$codename(m)]
       
-      if $prevlinked {
-        set char [set \u$codename(f)]
-      } else { 
-        set char [set \u$codename(i)]
       }
-      append newword $char
-
-    #set middle forms (unlinking letters have only 1 form)
-    } else {
       
-      append newword [set \u$codename(m)]
-    
+      set prevlinked $curLinked
     }
-    
-    set prevlinked $curLinked
-  }
 
-  #return as ltr:
-  return $newword
+    #return as ltr:
+    return $newword
   
   } ;#END formatArabicWord
   
-  
-
 } ;#END ::bidi ns
 
