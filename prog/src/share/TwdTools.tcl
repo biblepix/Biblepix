@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 5feb21 pv
+# Updated 15mch21 pv
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -243,17 +243,19 @@ proc parseToText {node TwdLang {withTags 0}} {
   return $text
 }
 
-
-
+# appendParolToText
+##called by getTodaysTwdText & getTodaysTwdSig
+##args='html' for Evolution
 proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
+  
   global tab
   
   set intro [getParolIntro $parolNode $TwdLang]
   if {$intro != ""} {
     if {$RtL} {
-      append TwdText $intro $indent\n
+      append TwdText $intro $indent { } \n
     } else {
-      append TwdText $indent $intro\n
+      append TwdText $indent $intro { } \n
     }
   }
   
@@ -262,9 +264,9 @@ proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
    
   foreach line $textLines {
     if {$RtL} {
-      append TwdText $line $indent\n
+      append TwdText $line $indent \n
     } else {
-      append TwdText $indent $line\n
+      append TwdText $indent $line \n
     }
   }
   
@@ -275,12 +277,14 @@ proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
     append TwdText $tab $ref
   }
   
-  return $TwdText
-}
+  return $TwdText  
+} ;#END appendParolToText
 
+# appendParolToTermText
+##called by ?
 proc appendParolToTermText {parolNode TwdText indent} {
   global tab
-  
+    
   set intro [getParolIntro $parolNode]
   if {$intro != ""} {
     append TwdText "echo -e \$\{txtrst\}\$\{int\}\"$indent$intro\"\n"
@@ -401,31 +405,37 @@ proc getTodaysTwdText {TwdFileName} {
   
   return $TwdText
 
-} ;#END getTwdText
+} ;#END getTodaysTwdText
 
+# getTodaysTwdSig
+##formats Twd text for signature
+##args=='html' for Evolution
+##called by Signature & SigTools (Trojita+Evolution)
 proc getTodaysTwdSig {TwdFileName} {
-  global ind
+  global ind tab
   
   set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   
   if {$twdTodayNode == ""} {
     set TwdText "No Bible text found for today."
+
   } else {
     set twdTitle [getTwdTitle $twdTodayNode]
-    set TwdText "===== $twdTitle =====\n"
-    
+    set TwdText "===== $twdTitle ===== \n"
     set parolNode [getTwdParolNode 1 $twdTodayNode]
+    
     set TwdText [appendParolToText $parolNode $TwdText $ind]
     
     append TwdText \n
-    
     set parolNode [getTwdParolNode 2 $twdTodayNode]
+    
     set TwdText [appendParolToText $parolNode $TwdText $ind]
   }
   
   $twdDomDoc delete
-  set bible2Url {                                               [bible2.net]}
+  append tab "                 "
+  set bible2Url "$tab \[bible2.net\]"
   append TwdText \n $bible2Url
 
   return $TwdText
@@ -441,7 +451,7 @@ proc getTodaysTwdTerm {TwdFileName} {
     set twdTerm "echo -e \$\{error\}\"No Bible text found for today.\""
   } else {
     set twdTitle [getTwdTitle $twdTodayNode]
-    set twdTerm "echo -e \$\{titbg\}\$\{tit\}\"* $twdTitle *\"\n"
+    set twdTerm "echo -e \$\{titbg\}\$\{tit\}\"* $twdTitle *\"\n
     
     set parolNode [getTwdParolNode 1 $twdTodayNode]
     set twdTerm [appendParolToTermText $parolNode $twdTerm $ind]

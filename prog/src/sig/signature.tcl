@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 29dec20 pv
+# Updated: 15mch21 pv
 source $TwdTools
 source $SigTools
 
@@ -26,20 +26,20 @@ foreach twdFileName $twdFileList {
   #check date, skip if today's & sig present
   set dateidatum [clock format [file mtime $sigFile] -format %d]
 
-  if {$heute == $dateidatum && [checkSigPresent $sigFile] } {
+  if {$heute == $dateidatum && [sig::checkSigPresent $sigFile] } {
     puts " [file tail $sigFile] is up-to-date"
     continue
   }
 
   #Recreate The Word for each file
-  set ::dwsig [getTodaysTwdSig $twdFileName]
+  set dwsig [sig::getTodaysTwdSig $twdFileName]
   set sigPath [file join $sigdir $sigFile]
-  set cleanSig [cleanSigfile $sigPath]
+  set cleanSig [sig::cleanSigfile $sigPath]
 
   #Write new sig to file
   set chan [open $sigPath w]
   puts $chan $cleanSig 
-  puts $chan \n${::dwsig}
+  puts $chan \n${dwsig}
   close $chan
   
   puts "Created signature for signature-$endung"
@@ -61,14 +61,14 @@ if {$os=="Windows NT"} {
   if [catch {registry keys $trojitaWinRegpath}] {
     return "No Registry entry for Trojitá found. Exiting."
   }
-  catch doSigTrojitaWin err
+  catch sig::doSigTrojitaWin err
 
 } elseif {$os=="Linux"} {
 
   if {[auto_execok trojita] == "" || ![file exists $trojitaLinConfFile]} {
     return "No Trojitá executable/configuration file found. Exiting."
   }
-  catch doSigTrojitaLin err
+  catch sig::doSigTrojitaLin err
 }
 
 if [info exists err] {
@@ -82,5 +82,7 @@ if [info exists err] {
 
 #Check presence of Evolution
 if {[auto_execok evolution] != ""} {
-  doSigEvolution
+  sig::doSigEvolution
 }
+#Clean up
+namespace delete sig
