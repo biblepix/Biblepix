@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 15mch21 pv
+# Updated: 16mch21 pv
 source $TwdTools
 source $SigTools
 
@@ -32,7 +32,7 @@ foreach twdFileName $twdFileList {
   }
 
   #Recreate The Word for each file
-  set dwsig [sig::getTodaysTwdSig $twdFileName]
+  set dwsig [getTodaysTwdSig $twdFileName]
   set sigPath [file join $sigdir $sigFile]
   set cleanSig [sig::cleanSigfile $sigPath]
 
@@ -52,8 +52,8 @@ foreach twdFileName $twdFileList {
 
 #Check presence of Trojita Win/Lin config || exit
 ##Windoze bug: auto_execok can't find executable in C:\Program Files (x86)\trojita.exe 
-set trojitaLinConfFile [file join $env(HOME) .config flaska.net trojita.conf]
-set trojitaWinRegpath [join {HKEY_CURRENT_USER SOFTWARE flaska.net trojita} \\]
+set sig::trojitaLinConfFile [file join $env(HOME) .config flaska.net trojita.conf]
+set sig::trojitaWinRegpath [join {HKEY_CURRENT_USER SOFTWARE flaska.net trojita} \\]
 
 if {$os=="Windows NT"} {
   package require registry
@@ -65,7 +65,7 @@ if {$os=="Windows NT"} {
 
 } elseif {$os=="Linux"} {
 
-  if {[auto_execok trojita] == "" || ![file exists $trojitaLinConfFile]} {
+  if {[auto_execok trojita] == "" || ![file exists $sig::trojitaLinConfFile]} {
     return "No Trojitá executable/configuration file found. Exiting."
   }
   catch sig::doSigTrojitaLin err
