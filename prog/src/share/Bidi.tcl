@@ -10,36 +10,36 @@ namespace eval bidi {
 
   #All Arabic letter list
   ##left-linking (n=name /l=linking /i=initial pos / m=middle pos / f = final pos (linking!)
-  array set 1576 {ba l 1 i \uFE91 m \uFE92 f \uFE90}
-  array set 1578 {ta l 1 i \uFE97 m \uFE98 f \uFE96}
-  array set 1579 {tha l 1 i \uFE91 m \uFE9C f \uFE9A}
-  array set 1580 {jim l 1 i \uFE9F m \uFEA0 f \uFE9E}
-  array set 1581 {hha l 1 i \uFEA3 m \uFEA4 f \uFEA2}
-  array set 1582 {kha l 1 i \uFEA7 m \uFEA8 f \uFEA6}
-  array set 1587 {sin l 1 i \uFEB3 m \uFEB4 f \uFEB2}
-  array set 1588 {shin l 1 i \uFEB7 m \uFEB8 f \uFEB6}
-  array set 1589 {sad l 1 i \uFEBB m \uFEBC f \uFEBA}
-  array set 1590 {dad l 1 1i \uFEBF m \uFEC0 f \uFEBE}
-  array set 1591 {tta l 1 i \uFEC3 m \uFEC4 f \uFEC2}
-  array set 1592 {za l 1 i \uFEC7 m \uFEC8 f \uFEC6}
-  array set 1593 {ayn l 1 i \uFECB m \uFECC f \uFECA}
-  array set 1594 {ghayn l 1 i \uFECF m \uFED0 f \uFECE}
-  array set 1601 {fa l 1 i \uFED3 m \uFED4 f \uFED2}
-  array set 1602 {qaf l 1 i \uFED7 m \uFED8 f \uFED6}
-  array set 1603 {kaf l 1 i \uFEDB m \uFEDC f \uFEDA}
-  array set 1604 {lam l 1 i \uFEDF m \uFEE0 f \uFEDE}
-  array set 1605 {mim l 1 i \uFEE3 m \uFEE4 f \uFEE2}
-  array set 1606 {nun l 1 i \uFEE7 m \uFEE8 f \uFEE6}
-  array set 1607 {ha l 1 i \uFEEB m \uFEEC f \uFEEA}
-  array set 1610 {ya l 1 i \uFEF3 m \uFEF4 f \uFEF2}
-  array set 1574 {ya_hamza l 1 i \uFE8B m \uFE8C f \uFE8A}
-  ##non left-linking (name=0)
-  array set 1583 {dal l 0 m \uFEAA f \uFEAA}
-  array set 1584 {dhal l 0 m \uFEAC f \uFEAC}
-  array set 1585 {ra l 0 m \uFEAE f \uFEAE}
-  array set 1586 {zayn l 0 m \uFEB0 f \uFEB0}
-  array set 1608 {waw l 0 m \uFEEE f \uFEEE}
-  array set 1572 {waw_hamza l 0 m \uFE86 f \uFE86}
+  array set 1576 {ba  \u0628 l 1 i \uFE91 m \uFE92 f \uFE90}
+  array set 1578 {ta  \u062a l 1 i \uFE97 m \uFE98 f \uFE96}
+  array set 1579 {tha \u062b l 1 i \uFE91 m \uFE9C f \uFE9A}
+  array set 1580 {jim \u062C l 1 i \uFE9F m \uFEA0 f \uFE9E}
+  array set 1581 {hha \u062D l 1 i \uFEA3 m \uFEA4 f \uFEA2}
+  array set 1582 {kha \u062E l 1 i \uFEA7 m \uFEA8 f \uFEA6}
+  array set 1587 {sin \u0633 l 1 i \uFEB3 m \uFEB4 f \uFEB2}
+  array set 1588 {shin \u0634 l 1 i \uFEB7 m \uFEB8 f \uFEB6}
+  array set 1589 {sad \u0635 l 1 i \uFEBB m \uFEBC f \uFEBA}
+  array set 1590 {dad \u0636 l 1 1i \uFEBF m \uFEC0 f \uFEBE}
+  array set 1591 {tta \u0637 l 1 i \uFEC3 m \uFEC4 f \uFEC2}
+  array set 1592 {za  \u0638 l 1 i \uFEC7 m \uFEC8 f \uFEC6}
+  array set 1593 {ayn \u0639 l 1 i \uFECB m \uFECC f \uFECA}
+  array set 1594 {ghayn \u063A l 1 i \uFECF m \uFED0 f \uFECE}
+  array set 1601 {fa  \u0641 l 1 i \uFED3 m \uFED4 f \uFED2}
+  array set 1602 {qaf \u0642 l 1 i \uFED7 m \uFED8 f \uFED6}
+  array set 1603 {kaf \u0643 l 1 i \uFEDB m \uFEDC f \uFEDA}
+  array set 1604 {lam \u0644 l 1 i \uFEDF m \uFEE0 f \uFEDE}
+  array set 1605 {mim \u0645 l 1 i \uFEE3 m \uFEE4 f \uFEE2}
+  array set 1606 {nun \u0646 l 1 i \uFEE7 m \uFEE8 f \uFEE6}
+  array set 1607 {ha  \u0647 l 1 i \uFEEB m \uFEEC f \uFEEA}
+  array set 1610 {ya  \u064A l 1 i \uFEF3 m \uFEF4 f \uFEF2}
+  array set 1574 {ya_hamza \u0678 l 1 i \uFE8B m \uFE8C f \uFE8A}
+  ##non left-linking (l=0)
+  array set 1583 {dal  \u062F l 0 m \uFEAA f \uFEAA}
+  array set 1584 {dhal \u0630 l 0 m \uFEAC f \uFEAC}
+  array set 1585 {ra   \u0631 l 0 m \uFEAE f \uFEAE}
+  array set 1586 {zayn \u0632 l 0 m \uFEB0 f \uFEB0}
+  array set 1608 {waw  \u0648 l 0 m \uFEEE f \uFEEE}
+  array set 1572 {waw_hamza \u0676 l 0 m \uFE86 f \uFE86}
   array set 1575 {alif l 0 m \uFE8E f \uFE8E}
   array set 1571 {alif_hamza_elyon l 0 m \uFEF8 f \uFEF8}
   array set 1573 {alif_hamza_tahton l 0 m \uFEFA f \uFEFA}
@@ -74,16 +74,14 @@ namespace eval bidi {
   # devowelise
   ##clears all vowels from Hebrew (he), Arabic (ar), Urdu (ur) or Persian (fa) text
   ##producing readable modern type text from poetic or religious vowelled text
-  ##necessary arguments: s = text string / lang = he|ar|ur|fa
-  proc devowelise {s lang} {
+  ##necessary arguments: s = text string / script = 'he' OR 'ar' (including Urdu+Farsi)
+  ##called by fixBidi
+  proc devowelise {s script} {
         
     #return if empty  
 	  if {$s == ""} {
 		  return -error "No text found"
 	  }
-
-    #Rule out language variants
-    set lang [string range $lang 0 1]    
 
     #All languages: revert digits
     set digits [regexp -all -inline {[[:digit:]]+} $s]
@@ -94,7 +92,7 @@ namespace eval bidi {
     # H e b r e w
     ##attempts to convert vowelled standard text to "ktiv male" (כתיב מלא) = "modern full spelling"
     ##as common in modern Hebrew, by replacing some vowel signs by the letters Jud (י) or Wav (ו)
-    if {$lang == "he"} {
+    if {$script == "he"} {
       ##Mosche
       regsub -all {מֹשֶה} $s משה s
       ##Yaaqov
@@ -134,7 +132,7 @@ namespace eval bidi {
     
     # A r a b i c  / U r d u  /  F a r s i
     ##cuts out all vowel signs as common in modern texts
-    } elseif {$lang=="ar" || $lang == "ur" || $lang == "fa"} {
+    } elseif {$script == "ar"} {
        ##eliminate all vowels 
        regsub -all {[\u064B-\u065F]} $s {} s
        ##eliminate ltr & rtl markers
@@ -154,37 +152,50 @@ namespace eval bidi {
   # fixBidi main process
   ##fixes bi-directional text for Tcl/Tk applications
   ##usable with Hebrew/Arabic/Farsi/Urdu 
-  ##with args=devowelise
-  proc fixBidi {s lang args} {
+  ##compulsary args: s (text string) 
+  ## vowelled(1/0): 0 = strip of all vowels 
+  ## bdf(1/0): 1 = don't reverse line order (BDF printing is from right to left)
+  proc fixBidi {s {vowelled 1} {bdf 0}} {
 
-    #devowelise if 'args'
-    if {$args != ""} {
-      set s [devowelise $s $lang]
+    #Detect Hebrew OR Arabic (incl. Farsi+Urdu) script
+    set he_range {[\u0590-\u05FF]}
+    set ar_range {[\u0600-\u06FF]}
+    if [regexp $he_range $s] {
+      set script he
+    } elseif [regexp $ar_range $s {
+      set script ar
+    }
+
+    #devowelise if $vowelled=0
+    if !$vowelled {
+      set s [devowelise $s $script]
     }
     
     #split text into lines
     set linesplit [split $s \n]
-
     foreach line $linesplit {
      
-      #handle Arabic + Hebrew text per word
+      #handle text per word
       foreach word $line {
-        
+      
+        #revert order if not for Bdf
+        if !$bdf {
+          set newword [string reverse $word]
+        }
         #skip if ASCII
         if [string is ascii $word] {
-          lappend newline $word  
-        
+          lappend newline $word
+          continue  
         #leave Hebrew alone
-        } elseif {$lang == "he"} {
+        } elseif {$script == "he"} {
           set newword $word
-        
-        #format Arabic word
-        } else {
+        #format Arabic script word
+        } elseif {$script == "ar"} {
           set newword [formatArabicWord $word]
         }
           
         #reverse bidi word for all languages
-        lappend newline [string reverse $newword]
+        lappend newline $newword
       }
         
       append newtext $newline \n
@@ -195,35 +206,44 @@ namespace eval bidi {
     return $newtext
     
   } ;#END fixBidi
-  
-   
+ 
   # formatArabicWord
   ##puts letters of a word into correct form
   ##called by fixBidi
-  proc formatArabicWord {word} {
+  proc formatArabicWord word {
 
     #Scan word for coded & non-coded characters
     for {set i 0} {$i<=$endpos} {incr i} { 
       
-      set char [lindex $letterL $i]
+      set utfchar [lindex $letterL $i]
       set htmcode [scan $letter %c]
+    
+      global bidi::$htmcode
       
-      #skip non-letter items if $args
-      if ![info exists ::bidi::$htmcode] {
-        if {$args == ""} {
-          append letterL $char
-        } else {
-          continue
-        }
+              
+      #TODO jesh balagan
+      
+      #skip non-letter items????????????
+      if ![info exists htmcode] {
+      
+      #  upvar $htmcode letArr
+        
+        append letterL $utfchar
+        continue
+
       
       #upvar htmcode array    
       } else {
-        upvar $bidi::$htmcode mycode
+      
+        upvar $::bidi::$htmcode letterArr
+#        array set myarr [array get bidi::$htmcode]
       }
       
       #scan array for letter name, form & linked info
-      set curLinked $mycode(l)
-    
+      
+      
+      set curLinked $letterArr(l)
+      
       #set 1st letter form
       if {$i == 0} {
         append newword [set \u$htmcode(i)]
@@ -252,6 +272,11 @@ namespace eval bidi {
     return $newword
   
   } ;#END formatArabicWord
+  
+  proc getArLetter {htmcode} {
+    upvar $bidi::$htmcode letterArr
+    return $letterArr(1)
+  }
   
 } ;#END ::bidi ns
 
