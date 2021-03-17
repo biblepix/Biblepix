@@ -4,69 +4,77 @@
 # ERSETZT BdfBidi !!!
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 13mch21
+# Updated: 17mch21
 
 namespace eval bidi {
 
-  #All Arabic letter list
-  ##left-linking (n=name /l=linking /i=initial pos / m=middle pos / f = final pos (linking!)
-  array set 1576 {ba  \u0628 l 1 i \uFE91 m \uFE92 f \uFE90}
-  array set 1578 {ta  \u062a l 1 i \uFE97 m \uFE98 f \uFE96}
-  array set 1579 {tha \u062b l 1 i \uFE91 m \uFE9C f \uFE9A}
-  array set 1580 {jim \u062C l 1 i \uFE9F m \uFEA0 f \uFE9E}
-  array set 1581 {hha \u062D l 1 i \uFEA3 m \uFEA4 f \uFEA2}
-  array set 1582 {kha \u062E l 1 i \uFEA7 m \uFEA8 f \uFEA6}
-  array set 1587 {sin \u0633 l 1 i \uFEB3 m \uFEB4 f \uFEB2}
-  array set 1588 {shin \u0634 l 1 i \uFEB7 m \uFEB8 f \uFEB6}
-  array set 1589 {sad \u0635 l 1 i \uFEBB m \uFEBC f \uFEBA}
-  array set 1590 {dad \u0636 l 1 1i \uFEBF m \uFEC0 f \uFEBE}
-  array set 1591 {tta \u0637 l 1 i \uFEC3 m \uFEC4 f \uFEC2}
-  array set 1592 {za  \u0638 l 1 i \uFEC7 m \uFEC8 f \uFEC6}
-  array set 1593 {ayn \u0639 l 1 i \uFECB m \uFECC f \uFECA}
-  array set 1594 {ghayn \u063A l 1 i \uFECF m \uFED0 f \uFECE}
-  array set 1601 {fa  \u0641 l 1 i \uFED3 m \uFED4 f \uFED2}
-  array set 1602 {qaf \u0642 l 1 i \uFED7 m \uFED8 f \uFED6}
-  array set 1603 {kaf \u0643 l 1 i \uFEDB m \uFEDC f \uFEDA}
-  array set 1604 {lam \u0644 l 1 i \uFEDF m \uFEE0 f \uFEDE}
-  array set 1605 {mim \u0645 l 1 i \uFEE3 m \uFEE4 f \uFEE2}
-  array set 1606 {nun \u0646 l 1 i \uFEE7 m \uFEE8 f \uFEE6}
-  array set 1607 {ha  \u0647 l 1 i \uFEEB m \uFEEC f \uFEEA}
-  array set 1610 {ya  \u064A l 1 i \uFEF3 m \uFEF4 f \uFEF2}
-  array set 1574 {ya_hamza \u0678 l 1 i \uFE8B m \uFE8C f \uFE8A}
-  ##non left-linking (l=0)
-  array set 1583 {dal  \u062F l 0 m \uFEAA f \uFEAA}
-  array set 1584 {dhal \u0630 l 0 m \uFEAC f \uFEAC}
-  array set 1585 {ra   \u0631 l 0 m \uFEAE f \uFEAE}
-  array set 1586 {zayn \u0632 l 0 m \uFEB0 f \uFEB0}
-  array set 1608 {waw  \u0648 l 0 m \uFEEE f \uFEEE}
-  array set 1572 {waw_hamza \u0676 l 0 m \uFE86 f \uFE86}
-  array set 1575 {alif l 0 m \uFE8E f \uFE8E}
-  array set 1571 {alif_hamza_elyon l 0 m \uFEF8 f \uFEF8}
-  array set 1573 {alif_hamza_tahton l 0 m \uFEFA f \uFEFA}
-  array set 1570 {alif_madda l 0 m \uFE82 f \uFE82}
-  array set 65275 {lam_alif l 0 m \uFEFC f \uFEFC}
-  array set 65270 {lam_alif_madda l 0 m \uFEF6 f \uFEF6}
-  ##final only
-  array set 1577 {ta_marbuta l 0 f \uFE94}
-  array set 1609 {alif_maqsura l 0 f \uFEF0}
+  # A l l   A r a b i c   l e t t e r   l i s t 
+  ## array name = html code of letter's 0 position (absolute form), 
+  ## to be printed with the command: 'set char [format %c $htmcode]'
+  ### Array values: 
+  #### 1. name + linking status 
+  #### 2. i + initial form
+  #### 3. m + middle form 
+  #### 4. f + final form
+  
+  ##left-linking letters: 
+  array set 1576 {ba  1 i \uFE91 m \uFE92 f \uFE90}
+  array set 1578 {ta  1 i \uFE97 m \uFE98 f \uFE96}
+  array set 1579 {tha 1 i \uFE91 m \uFE9C f \uFE9A}
+  array set 1580 {jim 1 i \uFE9F m \uFEA0 f \uFE9E}
+  array set 1581 {Ha 1 i \uFEA3 m \uFEA4 f \uFEA2}
+  array set 1582 {kha 1 i \uFEA7 m \uFEA8 f \uFEA6}
+  array set 1587 {sin 1 i \uFEB3 m \uFEB4 f \uFEB2}
+  array set 1588 {shin 1 i \uFEB7 m \uFEB8 f \uFEB6}
+  array set 1589 {Sad 1 i \uFEBB m \uFEBC f \uFEBA}
+  array set 1590 {Dad 1 i \uFEBF m \uFEC0 f \uFEBE}
+  array set 1591 {Ta 1 i \uFEC3 m \uFEC4 f \uFEC2}
+  array set 1592 {Za  1 i \uFEC7 m \uFEC8 f \uFEC6}
+  array set 1593 {Ayn 1 i \uFECB m \uFECC f \uFECA}
+  array set 1594 {Gayn 1 i \uFECF m \uFED0 f \uFECE}
+  array set 1601 {fa  1 i \uFED3 m \uFED4 f \uFED2}
+  array set 1602 {qaf 1 i \uFED7 m \uFED8 f \uFED6}
+  array set 1603 {kaf 1 i \uFEDB m \uFEDC f \uFEDA}
+  array set 1604 {lam 1 i \uFEDF m \uFEE0 f \uFEDE}
+  array set 1605 {mim 1 i \uFEE3 m \uFEE4 f \uFEE2}
+  array set 1606 {nun 1 i \uFEE7 m \uFEE8 f \uFEE6}
+  array set 1607 {ha  1 i \uFEEB m \uFEEC f \uFEEA}
+  array set 1610 {ya  1 i \uFEF3 m \uFEF4 f \uFEF2}
+  array set 1574 {ya_hamza 1 i \uFE8B m \uFE8C f \uFE8A}
+  ##non left-linking letters
+  array set 1583 {dal  0 i \uFEA9 m \uFEAA f \uFEAA}
+  array set 1584 {dhal 0 i \uFEAB m \uFEAC f \uFEAC}
+  array set 1585 {ra   0 i \uFEAD m \uFEAE f \uFEAE}
+  array set 1586 {zayn 0 i \uFEAF m \uFEB0 f \uFEB0}
+  array set 1608 {waw  0 i \uFEED m \uFEEE f \uFEEE}
+  array set 1572 {waw_hamza 0 i \uFE85 m \uFE86 f \uFE86}
+  array set 1575 {alif 0 i \uFE8D m \uFE8E f \uFE8E}
+  array set 1571 {alif_hamza_elyon i \uFEF7 0 m \uFEF8 f \uFEF8}
+  array set 1573 {alif_hamza_tahton 0 i \uFEF9 m \uFEFA f \uFEFA}
+  array set 1570 {alif_madda 0 i \uFE81 m \uFE82 f \uFE82}
+  array set 65275 {lam_alif 0 m i \ufefb \uFEFC f \uFEFC}
+  array set 65270 {lam_alif_madda i \ufef5 0 m \uFEF6 f \uFEF6}
+  ##final only letters
+  array set 1577 {ta_marbuta 0 f \uFE94}
+  array set 1609 {alif_maqsura 0 f \uFEF0}
   #Persian & Urdu special letters
-  array set 1662 {pe l 1 i \ufb58 m \ufb59 f \ufb57}
-  array set 1670 {che l 1 i \ufb7c m \ufb7d f \ufb7b}
-  array set 1711 {gaf l 1 i \ufb94 m \ufb95 f \ufb93}
-  array set 1657 {tte l 1 i \ufb68 m \ufb69 f \ufb67}
-  array set 1705 {kaf_urdu l 1 i \uFEDB m \uFEDC f \uFEDA}
-  array set 1722 {nun_ghunna l 1 i \u06ba f \ufb9f}
-  array set 1740 {choti_ye l 1 i \uFEF3 m \uFEF4 f \uFEF0}
-  array set 1746 {bari_ye l 1 f \uFBAF}
-  array set 1747 {bari_ye_hamza l 1 f \uFBB1}
-  array set 1729 {he_goal l 1 i \uFBA8 m \uFBA9 f \uFBA7} ;#= choti_he with hamza
-  array set 1730 {he_goal_hamza l 1 f \u06c2}
-  array set 1726 {do_chashmi_he l 1 i \uFEEB m \uFEEC}
+  array set 1662 {pe 1 i \ufb58 m \ufb59 f \ufb57}
+  array set 1670 {che 1 i \ufb7c m \ufb7d f \ufb7b}
+  array set 1711 {gaf 1 i \ufb94 m \ufb95 f \ufb93}
+  array set 1657 {tte 1 i \ufb68 m \ufb69 f \ufb67}
+  array set 1705 {kaf_urdu 1 i \uFEDB m \uFEDC f \uFEDA}
+  array set 1722 {nun_ghunna 1 i \u06ba f \ufb9f}
+  array set 1740 {choti_ye 1 i \uFEF3 m \uFEF4 f \uFEF0}
+  array set 1746 {bari_ye 1 f \uFBAF}
+  array set 1747 {bari_ye_hamza 1 f \uFBB1}
+  array set 1729 {he_goal 1 i \uFBA8 m \uFBA9 f \uFBA7} ;#= choti_he with hamza
+  array set 1730 {he_goal_hamza 1 f \u06c2}
+  array set 1726 {do_chashmi_he 1 i \uFEEB m \uFEEC}
   ##non left-linking
-  array set 1688 {zhe l 0 m \ufb8b f \ufb8b}
-  array set 1672 {dde l 0 m \ufb89 f \ufb89}
-  array set 1681 {rre l 0 m \ufb8d f \ufb8d}
-  array set 1731 {te_marbuta_goal l 0 f \u06c3} ;#=ta_marbuta?
+  array set 1688 {zhe 0 m \ufb8b f \ufb8b}
+  array set 1672 {dde 0 m \ufb89 f \ufb89}
+  array set 1681 {rre 0 m \ufb8d f \ufb8d}
+  array set 1731 {te_marbuta_goal 0 f \u06c3} ;#=ta_marbuta?
 
 
 ### P R O C S  ##############################################################
@@ -217,10 +225,19 @@ namespace eval bidi {
       
       set utfchar [lindex $letterL $i]
       set htmcode [scan $letter %c]
+
+      #umgekehrt unicode>char: - TODO where do we need this?
+      set char [format %c $htmcode]
     
       global bidi::$htmcode
       
-              
+      #Extract letter name (1st element, greater than 1)
+      set namelist [array names $htmcode]
+      foreach e $namelist [
+        if [string length $e <1] {
+        set lettername $e
+      }
+             
       #TODO jesh balagan
       
       #skip non-letter items????????????
