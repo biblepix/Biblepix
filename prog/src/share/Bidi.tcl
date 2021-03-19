@@ -7,8 +7,9 @@
 # Updated: 17mch21
 
 namespace eval bidi {
-
+  #################################################
   # A l l   A r a b i c   l e t t e r   l i s t 
+  #################################################
   ## array name = html code of letter's 0 position (absolute form), 
   ## to be printed with the command: 'set char [format %c $htmcode]'
   ### Array values: 
@@ -49,11 +50,11 @@ namespace eval bidi {
   array set 1608 {waw  0 i \uFEED m \uFEEE f \uFEEE}
   array set 1572 {waw_hamza 0 i \uFE85 m \uFE86 f \uFE86}
   array set 1575 {alif 0 i \uFE8D m \uFE8E f \uFE8E}
-  array set 1571 {alif_hamza_elyon i \uFEF7 0 m \uFEF8 f \uFEF8}
+  array set 1571 {alif_hamza_elyon 0 i \uFEF7 m \uFEF8 f \uFEF8}
   array set 1573 {alif_hamza_tahton 0 i \uFEF9 m \uFEFA f \uFEFA}
   array set 1570 {alif_madda 0 i \uFE81 m \uFE82 f \uFE82}
-  array set 65275 {lam_alif 0 m i \ufefb \uFEFC f \uFEFC}
-  array set 65270 {lam_alif_madda i \ufef5 0 m \uFEF6 f \uFEF6}
+  array set 65275 {lam_alif 0 i \ufefb m \uFEFC f \uFEFC}
+  array set 65270 {lam_alif_madda 0 i \ufef5 m \uFEF6 f \uFEF6}
   ##final only letters
   array set 1577 {ta_marbuta 0 f \uFE94}
   array set 1609 {alif_maqsura 0 f \uFEF0}
@@ -90,12 +91,6 @@ namespace eval bidi {
 	  if {$s == ""} {
 		  return -error "No text found"
 	  }
-
-    #All languages: revert digits
-    set digits [regexp -all -inline {[[:digit:]]+} $s]
-    foreach num $digits {
-      regsub $num $s [string reverse $num] s
-    }
 
     # H e b r e w
     ##attempts to convert vowelled standard text to "ktiv male" (כתיב מלא) = "modern full spelling"
@@ -144,15 +139,12 @@ namespace eval bidi {
        ##eliminate all vowels 
        regsub -all {[\u064B-\u065F]} $s {} s
        ##eliminate ltr & rtl markers
-       set s [string map {\u200e} {} {\u200f} {} $s]
+       set s [string map {\u200e {} \u200f {}} $s]
        ##substitute fake lam-alif combinations to true ligatures (=special combined letters):
        ##lam-alif / lam-alif-hamza_elyon / lam-alif-hamza_tahton / lam-alif_madda 
        set s [string map {\u0644\u0627 \uFEFB \u0644\u062f \uFEF7 \u0644\u0625 \uFEF9 \u0644\u062m \uFEF5} $s]
     }
     
-    #Revert brackets () to fit rtl
-    set s [string map {( ) ) (} $s]
-  
     return $s
     
   }  ;#END devowelise
@@ -170,7 +162,7 @@ namespace eval bidi {
     set ar_range {[\u0600-\u06FF]}
     if [regexp $he_range $s] {
       set script he
-    } elseif [regexp $ar_range $s {
+    } elseif [regexp $ar_range $s] {
       set script ar
     }
 
@@ -178,22 +170,25 @@ namespace eval bidi {
     if !$vowelled {
       set s [devowelise $s $script]
     }
+
+    #Revert brackets () to fit rtl
+    set s [string map {( ) ) (} $s]
     
     #split text into lines
     set linesplit [split $s \n]
+
     foreach line $linesplit {
      
       #handle text per word
       foreach word $line {
-      
-        #revert order if not for Bdf
-        if !$bdf {
-          set newword [string reverse $word]
-        }
-        #skip if ASCII
+puts $word      
+
+
+        #add to line unchanged if ASCII
         if [string is ascii $word] {
           lappend newline $word
           continue  
+
         #leave Hebrew alone
         } elseif {$script == "he"} {
           set newword $word
@@ -202,10 +197,14 @@ namespace eval bidi {
           set newword [formatArabicWord $word]
         }
           
-        #reverse bidi word for all languages
+        #reverse bidi word for all languages except if Bdf
+        if !$bdf {
+          set newword [string reverse $word]
+        }
+
         lappend newline $newword
       }
-        
+          
       append newtext $newline \n
       unset newline      
     
@@ -218,81 +217,76 @@ namespace eval bidi {
   # formatArabicWord
   ##puts letters of a word into correct form
   ##called by fixBidi
-  proc formatArabicWord word {
+  proc formatArabicWord {word} {
 
-    #Scan word for coded & non-coded characters
-    for {set i 0} {$i<=$endpos} {incr i} { 
-      
-      set utfchar [lindex $letterL $i]
-      set htmcode [scan $letter %c]
+    set letterL [split $word {}]
+    puts "letterlist $letterL"
 
-      #umgekehrt unicode>char: - TODO where do we need this?
-      set char [format %c $htmcode]
+    set pos 1    
+    set endpos [llength $letterL]
+    set prevLinking 0
     
-      global bidi::$htmcode
+    #Scan word for coded & non-coded characters
+    foreach char $letterL {
       
-      #Extract letter name (1st element, greater than 1)
-      set namelist [array names $htmcode]
-      foreach e $namelist [
-        if [string length $e <1] {
-        set lettername $e
-      }
-             
-      #TODO jesh balagan
+      set htmcode [scan $char %c]
       
-      #skip non-letter items????????????
-      if ![info exists htmcode] {
-      
-      #  upvar $htmcode letArr
-        
-        append letterL $utfchar
+      #A) Skip if not listed
+      if ![info exists [namespace current]::$htmcode] {
+        incr pos
         continue
-
-      
-      #upvar htmcode array    
-      } else {
-      
-        upvar $::bidi::$htmcode letterArr
-#        array set myarr [array get bidi::$htmcode]
       }
-      
-      #scan array for letter name, form & linked info
-      
-      
-      set curLinked $letterArr(l)
       
       #set 1st letter form
-      if {$i == 0} {
-        append newword [set \u$htmcode(i)]
-        
+      if {$pos == 1} {
+        set utfchar [formatArabicLetter $htmcode i $prevLinking]
       #set final letter form  
-      } elseif {$i == $endpos} { 
-        
-        if $prevlinked {
-          set char [set \u$codename(f)]
-        } else { 
-          set char [set \u$codename(i)]
-        }
-        append newword $char
-
-      #set middle forms (unlinking letters have only 1 form)
+      } elseif {$pos == $endpos} { 
+        set utfchar [formatArabicLetter $htmcode f $prevLinking]
+      #set middle letter form    
       } else {
-        
-        append newword [set \u$codename(m)]
-      
+        set utfchar [formatArabicLetter $htmcode m $prevLinking]
       }
       
-      set prevlinked $curLinked
-    }
-
-    #return as ltr:
+puts $utfchar      
+      append newword [lindex $utfchar 0]
+puts $newword
+      #set current left-linking status for next letter
+      set prevLinking [lindex $utfchar 1]
+      incr pos
+      
+    } ;#END foreach char
+    
+    puts $newword
+    #TODO where has it gone?    
+    #return word as ltr
     return $newword
   
   } ;#END formatArabicWord
   
-  proc getArLetter {htmcode} {
-    upvar $bidi::$htmcode letterArr
-    return $letterArr(1)
+  # getArLetter
+  ##returns Arabic character with requested form as UTF 
+  ##args: form = i|m|f & linking status of previous letter = 0|1
+  proc formatArabicLetter {htmcode form prevLinking} {
+    global [namespace current]::$htmcode
+    upvar [namespace current]::$htmcode letterArr
+    
+    foreach name [array names $htmcode] {
+      #letter name has min. 2 characters
+      if {[string length $name] > 1} {
+        set lettername $name
+      }
+    }
+    puts $lettername
+    
+    if $prevLinking {
+      set utfchar $letterArr($form)
+    } else {
+      set utfchar $letterArr(i)
+    }
+    
+    set curLinking [lindex [array get $htmcode $lettername] 1]
+    return "$utfchar $curLinking"
   }
   
 } ;#END ::bidi ns
