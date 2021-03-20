@@ -7,7 +7,10 @@
 # Updated: 17mch21
 
 namespace eval bidi {
-
+  
+  variable he_range {[\u0590-\u05FF]}
+  variable ar_range {[\u0600-\u06FF]}
+  
   #################################################
   # A l l   A r a b i c   l e t t e r   l i s t 
   ###########9#####################################
@@ -53,13 +56,30 @@ namespace eval bidi {
   array set 1572 {n waw_hamza l 0 i \uFE85 m \uFE86 f \uFE86}
   array set 1575 {n alif l 0 i \uFE8D m \uFE8E f \uFE8E}
   array set 1571 {n alif_hamza_elyon l 0 i \uFEF7 m \uFEF8 f \uFEF8}
-  array set 1573 {n alif_hamza_tahton l 0 i \uFEF9 m \uFEFA f \uFEFA}
+  array set 1573 {n alif_hamza_tahton l 0 i \uFE87 m \uFE88 f \uFE88}
   array set 1570 {n alif_madda l 0 i \uFE81 m \uFE82 f \uFE82}
   array set 65275 {n lam_alif l 0 i \ufefb m \uFEFC f \uFEFC}
   array set 65270 {n lam_alif_madda l 0 i \ufef5 m \uFEF6 f \uFEF6}
+  
   ##final only letters
   array set 1577 {n ta_marbuta l 0 f \uFE94}
   array set 1609 {n alif_maqsura l 0 f \uFEF0}
+  
+  #THese are not needed because they are added without formatting!
+#  array set 1548 {n KOMMA}
+#  array set 1563 {n SEMIKOLON}
+#  array set 1567 {n FRAGEZEICHEN}
+#  #Cifers
+#  array set 0660 {n 0}
+#  array set 0661 {n 1}
+#  array set 0662 {n 2}
+#  array set 0663 {n 3}
+#  array set 0664 {n 4}
+#  array set 0665 {n 5}
+#  array set 0666 {n 6}
+#  array set 0667 {n 7}
+#  array set 0668 {n 8}
+#  array set 0669 {n 9}
   #Persian & Urdu special letters
   array set 1662 {n pe l 1 i \ufb58 m \ufb59 f \ufb57}
   array set 1670 {n che l 1 i \ufb7c m \ufb7d f \ufb7b}
@@ -144,7 +164,12 @@ namespace eval bidi {
        set s [string map {\u200e {} \u200f {}} $s]
        ##substitute fake lam-alif combinations to true ligatures (=special combined letters):
        ##lam-alif / lam-alif-hamza_elyon / lam-alif-hamza_tahton / lam-alif_madda 
-       set s [string map {\u0644\u0627 \uFEFB \u0644\u062f \uFEF7 \u0644\u0625 \uFEF9 \u0644\u062m \uFEF5} $s]
+       set s [string map {
+       \u0644\u0627 \uFEFB 
+       \u0644\u062f \uFEF7 
+       \u0644\u0625 \uFEF9 
+       \u0644\u062m \uFEF5
+       } $s]
     }
     
     return $s
@@ -158,10 +183,10 @@ namespace eval bidi {
   ## vowelled(1/0): 0 = strip of all vowels 
   ## bdf(1/0): 1 = don't reverse line order (BDF printing is from right to left)
   proc fixBidi {s {vowelled 1} {bdf 0}} {
-
+    global [namespace current]::he_range
+    global [namespace current]::ar_range
+    
     #Detect Hebrew OR Arabic (incl. Farsi+Urdu) script
-    set he_range {[\u0590-\u05FF]}
-    set ar_range {[\u0600-\u06FF]}
     if [regexp $he_range $s] {
       set script he
     } elseif [regexp $ar_range $s] {
@@ -220,15 +245,19 @@ puts $word
   ##puts letters of a word into correct form
   ##called by fixBidi
   proc formatArabicWord {word} {
-
+    global [namespace current]::ar_range
     set newword ""
-    set letterL [split $word {}]
-#    puts "letterlist $letterL"
-
-    set pos 1    
-    set endpos [llength $letterL]
+    set pos 0    
     set prevLinking 0
     
+    #Get 1st und last Arabic letter positions
+    set letterL [split $word {}]
+    set arLetterL [lsearch -all -regexp $letterL $ar_range]
+    set firstLetterPos [lindex $arLetterL 0]
+    set lastLetterPos [lindex $arLetterL end]
+puts "1stpos $firstLetterPos"
+puts "lastpos $lastLetterPos"
+
     #Scan word for coded & non-coded characters
     foreach char $letterL {
       
@@ -236,17 +265,22 @@ puts $word
       
       #A) Skip if not listed
       if ![info exists [namespace current]::$htmcode] {
+        append newword $char
         incr pos
         continue
       }
       
-      #B) Set correct letter form:
+puts $pos
+      #B) Evaluate form from position:
       ##set 1st letter form
-      if {$pos == 1} {
+      if {$pos == $firstLetterPos} {
         set utfchar [formatArabicLetter $htmcode i $prevLinking]
+puts First
       ##set final letter form  
-      } elseif {$pos == $endpos} { 
+      } elseif {$pos == $lastLetterPos} { 
+puts Last
         set utfchar [formatArabicLetter $htmcode f $prevLinking]
+
       ##set middle letter form    
       } else {
         set utfchar [formatArabicLetter $htmcode m $prevLinking]
@@ -259,6 +293,7 @@ puts $word
       append newword [lindex $utfchar 0]
      
     } ;#END foreach char
+
 
 puts $newword
     #return word as ltr
@@ -277,13 +312,20 @@ puts $newword
     set curLinking $letterArr(l)
         
 puts $lettername
-    
-    if $prevLinking {
-      set utfchar $letterArr($form)
+puts $form
+puts $prevLinking
+
+    #A) absolute form if final & not prevLinking 
+    if {!$prevLinking && $form == "f"} {
+      set utfchar [format %c $htmcode]
+    #B) any form if prevLinking
+    } elseif $prevLinking {
+      set utfchar $letterArr($form) 
+    #C) initial if not prevLinking and not final
     } else {
-      set utfchar $letterArr(i)
+      set utfchar $letterArr(i) 
     }
-    
+
     return "$utfchar $curLinking"
   }
   
