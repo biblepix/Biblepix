@@ -10,6 +10,7 @@ namespace eval bidi {
   
   variable he_range {[\u0590-\u05FF]}
   variable ar_range {[\u0600-\u06FF]}
+  variable ar_vowels {[\u064B-\u065F]}
   
   #################################################
   # A l l   A r a b i c   l e t t e r   l i s t 
@@ -61,8 +62,8 @@ namespace eval bidi {
   array set 65275 {n lam_alif l 0 i \ufefb m \uFEFC f \uFEFC}
   array set 65270 {n lam_alif_madda l 0 i \ufef5 m \uFEF6 f \uFEF6}
   
-  ##final only letters
-  array set 1577 {n ta_marbuta l 0 f \uFE94}
+  ##final only letters TODO ta-Marbuta is a hack, should only have final + absolute forms! - formatArabicLetter has flaws still...
+  array set 1577 {n ta_marbuta l 0 i \uFE93 m \uFE93 f \uFE94}
   array set 1609 {n alif_maqsura l 0 f \uFEF0}
   
   #THese are not needed because they are added without formatting!
@@ -108,7 +109,8 @@ namespace eval bidi {
   ##necessary arguments: s = text string / script = 'he' OR 'ar' (including Urdu+Farsi)
   ##called by fixBidi
   proc devowelise {s script} {
-        
+    global [namespace current]::ar_vowels        
+ 
     #return if empty  
 	  if {$s == ""} {
 		  return -error "No text found"
@@ -158,18 +160,12 @@ namespace eval bidi {
     # A r a b i c  / U r d u  /  F a r s i
     ##cuts out all vowel signs as common in modern texts
     } elseif {$script == "ar"} {
+
        ##eliminate all vowels 
-       regsub -all {[\u064B-\u065F]} $s {} s
-       ##eliminate ltr & rtl markers
-       set s [string map {\u200e {} \u200f {}} $s]
-       ##substitute fake lam-alif combinations to true ligatures (=special combined letters):
-       ##lam-alif / lam-alif-hamza_elyon / lam-alif-hamza_tahton / lam-alif_madda 
-       set s [string map {
-       \u0644\u0627 \uFEFB 
-       \u0644\u062f \uFEF7 
-       \u0644\u0625 \uFEF9 
-       \u0644\u062m \uFEF5
-       } $s]
+       regsub -all $ar_vowels $s {} s
+       
+  #TODO put these somewhere else!
+       
     }
     
     return $s
@@ -189,18 +185,29 @@ namespace eval bidi {
     #Detect Hebrew OR Arabic (incl. Farsi+Urdu) script
     if [regexp $he_range $s] {
       set script he
+
     } elseif [regexp $ar_range $s] {
       set script ar
+      #Substitute common lam-alif combinations to true ligatures (=special combined letters):
+      ## lam-alif / lam-alif-hamza_elyon / lam-alif-hamza_tahton / lam-alif_madda 
+      set s [string map {
+       \u0644\u0627 \uFEFB
+       \u0644\u0623 \uFEF7
+       \u0644\u0625 \uFEF9
+       \u0644\u0622 \uFEF5
+       } $s]
     }
 
+    ##eliminate ltr & rtl markers
+    set s [string map {\u200e {} \u200f {}} $s]
+    #Revert brackets () to fit rtl
+    set s [string map {( ) ) (} $s]
+       
     #devowelise if $vowelled=0
     if !$vowelled {
       set s [devowelise $s $script]
     }
 
-    #Revert brackets () to fit rtl
-    set s [string map {( ) ) (} $s]
-    
     #split text into lines
     set linesplit [split $s \n]
 
@@ -209,7 +216,6 @@ namespace eval bidi {
       #handle text per word
       foreach word $line {
 puts $word      
-
 
         #add to line unchanged if ASCII
         if [string is ascii $word] {
@@ -255,8 +261,8 @@ puts $word
     set arLetterL [lsearch -all -regexp $letterL $ar_range]
     set firstLetterPos [lindex $arLetterL 0]
     set lastLetterPos [lindex $arLetterL end]
-puts "1stpos $firstLetterPos"
-puts "lastpos $lastLetterPos"
+puts "
+length [llength $letterL] ($firstLetterPos $lastLetterPos)"
 
     #Scan word for coded & non-coded characters
     foreach char $letterL {
@@ -270,15 +276,16 @@ puts "lastpos $lastLetterPos"
         continue
       }
       
-puts $pos
+#puts "curpos $pos"
+
       #B) Evaluate form from position:
       ##set 1st letter form
       if {$pos == $firstLetterPos} {
         set utfchar [formatArabicLetter $htmcode i $prevLinking]
-puts First
+puts "First $pos"
       ##set final letter form  
       } elseif {$pos == $lastLetterPos} { 
-puts Last
+puts "Last $pos"
         set utfchar [formatArabicLetter $htmcode f $prevLinking]
 
       ##set middle letter form    
@@ -287,10 +294,12 @@ puts Last
       }
 
       #set current left-linking status for next letter
-      set prevLinking [lindex $utfchar 1]
+      global [namespace current]::$htmcode
+      upvar [namespace current]::$htmcode letterArr
+      set prevLinking $letterArr(l)
+      
       incr pos
- 
-      append newword [lindex $utfchar 0]
+      append newword $utfchar
      
     } ;#END foreach char
 
@@ -307,26 +316,31 @@ puts $newword
   proc formatArabicLetter {htmcode form prevLinking} {
     global [namespace current]::$htmcode
     upvar [namespace current]::$htmcode letterArr
-
     set lettername $letterArr(n)
-    set curLinking $letterArr(l)
         
-puts $lettername
-puts $form
-puts $prevLinking
+puts "$lettername $form $prevLinking"
 
-    #A) absolute form if final & not prevLinking 
-    if {!$prevLinking && $form == "f"} {
-      set utfchar [format %c $htmcode]
+    #A) absolute or final form, depending on prevLinking status 
+    if {$form == "f"} {
+      if !$prevLinking {
+        ##absolute
+        set utfchar [format %c $htmcode]
+      } else {
+        ##final
+        set utfchar $letterArr(f)
+      }
+      
     #B) any form if prevLinking
     } elseif $prevLinking {
       set utfchar $letterArr($form) 
+   
     #C) initial if not prevLinking and not final
     } else {
-      set utfchar $letterArr(i) 
+      set utfchar $letterArr(i)
     }
 
-    return "$utfchar $curLinking"
+#    return "$utfchar $curLinking"
+ return $utfchar
   }
   
 } ;#END ::bidi ns
