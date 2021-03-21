@@ -56,17 +56,19 @@ namespace eval bidi {
   array set 1608 {n waw  l 0 i \uFEED m \uFEEE f \uFEEE}
   array set 1572 {n waw_hamza l 0 i \uFE85 m \uFE86 f \uFE86}
   array set 1575 {n alif l 0 i \uFE8D m \uFE8E f \uFE8E}
-  array set 1571 {n alif_hamza_elyon l 0 i \uFEF7 m \uFEF8 f \uFEF8}
-  array set 1573 {n alif_hamza_tahton l 0 i \uFE87 m \uFE88 f \uFE88}
-  array set 1570 {n alif_madda l 0 i \uFE81 m \uFE82 f \uFE82}
+  ##Alif+Lam ligatures
+  array set 1570  {n alif_madda l 0 i \uFE81 m \uFE82 f \uFE82}
+  array set 1571  {n alif_hamza_elyon l 0 i \uFE83 m \uFE84 f \uFE84}
+  array set 1573  {n alif_hamza_tahton l 0 i \uFE87 m \uFE88 f \uFE88}
   array set 65275 {n lam_alif l 0 i \ufefb m \uFEFC f \uFEFC}
   array set 65270 {n lam_alif_madda l 0 i \ufef5 m \uFEF6 f \uFEF6}
-  
-  ##final only letters TODO ta-Marbuta is a hack, should only have final + absolute forms! - formatArabicLetter has flaws still...
+  array set 65271 {n lam_alif_hamza_elyon l 0 i \uFEF7 m \uFEF8 f \uFEF8}
+  array set 65273 {n lam_alif_hamza_tahton l 0 i \uFEF9 m \uFEFA f \UFEFA}
+  ##final only letters TODO ta-Marbuta is a hack, should only have final + absolute forms! - 'formatArabicLetter' has flaws still...
   array set 1577 {n ta_marbuta l 0 i \uFE93 m \uFE93 f \uFE94}
   array set 1609 {n alif_maqsura l 0 f \uFEF0}
   
-  #THese are not needed because they are added without formatting!
+#THese are not needed because they are added without formatting!
 #  array set 1548 {n KOMMA}
 #  array set 1563 {n SEMIKOLON}
 #  array set 1567 {n FRAGEZEICHEN}
