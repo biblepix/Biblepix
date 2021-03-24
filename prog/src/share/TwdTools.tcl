@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 15mch21 pv
+# Updated 24mch21 pv
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -15,54 +15,50 @@ if [catch {package require tdom}] {
 ################################################################################
 
 #L i s t e n   o h n e   P f a d
-proc getTWDlist {} {
+proc getTwdList {} {
   global dirlist jahr
-  set twdlist [glob -nocomplain -tails -directory $dirlist(twdDir) *_$jahr.twd]
-  return $twdlist
+  set twdL [glob -nocomplain -tails -directory $dirlist(twdDir) *_$jahr.twd]
+  return $twdL
 }
 
 # getTwdSigList
 ##selects TWD files for languages selected in SetupEmail CodeList
-##called by getRandomTwdFile with args = sig
+##called by getRandomTwdFile with args=sig
 proc getTwdSigList {} {
   global dirlist jahr sigLanglist
 
-  #A) Use only files that match $sigLanglist
+  #A) Use only files that match $sigLangist
   if { [info exists sigLanglist] && $sigLanglist != ""} {
-  
     ##get all twdfiles related to $lang
     foreach code $sigLanglist {
       foreach item [glob -nocomplain -tails -directory $dirlist(twdDir) ${code}*_$jahr.twd] {
-        lappend twdL $item
+        lappend twdsigL $item
       }
     }
-  
-  #B) use all files if no list found
-  } else {
-
-    foreach item [glob -nocomplain -tails -directory $dirlist(twdDir) *_$jahr.twd] {
-      lappend twdL $item
-    }
+  } 
+  if [info exists twdsigL] {
+    return $twdsigL
   }
-  
-  return $twdL
 }
 
 #R a n d o m i z e r s
 
 # getRandomTwdFile
 ##Ausgabe ohne Pfad
-##called by Signature with args==sig
-proc getRandomTwdFile args {
+##called by Biblepix, with args=1 =sig
+proc getRandomTwdFile {{sig 0}} {
   #A) for signature
-  if { [info exists args] && $args == "sig"} {
-    set twdlist [getTwdSigList]
+  if $sig {
+    set twdL [getTwdSigList]
   #B) for all others 
-  } else { 
-    set twdlist [getTWDlist]
+  } else {
+    set twdL [getTwdList]
   }
-  set randIndex [expr {int(rand()*[llength $twdlist])}]
-  return [lindex $twdlist $randIndex]
+  
+  if {$twdL != ""} {
+    set randIndex [expr {int(rand()*[llength $twdL])}]  
+    return [lindex $twdL $randIndex]
+  }
 }
 
 # getRandomFontcolor
@@ -208,6 +204,8 @@ proc getDomNodeForToday {domDoc} {
   return [$rootDomNode selectNodes /thewordfile/theword\[@date='$datum'\]]
 }
 
+# parseToText
+##called by getTwdTitle getTwdParolNode getParolIntro getParolText getParolRef
 proc parseToText {node TwdLang {withTags 0}} {
   global BdfBidi os
   
@@ -230,15 +228,19 @@ proc parseToText {node TwdLang {withTags 0}} {
   set RtL [isRtL $TwdLang]
 
   if {$RtL} {
-    if {[info procs bidi] == ""} {
+    if {[info procs bidi::fixBidi] == ""} {
       source $BdfBidi
     }
 
-    if {$os == "Windows NT"} {
-      set text [bidi $text $TwdLang]
-    } else {
-      set text [bidi $text $TwdLang revert]
-    }
+#TODO what will this do?
+    set text [bidi::fixBidi $text]
+    
+#    if {$os == "Windows NT"} {
+#TODO what did this do?
+#      set text [bidi $text $TwdLang]
+#    } else {
+#      set text [bidi $text $TwdLang revert]
+#    }
   }
   return $text
 }

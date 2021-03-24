@@ -2,7 +2,7 @@
 # Procs for Trojitá & Evolution mail clients
 # Called by Signature if any of above found
 # Authors: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 15mch21 pv
+# Updated: 24mch21 pv
 
 namespace eval sig {
   
@@ -70,7 +70,7 @@ namespace eval sig {
   ##checks signature files for DW or trigger present & calls updateSigEvolution
   ##called by Signature
   ##NOTE: Evolution sig files must be (partly) formatted as HTML neuerdings
-  proc doSigEvolution {} {
+  proc doSigEvol {} {
     global env sig::dayOTY
     global sig::addedsigT sig::catchword sig::ev sig::nosigfoundT sig::evolSigdir sig::triggerRef sig::startcatch sig::addednum
     
@@ -95,7 +95,7 @@ namespace eval sig {
    
       #3) Update signature if old AND cleanSig exists
       if [info exists cleanSig] {
-        updateSigEvolution $sigFilePath $cleanSig
+        updateSigEvol $sigFilePath $cleanSig
         incr addednum
         unset cleanSig
       }
@@ -113,9 +113,9 @@ namespace eval sig {
 
   # updateSigEvolution
   ##called by doSigEvolution for each sig file
-  proc updateSigEvolution {sigfile cleanSig} {
+  proc updateSigEvol {sigfile cleanSig} {
 
-    set twdFile [getRandomTwdFile sig]
+    set twdFile [getRandomTwdFile 1]
     set dw [getTodaysTwdSig $twdFile]
 
     #format to html  
@@ -124,7 +124,6 @@ namespace eval sig {
 
     set chan [open $sigfile w]
     puts $chan $cleanSig
-  #  puts $chan <br>
     puts $chan $dwhtm
     close $chan
   }
@@ -179,7 +178,7 @@ namespace eval sig {
     global tr catchword startcatch endcatch
     
     #1. Create dw
-    set twdFile [getRandomTwdFile sig]
+    set twdFile [getRandomTwdFile 1]
     set dw [getTodaysTwdSig $twdFile]
     
     #2. Replace catchword
@@ -294,7 +293,7 @@ namespace eval sig {
     global sig::catchword sig::startcatch sig::endcatch sig::tr sig::addednum
     
     #Get fist TWD - TODO is this needed?
-    set file [getRandomTwdFile sig]
+    set file [getRandomTwdFile 1]
     set dwsig [getTodaysTwdSig $file]    
     set dwhex [getTwdHex $dwsig]
 
@@ -343,7 +342,7 @@ namespace eval sig {
         incr addednum
 
         #Get new Twd for next signature
-        set file [getRandomTwdFile sig]
+        set file [getRandomTwdFile 1]
         set dwsig [getTodaysTwdSig $file]    
         set dwhex [getTwdHex $dwsig]
       }

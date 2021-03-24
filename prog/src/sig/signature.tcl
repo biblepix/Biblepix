@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 16mch21 pv
+# Updated: 26mch21 pv
 source $TwdTools
 source $SigTools
 
@@ -11,7 +11,11 @@ source $SigTools
 #########################################################################
 
 puts "Updating signatures..."
+
 set twdFileList [getTwdSigList]
+if {$twdFileList == ""} {
+  return "No corresponding TWD language files found!\n Please rerun Setup to define which languages your desire for your e-mail signatures."
+}
 
 foreach twdFileName $twdFileList {
   
@@ -23,6 +27,7 @@ foreach twdFileName $twdFileList {
   if ![file exists $sigFile] {
     close [open $sigFile w]
   }
+  
   #check date, skip if today's & sig present
   set dateidatum [clock format [file mtime $sigFile] -format %d]
 
