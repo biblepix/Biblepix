@@ -4,7 +4,7 @@
 # ERSETZT BdfBidi !!!
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 22mch21
+# Updated: 24mch21
 
 namespace eval bidi {
   
@@ -104,12 +104,12 @@ namespace eval bidi {
     global [namespace current]::ar_numerals
     global os
     
-    #Detect Hebrew OR Arabic (incl. Farsi+Urdu) script
+    #Detect Hebrew OR Arabic script (incl. Farsi+Urdu!)
     if [regexp $he_range $s] {
-      set script he
+      set lang he
 
     } elseif [regexp $ar_range $s] {
-      set script ar
+      set lang ar
       #Substitute common lam-alif combinations to true ligatures (=special combined letters):
       ## lam-alif / lam-alif-hamza_elyon / lam-alif-hamza_tahton / lam-alif_madda 
       set s [string map {
@@ -119,15 +119,15 @@ namespace eval bidi {
        \u0644\u0622 \uFEF5
        } $s]
     }
-
-    ##eliminate ltr & rtl markers
-    set s [string map {\u200e {} \u200f {}} $s]
+    
+    ##eliminate control characters
+    regsub -all {[[:cntrl:]]} $s {} s
     #Revert brackets () to fit rtl
     set s [string map {( ) ) (} $s]
        
     #devowelise if $vowelled=0
     if !$vowelled {
-      set s [devowelise $s $script]
+      set s [devowelise $s $lang]
     }
 
     #split text into lines
@@ -137,35 +137,35 @@ namespace eval bidi {
      
       #handle text per word
       foreach word $line {
-        puts $word      
-
+ 
         #add to line pre-reverted if ASCII (=probably a number)
         if [string is ascii $word] {
           lappend newline [string reverse $word]
           continue  
 
         #leave Hebrew alone
-        } elseif {$script == "he"} {
+        } elseif {$lang == "he"} {
           set newword $word
-          
+ 
         #format Arabic script word
-        } elseif {$script == "ar"} {
-        
+        } elseif {$lang == "ar"} {
           #pre-revert Arabic numerals, no formatting
           if [regexp $ar_numerals $word] {
             set newword [string reverse $newword]
           } else {
             set newword [formatArabicWord $word]
           }
-        
         }
         
         lappend newline $newword
-      }  
+      }
+      
+      #remove any unwanted formatting chars: \ { }
+      set newline [string map { \{ {} \} {} \\ {} } $newline]
       
       #Revert Hebrew text line for Setup widgets
-      if {$os=="unix" && $script=="he" && !$bdf} {
-        puts yesh
+      if {$os=="unix" && $lang=="he" && !$bdf} {
+puts yesh
         set newline [string reverse $newline]
       }
    
@@ -235,7 +235,7 @@ namespace eval bidi {
     } ;#END foreach char
 
 
-puts $newword
+#puts $newword
     #return word as ltr
     return $newword
   
@@ -275,15 +275,15 @@ puts $newword
   # devowelise
   ##clears all vowels from Hebrew (he), Arabic (ar), Urdu (ur) or Persian (fa) text
   ##producing readable modern type text from poetic or religious vowelled text
-  ##necessary arguments: s = text string / script = 'he' OR 'ar' (including Urdu+Farsi)
+  ##necessary arguments: s = text string / lang = 'he' OR 'ar' (including Urdu+Farsi)
   ##called by fixBidi
-  proc devowelise {s script} {
+  proc devowelise {s lang} {
     global [namespace current]::ar_vowels        
  
     # H e b r e w
     ##attempts to convert vowelled standard text to "ktiv male" (כתיב מלא) = "modern full spelling"
     ##as common in modern Hebrew, by replacing some vowel signs by the letters Jud (י) or Wav (ו)
-    if {$script == "he"} {
+    if {$lang == "he"} {
       ##Mosche
       regsub -all {מֹשֶה} $s משה s
       ##Yaaqov
@@ -305,13 +305,23 @@ puts $newword
       #3. change chirik to yod for Pi'el, excluding Hif'il+Hitpa'el
       regsub -all {הִ} $s {ה} s
       regsub -all {\U05B4.\U05BC} $s \U05D9& s
+      
+      #TODO warum wird nicht: זהר > זוהר
+      #? Schwa -TODO testing new rule geth gar nicth!!
+      #change schwa+waw to double waw
+      regsub -all {\u05B0\u05D5} $s \u05D5\u05D5 s
+      
+      
       #4. Cholam
       ##change all alef+cholam to alef
       regsub -all {\u5D0\u05b9} $s \u5D0 s
+      
       ##change all cholam+alef to alef
       regsub -all {\u05b9\u5D0} $s \u5D0 s
+      
       ##change remaining waw+cholam to waw
       regsub -all {\u05D5\U05B9} $s \U05D5 s
+      
       #5. Kubutz
       #change all cholam/kubutz to waw
       regsub -all {\u05DC\U05B9\u05D0} $s \u05DC\u05D0 s
@@ -325,7 +335,7 @@ puts $newword
     
     # A r a b i c  / U r d u  /  F a r s i
     ##cuts out all vowel signs as common in modern texts
-    } elseif {$script == "ar"} {
+    } elseif {$lang == "ar"} {
 
        ##eliminate all vowels - TODO are there any at all?
        regsub -all $ar_vowels $s {} s
