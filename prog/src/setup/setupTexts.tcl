@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8mch21 pv
+# Updated: 24mch21 pv
 
 proc setTexts {lang} {
   global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -114,8 +114,7 @@ set ::packageRequireTls $packageRequireTls($lang)
     set RtlAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
     if {$platform=="unix"} {
       source $BdfBidi
-      set RtlAr [bidi $RtlAr ar revert]
-      #set RtlInfo [bidi $RtlInfo ar]
+      set RtlAr [bidi::fixBidi $RtlAr]]
     }
     append RtlInfo $RtlAr
   }
@@ -132,6 +131,10 @@ set ::packageRequireTls $packageRequireTls($lang)
   #set textposFN(en) "\n$RtlInfo"
   #set textposFN(de) "\n$RtlInfo"
   set ::textposFN "$RtlInfo"
+
+  set welcClickTwd(de) "Klick dich durch $dw!"  
+  set welcClickTwd(en) "Click yor way through $dw!"
+  set ::welcClickTwd $welcClickTwd($lang)
   
   set welcTit(en) "Welcome to the $bp setup program!"
   set welcTit(de) "Willkommen beim Einrichtungsprogramm von $bp!"
@@ -141,8 +144,8 @@ set ::packageRequireTls $packageRequireTls($lang)
   set welcSubtit1(de) "Was ist $bp?"
   set ::welc.subtit1 $welcSubtit1($lang)
 
-  set welcTxt1(en) "$bp is a Tcl program developed for the 'Bible 2.0' project which aims to publish $dw\nin a growing number of languages.\n$dw consists of two selected Bible verses for each day of the year.\n\n$bp can display $dw in various ways on your computer."
-  set welcTxt1(de) "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' geschrieben wurde.\n'Bibel 2.0' setzt sich zum Ziel, $dw \u2014 2 ausgewählte Bibelsprüche für jeden Tag des Jahres \u2014 in einer wachsenden Anzahl von Sprachen zu verbreiten.\n\n$bp kann $dw in vielfältiger Weise auf Ihrem PC anzeigen."
+  set welcTxt1(en) "$bp is a Tcl program developed for the 'Bible 2.0' project which aims to publish $dw\nin a growing number of languages.\n\n$dw consists of two selected Bible verses for each day of the year.\n\n$bp can display $dw in various ways on your computer."
+  set welcTxt1(de) "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' geschrieben wurde.\n\n'Bibel 2.0' setzt sich zum Ziel, $dw in einer wachsenden Anzahl von Sprachen zu verbreiten.\n$dw besteht aus 2 ausgewählten Bibelsprüchen für jeden Tag des Jahres.\n\n$bp kann $dw in vielfältiger Weise auf Ihrem PC anzeigen."
   set ::welc.txt1 $welcTxt1($lang)
 
   set welcSubtit2(en) "What are your options?"
@@ -238,8 +241,11 @@ set ::packageRequireTls $packageRequireTls($lang)
   set ::f2.fontexpl $f2Fontexpl($lang)
 
   set ::f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94"
-  #set ::f2ar_txt "كَلاَمك"
   set ::f2he_txt "הדבר"
+  if {$platform=="unix"} {
+    set ::f2ar_txt [string reverse $::f2ar_txt]
+    set ::f2he_txt [string reverse $::f2he_txt]
+  }
   set ::f2ltr_txt "The Word 每日金句 Калом"
   set ::f2thai_txt "พระคำสำหรับวันศุกร์ Слово"
 

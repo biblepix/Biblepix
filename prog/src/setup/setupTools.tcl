@@ -629,12 +629,10 @@ proc fillWidgetWithTodaysTwd {twdWidget} {
   if {[info procs getRandomTwdFile] == ""} {
     source $TwdTools
   }
-
   set twdFileName [getRandomTwdFile]
 
   if {$twdFileName == ""} {
-    $twdWidget conf -fg black -bg red
-    $twdWidget conf -activeforeground black -activebackground orange
+    $twdWidget conf -activebackground orange
     set twdText $::noTwdFilesFound
   } else {
     if {[isRtL [getTwdLang $twdFileName]]} {
@@ -642,7 +640,6 @@ proc fillWidgetWithTodaysTwd {twdWidget} {
     } else {
       $twdWidget conf -justify left
     }
-
     set twdText [getTodaysTwdText $twdFileName]
   }
 

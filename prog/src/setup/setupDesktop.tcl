@@ -80,14 +80,6 @@ $inttextC create image 0 0 -image intTextBG -anchor nw
 # Set international text
 label .adjFontT -font TkCaptionFont -textvar f2.fontexpl
 
-if {$os=="Linux"} {
-  #Unix needs a lot of formatting for Arabic & Hebrew
-  puts "Computing Arabic"
-  source $BdfBidi
-  #set f2ar_txt [bidi $f2ar_txt ar revert]
-  set f2ar_txt [string reverse $f2ar_txt]
-  set f2he_txt [bidi $f2he_txt he revert]
-} 
 set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
 
 #Get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
