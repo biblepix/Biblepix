@@ -70,7 +70,7 @@ namespace eval sig {
   ##checks signature files for DW or trigger present & calls updateSigEvolution
   ##called by Signature
   ##NOTE: Evolution sig files must be (partly) formatted as HTML neuerdings
-  proc doSigEvol {} {
+  proc doSigEvolution {} {
     global env sig::dayOTY
     global sig::addedsigT sig::catchword sig::ev sig::nosigfoundT sig::evolSigdir sig::triggerRef sig::startcatch sig::addednum
     
@@ -95,7 +95,7 @@ namespace eval sig {
    
       #3) Update signature if old AND cleanSig exists
       if [info exists cleanSig] {
-        updateSigEvol $sigFilePath $cleanSig
+        updateSigEvolution $sigFilePath $cleanSig
         incr addednum
         unset cleanSig
       }
@@ -113,7 +113,7 @@ namespace eval sig {
 
   # updateSigEvolution
   ##called by doSigEvolution for each sig file
-  proc updateSigEvol {sigfile cleanSig} {
+  proc updateSigEvolution {sigfile cleanSig} {
 
     set twdFile [getRandomTwdFile 1]
     set dw [getTodaysTwdSig $twdFile]
