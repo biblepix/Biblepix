@@ -9,7 +9,18 @@
 namespace eval bidi {
   
   variable he_range {[\u0590-\u05FF]}
+  
+  #TODO correct ar_range to exclude the following:
+  
+  #Arabic letters excluding Ar. punctuation marks
+  #Kommata: 060C 060D 066A 066B 066C 061B 061C=(Ar.Zeichen)
+  #Punkte: 06D4 061E
+  #FZ: 061F
+  #Hamza 0621
+  #Numbers 0-9: 06F1-06F9
+  
   variable ar_range {[\u0600-\u06FF]}
+
   variable ar_vowels {[\u064B-\u065F]}
   variable ar_numerals {[\u0660-\u0669]}
   
@@ -24,6 +35,7 @@ namespace eval bidi {
   #### 3. i + initial form
   #### 4. m + middle form 
   #### 5. f + final form
+  
   
   ##left-linking letters: 
   array set 1576 {n ba  l 1 i \uFE91 m \uFE92 f \uFE90}
@@ -57,7 +69,8 @@ namespace eval bidi {
   array set 1608 {n waw  l 0 i \uFEED m \uFEEE f \uFEEE}
   array set 1572 {n waw_hamza l 0 i \uFE85 m \uFE86 f \uFE86}
   array set 1575 {n alif l 0 i \uFE8D m \uFE8E f \uFE8E}
-  ##Alif+Lam ligatures
+  ##Ligatures (unlikely to come in standard text? - alif-hamza_ does!)
+  array set 1649  {n alif_wasla l 0 i \uFB50 m \uFB51 f \uFB51}
   array set 1570  {n alif_madda l 0 i \uFE81 m \uFE82 f \uFE82}
   array set 1571  {n alif_hamza_elyon l 0 i \uFE83 m \uFE84 f \uFE84}
   array set 1573  {n alif_hamza_tahton l 0 i \uFE87 m \uFE88 f \uFE88}
@@ -65,16 +78,19 @@ namespace eval bidi {
   array set 65270 {n lam_alif_madda l 0 i \ufef5 m \uFEF6 f \uFEF6}
   array set 65271 {n lam_alif_hamza_elyon l 0 i \uFEF7 m \uFEF8 f \uFEF8}
   array set 65273 {n lam_alif_hamza_tahton l 0 i \uFEF9 m \uFEFA f \UFEFA}
+  array set 64716 {n lam_mim l 1 i \uFCCC f \uFC42}
   ##final only letters 
   ##TODO ta-marbuta is a hack, should never need middle form!
   array set 1577 {n ta_marbuta l 0 m \uFE93 f \uFE94}
   array set 1609 {n alif_maqsura l 0 f \uFEF0}
 
-  #Persian & Urdu special letters
+  #Persian special letters
+  array set 1740 {n farsi-ye l 1 i \uFBFE m \uFBFF f \uFBFD} ;#Ya without dots in final form = ar. Ya_maqsura
   array set 1662 {n pe l 1 i \ufb58 m \ufb59 f \ufb57}
   array set 1670 {n che l 1 i \ufb7c m \ufb7d f \ufb7b}
   array set 1711 {n gaf l 1 i \ufb94 m \ufb95 f \ufb93}
   array set 1657 {n tte l 1 i \ufb68 m \ufb69 f \ufb67}
+  #Urdu special letters
   array set 1705 {n kaf_urdu l 1 i \uFEDB m \uFEDC f \uFEDA}
   array set 1722 {n nun_ghunna l 1 i \u06ba f \ufb9f}
   array set 1740 {n choti_ye l 1 i \uFEF3 m \uFEF4 f \uFEF0}
@@ -83,7 +99,7 @@ namespace eval bidi {
   array set 1729 {n he_goal l 1 i \uFBA8 m \uFBA9 f \uFBA7} ;#= choti_he with hamza
   array set 1730 {n he_goal_hamza l 1 f \u06c2}
   array set 1726 {n do_chashmi_he l 1 i \uFEEB m \uFEEC}
-  ##non left-linking
+  ##Urdu non left-linking
   array set 1688 {n zhe l 0 m \ufb8b f \ufb8b}
   array set 1672 {n dde l 0 m \ufb89 f \ufb89}
   array set 1681 {n rre l 0 m \ufb8d f \ufb8d}
@@ -102,34 +118,39 @@ namespace eval bidi {
     global [namespace current]::he_range
     global [namespace current]::ar_range
     global [namespace current]::ar_numerals
+    global [namespace current]::ar_vowels
     global os
     
     #Detect Hebrew OR Arabic script (incl. Farsi+Urdu!)
     if [regexp $he_range $s] {
       set lang he
-
+      
     } elseif [regexp $ar_range $s] {
       set lang ar
-      #Substitute common lam-alif combinations to true ligatures (=special combined letters):
-      ## lam-alif / lam-alif-hamza_elyon / lam-alif-hamza_tahton / lam-alif_madda 
-      set s [string map {
-       \u0644\u0627 \uFEFB
-       \u0644\u0623 \uFEF7
-       \u0644\u0625 \uFEF9
-       \u0644\u0622 \uFEF5
-       } $s]
+    }
+    
+    #Devowelise if $vowelled=0
+    
+    
+    if {$lang=="ar"} {   
+      #Map lam-alif and lam-mim double letters to common ligatures
+      ##allowing 0-1 vowel between 2 consonants 
+      regsub {\u0644[\u064B-\u065F]*\u0627} $s \uFEFB s ;#lam-alif
+      regsub {\u0644[\u064B-\u065F]*\u0623} $s \uFEF7 s ;#lam-alif-hamza_elyon
+  
+      regsub {\u0644?[\u064B-\u065F]\u0625} $s \uFEF9 s ;#lam-alif-hamza_tahton
+      regsub {\u0644?[\u064B-\u065F]\u0622} $s \uFEF5 s ;#lam-alif-madda
+      #regsub {\u0644?[\u064B-\u065F]\uFEE1} $s \uFC42 s ;#lam-mim_final - this is likely not needed & doesn't include inital form
+    }
+    
+    if !$vowelled {
+      set s [devowelise $s $lang]
     }
     
     ##eliminate control characters
     regsub -all {[[:cntrl:]]} $s {} s
-    #Revert brackets () to fit rtl
+    ##evert brackets () to fit rtl
     set s [string map {( ) ) (} $s]
-       
-    #devowelise if $vowelled=0
-    if !$vowelled {
-      set s [devowelise $s $lang]
-    }
-
     #split text into lines
     set linesplit [split $s \n]
 
@@ -163,10 +184,10 @@ namespace eval bidi {
       #remove any unwanted formatting chars: \ { }
       set newline [string map { \{ {} \} {} \\ {} } $newline]
       
-      #Revert Hebrew text line for Setup widgets
-      if {$os=="unix" && $lang=="he" && !$bdf} {
-puts yesh
-        set newline [string reverse $newline]
+      #Revert Hebrew+Arabic text line for Setup widgets
+      if {$os=="Linux" && !$bdf} {
+        set newline "[string reverse $newline]
+        "
       }
    
       append newtext $newline
@@ -192,8 +213,8 @@ puts yesh
     set arLetterL [lsearch -all -regexp $letterL $ar_range]
     set firstLetterPos [lindex $arLetterL 0]
     set lastLetterPos [lindex $arLetterL end]
-#puts "
-#length [llength $letterL] ($firstLetterPos $lastLetterPos)"
+puts "
+$word [llength $letterL] ($firstLetterPos $lastLetterPos)"
 
     #Scan word for coded & non-coded characters
     foreach char $letterL {
@@ -249,15 +270,17 @@ puts yesh
     upvar [namespace current]::$htmcode letterArr
     set lettername $letterArr(n)
         
-#puts "$lettername $form $prevLinking"
+puts "$lettername $form $prevLinking"
 
     #A) absolute or final form, depending on prevLinking status 
     if {$form == "f"} {
       if !$prevLinking {
         ##absolute
+        puts absolute
         set utfchar [format %c $htmcode]
       } else {
         ##final
+        puts final
         set utfchar $letterArr(f)
       }
       
@@ -337,7 +360,7 @@ puts yesh
     ##cuts out all vowel signs as common in modern texts
     } elseif {$lang == "ar"} {
 
-       ##eliminate all vowels - TODO are there any at all?
+       ##eliminate all vowels
        regsub -all $ar_vowels $s {} s
     }
 
