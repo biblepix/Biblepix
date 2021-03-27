@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 17feb21 jh
+# Updated 24mch21 pv
 
 #Statusbar
 frame .internationalF.f0 -padx $px
@@ -26,7 +26,7 @@ label .internationalF.f1.twdlocaltit -textvar f1.twdlocaltit -bg $bg -font bpfon
 pack .internationalF.f1.twdlocaltit -anchor w -fill x
 #set listbox
 listbox .internationalF.f1.twdlocal -bg lightgreen -width $tw -height 0 -selectmode single -activestyle none
-set twdlist [getTWDlist]
+set twdlist [getTwdList]
 foreach i [lsort $twdlist] { .internationalF.f1.twdlocal insert end $i }
 
 #Set delete button

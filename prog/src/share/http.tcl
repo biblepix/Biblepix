@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14aug20 pv
+# Updated: 27mch21 pv
 
 package require http
 
@@ -209,7 +209,7 @@ proc getRemoteRoot {} {
 }
 
 proc listRemoteTWDFiles {lBox} {
-  global platform
+  global os
   
   set root [getRemoteRoot]
   $lBox delete 0 end
@@ -230,15 +230,12 @@ proc listRemoteTWDFiles {lBox} {
     set name [$nameNode text]
     set version [$versionNode text]
 
-    #Set RtL languages from right to left, except digits
-    ##this should work for all LtR languages, but only tested on Hebrew!
+    #Set RtL languages from right to left (Windows should handle this without our help)
     set bidiRange [regexp {[\u05D0-\u06FC]} $version]
-    if {$platform != "windows" && $bidiRange} {
-      set version [string reverse $version]
-      set digits [regexp -all -inline {[[:digit:]]+} $version]
-      foreach zahl $digits {
-        regsub $zahl $version [string reverse $zahl] version
-      }
+    if {$os == "Linux" && $bidiRange} {
+      set version [bidi::fixBidi $version]
+      ##eliminate LF char
+      regsub {[\u000A]} $version {} version
     }
     
     ##start building line
@@ -294,8 +291,6 @@ proc downloadTWDFiles {} {
     NewsHandler::QueryNews $::noConnTwd red
     return 1
   }
-
-#  NewsHandler::QueryNews "$::gettingTwd" orange - falsche Message!
 
   cd $::dirlist(twdDir)
   #get hrefs alphabetically ordered
