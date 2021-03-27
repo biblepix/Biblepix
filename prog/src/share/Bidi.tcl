@@ -4,23 +4,13 @@
 # ERSETZT BdfBidi !!!
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 24mch21
+# Updated: 27mch21
 
 namespace eval bidi {
   
   variable he_range {[\u0590-\u05FF]}
-  
-  #TODO correct ar_range to exclude the following:
-  
-  #Arabic letters excluding Ar. punctuation marks
-  #Kommata: 060C 060D 066A 066B 066C 061B 061C=(Ar.Zeichen)
-  #Punkte: 06D4 061E
-  #FZ: 061F
-  #Hamza 0621
-  #Numbers 0-9: 06F1-06F9
-  
-  variable ar_range {[\u0600-\u06FF]}
-
+  ##Arabic letters excluding Ar. punctuation marks & numerals
+  variable ar_range {[\u0620-\u06D3]}
   variable ar_vowels {[\u064B-\u065F]}
   variable ar_numerals {[\u0660-\u0669]}
   
@@ -40,9 +30,9 @@ namespace eval bidi {
   ##left-linking letters: 
   array set 1576 {n ba  l 1 i \uFE91 m \uFE92 f \uFE90}
   array set 1578 {n ta  l 1 i \uFE97 m \uFE98 f \uFE96}
-  array set 1579 {n tha l 1 i \uFE91 m \uFE9C f \uFE9A}
+  array set 1579 {n tha l 1 i \uFE9B m \uFE9C f \uFE9A}
   array set 1580 {n jim l 1 i \uFE9F m \uFEA0 f \uFE9E}
-  array set 1581 {n Ha l 1 i \uFEA3 m \uFEA4 f \uFEA2}
+  array set 1581 {n Ha  l 1 i \uFEA3 m \uFEA4 f \uFEA2}
   array set 1582 {n kha l 1 i \uFEA7 m \uFEA8 f \uFEA6}
   array set 1587 {n sin l 1 i \uFEB3 m \uFEB4 f \uFEB2}
   array set 1588 {n shin l 1 i \uFEB7 m \uFEB8 f \uFEB6}
@@ -138,8 +128,8 @@ namespace eval bidi {
       regsub {\u0644[\u064B-\u065F]*\u0627} $s \uFEFB s ;#lam-alif
       regsub {\u0644[\u064B-\u065F]*\u0623} $s \uFEF7 s ;#lam-alif-hamza_elyon
   
-      regsub {\u0644?[\u064B-\u065F]\u0625} $s \uFEF9 s ;#lam-alif-hamza_tahton
-      regsub {\u0644?[\u064B-\u065F]\u0622} $s \uFEF5 s ;#lam-alif-madda
+      regsub {\u0644[\u064B-\u065F]*\u0625} $s \uFEF9 s ;#lam-alif-hamza_tahton
+      regsub {\u0644[\u064B-\u065F]*\u0622} $s \uFEF5 s ;#lam-alif-madda
       #regsub {\u0644?[\u064B-\u065F]\uFEE1} $s \uFC42 s ;#lam-mim_final - this is likely not needed & doesn't include inital form
     }
     
