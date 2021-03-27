@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupWelcome.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24mch21 pv
+# Updated: 27mch21 pv
 
 #Pack flags defined elsewhere
 pack .en .de -in .ftop -side right
@@ -22,7 +22,10 @@ pack .welcomeWhatisTxt -in .leftTopF -anchor nw
 
 #Set TheWord Button right
 label .twdWidgetTit -textvar welcClickTwd -font bpfont2
-set twdWidget [button .welcomeDwBtn -font {TkTextFont 22} -bg $bg -activebackground lightblue -fg blue -pady 20 -padx 20 -bd 5] 
+
+#TODO Arabic + Hebrew vowels are not correctly placed, needs at least Serif, but perhaps there are better fonts...
+set twdWidget [button .welcomeDwBtn -font {Luxi 22} -bg $bg -activebackground lightblue -fg blue -pady 20 -padx 20 -bd 7] 
+
 pack .twdWidgetTit $twdWidget -in .welcomeRightMainF -anchor n -pady 15
 $twdWidget conf -command {fillWidgetWithTodaysTwd $twdWidget}
 fillWidgetWithTodaysTwd $twdWidget
