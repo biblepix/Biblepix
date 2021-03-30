@@ -4,14 +4,25 @@
 # ERSETZT BdfBidi !!!
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 27mch21
+# Updated: 29mch21
 
 namespace eval bidi {
   
   variable he_range {[\u0590-\u05FF]}
+
   ##Arabic letters excluding Ar. punctuation marks & numerals
-  variable ar_range {[\u0620-\u06D3]}
+  #variable ar_range {[\u0620-\u06D3]}
+
+  #this is excluding Fathatân + all vowels + all puntuation marks
+  #TODO leave Fathatãn (-an) = \u064B 
+  ##(& ?Dammatãn (-un) \u0464C  & ?Kasratãn (-in) \u064D ?)
+  
+    variable ar_range {[\u0620-\u064A\u0671-\u06D3]}
+    
   variable ar_vowels {[\u064B-\u065F]}
+  # - hier ab Damma (=a), exluding Fathatân, Dammatân & Kasratân
+  #variable ar_vowels {[\u064E-\u065F]}
+  
   variable ar_numerals {[\u0660-\u0669]}
   
   #################################################
@@ -58,13 +69,18 @@ namespace eval bidi {
   array set 1586 {n zayn l 0 i \uFEAF m \uFEB0 f \uFEB0}
   array set 1608 {n waw  l 0 i \uFEED m \uFEEE f \uFEEE}
   array set 1572 {n waw_hamza l 0 i \uFE85 m \uFE86 f \uFE86}
+  
+  ##Alif & ligatures
   array set 1575 {n alif l 0 i \uFE8D m \uFE8E f \uFE8E}
-  ##Ligatures (unlikely to come in standard text? - alif-hamza_ does!)
+
   array set 1649  {n alif_wasla l 0 i \uFB50 m \uFB51 f \uFB51}
   array set 1570  {n alif_madda l 0 i \uFE81 m \uFE82 f \uFE82}
   array set 1571  {n alif_hamza_elyon l 0 i \uFE83 m \uFE84 f \uFE84}
   array set 1573  {n alif_hamza_tahton l 0 i \uFE87 m \uFE88 f \uFE88}
-  array set 65275 {n lam_alif l 0 i \ufefb m \uFEFC f \uFEFC}
+
+  array set 65275 {n lam_alif_abs l 0 i \ufefb m \uFEFC f \uFEFC}
+  array set 65276 {n lam_alif_linked l 0 m \uFEFC f \uFEFC}
+  
   array set 65270 {n lam_alif_madda l 0 i \ufef5 m \uFEF6 f \uFEF6}
   array set 65271 {n lam_alif_hamza_elyon l 0 i \uFEF7 m \uFEF8 f \uFEF8}
   array set 65273 {n lam_alif_hamza_tahton l 0 i \uFEF9 m \uFEFA f \UFEFA}
@@ -120,16 +136,27 @@ namespace eval bidi {
     }
     
     #Devowelise if $vowelled=0
-    
-    
+#    if !$vowelled {
+#      set s [devowelise $s $lang]
+#    }
+
     if {$lang=="ar"} {   
       #Map lam-alif and lam-mim double letters to common ligatures
-      ##allowing 0-1 vowel between 2 consonants 
-      regsub {\u0644[\u064B-\u065F]*\u0627} $s \uFEFB s ;#lam-alif
-      regsub {\u0644[\u064B-\u065F]*\u0623} $s \uFEF7 s ;#lam-alif-hamza_elyon
-  
-      regsub {\u0644[\u064B-\u065F]*\u0625} $s \uFEF9 s ;#lam-alif-hamza_tahton
-      regsub {\u0644[\u064B-\u065F]*\u0622} $s \uFEF5 s ;#lam-alif-madda
+      ##allowing 0 or more vowels between 2 consonants
+      
+     #1617 \u0651 schadda ّ 
+     
+     #1611 \u064B Fathatân ً  
+     #64829 \ufd3d Alif+Fathatân isol. ) kein Bdf!
+     #64828 \uFD3C Alif+Fathatân verb. ) kein Bdf!
+#      regsub {\u064B\u0627} $s \u0627\u064B s
+      
+      regsub -all {\u0644[\u064B-\u065F]*\u0627} $s \uFEFB s ;#lam-alif
+      regsub -all {\u0644[\u064B-\u065F]*\u0623} $s \uFEF7 s ;#lam-alif-hamza_elyon
+      regsub -all {\u0644[\u064B-\u065F]*\u0625} $s \uFEF9 s ;#lam-alif-hamza_tahton
+      regsub -all {\u0644[\u064B-\u065F]*\u0622} $s \uFEF5 s ;#lam-alif-madda
+      
+      set s [string map {\u064B\u0627 \u0627\u064B} $s]
       #regsub {\u0644?[\u064B-\u065F]\uFEE1} $s \uFC42 s ;#lam-mim_final - this is likely not needed & doesn't include inital form
     }
     
@@ -167,7 +194,6 @@ namespace eval bidi {
             set newword [formatArabicWord $word]
           }
         }
-        
         lappend newline $newword
       }
       
@@ -200,9 +226,14 @@ namespace eval bidi {
     
     #Get 1st und last Arabic letter positions
     set letterL [split $word {}]
+    
+    #TODO testing exclude fathatân, dammatân & kasratân
     set arLetterL [lsearch -all -regexp $letterL $ar_range]
+puts $arLetterL
+    
     set firstLetterPos [lindex $arLetterL 0]
     set lastLetterPos [lindex $arLetterL end]
+   
 puts "
 $word [llength $letterL] ($firstLetterPos $lastLetterPos)"
 
@@ -210,15 +241,14 @@ $word [llength $letterL] ($firstLetterPos $lastLetterPos)"
     foreach char $letterL {
       
       set htmcode [scan $char %c]
-      
+puts $htmcode
+ 
       #A) Skip if not listed
       if ![info exists [namespace current]::$htmcode] {
         append newword $char
         incr pos
         continue
       }
-      
-#puts "curpos $pos"
 
       #B) Evaluate form from position:
       ##set 1st letter form
@@ -350,7 +380,11 @@ puts "$lettername $form $prevLinking"
     ##cuts out all vowel signs as common in modern texts
     } elseif {$lang == "ar"} {
 
-       ##eliminate all vowels
+#      if $bdf {
+      #TODO testing : leave fathatân \u064B
+        set ar_vowels {[\u064C-\u065F]}
+#      }
+       ##eliminate all vowels, excluding Fathatân
        regsub -all $ar_vowels $s {} s
     }
 
