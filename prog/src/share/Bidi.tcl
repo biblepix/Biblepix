@@ -4,25 +4,20 @@
 # ERSETZT BdfBidi !!!
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 29mch21
+# Updated: 31mch21
 
 namespace eval bidi {
   
+  #all Hebrew range
   variable he_range {[\u0590-\u05FF]}
 
-  ##Arabic letters excluding Ar. punctuation marks & numerals
-  #variable ar_range {[\u0620-\u06D3]}
-
-  #this is excluding Fathatân + all vowels + all puntuation marks
-  #TODO leave Fathatãn (-an) = \u064B 
-  ##(& ?Dammatãn (-un) \u0464C  & ?Kasratãn (-in) \u064D ?)
-  
-    variable ar_range {[\u0620-\u064A\u0671-\u06D3]}
-    
-  variable ar_vowels {[\u064B-\u065F]}
-  # - hier ab Damma (=a), exluding Fathatân, Dammatân & Kasratân
-  #variable ar_vowels {[\u064E-\u065F]}
-  
+  ##all Arabic range
+  variable ar_range {[\u0620-\u06FF]}
+  #Letters only range, including Hamza & all presentation forms, 
+  ##excluding Tatwil, numerals, punctuation & vowels
+  variable ar_letters {[\u0620-\u063F\u0641-\u064A\u0671-\u06D3\uFE81-\uFEFC]}
+  ##vowels only range, excluding Fathatân & Hamza
+  variable ar_vowels {[\u064C-\u065F]}
   variable ar_numerals {[\u0660-\u0669]}
   
   #################################################
@@ -36,7 +31,6 @@ namespace eval bidi {
   #### 3. i + initial form
   #### 4. m + middle form 
   #### 5. f + final form
-  
   
   ##left-linking letters: 
   array set 1576 {n ba  l 1 i \uFE91 m \uFE92 f \uFE90}
@@ -123,6 +117,8 @@ namespace eval bidi {
   proc fixBidi {s {vowelled 1} {bdf 0}} {
     global [namespace current]::he_range
     global [namespace current]::ar_range
+#TODO do we need ar_letters here?
+  
     global [namespace current]::ar_numerals
     global [namespace current]::ar_vowels
     global os
@@ -135,33 +131,21 @@ namespace eval bidi {
       set lang ar
     }
     
-    #Devowelise if $vowelled=0
-#    if !$vowelled {
-#      set s [devowelise $s $lang]
-#    }
+    #Devowelise if $vowelled=0, 
+    ##NOTE: double-vowel Fathatân is not cleared since listed as regular letter (see above) 
+    if !$vowelled {
+      set s [devowelise $s $lang]
+    }
 
     if {$lang=="ar"} {   
       #Map lam-alif and lam-mim double letters to common ligatures
       ##allowing 0 or more vowels between 2 consonants
-      
-     #1617 \u0651 schadda ّ 
-     
-     #1611 \u064B Fathatân ً  
-     #64829 \ufd3d Alif+Fathatân isol. ) kein Bdf!
-     #64828 \uFD3C Alif+Fathatân verb. ) kein Bdf!
-#      regsub {\u064B\u0627} $s \u0627\u064B s
-      
       regsub -all {\u0644[\u064B-\u065F]*\u0627} $s \uFEFB s ;#lam-alif
       regsub -all {\u0644[\u064B-\u065F]*\u0623} $s \uFEF7 s ;#lam-alif-hamza_elyon
       regsub -all {\u0644[\u064B-\u065F]*\u0625} $s \uFEF9 s ;#lam-alif-hamza_tahton
       regsub -all {\u0644[\u064B-\u065F]*\u0622} $s \uFEF5 s ;#lam-alif-madda
-      
       set s [string map {\u064B\u0627 \u0627\u064B} $s]
       #regsub {\u0644?[\u064B-\u065F]\uFEE1} $s \uFC42 s ;#lam-mim_final - this is likely not needed & doesn't include inital form
-    }
-    
-    if !$vowelled {
-      set s [devowelise $s $lang]
     }
     
     ##eliminate control characters
@@ -219,16 +203,15 @@ namespace eval bidi {
   ##puts letters of a word into correct form
   ##called by fixBidi
   proc formatArabicWord {word} {
-    global [namespace current]::ar_range
+    global [namespace current]::ar_letters
     set newword ""
     set pos 0    
     set prevLinking 0
     
     #Get 1st und last Arabic letter positions
     set letterL [split $word {}]
-    
-    #TODO testing exclude fathatân, dammatân & kasratân
-    set arLetterL [lsearch -all -regexp $letterL $ar_range]
+    set arLetterL [lsearch -all -regexp $letterL $ar_letters]
+
 puts $arLetterL
     
     set firstLetterPos [lindex $arLetterL 0]
@@ -378,14 +361,11 @@ puts "$lettername $form $prevLinking"
     
     # A r a b i c  / U r d u  /  F a r s i
     ##cuts out all vowel signs as common in modern texts
+    ##excluding Fathatân & Hamza (see vowel range above)
     } elseif {$lang == "ar"} {
 
-#      if $bdf {
-      #TODO testing : leave fathatân \u064B
-        set ar_vowels {[\u064C-\u065F]}
-#      }
-       ##eliminate all vowels, excluding Fathatân
-       regsub -all $ar_vowels $s {} s
+      regsub -all $ar_vowels $s {} s
+   
     }
 
     return $s

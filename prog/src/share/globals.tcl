@@ -82,7 +82,7 @@ array set FilePaths "
   Biblepix [file join $srcdir biblepix.tcl]
   BdfTools [file join $picdir BdfTools.tcl]
   BdfPrint [file join $picdir BdfPrint.tcl]
-  BdfBidi [file join $sharedir BdfBidi.tcl]
+  BdfBidi [file join $sharedir Bidi.tcl]
   Image [file join $picdir image.tcl]
   ImageAngle [file join $picdir ImageAngle.tcl]
   RotateTools [file join $picdir RotateTools.tcl]

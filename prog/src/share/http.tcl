@@ -231,8 +231,7 @@ proc listRemoteTWDFiles {lBox} {
     set version [$versionNode text]
 
     #Set RtL languages from right to left (Windows should handle this without our help)
-    set bidiRange [regexp {[\u05D0-\u06FC]} $version]
-    if {$os == "Linux" && $bidiRange} {
+    if {$os == "Linux" && [isBidi $version]} {
       set version [bidi::fixBidi $version]
       ##eliminate LF char
       regsub {[\u000A]} $version {} version
