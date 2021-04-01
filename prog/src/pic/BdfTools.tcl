@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 2mch21 
+# Updated: 1apr21 
 
 namespace eval bdf {
 
@@ -279,11 +279,14 @@ namespace eval bdf {
   ## prints single letter to $img
   ## called by printTextLine
   proc printLetter {letterName img x y} {
+#puts $letterName
+
     global colour::regHex
     global colour::sunHex
     global colour::shaHex
     global RtL prefix
     upvar $letterName curLetter
+#parray curLetter
 
     set imgW [image width $img]
     set imgH [image height $img]
@@ -291,7 +294,7 @@ namespace eval bdf {
     set BBxoff $curLetter(BBxoff)
     set BBx $curLetter(BBx)
 
-    if {$RtL} {
+    if $RtL {
       set x [expr $x - $curLetter(DWx)]
     }
 
@@ -368,8 +371,10 @@ namespace eval bdf {
     } else {
       ##a) if no png info found, move text to the right
       set operator -
-      source $BdfBidi
-      set textLine [bidi $textLine $TwdLang]
+      if ![namespace exists bidi] {
+        source $BdfBidi
+      }
+      set textLine [bidi::fixBidi $textLine 0 1]
     }
 
     #Compute indentations
@@ -406,7 +411,8 @@ namespace eval bdf {
         array set curLetter [array get print_$encLetter]
         if [catch {printLetter curLetter $img $xBase $yBase} error] {
           puts "could not print letter: $encLetter"
-          error $error
+          #better skip spurious chars!
+          #error $error
           continue
         }
         set xBase [expr $xBase $operator $curLetter(DWx)]
@@ -421,4 +427,3 @@ namespace eval bdf {
   } ;#END printTextLine
 
 } ;#END bdf:: namespace
-

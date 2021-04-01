@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 24mch21 pv
+# Updated 1apr21 pv
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -226,24 +226,15 @@ proc parseToText {node TwdLang {withTags 0}} {
   
   #Fix Bidi languages
   set RtL [isRtL $TwdLang]
-
-  if {$RtL} {
-    if {[info procs bidi::fixBidi] == ""} {
+  if $RtL {
+    if ![namespace exists bidi] {
       source $BdfBidi
     }
-
-#TODO what will this do?
-    set text [bidi::fixBidi $text]
-    
-#    if {$os == "Windows NT"} {
-#TODO what did this do?
-#      set text [bidi $text $TwdLang]
-#    } else {
-#      set text [bidi $text $TwdLang revert]
-#    }
+  set text [bidi::fixBidi $text]
   }
+  
   return $text
-}
+} ;#END parseToText
 
 # appendParolToText
 ##called by getTodaysTwdText & getTodaysTwdSig
@@ -254,7 +245,7 @@ proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
   
   set intro [getParolIntro $parolNode $TwdLang]
   if {$intro != ""} {
-    if {$RtL} {
+    if $RtL {
       append TwdText $intro $indent { } \n
     } else {
       append TwdText $indent $intro { } \n
@@ -265,7 +256,7 @@ proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
   set textLines [split $text \n]
    
   foreach line $textLines {
-    if {$RtL} {
+    if $RtL {
       append TwdText $line $indent \n
     } else {
       append TwdText $indent $line \n
@@ -273,7 +264,7 @@ proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
   }
   
   set ref [getParolRef $parolNode $TwdLang]
-  if {$RtL} {
+  if $RtL {
     append TwdText $ref $tab
   } else {
     append TwdText $tab $ref
@@ -375,10 +366,10 @@ proc getTodaysTwdText {TwdFileName} {
   global enabletitle ind
   
   set TwdLang [getTwdLang $TwdFileName]
-  set indent ""
   set RtL [isRtL $TwdLang]
   set TwdText ""
-  
+  set indent ""
+    
   set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   

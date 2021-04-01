@@ -82,7 +82,7 @@ namespace eval bidi {
   ##final only letters 
   ##TODO ta-marbuta is a hack, should never need middle form!
   array set 1577 {n ta_marbuta l 0 m \uFE93 f \uFE94}
-  array set 1609 {n alif_maqsura l 0 f \uFEF0}
+  array set 1609 {n alif_maqsura l 0 \m \uFEF0 f \uFEF0}
 
   #Persian special letters
   array set 1740 {n farsi-ye l 1 i \uFBFE m \uFBFF f \uFBFD} ;#Ya without dots in final form = ar. Ya_maqsura
@@ -186,8 +186,7 @@ namespace eval bidi {
       
       #Revert Hebrew+Arabic text line for Setup widgets
       if {$os=="Linux" && !$bdf} {
-        set newline "[string reverse $newline]
-        "
+        set newline [string reverse $newline]
       }
    
       append newtext $newline
@@ -258,8 +257,6 @@ puts $htmcode
      
     } ;#END foreach char
 
-
-#puts $newword
     #return word as ltr
     return $newword
   
