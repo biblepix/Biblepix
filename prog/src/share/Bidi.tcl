@@ -4,7 +4,7 @@
 # ERSETZT BdfBidi !!!
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 31mch21
+# Updated: 1apr21
 
 namespace eval bidi {
   
@@ -148,12 +148,21 @@ namespace eval bidi {
       #regsub {\u0644?[\u064B-\u065F]\uFEE1} $s \uFC42 s ;#lam-mim_final - this is likely not needed & doesn't include inital form
     }
     
-    ##eliminate control characters
-    regsub -all {[[:cntrl:]]} $s {} s
+##eliminate control characters TODO don't! as it deletes all breaks!
+#    regsub -all {[[:cntrl:]]} $s {} s
+
     ##evert brackets () to fit rtl
     set s [string map {( ) ) (} $s]
+
+#TODO? this isn't working for Setup, because there are no '\n's !!!!
+## its unicode 10 (\u000A) that's causing the problem...
+#TODO Fix tabs for Setup!
+
+puts $s
+
     #split text into lines
-    set linesplit [split $s \n]
+    set linesplit [split $s \u000A]
+puts $linesplit
 
     foreach line $linesplit {
      
@@ -181,19 +190,19 @@ namespace eval bidi {
         lappend newline $newword
       }
       
-      #remove any unwanted formatting chars: \ { }
-      set newline [string map { \{ {} \} {} \\ {} } $newline]
       
       #Revert Hebrew+Arabic text line for Setup widgets
       if {$os=="Linux" && !$bdf} {
         set newline [string reverse $newline]
       }
-   
-      append newtext $newline
+      
+      lappend newtext $newline \n
       unset newline
     
     } ;#end foreach line
-
+    
+    #remove any unwanted formatting chars: \ { }
+    set newtext [string map { \{ {} \} {} \\ {} } $newtext]
     return $newtext
     
   } ;#END fixBidi

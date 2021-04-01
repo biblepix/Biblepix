@@ -24,7 +24,7 @@ pack .welcomeWhatisTxt -in .leftTopF -anchor nw
 label .twdWidgetTit -textvar welcClickTwd -font bpfont2
 
 #TODO Arabic + Hebrew vowels are not correctly placed, needs at least Serif, but perhaps there are better fonts...
-set twdWidget [button .welcomeDwBtn -font {Luxi 22} -bg $bg -activebackground lightblue -fg blue -pady 20 -padx 20 -bd 7] 
+set twdWidget [button .welcomeDwBtn -font {Luxi 20} -bg $bg -activebackground lightblue -fg blue -pady 20 -padx 20 -bd 7] 
 
 pack .twdWidgetTit $twdWidget -in .welcomeRightMainF -anchor n -pady 15
 $twdWidget conf -command {fillWidgetWithTodaysTwd $twdWidget}

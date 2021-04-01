@@ -274,8 +274,8 @@ proc setManText {lang} {
 #########################################################################
 
 # createMovingTextBox
-## Creates textbox with TW text on canvas $c
-## Called by SetupDesktop & SetupResizePhoto
+##Creates textbox with TW text on canvas $c
+##Called by SetupDesktop & SetupResizePhoto
 proc createMovingTextBox {c} {
   global FilePaths sunFactor shadeFactor fontcolortext
   global textPosFactor fontcolorHex fontsize fontfamily fontweight setupTwdText
@@ -294,7 +294,7 @@ proc createMovingTextBox {c} {
   set sunX [expr $x1 - 1]
   set sunY [expr $y1 - 1]
 
-  #Fill with medium colours (area luminance code = 2)
+  #Fill with medium colours (luminance code = 2)
   set regHex [set colour::$fontcolortext]
   set sunHex [gradient $regHex $sunFactor]
   set shaHex [gradient $regHex $shadeFactor]
@@ -303,6 +303,10 @@ proc createMovingTextBox {c} {
   $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun} -fill $sunHex
   $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main} -fill $regHex
   $c itemconf canvTxt -text $setupTwdText
+  if [isBidi $setupTwdText] {
+    $c itemconf canvTxt -justify right
+    font conf movingTextFont -family Luxi
+  } 
 
   if {$c == ".textposCanv"} {
     $c itemconf canvTxt -font movingTextFont -activefill red
@@ -310,6 +314,18 @@ proc createMovingTextBox {c} {
     $c itemconf canvTxt -font movingTextReposFont -activefill orange
   }
 } ;#END createMovingTextBox
+
+# isBidi
+##checks test range for bidi characters & sets widget to justify=right
+##called by various Setup procs
+proc isBidi s {
+  if [regexp {[\u05D0-\u06FC]} $s] {
+    #$widget conf -justify right
+    return 1
+  } else {
+    return 0
+  }
+}
 
 # dragCanvasItem
 ##adapted from a proc by ? ...THANKS TO  ...
@@ -641,9 +657,12 @@ proc fillWidgetWithTodaysTwd {twdWidget} {
       $twdWidget conf -justify left
     }
     set twdText [getTodaysTwdText $twdFileName]
+puts $twdText
   }
 
   $twdWidget conf -text $twdText
+  ##export for other Setup widgets
+  set ::setupTwdText $twdText
 }
 
 # deleteOldStuff
