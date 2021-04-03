@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24mch21 pv
+# Updated: 3apr21 pv
 
 proc setTexts {lang} {
   global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -324,8 +324,8 @@ set ::packageRequireTls $packageRequireTls($lang)
   set f3Btn(de) "E-Mail-Signatur erzeugen"
   set ::f3.btn $f3Btn($lang)
 
-  set f3Sprachen(de) "Gewünschte Sprachen: "
-  set f3Sprachen(en) "Desired languages: "
+  set f3Sprachen(de) "Gewünschte Sprachen für meine Signaturen"
+  set f3Sprachen(en) "Desired languages for my signatures"
   set ::f3.sprachen $f3Sprachen($lang)
   
   set f3Txt(en) "If activated, $bp will add $dw at the end of your e-mail signatures once a day for any language text files present on your computer. Signature files are stored by language shortcut (e.g. signature-en_Englis.txt) in the directory \n\n\t$dirlist(sigdir) \n\nYou can edit these files from your e-mail program, or in a text editor, and add any personal information (greetings, address etc.) at the top. Any text above the separating line ==== will remain untouched when 'The Word' changes. \n\nYou may not desire $dw to appear in your mails in all languages installed. In the checkboxes top right, please choose those languages you deem appropriate for your mail recipients.\n\nFinally you must instruct your e-mail program to use these signature files (generally under Options>Signatures).\n\nCertain programs like Seamonkey Mail, Evolution or Trojitá manage signatures internally. Among these $bp can handle Trojitá and Evolution for now."
@@ -334,16 +334,14 @@ set ::packageRequireTls $packageRequireTls($lang)
 
   set f3Expl(en) "
 Yours faithfully,
-Peter Vollmar
-Homepage: www.vollmar.ch
-The Word: www.biblepix.vollmar.ch
+Dr. med. Bible & Pix
+Homepage: www.biblepix.vollmar.ch
 "
 
   set f3Expl(de) "
 Mit freundlichem Gruss
-Peter Vollmar
-Homepage: www.vollmar.ch
-Das Wort: www.biblepix.vollmar.ch
+Dr. med. Bibel & Pix
+Homepage: www.biblepix.vollmar.ch
 "  
   set ::f3dw $f3Expl($lang)
 

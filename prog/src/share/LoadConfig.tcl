@@ -8,18 +8,19 @@ if { [catch {source $Config}] } {
   file mkdir $dirlist(confdir)
 }
 
-#Set language
-if { ![info exists lang] } {
+#Set lang var to English or German, depending if system lang found
+if ![info exists lang] {
   set lang en
 
   if {$platform=="windows"} {
     package require registry
-    if { ! [catch "set userlang [registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\] InstallLanguage]" ] } {
+    if ![catch {set userlang [registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\] InstallLanguage]} ] {
       #code 4stellig, alle Deutsch enden mit 07
-      if {  [string range $userlang 2 3] == 07 } {
+      if { [string range $userlang 2 3] == 07 } {
         set lang de
       }
     }
+    
   } elseif {$platform=="unix"} {
   
     if [info exists env(LANG)] {

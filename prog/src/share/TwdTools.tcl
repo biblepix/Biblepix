@@ -403,10 +403,14 @@ proc getTodaysTwdText {TwdFileName} {
 # getTodaysTwdSig
 ##formats Twd text for signature
 ##args=='html' for Evolution
-##called by Signature & SigTools (Trojita+Evolution)
-proc getTodaysTwdSig {TwdFileName} {
+##called by Signature & SigTools (Trojita+Evolution) & Setup!
+proc getTodaysTwdSig {TwdFileName {setup 0}} {
   global ind tab
   
+  if $setup {
+    .sigL1 conf -justify left
+    .sigL2 conf -justify left
+  }
   set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   
@@ -424,13 +428,19 @@ proc getTodaysTwdSig {TwdFileName} {
     set parolNode [getTwdParolNode 2 $twdTodayNode]
     
     set TwdText [appendParolToText $parolNode $TwdText $ind]
+  
+    if {$setup && [isBidi $TwdText]} {
+      source $BdfBidi
+      set TwdText [bidi::fixBidi $TwdText]
+      .sigL2 conf -justify right
+    }
   }
   
   $twdDomDoc delete
-  append tab "                 "
+  append tab "                      "
   set bible2Url "$tab \[bible2.net\]"
   append TwdText \n $bible2Url
-
+  
   return $TwdText
 }
 

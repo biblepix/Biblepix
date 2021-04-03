@@ -25,9 +25,10 @@ set imgstatus [set imgyesState]
 
 ##ticked signature languages
 set sigstatus [set sigyesState]
-if {$sigstatus} {
 #scan $CodeList from SetupEmail for selected items
-set sigLanglist [updateSelectedList]
+if {$sigstatus} {
+  set sigLanglist [updateSelectedList]
+  puts $sigLanglist
 }
 
 set titlelinestatus [set enabletitle]

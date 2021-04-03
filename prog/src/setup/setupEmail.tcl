@@ -1,21 +1,26 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 9mch21 pv
+# Updated 3apr21 pv
+
+#TODO Update page on (re)opening to account for added/deleted TWD language files!
 
 #Create frames & titles
-pack [label .emailF.t1 -textvar f3.tit -font bpfont3] -anchor w
-pack [frame .emailF.titelF -pady 20 -padx 20] -fill x
-checkbutton .sigyesnoCB -textvar f3.btn -variable sigyesState -command {toggleCBstate}
-label .emailF.titelF.sprachenL -textvar f3.sprachen -bg lightblue
-pack [frame .emailF.topframe] -fill x
-pack [frame .emailF.topframe.left] -side left
-pack .emailF.titelF.sprachenL -side right
-pack .sigyesnoCB -in .emailF.titelF -anchor w -side left
+pack [frame .emailF.topF] -fill x
+pack [frame .emailF.topF.f1] -fill x
+pack [frame .emailF.topF.f2] -fill x
+pack [frame .emailF.botF] -fill both
+pack [frame .emailF.botF.left] -side left -anchor nw
+pack [frame .emailF.botF.right -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -side right -padx 100
 
-##mail text frame
-pack [frame .emailF.topframe.right] -side right -padx 100
-.emailF.topframe.right conf -bd 5 -relief sunken -padx 30 -pady 30 -bg $bg
+#Create labels & widgets
+label .mainTit -textvar f3.tit -font bpfont3
+label .wunschsprachenTit -textvar f3.sprachen -font bpfont2 -bg beige -fg [gradient beige -0.3] -bd 1 -relief sunken -padx 7 -pady 3
+checkbutton .sigyesnoCB -textvar f3.btn -variable sigyesState -command {toggleCBstate}
+pack .mainTit -in .emailF.topF.f1 -side left
+pack .wunschsprachenTit -in .emailF.topF.f1 -side right -anchor ne -pady 10 -padx 100
+pack .sigyesnoCB -in .emailF.topF.f2 -side left -anchor nw
+pack [frame .emailF.topF.f2.rightF] -side right -padx 100 -pady $py
 
 #List language codes of installed TWD files 
 foreach L [glob -tails -directory $twdDir *.twd] {
@@ -31,22 +36,24 @@ set CodeList [lsort -decreasing -unique $codelist]
 
 #Lists selected sigLangCB's
 proc updateSelectedList {} {
-  global CodeList
+  global CodeList lang
   foreach code $CodeList {
     set varname "sel${code}" 
     if [set ::$varname] {
       lappend sigLanglist $code
     }
   }
+  if ![info exists sigLanglist] {
+    puts "No signature languages selected. Saving default."
+    set sigLanglist $lang
+  }
   return $sigLanglist
 }
 
 ##called by .sigyes CB to enable/disable lang checkbuttons
 proc toggleCBstate {} {
-  global sigLangCBList sigyesState
-  
+  global sigLangCBList sigyesState  
   foreach cb $sigLangCBList {
-    
     if {$sigyesState} {
       $cb conf -state normal
     } else {
@@ -57,8 +64,8 @@ proc toggleCBstate {} {
 
 #Create language buttons for each language code
 foreach code $CodeList {
-  checkbutton .${code}CB -text $code -width 5 -selectcolor yellow -indicatoron 0 -variable sel${code}
-  pack .${code}CB -in .emailF.titelF -side right -padx 3
+  checkbutton .${code}CB -text $code -width 5 -selectcolor beige -indicatoron 0 -variable sel${code}
+  pack .${code}CB -in .emailF.topF.f2.rightF -side right -padx 3
   lappend sigLangCBList .${code}CB
 }
 
@@ -75,17 +82,17 @@ if {[info exists sigLanglist] && $sigLanglist != ""} {
 ##B) $sigLanglist not found
 } else {
 
+  #select language button if system language is different from $lang var
   if {[info exists syslangCode] && [winfo exists .${syslangCode}CB]} {
     .${syslangCode}CB select
   }
-
+  #select $lang button if it exists
   if {$lang == "de" && [winfo exists .deCB]} {
     .deCB select
   } elseif {$lang == "en" && [winfo exists .enCB]} {
     .enCB select
   }
 }
-
 
 if {$enablesig==1} {
   set sigyesState 1
@@ -94,23 +101,21 @@ if {$enablesig==1} {
 }
 
 #Create Message
-message .emailF.topframe.left.t2 -font bpfont1 -padx $px -pady $py -textvar f3.txt 
-pack .emailF.topframe.left.t2 -anchor nw
+message .emailMsg -font bpfont1 -padx $px -pady $py -textvar f3.txt 
+pack .emailMsg -in .emailF.botF.left -anchor nw
+#Create E-Mail text
+label .sigL1 -font "TkIconFont 16" -bg $bg -fg blue -pady 13 -padx 13 -justify left -textvar f3dw
+label .sigL2 -font "TkIconFont 16" -bg $bg -fg blue -pady 13 -padx 13 -justify left -textvar dwsig
 
-#Create Label 1
-set sigLabel1 [label .emailF.topframe.right.sig -font TkIconFont -bg $bg -width 0 -foreground blue -pady 3 -padx 3 -justify left -textvariable f3dw]
-
-#Create Label 2
-set sigLabel2 [label .emailF.topframe.right.sig2 -font TkIconFont -bg $bg -width 0 -foreground blue -pady 3 -padx 3 -justify left -textvariable dwsig]
-
-#Adapt $setupTwdText for signature 
-if { [catch {set dwsig [getTodaysTwdSig $setupTwdFileName]}] } {
+#Adapt $setupTwdText for signature (1=setup)
+if { [catch {set dwsig [getTodaysTwdSig $setupTwdFileName 1]}] } {
   set dwsig "----\n $::noTwdFilesFound"
 }
 
 #Justify right for Hebrew & Arabic
-if { [isRtL [getTwdLang $setupTwdFileName]] } {
-  $sigLabel2 configure -justify right
+if [isBidi $setupTwdText] {
+  .sigL1 conf -justify right
+  .sigL2 conf -font Luxi
 }
 
-pack $sigLabel1 $sigLabel2 -anchor w
+pack .sigL1 .sigL2 -in .emailF.botF.right -anchor w
