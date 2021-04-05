@@ -15,8 +15,9 @@ pack [frame .emailF.botF.right -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -
 
 #Create labels & widgets
 label .mainTit -textvar f3.tit -font bpfont3
-label .wunschsprachenTit -textvar f3.sprachen -font bpfont2 -bg beige -fg [gradient beige -0.3] -bd 1 -relief sunken -padx 7 -pady 3
+label .wunschsprachenTit -textvar f3.sprachen -font bpfont1 -bg beige -bd 1 -relief sunken -padx 7 -pady 3 ;#-fg [gradient beige -0.3]
 checkbutton .sigyesnoCB -textvar f3.btn -variable sigyesState -command {toggleCBstate}
+
 pack .mainTit -in .emailF.topF.f1 -side left
 pack .wunschsprachenTit -in .emailF.topF.f1 -side right -anchor ne -pady 10 -padx 100
 pack .sigyesnoCB -in .emailF.topF.f2 -side left -anchor nw
@@ -54,7 +55,7 @@ proc updateSelectedList {} {
 proc toggleCBstate {} {
   global sigLangCBList sigyesState  
   foreach cb $sigLangCBList {
-    if {$sigyesState} {
+    if $sigyesState {
       $cb conf -state normal
     } else {
       $cb conf -state disabled
@@ -94,7 +95,7 @@ if {[info exists sigLanglist] && $sigLanglist != ""} {
   }
 }
 
-if {$enablesig==1} {
+if $enablesig {
   set sigyesState 1
 } else {
   set sigyesState 0
@@ -107,15 +108,14 @@ pack .emailMsg -in .emailF.botF.left -anchor nw
 label .sigL1 -font "TkIconFont 16" -bg $bg -fg blue -pady 13 -padx 13 -justify left -textvar f3dw
 label .sigL2 -font "TkIconFont 16" -bg $bg -fg blue -pady 13 -padx 13 -justify left -textvar dwsig
 
-#Adapt $setupTwdText for signature (1=setup)
-if { [catch {set dwsig [getTodaysTwdSig $setupTwdFileName 1]}] } {
-  set dwsig "----\n $::noTwdFilesFound"
-}
+#Get any TWD file for Setup sig (setup=0)
+set twdfile [getRandomTwdFile 0]
+# setup=1
+set dwsig [getTodaysTwdSig $twdfile 1]
 
 #Justify right for Hebrew & Arabic
-if [isBidi $setupTwdText] {
-  .sigL1 conf -justify right
-  .sigL2 conf -font Luxi
+if [isBidi $dwsig] {
+  .sigL2 conf -justify right -font Luxi
 }
 
 pack .sigL1 .sigL2 -in .emailF.botF.right -anchor w
