@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 1apr21 pv
+# Updated 8apr21 pv
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -9,6 +9,8 @@ if [catch {package require tdom}] {
   tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $packageRequireTDom
   exit
 }
+
+source $SetupTools
 
 ################################################################################
 ######################### G E N E R A L   T O O L S  ###########################
@@ -223,25 +225,25 @@ proc parseToText {node TwdLang {withTags 0}} {
   }
   
   set text [$node asText]
-  
-  #Fix Bidi languages
-  set RtL [isRtL $TwdLang]
-  if $RtL {
-    if ![namespace exists bidi] {
-      source $BdfBidi
-    }
-  set text [bidi::fixBidi $text]
-  }
-  
   return $text
 } ;#END parseToText
 
 # appendParolToText
+##Extracts TWD intro / parolnode(1/2) for each Parole
 ##called by getTodaysTwdText & getTodaysTwdSig
 ##args='html' for Evolution
+##var RtL is ONLY for setting indents & tabs, fixBidi comes in getTodays..!
 proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
   
-  global tab
+  global tab BdfBidi
+
+#set tab "\u00A0 \u00A0\u00A0 \u00A0 \u00A0 "
+#set indent "\u00A0 \u00A0 \u00A0"  
+
+  #Preload Bidi for RtL
+  if {$RtL && ![namespace exists bidi]} {
+    source $BdfBidi
+  }
   
   set intro [getParolIntro $parolNode $TwdLang]
   if {$intro != ""} {
@@ -361,12 +363,14 @@ proc setTodaysTwdNodes {TwdFileName} {
 }
 
 #getTodaysTwdText
-## used in Setup
+##used in Setup
+##called by SetupBuildGUI
 proc getTodaysTwdText {TwdFileName} {
   global enabletitle ind
   
   set TwdLang [getTwdLang $TwdFileName]
   set RtL [isRtL $TwdLang]
+
   set TwdText ""
   set indent ""
     
@@ -376,28 +380,34 @@ proc getTodaysTwdText {TwdFileName} {
   if {$twdTodayNode == ""} {
     set TwdText "No Bible text found for today."
     return 
-    
-  } else {
-  
-    if {$enabletitle} {
-      set twdTitle [getTwdTitle $twdTodayNode $TwdLang]
-      append TwdText $twdTitle\n
-      set indent $ind
-    }
-    
-    set parolNode [getTwdParolNode 1 $twdTodayNode]
-    set TwdText [appendParolToText $parolNode $TwdText $indent $TwdLang $RtL]
-    
-    append TwdText \n
-    
-    set parolNode [getTwdParolNode 2 $twdTodayNode]
-    set TwdText [appendParolToText $parolNode $TwdText $indent $TwdLang $RtL]
+  }
+
+  if {$enabletitle} {
+    set twdTitle [getTwdTitle $twdTodayNode $TwdLang]
+    append TwdText $twdTitle\n
+    set indent $ind
   }
   
-  $twdDomDoc delete
+  set parolNode [getTwdParolNode 1 $twdTodayNode]
+  set TwdText [appendParolToText $parolNode $TwdText $indent $TwdLang $RtL]
   
-  return $TwdText
+  append TwdText \n
+  
+  set parolNode [getTwdParolNode 2 $twdTodayNode]
+  set TwdText [appendParolToText $parolNode $TwdText $indent $TwdLang $RtL]
 
+  if $RtL {
+    if ![namespace exists bidi] {
+      source $BdfBidi
+    }
+
+
+#TODO THIS DESTROYS ALL INDENTS & TABS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    set TwdText [bidi::fixBidi $TwdText]
+  }  
+  
+  $twdDomDoc delete
+  return $TwdText
 } ;#END getTodaysTwdText
 
 # getTodaysTwdSig
@@ -405,38 +415,44 @@ proc getTodaysTwdText {TwdFileName} {
 ##args=='html' for Evolution
 ##called by Signature & SigTools (Trojita+Evolution) & Setup!
 proc getTodaysTwdSig {TwdFileName {setup 0}} {
-  global ind tab
+  global ind tab noTwdFilesFound BdfBidi
   
-  if $setup {
-    .sigL1 conf -justify left
-    .sigL2 conf -justify left
-  }
+  # G e t  d o m D o c  & exit if empty
   set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
-  
-  if {$twdTodayNode == ""} {
-    set TwdText "No Bible text found for today."
 
-  } else {
-    set twdTitle [getTwdTitle $twdTodayNode]
-    set TwdText "===== $twdTitle ===== \n"
-    set parolNode [getTwdParolNode 1 $twdTodayNode]
-    
-    set TwdText [appendParolToText $parolNode $TwdText $ind]
-    
-    append TwdText \n
-    set parolNode [getTwdParolNode 2 $twdTodayNode]
-    
-    set TwdText [appendParolToText $parolNode $TwdText $ind]
-  
-    if {$setup && [isBidi $TwdText]} {
-      source $BdfBidi
-      set TwdText [bidi::fixBidi $TwdText]
-      .sigL2 conf -justify right
-    }
+  if {$twdTodayNode == ""} {
+    return $noTwdFilesFound
   }
   
+  # P a r s e   d o m D o c
+  ##get title
+  set twdTitle [getTwdTitle $twdTodayNode]
+  set TwdText "===== $twdTitle ===== \n"
+  
+  ##check if Bidi (needed for Setup)
+  set RtL [isBidi $TwdText]
+  if !$setup {set RtL 0}
+  
+  ##get 1st parole
+  set parolNode [getTwdParolNode 1 $twdTodayNode]
+    set TwdText [appendParolToText $parolNode $TwdText $ind $RtL]
+  
+  append TwdText \n
+  
+  ##get 2nd parole
+  set parolNode [getTwdParolNode 2 $twdTodayNode]
+  set TwdText [appendParolToText $parolNode $TwdText $ind $RtL]
+ 
+  ##fix Bidi langs -NOT NEEDED NOW
+#  if {$setup && $isBid} {
+#    source $BdfBidi
+#    set TwdText [bidi::fixBidi $TwdText]
+#  }
+  
   $twdDomDoc delete
+  
+#TODO try to justify this right instead of tab - same for references!
   append tab "                      "
   set bible2Url "$tab \[bible2.net\]"
   append TwdText \n $bible2Url
@@ -444,18 +460,21 @@ proc getTodaysTwdSig {TwdFileName {setup 0}} {
   return $TwdText
 }
 
+# getTodaysTwdTerm
+##proc called by Biblepix if $enablesig
+##NOTE: not for Setup!
 proc getTodaysTwdTerm {TwdFileName} {
   global ind
-  
   set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   
   if {$twdTodayNode == ""} {
     set twdTerm "echo -e \$\{error\}\"No Bible text found for today.\""
+    
   } else {
     set twdTitle [getTwdTitle $twdTodayNode]
     set twdTerm "echo -e \$\{titbg\}\$\{tit\}\"* $twdTitle *\"\n
-    
+
     set parolNode [getTwdParolNode 1 $twdTodayNode]
     set twdTerm [appendParolToTermText $parolNode $twdTerm $ind]
     
@@ -464,9 +483,7 @@ proc getTodaysTwdTerm {TwdFileName} {
     set parolNode [getTwdParolNode 2 $twdTodayNode]
     set twdTerm [appendParolToTermText $parolNode $twdTerm $ind]
   }
-  
   $twdDomDoc delete
-  
   return $twdTerm
 }
 

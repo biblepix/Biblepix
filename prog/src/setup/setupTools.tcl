@@ -657,9 +657,8 @@ proc fillWidgetWithTodaysTwd {twdWidget} {
       $twdWidget conf -justify left
     }
     set twdText [getTodaysTwdText $twdFileName]
-puts $twdText
+#puts $twdText
   }
-
   $twdWidget conf -text $twdText
   ##export for other Setup widgets
   set ::setupTwdText $twdText

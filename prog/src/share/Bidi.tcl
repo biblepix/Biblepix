@@ -6,6 +6,8 @@
 # Author: Peter Vollmar, biblepix.vollmar.ch
 # Updated: 1apr21
 
+puts "Sourcing Bidi..."
+
 namespace eval bidi {
   
   #all Hebrew range
@@ -154,18 +156,27 @@ namespace eval bidi {
     ##evert brackets () to fit rtl
     set s [string map {( ) ) (} $s]
 
+
+
 #TODO? this isn't working for Setup, because there are no '\n's !!!!
 ## its unicode 10 (\u000A) that's causing the problem...
-#TODO Fix tabs for Setup!
-
+#TODO Fix tabs & indents for Setup! -they are not added to newline!!!!!!!!!!
 puts $s
+#regsub -all {[::space::]} $s \u00A0 s
 
     #split text into lines
     set linesplit [split $s \u000A]
 puts $linesplit
 
     foreach line $linesplit {
-     
+    
+ regsub -all {\s} $line \u00A0 line
+
+
+
+
+
+
       #handle text per word
       foreach word $line {
  
@@ -193,11 +204,14 @@ puts $linesplit
       
       #Revert Hebrew+Arabic text line for Setup widgets
       if {$os=="Linux" && !$bdf} {
-        set newline [string reverse $newline]
+        ##avoid empty lines (e.g. breaks)
+        if {[info exists newline] && $newline != ""} {
+          set newline [string reverse $newline]
+        }
       }
       
-      lappend newtext $newline \n
-      unset newline
+      catch {lappend newtext $newline \n}
+      catch {unset newline}
     
     } ;#end foreach line
     

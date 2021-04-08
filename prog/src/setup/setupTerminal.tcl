@@ -38,7 +38,12 @@ text .terminalF.mainf.right.bp -width 70
 set t .terminalF.mainf.right.bp
 pack $t
 
-puts $setupTwdText
+
+
+#TODO testing font for Bidi
+$t conf -font "Luxi"
+puts "Setup TWD \n text $setupTwdText"
+
 
 $t insert 1.0 $setupTwdText
 $t conf -foreground orange -background black -pady 15 -padx 15 -borderwidth 7
