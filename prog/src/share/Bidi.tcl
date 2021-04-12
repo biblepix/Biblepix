@@ -4,9 +4,7 @@
 # ERSETZT BdfBidi !!!
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 1apr21
-
-puts "Sourcing Bidi..."
+# Updated: 12apr21
 
 namespace eval bidi {
   
@@ -119,8 +117,6 @@ namespace eval bidi {
   proc fixBidi {s {vowelled 1} {bdf 0}} {
     global [namespace current]::he_range
     global [namespace current]::ar_range
-#TODO do we need ar_letters here?
-  
     global [namespace current]::ar_numerals
     global [namespace current]::ar_vowels
     global os
@@ -153,30 +149,12 @@ namespace eval bidi {
 ##eliminate control characters TODO don't! as it deletes all breaks!
 #    regsub -all {[[:cntrl:]]} $s {} s
 
-    ##evert brackets () to fit rtl
-    set s [string map {( ) ) (} $s]
-
-
-
-#TODO? this isn't working for Setup, because there are no '\n's !!!!
-## its unicode 10 (\u000A) that's causing the problem...
-#TODO Fix tabs & indents for Setup! -they are not added to newline!!!!!!!!!!
-puts $s
-#regsub -all {[::space::]} $s \u00A0 s
-
     #split text into lines
     set linesplit [split $s \u000A]
-puts $linesplit
+#puts $linesplit
 
     foreach line $linesplit {
-    
- regsub -all {\s} $line \u00A0 line
-
-
-
-
-
-
+     
       #handle text per word
       foreach word $line {
  
@@ -204,14 +182,11 @@ puts $linesplit
       
       #Revert Hebrew+Arabic text line for Setup widgets
       if {$os=="Linux" && !$bdf} {
-        ##avoid empty lines (e.g. breaks)
-        if {[info exists newline] && $newline != ""} {
-          set newline [string reverse $newline]
-        }
+        set newline [string reverse $newline]
       }
       
-      catch {lappend newtext $newline \n}
-      catch {unset newline}
+      lappend newtext $newline \n
+      unset newline
     
     } ;#end foreach line
     
@@ -234,19 +209,19 @@ puts $linesplit
     set letterL [split $word {}]
     set arLetterL [lsearch -all -regexp $letterL $ar_letters]
 
-puts $arLetterL
+#puts $arLetterL
     
     set firstLetterPos [lindex $arLetterL 0]
     set lastLetterPos [lindex $arLetterL end]
    
-puts "
-$word [llength $letterL] ($firstLetterPos $lastLetterPos)"
+#puts "
+#$word [llength $letterL] ($firstLetterPos $lastLetterPos)"
 
     #Scan word for coded & non-coded characters
     foreach char $letterL {
       
       set htmcode [scan $char %c]
-puts $htmcode
+#puts $htmcode
  
       #A) Skip if not listed
       if ![info exists [namespace current]::$htmcode] {

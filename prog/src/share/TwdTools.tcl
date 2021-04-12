@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 8apr21 pv
+# Updated 12apr21 pv
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -56,7 +56,6 @@ proc getRandomTwdFile {{sig 0}} {
   } else {
     set twdL [getTwdList]
   }
-  
   if {$twdL != ""} {
     set randIndex [expr {int(rand()*[llength $twdL])}]  
     return [lindex $twdL $randIndex]
@@ -235,44 +234,31 @@ proc parseToText {node TwdLang {withTags 0}} {
 ##var RtL is ONLY for setting indents & tabs, fixBidi comes in getTodays..!
 proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
   
-  global tab BdfBidi
+  global BdfBidi tab
 
-#set tab "\u00A0 \u00A0\u00A0 \u00A0 \u00A0 "
-#set indent "\u00A0 \u00A0 \u00A0"  
-
-  #Preload Bidi for RtL
-  if {$RtL && ![namespace exists bidi]} {
-    source $BdfBidi
+  #Fix Tabs & indents for RtL (must be fixed spaces - \u00A0=protected space)
+  if $RtL {
+    set indent [string repeat \u00A0 3]
+    set tab [string repeat $indent 4]
   }
   
+  ##get any Intro
   set intro [getParolIntro $parolNode $TwdLang]
   if {$intro != ""} {
-    if $RtL {
-      append TwdText $intro $indent { } \n
-    } else {
-      append TwdText $indent $intro { } \n
-    }
+      append TwdText $indent { } $intro { } \n
   }
-  
-  set text [getParolText $parolNode $TwdLang]
-  set textLines [split $text \n]
-   
-  foreach line $textLines {
-    if $RtL {
-      append TwdText $line $indent \n
-    } else {
-      append TwdText $indent $line \n
-    }
+  ##get 2 Bible texts
+  set paroltext [getParolText $parolNode $TwdLang]
+  set paroltextlines [split $paroltext \n]
+  foreach line $paroltextlines {
+    append TwdText $indent { } $line { } \n
   }
-  
+  ##get refs  
   set ref [getParolRef $parolNode $TwdLang]
-  if $RtL {
-    append TwdText $ref $tab
-  } else {
-    append TwdText $tab $ref
-  }
+  append TwdText $tab { } $ref
   
-  return $TwdText  
+  return $TwdText
+  
 } ;#END appendParolToText
 
 # appendParolToTermText
@@ -396,13 +382,17 @@ proc getTodaysTwdText {TwdFileName} {
   set parolNode [getTwdParolNode 2 $twdTodayNode]
   set TwdText [appendParolToText $parolNode $TwdText $indent $TwdLang $RtL]
 
+
+
+#TODO this ignores all tabs + indents! - wrong place???????????????????????
+set chan [open /tmp/twdtext w]
+puts $chan $TwdText
+close $chan
+
   if $RtL {
     if ![namespace exists bidi] {
       source $BdfBidi
     }
-
-
-#TODO THIS DESTROYS ALL INDENTS & TABS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     set TwdText [bidi::fixBidi $TwdText]
   }  
   
@@ -443,12 +433,6 @@ proc getTodaysTwdSig {TwdFileName {setup 0}} {
   ##get 2nd parole
   set parolNode [getTwdParolNode 2 $twdTodayNode]
   set TwdText [appendParolToText $parolNode $TwdText $ind $RtL]
- 
-  ##fix Bidi langs -NOT NEEDED NOW
-#  if {$setup && $isBid} {
-#    source $BdfBidi
-#    set TwdText [bidi::fixBidi $TwdText]
-#  }
   
   $twdDomDoc delete
   
