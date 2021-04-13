@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTerminal.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15may19
+# Updated: 13apr21 pv
 
 #Create label & checkbutton
 label .terminalF.t1 -textvar f4.tit -font bpfont3
@@ -13,50 +13,45 @@ if {[info exists enableterm]} {
   }  
 }
 
-#Create frames left & right
-pack [frame .terminalF.mainf] -expand false -fill x
-pack [frame .terminalF.mainf.left] -side left -expand false 
-pack [frame .terminalF.mainf.right] -side right -expand true -fill both
+# C r e a t e  m a i n  f r a m e s
+pack [frame .terminalF.mainF] -fill both -expand 1
+pack [frame .terminalF.mainF.left] -side left -expand 1 -anchor nw 
+pack [frame .terminalF.mainF.right] -side right -anchor ne -padx 25 -pady 25
 
-#Fill left frame
-message .terminalF.mainf.left.t2 -textvar f4.txt -font bpfont1 -width 500 -padx $px -pady $py
-#text .terminalF.mainf.left.t3 -height 1 -bg $bg
-#bash entry
-#.terminalF.mainf.left.t3 insert end "echo \"sh $dirlist(unixdir)\/term.sh\" \>\> \~\/\.bashrc"
-#.terminalF.mainf.left.t3 configure -state disabled
-pack .terminalF.mainf.left.t2 -anchor nw -fill none
-#pack .terminalF.mainf.left.t3 -anchor sw -fill x
-pack [label .terminalF.mainf.left.t4 -font bpfont2 -textvar expl -anchor w]
+# F i l l   l e f t   f r a m e
+message .termMsg -textvar f4.txt -font bpfont1 -width 500 -padx $px -pady $py
+label .termL -font bpfont2 -textvar expl -anchor nw
+pack .termMsg -in .terminalF.mainF.left -anchor nw
+pack .termL -in .terminalF.mainF.left -anchor nw
 
-#Fill right frame
-pack [label .terminalF.mainf.right.lb]
-set padLeft 5
-
-
+# F i l l   r i g h t   f r a m e
 #Create bp text widget 
-text .terminalF.mainf.right.bp -width 70  
-set t .terminalF.mainf.right.bp
-pack $t
+text .termTwdT -width 70 -borderwidth 7
+set t .termTwdT
+pack $t -in .terminalF.mainF.right -anchor ne -pady 25 -pady 25
 
-
-
-#TODO testing font for Bidi
-$t conf -font "Luxi"
-puts "Setup TWD \n text $setupTwdText"
-
-
+##insert whole TWD text from line 1.0
 $t insert 1.0 $setupTwdText
-$t conf -foreground orange -background black -pady 15 -padx 15 -borderwidth 7
-##Colour 1st line
-$t tag add intro 1.0 1.end
-$t tag conf intro -foreground yellow -background blue
-##Colour refLines
-set refL1 [$t search "                  " 1.0 end]
-set refL2 [$t count -lines 1.0 end].0
-$t tag add refL $refL1 [string index $refL1 0].end
-$t tag add refL $refL2 end
-$t tag conf refL -foreground lightgreen -background black
-#add last line
-$t insert end "\nbiblepix@localhost ~ $" grün
-$t tag conf grün -foreground green
-
+$t conf -foreground orange -background black
+#mark all text as right-flushing if RtL
+if [isBidi $setupTwdText] {
+  $t conf -font "Luxi"
+  $t tag add rtl 1.0 end
+  $t tag conf rtl -justify right
+}
+##colour title line
+$t tag add tit 1.0 1.end
+$t tag conf tit -foreground yellow -background blue
+##colour refs
+set tab [string repeat \u00A0 7]
+$t tag conf ref -foreground green3
+set reflines [$t search -all $tab 1.0 end]
+puts $reflines
+foreach refline $reflines {
+  set dotpos [string first . $refline]
+  set lineNo [string range $refline 0 $dotpos-1]
+  $t tag add ref $lineNo.0 $lineNo.end 
+}
+##add last line
+$t insert end "\nbiblepix@localhost ~ $" www
+$t tag conf www -justify left -foreground green
