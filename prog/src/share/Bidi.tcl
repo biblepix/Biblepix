@@ -10,9 +10,10 @@ namespace eval bidi {
   
   #all Hebrew range
   variable he_range {[\u0590-\u05FF]}
-
   ##all Arabic range
   variable ar_range {[\u0620-\u06FF]}
+  ##all LTR range
+  variable ltr_range {[\u0590-\u05FF\u0620-\u06FF]}
   #Letters only range, including Hamza & all presentation forms, 
   ##excluding Tatwil, numerals, punctuation & vowels
   variable ar_letters {[\u0620-\u063F\u0641-\u064A\u0671-\u06D3\uFE81-\uFEFC]}
@@ -120,6 +121,7 @@ namespace eval bidi {
     global [namespace current]::ar_numerals
     global [namespace current]::ar_vowels
     global os
+    global [namespace current]::ltr_range
     
     #Detect Hebrew OR Arabic script (incl. Farsi+Urdu!)
     if [regexp $he_range $s] {
@@ -159,8 +161,17 @@ namespace eval bidi {
       foreach word $line {
  
         #add to line pre-reverted if ASCII (=probably a number)
-        if [string is ascii $word] {
-          lappend newline [string reverse $word]
+        #TODO reverting is only needed if Bdf! - why?
+        #TODO still testing phase!
+        
+#if [string is ascii $word] {}
+#if ![regexp $ltr_range $word] {}
+
+if [string is ascii [string range $word 0 1]] {
+        
+        #TODO not sure we want "only digits"
+        #if [regexp {[::digit::]} $word] {}
+ puts $word;         lappend newline [string reverse $word]
           continue  
 
         #leave Hebrew alone
@@ -192,6 +203,9 @@ namespace eval bidi {
     
     #remove any unwanted formatting chars: \ { }
     set newtext [string map { \{ {} \} {} \\ {} } $newtext]
+    ##left/right/Ar. letter signs
+    regsub -all {[\U061C\U200E\U200F]} $newtext {} newtext
+    
     return $newtext
     
   } ;#END fixBidi
