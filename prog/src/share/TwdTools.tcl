@@ -352,7 +352,7 @@ proc setTodaysTwdNodes {TwdFileName} {
 ##used in Setup
 ##called by SetupBuildGUI
 proc getTodaysTwdText {TwdFileName} {
-  global enabletitle ind
+  global enabletitle ind BdfBidi
   
   set TwdLang [getTwdLang $TwdFileName]
   set RtL [isRtL $TwdLang]
@@ -381,13 +381,6 @@ proc getTodaysTwdText {TwdFileName} {
   
   set parolNode [getTwdParolNode 2 $twdTodayNode]
   set TwdText [appendParolToText $parolNode $TwdText $indent $TwdLang $RtL]
-
-
-
-#TODO this ignores all tabs + indents! - wrong place???????????????????????
-set chan [open /tmp/twdtext w]
-puts $chan $TwdText
-close $chan
 
   if $RtL {
     if ![namespace exists bidi] {

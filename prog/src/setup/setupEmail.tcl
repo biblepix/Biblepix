@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 3apr21 pv
+# Updated 16apr21 pv
 
 #TODO Update page on (re)opening to account for added/deleted TWD language files!
 
@@ -23,22 +23,37 @@ pack .wunschsprachenTit -in .emailF.topF.f1 -side right -anchor ne -pady 10 -pad
 pack .sigyesnoCB -in .emailF.topF.f2 -side left -anchor nw
 pack [frame .emailF.topF.f2.rightF] -side right -padx 100 -pady $py
 
-#List language codes of installed TWD files 
-foreach L [glob -tails -directory $twdDir *.twd] {
-  lappend langlist $L
-}
-foreach e $langlist {
-  #files may have been deleted after creating Codelist
-  if [file exists $twdDir/$e] {
-    lappend codelist [string range $e 0 1]
+#List language codes of installed TWD files
+#called here & in SetupInternational 
+proc updateMailBtnList {} {
+  global twdDir
+  set twdList [getTwdList]
+
+  foreach e $twdList {
+    #files may have been deleted after creating Codelist!
+    if [file exists $twdDir/$e] {
+      lappend codelist [string range $e 0 1]
+    }
   }
+  set codelist [lsort -decreasing -unique $codelist]
+
+  #Create language buttons for each language code
+  foreach slave [pack slaves .emailF.topF.f2.rightF] {pack forget $slave}
+  
+  foreach code $codelist {
+    catch {  checkbutton .${code}CB -text $code -width 5 -selectcolor beige -indicatoron 0 -variable sel${code} }
+    pack .${code}CB -in .emailF.topF.f2.rightF -side right -padx 3
+    lappend sigLangCBList .${code}CB
+    
+  }
+
 }
-set CodeList [lsort -decreasing -unique $codelist]
+updateMailBtnList
 
 #Lists selected sigLangCB's
 proc updateSelectedList {} {
-  global CodeList lang
-  foreach code $CodeList {
+  global codelist lang
+  foreach code $codelist {
     set varname "sel${code}" 
     if [set ::$varname] {
       lappend sigLanglist $code
@@ -63,12 +78,6 @@ proc toggleCBstate {} {
   }
 }
 
-#Create language buttons for each language code
-foreach code $CodeList {
-  checkbutton .${code}CB -text $code -width 5 -selectcolor beige -indicatoron 0 -variable sel${code}
-  pack .${code}CB -in .emailF.topF.f2.rightF -side right -padx 3
-  lappend sigLangCBList .${code}CB
-}
 
 #Preselect language Buttons:
 ##A) $sigLanglist exists, but files may have been deleted
@@ -111,10 +120,15 @@ label .sigL2 -font "TkIconFont 16" -bg $bg -fg blue -pady 13 -padx 13 -justify l
 #Get any TWD file for Setup sig (setup=0)
 set twdfile [getRandomTwdFile 0]
 # setup=1
+
+
+#TODO Text is LtR and has no tabs or indents!
 set dwsig [getTodaysTwdSig $twdfile 1]
 
 #Justify right for Hebrew & Arabic
 if [isBidi $dwsig] {
+
+#TODO make better font solution
   .sigL2 conf -justify right -font Luxi
 }
 

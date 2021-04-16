@@ -650,14 +650,22 @@ proc fillWidgetWithTodaysTwd twdWidget {
   if {$twdFileName == ""} {
     $twdWidget conf -activebackground orange
     set twdText $::noTwdFilesFound
-  } else {
-    if {[isRtL [getTwdLang $twdFileName]]} {
-      $twdWidget conf -justify right
-    } else {
-      $twdWidget conf -justify left
-    }
+    
+  } else {    
+    
     set twdText [getTodaysTwdText $twdFileName]
+    $twdWidget conf -justify left
+    
+    if [isBidi $twdText] {
+      $twdWidget conf -justify right
+      $twdWidget conf -font {"Ezra SIL" 16}
+      $twdWidget conf -font {"Arabic Newspaper" 16}
+      #TODO this should be sorted in getTodaysTwdText !!!!!
+      #set twdText [bidi::fixBidi $twdText]
+    }
+
   }
+  
   $twdWidget conf -text $twdText
   ##export for other Setup widgets
   set ::setupTwdText $twdText

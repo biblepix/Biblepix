@@ -32,10 +32,10 @@ pack $t -in .terminalF.mainF.right -anchor ne -pady 25 -pady 25
 
 ##insert whole TWD text from line 1.0
 $t insert 1.0 $setupTwdText
-$t conf -foreground orange -background black
+$t conf -foreground orange -background black -font "Luxi 16"
+
 #mark all text as right-flushing if RtL
 if [isBidi $setupTwdText] {
-  $t conf -font "Luxi"
   $t tag add rtl 1.0 end
   $t tag conf rtl -justify right
 }

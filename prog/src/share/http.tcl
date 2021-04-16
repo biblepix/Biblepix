@@ -290,7 +290,7 @@ proc downloadTWDFiles {} {
     NewsHandler::QueryNews $::noConnTwd red
     return 1
   }
-
+  
   cd $::dirlist(twdDir)
   #get hrefs alphabetically ordered
   set urllist [$root selectNodes {//tr/td/a}]
@@ -311,9 +311,10 @@ proc downloadTWDFiles {} {
       downloadFileFromRelease $filePath 0
     }
 
+    #Download file & recreate Twd lists
     downloadTwdFile $filename $::jahr
-
-    after 3000 .internationalF.f1.twdlocal insert end $filename
+    after 3000
+    .internationalF.f1.twdlocal insert end $filename
   }
   #deselect all downloaded files
   .twdremoteLB selection clear 0 end
