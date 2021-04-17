@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15apr21 pv
+# Updated: 17apr21 pv
 
 proc setTexts {lang} {
   global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -334,13 +334,13 @@ set ::packageRequireTls $packageRequireTls($lang)
 
   set f3Expl(en) "
 Yours faithfully,
-Drs. Bible & Pix Brothers
+Bible & Pix Brothers
 Homepage: www.biblepix.vollmar.ch
 "
 
   set f3Expl(de) "
-Mit freundlichem Gruss
-Dr. Gebr. Bibel & Pix
+Mit freundlichem Gruß
+Gebr. Bibel & Pix
 Homepage: www.biblepix.vollmar.ch
 "  
   set ::f3dw $f3Expl($lang)
