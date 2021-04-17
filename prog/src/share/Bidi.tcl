@@ -145,29 +145,43 @@ namespace eval bidi {
       regsub -all {\u0644[\u064B-\u065F]*\u0625} $s \uFEF9 s ;#lam-alif-hamza_tahton
       regsub -all {\u0644[\u064B-\u065F]*\u0622} $s \uFEF5 s ;#lam-alif-madda
       set s [string map {\u064B\u0627 \u0627\u064B} $s]
-      #regsub {\u0644?[\u064B-\u065F]\uFEE1} $s \uFC42 s ;#lam-mim_final - this is likely not needed & doesn't include inital form
+    
+    } elseif {$lang=="he"} {
+      #substitue Maqaf with space
+      regsub -all {[\u05BE]} $s { } s
     }
     
-##eliminate control characters TODO don't! as it deletes all breaks!
-#    regsub -all {[[:cntrl:]]} $s {} s
+    #GENERAL BOTH LANGS:
+##eliminate control characters:
+##left/right/Ar. letter signs
+regsub -all {[\U061C\U200E\U200F]} $s {} s
+##all quotation marks since Tcl thinks they're for them!
+regsub -all {[\u0022\u0027\u00AB\u00BB\u2018\u2019]} $s {} s
 
-    #split text into lines
-    set linesplit [split $s \u000A]
-#puts $linesplit
+#set s [string map {" {} ' {} « {} » {} ‘ {} ’ {} } $s]
+#regsub -all {{[""'']}} $s {} s
 
-    foreach line $linesplit {
-     
+  #Klammern umkehren	
+  set s [string map {( ) ) (} $s]
+
+  #split text into lines
+  set linesplit [split $s \u000A]
+
+  foreach line $linesplit {
+puts $line
+   
       #handle text per word
       foreach word $line {
- 
+  
+#        if [regexp {[""]} $word] {}
         #add to line pre-reverted if ASCII (=probably a number)
         #TODO reverting is only needed if Bdf! - why?
         #TODO still testing phase!
         
-#if [string is ascii $word] {}
+if [string is ascii $word] {
 #if ![regexp $ltr_range $word] {}
 
-if [string is ascii [string range $word 0 1]] {
+#if [string is ascii [string index $word 1]] {}
         
         #TODO not sure we want "only digits"
         #if [regexp {[::digit::]} $word] {}
@@ -176,6 +190,8 @@ if [string is ascii [string range $word 0 1]] {
 
         #leave Hebrew alone
         } elseif {$lang == "he"} {
+          
+          
           set newword $word
  
         #format Arabic script word
@@ -190,7 +206,6 @@ if [string is ascii [string range $word 0 1]] {
         lappend newline $newword
       }
       
-      
       #Revert Hebrew+Arabic text line for Setup widgets
       if {$os=="Linux" && !$bdf} {
         set newline [string reverse $newline]
@@ -203,8 +218,8 @@ if [string is ascii [string range $word 0 1]] {
     
     #remove any unwanted formatting chars: \ { }
     set newtext [string map { \{ {} \} {} \\ {} } $newtext]
-    ##left/right/Ar. letter signs
-    regsub -all {[\U061C\U200E\U200F]} $newtext {} newtext
+    
+    
     
     return $newtext
     
