@@ -233,19 +233,19 @@ proc parseToText {node TwdLang {withTags 0}} {
 ##args='html' for Evolution
 ##var RtL is ONLY for setting indents & tabs, fixBidi comes in getTodays..!
 proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
-  
-  global BdfBidi tab
+  global BdfBidi tab ind 
 
   #Fix Tabs & indents for RtL (must be fixed spaces - \u00A0=protected space)
-  if $RtL {
-    set indent [string repeat \u00A0 3]
-    set tab [string repeat $indent 4]
-  }
+#  if $RtL {
+#    set indent [string repeat \u00A0 3]
+#    set tab [string repeat $indent 4]
+#  }
+  set indent $ind
   
   ##get any Intro
   set intro [getParolIntro $parolNode $TwdLang]
   if {$intro != ""} {
-      append TwdText $indent { } $intro { } \n
+    append TwdText $indent { } $intro { } \n
   }
   ##get 2 Bible texts
   set paroltext [getParolText $parolNode $TwdLang]
@@ -403,7 +403,6 @@ proc getTodaysTwdSig {TwdFileName {setup 0}} {
   # G e t  d o m D o c  & exit if empty
   set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
-
   if {$twdTodayNode == ""} {
     return $noTwdFilesFound
   }
@@ -411,21 +410,22 @@ proc getTodaysTwdSig {TwdFileName {setup 0}} {
   # P a r s e   d o m D o c
   ##get title
   set twdTitle [getTwdTitle $twdTodayNode]
-  set TwdText "===== $twdTitle ===== \n"
+  set TwdSig "===== $twdTitle ===== \n"
   
   ##check if Bidi (needed for Setup)
-  set RtL [isBidi $TwdText]
+  set RtL [isBidi $TwdSig]
   if !$setup {set RtL 0}
-  
+    puts "twdsigrtl $RtL"
+    
   ##get 1st parole
   set parolNode [getTwdParolNode 1 $twdTodayNode]
-    set TwdText [appendParolToText $parolNode $TwdText $ind $RtL]
+  set TwdSig [appendParolToText $parolNode $TwdSig $ind $RtL]
   
-  append TwdText \n
+  append TwdSig \n
   
   ##get 2nd parole
   set parolNode [getTwdParolNode 2 $twdTodayNode]
-  set TwdText [appendParolToText $parolNode $TwdText $ind $RtL]
+  set TwdSig [appendParolToText $parolNode $TwdSig$ind $RtL]
   
   $twdDomDoc delete
   
@@ -433,8 +433,11 @@ proc getTodaysTwdSig {TwdFileName {setup 0}} {
   append tab "                      "
   set bible2Url "$tab \[bible2.net\]"
   append TwdText \n $bible2Url
-  
-  return $TwdText
+
+if $RtL {
+  set TwdSig [bidi::fixBidi $TwdSig]
+}  
+  return $TwdSig
 }
 
 # getTodaysTwdTerm

@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29dec20 pv
+# Updated: 24apr21 pv
 
 setFlags
 sourceHTTP
@@ -16,7 +16,7 @@ if {$setupTwdFileName == ""} {
 }
 
 #Create title logo with icon
-if { [catch {package require Img} ] } {
+if [catch {package require Img} ]  {
   NewsHandler::QueryNews $packageRequireImg red
 } else {
   image create photo Logo -file $WinIcon -format ICO
@@ -24,9 +24,8 @@ if { [catch {package require Img} ] } {
   .ftop.titelmitlogo configure -compound left -image Logo
 }
 
-#Configure Fonts                     ??? -PIXELS ???
+#Configure Fonts
 font create bpfont1 -family TkTextFont
-
 if {$wHeight < 700} {
   font configure bpfont1 -size 10
 } elseif {$wHeight < 900} {
@@ -37,8 +36,15 @@ if {$wHeight < 700} {
 
 font create bpfont2 -family TkHeadingFont -size 12 -weight bold
 font create bpfont3 -family TkCaptionFont -size 18
+
+#TODO this must be tested for Ar. and Hebrew on all platforms!
+font create twdwidgetfont
+set avfontsize [font conf bpfont1 -size]
+font conf twdwidgetfont -family TkTextFont -size [expr int($avfontsize * 1.3)]
+
 #created in Setup
 catch {font create bpfont4 -family TkCaptionFont -size 30 -weight bold}
+
 
 # B U I L D   M A I N   T A G S
 

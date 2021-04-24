@@ -658,8 +658,8 @@ proc fillWidgetWithTodaysTwd twdWidget {
     
     if [isBidi $twdText] {
       $twdWidget conf -justify right
-      $twdWidget conf -font {"Ezra SIL" 16}
-      $twdWidget conf -font {"Arabic Newspaper" 16}
+#      $twdWidget conf -font {"Ezra SIL" 16}
+#      $twdWidget conf -font {"Arabic Newspaper" 16}
       #TODO this should be sorted in getTodaysTwdText !!!!!
       #set twdText [bidi::fixBidi $twdText]
     }

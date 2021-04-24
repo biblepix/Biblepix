@@ -179,8 +179,8 @@ set TwdPNG [file join $imgdir theword.png]
 set datum [clock format [clock seconds] -format %Y-%m-%d]
 set jahr [clock format [clock seconds] -format %Y]
 set heute [clock format [clock seconds] -format %d]
-set tab "                              "
-set ind "     "
+set ind [string repeat \u00A0 3]
+set tab [string repeat $ind 4]
 
 #Define font colour names 
 set fontcolourL {Earth Gold Leaf Sea Silver Slate}

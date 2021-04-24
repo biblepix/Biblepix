@@ -1,9 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16apr21 pv
-
-#TODO Update page on (re)opening to account for added/deleted TWD language files!
+# Updated 24pr21 pv
 
 #Create frames & titles
 pack [frame .emailF.topF] -fill x
@@ -11,13 +9,12 @@ pack [frame .emailF.topF.f1] -fill x
 pack [frame .emailF.topF.f2] -fill x
 pack [frame .emailF.botF] -fill both
 pack [frame .emailF.botF.left] -side left -anchor nw
-pack [frame .emailF.botF.right -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -side right -padx 100
+pack [frame .emailF.botF.right -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -side right -padx 100 
 
 #Create labels & widgets
 label .mainTit -textvar f3.tit -font bpfont3
 label .wunschsprachenTit -textvar f3.sprachen -font bpfont1 -bg beige -bd 1 -relief sunken -padx 7 -pady 3 ;#-fg [gradient beige -0.3]
 checkbutton .sigyesnoCB -textvar f3.btn -variable sigyesState -command {toggleCBstate}
-
 pack .mainTit -in .emailF.topF.f1 -side left
 pack .wunschsprachenTit -in .emailF.topF.f1 -side right -anchor ne -pady 10 -padx 100
 pack .sigyesnoCB -in .emailF.topF.f2 -side left -anchor nw
@@ -28,13 +25,13 @@ pack [frame .emailF.topF.f2.rightF] -side right -padx 100 -pady $py
 proc updateMailBtnList {} {
   global twdDir
   set twdList [getTwdList]
-
   foreach e $twdList {
     #files may have been deleted after creating Codelist!
     if [file exists $twdDir/$e] {
       lappend codelist [string range $e 0 1]
     }
   }
+  
   set codelist [lsort -decreasing -unique $codelist]
 
   #Create language buttons for each language code
@@ -44,13 +41,13 @@ proc updateMailBtnList {} {
     catch {  checkbutton .${code}CB -text $code -width 5 -selectcolor beige -indicatoron 0 -variable sel${code} }
     pack .${code}CB -in .emailF.topF.f2.rightF -side right -padx 3
     lappend sigLangCBList .${code}CB
-    
   }
-
+  set ::codelist $codelist
 }
 updateMailBtnList
 
 #Lists selected sigLangCB's
+##called by Save
 proc updateSelectedList {} {
   global codelist lang
   foreach code $codelist {
@@ -77,7 +74,6 @@ proc toggleCBstate {} {
     }
   }
 }
-
 
 #Preselect language Buttons:
 ##A) $sigLanglist exists, but files may have been deleted
@@ -113,23 +109,18 @@ if $enablesig {
 #Create Message
 message .emailMsg -font bpfont1 -padx $px -pady $py -textvar f3.txt 
 pack .emailMsg -in .emailF.botF.left -anchor nw
-#Create E-Mail text
-label .sigL1 -font "TkIconFont 16" -bg $bg -fg blue -pady 13 -padx 13 -justify left -textvar f3dw
-label .sigL2 -font "TkIconFont 16" -bg $bg -fg blue -pady 13 -padx 13 -justify left -textvar dwsig
-
-#Get any TWD file for Setup sig (setup=0)
+#Create Twd text
 set twdfile [getRandomTwdFile 0]
-# setup=1
-
-
-#TODO Text is LtR and has no tabs or indents!
 set dwsig [getTodaysTwdSig $twdfile 1]
 
-#Justify right for Hebrew & Arabic
+#Create E-Mail widgets
+label .sigL -font twdwidgetfont -bg $bg -fg blue -pady 13 -padx 13 -justify left -textvar f3dw
+text .sigT -font twdwidgetfont -background $bg -foreground blue -pady 13 -padx 13 -bd 0
+.sigT insert 1.0 $dwsig
+##justify right for Hebrew & Arabic
 if [isBidi $dwsig] {
-
-#TODO make better font solution
-  .sigL2 conf -justify right -font Luxi
+  .sigT tag add rtl 1.0 end
+  .sigT tag conf rtl -justify right
 }
 
-pack .sigL1 .sigL2 -in .emailF.botF.right -anchor w
+pack .sigL .sigT -in .emailF.botF.right -anchor w -expand 1 

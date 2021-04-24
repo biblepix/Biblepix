@@ -4,7 +4,7 @@
 # ERSETZT BdfBidi !!!
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 12apr21
+# Updated: 20apr21
 
 namespace eval bidi {
   
@@ -67,24 +67,19 @@ namespace eval bidi {
   
   ##Alif & ligatures
   array set 1575 {n alif l 0 i \uFE8D m \uFE8E f \uFE8E}
-
   array set 1649  {n alif_wasla l 0 i \uFB50 m \uFB51 f \uFB51}
   array set 1570  {n alif_madda l 0 i \uFE81 m \uFE82 f \uFE82}
   array set 1571  {n alif_hamza_elyon l 0 i \uFE83 m \uFE84 f \uFE84}
   array set 1573  {n alif_hamza_tahton l 0 i \uFE87 m \uFE88 f \uFE88}
-
   array set 65275 {n lam_alif_abs l 0 i \ufefb m \uFEFC f \uFEFC}
   array set 65276 {n lam_alif_linked l 0 m \uFEFC f \uFEFC}
-  
   array set 65270 {n lam_alif_madda l 0 i \ufef5 m \uFEF6 f \uFEF6}
   array set 65271 {n lam_alif_hamza_elyon l 0 i \uFEF7 m \uFEF8 f \uFEF8}
   array set 65273 {n lam_alif_hamza_tahton l 0 i \uFEF9 m \uFEFA f \UFEFA}
   array set 64716 {n lam_mim l 1 i \uFCCC f \uFC42}
   ##final only letters 
-  ##TODO ta-marbuta is a hack, should never need middle form!
   array set 1577 {n ta_marbuta l 0 m \uFE93 f \uFE94}
   array set 1609 {n alif_maqsura l 0 \m \uFEF0 f \uFEF0}
-
   #Persian special letters
   array set 1740 {n farsi-ye l 1 i \uFBFE m \uFBFF f \uFBFD} ;#Ya without dots in final form = ar. Ya_maqsura
   array set 1662 {n pe l 1 i \ufb58 m \ufb59 f \ufb57}
@@ -115,22 +110,21 @@ namespace eval bidi {
   ##compulsary args: s (text string) 
   ## vowelled(1/0): 0 = strip of all vowels 
   ## bdf(1/0): 1 = don't reverse line order (BDF printing is from right to left)
+  ##called by ... ...
   proc fixBidi {s {vowelled 1} {bdf 0}} {
+    global os
     global [namespace current]::he_range
     global [namespace current]::ar_range
     global [namespace current]::ar_numerals
     global [namespace current]::ar_vowels
-    global os
-    global [namespace current]::ltr_range
-    
+     
     #Detect Hebrew OR Arabic script (incl. Farsi+Urdu!)
     if [regexp $he_range $s] {
       set lang he
-      
     } elseif [regexp $ar_range $s] {
       set lang ar
     }
-    
+
     #Devowelise if $vowelled=0, 
     ##NOTE: double-vowel Fathatân is not cleared since listed as regular letter (see above) 
     if !$vowelled {
@@ -158,9 +152,6 @@ regsub -all {[\U061C\U200E\U200F]} $s {} s
 ##all quotation marks since Tcl thinks they're for them!
 regsub -all {[\u0022\u0027\u00AB\u00BB\u2018\u2019]} $s {} s
 
-#set s [string map {" {} ' {} « {} » {} ‘ {} ’ {} } $s]
-#regsub -all {{[""'']}} $s {} s
-
   #Klammern umkehren	
   set s [string map {( ) ) (} $s]
 
@@ -168,8 +159,7 @@ regsub -all {[\u0022\u0027\u00AB\u00BB\u2018\u2019]} $s {} s
   set linesplit [split $s \u000A]
 
   foreach line $linesplit {
-puts $line
-   
+  
       #handle text per word
       foreach word $line {
   
@@ -178,19 +168,15 @@ puts $line
         #TODO reverting is only needed if Bdf! - why?
         #TODO still testing phase!
         
-if [string is ascii $word] {
+#if [string is ascii $word] {}
 #if ![regexp $ltr_range $word] {}
-
-#if [string is ascii [string index $word 1]] {}
-        
-        #TODO not sure we want "only digits"
-        #if [regexp {[::digit::]} $word] {}
- puts $word;         lappend newline [string reverse $word]
+if [string is ascii [string index $word 1]] {
+#if [regexp {[::digit::]} $word] {}
+          lappend newline [string reverse $word]
           continue  
 
         #leave Hebrew alone
         } elseif {$lang == "he"} {
-          
           
           set newword $word
  
@@ -219,8 +205,6 @@ if [string is ascii $word] {
     #remove any unwanted formatting chars: \ { }
     set newtext [string map { \{ {} \} {} \\ {} } $newtext]
     
-    
-    
     return $newtext
     
   } ;#END fixBidi
@@ -237,20 +221,13 @@ if [string is ascii $word] {
     #Get 1st und last Arabic letter positions
     set letterL [split $word {}]
     set arLetterL [lsearch -all -regexp $letterL $ar_letters]
-
-#puts $arLetterL
-    
     set firstLetterPos [lindex $arLetterL 0]
     set lastLetterPos [lindex $arLetterL end]
-   
-#puts "
-#$word [llength $letterL] ($firstLetterPos $lastLetterPos)"
 
     #Scan word for coded & non-coded characters
     foreach char $letterL {
       
       set htmcode [scan $char %c]
-#puts $htmcode
  
       #A) Skip if not listed
       if ![info exists [namespace current]::$htmcode] {
@@ -263,12 +240,9 @@ if [string is ascii $word] {
       ##set 1st letter form
       if {$pos == $firstLetterPos} {
         set utfchar [formatArabicLetter $htmcode i $prevLinking]
-#puts "First $pos"
       ##set final letter form  
       } elseif {$pos == $lastLetterPos} { 
-#puts "Last $pos"
         set utfchar [formatArabicLetter $htmcode f $prevLinking]
-
       ##set middle letter form    
       } else {
         set utfchar [formatArabicLetter $htmcode m $prevLinking]
@@ -292,13 +266,12 @@ if [string is ascii $word] {
   # getArLetter
   ##returns Arabic character with requested form as UTF 
   ##args: form = i|m|f & linking status of previous letter = 0|1
+  ##called by formatArabicWord
   proc formatArabicLetter {htmcode form prevLinking} {
     global [namespace current]::$htmcode
     upvar [namespace current]::$htmcode letterArr
     set lettername $letterArr(n)
         
-puts "$lettername $form $prevLinking"
-
     #A) absolute or final form, depending on prevLinking status 
     if {$form == "f"} {
       if !$prevLinking {
@@ -327,6 +300,8 @@ puts "$lettername $form $prevLinking"
   ##producing readable modern type text from poetic or religious vowelled text
   ##necessary arguments: s = text string / lang = 'he' OR 'ar' (including Urdu+Farsi)
   ##called by fixBidi
+
+#TODO make separate proc for Heb substitution!
   proc devowelise {s lang} {
     global [namespace current]::ar_vowels        
  
