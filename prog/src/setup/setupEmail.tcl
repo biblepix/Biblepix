@@ -114,13 +114,22 @@ set twdfile [getRandomTwdFile 0]
 set dwsig [getTodaysTwdSig $twdfile 1]
 
 #Create E-Mail widgets
-label .sigL -font twdwidgetfont -bg $bg -fg blue -pady 13 -padx 13 -justify left -textvar f3dw
-text .sigT -font twdwidgetfont -background $bg -foreground blue -pady 13 -padx 13 -bd 0
+label .sigL -font twdwidgetfont -bg $bg -fg blue -justify left -textvar f3dw
+text .sigT -font twdwidgetfont -background $bg -foreground blue -bd 0
 .sigT insert 1.0 $dwsig
+
+##right justify www line
+set wwwline [.sigT search bible2 5.0]
+set dotpos [string first . $wwwline]
+set lineNo [string range $wwwline 0 $dotpos-1]
+.sigT tag add www $lineNo.0 end
+.sigT tag conf www -justify right
+  
 ##justify right for Hebrew & Arabic
 if [isBidi $dwsig] {
   .sigT tag add rtl 1.0 end
   .sigT tag conf rtl -justify right
+  .sigT tag conf www -justify left
 }
 
-pack .sigL .sigT -in .emailF.botF.right -anchor w -expand 1 
+pack .sigL .sigT -in .emailF.botF.right -anchor w
