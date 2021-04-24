@@ -124,7 +124,8 @@ set dotpos [string first . $wwwline]
 set lineNo [string range $wwwline 0 $dotpos-1]
 .sigT tag add www $lineNo.0 end
 .sigT tag conf www -justify right
-  
+.sigT conf -height $lineNo
+
 ##justify right for Hebrew & Arabic
 if [isBidi $dwsig] {
   .sigT tag add rtl 1.0 end

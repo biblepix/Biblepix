@@ -425,18 +425,16 @@ proc getTodaysTwdSig {TwdFileName {setup 0}} {
   
   ##get 2nd parole
   set parolNode [getTwdParolNode 2 $twdTodayNode]
-  set TwdSig [appendParolToText $parolNode $TwdSig$ind $RtL]
-  
-  $twdDomDoc delete
-  
-#TODO try to justify this right instead of tab - same for references!
-  append tab "                      "
+  set TwdSig [appendParolToText $parolNode $TwdSig $ind $RtL]
   set bible2Url "$tab \[bible2.net\]"
-  append TwdText \n $bible2Url
+  append TwdSig \n $bible2Url
 
-if $RtL {
-  set TwdSig [bidi::fixBidi $TwdSig]
-}  
+  $twdDomDoc delete
+
+  if $RtL {
+    set TwdSig [bidi::fixBidi $TwdSig]
+  }  
+
   return $TwdSig
 }
 
