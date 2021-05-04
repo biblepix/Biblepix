@@ -248,8 +248,15 @@ namespace eval bdf {
 
     # 1. Print Title in Bold +...~
     if {$enabletitle} {
-      set y [printTextLine ${markTitle}${title} $x $y $img]
+      set y [printTextLine ${markTitle}${title} $x $y $img TIT]
     }
+    
+    #TODO? Textbreite von Titel berechnen (get first & last x pos)
+    #für Positionierung von refs rechtsbündig mit Titel
+    #dafür müssen die refs vorerst in 2 separate Bilder gedruckt werden, um ihre Textbreite zu bestimmen
+    ##TODO use TAB if no title found!
+    
+    
     #Print intro1 in Italics <...~
     if [info exists intro1] {
       set y [printTextLine ${markRef}${intro1} $x $y $img IND]
@@ -259,8 +266,13 @@ namespace eval bdf {
     foreach line $textLines {
       set y [printTextLine ${markText}$line $x $y $img IND]
     }
+    
     #Print ref1 in Italics
-    set y [printTextLine ${markRef}${ref1} $x $y $img TAB]
+#set refX [alignRef $markRef 1]
+set refX $x
+set y [printTextLine ${markRef}${ref1} $refX $y $img TAB]
+    
+    
     #Print intro2 in Italics
     if [info exists intro2] {
       set y [printTextLine ${markRef}${intro2} $x $y $img IND]
@@ -271,10 +283,43 @@ namespace eval bdf {
       set y [printTextLine ${markText}$line $x $y $img IND]
     }
     #Print ref2
-    set y [printTextLine ${markRef}${ref2}${markText} $x $y $img TAB]
+#set refX [alignRef $markRef 2]
+set refX $x
+set y [printTextLine ${markRef}${ref2} $refX $y $img TAB]
+    
   } ;#END printTwdTextParts
 
+  proc alignRef {markRef refNo} {
+      global [namespace current]::titleEnd
+      global [namespace current]::ref1
+      global [namespace current]::ref2 
+      global [namespace current]::marginleft
+      
+#      set titleW [expr $marginleft - $titleEnd]
+#puts "titleW $titleW"
 
+      if {$refNo == 1} {
+        set ref $ref1
+      } elseif {$refNo == 2} {
+        set ref $ref2
+      }
+      
+      image create photo refpic
+      printTextLine ${markRef}${ref} 0 0 refpic
+      refpic write /tmp/refpic.png -format PNG
+      
+      set refW [image width refpic]
+puts "refpicW: $refW"
+puts "titleEnd: $titleEnd"
+      set refPos [expr $marginleft - $titleEnd - $refW]
+      ##export for printTextParts
+puts "refPos $refPos"
+      set [namespace current]::refPos $refPos
+      
+      return $refPos
+  }
+    
+    
   # printLetter
   ## prints single letter to $img
   ## called by printTextLine
@@ -343,7 +388,7 @@ namespace eval bdf {
   ## Called by printTwd
   proc printTextLine {textLine x y img args} {
       
-    global TwdLang enabletitle RtL BdfBidi prefix
+    global TwdLang enabletitle RtL Bidi prefix
 
     #set textpic width for RtL, to be cropped later
     if $RtL {
@@ -372,7 +417,7 @@ namespace eval bdf {
       ##a) if no png info found, move text to the right
       set operator -
       if ![namespace exists bidi] {
-        source $BdfBidi
+        source $Bidi
       }
       set textLine [bidi::fixBidi $textLine 0 1]
     }
@@ -380,7 +425,16 @@ namespace eval bdf {
     #Compute indentations
     if {$args=="IND"} {
       set xBase [expr $xBase $operator $ind]
+    
     } elseif {$args=="TAB"} {
+    
+      #TODO use tab only if no titleEnd found!
+      global [namespace current]::refPos 
+      if [info exists refPos] {
+        set tab [expr $xBase - $refPos]
+        set tab $refPos
+      }
+    
       set xBase [expr $xBase $operator $tab]
     }
 
@@ -410,12 +464,18 @@ namespace eval bdf {
         
         array set curLetter [array get print_$encLetter]
         if [catch {printLetter curLetter $img $xBase $yBase} error] {
-          puts "could not print letter: $encLetter"
+          puts $error
           #better skip spurious chars!
           #error $error
           continue
         }
         set xBase [expr $xBase $operator $curLetter(DWx)]
+        
+        #Count line length if title for alignment of refs, to be computed later by alignRef
+        if {$args=="TIT"} {
+          set [namespace current]::titleEnd $xBase
+        }
+        
       }
     } ;#END foreach
 
@@ -427,3 +487,4 @@ namespace eval bdf {
   } ;#END printTextLine
 
 } ;#END bdf:: namespace
+

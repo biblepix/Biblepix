@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 24feb21 pv
+# Updated: 4may21 pv
 
 #set version "3.2"
 set version "4.0"
@@ -82,7 +82,7 @@ array set FilePaths "
   Biblepix [file join $srcdir biblepix.tcl]
   BdfTools [file join $picdir BdfTools.tcl]
   BdfPrint [file join $picdir BdfPrint.tcl]
-  BdfBidi [file join $sharedir Bidi.tcl]
+  Bidi [file join $sharedir Bidi.tcl]
   Image [file join $picdir image.tcl]
   ImageAngle [file join $picdir ImageAngle.tcl]
   RotateTools [file join $picdir RotateTools.tcl]

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 12apr21 pv
+# Updated 4may21 pv
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -102,12 +102,10 @@ proc updateTwd {} {
   # Download New TwdFiles if available
   ##########################################
 
-  if {[catch {set onlineJsonFileList [getDataFromUrl "$::twdUrl?format=json"]}]} {
+  if [catch {set onlineJsonFileList [getDataFromUrl "$::twdUrl?format=json"]}] {
     return
   }
-
   set onlineDictFileList [::json::json2dict $onlineJsonFileList]
-  
   set nextYearAvailable 0
   set nextYear [expr {$::jahr + 1}]
 
@@ -208,7 +206,7 @@ proc getDomNodeForToday {domDoc} {
 # parseToText
 ##called by getTwdTitle getTwdParolNode getParolIntro getParolText getParolRef
 proc parseToText {node TwdLang {withTags 0}} {
-  global BdfBidi os
+  global Bidi os
   
   if {$node == ""} {
     return ""
@@ -233,13 +231,7 @@ proc parseToText {node TwdLang {withTags 0}} {
 ##args='html' for Evolution
 ##var RtL is ONLY for setting indents & tabs, fixBidi comes in getTodays..!
 proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
-  global BdfBidi tab ind 
-
-  #Fix Tabs & indents for RtL (must be fixed spaces - \u00A0=protected space)
-#  if $RtL {
-#    set indent [string repeat \u00A0 3]
-#    set tab [string repeat $indent 4]
-#  }
+  global Bidi tab ind 
   set indent $ind
   
   ##get any Intro
@@ -352,7 +344,7 @@ proc setTodaysTwdNodes {TwdFileName} {
 ##used in Setup
 ##called by SetupBuildGUI
 proc getTodaysTwdText {TwdFileName} {
-  global enabletitle ind BdfBidi
+  global enabletitle ind Bidi
   
   set TwdLang [getTwdLang $TwdFileName]
   set RtL [isRtL $TwdLang]
@@ -384,7 +376,7 @@ proc getTodaysTwdText {TwdFileName} {
 
   if $RtL {
     if ![namespace exists bidi] {
-      source $BdfBidi
+      source $Bidi
     }
     set TwdText [bidi::fixBidi $TwdText]
   }  
@@ -398,7 +390,7 @@ proc getTodaysTwdText {TwdFileName} {
 ##args=='html' for Evolution
 ##called by Signature & SigTools (Trojita+Evolution) & Setup!
 proc getTodaysTwdSig {TwdFileName {setup 0}} {
-  global ind tab noTwdFilesFound BdfBidi
+  global ind tab noTwdFilesFound Bidi
   
   # G e t  d o m D o c  & exit if empty
   set twdDomDoc [parseTwdFileDomDoc $TwdFileName]

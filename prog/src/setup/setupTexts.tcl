@@ -2,10 +2,10 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17apr21 pv
+# Updated: 14may21 pv
 
 proc setTexts {lang} {
-  global BdfBidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
+  global Bidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
   set ::lang $lang
   
   #### G E N E R A L ###############################
@@ -102,7 +102,7 @@ set ::packageRequireTls $packageRequireTls($lang)
   #Create RtL info on text positioning
   set RtlInfo ""
   ##Hebrew
-  if {! [catch "glob $dirlist(twdDir)/he_*"]} {
+  if ![catch "glob $dirlist(twdDir)/he_*"] {
     set RtlHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
     if {$platform=="unix"} {
       set RtlHe [string reverse $RtlHe]
@@ -110,10 +110,10 @@ set ::packageRequireTls $packageRequireTls($lang)
     append RtlInfo $RtlHe
   }
   ##Arabic
-  if {! [catch "glob $dirlist(twdDir)/ar_*"]} {
+  if ![catch "glob $dirlist(twdDir)/ar_*"] {
     set RtlAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
     if {$platform=="unix"} {
-      source $BdfBidi
+      source $Bidi
       set RtlAr [bidi::fixBidi $RtlAr]]
     }
     append RtlInfo $RtlAr
@@ -126,7 +126,6 @@ set ::packageRequireTls $packageRequireTls($lang)
   set textposAdjust(en) "Do you want to adjust the text position for this picture before saving?"
   set textposAdjust(de) "Wollen Sie vor dem Speichern die Textposition für dieses Bild ändern?"
   set ::textposAdjust $textposAdjust($lang)
-
 
   #set textposFN(en) "\n$RtlInfo"
   #set textposFN(de) "\n$RtlInfo"
@@ -274,7 +273,7 @@ set ::packageRequireTls $packageRequireTls($lang)
   set ::f6.txt $f6Txt($lang)  
 
   set f6numPhotosTxt(de) "Anzahl Bilder: "
-  set f6numPhotosTxt(en) "Number of Pictures: "
+  set f6numPhotosTxt(en) "Number of pictures: "
   set ::numPhotosTxt $f6numPhotosTxt($lang) 
 
   set f6Add(en) "Add to $bp Photo Collection:"
