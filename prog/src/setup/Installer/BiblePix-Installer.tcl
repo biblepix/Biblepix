@@ -3,9 +3,9 @@
 ##(Location after download unimportant, can be deleted after first use)
 # First time installer for BiblePix on a Linux or Windows PC
 # Overwrites any old program version!
-# Version: 3.1
+# Version: 4.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14may19
+# Updated: 30apr21 pv
 
 package require http
 
@@ -13,12 +13,13 @@ set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
 set downloadingHttp "Downloading BiblePix program files...\nLade BibelPix-Programmdateien herunter..."
 set noConnHttp "No Internet connection. Try later. Exiting...\nKeine Internetverbindung. Versuchen Sie es später. Abbruch..."
 set uptodateHttp "Program files downloaded successfulfy.\nErster Download gelungen!"
+set testfile [file join $bpxReleaseUrl biblepix.png]    
 
 #1. SET HOME DIRECTORY & CLEAN OUT
 
 ## Set Windows Home & delete any old installation
 #  move Config to $LOCALAPPDATA
-if { [info exists env(LOCALAPPDATA)] } {
+if [info exists env(LOCALAPPDATA)] {
   
   set oldWinHome "$env(USERPROFILE)"
   set newWinHome "$env(LOCALAPPDATA)"
@@ -44,7 +45,7 @@ if { [info exists env(LOCALAPPDATA)] } {
 # setProxy
 ##called by testHttpCon
 proc setProxy {} {
-  if { [catch {package require autoproxy} ] } {
+  if [catch {package require autoproxy} ] {
     set host localhost
     set port 80
   } else {
@@ -58,9 +59,7 @@ proc setProxy {} {
 # getTesttoken
 ##called by testHttpCon
 proc getTesttoken {} {
-  global bpxReleaseUrl
-
-  set testfile "$bpxReleaseUrl/README"    
+  global bpxReleaseUrl testfile
   set testtoken [http::geturl $testfile -validate 1]
   
   if {[http::error $testtoken] != ""} {
@@ -77,13 +76,13 @@ proc getTesttoken {} {
 # testHttpCon
 ##throws error if test fails
 proc testHttpCon {} {
-  if { [catch getTesttoken error] } {
+  if [catch getTesttoken error] {
     puts "ERROR: BiblePix-Installer.tcl -> testHttpCon: $error"  
     
     #try proxy & retry connexion
     setProxy
     
-    if { [catch getTesttoken error] } {
+    if [catch getTesttoken error] {
       puts "ERROR: BiblePix-Installer.tcl -> testHttpCon -> proxy: $error"
       error $error
     }
@@ -121,18 +120,14 @@ pack .if.initialL .if.initialMsg .if.pb
 
 set httpStatus $downloadingHttp
 
-if { [catch testHttpCon Error] } {
+if [catch testHttpCon Error] {
   #exit if error
   set httpStatus $noConnHttp
-  
   puts "ERROR: BiblePix-Installer.tcl: $Error"
-  
   after 5000 { exit }
-
 
 #4. FETCH Globals + Http
 } else {
-#return testing
  
   .if.pb start
   
@@ -147,7 +142,7 @@ if { [catch testHttpCon Error] } {
   #5. FETCH ALL prog files (securely, re-fetching above 2!)
   source $srcdir/http.tcl
 
-  if { [catch {runHTTP 1} result] } {
+  if [catch {runHTTP 1} result] {
   
     #exit if error
     set httpStatus $noConnHttp
