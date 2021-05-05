@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 4may21 pv
+# Updated 5may21 pv
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -439,11 +439,13 @@ proc getTodaysTwdTerm {TwdFileName} {
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   
   if {$twdTodayNode == ""} {
-    set twdTerm "echo -e \$\{error\}\"No Bible text found for today.\""
+  
+    set twdTerm {echo "No Bible text found for today."}
     
   } else {
+  
     set twdTitle [getTwdTitle $twdTodayNode]
-    set twdTerm "echo -e \$\{titbg\}\$\{tit\}\"* $twdTitle *\"\n
+    set twdTerm "echo -e \$\{titbg\}\$\{tit\}\"* $twdTitle *\" \n"
 
     set parolNode [getTwdParolNode 1 $twdTodayNode]
     set twdTerm [appendParolToTermText $parolNode $twdTerm $ind]

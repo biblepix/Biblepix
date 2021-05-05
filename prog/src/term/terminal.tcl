@@ -3,10 +3,9 @@
 # Creates 'term.sh' Bash script for The Word to be displayed in Linux terminals
 # Called once by Biblepix, then Executed as last command by term.sh whenever a terminal opens
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8jan19
+# Updated: 5may21 pv
 
-
-if {! [info exists dwTerm] } {
+if ![info exists dwTerm] {
   set termdir [file dirname [info script]]
   cd $termdir/..
   source [pwd]/share/globals.tcl
