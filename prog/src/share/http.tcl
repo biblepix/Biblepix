@@ -52,13 +52,11 @@ proc runHTTP isInitial {
 proc downloadFileArray {fileArrayName url} {
   upvar $fileArrayName fileArray
   foreach fileName [array names fileArray] {
-    puts $fileName
+    #puts $fileName
     set filePath [lindex [array get fileArray $fileName] 1]
     set chan [open $filePath w]
-
     fconfigure $chan -encoding binary -translation binary
     http::geturl $url/$fileName -channel $chan
-
     close $chan
   }
 }

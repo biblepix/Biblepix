@@ -34,7 +34,7 @@ proc getRandomPhotoPath	{} {
 
 proc setPngFileName {fileName} {
   set fileExt [file extension $fileName]
-  if {![regexp png|PNG $fileExt]} {
+  if ![regexp png|PNG $fileExt] {
     set fileName "[file rootname $fileName].png"
   }
   return $fileName
