@@ -4,9 +4,9 @@
 # Called by User via Windows/Unix Desktop entry
 # If called by BiblePix-Installer, this is the first file downloaded + executed
 ################################################################################
-# Version: 3.1
+# Version: 4.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27may19
+# Updated: 7may21 pv
 
 package require Tk
 
@@ -61,11 +61,9 @@ if [catch {source $Globals}] {
     }
 
     #Copy photos after first run of Installer or if Config missing
-
     if { [info exists InitialJustDone] || ![file exists $Config] } {
       source $SetupTexts
       source $SetupTools
-
       after idle {
         catch {NewsHandler::QueryNews $resizingPic yellow}
         copyAndResizeSamplePhotos
