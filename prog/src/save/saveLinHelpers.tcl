@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30dec20 pv
+# Updated: 10may21 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -13,32 +13,53 @@
 
 #Set & create general Linux Desktop dirs
 ##recognised by alle Desktops, including KDE5
-set LinConfDir $HOME/.config
-set LinLocalShareDir $HOME/.local/share
-set LinDesktopFilesDir $LinLocalShareDir/applications
-
-#Create dirs if missing (needed for [open] command)
+set LinConfDir [file join $HOME .config]
+set LinDesktopFilesDir [file join $HOME .local share applications]
 file mkdir $LinDesktopFilesDir
-
-#Set KDE dirs / Create ~/.kde if missing
-set KdeDir [glob -nocomplain $HOME/.kde*]
-if {$KdeDir == ""} {
-  file mkdir $KdeDir
+set Kde4ConfFile "plasma-desktop-appletsrc"
+set Kde5ConfFile "plasma-org.kde.plasma.desktop-appletsrc"
+  
+proc getKdeVersion {} {
+  global HOME Kde4ConfFile
+  set plasmaSnippet "desktop-appletsrc"
+    
+  cd $HOME
+  set KdeConfFilepath [glob -nocomplain *$plasmaSnippet]
+  ##work with names only - paths may change!
+  set KdeVersion 5
+  if {$KdeConfFilepath != ""} {
+    if { [file tail $KdeConfFilepath] == "$Kde4ConfFile" } {
+    set KdeVersion 4
+  }
+  
+  return "$KdeVersion $KdeConfFilepath"
 }
+
+##Set KDE dirs / Create ~/.kde if missing
+#TODO this may not be needed, se below!
+#set KdeDir [glob -nocomplain $HOME/.kde*]
+#if {$KdeDir == ""} {
+#  file mkdir $HOME/.kde
+#}
+#according to some KDE plasma files can be in either : .kde/.config OR .config
+#TODO need to distinguish Plasma 4 and Plasma 5 conf files!
+
+
+#TODO do we need this?= 
 set KdeConfDir [file join $KdeDir share config]
 file mkdir $KdeConfDir
 
-#Determine KDE config files
-set Kde4ConfFile $KdeConfDir/plasma-desktop-appletsrc
-set Kde5ConfFile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
-if [file exists $Kde4ConfFile] {
-  set KdeVersion 4
-} else {
-  set KdeVersion 5
-}
+#Determine KDE config files - TODO This was determined above!!!!!!!!!!!!!!!!!!!
+#set Kde4ConfFile $KdeConfDir/plasma-desktop-appletsrc
+#set Kde5ConfFile $LinConfDir/plasma-org.kde.plasma.desktop-appletsrc
+
+set KdeConf [getKdeVersion]
+set KdeVersion [lindex $KdeConf 0]
+set KdeConfFilepath [lindex $KdeConf 1]
 
 ##KDE4 deprecated service path - only respected if KdeVersion=4
 set Kde4ServiceDir ~/.kde/share/kde4/services
+
 
 #Wayland/Sway
 set SwayConfFile $LinConfDir/sway/config
