@@ -17,21 +17,45 @@ set LinConfDir [file join $HOME .config]
 set LinDesktopFilesDir [file join $HOME .local share applications]
 file mkdir $LinDesktopFilesDir
 set Kde4ConfFile "plasma-desktop-appletsrc"
-set Kde5ConfFile "plasma-org.kde.plasma.desktop-appletsrc"
-  
+set Kde5ConfFile "plasma-org.kde.plasma.desktop-appletsrc"#TODO do we need this?= 
+set KdeConfDir [file join $KdeDir share config]
+ #file mkdir $KdeConfDir
+
 proc getKdeVersion {} {
-  global HOME Kde4ConfFile
-  set plasmaSnippet "desktop-appletsrc"
-    
-  cd $HOME
-  set KdeConfFilepath [glob -nocomplain *$plasmaSnippet]
-  ##work with names only - paths may change!
+  global HOME KdeConfDir Kde4ConfFile Kde5ConfFile
   set KdeVersion 5
-  if {$KdeConfFilepath != ""} {
-    if { [file tail $KdeConfFilepath] == "$Kde4ConfFile" } {
+
+  #Return standard KDE5 path if fileutils missing
+  ##glob can't do subdirs!
+  if [catch {package require fileutils}] {
+    set KdeConfFilepath [file join $KdeConfDir $Kde5ConfFile]
+    return "$KdeVersion $KdeConfFilepath"
+  }
+  
+  #set plasmaSnippet "desktop-appletsrc"
+  
+  #A) Search KDE5 file
+  set KdeConfFilepath [fileutil::findByPattern ~ $Kde5ConfFile]
+  #B). Search KDE4 file
+  if {$KdeConfFilepath == ""} {
+    set KdeConfFilepath [fileutil::findByPattern $HOME $Kde4ConfFile]
     set KdeVersion 4
   }
   
+  if {$KdeConfFilepath == "" } {
+    set KdeVersion 0
+  }
+  
+#  cd $HOME
+#  set KdeConfFilepath [glob -nocomplain *$plasmaSnippet]
+  ##work with names only - paths may change!
+
+#  if {$KdeConfFilepath != ""} {
+#    if { [file tail $KdeConfFilepath] == "$Kde4ConfFile" } {
+#    set KdeVersion 4
+#  }
+  
+  #This may return "0 0" in worst case
   return "$KdeVersion $KdeConfFilepath"
 }
 
@@ -45,9 +69,7 @@ proc getKdeVersion {} {
 #TODO need to distinguish Plasma 4 and Plasma 5 conf files!
 
 
-#TODO do we need this?= 
-set KdeConfDir [file join $KdeDir share config]
-file mkdir $KdeConfDir
+
 
 #Determine KDE config files - TODO This was determined above!!!!!!!!!!!!!!!!!!!
 #set Kde4ConfFile $KdeConfDir/plasma-desktop-appletsrc
