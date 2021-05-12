@@ -36,6 +36,9 @@ proc getKdeVersion {} {
   ##glob can't do subdirs!
   if [catch {package require fileutils}] {
     set KdeConfFilepath [file join $LinConfDir $Kde5ConfFile]
+    if ![file exists $KdeConfFilepath] {
+      set KdeConfFilepath 0
+    }
     return "$KdeVersion $KdeConfFilepath"
   }
 
