@@ -4,7 +4,7 @@
 # ERSETZT BdfBidi !!!
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 2may21
+# Updated: 12may21
 
 namespace eval bidi {
   
@@ -167,9 +167,6 @@ regsub -all {[\u0022\u0027\u00AB\u00BB\u2018\u2019]} $s {} s
         #TODO reverting is only needed if Bdf! - why?
         
         if [string is ascii $word] {
-        #if ![regexp $ltr_range $word] {}
-        #if [string is ascii [string index $word 1]] {}
-        #if [regexp {[::digit::]} $word] {}
           lappend newline [string reverse $word]
           continue  
 
