@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12may21 pv
+# Updated: 14may21 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -26,11 +26,11 @@ file mkdir $LinDesktopFilesDir
 set Kde4ConfDir [file join $HOME .kde]
 set Kde4ServiceDir [file join $Kde4ConfDir share kde4 services]
 
-proc getKdeVersion {} {
+proc locateKdeConffile {} {
   global HOME Kde5ConfFile Kde4ConfDir
 
   set plasmaSnippet "desktop-appletsrc"
-  set KdeVersion 5
+  #set KdeVersion 5
 
   #Return standard KDE5 path if fileutils missing
   ##glob can't do subdirs!
@@ -39,7 +39,7 @@ proc getKdeVersion {} {
     if ![file exists $KdeConfFilepath] {
       set KdeConfFilepath 0
     }
-    return "$KdeVersion $KdeConfFilepath"
+    return $KdeConfFilepath
   }
 
   #Search snippet in Kde5 and Kde4 conf dirs
@@ -47,25 +47,30 @@ proc getKdeVersion {} {
   if [file isdir $Kde4ConfDir] {
     set Kde4ConfFilepath [fileutil::findByPattern $Kde4ConfDir *$plasmaSnippet]
   }
+  
   ##set definite file path
   if {$Kde5ConfFilepath != ""} {
     set KdeConfFilepath $Kde5ConfFilepath
   } elseif { [info exists Kde4ConfFilepath] && $Kde4ConfFilepath != ""} {
     set KdeConfFilepath $Kde4ConfFilepath
-    set KdeVersion 4
+   # set KdeVersion 4
+  } else {
+    set KdeConfFilepath 0
   }
+  
   ##reduce to 1 file if list has many
   if { [llength $KdeConfFilepath] >1} {
     set KdeConfFilepath [lindex $KdeConfFilepath 0]
   }
-  #This may return "0 0" in worst case
-  return "$KdeVersion $KdeConfFilepath"
+  return $KdeConfFilepath
 }
 
-#Determine KDE config files
-set KdeConf [getKdeVersion]
-set KdeVersion [lindex $KdeConf 0]
-set KdeConfFilepath [lindex $KdeConf 1]
+#Determine KDE config files as global vars
+set KdeConfFilepath [locateKdeConffile]
+set KdeVersion 5
+if {$KdeConfFilepath == $Kde4ConfFilepath} {
+  set KdeVersion 4
+}
 
 #Wayland/Sway
 set SwayConfFile $LinConfDir/sway/config
@@ -439,14 +444,19 @@ Exec=$Setup
 ################################################
 # B A C K G R O U N D   P I C   S E T T E R S
 ################################################
-
-# setupKdeBackground
-## Configures KDE4 or KDE5 Plasma for single pic or slideshow
 # TODO: > Anleitung in Manpage für andere KDE-Versionen/andere Desktops (Rechtsklick > Desktop-Einstellungen >Einzelbild/Diaschau)
 
+# setupKdeBackground
+##configures KDE4 or KDE5 Plasma for single pic or slideshow
+##called by SaveLin
 proc setupKdeBackground {} {
-  global KdeVersion Kde4ConfFile Kde5ConfFile TwdPNG slideshow dirlist
+  global KdeVersion KdeConfFilepath slideshow dirlist TwdPNG
 
+  #Exit if no KDE installation found
+  if !$KdeVersion {
+    return 1
+  }
+  
   #check kread/kwrite executables
   if {[auto_execok kreadconfig5] != "" && 
       [auto_execok kwriteconfig5] != ""} {
@@ -468,13 +478,13 @@ puts $kread
   #set KDE4 if detected
   set errCode4 ""
   if {$KdeVersion==4} {
-    catch {setupKde4Bg $Kde4ConfFile $kread $kwrite} errCode4
+    catch {setupKde4Bg $KdeConfFilepath $kread $kwrite} errCode4
 puts $errCode4
 
   }
 
   #set KDE5 always
-  catch {setupKde5Bg $Kde5ConfFile $kread $kwrite} errCode5
+  catch {setupKde5Bg $KdeConfFilepath $kread $kwrite} errCode5
 puts $errCode5
 
   if {$errCode4=="" && $errCode5==""} {
