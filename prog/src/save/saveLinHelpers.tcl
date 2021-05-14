@@ -17,7 +17,7 @@ set LinConfDir [file join $HOME .config]
 set LinDesktopFilesDir [file join $HOME .local share applications]
 file mkdir $LinDesktopFilesDir
 ##Only for info:
-#set Kde4ConfFile "plasma-desktop-appletsrc"
+set Kde4ConfFile "plasma-desktop-appletsrc"
 #set Kde5ConfFile "plasma-org.kde.plasma.desktop-appletsrc"
 #KDE5: all plasma files reside in .config now!
 ##https://github.com/shalva97/kde-configuration-files
@@ -25,6 +25,7 @@ file mkdir $LinDesktopFilesDir
 #KDE4 deprecated service path - only respected if KdeVersion=4
 set Kde4ConfDir [file join $HOME .kde]
 set Kde4ServiceDir [file join $Kde4ConfDir share kde4 services]
+set Kde4ConfFilepath [file join $Kde4ConfDir $Kde4ConfFile]
 
 proc locateKdeConffile {} {
   global HOME Kde5ConfFile Kde4ConfDir
@@ -53,21 +54,23 @@ proc locateKdeConffile {} {
     set KdeConfFilepath $Kde5ConfFilepath
   } elseif { [info exists Kde4ConfFilepath] && $Kde4ConfFilepath != ""} {
     set KdeConfFilepath $Kde4ConfFilepath
-   # set KdeVersion 4
   } else {
     set KdeConfFilepath 0
   }
-  
   ##reduce to 1 file if list has many
   if { [llength $KdeConfFilepath] >1} {
     set KdeConfFilepath [lindex $KdeConfFilepath 0]
   }
+  
+  #return path or 0
   return $KdeConfFilepath
 }
 
 #Determine KDE config files as global vars
 set KdeConfFilepath [locateKdeConffile]
 set KdeVersion 5
+if {$KdeConfFilepath != 0} {
+  set KdeVersion 5
 if {$KdeConfFilepath == $Kde4ConfFilepath} {
   set KdeVersion 4
 }
@@ -450,10 +453,11 @@ Exec=$Setup
 ##configures KDE4 or KDE5 Plasma for single pic or slideshow
 ##called by SaveLin
 proc setupKdeBackground {} {
-  global KdeVersion KdeConfFilepath slideshow dirlist TwdPNG
+  global KdeVersion KdeConfFilepath Kde4ConfFilepath slideshow dirlist TwdPNG
 
   #Exit if no KDE installation found
-  if !$KdeVersion {
+  if {$KdeVersion == 0} {
+    puts "No KDE installation found"
     return 1
   }
   
@@ -472,18 +476,18 @@ puts $kwrite
 puts $kread
   } else {
 
+    puts "Could not configure KDE Desktop background."
     return 1
   }
 
   #set KDE4 if detected
   set errCode4 ""
-  if {$KdeVersion==4} {
-    catch {setupKde4Bg $KdeConfFilepath $kread $kwrite} errCode4
+  if {$KdeVersion == 4} {
+    catch {setupKde4Bg $Kde4ConfFilepath $kread $kwrite} errCode4
 puts $errCode4
-
   }
 
-  #set KDE5 always
+  #set KDE5 always, using detected conf file path:
   catch {setupKde5Bg $KdeConfFilepath $kread $kwrite} errCode5
 puts $errCode5
 
