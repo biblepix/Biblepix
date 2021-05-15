@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5may21 pv
+# Updated: 15may21 pv
 
 proc setTexts {lang} {
   global Bidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -36,6 +36,17 @@ proc setTexts {lang} {
   set random(de) zufällig
   set ::random $random($lang)
 
+  # U N I N S T A L L
+  set uninstall(en) "Do you really want to remove BiblePix from your computer?"
+  set uninstall(de) "Wollen Sie wirklich BibelPix von Ihrem Computer entfernen?"
+  set ::uninstall $uninstall($lang)
+  set uninstalling(en) "BiblePix will now be uninstalled. To clear system settings made, you must confirm any upcoming dialogue boxes with \"Yes\"."
+  set uninstalling(de) "BiblePix wird nun deinstalliert. Zum Löschen der Systemeinstellungen müssen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\" beantworten!"
+  set ::uninstalling $uninstalling($lang)
+  set uninstalled(en) "$bp has been removed safely from your system. To reinstall, visit our website, www.bible2.net, and download the BiblePix Setup program." 
+  set uninstalled(de) "$bp ist sicher von Ihrem System entfernt worden. Um es neu zu installieren, besuchen Sie uns auf www.bible2.net und laden Sie das BibelPix Setup herunter."
+  set ::uninstalled $uninstalled($lang)
+    
   # # # #  M I S S I N G   P A C K A G E  # # # # # # # # # # # #                               
 
 set packageRequireImg(all) "\n* apt-get install libtk-img (Debian/Ubuntu)\n* emerge tkimg (Gentoo)\n* zypper install tkimg (openSUSE)\n* yum install tkimg (Fedora)\n* urpmi tkimg (Mandriva)"

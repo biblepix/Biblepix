@@ -2,26 +2,22 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 4may21 pv
-
-#set version "3.2"
+# Updated: 15may21 pv
 set version "4.0"
-
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
-
 set platform $tcl_platform(platform)
 set os $tcl_platform(os)
 set tclpath [auto_execok tclsh]
 set wishpath [auto_execok wish]
 
-if { [info exists srcdir] } {
+if  [info exists srcdir] {
   #set
   set rootdir "[file dirname [file dirname [file normalize $srcdir ]]]"
 } else {
   #reset
-  if { [info exists env(LOCALAPPDATA)] } {
+  if [info exists env(LOCALAPPDATA)] {
     set rootdir "[file join $env(LOCALAPPDATA) Biblepix]"
   } else {
     set rootdir "[file join $env(HOME) Biblepix]"
@@ -60,7 +56,7 @@ foreach i [array names dirlist] {
   set $name $path
 }
 
-# makeDirs - TODO: why needed?
+# makeDirs
 ##called by Installer & UpdateInjection
 proc makeDirs {} {
   global dirlist

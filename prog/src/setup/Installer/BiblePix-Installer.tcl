@@ -5,15 +5,16 @@
 # Overwrites any old program version!
 # Version: 4.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30apr21 pv
+# Updated: 15may21 pv
 
 package require http
 
-set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
+set bpxReleaseUrl {http://vollmar.ch/biblepix/release}
+set testfile {http.tcl}
+
 set downloadingHttp "Downloading BiblePix program files...\nLade BibelPix-Programmdateien herunter..."
 set noConnHttp "No Internet connection. Try later. Exiting...\nKeine Internetverbindung. Versuchen Sie es später. Abbruch..."
 set uptodateHttp "Program files downloaded successfulfy.\nErster Download gelungen!"
-set testfile [file join $bpxReleaseUrl biblepix.png]    
 
 #1. SET HOME DIRECTORY & CLEAN OUT
 
@@ -60,16 +61,20 @@ proc setProxy {} {
 ##called by testHttpCon
 proc getTesttoken {} {
   global bpxReleaseUrl testfile
-  set testtoken [http::geturl $testfile -validate 1]
   
+  append testpath $bpxReleaseUrl / $testfile
+  set testtoken [http::geturl $testpath -validate 1]
+  
+  #A) test if http error
   if {[http::error $testtoken] != ""} {
     error "testtoken -> error:" + [http::error $testtoken]
   }
-  
+  #B) test ncode - should be 299 if correct
   if {[http::ncode $testtoken] != 200} {           
     error "testtoken -> ncode:" + [http::ncode $testtoken]
   }
-  
+
+#return [http::data $testtoken]  
   return $testtoken
 }
 
@@ -130,10 +135,14 @@ if [catch testHttpCon Error] {
 } else {
  
   .if.pb start
+
+#TODO testing
+#set srcdir /tmp/Biblepix/prog/src
   
   #Create directory structure & source Globals
   file mkdir $srcdir
   cd $srcdir
+
   fetchInitialFiles
 
   source $srcdir/globals.tcl

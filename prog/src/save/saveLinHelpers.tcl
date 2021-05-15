@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14may21 pv
+# Updated: 15may21 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -16,22 +16,22 @@
 set LinConfDir [file join $HOME .config]
 set LinDesktopFilesDir [file join $HOME .local share applications]
 file mkdir $LinDesktopFilesDir
+
 ##Only for info:
-set Kde4ConfFile "plasma-desktop-appletsrc"
-#set Kde5ConfFile "plasma-org.kde.plasma.desktop-appletsrc"
+set Kde5ConfFile "plasma-org.kde.plasma.desktop-appletsrc"
 #KDE5: all plasma files reside in .config now!
 ##https://github.com/shalva97/kde-configuration-files
-##but this is for old stuff (maybe KDE4?)
+##but this is for old stuff:
 #KDE4 deprecated service path - only respected if KdeVersion=4
 set Kde4ConfDir [file join $HOME .kde]
+set Kde4ConfFile "plasma-desktop-appletsrc"
 set Kde4ServiceDir [file join $Kde4ConfDir share kde4 services]
 set Kde4ConfFilepath [file join $Kde4ConfDir $Kde4ConfFile]
 
 proc locateKdeConffile {} {
-  global HOME Kde5ConfFile Kde4ConfDir
+  global HOME Kde5ConfFile Kde4ConfDir LinConfDir
 
   set plasmaSnippet "desktop-appletsrc"
-  #set KdeVersion 5
 
   #Return standard KDE5 path if fileutils missing
   ##glob can't do subdirs!
@@ -71,6 +71,7 @@ set KdeConfFilepath [locateKdeConffile]
 set KdeVersion 5
 if {$KdeConfFilepath != 0} {
   set KdeVersion 5
+}
 if {$KdeConfFilepath == $Kde4ConfFilepath} {
   set KdeVersion 4
 }
@@ -86,14 +87,14 @@ set Xfce4ConfFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
 set LinDesktopFile $LinDesktopFilesDir/biblepixSetup.desktop
 
 ## B) KDE4
-set Kde4DesktopFile $KdeConfDir/share/kde4/services/biblepixSetup.desktop
+set Kde4DesktopFile $Kde4ConfDir/share/kde4/services/biblepixSetup.desktop
 
 ## C) MENU ENTRY RIGHTCLICK FILE (works only for some Plasma 5 versions of Konqueror/Dolphin?)
 set Kde5DesktopActionFile $LinDesktopFilesDir/biblepixSetupAction.desktop
 
 # 3 Autostart files
 ##this is obsolete:
-set Kde4AutostartDir $KdeDir/Autostart
+set Kde4AutostartDir $Kde4ConfDir/Autostart
 set Kde4AutostartFile $Kde4AutostartDir/biblepix.desktop
 set LinAutostartDir $LinConfDir/autostart
 file mkdir $LinAutostartDir
@@ -623,16 +624,15 @@ proc setupXfce4Background {} {
   set root [dom parse $txt]
   set doc [$root documentElement]
 
-  #List required property nodes
+  # List required property nodes
+  ##################################################################################################
+  #WICHTIG: these may not be present, but ARE UNNECESSARY - Xfce4 reloads picture when changed by BP
+  #  set cycleL [$doc selectNodes //property\[@name='backdrop-cycle-enable'\]]
+  #  set timerL [$doc selectNodes //property\[@name='backdrop-cycle-timer'\]]
+  #  set randomL [$doc selectNodes //property\[@name='backdrop-cycle-random-order'\]]
+  ##################################################################################################
   set lastimgL [$doc selectNodes //property\[@name='last-image'\]]
   set styleL [$doc selectNodes //property\[@name='image-style'\]]
-
-##################################################################################################
-#WICHTIG: these may not be present, but ARE UNNECESSARY - Xfce4 reloads picture when changed by BP
-#  set cycleL [$doc selectNodes //property\[@name='backdrop-cycle-enable'\]]
-#  set timerL [$doc selectNodes //property\[@name='backdrop-cycle-timer'\]]
-#  set randomL [$doc selectNodes //property\[@name='backdrop-cycle-random-order'\]]
-##################################################################################################
 
   #Set required parameters
   foreach node $lastimgL {
