@@ -446,8 +446,8 @@ Example:"
   set rotateWait(en) "Please wait patiently while rotating original picture..."
   set ::rotateWait $rotateWait($lang)
   
-  set rotateInfo(de) "Achtung: durch wiederholtes Drücken der Speichertaste lässt sich ein Bild in mehreren Schritten drehen!"
-  set rotateInfo(en) "Note: by repeated pressing of the 'Save' button, a picture can be rotated in several steps!"
+  set rotateInfo(de) "Achtung: durch Abspeichern und Neuladen kann ein Bild in mehreren Schritten gedreht werden!"
+  set rotateInfo(en) "Note: by saving and reloading, a picture can be rotated in several steps!"
   set ::rotateInfo $rotateInfo($lang)
   
 } ;#END setTexts
