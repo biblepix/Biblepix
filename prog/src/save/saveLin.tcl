@@ -80,31 +80,39 @@ if {!$enablepic} {
 
 tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $linChangingDesktop
 
+#Error codes: 0 = success | 1 = not found | 2 = error
 set GnomeErr [setupGnomeBackground]
 set KdeErr   [setupKdeBackground]
 set XfceErr  [setupXfce4Background]
 
-#Create OK message for each successful desktop configuration
-if {$GnomeErr==0} {
-  lappend desktopList GNOME /
-}
-if {$KdeErr==0} {
-  lappend desktopList {KDE Plasma} /
-}
-if {$XfceErr==0} {
-  lappend desktopList XFCE4
-}
-#puts "desktopList: $desktopList"
+#Fire up message box for each Desktop configured
+if { $GnomeErr == 1 && $KdeErr == 1 && $XfceErr == 1} {
 
-#Create Ok message if desktopList not empty
-if [info exists desktopList] {
-  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "$desktopList: $changeDesktopOk" 
+#TODO add to Texts!
+  set msg "No desktop found to configure! Find a solution in the manual."
+  tk_messageBox -type ok -icon warning -title "BiblePix Installation" -message $msg 
 
-#Create Error message if no desktop configured
 } else {
-  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linChangeDesktopProb
+  #GNOME (0 or 2)
+  if !$GnomeErr {
+    set msg "GNOME: $changeDesktopOk"
+  } elseif {$GnomeErr == 2} {
+    set msg "GNOME: $linChangeDesktopProb"
+  }
+  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg
+  #KDE (0 or 2)
+    if !$KdeErr {
+    set msg "KDE: $changeDesktopOk"
+  } elseif {$KdeErr == 2} {
+    set msg "KDE: $linChangeDesktopProb"
+  }
+  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg
+  #XFCE4 (only 0)
+  if !$XfceErr {
+    set msg "XFCE4: $changeDesktopOk"
+  }
+  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg
 }
-
 
 ########################################################
 # 5 Try reloading KDE & XFCE Desktops - no error handling

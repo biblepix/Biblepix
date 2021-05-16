@@ -453,12 +453,13 @@ Exec=$Setup
 # setupKdeBackground
 ##configures KDE4 or KDE5 Plasma for single pic or slideshow
 ##called by SaveLin
+##return codes: 0 = success / 1 = KDE not found / 2 = error  
 proc setupKdeBackground {} {
   global KdeVersion KdeConfFilepath Kde4ConfFilepath slideshow dirlist TwdPNG
 
   #Exit if no KDE installation found
   if {$KdeVersion == 0} {
-    puts "No KDE installation found"
+    NewsHandler::QueryNews "No KDE installation found" orange
     return 1
   }
   
@@ -477,8 +478,8 @@ puts $kwrite
 puts $kread
   } else {
 
-    puts "Could not configure KDE Desktop background."
-    return 1
+    NewsHandler::QueryNews "Could not configure KDE Desktop background." red
+    return 2
   }
 
   #set KDE4 if detected
@@ -495,7 +496,8 @@ puts $errCode5
   if {$errCode4=="" && $errCode5==""} {
     return 0
   } else {
-    return "KDE4: $errCode4 / \nKDE5: $errCode5"
+    NewsHandler:QueryNews "KDE4: $errCode4 / \nKDE5: $errCode5" red
+    return 2
   }
   
 } ;#END setKdeBackground
@@ -606,11 +608,12 @@ proc setupKde5Bg {Kde5ConfFile kread kwrite} {
 # setupXfceBackground
 ##Change settings with tDom parser
 ##called by SaveLin
+##return codes: 0 = success / 1 = XFCE4 not found
 proc setupXfce4Background {} {
   global Xfce4ConfFile TwdPNG
   package require tdom
   
-  puts "Changing Xfce4 background picture..."
+  puts "Setting up Xfce4 background..."
   
   #Exit if XML not found
   if ![file exists $Xfce4ConfFile] {
@@ -648,11 +651,13 @@ proc setupXfce4Background {} {
   puts $chan [$root asXML]
   close $chan
   
+  return 0
 } ;#END setupXfce4Background
 
 # setupGnomeBackground - TODO: das funktioniert nicht mit return!
 ##configures Gnome single pic
 ##setting up slideshow not needed because Gnome detects picture change automatically
+##return codes: 0 = success / 1 = Gnome not found / 2 = error  
 proc setupGnomeBackground {} {
   #Gnome2
   if {[auto_execok gconftool-2] != ""} {
@@ -668,7 +673,8 @@ proc setupGnomeBackground {} {
   if {$errCode==""} {
     return 0
   } else {
-  return $errCode
+    NewsHandler::QueryNews $errCode red
+    return 2
   }
 } ;#END setGnomeBackground
 
