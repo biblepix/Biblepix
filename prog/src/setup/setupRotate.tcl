@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6feb21
+# Updated: 16may21
 
 source $RotateTools
 namespace eval rotatepic {}
@@ -16,7 +16,6 @@ if {![info exists addpicture::curPic]} {
 set rotatepic::W [toplevel .rotateW -width 600 -height 400]
 catch {tk::PlaceWindow .rotateW center}
 tk::PlaceWindow .rotateW center
-
 set F1 [frame ${rotatepic::W}.topF]
 set col1 [gradient beige -0.2]
 set col2 [gradient beige -0.1]
@@ -117,6 +116,8 @@ set confirmBtnAction {
   set ::Modal.Result "Success"
 }
 
+#Create Info label & buttons
+set infoL [label .rotateW.infoL -textvar rotateInfo -font TkCaptionFont -bg beige -fg green -padx 5 -pady 10]
 set saveBtn $rotatepic::W.saveBtn
 set cancelBtn $rotatepic::W.cancelBtn
 button $saveBtn -textvar save -activebackground lightgreen -command $confirmBtnAction
@@ -125,6 +126,8 @@ button $cancelBtn -textvar cancel -activebackground red -command $cancelBtnActio
 catch { canvas $canv }
 $canv create image 6 6 -image $rotatepic::rotateCanvPic -anchor nw -tags img
 $canv conf -width [image width $rotatepic::rotateCanvPic] -height [image height $rotatepic::rotateCanvPic]
+
+pack $infoL -in $F1 -fill x
 pack $canv -in $F1
 
 #Create scale
@@ -134,7 +137,6 @@ set from [$scale cget -from]
 set to [$scale cget -to]
 
 #Create meter
-#set meter [makeMeter]
 pack [makeMeter] -pady 10
 pack $scale
 trace add variable v write updateMeter
@@ -145,6 +147,7 @@ pack $90Btn -pady 5 -side left -expand 1
 pack $180Btn -side left -expand 1
 pack $anyBtn -pady 10
 pack $cancelBtn $saveBtn -side right
+
 bind $rotatepic::W <Escape> $cancelBtnAction
 bind $rotatepic::W <Return> $confirmBtnAction
 Show.Modal $rotatepic::W -destroy 0 -onclose $cancelBtnAction

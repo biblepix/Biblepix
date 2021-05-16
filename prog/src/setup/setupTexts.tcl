@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15may21 pv
+# Updated: 16may21 pv
 
 proc setTexts {lang} {
   global Bidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -445,6 +445,10 @@ Example:"
   set rotateWait(de) "Bitte haben Sie eine Weile Geduld, bis die Drehung am Originalbild abgeschlossen ist..."
   set rotateWait(en) "Please wait patiently while rotating original picture..."
   set ::rotateWait $rotateWait($lang)
+  
+  set rotateInfo(de) "Achtung: durch wiederholtes Drücken der Speichertaste lässt sich ein Bild in mehreren Schritten drehen!"
+  set rotateInfo(en) "Note: by repeated pressing of the 'Save' button, a picture can be rotated in several steps!"
+  set ::rotateInfo $rotateInfo($lang)
   
 } ;#END setTexts
 
