@@ -1,10 +1,9 @@
 # ~/Biblepix/prog/src/share/Bidi.tcl
 # Fixes missing bidi algorithm for Unix and Win Tk Hebrew/Arabic
 # called by BdfPrint + several Setup widgets
-# ERSETZT BdfBidi !!!
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 12may21
+# Updated: 17may21
 
 namespace eval bidi {
   
@@ -271,11 +270,9 @@ regsub -all {[\u0022\u0027\u00AB\u00BB\u2018\u2019]} $s {} s
     if {$form == "f"} {
       if !$prevLinking {
         ##absolute
-        puts absolute
         set utfchar [format %c $htmcode]
       } else {
         ##final
-        puts final
         set utfchar $letterArr(f)
       }
       

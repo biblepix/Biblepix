@@ -28,6 +28,9 @@ set Kde4ConfFile "plasma-desktop-appletsrc"
 set Kde4ServiceDir [file join $Kde4ConfDir share kde4 services]
 set Kde4ConfFilepath [file join $Kde4ConfDir $Kde4ConfFile]
 
+# locateKdeConffile
+##checks presence of KDE4/KDE5 configuration file(s)
+##called further down 
 proc locateKdeConffile {} {
   global HOME Kde5ConfFile Kde4ConfDir LinConfDir
 
@@ -38,9 +41,8 @@ proc locateKdeConffile {} {
   if [catch {package require fileutils}] {
     set KdeConfFilepath [file join $LinConfDir $Kde5ConfFile]
     if ![file exists $KdeConfFilepath] {
-      set KdeConfFilepath 0
+      return 0
     }
-    return $KdeConfFilepath
   }
 
   #Search snippet in Kde5 and Kde4 conf dirs
@@ -54,9 +56,8 @@ proc locateKdeConffile {} {
     set KdeConfFilepath $Kde5ConfFilepath
   } elseif { [info exists Kde4ConfFilepath] && $Kde4ConfFilepath != ""} {
     set KdeConfFilepath $Kde4ConfFilepath
-  } else {
-    set KdeConfFilepath 0
   }
+  
   ##reduce to 1 file if list has many
   if { [llength $KdeConfFilepath] >1} {
     set KdeConfFilepath [lindex $KdeConfFilepath 0]
@@ -458,7 +459,7 @@ proc setupKdeBackground {} {
   global KdeVersion KdeConfFilepath Kde4ConfFilepath slideshow dirlist TwdPNG
 
   #Exit if no KDE installation found
-  if {$KdeVersion == 0} {
+  if {$KdeConfFilepath == 0} {
     NewsHandler::QueryNews "No KDE installation found" orange
     return 1
   }
@@ -474,8 +475,6 @@ proc setupKdeBackground {} {
     set kread kreadconfig
     set kwrite kwriteconfig
 
-puts $kwrite
-puts $kread
   } else {
 
     NewsHandler::QueryNews "Could not configure KDE Desktop background." red
