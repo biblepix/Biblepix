@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9mch21 pv
+# Updated: 17may21 pv
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
@@ -57,7 +57,7 @@ if { [winfo y .] > 20 } {
 }
 
 #Fill .fbottom
-button .mainSaveB -activebackground lightgreen -textvar ::saveSettings -width 20 -command {source $SetupSave}
+button .mainSaveB -activebackground lightgreen -textvar ::saveSettings -width 20 -command {source $Save}
 button .mainCloseB -activebackground red -textvar ::cancel -width 20 -command exit
 pack .mainCloseB .mainSaveB -in .fbottom -side right
 

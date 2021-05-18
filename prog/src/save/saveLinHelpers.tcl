@@ -485,12 +485,12 @@ proc setupKdeBackground {} {
   set errCode4 ""
   if {$KdeVersion == 4} {
     catch {setupKde4Bg $Kde4ConfFilepath $kread $kwrite} errCode4
-puts $errCode4
+    puts $errCode4
   }
 
   #set KDE5 always, using detected conf file path:
   catch {setupKde5Bg $KdeConfFilepath $kread $kwrite} errCode5
-puts $errCode5
+  puts $errCode5
 
   if {$errCode4=="" && $errCode5==""} {
     return 0
@@ -653,9 +653,10 @@ proc setupXfce4Background {} {
   return 0
 } ;#END setupXfce4Background
 
-# setupGnomeBackground - TODO: das funktioniert nicht mit return!
+# setupGnomeBackground
 ##configures Gnome single pic
 ##setting up slideshow not needed because Gnome detects picture change automatically
+##called by SaveLin
 ##return codes: 0 = success / 1 = Gnome not found / 2 = error  
 proc setupGnomeBackground {} {
   #Gnome2

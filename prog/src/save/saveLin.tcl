@@ -1,9 +1,8 @@
 # ~/Biblepix/prog/src/save/saveLin.tcl
-# Sourced by SetupSave
+# Sourced by Save.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28dec20
-
-source $SetupSaveLinHelpers
+# Updated: 17may21 pv
+source $SaveLinHelpers
 source $SetupTools
 source $SetBackgroundChanger
 
@@ -12,7 +11,6 @@ set hasError 0
 
 #Check / Amend Linux executables - TODO: Test again
 catch {formatLinuxExecutables} Error
-puts "LinExec: $Error"
 
 ##################################################
 # 1 Set up Linux A u t o s t a r t for all Desktops
@@ -21,7 +19,6 @@ if [catch {setupLinAutostart} Err] {
   puts $Err
   tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $linSetAutostartProb
 }
-
 
 ####################################################
 # 2 Set up Menu entries for all Desktops
@@ -73,7 +70,6 @@ if {!$enablepic} {
   return 0
 }
 
-
 #####################################################
 ## 4 Set up Desktop Background Image - with error handling
 #####################################################
@@ -86,33 +82,40 @@ set KdeErr   [setupKdeBackground]
 set XfceErr  [setupXfce4Background]
 
 #Fire up message box for each Desktop configured
+##A) None detected
 if { $GnomeErr == 1 && $KdeErr == 1 && $XfceErr == 1} {
+  tk_messageBox -type ok -icon warning -title "BiblePix Installation" -message $linNoDesktopFound 
 
-#TODO add to Texts!
-  set msg "No desktop found to configure! Find a solution in the manual."
-  tk_messageBox -type ok -icon warning -title "BiblePix Installation" -message $msg 
-
+##B) each individually if installation detected
 } else {
+
   #GNOME (0 or 2)
   if !$GnomeErr {
     set msg "GNOME: $changeDesktopOk"
   } elseif {$GnomeErr == 2} {
     set msg "GNOME: $linChangeDesktopProb"
   }
-  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg
+  if {$GnomeErr != 1} {
+    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg
+  }
+
   #KDE (0 or 2)
-    if !$KdeErr {
+  if !$KdeErr {
     set msg "KDE: $changeDesktopOk"
   } elseif {$KdeErr == 2} {
     set msg "KDE: $linChangeDesktopProb"
   }
-  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg
+  if {$KdeErr != 1} {
+    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg
+  }
+  
   #XFCE4 (only 0)
   if !$XfceErr {
     set msg "XFCE4: $changeDesktopOk"
-  }
-  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg
+    tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg
+  } 
 }
+
 
 ########################################################
 # 5 Try reloading KDE & XFCE Desktops - no error handling

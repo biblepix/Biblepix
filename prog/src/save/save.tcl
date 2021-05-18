@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 15feb21 pv 
+# Updated : 17may21 pv 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $dirlist(twdDir)/*$jahr.twd}] } {
@@ -95,7 +95,7 @@ if {$os == "Linux"} {
     puts $chan "set enableterm $termstatus"
   }
   #Define Desktop Images dir
-  source $SetupSaveLinHelpers
+  source $SaveLinHelpers
   puts $chan "set DesktopPicturesDir [setLinDesktopPicturesDir]" 
 }
 
@@ -117,9 +117,9 @@ pack forget .n .fbottom .ftop
 source $Config
 
 if {$os == "Windows NT"} {
-  source $SetupSaveWin
+  source $SaveWin
 } elseif {$os == "Linux"} {
-  source $SetupSaveLin
+  source $SaveLin
 }
 
 source $Biblepix

@@ -1,7 +1,7 @@
 # ~/Biblepix/progs/src/pic/image.tcl
 # Initiates BdfPrint, called by biblepix.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 27feb21 pv
+# Updated 18may21 pv
 
 source $ImgTools
 source $AnnotatePng
@@ -63,14 +63,10 @@ namespace eval bdf {
         set marginleft $marginleft
         set margintop $margintop
         set pngmargins 0  
-      }
-    
+      } 
   }
-  
-puts "bdfLum  $bdf::luminacy"
-puts "bdfLeft $bdf::marginleft"
-puts "bdfTop  $bdf::margintop"
 }
+
 #Printing   B D F 
 #puts "Creating BDF picture..."
 source $BdfPrint

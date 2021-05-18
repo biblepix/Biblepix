@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/com/uninstall.tcl
+# ~/Biblepix/prog/src/save/uninstall.tcl
 # sourced by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15may21 pv
+# Updated: 17may21 pv
 
 set antwort [tk_messageBox -icon warning -type yesno -message $uninstall]
 
@@ -37,13 +37,13 @@ if {$antwort=="yes"} {
         
       #Remove any entry in Sway config
       if [file exists $swayConfFile] {
-        source $SetupSaveLinHelpers
+        source $SaveLinHelpers
         catch {setupSwayBackground delete}
       }
 
     } elseif {$platform=="windows"} {
        
-      source $SetupSaveWinHelpers
+      source $SaveWinHelpers
       
       #Message for sysadmin
       tk_messageBox -type ok -message $uninstalling

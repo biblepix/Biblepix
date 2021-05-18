@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16may21 pv
+# Updated: 18may21 pv
 
 proc setTexts {lang} {
   global Bidi platform jahr TwdTIF TwdBMP TwdPNG dirlist
@@ -396,6 +396,10 @@ Example:"
   set linSetAutostartProb(de) "Wir hatten ein Problem mit der Einrichtung des Autostarts.\nDamit $bp beim PC-Start ausgeführt wird, ist ein Eintrag im Autostart-Menü Ihres PCs nötig. Finden Sie den Dialog 'Automatisch ausgeführte Programme'. Dort geben Sie '$::Biblepix' als neuen Programmpfad ein.\nWeitere Lösungen finden Sie im Manual."
   set linSetAutostartProb(en) "We had a problem configuring $bp Autostart.\n In order for $bp to run at computer boot time, you must make an entry in the Autostart menu of your PC. Find the dialog 'Automatically executed programs'. There enter '$::Biblepix' as the new program path.\nFor other solutions consult the Manual."
   set ::linSetAutostartProb $linSetAutostartProb($lang)
+
+  set linNoDesktopFound(de) "Kein Linux-Desktop gefunden! Suchen Sie im Manual eine Lösung zum manuellen Einrichten des $bp-Hintergrundbilds."
+  set linNoDesktopFound(en) "No Llinux Desktop detected! Please find out in the manual how to manually set up the $bp background picture."
+  set ::linNoDesktopFound $linNoDesktopFound($lang)
 
   set linReloadingDesktop(en) "We shall now try to reload your Desktop. If this fails, please log out and in again for the BiblePix settings to take effect."
   set linReloadingDesktop(de) "Wir versuchen nun, Ihre Arbeitsfläche neu einzulesen. Falls dies fehlschlägt, müssen Sie sich kurz ab- und wieder anmelden, damit die BibelPix-Einstellungen wirksam werden."

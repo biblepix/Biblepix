@@ -150,7 +150,7 @@ Original photos remain untouched.
 From version 3.3, both the desired text position and the luminance of the text
 colour are registered when adding a photo.
 
-THE WORD ON PICTURE
+THE WORD ON A BACKGROUND PICTURE
 The centre-piece of BiblePix is projecting The Word onto a background image. 
 If the feature "Background Image" is activated in the Setup, BiblePix will take
 a picture from the photo collection and adorn it with The Word from an available
@@ -172,7 +172,15 @@ Setup program (for Hebrew and Arabic see footnote*****).
 Displaying the background image as well switching images (in case of slideshow activated) 
 are managed by the BiblePix main program. 
 
+BiblePix Setup will try to automatically change the background picture of your Desktop; 
+all Windows and most common Linux Desktops have been taken into account. If you encounter
+problems you can easily set up your background picture manually by right-clicking on your
+Desktop and instructing your system to use the above image path from now on. It shouldn't be
+necessary to set up a slideshow via your system desktop control, since BiblePix takes care
+of changing the picture at a given interval.
+
 EMAIL SIGNATURE
+
 BiblePix has an extended feature called "Add The Word to your e-mail signatures".
 If this is activated in the Setup, BiblePix will add The Word to your signature(s) 
 once a day on the basis of any installed Bible text files. The signature files are 

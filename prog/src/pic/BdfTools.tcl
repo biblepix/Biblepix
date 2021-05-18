@@ -289,6 +289,7 @@ set y [printTextLine ${markRef}${ref2} $refX $y $img TAB]
     
   } ;#END printTwdTextParts
 
+#TODO this is not used at present!
   proc alignRef {markRef refNo} {
       global [namespace current]::titleEnd
       global [namespace current]::ref1
@@ -331,11 +332,9 @@ puts "refPos $refPos"
     global colour::shaHex
     global RtL prefix
     upvar $letterName curLetter
-#parray curLetter
 
     set imgW [image width $img]
     set imgH [image height $img]
-
     set BBxoff $curLetter(BBxoff)
     set BBx $curLetter(BBx)
 
@@ -369,14 +368,11 @@ puts "refPos $refPos"
           if {$xCur <0} {
             set xCur 1
           }
-
           # put colour pixel
           $img put $pxColor -to $xCur $yCur
         }
-
         incr xCur
       }
-
       incr yCur
     }
   } ;#END printLetter

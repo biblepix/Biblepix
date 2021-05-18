@@ -153,7 +153,6 @@ unberührt.
 Ab Version 3.3 wird beim Hinzufügen eines Bildes die gewünschte Textposition sowie
 die Helligkeit der Schriftfarbe mit gespeichert.
 
-
 WORT AUF BILD
 Das Kernstück von BibelPix ist die Projektion des täglichen Bibelspruchs auf ein
 Hintergrundbild. Wenn im Einrichtungsprogramm die Funktion "Hintergrundbild" 
@@ -178,6 +177,13 @@ Grösse, Farbe und Art der Schrift können im Einrichtungsprogramm festgelegt we
 ebenso die Position des Textes auf dem Bild (Hebräisch und Arabisch s. Anm.*****).
 Die Darstellung als Desktop-Hintergrundbild sowie der Bildwechsel (bei Diaschau) 
 werden vom BibelPix-Hauptprogramm automatisch gesteuert. 
+
+Das BibelPix-Einrichtungsprogramm versucht, das neue Hintergrundbild für Ihr Desktop
+automatisch einzurichten; berücksichtigt sind all Windows- und gängige Linux-Desktops.
+Sollten dabei Probleme entstehen, können Sie das leicht manuell nachholen, indem Sie
+auf Ihrer Arbeitsfläche rechtsklicken und Ihr System anweisen, künftig den obigen Bildpfad
+als Hintergrundbild zu verwenden. Die Einrichtung einer Diaschau übers System sollte nicht 
+nötig sein, da BibelPix selbsttätig das Bild im gewünschten Minutentakt ändert.
 
 EMAIL-SIGNATUR
 BibelPix bietet die Zusatzfunktion "Das Tageswort als E-Mail-Signatur". Diese 
