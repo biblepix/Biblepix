@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15may21 pv
+# Updated: 19may21 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -36,9 +36,9 @@ proc locateKdeConffile {} {
 
   set plasmaSnippet "desktop-appletsrc"
 
-  #Return standard KDE5 path if fileutils missing
+  #Return standard KDE5 path if fileutil missing
   ##glob can't do subdirs!
-  if [catch {package require fileutils}] {
+  if [catch {package require fileutil}] {
     set KdeConfFilepath [file join $LinConfDir $Kde5ConfFile]
     if ![file exists $KdeConfFilepath] {
       return 0
@@ -56,6 +56,8 @@ proc locateKdeConffile {} {
     set KdeConfFilepath $Kde5ConfFilepath
   } elseif { [info exists Kde4ConfFilepath] && $Kde4ConfFilepath != ""} {
     set KdeConfFilepath $Kde4ConfFilepath
+  } else {
+    set KdeConfFilepath 0
   }
   
   ##reduce to 1 file if list has many
@@ -252,7 +254,7 @@ Exec=$Biblepix
   #Set up Sway if conf file found
   if [file exists $SwayConfFile] {
     if [catch setupSwayBackground] {
-      puts "Having problem setting up Sway background"
+      NewsHandler::QueryNews "Sway: $linChangeDesktopProb" red
       return 1
     }
   }
@@ -476,7 +478,6 @@ proc setupKdeBackground {} {
     set kwrite kwriteconfig
 
   } else {
-
     NewsHandler::QueryNews "Could not configure KDE Desktop background." red
     return 2
   }
@@ -485,20 +486,17 @@ proc setupKdeBackground {} {
   set errCode4 ""
   if {$KdeVersion == 4} {
     catch {setupKde4Bg $Kde4ConfFilepath $kread $kwrite} errCode4
-    puts $errCode4
+    NewsHandler::QueryNews "KDE4: $errCode4" red
+    return 2
   }
 
   #set KDE5 always, using detected conf file path:
-  catch {setupKde5Bg $KdeConfFilepath $kread $kwrite} errCode5
-  puts $errCode5
-
-  if {$errCode4=="" && $errCode5==""} {
-    return 0
-  } else {
-    NewsHandler:QueryNews "KDE4: $errCode4 / \nKDE5: $errCode5" red
+  if [catch {setupKde5Bg $KdeConfFilepath $kread $kwrite} errCode5] {
+    NewsHandler::QueryNews "KDE Plasma: $errCode5" red
     return 2
-  }
-  
+  } else {
+    return 0
+  } 
 } ;#END setKdeBackground
 
 # setupKde4Bg
@@ -514,7 +512,7 @@ proc setupKde4Bg {Kde4ConfFile kread kwrite} {
     set interval $slideshow
   }
   
-  set slidepaths $dirlist(imgDir)
+  set slidepaths $dirlist(imgdir)
   set mode Slideshow
         
   for {set g 1} {$g<200} {incr g} {
@@ -589,10 +587,10 @@ proc setupKde5Bg {Kde5ConfFile kread kwrite} {
       
       ##2.[Containments][$g][Wallpaper][General] - General settings (not sure if needed)
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key Image file://$TwdPNG
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $dirlist(imgDir)
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group General --key SlidePaths $dirlist(imgdir)
       
       ##3. [Containments][$g][Wallpaper][org.kde.slideshow][General]: Set SlideInterval+SlidePaths+height+width
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlidePaths $dirlist(imgDir)
+      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlidePaths $dirlist(imgdir)
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key SlideInterval $interval
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key height [winfo screenheight .]
       exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group $oks --group General --key width [winfo screenwidth .]
