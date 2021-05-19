@@ -20,8 +20,7 @@ System requirements
 -------------------
 Operating systems: Linux, Windows
 Pre-installation Windows: ActiveTcl (from activestate.com/activetcl/downloads)
-Pre-installation Linux: Tcl/Tk library with tls, tDom und tkimg 
-extensions
+Pre-installation Linux: Tcl/Tk library with tcllib, tls, tDom und tkimg extensions
 
 Installation
 ------------
@@ -29,7 +28,11 @@ Git: git clone https://github.com/Biblepix/Biblepix.git
 Linux: Download Installer from bible2.net
 Windows: Download Installer from bible2.net
 
-For further details consult the Manual (from the BiblePix Setup, or in a text editor open ~/Biblepix/Docs/MANUAL_en.txt).
+For further details consult the Manual (from the BiblePix Setup, or in a text editor open 
+  
+  ~/Biblepix/Docs/MANUAL_en.txt
+  
+)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -54,8 +57,7 @@ Systemvoraussetzungen
 ---------------------
 Betriebssysteme: Linux, Windows
 Vorinstallation Windows: ActiveTcl (von activestate.com/activetcl/downloads)
-Vorinstallation Linux: Tcl/Tk-Bibliothek mit Zusatzpaketen tls, tDom und 
-tkimg
+Vorinstallation Linux: Tcl/Tk-Bibliothek mit Zusatzpaketen tcllib, tls, tDom und tkimg
 
 Installation
 ------------
@@ -63,4 +65,8 @@ Git: git clone https://github.com/Biblepix/Biblepix.git
 Linux: Installer von bible2.net herunterladen und ausführen
 Windows: Installer von bible2.net herunterladen und ausführen
 
-Ausführliche Anleitung im Manual (aus dem Einrichtungsprogramm, bzw. im Texteditor ~/Biblepix/Docs/MANUAL_de.txt öffnen).
+Ausführliche Anleitung im Manual (aus dem Einrichtungsprogramm, bzw. im Texteditor 
+
+  ~/Biblepix/Docs/MANUAL_de.txt 
+  
+öffnen).

@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 17may21 pv
+# Updated: 19may21 pv
 set version "4.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -81,6 +81,7 @@ array set FilePaths "
   Bidi [file join $sharedir Bidi.tcl]
   Image [file join $picdir image.tcl]
   ImageAngle [file join $picdir ImageAngle.tcl]
+  Releasenotes [file join $docdir RELEASENOTES.txt]
   RotateTools [file join $picdir RotateTools.tcl]
   SetBackgroundChanger [file join $picdir setBackgroundChanger.tcl]
   SetupMainFrame [file join $setupdir setupMainFrame.tcl]

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 8feb21 pv
+# Updated: 19may21 pv
 
 #Source Config and LoadConfig for defaults
 if { [catch {source $Config}] } {
@@ -39,19 +39,19 @@ if ![info exists sigLanglist] {
 }
  
 #Set Intro
-if {![info exists enabletitle]} {
+if ![info exists enabletitle] {
   set enabletitle 1
 }
 #Set Enable Pic
-if {![info exists enablepic]} {
+if ![info exists enablepic] {
   set enablepic 1
 }
 #Set Enable Sig
-if {![info exists enablesig]} {
+if ![info exists enablesig] {
   set enablesig 0
 }
 #Set Slideshow
-if {![info exists slideshow]} {
+if ![info exists slideshow] {
   set slideshow 300
 }
 #Set fontfamily
@@ -63,30 +63,30 @@ if {![info exists fontsize] || ![string is digit $fontsize] || ![regexp $fontsiz
   set fontsize [lindex $fontSizeList 1]
 }
 #Set fontweight
-if {![info exists fontweight]} {
+if ![info exists fontweight] {
   set fontweight normal
 }
-#Set fontcolortext
-if {![info exists fontcolortext]} {
+#Set fontcolortext, avoiding old colour names in Config
+if {![info exists fontcolortext] || [lsearch $fontcolourL $fontcolortext] == -1} {
   set fontcolortext Gold
 }
 if ![info exists enableRandomFontcolor] {
   set enableRandomFontcolor 0
 }
 #Set marginleft
-if {![info exists marginleft]} {
+if ![info exists marginleft] {
   set marginleft 30
 }
 #Set margintop
-if {![info exists margintop]} {
+if ![info exists margintop] {
   set margintop 30
 }
 #Set Debug
-if {![info exists Debug]} {
+if ![info exists Debug] {
   set Debug 0
 }
 #Set Httpmock
-if {![info exists Httpmock]} {
+if ![info exists Httpmock] {
   set Httpmock 0
 }
 
