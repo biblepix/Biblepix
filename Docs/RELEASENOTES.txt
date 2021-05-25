@@ -6,20 +6,22 @@ F i x e d   b u g s
 
 * Arabic & Hebrew display now faultless (fully vowelled text in the Setup, devowelled on the photo for readability)
 
-A d d e d  / I m p r o v e d  f e a t u r e s
+A d d e d   f e a t u r e s
 
-* Automatic Desktop detection & background configuration improved, now including: Windows, Linux KDE/GNOME/XFCE4/Sway
-* Automatic program update in the background, whenever BiblePix is run (formerly only when Setup was on)
+* Automatic program update in the background, whenever BiblePix is run
+    (this used to happen only when Setup was started)
+
 * Setup (International): list of Bible texts for download now in English and native languages
 * Setup (Desktop): Choosable text colours for Desktop picture now: Gold/Silver/Leaf/Sea/Slate 
     with an optional "accidental" switch (colour is chosen at random for each new picture)  
 * Setup (Photos): Number of installed pictures now shown
-* Setup (Photos): Rotating function added for ill-looking photos
+* Setup (Photos): Rotating function added for badly taken photos
 * Setup (Photos): Text position can now be set for each individual picture when adding to the BiblePix photo collection
 * Setup (Photos): Ill-dimensioned pictures can be fitted to screen dimensions before saving
 * Setup (e-mail): desired language(s) for mail signatures now choosable
 
 * New Colour management:
-  To enhance readability, text colour brightness is automatically adjusted depending on the brightness of the text area. 
-  This information is saved along with the picture, as well as any positioning information (if desired, see above) 
-  when adding a photo to the BiblePix photo collection.
+
+To enhance readability, text colour brightness is automatically adjusted depending on the brightness of the text area. 
+This information is saved along with the picture, as well as any positioning information (if desired, see above) 
+when adding a photo to the BiblePix photo collection.
