@@ -667,48 +667,47 @@ proc fillWidgetWithTodaysTwd twdWidget {
   set ::setupTwdText $twdText
 }
 
+
+
+
+
+
 # deleteOldStuff
 ##Removes stale prog files & dirs not listed in Globals
 ##called by Setup
 proc deleteOldStuff {} {
   global dirPathL filePathL fontPathL progdir srcdir
 
-  #############################################
-  # 1. Delete stale directories
-  #############################################
+  #combine all file & font lists
+  set filePathL [list {*}$filePathL {*}$fontPathL]
+  
+  # 1. D e l e t e   s t a l e   d i r e c t o r i e s
 
-  #1.List current directory paths starting from progdir
+  #1.List current directory paths starting from progdir&srcdir
   foreach path [glob -directory $progdir -type d *] {
     lappend curFolderList $path
   }
-
   foreach path [glob -directory $srcdir -type d *] {
     lappend curFolderList $path
   }
 
-  #3. Delete dir paths
+  #Delete stale dir paths
   foreach path $curFolderList {
-    catch {lsearch -exact $dirL $path} res
+    catch {lsearch -exact $dirPathL $path} res
     if {$res == -1} {
       file delete -force $path
       NewsHandler::QueryNews "Deleted obsolete folder: $path" red
     }
   }
 
-  ####################################
-  # 2. Delete stale single files
-  ####################################
+  # 2. D e l e t e   s t a l e   s i n g l e   f i l e s
 
-  ##get latest file list from Globals
-#  foreach path [array names FilePaths] {
-#    lappend latestFileList [lindex [array get FilePaths $path] 1]
-#  }
-
-  ##list all subdirs in $srcdir
+  ##list all immediate subdirs of $srcdir
   foreach dir [glob -directory $srcdir -type d *] {
     lappend curFolderList $dir
   }
-  ##list all files in subdirs
+
+  ##list all files in immediate subdirs
   foreach dir $curFolderList {
     foreach f [glob -nocomplain $dir/*] {
       lappend curFileList $f
@@ -723,30 +722,25 @@ proc deleteOldStuff {} {
     }
   }
 
+#  #########################################
+#  # 3. Delete stale fonts
+#  #########################################
 
-  #########################################
-  # 3. Delete stale fonts
-  #########################################
-
-  #1. Get latest font paths from globals
-#  foreach path [array names BdfFontPaths] {
-#    lappend latestFontList [lindex [array get BdfFontPaths $path] 1]
+#  #2. list installed font names including asian
+#  foreach path [glob -directory $fontdir *] {
+#    lappend curFontList $path
 #  }
-  #2. list installed font names including asian
-  foreach path [glob -directory $fontdir *] {
-    lappend curFontList $path
-  }
-  foreach path [glob -directory $fontdir/asian *] {
-    lappend curFontList $path
-  }
-  #3. delete any obsolete fonts
-  foreach path $curFontList {
-    catch {lsearch -exact $fontPathL $path} res
-    if {$res == "-1" && [file isfile $path]} {
-      file delete $path
-      NewsHandler::QueryNews "Deled obsolete font file: $path" red
-    }
-  }
+#  foreach path [glob -directory $fontasiandir *] {
+#    lappend curFontList $path
+#  }
+#  #3. delete any obsolete fonts
+#  foreach path $curFontList {
+#    catch {lsearch -exact $fontPathL $path} res
+#    if {$res == "-1" && [file isfile $path]} {
+#      file delete $path
+#      NewsHandler::QueryNews "Deled obsolete font file: $path" red
+#    }
+#  }
 
   NewsHandler::QueryNews "$::uptodateHttp" lightgreen
 

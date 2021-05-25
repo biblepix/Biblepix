@@ -27,35 +27,33 @@ if  [info exists srcdir] {
 }
 
 #S e t   d i r n a m e s
-set progdir [file join $rootdir prog]
-set srcdir [file join $progdir src]
-
 ##make complete pathlist for use in makeDirs
 ##export name vars for use in all procs
-set dirPathL ""
+set dirPathL {}
+lappend dirPathL [set progdir [file join $rootdir prog]]
+lappend dirPathL [set srcdir [file join $progdir src]]
 lappend dirPathL [set confdir [file join $progdir conf]]
 lappend dirPathL [set docdir [file join $rootdir Docs]]
 lappend dirPathL [set fontdir [file join $progdir font]]
+lappend dirPathL [set fontasiandir [file join $fontdir asian]]
 lappend dirPathL [set imgdir [file join $rootdir TodaysPicture]]
 lappend dirPathL [set maildir [file join $srcdir sig]]
 lappend dirPathL [set photosDir [file join $rootdir Photos]]
 lappend dirPathL [set picdir [file join $srcdir pic]]
-lappend dirPathL [set progdir [file join $rootdir prog]]
 lappend dirPathL [set piddir [file join $progdir pid]]
 lappend dirPathL [set savedir [file join $srcdir save]]
 lappend dirPathL [set sampleJpgDir [file join $srcdir pic SamplePhotos]]
 lappend dirPathL [set setupdir [file join $srcdir setup]]
 lappend dirPathL [set sharedir [file join $srcdir share]]
 lappend dirPathL [set sigdir [file join $rootdir TodaysSignature]]
-lappend dirPathL [set srcdir [file join $progdir src]]
 lappend dirPathL [set termdir [file join $srcdir term]]
 lappend dirPathL [set twdDir [file join $rootdir BibleTexts]]
 lappend dirPathL [set unixdir [file join $progdir unix]]
 lappend dirPathL [set windir [file join $progdir win]]
 
-##make complete pathlist for use in makeDirs
-##export name vars for use in all procs
-set filePathL ""
+##make complete file pathlist for use in makeDirs
+##export file var names for use in all procs
+set filePathL {}
 lappend filePathL [set AnnotatePng [file join $picdir annotatePng.tcl]]
 lappend filePathL [set Globals [file join $sharedir globals.tcl]]
 lappend filePathL [set Http [file join $sharedir http.tcl]]
@@ -105,6 +103,9 @@ lappend filePathL [set SigTools [file join $maildir SigTools.tcl]]
 lappend filePathL [set Config [file join $confdir biblepix.conf]]
 lappend filePathL [set Terminal [file join $termdir terminal.tcl]]
 lappend filePathL [set TerminalShell [file join $unixdir term.sh]]
+lappend filePathL [set LinIcon [file join $unixdir biblepix.png]]
+lappend filePathL [set LinIconSvg [file join $unixdir biblepix.svg]]
+lappend filePathL [set WinIcon [file join $windir biblepix.ico]]
 
 ##make complete pathlist for use in makeDirs
 ##export name vars for use in all procs
@@ -116,15 +117,9 @@ lappend sampleJpgL [set Palms [file join $sampleJpgDir palms.jpg]]
 lappend sampleJpgL [set Mountain [file join $sampleJpgDir mountain.jpg]]
 lappend sampleJpgL [set Nevada [file join $sampleJpgDir nevada.jpg]]
 
-set WinIcon [file join $unixdir biblepix.png]
-set LinIcon [file join $windir biblepix.ico]
-
 #Set font size list (in pts)
 set fontSizeL {16 20 26 32}
 set fontPathL {}
-
-#set ptsize 20
-#set fontname ?
 foreach ptsize $fontSizeL {
   lappend fontPathL [set Arial${ptsize} [file join $fontdir Arial${ptsize}.tcl]]
   lappend fontPathL [set ArialI${ptsize} [file join $fontdir ArialI${ptsize}.tcl]]
@@ -133,8 +128,9 @@ foreach ptsize $fontSizeL {
   lappend fontPathL [set TimesI${ptsize} [file join $fontdir TimesI${ptsize}.tcl]]
   lappend fontPathL [set TimesB${ptsize} [file join $fontdir TimesB${ptsize}.tcl]]
 }
-lappend fontPathL [set ChinaFont [file join $fontdir asian WenQuanYi_ZenHei_24.tcl]]
-lappend fontPathL [set ThaiFont [file join $fontdir asian Kinnari_Bold_20.tcl]]
+#One size fonts
+lappend fontPathL [set ChinaFont [file join $fontasiandir WenQuanYi_ZenHei_24.tcl]]
+lappend fontPathL [set ThaiFont [file join $fontasiandir Kinnari_Bold_20.tcl]]
 
 #Set TWD picture paths
 set TwdBMP [file join $imgdir theword.bmp]

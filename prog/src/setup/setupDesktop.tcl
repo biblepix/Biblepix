@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 9mch21 pv
+# Updated 25apr21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -116,7 +116,7 @@ setFontcolSpinState
 
 #set Fontsize spinbox
 message .fontsizeTxt -width 200 -textvar f2.fontsizetext
-spinbox .fontsizeSpin -width 2 -values $fontSizeList -bg lightgrey
+spinbox .fontsizeSpin -width 2 -values $fontSizeL -bg lightgrey
 .fontsizeSpin conf -command {setCanvasFontSize %s}
 .fontsizeSpin set $fontsize
 
