@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 5may21 pv
+# Updated 23may21 pv
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -18,8 +18,8 @@ source $SetupTools
 
 #L i s t e n   o h n e   P f a d
 proc getTwdList {} {
-  global dirlist jahr
-  set twdL [glob -nocomplain -tails -directory $dirlist(twdDir) *_$jahr.twd]
+  global twdDir jahr
+  set twdL [glob -nocomplain -tails -directory $twdDir *_$jahr.twd]
   return $twdL
 }
 
@@ -27,13 +27,13 @@ proc getTwdList {} {
 ##selects TWD files for languages selected in SetupEmail CodeList
 ##called by getRandomTwdFile with args=sig
 proc getTwdSigList {} {
-  global dirlist jahr sigLanglist
+  global twdDir jahr sigLanglist
 
   #A) Use only files that match $sigLangist
   if { [info exists sigLanglist] && $sigLanglist != ""} {
     ##get all twdfiles related to $lang
     foreach code $sigLanglist {
-      foreach item [glob -nocomplain -tails -directory $dirlist(twdDir) ${code}*_$jahr.twd] {
+      foreach item [glob -nocomplain -tails -directory $twdDir ${code}*_$jahr.twd] {
         lappend twdsigL $item
       }
     }
@@ -71,10 +71,16 @@ proc getRandomFontcolor {} {
 }
 
 proc updateTwd {} {
-  package require json
+  global twdDir
+  
+  if [catch {package require json}] {
+	  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message "Missing package: json - please install latest version of tcllib!"
+    exit
+  }
+  
   source $::Http
 
-  set twdFiles [glob -nocomplain -directory $::dirlist(twdDir) *.twd]
+  set twdFiles [glob -nocomplain -directory $twdDir *.twd]
 
   ##########################################
   # Download Current TwdFiles if missing
@@ -117,8 +123,8 @@ proc updateTwd {} {
   }
 
   if {$nextYearAvailable} {
-    set currentTwdList [glob -nocomplain -directory $::dirlist(twdDir) *$::jahr.twd]
-    set nextTwdList [glob -nocomplain -directory $::dirlist(twdDir) *$nextYear.twd]
+    set currentTwdList [glob -nocomplain -directory $twdDir *$::jahr.twd]
+    set nextTwdList [glob -nocomplain -directory $twdDir *$nextYear.twd]
 
     foreach currentFile $currentTwdList {
       set nextExists 0
@@ -175,9 +181,9 @@ proc updateTwd {} {
 #####################################################################
   
 proc getTWDFileRoot {twdFile} {
-  global dirlist
+  global twdDir
 
-  set path [file join $dirlist(twdDir) $twdFile]
+  set path [file join $twdDir $twdFile]
   set file [open $path]
   chan configure $file -encoding utf-8
   set TWD [read $file]
@@ -187,9 +193,9 @@ proc getTWDFileRoot {twdFile} {
 }
 
 proc parseTwdFileDomDoc {twdFile} {
-  global dirlist
-
-  set path [file join $dirlist(twdDir) $twdFile]
+  global twdDir
+  
+  set path [file join $twdDir $twdFile]
   set file [open $path]
   chan configure $file -encoding utf-8
   set Twd [read $file]

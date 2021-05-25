@@ -1,11 +1,10 @@
 # ~/Biblepix/prog/src/save/saveLin.tcl
 # Sourced by Save.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17may21 pv
+# Updated: 25may21 pv
 source $SaveLinHelpers
 source $SetupTools
 source $SetBackgroundChanger
-
 set Error 0
 set hasError 0
 
@@ -50,7 +49,7 @@ catch setupKdeActionMenu Error
 #################################################
 # 3 Set up Linux terminal -- TODO? error handling?
 #################################################
-if {$enableterm} {
+if $enableterm {
   catch {setupLinTerminal} Error
   
   #TODO Infozeile verschwindet !!!!!!!!!!!!!!!
@@ -66,7 +65,7 @@ if {$enableterm} {
 
 
 #Exit if no picture desired
-if {!$enablepic} {
+if !$enablepic {
   return 0
 }
 

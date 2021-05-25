@@ -2,7 +2,7 @@
 # Procs used in Resizing + Repositioning processes
 # sourced by SetupPhotos & ???
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18feb21 pv
+# Updated: 25may21 pv
 
 # needsResize
 ##compares photosOrigPic OR rotateOrigPic with screen dimensions
@@ -168,23 +168,17 @@ proc setCanvasFontSize args {
 ##called by SetupDesktop for inttextCanv & SetupResize for .textposCanv
 proc setCanvasFontColour {c fontcolortext args} {
   global sunFactor shadeFactor
-  #global colour::${fontcolortext}
-  # variable colour::$fontcolortext
-   
-   #TODO do we need this? 
+
+   #TODO luminacy is not used on canvases!
+   #remove in time, correcting calling progs
   #set luminance = 2 if no args
-  if {$args == ""} {
-    set lum 2
-  } {
-    set lum $args
-  }
-  
-  
-  #TODO use proc...
+#  if {$args == ""} {
+#    set lum 2
+#  } {
+#    set lum $args
+#  }
+
   lassign [setFontShades $fontcolortext] regHex sunHex shaHex
-#  set regHex [set "colour::$fontcolortext"]
-#  set sunHex [gradient $regHex $sunFactor]
-#  set shaHex [gradient $regHex $shadeFactor]
 
   #fill canvas colours
   $c itemconf main -fill $regHex
@@ -237,17 +231,15 @@ proc getReposScalefactor {} {
 ## organises all resizing processes
 ## called by openResizeWindow
 proc doResize {canv scaleFactor} {
-  global dirlist picPath
+  global picPath
   global addpicture::curPic
 
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
   set screenFactor [expr $screenX. / $screenY]
-
   set imgX [image width $curPic]
   set imgY [image height $curPic]
   set imgFactor [expr $imgX. / $imgY]
-
   set canvX [lindex [$canv conf -width] end]
   set canvY [lindex [$canv conf -height] end]
   

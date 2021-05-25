@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 26feb21 pv
+# Updated: 23may21 pv
 source $TwdTools
 source $BdfTools
 source $ImgTools
@@ -11,27 +11,42 @@ set TwdLang [getTwdLang $TwdFileName]
 set RtL [isRtL $TwdLang]
 puts $TwdLang
 
+set fw ""
+if {$fontweight == "bold"} {
+  set fw B
+}
+
 # S O U R C E   F O N T S   I N T O   N A M E S P A C E S
 
 ##Chinese: (regular_24)
 if {$TwdLang == "zh"} {
   set ::prefix Z
-  if {! [namespace exists Z]} {
+  if ![namespace exists Z] {
     namespace eval Z {
-      source -encoding utf-8 $BdfFontPaths(ChinaFont)
+      source -encoding utf-8 $ChinaFont
     }
   }
 ##Thai: (regular_20)
 } elseif {$TwdLang == "th"} {
   set ::prefix T
-  if {! [namespace exists T]} {
+  if ![namespace exists T] {
     namespace eval T {
-      source -encoding utf-8 $BdfFontPaths(ThaiFont)
+      source -encoding utf-8 $ThaiFont)
     }
   }
 ##All else: Regular / Bold / Italic
 } else {
 
+
+
+if {$fontfamily == "Serif" } {
+  set ffam Times
+  } {
+  set ffam Arial
+  }
+  
+
+}
   if {$fontweight == "bold"} {
     set ::prefix B
   } else {
@@ -39,30 +54,46 @@ if {$TwdLang == "zh"} {
   }
 
   if {! [namespace exists R] && $fontweight != "bold"} {
+  
+  catch {unset fontname}  
+append fontname $ffam $fontsize 
+    set fnpath [set $fontname]
+
+    
     namespace eval R {
-      puts "sourcing $BdfFontPaths($fontname)"
-      source -encoding utf-8 $BdfFontPaths($fontname)
+      
+      source -encoding utf-8 $::fnpath
     }
   }
   
   #Source Italic for all except Asian
-  if {! [namespace exists I]} {
+  if ![namespace exists I] {
+  
+  catch {unset fontname}
+  append fontname $ffam I $fontsize 
+    set fnpath [set $fontname]
+
     namespace eval I {
-      puts "sourcing $BdfFontPaths($fontnameItalic)"
-      source -encoding utf-8 $BdfFontPaths($fontnameItalic)
+      source -encoding utf-8 $::fnpath
     }
   }
   
   #Source Bold if $enabletitle OR $fontweight==bold
   if {$enabletitle || $fontweight == "bold"} { 
-    if {! [namespace exists B]} {
+    if ![namespace exists B] {
+catch {unset fontname}
+append fontname $ffam B $fontsize 
+    set fnpath [set $fontname]
+
       namespace eval B {
-        puts "sourcing $BdfFontPaths($fontnameBold)"
-        source -encoding utf-8 $BdfFontPaths($fontnameBold)
+#        append fn $::ffam B $::fontsize
+ #       puts "sourcing $fn"
+        source -encoding utf-8 $::fnpath
       }
     }
   }
-} ;#END source fonts
+
+#} ;#END source fonts
 
 
 # 2) C O M P U T E   C O L O U R S   A N D   M A R G I N S

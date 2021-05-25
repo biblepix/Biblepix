@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12apr21 pv
+# Updated: 25may21 pv
 
 source $SetupResizeTools
 source $JList
@@ -12,12 +12,12 @@ source $JList
 ##called by SetupPhotos:addPic Button
 proc addPic {origPicPath} {
   
-  global dirlist v
+  global photosDir v
   source $::SetupResizePhoto
   source $::SetupResizeTools
 
   #Set path & exit if already there
-  set targetPicPath [file join $dirlist(photosDir) [setPngFileName [file tail $origPicPath]]]
+  set targetPicPath [file join $photosDir [setPngFileName [file tail $origPicPath]]]
   if [file exists $targetPicPath] {
     NewsHandler::QueryNews $::picSchonDa red
     return 1
@@ -66,15 +66,15 @@ proc addPic {origPicPath} {
     openResizeWindow
   }
 
-  set ::numPhotos [llength [glob $dirlist(photosDir)/*]]
+  set ::numPhotos [llength [glob $photosDir/*]]
 } ;#END addPic
 
 proc delPic {c} {
-  global dirlist fileJList picPath
+  global photosDir fileJList picPath
   file delete $picPath
   set fileJList [deleteImg $fileJList $c]
   NewsHandler::QueryNews "[deletedPicMsg $picPath]" orange
-  set ::numPhotos [llength [glob $dirlist(photosDir)/*]]
+  set ::numPhotos [llength [glob $photosDir/*]]
 }
 
 #######################################################################
@@ -494,15 +494,15 @@ proc openFileDialog {bildordner} {
 }
 
 proc refreshFileList {} {
-  global tcl_platform dirlist
+  global tcl_platform photosDir
   set storage ""
   set parted 0
   set localJList ""
 
   if {$tcl_platform(os) == "Linux"} {
-    set fileNames [glob -nocomplain -directory $dirlist(photosDir) *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
+    set fileNames [glob -nocomplain -directory $photosDir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
   } elseif {$tcl_platform(platform) == "windows"} {
-    set fileNames [glob -nocomplain -directory $dirlist(photosDir) *.jpg *.jpeg *.png]
+    set fileNames [glob -nocomplain -directory $photosDir *.jpg *.jpeg *.png]
   }
 
   foreach fileName $fileNames {
@@ -598,15 +598,15 @@ proc deleteImg {localJList canv} {
 ## no cutting intended because these pics can be stretched
 ## called by BiblepixSetup
 proc copyAndResizeSamplePhotos {} {
-  global sampleJpgArray dirlist
+  global sampleJpgArray photosDir sampleJpgDir
   source $::ImgTools
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
 
   foreach fileName [array names sampleJpgArray] {
 
-    set origJpgPath [file join $dirlist(sampleJpgDir) $fileName]
-    set newJpgPath [file join $dirlist(photosDir) $fileName]
+    set origJpgPath [file join $sampleJpgDir $fileName]
+    set newJpgPath [file join $photosDir $fileName]
     set newPngPath [setPngFileName $newJpgPath]
 
     #Skip if JPG or PNG found in $photosDir
@@ -658,10 +658,6 @@ proc fillWidgetWithTodaysTwd twdWidget {
     
     if [isBidi $twdText] {
       $twdWidget conf -justify right
-#      $twdWidget conf -font {"Ezra SIL" 16}
-#      $twdWidget conf -font {"Arabic Newspaper" 16}
-      #TODO this should be sorted in getTodaysTwdText !!!!!
-      #set twdText [bidi::fixBidi $twdText]
     }
 
   }
@@ -675,29 +671,24 @@ proc fillWidgetWithTodaysTwd twdWidget {
 ##Removes stale prog files & dirs not listed in Globals
 ##called by Setup
 proc deleteOldStuff {} {
-  global dirlist
+  global dirPathL filePathL fontPathL progdir srcdir
 
   #############################################
   # 1. Delete stale directories
   #############################################
 
   #1.List current directory paths starting from progdir
-  foreach path [glob -directory $dirlist(progdir) -type d *] {
+  foreach path [glob -directory $progdir -type d *] {
     lappend curFolderList $path
   }
 
-  foreach path [glob -directory $dirlist(srcdir) -type d *] {
+  foreach path [glob -directory $srcdir -type d *] {
     lappend curFolderList $path
-  }
-
-  #2.List latest directory paths from Globals
-  foreach name [array names dirlist] {
-    lappend latestFolderList [lindex [array get dirlist $name] 1]
   }
 
   #3. Delete dir paths
   foreach path $curFolderList {
-    catch {lsearch -exact $latestFolderList $path} res
+    catch {lsearch -exact $dirL $path} res
     if {$res == -1} {
       file delete -force $path
       NewsHandler::QueryNews "Deleted obsolete folder: $path" red
@@ -709,12 +700,12 @@ proc deleteOldStuff {} {
   ####################################
 
   ##get latest file list from Globals
-  foreach path [array names FilePaths] {
-    lappend latestFileList [lindex [array get FilePaths $path] 1]
-  }
+#  foreach path [array names FilePaths] {
+#    lappend latestFileList [lindex [array get FilePaths $path] 1]
+#  }
 
   ##list all subdirs in $srcdir
-  foreach dir [glob -directory $dirlist(srcdir) -type d *] {
+  foreach dir [glob -directory $srcdir -type d *] {
     lappend curFolderList $dir
   }
   ##list all files in subdirs
@@ -725,7 +716,7 @@ proc deleteOldStuff {} {
   }
   ##delete any obsolete files
   foreach path $curFileList {
-    catch {lsearch -exact $latestFileList $path} res
+    catch {lsearch -exact $filePathL $path} res
     if {$res == -1 && [file isfile $path]} {
       file delete $path
       NewsHandler::QueryNews "Deleted obsolete file: $path" red
@@ -738,19 +729,19 @@ proc deleteOldStuff {} {
   #########################################
 
   #1. Get latest font paths from globals
-  foreach path [array names BdfFontPaths] {
-    lappend latestFontList [lindex [array get BdfFontPaths $path] 1]
-  }
+#  foreach path [array names BdfFontPaths] {
+#    lappend latestFontList [lindex [array get BdfFontPaths $path] 1]
+#  }
   #2. list installed font names including asian
-  foreach path [glob -directory $dirlist(fontdir) *] {
+  foreach path [glob -directory $fontdir *] {
     lappend curFontList $path
   }
-  foreach path [glob -directory $dirlist(fontdir)/asian *] {
+  foreach path [glob -directory $fontdir/asian *] {
     lappend curFontList $path
   }
   #3. delete any obsolete fonts
   foreach path $curFontList {
-    catch {lsearch -exact $latestFontList $path} res
+    catch {lsearch -exact $fontPathL $path} res
     if {$res == "-1" && [file isfile $path]} {
       file delete $path
       NewsHandler::QueryNews "Deled obsolete font file: $path" red

@@ -2,11 +2,13 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 19may21 pv
+# Updated: 25may21 pv
 set version "4.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
+set bpxJpegUrl "http://vollmar.ch/biblepix/jpeg"
+set bpxIconUrl "http://vollmar.ch/biblepix"
 set platform $tcl_platform(platform)
 set os $tcl_platform(os)
 set tclpath [auto_execok tclsh]
@@ -27,145 +29,112 @@ if  [info exists srcdir] {
 #S e t   d i r n a m e s
 set progdir [file join $rootdir prog]
 set srcdir [file join $progdir src]
-array set dirlist "
-  confdir [file join $progdir conf]
-  docdir [file join $rootdir Docs]
-  fontdir [file join $progdir font]
-  imgdir [file join $rootdir TodaysPicture]
-  maildir [file join $srcdir sig]
-  photosDir [file join $rootdir Photos] 
-  picdir [file join $srcdir pic]
-  progdir [file join $rootdir prog]
-  piddir [file join $progdir pid]
-  savedir [file join $srcdir save]
-  sampleJpgDir [file join $srcdir pic SamplePhotos]
-  setupdir [file join $srcdir setup]
-  sharedir [file join $srcdir share]
-  sigdir [file join $rootdir TodaysSignature]
-  srcdir [file join $progdir src]
-  termdir [file join $srcdir term]
-  twdDir [file join $rootdir BibleTexts]
-  unixdir [file join $progdir unix]
-  windir [file join $progdir win]
-"
-#Export single dir names
-foreach i [array names dirlist] {
-  set ivalues [array get dirlist $i]
-  set name [lindex $ivalues 0]
-  set path [lindex $ivalues 1]
-  set $name $path
-}
 
-# makeDirs
-##called by Installer & UpdateInjection
-proc makeDirs {} {
-  global dirlist
-  foreach dir [array names dirlist] {
-    file mkdir $dirlist($dir)
-  }
-}
+##make complete pathlist for use in makeDirs
+##export name vars for use in all procs
+set dirPathL ""
+lappend dirPathL [set confdir [file join $progdir conf]]
+lappend dirPathL [set docdir [file join $rootdir Docs]]
+lappend dirPathL [set fontdir [file join $progdir font]]
+lappend dirPathL [set imgdir [file join $rootdir TodaysPicture]]
+lappend dirPathL [set maildir [file join $srcdir sig]]
+lappend dirPathL [set photosDir [file join $rootdir Photos]]
+lappend dirPathL [set picdir [file join $srcdir pic]]
+lappend dirPathL [set progdir [file join $rootdir prog]]
+lappend dirPathL [set piddir [file join $progdir pid]]
+lappend dirPathL [set savedir [file join $srcdir save]]
+lappend dirPathL [set sampleJpgDir [file join $srcdir pic SamplePhotos]]
+lappend dirPathL [set setupdir [file join $srcdir setup]]
+lappend dirPathL [set sharedir [file join $srcdir share]]
+lappend dirPathL [set sigdir [file join $rootdir TodaysSignature]]
+lappend dirPathL [set srcdir [file join $progdir src]]
+lappend dirPathL [set termdir [file join $srcdir term]]
+lappend dirPathL [set twdDir [file join $rootdir BibleTexts]]
+lappend dirPathL [set unixdir [file join $progdir unix]]
+lappend dirPathL [set windir [file join $progdir win]]
 
-#Set FilePaths array
-array set FilePaths "
-  AnnotatePng [file join $picdir annotatePng.tcl]
-  Globals [file join $sharedir globals.tcl]
-  Http [file join $sharedir http.tcl]
-  UpdateInjection [file join $srcdir updateInjection.tcl]
-  Readme [file join $rootdir README.txt]
-  Setup [file join $rootdir biblepix-setup.tcl]
-  ManualD [file join $docdir MANUAL_de.txt]
-  ManualE [file join $docdir MANUAL_en.txt]
-  Biblepix [file join $srcdir biblepix.tcl]
-  BdfTools [file join $picdir BdfTools.tcl]
-  BdfPrint [file join $picdir BdfPrint.tcl]
-  Bidi [file join $sharedir Bidi.tcl]
-  Image [file join $picdir image.tcl]
-  ImageAngle [file join $picdir ImageAngle.tcl]
-  Releasenotes [file join $docdir RELEASENOTES.txt]
-  RotateTools [file join $picdir RotateTools.tcl]
-  SetBackgroundChanger [file join $picdir setBackgroundChanger.tcl]
-  SetupMainFrame [file join $setupdir setupMainFrame.tcl]
-  SetupBuild [file join $setupdir setupBuildGUI.tcl]
-  SetupDesktop [file join $setupdir setupDesktop.tcl]
-  SetupDesktopPng [file join $setupdir setupDesktop.png]
-  SetupEmail [file join $setupdir setupEmail.tcl]
-  SetupInternational [file join $setupdir setupInternational.tcl]
-  SetupPhotos [file join $setupdir setupPhotos.tcl]
-  SetupManual [file join $setupdir setupManual.tcl]
-  SetupResizePhoto [file join $setupdir setupResizePhoto.tcl]
-  SetupResizeTools [file join $setupdir setupResizeTools.tcl]
-  SetupRotate [file join $setupdir setupRotate.tcl]
-  SetupTerminal [file join $setupdir setupTerminal.tcl]
-  SetupWelcome [file join $setupdir setupWelcome.tcl]
-  SetupTools [file join $setupdir setupTools.tcl]
-  SetupTexts [file join $setupdir setupTexts.tcl]
-  Save [file join $savedir save.tcl]
-  SaveLin [file join $savedir saveLin.tcl]
-  SaveLinHelpers [file join $savedir saveLinHelpers.tcl]
-  SaveWin [file join $savedir saveWin.tcl]
-  SaveWinHelpers [file join $savedir saveWinHelpers.tcl]
-  Flags [file join $sharedir flags.tcl]
-  Http [file join $sharedir http.tcl]
-  HttpMock [file join $sharedir httpMock.tcl]
-  JList [file join $sharedir JList.tcl]
-  ImgTools [file join $picdir ImageTools.tcl]
-  LoadConfig [file join $sharedir LoadConfig.tcl]
-  TwdTools [file join $sharedir TwdTools.tcl]
-  Uninstall [file join $savedir uninstall.tcl]
-  Signature [file join $maildir signature.tcl]
-  SigTools [file join $maildir SigTools.tcl]
-  Config [file join $confdir biblepix.conf]
-  Terminal [file join $termdir terminal.tcl]
-  TerminalShell [file join $unixdir term.sh]
-"
-#Export single FilePaths
-foreach i [array names FilePaths] {
-  set ivalues [array get FilePaths $i]
-  set name [lindex $ivalues 0]
-  set path [lindex $ivalues 1]
-  set $name $path
-}
+##make complete pathlist for use in makeDirs
+##export name vars for use in all procs
+set filePathL ""
+lappend filePathL [set AnnotatePng [file join $picdir annotatePng.tcl]]
+lappend filePathL [set Globals [file join $sharedir globals.tcl]]
+lappend filePathL [set Http [file join $sharedir http.tcl]]
+lappend filePathL [set UpdateInjection [file join $srcdir updateInjection.tcl]]
+lappend filePathL [set Readme [file join $rootdir README.txt]]
+lappend filePathL [set Setup [file join $rootdir biblepix-setup.tcl]]
+lappend filePathL [set ManualD [file join $docdir MANUAL_de.txt]]
+lappend filePathL [set ManualE [file join $docdir MANUAL_en.txt]]
+lappend filePathL [set Biblepix [file join $srcdir biblepix.tcl]]
+lappend filePathL [set BdfTools [file join $picdir BdfTools.tcl]]
+lappend filePathL [set BdfPrint [file join $picdir BdfPrint.tcl]]
+lappend filePathL [set Bidi [file join $sharedir Bidi.tcl]]
+lappend filePathL [set Image [file join $picdir image.tcl]]
+lappend filePathL [set Releasenotes [file join $docdir RELEASENOTES.txt]]
+lappend filePathL [set RotateTools [file join $picdir RotateTools.tcl]]
+lappend filePathL [set SetBackgroundChanger [file join $picdir setBackgroundChanger.tcl]]
+lappend filePathL [set SetupMainFrame [file join $setupdir setupMainFrame.tcl]]
+lappend filePathL [set SetupBuild [file join $setupdir setupBuildGUI.tcl]]
+lappend filePathL [set SetupDesktop [file join $setupdir setupDesktop.tcl]]
+lappend filePathL [set SetupDesktopPng [file join $setupdir setupDesktop.png]]
+lappend filePathL [set SetupEmail [file join $setupdir setupEmail.tcl]]
+lappend filePathL [set SetupInternational [file join $setupdir setupInternational.tcl]]
+lappend filePathL [set SetupPhotos [file join $setupdir setupPhotos.tcl]]
+lappend filePathL [set SetupManual [file join $setupdir setupManual.tcl]]
+lappend filePathL [set SetupResizePhoto [file join $setupdir setupResizePhoto.tcl]]
+lappend filePathL [set SetupResizeTools [file join $setupdir setupResizeTools.tcl]]
+lappend filePathL [set SetupRotate [file join $setupdir setupRotate.tcl]]
+lappend filePathL [set SetupTerminal [file join $setupdir setupTerminal.tcl]]
+lappend filePathL [set SetupWelcome [file join $setupdir setupWelcome.tcl]]
+lappend filePathL [set SetupTools [file join $setupdir setupTools.tcl]]
+lappend filePathL [set SetupTexts [file join $setupdir setupTexts.tcl]]
+lappend filePathL [set Save [file join $savedir save.tcl]]
+lappend filePathL [set SaveLin [file join $savedir saveLin.tcl]]
+lappend filePathL [set SaveLinHelpers [file join $savedir saveLinHelpers.tcl]]
+lappend filePathL [set SaveWin [file join $savedir saveWin.tcl]]
+lappend filePathL [set SaveWinHelpers [file join $savedir saveWinHelpers.tcl]]
+lappend filePathL [set Flags [file join $sharedir flags.tcl]]
+lappend filePathL [set Http [file join $sharedir http.tcl]]
+lappend filePathL [set HttpMock [file join $sharedir httpMock.tcl]]
+lappend filePathL [set JList [file join $sharedir JList.tcl]]
+lappend filePathL [set ImgTools [file join $picdir ImageTools.tcl]]
+lappend filePathL [set LoadConfig [file join $sharedir LoadConfig.tcl]]
+lappend filePathL [set TwdTools [file join $sharedir TwdTools.tcl]]
+lappend filePathL [set Uninstall [file join $savedir uninstall.tcl]]
+lappend filePathL [set Signature [file join $maildir signature.tcl]]
+lappend filePathL [set SigTools [file join $maildir SigTools.tcl]]
+lappend filePathL [set Config [file join $confdir biblepix.conf]]
+lappend filePathL [set Terminal [file join $termdir terminal.tcl]]
+lappend filePathL [set TerminalShell [file join $unixdir term.sh]]
 
-#Set sample JPEG array
-set bpxJpegUrl "http://vollmar.ch/biblepix/jpeg"
-array set sampleJpgArray "
-  utah.jpg [file join $sampleJpgDir) utah.jpg]
-  eire.jpg [file join $sampleJpgDir) eire.jpg]
-  lake.jpg [file join $sampleJpgDir) lake.jpg]
-  palms.jpg [file join $sampleJpgDir) palms.jpg]
-  mountain.jpg [file join $sampleJpgDir) mountain.jpg]
-  nevada.jpg [file join $sampleJpgDir) nevada.jpg]
-"
+##make complete pathlist for use in makeDirs
+##export name vars for use in all procs
+set sampleJpgL {}
+lappend sampleJpgL [set Utah [file join $sampleJpgDir utah.jpg]]
+lappend sampleJpgL [set Eire [file join $sampleJpgDir eire.jpg]]
+lappend sampleJpgL [set Lake [file join $sampleJpgDir lake.jpg]]
+lappend sampleJpgL [set Palms [file join $sampleJpgDir palms.jpg]]
+lappend sampleJpgL [set Mountain [file join $sampleJpgDir mountain.jpg]]
+lappend sampleJpgL [set Nevada [file join $sampleJpgDir nevada.jpg]]
 
-#Set Icons array & export
-set bpxIconUrl "http://vollmar.ch/biblepix"
-array set iconArray "
-  biblepix.png [file join $unixdir biblepix.png]
-  biblepix.ico [file join $windir biblepix.ico]
-"
+set WinIcon [file join $unixdir biblepix.png]
+set LinIcon [file join $windir biblepix.ico]
 
 #Set font size list (in pts)
-set fontSizeList {16 20 26 32}
+set fontSizeL {16 20 26 32}
+set fontPathL {}
 
-#Set fonts array
-foreach ptsize $fontSizeList {
-  array set BdfFontPaths "
-    Arial${ptsize}  [file join $fontdir Arial${ptsize}.tcl]
-    ArialI${ptsize} [file join $fontdir ArialI${ptsize}.tcl]
-    ArialB${ptsize} [file join $fontdir ArialB${ptsize}.tcl]
-    Times${ptsize}  [file join $fontdir Times${ptsize}.tcl]
-    TimesI${ptsize} [file join $fontdir TimesI${ptsize}.tcl]
-    TimesB${ptsize} [file join $fontdir TimesB${ptsize}.tcl]
-  "
+#set ptsize 20
+#set fontname ?
+foreach ptsize $fontSizeL {
+  lappend fontPathL [set Arial${ptsize} [file join $fontdir Arial${ptsize}.tcl]]
+  lappend fontPathL [set ArialI${ptsize} [file join $fontdir ArialI${ptsize}.tcl]]
+  lappend fontPathL [set ArialB${ptsize} [file join $fontdir ArialB${ptsize}.tcl]]
+  lappend fontPathL [set Times${ptsize}  [file join $fontdir Times${ptsize}.tcl]]
+  lappend fontPathL [set TimesI${ptsize} [file join $fontdir TimesI${ptsize}.tcl]]
+  lappend fontPathL [set TimesB${ptsize} [file join $fontdir TimesB${ptsize}.tcl]]
 }
-#Add Asian fonts to array (1 size!)
-array set BdfFontPaths "
-  ChinaFont [file join $fontdir asian WenQuanYi_ZenHei_24.tcl]
-  ThaiFont [file join $fontdir asian Kinnari_Bold_20.tcl]
-"
-
-set WinIcon [lindex [array get iconArray biblepix.ico] 1]
-set LinIcon [lindex [array get iconArray biblepix.png] 1]
+lappend fontPathL [set ChinaFont [file join $fontdir asian WenQuanYi_ZenHei_24.tcl]]
+lappend fontPathL [set ThaiFont [file join $fontdir asian Kinnari_Bold_20.tcl]]
 
 #Set TWD picture paths
 set TwdBMP [file join $imgdir theword.bmp]
@@ -285,6 +254,14 @@ proc sleep { ms } {
   after $ms set ::__sleep__tmp__$uniq 1
   vwait ::__sleep__tmp__$uniq
   unset ::__sleep__tmp__$uniq
+}
+# makeDirs
+##called by Installer & UpdateInjection
+proc makeDirs {} {
+  global dirPathL
+  foreach dirpath $dirPathL {
+    file mkdir $dirpath
+  }
 }
 
 catch {source $LoadConfig}

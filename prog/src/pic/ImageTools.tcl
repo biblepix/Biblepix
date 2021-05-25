@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18may21 pv
+# Updated: 23may21 pv
 
 #Check for Img package
 if [catch {package require Img} ] {
@@ -21,13 +21,14 @@ proc getRandomBMP {} {
   return [lindex $bmplist $randIndex]
 }
 
+#Ausgabe JPG/PNG mit Pfad
 proc getRandomPhotoPath	{} {
-  #Ausgabe JPG/PNG mit Pfad
-  global platform dirlist
+  global platform photosDir
+  
   if {$platform=="unix"} {
-    set imglist [glob -nocomplain -directory $dirlist(photosDir) *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
+    set imglist [glob -nocomplain -directory $photosDir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
   } elseif {$platform=="windows"} {
-    set imglist [glob -nocomplain -directory $dirlist(photosDir) *.jpg *.jpeg *.png]
+    set imglist [glob -nocomplain -directory $photosDir *.jpg *.jpeg *.png]
   }
   return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ] 
 }

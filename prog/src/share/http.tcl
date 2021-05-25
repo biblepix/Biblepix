@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27mch21 pv
+# Updated: 25may21 pv
 
 package require http
 
@@ -125,12 +125,13 @@ proc downloadFileFromUrl {filePath url} {
 }
 
 proc downloadTwdFile {twdFile year} {
+  global twdDir
   set twdFile [file tail $twdFile]
   set nameParts [split $twdFile "_"]
   lset nameParts 2 "$year.twd"
   set fileName [join $nameParts "_"]
 
-  set filePath $::dirlist(twdDir)/$fileName
+  set filePath $twdDir/$fileName
   set url $::twdBaseUrl/$fileName
 
   if [catch {package require tls}] {
@@ -152,7 +153,6 @@ proc downloadTwdFile {twdFile year} {
   http::cleanup $token
   http::unregister https
 }
-
 
 proc getDataFromUrl {url} {
   if [catch {package require tls}] {
@@ -284,12 +284,14 @@ proc getRemoteTWDFileList {} {
 }
 
 proc downloadTWDFiles {} {
+  global twdDir jahr
+  
   if { [catch {set root [getRemoteRoot]}] } {
     NewsHandler::QueryNews $::noConnTwd red
     return 1
   }
   
-  cd $::dirlist(twdDir)
+  cd $twdDir
   #get hrefs alphabetically ordered
   set urllist [$root selectNodes {//tr/td/a}]
   set hrefs ""
@@ -310,7 +312,7 @@ proc downloadTWDFiles {} {
     }
 
     #Download file & recreate Twd lists
-    downloadTwdFile $filename $::jahr
+    downloadTwdFile $filename $jahr
     after 3000
     .internationalF.f1.twdlocal insert end $filename
   }

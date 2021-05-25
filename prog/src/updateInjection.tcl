@@ -2,7 +2,7 @@
 # Regulates shift vom version 2.4 to 3.0
 # sourced once by biblepix-setup.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10jan19
+# Updated: 25may21 pv
 
 #Return to Setup if wrong version
 if {$version == "2.4"} {
@@ -11,7 +11,7 @@ if {$version == "2.4"} {
   pack .updateFrame.pbTitle .updateFrame.progbar
   .updateFrame.progbar start
   set pbTitle $updatingHttp
-  set srcdir $dirlist(srcdir)
+  set srcdir $srcdir
 
   # 1 Download new Globals & Http
   set sharedir [file join $srcdir share]
@@ -37,7 +37,7 @@ if {$version == "2.4"} {
   foreach path [glob -directory $rootdir -type d *] {
     lappend oldDirList $path
   }
-  foreach path [glob -directory $dirlist(srcdir) -type d *] {
+  foreach path [glob -directory $srcdir -type d *] {
     lappend oldDirList $path
   }
 
@@ -66,8 +66,9 @@ if {$version == "2.4"} {
 
   ##delete obsolete single files
   file delete $rootdir/README
-  file delete $dirlist(picdir)/hgbild.tcl
-  file delete $dirlist(picdir)/textbild.tcl
+  file delete $picdir/hgbild.tcl
+  file delete $picdir/textbild.tcl
+  file delete $sharedir/BdfBidi.tcl	
 
   # 4 Exit progbar and return to Setup
   .updateFrame.progbar stop

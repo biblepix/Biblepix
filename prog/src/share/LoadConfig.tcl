@@ -1,11 +1,11 @@
 # ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 19may21 pv
+# Updated: 25may21 pv
 
 #Source Config and LoadConfig for defaults
-if { [catch {source $Config}] } {
-  file mkdir $dirlist(confdir)
+if [catch {source $Config}] {
+  file mkdir $confdir
 }
 
 #Set lang var to English or German, depending if system lang found
@@ -29,7 +29,7 @@ if ![info exists lang] {
     if {[info exists syslangCode] && $syslangCode == "de"} {
       set lang de
     }
-    if {![info exists DesktopPicturesDir]} {
+    if ![info exists DesktopPicturesDir] {
       set DesktopPicturesDir $HOME
     }
   }
@@ -58,9 +58,9 @@ if ![info exists slideshow] {
 if {![info exists fontfamily] || ($fontfamily != "Sans" && $fontfamily != "Serif")} {
   set fontfamily "Sans"
 }
-#Set fontsize (must exist and be digits and be listed in fontSizeList)
-if {![info exists fontsize] || ![string is digit $fontsize] || ![regexp $fontsize $fontSizeList]} {
-  set fontsize [lindex $fontSizeList 1]
+#Set fontsize (must exist and be digits and be listed in fontSizeL)
+if {![info exists fontsize] || ![string is digit $fontsize] || ![regexp $fontsize $fontSizeL]} {
+  set fontsize [lindex $fontSizeL 1]
 }
 #Set fontweight
 if ![info exists fontweight] {

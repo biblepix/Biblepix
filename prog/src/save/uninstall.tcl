@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/uninstall.tcl
 # sourced by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17may21 pv
+# Updated: 25may21 pv
 
 set antwort [tk_messageBox -icon warning -type yesno -message $uninstall]
 
@@ -51,7 +51,7 @@ if {$antwort=="yes"} {
       #1. restore custom.theme
       set themepath [file join $env(appdata) Local Microsoft Windows Themes biblepix.theme]
       file delete -force $themepath
-      catch {exec cmd /c [file join $dirlist(windir) Custom.theme]}
+      catch {exec cmd /c [file join $windir Custom.theme]}
 
       #2. unregister Autorun
       setWinAutorun delete
