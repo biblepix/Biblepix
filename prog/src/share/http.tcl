@@ -30,7 +30,7 @@ proc runHTTP isInitial {
     foreach filepath $filePathList {
     
       ##avoid Chinese if not needed (rechecked in downloadTwdFile)
-      if {$filepath == $ChinaFont} {
+      if {$filepath == $::ChinaFont} {
         continue
       }
       downloadFileFromRelease $filepath $isInitial
@@ -52,6 +52,7 @@ proc runHTTP isInitial {
 proc downloadSampleJpegs {sampleJpgL url} {
   
   foreach filePath $sampleJpgL {
+    set fileName [file tail $filePath]
     set chan [open $filePath w]
     fconfigure $chan -encoding binary -translation binary
     http::geturl $url/$fileName -channel $chan

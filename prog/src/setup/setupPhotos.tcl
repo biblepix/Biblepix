@@ -42,4 +42,5 @@ button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic $::
 button .delBtn -textvar f6.del -activebackground red -command {delPic .photosC}
 button .rotateBtn -activebackground orange -textvar rotatePic -command {source $::SetupRotate}
 
+
 set fileJList [doCollect .photosC]

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25may21 pv
+# Updated: 26may21 pv
 
 source $SetupResizeTools
 source $JList
@@ -594,18 +594,18 @@ proc deleteImg {localJList canv} {
 
 # copyAndResizeSamplePhotos
 ## copies sample Jpegs to PhotosDir unchanged if size OK
-## else calls [resize]
+## else calls [resizePic]
 ## no cutting intended because these pics can be stretched
 ## called by BiblepixSetup
 proc copyAndResizeSamplePhotos {} {
-  global sampleJpgArray photosDir sampleJpgDir
+  global sampleJpgL photosDir sampleJpgDir
   source $::ImgTools
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
 
-  foreach fileName [array names sampleJpgArray] {
-
-    set origJpgPath [file join $sampleJpgDir $fileName]
+  foreach filePath $sampleJpgL {
+    set fileName [file tail $filePath]
+    set origJpgPath $filePath
     set newJpgPath [file join $photosDir $fileName]
     set newPngPath [setPngFileName $newJpgPath]
 
@@ -627,12 +627,12 @@ proc copyAndResizeSamplePhotos {} {
     } else {
 
       puts "Resizing $origJpgPath"
-      set newPic [resize origJpeg $screenX $screenY]
+      set newPic [resizePic origJpeg $screenX $screenY]
       $newPic write $newPngPath -format PNG
     }
   } ;#END foreach
+  
 } ;#END copyAndResizeSamplePhotos
-
 
 
 ################################################################################
