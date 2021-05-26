@@ -54,6 +54,7 @@ lappend dirPathL [set windir [file join $progdir win]]
 ##make complete file pathlist for use in makeDirs
 ##export file var names for use in all procs
 set filePathL {}
+##regular files
 lappend filePathL [set AnnotatePng [file join $picdir annotatePng.tcl]]
 lappend filePathL [set Globals [file join $sharedir globals.tcl]]
 lappend filePathL [set Http [file join $sharedir http.tcl]]
@@ -103,12 +104,14 @@ lappend filePathL [set SigTools [file join $maildir SigTools.tcl]]
 lappend filePathL [set Config [file join $confdir biblepix.conf]]
 lappend filePathL [set Terminal [file join $termdir terminal.tcl]]
 lappend filePathL [set TerminalShell [file join $unixdir term.sh]]
+##icons
 lappend filePathL [set LinIcon [file join $unixdir biblepix.png]]
 lappend filePathL [set LinIconSvg [file join $unixdir biblepix.svg]]
 lappend filePathL [set WinIcon [file join $windir biblepix.ico]]
 
 ##make complete pathlist for use in makeDirs
 ##export name vars for use in all procs
+##these are downloaded once by Installer
 set sampleJpgL {}
 lappend sampleJpgL [set Utah [file join $sampleJpgDir utah.jpg]]
 lappend sampleJpgL [set Eire [file join $sampleJpgDir eire.jpg]]
@@ -121,7 +124,7 @@ lappend sampleJpgL [set Nevada [file join $sampleJpgDir nevada.jpg]]
 set fontSizeL {16 20 26 32}
 set fontPathL {}
 foreach ptsize $fontSizeL {
-  lappend fontPathL [set Arial${ptsize} [file join $fontdir Arial${ptsize}.tcl]]
+  lappend fontPathL [set Arial${ptsize}  [file join $fontdir Arial${ptsize}.tcl]]
   lappend fontPathL [set ArialI${ptsize} [file join $fontdir ArialI${ptsize}.tcl]]
   lappend fontPathL [set ArialB${ptsize} [file join $fontdir ArialB${ptsize}.tcl]]
   lappend fontPathL [set Times${ptsize}  [file join $fontdir Times${ptsize}.tcl]]

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25may21 pv
+# Updated: 26may21 pv
 
 package require http
 
@@ -14,30 +14,28 @@ package require http
 ## Called by Installer, Setup, UpdateInjection
 proc runHTTP isInitial {
   #Test connexion & start download
-  if { [catch testHttpCon Error] } {
+  if [catch testHttpCon Error] {
     set ::ftpStatus $::noConnHttp
     catch {NewsHandler::QueryNews $::noConnHttp red}
-
     puts "ERROR: http.tcl -> runHTTP($args): $Error"
     error $Error
 
   } else {
 
-  #Download all registered files
-    foreach varName [array names ::FilePaths] {
-      set filePath [lindex [array get ::FilePaths $varName] 1]
-      downloadFileFromRelease $filePath $isInitial
-    }
 
-  #Download all registered fonts
-    foreach varName [array names ::BdfFontPaths] {
-      if {$varName == "ChinaFont"} {
+    global filePathL fontPathL
+    set filePathList [list {*}$filePathL {*}$fontPathL]
+    
+    #Download all registered files & fonts
+    foreach filepath $filePathList {
+    
+      ##avoid Chinese if not needed (rechecked in downloadTwdFile)
+      if {$filepath == $ChinaFont} {
         continue
       }
-      set filePath [lindex [array get ::BdfFontPaths $varName] 1]
-      downloadFileFromRelease $filePath $isInitial
+      downloadFileFromRelease $filepath $isInitial
     }
-      
+
     #Success message (source Texts again for Initial)
     catch {.if.initialMsg configure -bg lightgreen}
     catch {NewsHandler::QueryNews $::uptodateHttp bluen}
@@ -47,13 +45,13 @@ proc runHTTP isInitial {
   
 } ;#end runHTTP
 
-# downloadFileArray
-##Called by Installer for sampleJpgArray & iconArray
-proc downloadFileArray {fileArrayName url} {
-  upvar $fileArrayName fileArray
-  foreach fileName [array names fileArray] {
-    #puts $fileName
-    set filePath [lindex [array get fileArray $fileName] 1]
+
+
+# downloadSampleJpegs
+##Called by Installer for sample Jpg List
+proc downloadSampleJpegs {sampleJpgL url} {
+  
+  foreach filePath $sampleJpgL {
     set chan [open $filePath w]
     fconfigure $chan -encoding binary -translation binary
     http::geturl $url/$fileName -channel $chan
@@ -64,9 +62,9 @@ proc downloadFileArray {fileArrayName url} {
 # downloadFileFromRelease
 ##called by runHTTP
 proc downloadFileFromRelease {filePath isInitial} {
-  set filename [file tail $filePath]
 
-  puts $filename
+  set filename [file tail $filePath]
+  puts "Downloading $filename ..."
 
   #get remote 'meta' info (-validate 1)
   set token [http::geturl $::bpxReleaseUrl/$filename -validate 1]
@@ -266,12 +264,12 @@ proc listRemoteTWDFiles {lBox} {
 # getRemoteTWDFileList
 #......
 proc getRemoteTWDFileList {} {
-  if { [catch testHttpCon Error] } {
+  if [catch testHttpCon Error] {
     .internationalF.status conf -bg red
     set status $::noConnTwd
     puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
   } else {
-    if {![catch {listRemoteTWDFiles .twdremoteLB}]} {
+    if ![catch {listRemoteTWDFiles .twdremoteLB}] {
       .internationalF.status conf -bg lightgreen
       set status $::connTwd
     } else {
@@ -286,7 +284,7 @@ proc getRemoteTWDFileList {} {
 proc downloadTWDFiles {} {
   global twdDir jahr
   
-  if { [catch {set root [getRemoteRoot]}] } {
+  if [catch {set root [getRemoteRoot]}] {
     NewsHandler::QueryNews $::noConnTwd red
     return 1
   }
@@ -307,7 +305,7 @@ proc downloadTWDFiles {} {
     NewsHandler::QueryNews "Downloading $filename..." lightblue
 
     if [regexp zh- $url] {
-      set filePath $::BdfFontPaths(ChinaFont)
+      set filePath $::ChinaFont
       downloadFileFromRelease $filePath 0
     }
 
@@ -329,13 +327,13 @@ proc downloadTWDFiles {} {
 ##tests Http Connexion, returns error if connexion fails
 ##called by runHTTP
 proc testHttpCon {} {
-  if { [catch getTesttoken error] } {
+  if [catch getTesttoken error] {
     puts "ERROR: http.tcl -> testHttpCon: $error"
 
     #try proxy & retry connexion
     setProxy
 
-    if { [catch getTesttoken error] } {
+    if [catch getTesttoken error] {
       puts "ERROR: http.tcl -> testHttpCon -> proxy: $error"
       error $error
     }
@@ -362,7 +360,7 @@ proc getTesttoken {} {
 # setProxy
 ##called by testHttpCon
 proc setProxy {} {
-  if { [catch {package require autoproxy} ] } {
+  if [catch {package require autoproxy}] {
     set host localhost
     set port 80
   } else {

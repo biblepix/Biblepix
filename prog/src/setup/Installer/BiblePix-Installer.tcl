@@ -5,7 +5,7 @@
 # Overwrites any old program version!
 # Version: 4.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15may21 pv
+# Updated: 26may21 pv
 
 package require http
 
@@ -135,10 +135,7 @@ if [catch testHttpCon Error] {
 } else {
  
   .if.pb start
-
-#TODO testing
-#set srcdir /tmp/Biblepix/prog/src
-  
+ 
   #Create directory structure & source Globals
   file mkdir $srcdir
   cd $srcdir
@@ -162,8 +159,10 @@ if [catch testHttpCon Error] {
 	} else {
     
 		source $Http
-    downloadFileArray sampleJpgArray $bpxJpegUrl
-    downloadFileArray iconArray $bpxIconUrl
+    downloadSampleJpegs $sampleJpgL $bpxJpegUrl
+    
+#    downloadFileArray sampleJpgArray $bpxJpegUrl
+#    downloadFileArray iconArray $bpxIconUrl
 
     #delete extra files (refetched!)
     file delete $srcdir/globals.tcl $srcdir/http.tcl
