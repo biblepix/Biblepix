@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 25may21 pv
+# Updated: 27may21 pv
 set version "4.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -14,16 +14,16 @@ set os $tcl_platform(os)
 set tclpath [auto_execok tclsh]
 set wishpath [auto_execok wish]
 
-if  [info exists srcdir] {
-  #set
+#Rootdir location
+##Git download (any place on PC)
+if [info exists srcdir] {
   set rootdir "[file dirname [file dirname [file normalize $srcdir ]]]"
+##Windows
+} elseif [info exists env(LOCALAPPDATA)] {
+  set rootdir "[file normalize [file join $env(LOCALAPPDATA) Biblepix]]"
+##Unix
 } else {
-  #reset
-  if [info exists env(LOCALAPPDATA)] {
-    set rootdir "[file join $env(LOCALAPPDATA) Biblepix]"
-  } else {
-    set rootdir "[file join $env(HOME) Biblepix]"
-  }
+  set rootdir "[file join $env(HOME) Biblepix]"
 }
 
 #S e t   d i r n a m e s
