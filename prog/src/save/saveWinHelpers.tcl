@@ -1,14 +1,14 @@
 # ~/Biblepix/prog/src/share/setupSaveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25may21 pv
+# Updated: 27may21 pv
 
 package require registry
 
 #Set Registry compatible paths
-set wishpath [file nativename [auto_execok wish]]
-set srcpath [file nativename $srcdir]
-set winpath [file nativename $windir]
+set wishpath [file normalize [auto_execok wish]]
+set srcpath [file normalize $srcdir]
+set winpath [file normalize $windir]
 
 #sets/unsets BiblePix Autorun
 #no admin rights required
@@ -18,7 +18,7 @@ proc setWinAutorun args {
   set regpath_autorun [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Run} \\]
 
   if {$args == ""} {
-    set regtext "$wishpath [file nativename [file join $srcpath biblepix.tcl]]"
+    set regtext "$wishpath [file normalize [file join $srcpath biblepix.tcl]]"
     regsub -all {[\{\}]} $regtext {} regtext
     
     registry set $regpath_autorun Biblepix $regtext
@@ -59,7 +59,7 @@ proc setBackgroundType {} {
 proc setWinContextMenu args {
   global wishpath Setup winpath windir
   
-  set SetupPath [file nativename $Setup]
+  set SetupPath [file normalize $Setup]
 
   #amend paths for .reg file (double \\ needed)
   regsub -all {\\} $wishpath {\\\\} wishpath
@@ -99,7 +99,7 @@ proc setWinContextMenu args {
   close $chan
 
   #Execute regfile
-  set regpath "[file nativename $windir]\\install.reg"
+  set regpath "[file normalize $windir]\\install.reg"
   regsub -all {\\} $regpath {\\\\} regpath
   
   catch {exec cmd /c regedit.exe $regpath}
@@ -116,7 +116,7 @@ proc setWinTheme {} {
 DisplayName=BiblePix
 
 \[Control Panel\\Desktop\]
-Wallpaper=[file nativename $TwdTIF]
+Wallpaper=[file normalize $TwdTIF]
 TileWallpaper=0
 WallpaperStyle=2
 
