@@ -1,14 +1,14 @@
 # ~/Biblepix/prog/src/share/setupSaveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27may21 pv
+# Updated: 28may21 pv
 
 package require registry
 
 #Set Registry compatible paths
-set wishpath [file normalize [auto_execok wish]]
-set srcpath [file normalize $srcdir]
-set winpath [file normalize $windir]
+set wishpath "[file nativename [auto_execok wish]]"
+set srcpath "[file nativename $srcdir]"
+set winpath "[file nativename $windir]"
 
 #sets/unsets BiblePix Autorun
 #no admin rights required
@@ -16,14 +16,18 @@ proc setWinAutorun args {
   global wishpath srcpath
 
   set regpath_autorun [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Run} \\]
+  ##extra "" must be since Tcl can't read path's with spaces!
+  append execpath \" $srcpath \\ biblepix.tcl \"
 
   if {$args == ""} {
-    set regtext "$wishpath [file normalize [file join $srcpath biblepix.tcl]]"
-    regsub -all {[\{\}]} $regtext {} regtext
-    
-    registry set $regpath_autorun Biblepix $regtext
+
+  append execstring $wishpath { } $execpath 
+  registry set "$regpath_autorun" "Biblepix" "$execstring"
+
+  
   } else {
-    catch {registry delete $regpath_autorun Biblepix}
+  
+    catch {registry delete "$regpath_autorun" "Biblepix"}
   }
 }
 
@@ -59,14 +63,14 @@ proc setBackgroundType {} {
 proc setWinContextMenu args {
   global wishpath Setup winpath windir
   
-  set SetupPath [file normalize $Setup]
+  append SetupPath "[file nativename $Setup]"
 
   #amend paths for .reg file (double \\ needed)
   regsub -all {\\} $wishpath {\\\\} wishpath
   regsub -all {\\} $SetupPath {\\\\} SetupPath
   regsub -all {\\} $winpath {\\\\} winpath
 
-  set setupCommand "$wishpath $SetupPath"
+  append setupCommand $wishpath { } \" $SetupPath \"
   
   #detect if "unset"
   if {$args != ""} {
@@ -89,9 +93,10 @@ proc setWinContextMenu args {
 \"Wallpaper\"=-
 "
   }
-  
+
+
   #remove any {} from paths
-  regsub -all {[\{\}]} $regtext {} regtext
+  #regsub -all {[\{\}]} $regtext {} regtext
 
   #Write regtext to install.reg, overwriting any old files
   set chan [open $windir/install.reg w]
@@ -99,7 +104,7 @@ proc setWinContextMenu args {
   close $chan
 
   #Execute regfile
-  set regpath "[file normalize $windir]\\install.reg"
+  set regpath "[file nativename $windir]\\install.reg"
   regsub -all {\\} $regpath {\\\\} regpath
   
   catch {exec cmd /c regedit.exe $regpath}
