@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 25may21 pv
+# Updated 29may21 pv
 
 #Statusbar
 frame .internationalF.f0 -padx $px
@@ -37,7 +37,7 @@ button .internationalF.f1.delbtn -bg $bg -textvar delete -command {
     file delete $twdDir/$fileName
     .internationalF.f1.twdlocal delete $lbIndex
   }
-  updateMailBtnList
+  updateMailBtnList .emailF.topF.f2.rightF
 }
 
 pack .internationalF.f1.delbtn -side right -fill none
@@ -63,7 +63,7 @@ listbox .twdremoteLB -yscrollcommand {.twdremoteScr set} -selectmode multiple -a
 scrollbar .twdremoteScr -command {.twdremoteLB yview}
 button .downloadBtn -text Download -command {
   downloadTWDFiles
-  updateMailBtnList
+  updateMailBtnList .emailF.topF.f2.rightF
 }
 pack .internationalF.twdremoteframe -anchor w
 pack .downloadBtn -in .internationalF.twdremoteframe -side right -fill x
