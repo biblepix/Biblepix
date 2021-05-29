@@ -294,7 +294,7 @@ proc updateMailBtnList {window} {
     lappend sigLangBtnList .${code}Btn
   }
   set ::langcodeL $langcodeL
-  set ::sigLangBtnList $sigLanggBtnList
+  set ::sigLangBtnList $sigLangBtnList
   #return $sigLangBtnList
 }
 # updateSelectedMailBtnList
