@@ -61,7 +61,10 @@ pack .twdremote1L .twdremote2L .twdremote3L .twdremote4L -in .twdremoteTitleF -s
 frame .internationalF.twdremoteframe -padx $px
 listbox .twdremoteLB -yscrollcommand {.twdremoteScr set} -selectmode multiple -activestyle none -font TkFixedFont -width [expr $wWidth - 50] -height [expr $wHeight - 300] -bg lightblue
 scrollbar .twdremoteScr -command {.twdremoteLB yview}
-button .downloadBtn -text Download -command {downloadTWDFiles; updateMailBtnList}
+button .downloadBtn -text Download -command {
+  downloadTWDFiles
+  updateMailBtnList
+}
 pack .internationalF.twdremoteframe -anchor w
 pack .downloadBtn -in .internationalF.twdremoteframe -side right -fill x
 pack .twdremoteScr .twdremoteLB -in .internationalF.twdremoteframe -side right -fill y

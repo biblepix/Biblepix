@@ -14,59 +14,23 @@ pack [frame .emailF.botF.right -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -
 #Create labels & widgets
 label .mainTit -textvar f3.tit -font bpfont3
 label .wunschsprachenTit -textvar f3.sprachen -font bpfont1 -bg beige -bd 1 -relief sunken -padx 7 -pady 3 ;#-fg [gradient beige -0.3]
-checkbutton .sigyesnoCB -textvar f3.btn -variable sigyesState -command {toggleCBstate}
+checkbutton .sigyesnoBtn -textvar f3.btn -variable sigyesState -command {toggleBtnstate}
 pack .mainTit -in .emailF.topF.f1 -side left
 pack .wunschsprachenTit -in .emailF.topF.f1 -side right -anchor ne -pady 10 -padx 100
-pack .sigyesnoCB -in .emailF.topF.f2 -side left -anchor nw
+pack .sigyesnoBtn -in .emailF.topF.f2 -side left -anchor nw
 pack [frame .emailF.topF.f2.rightF] -side right -padx 100 -pady $py
 
-#List language codes of installed TWD files
-#called here & in SetupInternational 
-proc updateMailBtnList {} {
-  global twdDir
-  set twdList [getTwdList]
-  foreach e $twdList {
-    #files may have been deleted after creating Codelist!
-    if [file exists $twdDir/$e] {
-      lappend codelist [string range $e 0 1]
-    }
-  }
+updateMailBtnList .emailF.topF.f2.rightF
+
+##called by .sigyes Btn to enable/disable lang checkbuttons
+proc toggleBtnstate {} {
+  global sigLangBtnList sigyesState
   
-  set codelist [lsort -decreasing -unique $codelist]
-
-  #Create language buttons for each language code
-  foreach slave [pack slaves .emailF.topF.f2.rightF] {pack forget $slave}
-  
-  foreach code $codelist {
-    catch {  checkbutton .${code}CB -text $code -width 5 -selectcolor beige -indicatoron 0 -variable sel${code} }
-    pack .${code}CB -in .emailF.topF.f2.rightF -side right -padx 3
-    lappend sigLangCBList .${code}CB
+  if {![info exists sigLangBtnList] || $sigLangBtnList== ""} {
+    return
   }
-  set ::codelist $codelist
-}
-updateMailBtnList
 
-#Lists selected sigLangCB's
-##called by Save
-proc updateSelectedList {} {
-  global codelist lang
-  foreach code $codelist {
-    set varname "sel${code}" 
-    if [set ::$varname] {
-      lappend sigLanglist $code
-    }
-  }
-  if ![info exists sigLanglist] {
-    puts "No signature languages selected. Saving default."
-    set sigLanglist $lang
-  }
-  return $sigLanglist
-}
-
-##called by .sigyes CB to enable/disable lang checkbuttons
-proc toggleCBstate {} {
-  global sigLangCBList sigyesState  
-  foreach cb $sigLangCBList {
+  foreach cb $sigLangBtnList {
     if $sigyesState {
       $cb conf -state normal
     } else {
@@ -80,23 +44,22 @@ proc toggleCBstate {} {
 if {[info exists sigLanglist] && $sigLanglist != ""} {
   foreach code $sigLanglist {
     if [file exists [glob -nocomplain -directory $twdDir ${code}*]] {
-      set CB .${code}CB
-      $CB select
+      set Btn .${code}Btn
+      $Btn select
     }
   }
-    
+
 ##B) $sigLanglist not found
 } else {
-
   #select language button if system language is different from $lang var
-  if {[info exists syslangCode] && [winfo exists .${syslangCode}CB]} {
-    .${syslangCode}CB select
+  if {[info exists syslangCode] && [winfo exists .${syslangCode}Btn]} {
+    .${syslangCode}Btn select
   }
   #select $lang button if it exists
-  if {$lang == "de" && [winfo exists .deCB]} {
-    .deCB select
-  } elseif {$lang == "en" && [winfo exists .enCB]} {
-    .enCB select
+  if {$lang == "de" && [winfo exists .deBtn]} {
+    .deBtn select
+  } elseif {$lang == "en" && [winfo exists .enBtn]} {
+    .enBtn select
   }
 }
 

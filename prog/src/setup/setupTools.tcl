@@ -1,8 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26may21 pv
-
+# Updated: 29may21 pv
 source $SetupResizeTools
 source $JList
 
@@ -154,7 +153,7 @@ proc setSpinState {imgyesState} {
   } else {
     set com disabled
   }
-  lappend widgetlist .showdateBtn .slideBtn .slideSpin .fontcolorSpin .fontsizeSpin .fontweightBtn .fontfamilySpin .randomfontcolorCB
+  lappend widgetlist .showdateBtn .slideBtn .slideSpin .fontcolorSpin .fontsizeSpin .fontweightBtn .fontfamilySpin .randomfontcolorBtn
   foreach i $widgetlist {
     $i configure -state $com
   }
@@ -268,6 +267,57 @@ proc setManText {lang} {
   $manW configure -state disabled
 
 }
+#####################################################################
+# S E T U P   M A I L   P R O C S
+#####################################################################
+
+# updateMailBtnList
+#List language codes of installed TWD files
+#called here & in SetupInternational 
+proc updateMailBtnList {window} {
+  global twdDir
+  set twdList [getTwdList]
+  if {$twdList == ""} {return}
+  
+  foreach e $twdList {
+    #files may have been deleted after creating langcodeL!
+    if [file exists $twdDir/$e] {
+      lappend codeL [string range $e 0 1]
+    }
+  }
+  set langcodeL [lsort -decreasing -unique $codeL]
+  #Create language buttons for each language code
+  foreach slave [pack slaves $window] {pack forget $slave}
+  foreach code $langcodeL {
+    catch {  checkbutton .${code}Btn -text $code -width 5 -selectcolor beige -indicatoron 0 -variable sel${code} }
+    pack .${code}Btn -in .emailF.topF.f2.rightF -side right -padx 3
+    lappend sigLangBtnList .${code}Btn
+  }
+  set ::langcodeL $langcodeL
+  set ::sigLangBtnList $sigLanggBtnList
+  #return $sigLangBtnList
+}
+# updateSelectedMailBtnList
+#Lists selected sigLangBtn's
+##called by Save
+proc updateSelectedMailBtnList {} {
+  global lang langcodeL
+  if {![info exists langcodeL] || $langcodeL == ""} {
+    return $lang
+  }
+  foreach code $langcodeL {
+    set varname "sel${code}" 
+    if [set ::$varname] {
+      lappend sigLanglist $code
+    }
+  }
+  if ![info exists sigLanglist] {
+    puts "No signature languages selected. Saving default."
+    set sigLanglist $lang
+  }
+  return $sigLanglist
+}
+
 
 #########################################################################
 ##### C A N V A S   M O V E   P R O C S #################################
@@ -666,10 +716,6 @@ proc fillWidgetWithTodaysTwd twdWidget {
   ##export for other Setup widgets
   set ::setupTwdText $twdText
 }
-
-
-
-
 
 
 # deleteOldStuff

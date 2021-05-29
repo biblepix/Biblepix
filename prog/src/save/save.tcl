@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 25may21 pv 
+# Updated : 29may21 pv 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $twdDir/*$jahr.twd}] } {
@@ -27,7 +27,7 @@ set imgstatus [set imgyesState]
 set sigstatus [set sigyesState]
 #scan $CodeList from SetupEmail for selected items
 if {$sigstatus} {
-  set sigLanglist [updateSelectedList]
+  set sigLanglist [updateSelectedMailBtnList]
 }
 
 set titlelinestatus [set enabletitle]
