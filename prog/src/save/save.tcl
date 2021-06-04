@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 29may21 pv 
+# Updated : 4jun21 pv 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $twdDir/*$jahr.twd}] } {
@@ -88,10 +88,10 @@ puts $chan "set Httmock $Httpmock"
 
 #3.Write Linux vars to $Config
 if {$os == "Linux"} {
-  if {[info exists crontab]} {
+  if [info exists crontab] {
     puts $chan "set crontab 1"
   }
-  if {[info exists termstatus]} {
+  if [info exists termstatus] {
     puts $chan "set enableterm $termstatus"
   }
   #Define Desktop Images dir

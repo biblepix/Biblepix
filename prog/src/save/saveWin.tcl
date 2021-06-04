@@ -1,60 +1,76 @@
 # ~/Biblepix/prog/src/gui/setupSaveWin.tcl
 # Sourced by Save.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 30may21
+# Updated: 4jun21
 
 #Windows handles TIF + BMP
 package require registry
 source $SaveWinHelpers
 
 #Set Registry compatible paths
-set wishpath [file nativename [auto_execok wish]]
-set winpath [file nativename $windir]
+set wishpath "[file nativename [auto_execok wish]]"
+set srcpath "[file nativename $srcdir]"
+set winpath "[file nativename $windir]"
+set setuppath "[file nativename $Setup]"
+
+##non-root registry paths
+set regpath_autorun         [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Run} \\]
+set regpath_backgroundtype  [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
+##root privileges needed
+set regpath_desktop  [join {HKEY_CLASSES_ROOT DesktopBackground Shell Biblepix} \\]
+set regpath_policies [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Policies System} \\]
 
 # A)  N O N - A D M I N   R E G I S T E R I N G S
 
-#1a. Register Autorun always
+#1a. Register Autorun if not present
 if { [info exists Debug] && $Debug } {
-  regWinAutorun
+  regAutorun
 } else {
-  set autorunError [catch setWinAutorun]
+puts Running_Autorun...
+  set autorunError [catch regAutorun err]
+  puts $err
 }
 
+#TODO !try skipping!
 #1b. Execute single pic theme if running slideshow detected
 if {$enablepic} {
   if { [info exists Debug] && $Debug } {
     getBackgroundType
   } else {
-    set themeError [catch getBackgroundType]
+    set themeError [catch getBackgroundType err]
+    puts Running_backgroundtype...
+    puts $err
   }
 }
 
 # B)  A D M I N   R E G I S T E R I N G S
 
 # Register Context Menu IF values differ
-#TODO coordinate values with saveWinHelpers!
-
-set regpath_desktop [join {HKEY_CLASSES_ROOT DesktopBackground Shell Biblepix} \\]
 set regpathStandardKeyValue "BiblePix Setup"
 set iconKeyValue "$winpath\\biblepix.ico"
 set posKeyValue "Bottom"
 set commandPath "$regpath_desktop\\Command"
 
-#TODO something's wrong here !!!!!!! - adapt to way in saveWinHelpers
-regsub -all {[{}]} "$wishpath [file nativename $Setup]" {} commandPathStandardKeyValue
+#setupCommand must have \\ usw. because of \" inside string, exactly like this:
+## ...TODO get from $windir/install.reg !
+append setupCommand $wishpath { } \u0022 $setuppath \u0022
 
-#1. Prüfe Grundeintrag und Schlüssel - TODO use more catch?s?
-if { [catch {registry get $regpath_desktop {}} ] ||
-  [registry get $regpath_desktop Icon] != $iconKeyValue ||
-  [registry get $regpath_desktop Position] != $posKeyValue ||
-  [registry get $commandPath {}] != $commandPathStandardKeyValue
-  } {
+#Prüfe Grundeintrag und Schlüssel
+if { 
+  [catch {registry get $regpath_desktop {}} ] ||
+  [registry get $regpath_desktop Icon] != "$iconKeyValue" ||
+  [registry get $regpath_desktop Position] != "$posKeyValue" ||
+  [registry get $commandPath {}] != "$setupCommand"
   
+} {
+puts running_contextmenu
+
   tk_messageBox -type ok -title "BiblePix Registry Installation" -icon info -message $winRegister
   if { [info exists Debug] && $Debug } {
-    setWinContextMenu
+    regContextMenu
   } else {
-    set regError [catch setWinContextMenu]
+    set regError [catch regContextMenu err]
+    puts $err
   }
 }
 

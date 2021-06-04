@@ -1,39 +1,32 @@
 # ~/Biblepix/prog/src/share/setupSaveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jun21 pv
-#package require registry
-
-#Set Registry compatible paths
-set wishpath "[file nativename [auto_execok wish]]"
-set srcpath "[file nativename $srcdir]"
-set winpath "[file nativename $windir]"
-##non-root
-set regpath_autorun         [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Run} \\]
-set regpath_backgroundtype  [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
-##root privileges needed
-set regpath_desktopbackground [join {HKEY_CLASSES_ROOT DesktopBackground Shell Biblepix} \\]
-set regpath_policies          [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Policies System} \\]
+# Updated: 4jun21 pv
 
 # regWinAutorun 
 ##(un)registers BiblePix Autorun (with args=unset)
 ##no admin rights required
+##NOTE: Windows "Designs" program is run if 'registry set' fails!
 ##called by SaveWin
 proc regAutorun args {
   global wishpath srcpath regpath_autorun
 
-#puts [info level 0]
+  ##NOTE: extra "0022" needed since Tcl can't read paths with spaces!
+  append commandpath \u0022 $srcpath \\ biblepix.tcl \u0022
 
-  ##extra "0022" must be since Tcl can't read paths with spaces!
-  append execpath \u0022 $srcpath \\ biblepix.tcl \u0022
-
-  #with args = delete
+  #A) with args: delete
   if {$args != ""} {
     catch {registry delete "$regpath_autorun" "Biblepix"}
     return
   }
-
-  registry set "$regpath_autorun" "Biblepix" "$execstring" 
+  #B) register only if missing
+  if { 
+    [catch {registry get "$regpath_autorun" "Biblepix"} res] || 
+    $res != "$commandpath"
+  } {
+    puts "Registering Autorun for Biblepix..."
+    registry set "$regpath_autorun" "Biblepix" "$commandpath" 
+  }
 }
 
 # regWinContextMenu
@@ -42,53 +35,16 @@ proc regAutorun args {
 ##removes any "Policies\System Wallpaper" key (blocks user intervention)
 ##called by SaveWin
 proc regContextMenu args {
-  global wishpath Setup winpath windir WinIcon
-  global regpath_desktopbackground regpath_policies 
+  global wishpath setuppath windir winpath WinIcon
+  global regpath_desktop regpath_policies iconKeyValue posKeyValue 
   
-  set setupPath "[file nativename $Setup]"
-  append iconPath  "[file nativename $winpath]" \\ biblepix.ico
-  append commandPath "[file nativename $regpath_desktopbackground]" \\ Command
-
-  ##setupCommand must have \\ usw. because of \" inside string, exactly like this:
+  ##setupCommand must have double \\ because of \" inside string, exactly like this:
   ## ...TODO get from $windir/install.reg !
   set wishpathRegfile [string map {\u005c \u005c\u005c} $wishpath]
-  set setuppathRegfile [string map {\u005c \u005c\u005c} $setupPath]
-  append setupCommand \u0022 $wishpathRegfile { } \\ \u0022 $setuppathRegfile \\ \u0022 \u0022
+  set setuppathRegfile [string map {\u005c \u005c\u005c} $setuppath]
+  append setupCommandRegfile \u0022 $wishpathRegfile { } \\ \u0022 $setuppathRegfile \\ \u0022 \u0022
   
-  #A) Check if path installed & all values correct (no admin rights required)
-  ##check if key "Command" is present
-  if ![catch {registry keys $regpath_desktopbackground}] {
-  
-    #B) Check command values
-    ##1.Command value ##2. Icon value     ##3 Position value
-    catch {registry get $commandPath ""} val1
-    catch {registry get $regpath_desktopbackground Icon} val2
-    catch {registry get $regpath_desktopbackground Position} val3
-
-puts $val1
-#puts $setupCommand
-#puts $val2
-#puts $iconPath
-#puts $val3
-#append setupCommandforCheck $wishpath { } \" $setupPath \"
-
-#puts $setupCommandforCheck
-  
-    #C) Compare values with defaults 
-    ##NOTE full paths are never matched!
-    if {
-      [string match "*[file tail $Setup]" $val1] &&
-      [string match "*[file tail $WinIcon]" $val2] &&
-      [string match "Bottom" $val3]
-    } {
-    #no reinstall needed
-      return 0
-    }
-  }
-  
-
-
-  #B) Prepare reg file for execution as Admin  
+  #Prepare reg file for execution as Admin  
   ##set obligatory intro line
   set regintro "Windows Registry Editor Version 5.00"
       
@@ -106,11 +62,11 @@ puts $val1
     ##add Biblepix Description + Iconpath + Position
     append regtext {[HKEY_CLASSES_ROOT\DesktopBackground\Shell\Biblepix]} \n
     append regtext {@="BiblePix Setup"} \n
-    append regtext {"Icon"=} \u0022 "$iconPath" \u0022 \n
+    append regtext {"Icon"=} \u0022 "$iconKeyValue" \u0022 \n
     append regtext {"Position"="Bottom"} \n\n
     ##add Biblepix command
     append regtext {[HKEY_CLASSES_ROOT\DesktopBackground\Shell\Biblepix\Command]} \n
-    append regtext {@=} "$setupCommand" \n\n
+    append regtext {@=} "$setupCommandRegfile" \n\n
     ##remove Wallpaper value from System policies
     append regtext {[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System]} \n
     append regtext {"Wallpaper"=-}
@@ -131,6 +87,8 @@ puts $val1
 ##Detect running slideshow 
 ##no admin rights required (entry reset by Windows when user sets bg)
 ##Types: 0=Einzelbild / 2=Diaschau / 1=Volltonfarbe
+#TODO müssen wir set backgroundtype ausführen?????##falsche frage, das Problem ist mit setWinTheme!
+
 ##called by SaveWin
 proc getBackgroundType {} {
   global winChangingDesktop regpath_backgroundtype
@@ -139,6 +97,7 @@ proc getBackgroundType {} {
   if {!$error && $BackgroundType == 0} {
     return
   }
+  
   if !$error {
     tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangingDesktop
     setWinTheme
@@ -150,7 +109,6 @@ proc getBackgroundType {} {
 ##called by getBackgroundType
 proc setWinTheme {} {
   global env TwdTIF windir
-
   set themepath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Biblepix.theme]
   set themetext "\[Theme\]
 DisplayName=BiblePix
@@ -171,20 +129,22 @@ MTSM=DABJDKT"
 
   #1.Save current theme to $windir for Uninstall
   set CustomThemePath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Custom.theme]
-  catch {file copy $CustomThemePath $windir}
+  catch {file copy "$CustomThemePath" $windir}
 
   #2.Write & execute BP theme
   set chan [open $themepath w]
   puts $chan $themetext
   close $chan
   
+  #TODO this opens the Designs window!
+  tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message "If the 'Designs' window pops up, just click on the X (exit) symbol so BiblePix can finish installation!"
   exec cmd /c $themepath
 } ;#END setWinTheme
 
 # registerTcl
 ##registers run_? and .tcl extension
 ##Magicsplat registers different extension!
-##called by ...
+##called by ...?
 proc registerTcl {} {
 
 
