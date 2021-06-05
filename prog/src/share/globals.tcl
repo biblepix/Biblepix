@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 27may21 pv
+# Updated: 5jun21 pv
 set version "4.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -104,6 +104,7 @@ lappend filePathL [set SigTools [file join $maildir SigTools.tcl]]
 lappend filePathL [set Config [file join $confdir biblepix.conf]]
 lappend filePathL [set Terminal [file join $termdir terminal.tcl]]
 lappend filePathL [set TerminalShell [file join $unixdir term.sh]]
+lappend filePathL [set TerminalConf [file join $confdir term.conf]]
 ##icons
 lappend filePathL [set LinIcon [file join $unixdir biblepix.png]]
 lappend filePathL [set LinIconSvg [file join $unixdir biblepix.svg]]
