@@ -87,8 +87,6 @@ proc regContextMenu args {
 ##Detect running slideshow 
 ##no admin rights required (entry reset by Windows when user sets bg)
 ##Types: 0=Einzelbild / 2=Diaschau / 1=Volltonfarbe
-#TODO müssen wir set backgroundtype ausführen?????##falsche frage, das Problem ist mit setWinTheme!
-
 ##called by SaveWin
 proc getBackgroundType {} {
   global winChangingDesktop regpath_backgroundtype
@@ -97,9 +95,7 @@ proc getBackgroundType {} {
   if {!$error && $BackgroundType == 0} {
     return
   }
-  
   if !$error {
-    tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangingDesktop
     setWinTheme
   }
 }
@@ -110,6 +106,10 @@ proc getBackgroundType {} {
 proc setWinTheme {} {
   global env TwdTIF windir
   set themepath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Biblepix.theme]
+
+  #Warn of Designs window popping up
+  tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winIgnorePopup
+
   set themetext "\[Theme\]
 DisplayName=BiblePix
 
@@ -136,8 +136,6 @@ MTSM=DABJDKT"
   puts $chan $themetext
   close $chan
   
-  #TODO this opens the Designs window!
-  tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message "If the 'Designs' window pops up, just click on the X (exit) symbol so BiblePix can finish installation!"
   exec cmd /c $themepath
 } ;#END setWinTheme
 

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupSaveWin.tcl
 # Sourced by Save.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4jun21
+# Updated: 5jun21
 
 #Windows handles TIF + BMP
 package require registry
@@ -12,7 +12,6 @@ set wishpath "[file nativename [auto_execok wish]]"
 set srcpath "[file nativename $srcdir]"
 set winpath "[file nativename $windir]"
 set setuppath "[file nativename $Setup]"
-
 ##non-root registry paths
 set regpath_autorun         [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Run} \\]
 set regpath_backgroundtype  [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
@@ -26,20 +25,19 @@ set regpath_policies [join {HKEY_CURRENT_USER Software Microsoft Windows Current
 if { [info exists Debug] && $Debug } {
   regAutorun
 } else {
-puts Running_Autorun...
   set autorunError [catch regAutorun err]
   puts $err
 }
 
-#TODO !try skipping!
 #1b. Execute single pic theme if running slideshow detected
+##runs setWinTheme if necessary & warns to ignore Designs popup
 if {$enablepic} {
+  tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangingDesktop
+
   if { [info exists Debug] && $Debug } {
     getBackgroundType
   } else {
     set themeError [catch getBackgroundType err]
-    puts Running_backgroundtype...
-    puts $err
   }
 }
 
@@ -65,7 +63,9 @@ if {
 } {
 puts running_contextmenu
 
+#TODO Move this up to include Designs popup!!!!!
   tk_messageBox -type ok -title "BiblePix Registry Installation" -icon info -message $winRegister
+  
   if { [info exists Debug] && $Debug } {
     regContextMenu
   } else {

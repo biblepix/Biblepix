@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/uninstall.tcl
 # sourced by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25may21 pv
+# Updated: 5jun21 pv
 
 set antwort [tk_messageBox -icon warning -type yesno -message $uninstall]
 
@@ -54,10 +54,10 @@ if {$antwort=="yes"} {
       catch {exec cmd /c [file join $windir Custom.theme]}
 
       #2. unregister Autorun
-      setWinAutorun delete
+      regAutorun delete
       
       #3. unregister Context Menu
-      setWinContextMenu delete
+      regContextMenu delete
 
     } ;#end if windows
     
