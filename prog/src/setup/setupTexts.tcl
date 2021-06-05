@@ -382,14 +382,12 @@ Example:"
   set linChangingDesktop(en) "BiblePix will now try to register with your Desktop Background. If you can't see a new background picture after that, find a solution in the Manual."
   set ::linChangingDesktop $linChangingDesktop($lang)
 
-#TODO why 2 Dialogs???????????????????????
-  set winChangingDesktop(de) "$linChangingDesktop($lang)\n\n$winIgnorePopup($lang)"
-  set winChangingDesktop(en) "$linChangingDesktop($lang)\n\n$winIgnorePopup($lang)"
-  set ::winChangingDesktop $winChangingDesktop($lang)
-
   set winIgnorePopup(en) "Please confirm any System window popping up by pressing OK so $bp can finish registration!"
   set winIgnorePopup(de) "Quittieren Sie bitte alle Systemmeldungen mit OK, damit $bp die Registrierung abschliessen kann!"
   set ::winIgnorePopup $winIgnorePopup($lang)
+  set winChangingDesktop(de) "$linChangingDesktop($lang)\n\n$winIgnorePopup($lang)"
+  set winChangingDesktop(en) "$linChangingDesktop($lang)\n\n$winIgnorePopup($lang)"
+  set ::winChangingDesktop $winChangingDesktop($lang)
 
   set winChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung des Desktophintergrunds.\nBitte rechtsklicken Sie auf Ihrem Desktop und wählen Sie \"Anpassen\"', dort finden Sie das BibelPix-Thema.\nKlicken Sie darauf, um es zu aktivieren, dann schliessen Sie das Fenster."
   set winChangeDesktopProb(en) "We are having a problem changing your Desktop background.\nPlease right-click on your Desktop and select \"Customize\".\nFind the BiblePix theme, click on it and then close the window."

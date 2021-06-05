@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29may21 pv
+# Updated: 5jun21 pv
 source $SetupResizeTools
 source $JList
 
@@ -147,13 +147,12 @@ namespace eval NewsHandler {
 
 # Grey out all spinboxes if !$enablepic
 proc setSpinState {imgyesState} {
-
   if {$imgyesState} {
     set com normal
   } else {
     set com disabled
   }
-  lappend widgetlist .showdateBtn .slideBtn .slideSpin .fontcolorSpin .fontsizeSpin .fontweightBtn .fontfamilySpin .randomfontcolorBtn
+  lappend widgetlist .showdateBtn .slideBtn .slideSpin .fontcolorSpin .fontsizeSpin .fontweightBtn .fontfamilySpin .randomfontcolorCB
   foreach i $widgetlist {
     $i configure -state $com
   }
