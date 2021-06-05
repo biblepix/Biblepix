@@ -1,7 +1,18 @@
 # ~/Biblepix/prog/src/share/setupSaveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4jun21 pv
+# Updated: 5jun21 pv
+
+#set paths for SaveWin & Uninstall
+set wishpath "[file nativename [auto_execok wish]]"
+set srcpath "[file nativename $srcdir]"
+set winpath "[file nativename $windir]"
+set setuppath "[file nativename $Setup]"
+set regpath_autorun         [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Run} \\]
+set regpath_policies        [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Policies System} \\]
+set regpath_backgroundtype  [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
+##admin privileges needed for this one (therefore need install.reg, commandline doesn't work)
+set regpath_desktop         [join {HKEY_CLASSES_ROOT DesktopBackground Shell Biblepix} \\]
 
 # regWinAutorun 
 ##(un)registers BiblePix Autorun (with args=unset)
@@ -12,7 +23,7 @@ proc regAutorun args {
   global wishpath srcpath regpath_autorun
 
   ##NOTE: extra "0022" needed since Tcl can't read paths with spaces!
-  append commandpath \u0022 $srcpath \\ biblepix.tcl \u0022
+  append commandpath "$wishpath" \u0022 "$srcpath" \\ biblepix.tcl \u0022
 
   #A) with args: delete
   if {$args != ""} {
@@ -36,7 +47,7 @@ proc regAutorun args {
 ##called by SaveWin
 proc regContextMenu args {
   global wishpath setuppath windir winpath WinIcon
-  global regpath_desktop regpath_policies iconKeyValue posKeyValue 
+  global regpath_desktop regpath_policies WinIcon posKeyValue 
   
   ##setupCommand must have double \\ because of \" inside string, exactly like this:
   ## ...TODO get from $windir/install.reg !
@@ -62,12 +73,12 @@ proc regContextMenu args {
     ##add Biblepix Description + Iconpath + Position
     append regtext {[HKEY_CLASSES_ROOT\DesktopBackground\Shell\Biblepix]} \n
     append regtext {@="BiblePix Setup"} \n
-    append regtext {"Icon"=} \u0022 "$iconKeyValue" \u0022 \n
+    append regtext {"Icon"=} \u0022 "$WinIcon" \u0022 \n
     append regtext {"Position"="Bottom"} \n\n
     ##add Biblepix command
     append regtext {[HKEY_CLASSES_ROOT\DesktopBackground\Shell\Biblepix\Command]} \n
     append regtext {@=} "$setupCommandRegfile" \n\n
-    ##remove Wallpaper value from System policies
+    ##remove Wallpaper value from System policies (needs to be done by regfile)
     append regtext {[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System]} \n
     append regtext {"Wallpaper"=-}
   }

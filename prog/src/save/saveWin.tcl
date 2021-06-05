@@ -8,16 +8,16 @@ package require registry
 source $SaveWinHelpers
 
 #Set Registry compatible paths
-set wishpath "[file nativename [auto_execok wish]]"
-set srcpath "[file nativename $srcdir]"
-set winpath "[file nativename $windir]"
-set setuppath "[file nativename $Setup]"
+#set wishpath "[file nativename [auto_execok wish]]"
+#set srcpath "[file nativename $srcdir]"
+#set winpath "[file nativename $windir]"
+#set setuppath "[file nativename $Setup]"
 ##non-root registry paths
-set regpath_autorun         [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Run} \\]
-set regpath_backgroundtype  [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
-##root privileges needed
-set regpath_desktop  [join {HKEY_CLASSES_ROOT DesktopBackground Shell Biblepix} \\]
-set regpath_policies [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Policies System} \\]
+#set regpath_autorun         [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Run} \\]
+#set regpath_backgroundtype  [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
+###root privileges needed
+#set regpath_desktop  [join {HKEY_CLASSES_ROOT DesktopBackground Shell Biblepix} \\]
+#set regpath_policies [join {HKEY_CURRENT_USER Software Microsoft Windows CurrentVersion Policies System} \\]
 
 # A)  N O N - A D M I N   R E G I S T E R I N G S
 
@@ -45,7 +45,6 @@ if {$enablepic} {
 
 # Register Context Menu IF values differ
 set regpathStandardKeyValue "BiblePix Setup"
-set iconKeyValue "$winpath\\biblepix.ico"
 set posKeyValue "Bottom"
 set commandPath "$regpath_desktop\\Command"
 
@@ -56,14 +55,12 @@ append setupCommand $wishpath { } \u0022 $setuppath \u0022
 #Prüfe Grundeintrag und Schlüssel
 if { 
   [catch {registry get $regpath_desktop {}} ] ||
-  [registry get $regpath_desktop Icon] != "$iconKeyValue" ||
+  [registry get $regpath_desktop Icon] != "$WinIcon" ||
   [registry get $regpath_desktop Position] != "$posKeyValue" ||
   [registry get $commandPath {}] != "$setupCommand"
   
 } {
-puts running_contextmenu
 
-#TODO Move this up to include Designs popup!!!!!
   tk_messageBox -type ok -title "BiblePix Registry Installation" -icon info -message $winRegister
   
   if { [info exists Debug] && $Debug } {
