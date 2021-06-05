@@ -40,11 +40,13 @@ W I N D O W S
 
 and double-click it to install. It contains all necessary Tcl programs.
 
+NOTE: Before the next step, restart computer to make sure Tcl is properly registered!
+
 2. Download the BiblePix Installer from
 
 	www.bible2.net
 
-and double-click it to install.
+and right-click to install (for option 'Open with...' choose 'Wish application').
 
 
 L I N U X

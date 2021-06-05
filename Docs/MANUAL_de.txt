@@ -39,11 +39,13 @@ W I N D O W S
 
 herunterladen und ausführen. Es enthält alle nötigen Tcl-Programme.
 
+WICHTIG: vor dem nächsten Schritt Computer neu starten, damit Tcl registriert wird!
+
 2. Den BibelPix-Installer von
 
 	www.bible2.net
 
-herunterladen und ausführen mit Doppelklick auf die Datei.
+herunterladen und ausführen (Rechtsklick auf die Datei > öffnen mit 'Wish application').
 
 
 L I N U X
