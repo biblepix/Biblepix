@@ -28,7 +28,7 @@ proc regAutorun args {
   
   ##NOTE: extra "0022" needed since Tcl can't read paths with spaces!
   #append commandpath "$wishpath" \u0022 "$srcpath" \\ biblepix.tcl \u0022
-  append commandpath "$wishpath" \u0022 %LOCALAPPDATA% {Biblepix\prog\src\biblepix.tcl} \u0022
+  append commandpath "$wishpath" \u0022 %LOCALAPPDATA% { } {Biblepix\prog\src\biblepix.tcl} \u0022
 
   #A) with args: delete
   if {$args != ""} {
