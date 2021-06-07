@@ -1,11 +1,11 @@
 # ~/Biblepix/prog/src/share/setupSaveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5jun21 pv
+# Updated: 6jun21 pv
 
 #set paths for SaveWin & Uninstall
 set wishpath "[file nativename [auto_execok wish]]"
-set srcpath "[file nativename $srcdir]"
+#set srcpath "[file nativename $srcdir]"
 set winpath "[file nativename $windir]"
 set setuppath "[file nativename $Setup]"
 set regpath_autorun         [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Run} \\]
@@ -13,6 +13,9 @@ set regpath_policies        [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows 
 set regpath_backgroundtype  [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
 ##admin privileges needed for this one (therefore need install.reg, commandline doesn't work)
 set regpath_desktop         [join {HKEY_CLASSES_ROOT DesktopBackground Shell Biblepix} \\]
+
+#TODO testing win var in Registry:
+set srcpath {%LOCALAPPDATA%\Biblepix\prog\src}
 
 # regWinAutorun 
 ##(un)registers BiblePix Autorun (with args=unset)
@@ -22,8 +25,10 @@ set regpath_desktop         [join {HKEY_CLASSES_ROOT DesktopBackground Shell Bib
 proc regAutorun args {
   global wishpath srcpath regpath_autorun
 
+  
   ##NOTE: extra "0022" needed since Tcl can't read paths with spaces!
-  append commandpath "$wishpath" \u0022 "$srcpath" \\ biblepix.tcl \u0022
+  #append commandpath "$wishpath" \u0022 "$srcpath" \\ biblepix.tcl \u0022
+  append commandpath "$wishpath" \u0022 %LOCALAPPDATA% {Biblepix\prog\src\biblepix.tcl} \u0022
 
   #A) with args: delete
   if {$args != ""} {
@@ -36,9 +41,10 @@ proc regAutorun args {
     $res != "$commandpath"
   } {
     puts "Registering Autorun for Biblepix..."
-    registry set "$regpath_autorun" "Biblepix" "$commandpath" 
+    registry set "$regpath_autorun" "Biblepix" "$commandpath" expand_sz
   }
-}
+  
+} ;#END regAutorun
 
 # regWinContextMenu
 ##(un)registers BiblePix Context Menu
@@ -72,7 +78,7 @@ proc regContextMenu args {
 
     ##add Biblepix Description + Iconpath + Position
     append regtext {[HKEY_CLASSES_ROOT\DesktopBackground\Shell\Biblepix]} \n
-    append regtext {@="BiblePix Setup"} \n
+    append regtext {@="BiblePix Setup"} \n$
     append regtext {"Icon"=} \u0022 "$WinIcon" \u0022 \n
     append regtext {"Position"="Bottom"} \n\n
     ##add Biblepix command

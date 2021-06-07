@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5jun21 pv
+# Updated: 7jun21 pv
 
 proc setTexts {lang} {
   global Bidi platform jahr TwdTIF TwdBMP TwdPNG 
@@ -409,8 +409,8 @@ Example:"
   set linReloadingDesktop(de) "Wir versuchen nun, Ihre Arbeitsfläche neu einzulesen. Falls dies fehlschlägt, müssen Sie sich kurz ab- und wieder anmelden, damit die BibelPix-Einstellungen wirksam werden."
   set ::linReloadingDesktop $linReloadingDesktop($lang)
 
-  set changeDesktopOk(en) "$bp has been configured successfully and will start shortly.\nYou can run the BiblePix Setup program anytime by selecting the \"BiblePix Setup\" icon in the Program Menu."
-  set changeDesktopOk(de) "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\nDas BibelPix-Einrichtungsprogramm können Sie jederzeit aus dem Programmmenü starten."
+  set changeDesktopOk(en) "$bp has been configured successfully and will start shortly.\n\nYou can run the $bp Setup program anytime by selecting the \"BiblePix Setup\" icon in the Program Menu (Linux) or by right-click on your Desktop (Windows)."
+  set changeDesktopOk(de) "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\n\nDas ${bp}-Einrichtungsprogramm können Sie jederzeit starten, indem Sie im Programmmenü das ${bp}-Symbol wählen (Linux) bzw. auf Ihrer Arbeitsoberfläche rechtsklicken und das ${bp}-Symbol wählen (Windows)."
   set ::changeDesktopOk $changeDesktopOk($lang)
 
   set winRegister(en) "BiblePix will no try to register with your system.\nYou must confirm any dialogue boxes with \"Yes\"."
