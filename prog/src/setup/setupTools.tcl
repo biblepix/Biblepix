@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5jun21 pv
+# Updated: 8jun21 pv
 source $SetupResizeTools
 source $JList
 
@@ -716,12 +716,11 @@ proc fillWidgetWithTodaysTwd twdWidget {
   set ::setupTwdText $twdText
 }
 
-
 # deleteOldStuff
 ##Removes stale prog files & dirs not listed in Globals
 ##called by Setup
 proc deleteOldStuff {} {
-  global dirPathL filePathL fontPathL progdir srcdir
+  global dirPathL filePathL fontPathL progdir srcdir piddir
 
   #combine all file & font lists
   set filePathL [list {*}$filePathL {*}$fontPathL]
@@ -736,12 +735,16 @@ proc deleteOldStuff {} {
     lappend curFolderList $path
   }
 
+  #remove piddir from folderlist
+  set index [lsearch $piddir $curFolderList]
+  set curFolderList [lreplace $curFolderList $index $index]
+
   #Delete stale dir paths
   foreach path $curFolderList {
     catch {lsearch -exact $dirPathL $path} res
     if {$res == -1} {
       file delete -force $path
-      NewsHandler::QueryNews "Deleted obsolete folder: $path" red
+      NewsHandler::QueryNews "Deleted obsolete folder: $path" orange
     }
   }
 
@@ -763,7 +766,7 @@ proc deleteOldStuff {} {
     catch {lsearch -exact $filePathL $path} res
     if {$res == -1 && [file isfile $path]} {
       file delete $path
-      NewsHandler::QueryNews "Deleted obsolete file: $path" red
+      NewsHandler::QueryNews "Deleted obsolete file: $path" orange
     }
   }
 

@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 5jun21 pv
+# Updated: 8jun21 pv
 set version "4.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -116,7 +116,7 @@ lappend filePathL [set WinIcon [file join $windir biblepix.ico]]
 set sampleJpgL {}
 lappend sampleJpgL [set Utah [file join $sampleJpgDir utah.jpg]]
 lappend sampleJpgL [set Eire [file join $sampleJpgDir eire.jpg]]
-lappend sampleJpgL [set Lake [file join $sampleJpgDir lake.jpg]]
+lappend sampleJpgL [set Lake [file 	join $sampleJpgDir lake.jpg]]
 lappend sampleJpgL [set Palms [file join $sampleJpgDir palms.jpg]]
 lappend sampleJpgL [set Mountain [file join $sampleJpgDir mountain.jpg]]
 lappend sampleJpgL [set Nevada [file join $sampleJpgDir nevada.jpg]]
@@ -154,7 +154,7 @@ set fontcolourL {Earth Gold Leaf Sea Silver Slate}
 array set SeaArr {r 30 g 100 b 244}
 array set EarthArr {r 160 g 105 b 0}
 array set GoldArr  {r 230 g 195 b 0}
-array set LeafArr {r 48 g 150 b 97}
+array set LeafArr {r 43 g 135 b 87}
 array set SilverArr {r 160 g 160 b 160}
 array set SlateArr {r 120 g 120 b 120}
 
