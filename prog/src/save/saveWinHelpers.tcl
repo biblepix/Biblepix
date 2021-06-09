@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/setupSaveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6jun21 pv
+# Updated: 9jun21 pv
 
 #set paths for SaveWin & Uninstall
 set wishpath "[file nativename [auto_execok wish]]"
@@ -28,6 +28,7 @@ proc regAutorun args {
   
   ##NOTE: extra "0022" needed since Tcl can't read paths with spaces!
   #append commandpath "$wishpath" \u0022 "$srcpath" \\ biblepix.tcl \u0022
+  ##NOTE: variable expansion in the Registry works if the type is set to 'expand_sz'
   append commandpath "$wishpath" { } \u0022 %LOCALAPPDATA% {\Biblepix\prog\src\biblepix.tcl} \u0022
 
   #A) with args: delete
@@ -53,13 +54,18 @@ proc regAutorun args {
 ##called by SaveWin
 proc regContextMenu args {
   global wishpath setuppath windir winpath WinIcon
-  global regpath_desktop regpath_policies WinIcon posKeyValue 
+  global regpath_desktop regpath_policies posKeyValue 
   
   ##setupCommand must have double \\ because of \" inside string, exactly like this:
   ## ...TODO get from $windir/install.reg !
+  ##NOTE: variable expansion EXPAND_SZ cannot be set easily via a REG file, so leave paths as they are! 
   set wishpathRegfile [string map {\u005c \u005c\u005c} $wishpath]
   set setuppathRegfile [string map {\u005c \u005c\u005c} $setuppath]
+  set iconpath [file nativename $WinIcon]
+  set iconpathRegfile [string map {\u005c \u005c\u005c} $iconpath]
+  
   append setupCommandRegfile \u0022 $wishpathRegfile { } \\ \u0022 $setuppathRegfile \\ \u0022 \u0022
+  append iconPathRegfile \u0022 $iconpathRegfile \u0022
   
   #Prepare reg file for execution as Admin  
   ##set obligatory intro line
@@ -78,8 +84,8 @@ proc regContextMenu args {
 
     ##add Biblepix Description + Iconpath + Position
     append regtext {[HKEY_CLASSES_ROOT\DesktopBackground\Shell\Biblepix]} \n
-    append regtext {@="BiblePix Setup"} \n$
-    append regtext {"Icon"=} \u0022 "$WinIcon" \u0022 \n
+    append regtext {@="BiblePix Setup"} \n
+    append regtext {"Icon"=} "$iconPathRegfile" \n
     append regtext {"Position"="Bottom"} \n\n
     ##add Biblepix command
     append regtext {[HKEY_CLASSES_ROOT\DesktopBackground\Shell\Biblepix\Command]} \n
@@ -119,9 +125,17 @@ proc getBackgroundType {} {
 
 # setWinTheme
 ##sets & runs 'single pic' .theme file if running slideshow detected
+##NOTE: .theme file is required here; Windows Wallpaper settings (for path see getBackgroundType) are
+##extremely complex and require blabla....
 ##called by getBackgroundType
+
+#TODO try working with above registry path - no Root priv. requiredèè
+##thorough testing needed - might make setWinTheme redundent!
+#1. registry set $regpath_backgroundtype(should be regpath_wallpapers) BackgroundType 2 | CurrentWallpaperPath ... | SlideshowDirectoryPath(1?) | SlideShowSourceDirectoriesSet 1 (wozu?)
+#2. registry set {HKCU\Control Panel\Personalization\Desktop Slideshow} Interval ....
+# NOTE: probably only single pic needed - see below!
 proc setWinTheme {} {
-  global env TwdTIF windir
+  global env TwdTIF windir winIgnorePopup
   set themepath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Biblepix.theme]
 
   #Warn of Designs window popping up

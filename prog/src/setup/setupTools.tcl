@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8jun21 pv
+# Updated: 9jun21 pv
 source $SetupResizeTools
 source $JList
 
@@ -720,7 +720,7 @@ proc fillWidgetWithTodaysTwd twdWidget {
 ##Removes stale prog files & dirs not listed in Globals
 ##called by Setup
 proc deleteOldStuff {} {
-  global dirPathL filePathL fontPathL progdir srcdir piddir
+  global dirPathL filePathL fontPathL progdir srcdir piddir confdir
 
   #combine all file & font lists
   set filePathL [list {*}$filePathL {*}$fontPathL]
@@ -729,7 +729,10 @@ proc deleteOldStuff {} {
 
   #1.List current directory paths starting from progdir&srcdir
   foreach path [glob -directory $progdir -type d *] {
-    lappend curFolderList $path
+    ##exempt piddir & confdir
+    if {$path != "$piddir" && $path != "$confdir"} {
+      lappend curFolderList $path
+    }
   }
   foreach path [glob -directory $srcdir -type d *] {
     lappend curFolderList $path
@@ -761,6 +764,7 @@ proc deleteOldStuff {} {
       lappend curFileList $f
     }
   }
+
   ##delete any obsolete files
   foreach path $curFileList {
     catch {lsearch -exact $filePathL $path} res
@@ -770,26 +774,6 @@ proc deleteOldStuff {} {
     }
   }
 
-#  #########################################
-#  # 3. Delete stale fonts
-#  #########################################
-
-#  #2. list installed font names including asian
-#  foreach path [glob -directory $fontdir *] {
-#    lappend curFontList $path
-#  }
-#  foreach path [glob -directory $fontasiandir *] {
-#    lappend curFontList $path
-#  }
-#  #3. delete any obsolete fonts
-#  foreach path $curFontList {
-#    catch {lsearch -exact $fontPathL $path} res
-#    if {$res == "-1" && [file isfile $path]} {
-#      file delete $path
-#      NewsHandler::QueryNews "Deled obsolete font file: $path" red
-#    }
-#  }
-
-  NewsHandler::QueryNews "$::uptodateHttp" lightgreen
+#  NewsHandler::QueryNews "$::uptodateHttp" lightgreen
 
 } ;#END deleteOldStuff

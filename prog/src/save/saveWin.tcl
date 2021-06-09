@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupSaveWin.tcl
 # Sourced by Save.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5jun21
+# Updated: 8jun21
 
 #Windows handles TIF + BMP
 package require registry
@@ -52,13 +52,16 @@ set commandPath "$regpath_desktop\\Command"
 ## ...TODO get from $windir/install.reg !
 append setupCommand $wishpath { } \u0022 $setuppath \u0022
 
-#Prüfe Grundeintrag und Schlüssel
-if { 
-  [catch {registry get $regpath_desktop {}} ] ||
-  [registry get $regpath_desktop Icon] != "$WinIcon" ||
-  [registry get $regpath_desktop Position] != "$posKeyValue" ||
-  [registry get $commandPath {}] != "$setupCommand"
-  
+#Check if preinstalled and correct:
+##a) Grundeintrag
+if {
+  [catch {registry get $regpath_desktop {} }] || 
+  [catch {registry get $regpath_desktop Icon} res1] ||
+  [catch {registry get $regpath_desktop Position} res2] ||
+  [catch {registry get $commandPath {}} res3] ||
+  $res1 != "[file nativename $WinIcon]" ||
+  $res2 != "$posKeyValue" ||
+  $res3 != "$setupCommand"
 } {
 
   tk_messageBox -type ok -title "BiblePix Registry Installation" -icon info -message $winRegister
