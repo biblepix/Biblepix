@@ -23,8 +23,12 @@ label .updateFrame.pbTitle -justify center -bg lightblue -fg black -borderwidth 
 ttk::progressbar .updateFrame.progbar -mode indeterminate -length 200
 pack .updateFrame.pbTitle .updateFrame.progbar
 
+lappend errText "Update not possible!\nYou must download and rerun the BiblePix Installer from bible2.net."
+if {[info exists lang] && $lang == "de"} {
+  lappend errText \n "Aktualisierung nicht möglich!\nSie müssen den BibelPix-Installer herunterladen und neu laufen lassen."
+}
 if [catch {source $Globals}] {
-  set pbTitle "Update not possible.\nYou must download and rerun the BiblePix Installer from bible2.net."
+  set pbTitle $errText 
   after 7000 {exit}
 
 } else {
@@ -38,13 +42,13 @@ if [catch {source $Globals}] {
   #Set initial texts if missing
   if [catch {source -encoding utf-8 $SetupTexts ; setTexts $lang}] {
     set updatingHttp "Updating BiblePix program files..."
-    set noConnHttp "No connection for BiblePix update. Try later."
+    set noConnHttp "No connection for BiblePix update."
   }
 
   # 1.  D O   H T T P  U P D A T E   (if not initial)
 
   if [catch {sourceHTTP}] {
-    set pbTitle "Update not possible.\nYou must download and rerun the BiblePix Installer from bible2.net."
+    set pbTitle $errText
     after 7000 {exit}
 
   } else {
@@ -57,7 +61,7 @@ if [catch {source $Globals}] {
     } else {
       set pbTitle $updatingHttp
 
-      catch {runHTTP 0}
+      catch {runHTTP 0} httpError
     }
 
     #Copy photos after first run of Installer or if Config missing
@@ -76,9 +80,8 @@ if [catch {source $Globals}] {
 
   }
 
-    # 2. B U I L D  M A I N  G U I
+   # 2. B U I L D  M A I N  G U I
    source $SetupMainFrame
-
 
   #Delete any stale program files/fonts/directories/TWD files
   after idle {deleteOldStuff}

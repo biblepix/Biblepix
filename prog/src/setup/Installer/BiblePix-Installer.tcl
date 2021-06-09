@@ -35,7 +35,7 @@ if [info exists env(LOCALAPPDATA)] {
 
 ## Set Unix Home & delete any old $tcldir
 } else {
-  
+ 
   set rootdir [file join $env(HOME) Biblepix]
   set srcdir [file join $rootdir prog src]
   catch {file delete -force [file join $rootdir prog tcl]}
@@ -74,8 +74,8 @@ proc getTesttoken {} {
     error "testtoken -> ncode:" + [http::ncode $testtoken]
   }
 
-#return [http::data $testtoken]  
-  return $testtoken
+return [http::data $testtoken]  
+#  return $testtoken
 }
 
 # testHttpCon
@@ -113,7 +113,6 @@ proc fetchInitialFiles {} {
   }
 }
 
-
 # 3. SET UP PRELIMINARY MESSAGE WINDOW & PROGRESS BAR
 package require Tk
 
@@ -147,6 +146,10 @@ if [catch testHttpCon Error] {
 
   #5. FETCH ALL prog files (securely, re-fetching above 2!)
   source $srcdir/http.tcl
+
+#TODO testing
+set rootdir /tmp/Biblepix
+
 
   if [catch {runHTTP 1} result] {
   
