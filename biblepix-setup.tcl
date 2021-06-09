@@ -6,8 +6,7 @@
 ################################################################################
 # Version: 4.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7may21 pv
-
+# Updated: 9jun21 pv
 package require Tk
 
 #Verify location & source vars
@@ -73,11 +72,8 @@ if [catch {source $Globals}] {
         copyAndResizeSamplePhotos
       }
     }
-
-    catch {source $UpdateInjection}
     .updateFrame.progbar stop
     pack forget .updateFrame.pbTitle .updateFrame.progbar .updateFrame
-
   }
 
    # 2. B U I L D  M A I N  G U I
