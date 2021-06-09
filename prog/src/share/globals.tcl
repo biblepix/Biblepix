@@ -58,7 +58,7 @@ set filePathL {}
 lappend filePathL [set AnnotatePng [file join $picdir annotatePng.tcl]]
 lappend filePathL [set Globals [file join $sharedir globals.tcl]]
 lappend filePathL [set Http [file join $sharedir http.tcl]]
-lappend filePathL [set UpdateInjection [file join $srcdir updateInjection.tcl]]
+#lappend filePathL [set UpdateInjection [file join $srcdir updateInjection.tcl]]
 lappend filePathL [set Readme [file join $rootdir README.txt]]
 lappend filePathL [set Setup [file join $rootdir biblepix-setup.tcl]]
 lappend filePathL [set ManualD [file join $docdir MANUAL_de.txt]]

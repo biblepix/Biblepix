@@ -5,6 +5,15 @@
 
 package require http
 
+#TODO tls isonly needed for bible2 !!!
+proc checkTls {} {
+  if [catch {package require tls}] {
+    package require Tk
+    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $::packageRequireTls
+    return 1
+  }
+}
+
 ###############################################################################
 ########### PROCS FOR SETUP UPDATE ############################################
 ###############################################################################
@@ -22,7 +31,6 @@ proc runHTTP isInitial {
 
   } else {
 
-
     global filePathL fontPathL
     set filePathList [list {*}$filePathL {*}$fontPathL]
     
@@ -33,16 +41,14 @@ proc runHTTP isInitial {
       if {$filepath == $::ChinaFont} {
         continue
       }
-      downloadFileFromRelease $filepath $isInitial
+    downloadFileFromRelease $filepath $isInitial
     }
 
     #Success message (source Texts again for Initial)
     catch {.if.initialMsg configure -bg lightgreen}
-    catch {NewsHandler::QueryNews $::uptodateHttp bluen}
+    catch {NewsHandler::QueryNews $::uptodateHttp blue}
     catch {set ::ftpStatus $::uptodateHttp}
-
-  } ;#end if main condition
-  
+  }
 } ;#end runHTTP
 
 
@@ -125,6 +131,9 @@ proc downloadFileFromUrl {filePath url} {
 
 proc downloadTwdFile {twdFile year} {
   global twdDir
+  
+  checkTls
+  
   set twdFile [file tail $twdFile]
   set nameParts [split $twdFile "_"]
   lset nameParts 2 "$year.twd"
@@ -132,10 +141,6 @@ proc downloadTwdFile {twdFile year} {
 
   set filePath $twdDir/$fileName
   set url $::twdBaseUrl/$fileName
-
-  if [catch {package require tls}] {
-    error "tls missing"
-  }
 
   #Register SSL connection
   http::register https 443 [list ::tls::socket -tls1 1]
@@ -153,10 +158,8 @@ proc downloadTwdFile {twdFile year} {
   http::unregister https
 }
 
+#TODO called by?
 proc getDataFromUrl {url} {
-  if [catch {package require tls}] {
-    error "tls missing"
-  }
 
   #Register SSL connection
   http::register https 443 [list ::tls::socket -tls1 1]
@@ -181,6 +184,8 @@ proc getDataFromUrl {url} {
 ###############################################################################
 
 proc getRemoteRoot {} {
+
+#TODO outsource below!
   #These are standard in ActiveTcl, Linux distros vary
   if [catch {package require tdom}] {
     package require Tk
@@ -263,7 +268,7 @@ proc listRemoteTWDFiles {lBox} {
 }
 
 # getRemoteTWDFileList
-#......
+#TODO called by?......
 proc getRemoteTWDFileList {} {
   if [catch testHttpCon Error] {
     .internationalF.status conf -bg red
@@ -278,10 +283,10 @@ proc getRemoteTWDFileList {} {
       set status $::noConnTwd
     }
   }
-
   return $status
 }
 
+#TODO called by?
 proc downloadTWDFiles {} {
   global twdDir jahr
   
