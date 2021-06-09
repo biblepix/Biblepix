@@ -2,12 +2,12 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17may21 pv
-
+# Updated: 9jun21 pv
 source -encoding utf-8 $SetupTexts
 setTexts $lang
 source $SetupTools
 source $TwdTools
+source $Http
 
 #Set general X vars & Main Window width
 set screenX [winfo screenwidth .]
@@ -66,7 +66,9 @@ label .label -text "BiblePix Version $version"
 pack .label -in .fbottom -side left
 
 message .news -textvariable news -width [expr $wWidth - 350]
-if {![info exists error] || !$error} {
+
+#Test error var (issued by Setup)
+if {$httpError == 0} {
   NewsHandler::QueryNews "$uptodateHttp" lightgreen
 } else {
   NewsHandler::QueryNews "$noConnHttp" red

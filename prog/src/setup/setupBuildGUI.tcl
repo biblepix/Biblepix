@@ -2,10 +2,9 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24apr21 pv
+# Updated: 9jun21 pv
 
 setFlags
-sourceHTTP
 source $TwdTools
 
 set setupTwdFileName [getRandomTwdFile]
@@ -33,7 +32,6 @@ if {$wHeight < 700} {
 } else {
   font configure bpfont1 -size 12
 }
-
 font create bpfont2 -family TkHeadingFont -size 12 -weight bold
 font create bpfont3 -family TkCaptionFont -size 18
 
@@ -41,8 +39,7 @@ font create bpfont3 -family TkCaptionFont -size 18
 font create twdwidgetfont
 set avfontsize [font conf bpfont1 -size]
 font conf twdwidgetfont -family TkTextFont -size [expr int($avfontsize * 1.3)]
-
-#created in Setup
+##created later? in Setup
 catch {font create bpfont4 -family TkCaptionFont -size 30 -weight bold}
 
 
@@ -61,7 +58,6 @@ if { [info exists Debug] && $Debug } {
 } else {
   catch {source $SetupInternational}
 }
-
 set status "No Internet connexion"
 catch {set status [getRemoteTWDFileList]}
 updateTwd
@@ -85,14 +81,14 @@ if { [info exists Debug] && $Debug } {
   source $SetupPhotos
 } else {
 
-  if { [catch {source $SetupPhotos} ] } {
-    if { [catch {package require Img} ] } {
+  if [catch {source $SetupPhotos} ] {
+    if [catch {package require Img}] {
       NewsHandler::QueryNews $packageRequireImg red
     }
   }
 }
 
-#TODO Wer führt dieses Kommando aus? - make proc for delPic & addPic!
+#Preset number of photos (to be changed later by proc)
 set numPhotos [llength [glob $photosDir/*]]
 
 #6. Terminal
