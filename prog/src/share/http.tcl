@@ -125,21 +125,6 @@ proc downloadFileFromUrl {filePath url} {
     set token [http::geturl $url -channel $chan]
     close $chan
   }
-  
-  #Fire up Message if Setup is being upgraded
-#  if {$filePath == $Setup} {
-#    package require Tk
-    
-    
-   #TODO add to texts
-   ##TODO filepath/=filename!
-#    set todo [tk_messageBox -type yesno -icon info -title "BiblePix Installation" -message "The BiblePix Setup program has been upgraded.\nPress OK to restart Setup now..."]
-#    if {$todo == "yes"} {
-#      after destroy .
-#      source $Setup
-#    }
-#  }
-  
   http::cleanup $token
 }
 
