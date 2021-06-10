@@ -1,11 +1,12 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26may21 pv
-
+# Updated: 10jun21 pv
 package require http
 
-#TODO tls isonly needed for bible2 !!!
+# checkTls
+##needed for TWD downloads from https://bible2.net
+##called by downloadTWDFile
 proc checkTls {} {
   if [catch {package require tls}] {
     package require Tk
@@ -20,20 +21,20 @@ proc checkTls {} {
 
 # runHTTP
 ## Main program for BiblePix Http download
-## Called by Installer, Setup, UpdateInjection
+## Called by Installer & Setup
 proc runHTTP isInitial {
   #Test connexion & start download
   if [catch testHttpCon Error] {
     set ::ftpStatus $::noConnHttp
     catch {NewsHandler::QueryNews $::noConnHttp red}
-    puts "ERROR: http.tcl -> runHTTP($args): $Error"
+    puts "ERROR: http.tcl -> runHTTP($isInitial): $Error"
     error $Error
 
   } else {
 
     global filePathL fontPathL
     set filePathList [list {*}$filePathL {*}$fontPathL]
-    
+
     #Download all registered files & fonts
     foreach filepath $filePathList {
     
@@ -71,7 +72,7 @@ proc downloadSampleJpegs {sampleJpgL url} {
 proc downloadFileFromRelease {filePath isInitial} {
 
   set filename [file tail $filePath]
-  puts "Downloading $filename ..."
+  puts "Checking $filename ..."
 
   #get remote 'meta' info (-validate 1)
   set token [http::geturl $::bpxReleaseUrl/$filename -validate 1]
@@ -97,7 +98,8 @@ proc downloadFileFromRelease {filePath isInitial} {
     if { ! [string is digit $newsecs] ||
          ! [string is digit $oldsecs] ||
          $oldsecs<$newsecs } {
-      downloadFileFromUrl $filePath $::bpxReleaseUrl/$filename
+       puts "Updating $filename..."
+       downloadFileFromUrl $filePath $::bpxReleaseUrl/$filename
     }
   }
 
@@ -108,8 +110,6 @@ proc downloadFileFromRelease {filePath isInitial} {
 ##called by downloadFileFromRelease
 proc downloadFileFromUrl {filePath url} {
   #download file into channel
-  #puts $filePath
-
   set chan [open $filePath w]
   fconfigure $chan -encoding utf-8
   set token [http::geturl $url -channel $chan]
@@ -125,6 +125,20 @@ proc downloadFileFromUrl {filePath url} {
     set token [http::geturl $url -channel $chan]
     close $chan
   }
+  
+  #Fire up Message if Setup is being upgraded
+#  if {$filePath == $Setup} {
+#    package require Tk
+    
+    
+   #TODO add to texts
+   ##TODO filepath/=filename!
+#    set todo [tk_messageBox -type yesno -icon info -title "BiblePix Installation" -message "The BiblePix Setup program has been upgraded.\nPress OK to restart Setup now..."]
+#    if {$todo == "yes"} {
+#      after destroy .
+#      source $Setup
+#    }
+#  }
   
   http::cleanup $token
 }

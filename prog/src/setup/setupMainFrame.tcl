@@ -2,12 +2,11 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9jun21 pv
+# Updated: 10jun21 pv
 source -encoding utf-8 $SetupTexts
 setTexts $lang
 source $SetupTools
 source $TwdTools
-source $Http
 
 #Set general X vars & Main Window width
 set screenX [winfo screenwidth .]
@@ -21,19 +20,14 @@ set px 10
 set py 10
 set bg LightGrey
 set fg blue
-
 font create bpfont4 -family TkCaptionFont -size 30 -weight bold
 
-#Create bottom frame
+#Create frames
 pack [frame .fbottom] -fill x -side bottom
-
-#Create top frame
 pack [frame .ftop] -fill x
-
 #Create notebook
 ttk::notebook .nb -width [expr $wWidth - 50] -height [expr $wHeight - 200]
 pack .nb -fill y -expand true -padx $px -pady $py
-
 #Create Title (LOGO to be created later)
 ttk::label .ftop.titelmitlogo -textvar bpsetup -font bpfont4 -padding 5
 pack .ftop.titelmitlogo -side left
@@ -44,12 +38,10 @@ pack .ftop.titelmitlogo -side left
 .nb add [frame .desktopF -padx $px -pady $py] -text Desktop
 .nb add [frame .photosF -padx $px -pady $py] -text Photos
 .nb add [frame .emailF -padx $px -pady $py] -text E-Mail
-
-if {$platform=="unix"} {
-  .nb add [frame .terminalF -padx $px -pady $py] -text Terminal
-}
-
 .nb add [frame .manualF -padx $px -pady $py] -text Manual
+if {$platform=="unix"} {
+  .nb insert 5 [frame .terminalF -padx $px -pady $py] -text Terminal
+}
 
 #Reposition window to screen top
 if { [winfo y .] > 20 } {
@@ -67,7 +59,7 @@ pack .label -in .fbottom -side left
 
 message .news -textvariable news -width [expr $wWidth - 350]
 
-#Test error var (issued by Setup)
+#Validate error msg issued by Setup
 if {$httpError == 0} {
   NewsHandler::QueryNews "$uptodateHttp" lightgreen
 } else {

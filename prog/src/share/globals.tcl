@@ -255,7 +255,7 @@ proc sleep { ms } {
   unset ::__sleep__tmp__$uniq
 }
 # makeDirs
-##called by Installer & UpdateInjection
+##called by Installer
 proc makeDirs {} {
   global dirPathL
   foreach dirpath $dirPathL {

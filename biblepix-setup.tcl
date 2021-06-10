@@ -6,7 +6,7 @@
 ################################################################################
 # Version: 4.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9jun21 pv
+# Updated: 10jun21 pv
 package require Tk
 
 #Verify location & source vars
@@ -45,7 +45,6 @@ if [catch {source $Globals}] {
   }
 
   # 1.  D O   H T T P  U P D A T E   (if not initial)
-
   if [catch {sourceHTTP}] {
     set pbTitle $errText
     after 7000 {exit}
@@ -54,12 +53,11 @@ if [catch {source $Globals}] {
 
     .updateFrame.progbar start
 
-    if { [info exists InitialJustDone] } {
+    if [info exists InitialJustDone] {
       set pbTitle $uptodateHttp
-
     } else {
       set pbTitle $updatingHttp
-
+      ##start downloading process; $httpError is validated by SetupMainFrame
       catch {runHTTP 0} httpError
     }
 
@@ -68,7 +66,7 @@ if [catch {source $Globals}] {
       source $SetupTexts
       source $SetupTools
       after idle {
-        catch {NewsHandler::QueryNews $resizingPic yellow}
+        catch {NewsHandler::QueryNews $resizingPic orange}
         copyAndResizeSamplePhotos
       }
     }
@@ -76,8 +74,8 @@ if [catch {source $Globals}] {
     pack forget .updateFrame.pbTitle .updateFrame.progbar .updateFrame
   }
 
-   # 2. B U I L D  M A I N  G U I
-   source $SetupMainFrame
+  # 2. B U I L D  M A I N  G U I
+  source $SetupMainFrame
 
   #Delete any stale program files/fonts/directories/TWD files
   after idle {deleteOldStuff}
