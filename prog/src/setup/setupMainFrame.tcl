@@ -60,10 +60,12 @@ pack .label -in .fbottom -side left
 message .news -textvariable news -width [expr $wWidth - 350]
 
 #Validate error msg issued by Setup
-if {$httpError == 0} {
-  NewsHandler::QueryNews "$uptodateHttp" lightgreen
-} else {
-  NewsHandler::QueryNews "$noConnHttp" red
+if [info exists httpError] {
+  if {$httpError == 0} {
+    NewsHandler::QueryNews "$uptodateHttp" lightgreen
+  } else {
+    NewsHandler::QueryNews "$noConnHttp" red
+  }
 }
 pack .news -in .fbottom -fill x
 
