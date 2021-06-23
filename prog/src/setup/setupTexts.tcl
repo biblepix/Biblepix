@@ -160,7 +160,7 @@ set ::packageRequireTls $packageRequireTls($lang)
   set ::welc.txt1 $welcTxt1($lang)
 
   set welcSubtit2(en) "What are your options?"
-  set welcSubtit2(de) "Was sind Ihre Möglichkeiten?"
+  set welcSubtit2(de) "Was sind Ihre M¶glichkeiten?"
   set ::welc.subtit2 $welcSubtit2($lang)
 
   set welcTxt2(en) "° INTERNATIONAL:\tChoose one or several Bible text languages for $dw\n° DESKTOP:\t\tGet $dw on your personal background pictures, incl. slide show\n° PHOTOS:\t\tOrganise your background pictures for $bp\n° E-MAIL:\t\t\tGet $dw added to your e-mail signatures each day"
