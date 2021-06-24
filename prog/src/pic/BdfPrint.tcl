@@ -21,7 +21,6 @@ if {$fontweight == "bold"} {
 ##Chinese: (regular_24)
 if {$TwdLang == "zh"} {
   set ::prefix Z
-
   if ![namespace exists Z] {
     namespace eval Z {
       source -encoding utf-8 $ChinaFont
