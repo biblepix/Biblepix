@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/uninstall.tcl
 # sourced by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5jun21 pv
+# Updated: 1jul21 pv
 
 set antwort [tk_messageBox -icon warning -type yesno -message $uninstall]
 
@@ -62,10 +62,14 @@ if {$antwort=="yes"} {
     } ;#end if windows
     
     #Remove Biblepix directory on all platforms (some problems on Win)
-    catch {file delete -force $rootdir}
+    if [catch {file delete -force $rootdir}] {
+      set msg $uninstallprob
     
+    } else {
+      set msg $uninstalled
+    }
     #Final message
-    tk_messageBox -type ok -title "Uninstalling BiblePix" -message $uninstalled
+    tk_messageBox -type ok -title "Uninstalling BiblePix" -message $msg
 
     exit
 } ;#end if "yes"
