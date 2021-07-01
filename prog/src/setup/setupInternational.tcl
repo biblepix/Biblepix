@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/setup/setupEmail.tcl
+# ~/Biblepix/prog/src/setup/setupInternational.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 29may21 pv
+# Updated 1jul21 pv
 
 #Statusbar
 frame .internationalF.f0 -padx $px
@@ -69,3 +69,4 @@ button .downloadBtn -text Download -command {
 pack .internationalF.twdremoteframe -anchor w
 pack .downloadBtn -in .internationalF.twdremoteframe -side right -fill x
 pack .twdremoteScr .twdremoteLB -in .internationalF.twdremoteframe -side right -fill y
+
