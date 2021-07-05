@@ -2,11 +2,11 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1jul21 pv
+# Updated: 5jul21 pv
 
 proc setTexts {lang} {
   global Bidi platform jahr TwdTIF TwdBMP TwdPNG 
-  global twdDir imgdir sigdir confdir windir
+  global twdDir imgdir sigdir confdir windir rootdir
   set ::lang $lang
   
   #### G E N E R A L ###############################
