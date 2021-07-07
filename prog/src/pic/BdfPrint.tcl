@@ -2,7 +2,7 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 24jun21 pv
+# Updated: 6jul21 pv
 source $TwdTools
 source $BdfTools
 source $ImgTools
@@ -102,9 +102,12 @@ puts "Printing TWD text..."
 set finalImg [bdf::printTwd $TwdFileName hgbild]
 
 ##save image
+#TODO testing Win slideshow
 if {$platform=="windows"} {  
   $finalImg write $TwdTIF -format TIFF
-  puts "Saved new image to:\n $TwdTIF"
+  $finalImg write $TwdBMP -format BMP
+  puts "Saved new image to:\n $TwdTIF" and \n $TwdBMP
+  
 } elseif {$platform=="unix"} {
   $finalImg write $TwdBMP -format BMP
   $finalImg write $TwdPNG -format PNG

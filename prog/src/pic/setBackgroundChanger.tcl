@@ -97,7 +97,9 @@ if {$platform=="windows"} {
   proc setBg {} {
     for {set i 0} {$i < 10} {incr i} {
       sleep 100
-      exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
+      
+#TODO testing
+#      exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
     }
   }
   return
