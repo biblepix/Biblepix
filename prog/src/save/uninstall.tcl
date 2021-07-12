@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/uninstall.tcl
 # sourced by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1jul21 pv
+# Updated: 12jul21 pv
 
 set antwort [tk_messageBox -icon warning -type yesno -message $uninstall]
 
@@ -53,8 +53,9 @@ if {$antwort=="yes"} {
       file delete -force $themepath
       catch {exec cmd /c [file join $windir Custom.theme]}
 
-      #2. unregister Autorun
+      #2. unregister Autorun & Desktop Background
       regAutorun delete
+      regDesktopBg delete
       
       #3. unregister Context Menu
       regContextMenu delete
@@ -62,14 +63,10 @@ if {$antwort=="yes"} {
     } ;#end if windows
     
     #Remove Biblepix directory on all platforms (some problems on Win)
-    if [catch {file delete -force $rootdir}] {
-      set msg $uninstallprob
+    catch {file delete -force $rootdir}
     
-    } else {
-      set msg $uninstalled
-    }
     #Final message
-    tk_messageBox -type ok -title "Uninstalling BiblePix" -message $msg
+    tk_messageBox -type ok -title "Uninstalling BiblePix" -message $uninstalled
 
     exit
 } ;#end if "yes"

@@ -2,11 +2,11 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5jul21 pv
+# Updated: 10jul21 pv
 
 proc setTexts {lang} {
   global Bidi platform jahr TwdTIF TwdBMP TwdPNG 
-  global twdDir imgdir sigdir confdir windir rootdir
+  global twdDir imgdir sigdir confdir windir
   set ::lang $lang
   
   #### G E N E R A L ###############################
@@ -47,10 +47,6 @@ proc setTexts {lang} {
   set uninstalled(en) "$bp has been removed safely from your system. To reinstall, visit our website, www.bible2.net, and download $bp Installer." 
   set uninstalled(de) "$bp ist sicher von Ihrem System entfernt worden. Um es neu zu installieren, besuchen Sie uns auf www.bible2.net und laden Sie den $bp Installer herunter."
   set ::uninstalled $uninstalled($lang)
-  
-  set uninstallprob(en) "We had a problem deleting all $bp program files. You may have to remove $rootdir manually."
-  set uninstallprob(de) "Wir hatten ein Problem mit dem Löschen aller $bp-Programmdateien. Sie müssen $rootdir eventuell manuell entfernen."
-  set ::uninstallprob $uninstallprob($lang)
     
   # # # #  M I S S I N G   P A C K A G E  # # # # # # # # # # # #                               
 
@@ -386,9 +382,10 @@ Example:"
   set linChangingDesktop(en) "BiblePix will now try to register with your Desktop Background. If you can't see a new background picture after that, find a solution in the Manual."
   set ::linChangingDesktop $linChangingDesktop($lang)
 
-  set winIgnorePopup(en) "Please confirm any System window popping up by pressing OK so $bp can finish registration!"
-  set winIgnorePopup(de) "Quittieren Sie bitte alle Systemmeldungen mit OK, damit $bp die Registrierung abschliessen kann!"
+  set winIgnorePopup(en) "Please dismiss any pop-up windows without changes so $bp can finish registration!"
+  set winIgnorePopup(de) "Schliessen Sie bitte aufspringende Fenster ohne Aenderung, damit $bp die Registrierung abschliessen kann!"
   set ::winIgnorePopup $winIgnorePopup($lang)
+  
   set winChangingDesktop(de) "$linChangingDesktop($lang)\n\n$winIgnorePopup($lang)"
   set winChangingDesktop(en) "$linChangingDesktop($lang)\n\n$winIgnorePopup($lang)"
   set ::winChangingDesktop $winChangingDesktop($lang)

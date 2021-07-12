@@ -1,65 +1,122 @@
 # ~/Biblepix/prog/src/share/setupSaveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9jun21 pv
+# Updated: 12jul21 pv
 
 #set paths for SaveWin & Uninstall
-set wishpath "[file nativename [auto_execok wish]]"
-#set srcpath "[file nativename $srcdir]"
+#TODO these all include %LOCALAPPDATA% ....!!!!!!!!!!!
+#set wishpath "[file nativename $wishpath]"
+set srcpath "[file nativename $srcdir]"
 set winpath "[file nativename $windir]"
 set setuppath "[file nativename $Setup]"
+set wishpath "[file nativename [auto_execok wish]]"
+
+#NOTE these vars are to be used by TCL!
+append regpath_root %LOCALAPPDATA% \\ Biblepix
+append regpath_src "$regpath_root" \\ prog \\ src
+append regpath_setup "$regpath_root" \\ biblepix-setup.tcl
+append regpath_bp "$regpath_src" \\ biblepix.tcl
+append regpath_imgdir "$regpath_root" \\ TodaysPicture
+
+#Registry paths
 set regpath_autorun         [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Run} \\]
 set regpath_policies        [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Policies System} \\]
 set regpath_backgroundtype  [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
+##TODO testing
+set regpath_Wallpapers $regpath_backgroundtype
+set regpath_DesktopSlideshow [join {HKEY_CURRENT_USER {Control Panel} Personalization {Desktop Slideshow}} \\]
+
 ##admin privileges needed for this one (therefore need install.reg, commandline doesn't work)
 set regpath_desktop         [join {HKEY_CLASSES_ROOT DesktopBackground Shell Biblepix} \\]
 
-#TODO testing win var in Registry:
-set srcpath {%LOCALAPPDATA%\Biblepix\prog\src}
+#Check wishpath (Magicsplat or any)
+##Magicsplat
+if [regexp AppData $wishpath] {
+  set regpath_wish {%LOCALAPPDATA%\Apps\Tcl86\bin\wish.EXE}
+##ActiveTcl or any
+} else {
+  set regpath_wish "[file nativename $wishpath]"
+}
 
-# regWinAutorun 
+#REGify path to Biblepix Setup
+append setupCmdpath "$regpath_wish" { } \u0022 "$regpath_setup" \u0022
+set setupCmdpath [string map { \u007B {} \u007D {} } $setupCmdpath] 
+
+#REGify path to Biblepix executable
+append bpCmdpath "$regpath_wish" { } \u0022 "$regpath_bp" \u0022
+set bpCmdpath [string map { \u007B {} \u007D {} } $bpCmdpath]
+
+
+###########################################################
+# A)  P R O C S   W I T H O U T   A D M I N   R I G H T S  
+################### TO BE RUN AT EACH SETUP ###############
+
+# regAutorun 
 ##(un)registers BiblePix Autorun (with args=unset)
 ##no admin rights required
 ##NOTE: Windows "Designs" program is run if 'registry set' fails!
 ##called by SaveWin
 proc regAutorun args {
-  global wishpath srcpath regpath_autorun
-
-  
-  ##NOTE: extra "0022" needed since Tcl can't read paths with spaces!
-  #append commandpath "$wishpath" \u0022 "$srcpath" \\ biblepix.tcl \u0022
-  ##NOTE: variable expansion in the Registry works if the type is set to 'expand_sz'
-  append commandpath "$wishpath" { } \u0022 %LOCALAPPDATA% {\Biblepix\prog\src\biblepix.tcl} \u0022
+  global regpath_autorun bpCmdpath
 
   #A) with args: delete
   if {$args != ""} {
     catch {registry delete "$regpath_autorun" "Biblepix"}
     return
   }
-  #B) register only if missing
-  if { 
-    [catch {registry get "$regpath_autorun" "Biblepix"} res] || 
-    $res != "$commandpath"
-  } {
-    puts "Registering Autorun for Biblepix..."
-    registry set "$regpath_autorun" "Biblepix" "$commandpath" expand_sz
-  }
   
+  #B) Register
+  puts "Registering BiblePix Autorun..."
+  registry set "$regpath_autorun" "Biblepix" "$bpCmdpath" expand_sz
 } ;#END regAutorun
 
-# regWinContextMenu
+# regDesktopBg
+##needs 2 pictures to work!
+##called by setWinTheme
+proc regDesktopBg args {
+  global regpath_Wallpapers regpath_DesktopSlideshow regpath_imgdir
+  global slideshow imgdir
+  
+  #A) with args: delete
+  if {$args != ""} {
+    catch {registry delete "$regpath_Wallpapers" CurrentWallpaperPath}
+    return
+  }
+  
+  #B) Register
+  puts "Registering BiblePix desktop background..."
+  
+  ##1. set slideshow
+  registry set $regpath_DesktopSlideshow Interval [expr $slideshow * 1000] sz
+  registry set $regpath_DesktopSlideshow Shuffle 0 dword
+  ##2. set wallpaper: type=2 (slideshow) |
+  registry set $regpath_Wallpapers BackgroundType 2 dword
+  registry set $regpath_Wallpapers CurrentWallpaperPath "$regpath_imgdir" expand_sz
+  ##3. Not sure what this does (set lockscreen?)
+  registry set $regpath_Wallpapers SlideshowSourceDirectoriesSet 1 dword
+
+  exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
+}
+
+##################################################################
+# B)  P R O C S   W I T H   A D M I N   R I G H T S 
+# User action required - to be run only if parameters have changed
+################################################################## 
+
+# regContextMenu
 ##(un)registers BiblePix Context Menu
-##ADMIN RIGHTS REQUIRED!
 ##removes any "Policies\System Wallpaper" key (blocks user intervention)
 ##called by SaveWin
 proc regContextMenu args {
   global wishpath setuppath windir winpath WinIcon
   global regpath_desktop regpath_policies posKeyValue 
   
-  ##setupCommand must have double \\ because of \" inside string, exactly like this:
-  ## ...TODO get from $windir/install.reg !
-  ##NOTE: variable expansion EXPAND_SZ cannot be set easily via a REG file, so leave paths as they are! 
-  set wishpathRegfile [string map {\u005c \u005c\u005c} $wishpath]
+  puts "Registering BiblePix context menu..."
+  ##setupCommand must have double \\ because of \" inside string, exactly like this (from $windir/install.reg):
+  ## "C:\\Users\\USER NAME\\AppData\\Local\\Apüs\\Tcl86\\bin\\wish.EXE \"C:\\Users ... biblepix-setup.tcl\""
+  ##TODO?: variable expansion EXPAND_SZ (here needed for %%LOCALAPPDATA%) cannot be set easily via a REG file, for now leave paths as they are! 
+  #double \\ (=\u005c)
+  set wishpathRegfile [string map {\u005c \u005c\u005c \u007B {} \u007D {} } $wishpath]
   set setuppathRegfile [string map {\u005c \u005c\u005c} $setuppath]
   set iconpath [file nativename $WinIcon]
   set iconpathRegfile [string map {\u005c \u005c\u005c} $iconpath]
@@ -106,34 +163,11 @@ proc regContextMenu args {
 
 } ;#END regContextMenu
 
-# getBackgroundType
-##Detect running slideshow 
-##no admin rights required (entry reset by Windows when user sets bg)
-##Types: 0=Einzelbild / 2=Diaschau / 1=Volltonfarbe
-##called by SaveWin
-proc getBackgroundType {} {
-  global winChangingDesktop regpath_backgroundtype
-  
-  set error [catch {set BackgroundType [registry get $regpath_backgroundtype BackgroundType]}]
-  if {!$error && $BackgroundType == 0} {
-    return
-  }
-  if !$error {
-    setWinTheme
-  }
-}
-
 # setWinTheme
-##sets & runs 'single pic' .theme file if running slideshow detected
-##NOTE: .theme file is required here; Windows Wallpaper settings (for path see getBackgroundType) are
-##extremely complex and require blabla....
-##called by getBackgroundType
-
-#TODO try working with above registry path - no Root priv. requiredèè
-##thorough testing needed - might make setWinTheme redundent!
-#1. registry set $regpath_backgroundtype(should be regpath_wallpapers) BackgroundType 2 | CurrentWallpaperPath ... | SlideshowDirectoryPath(1?) | SlideShowSourceDirectoriesSet 1 (wozu?)
-#2. registry set {HKCU\Control Panel\Personalization\Desktop Slideshow} Interval ....
-# NOTE: probably only single pic needed - see below!
+##sets & runs ?single pic? theme 
+##NOTE: .theme file required here TO ACTIVATE above Wallpaper settings!
+##run only if Initial OR if slideshow settings have changed
+##called by SaveWin
 proc setWinTheme {} {
   global env TwdTIF windir winIgnorePopup
   set themepath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Biblepix.theme]
@@ -168,13 +202,8 @@ MTSM=DABJDKT"
   close $chan
   
   exec cmd /c $themepath
+
+  #Register slideshow, interval & pipaths
+  regDesktopBg
 } ;#END setWinTheme
 
-# registerTcl
-##registers run_? and .tcl extension
-##Magicsplat registers different extension!
-##called by ...?
-proc registerTcl {} {
-
-
-}	

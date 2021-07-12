@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 25apr21 pv
+# Updated 12jul21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -29,7 +29,7 @@ message .mainTxt -textvar f2.txt -font bpfont1 -width 700 -padx $px -pady $py -j
 
 #Create ImageYesno checkbutton 
 checkbutton .imgyesnoCB -textvar f2.box -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
-if {$enablepic} {set imgyesState 1} else {set imgyesState 0}
+if $enablepic {set imgyesState 1} else {set imgyesState 0}
 
 #P A C K   L E F T 
 pack .title -in .desktopF.leftF -anchor w
@@ -60,7 +60,7 @@ message .slideSecTxt -text sec -width 100
 spinbox .slideSpin -from 10 -to 600 -increment 10 -width 3
 .slideSpin set $slideshow
 
-if {!$slideshow} {
+if !$slideshow {
   .slideBtn deselect 
   set slideshowState 0
   .slideSpin configure -state disabled

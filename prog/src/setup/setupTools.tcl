@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9jun21 pv
+# Updated: 12jul21 pv
 source $SetupResizeTools
 source $JList
 
@@ -26,7 +26,7 @@ proc addPic {origPicPath} {
   namespace eval addpicture {}
   set addpicture::targetPicPath $targetPicPath
 
-  if {![info exists addpicture::curPic]} {
+  if ![info exists addpicture::curPic] {
     set addpicture::curPic photosOrigPic
   }
 
@@ -147,7 +147,7 @@ namespace eval NewsHandler {
 
 # Grey out all spinboxes if !$enablepic
 proc setSpinState {imgyesState} {
-  if {$imgyesState} {
+  if $imgyesState {
     set com normal
   } else {
     set com disabled

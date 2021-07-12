@@ -10,7 +10,6 @@ A d d e d   f e a t u r e s
 
 * Automatic program update in the background, whenever BiblePix is run
     (this used to happen only when Setup was started)
-* Automatic download of next year's Bible text(s) on 1st January
 
 * Setup (International): list of Bible texts for download now in English and native languages
 * Setup (Desktop): Choosable text colours for Desktop picture now: Gold/Silver/Leaf/Sea/Slate 
