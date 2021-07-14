@@ -2,10 +2,11 @@
 # Searches system for current Desktop manager, gives out appropriate BG changing command
 # Called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7jan21
+# Updated: 14jul21
 
 ########################################################################
 # WINDOWS: accepts command through RUNDLL32.EXE - a bit buggy still...
+
 # LINUX SWAY (WAYLAND): accepts command through 'swaymsg'
 # GNOME: needs no image changer, detects image change
 # KDE: needs to be preconfigured (in setupSave)
@@ -13,6 +14,9 @@
 # Other (Linux) desktops: error "command not found" 
 ##########################################################################
 
+if {$platform == "windows"} {
+  package require registry
+}
 
 # detectRunningLinuxDesktop
 ##returns 1 if GNOME detected
@@ -62,9 +66,11 @@ proc detectRunningLinuxDesktop {} {
 
 # B a c k g r o u n d  c h a n g e r s
 proc setWinBg {} {
+
+#TODO adapt PATH to %LOCALAPPDATA% !
   package require registry
   set regpath [join {HKEY_CURRENT_USER {Control Panel} Desktop} \\]
-  registry set $regpath Wallpaper [file nativename $::TwdTIF]
+  registry set $regpath Wallpaper [file nativename $::TwdBMP]
 }
 
 proc getSwayOutputName {} {
@@ -94,13 +100,12 @@ proc getSwayOutputName {} {
 #Create setBg proc for Windows 
 if {$platform=="windows"} {
   setWinBg
+ 
   proc setBg {} {
 
-#TODO testing!
-puts "Testing without RUNDLL32..."
-#    for {set i 0} {$i < 10} {incr i} {
-#      sleep 100
-#      exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
+    for {set i 0} {$i < 10} {incr i} {
+      sleep 100
+      exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
     }
   }
   return

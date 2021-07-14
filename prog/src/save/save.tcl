@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 4jun21 pv 
+# Updated : 12jul21 pv 
 
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $twdDir/*$jahr.twd}] } {
@@ -20,8 +20,9 @@ if { [catch {glob $twdDir/*$jahr.twd}] } {
 
 # R E W R I T E   C O N F I G
 
-#1.Fetch status variables from GUI
+#1.Fetch status variables from GUI (old needed in SaveWin)
 set imgstatus [set imgyesState]
+set enablepic_old $enablepic
 
 ##ticked signature languages
 set sigstatus [set sigyesState]
@@ -64,7 +65,8 @@ puts $chan "set enablesig $sigstatus"
 if {$sigstatus} {
   puts $chan "set sigLanglist \{$sigLanglist\}"
 }
-##slideshow
+##slideshow (old needed in SaveWin)
+set slideshow_old $slideshow
 puts $chan "set slideshow $slidestatus"
 ##fonts
 puts $chan "set fontfamily \{$fontfamilystatus\}"

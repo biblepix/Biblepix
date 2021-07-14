@@ -55,7 +55,7 @@ if {$antwort=="yes"} {
 
       #2. unregister Autorun & Desktop Background
       regAutorun delete
-      regDesktopBg delete
+      #regDesktopBg delete
       
       #3. unregister Context Menu
       regContextMenu delete

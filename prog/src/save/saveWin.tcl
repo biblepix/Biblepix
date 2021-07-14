@@ -1,9 +1,8 @@
 # ~/Biblepix/prog/src/save/saveWin.tcl
 # Sourced by Save.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12jul21
+# Updated: 14jul21
 
-#Windows handles TIF + BMP
 package require registry
 source $SaveWinHelpers
 
@@ -15,31 +14,12 @@ if { [info exists Debug] && $Debug } {
   puts $err
 }
 
-#Query .imgyesnoCB checkbutton
-if $imgyesState {
-  
-  #2. Register Desktop background always  
-  if { [info exists Debug] && $Debug } {
-    regDesktopBg
-  } else {
-    set desktopBgError [catch regDesktopBg err]
-    puts $err
-  }  
-
-  #3. Run win theme only if Initial OR if $slideshow/$enablepic changed
-  if { [info exists InitialJustDone] && $InitialJustDone ||
-       [.slideSpin get] != $slideshow ||
-       $imgyesState != $enablepic
-  } {
-
-    tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangingDesktop
- 
-    if { [info exists Debug] && $Debug } {
-      setWinTheme
-    } else {
-      set themeError [catch setWinTheme err]
-    }
-  }
+#2. getBackgroundType: Run win theme only if running slideshow detected 
+tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winChangingDesktop
+if { [info exists Debug] && $Debug } {
+  getBackgroundType
+} else {
+  set themeError [catch geBackgroundType err]
 }
 
 

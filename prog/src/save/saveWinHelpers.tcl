@@ -1,27 +1,15 @@
-# ~/Biblepix/prog/src/share/setupSaveWinHelpers.tcl
+# ~/Biblepix/prog/src/save/saveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12jul21 pv
+# Updated: 14jul21 pv
 
-#set paths for SaveWin & Uninstall
-#TODO these all include %LOCALAPPDATA% ....!!!!!!!!!!!
-#set wishpath "[file nativename $wishpath]"
+#set basic paths
+set rootpath "[file nativename $rootdir]"
 set srcpath "[file nativename $srcdir]"
 set winpath "[file nativename $windir]"
 set setuppath "[file nativename $Setup]"
-set wishpath "[file nativename [auto_execok wish]]"
+set wishpath "[file nativename $wishpath]"
 
-#NOTE these vars are to be used by TCL!
-append regpath_root %LOCALAPPDATA% \\ Biblepix
-append regpath_src "$regpath_root" \\ prog \\ src
-append regpath_setup "$regpath_root" \\ biblepix-setup.tcl
-append regpath_bp "$regpath_src" \\ biblepix.tcl
-append regpath_imgdir "$regpath_root" \\ TodaysPicture
-
-#Registry paths
-set regpath_autorun         [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Run} \\]
-set regpath_policies        [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Policies System} \\]
-set regpath_backgroundtype  [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
 ##TODO testing
 set regpath_Wallpapers $regpath_backgroundtype
 set regpath_DesktopSlideshow [join {HKEY_CURRENT_USER {Control Panel} Personalization {Desktop Slideshow}} \\]
@@ -29,22 +17,33 @@ set regpath_DesktopSlideshow [join {HKEY_CURRENT_USER {Control Panel} Personaliz
 ##admin privileges needed for this one (therefore need install.reg, commandline doesn't work)
 set regpath_desktop         [join {HKEY_CLASSES_ROOT DesktopBackground Shell Biblepix} \\]
 
-#Check wishpath (Magicsplat or any)
-##Magicsplat
-if [regexp AppData $wishpath] {
-  set regpath_wish {%LOCALAPPDATA%\Apps\Tcl86\bin\wish.EXE}
-##ActiveTcl or any
-} else {
-  set regpath_wish "[file nativename $wishpath]"
+set LAD $env(localappdata)
+
+#REGify wishpath (ActiveTcl, Magicsplat or any), checking if within %LOCALAPPDATA%
+##probably: %LOCALAPPDATA%\Apps\Tcl86\bin\wish.EXE
+if ![catch {string first $LAD $wishpath}] {
+  set reg_wishpath [string replace $wishpath 0 [string length $LAD] %LOCALAPPDATA%]
 }
+set reg_wishpath [string map { \u007B {} \u007D {} } $reg_wishpath]
 
-#REGify path to Biblepix Setup
-append setupCmdpath "$regpath_wish" { } \u0022 "$regpath_setup" \u0022
-set setupCmdpath [string map { \u007B {} \u007D {} } $setupCmdpath] 
+##REGify rootpath (standard or git), checking if within %LOCALAPPDATA%
+if ![catch {string first $LAD $rootpath}] {
+  set reg_rootpath [string replace "$rootdir" 0 [string length $LAD] %LOCALAPPDATA%]
+}
+set reg_rootpath [string map { \u007B {} \u007D {} } $reg_rootpath]
 
-#REGify path to Biblepix executable
-append bpCmdpath "$regpath_wish" { } \u0022 "$regpath_bp" \u0022
-set bpCmdpath [string map { \u007B {} \u007D {} } $bpCmdpath]
+#REGify all paths
+append reg_srcpath "$reg_rootpath" \\ prog \\ src
+append reg_setuppath "$reg_rootpath" \\ biblepix-setup.tcl
+append reg_bppath "$reg_srcpath" \\ biblepix.tcl
+append reg_imgdir "$reg_rootpath" \\ TodaysPicture
+
+#set Registry paths
+set regpath_autorun         [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Run} \\]
+set regpath_policies        [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Policies System} \\]
+set regpath_backgroundtype  [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
+append setupCmdpath "$reg_wishpath" { } \u0022 "$reg_setuppath" \u0022
+append bpCmdpath "$reg_wishpath" { } \u0022 "$reg_bppath" \u0022
 
 
 ###########################################################
@@ -70,32 +69,16 @@ proc regAutorun args {
   registry set "$regpath_autorun" "Biblepix" "$bpCmdpath" expand_sz
 } ;#END regAutorun
 
-# regDesktopBg
-##needs 2 pictures to work!
-##called by setWinTheme
-proc regDesktopBg args {
-  global regpath_Wallpapers regpath_DesktopSlideshow regpath_imgdir
-  global slideshow imgdir
+proc getBackgroundType {} {
+  global regpath_backgroundtype
   
-  #A) with args: delete
-  if {$args != ""} {
-    catch {registry delete "$regpath_Wallpapers" CurrentWallpaperPath}
+  set error [catch {set BackgroundType [registry get $regpath_backgroundtype BackgroundType]}]
+  
+  if {!$error && $BackgroundType == 0} {
     return
   }
-  
-  #B) Register
-  puts "Registering BiblePix desktop background..."
-  
-  ##1. set slideshow
-  registry set $regpath_DesktopSlideshow Interval [expr $slideshow * 1000] sz
-  registry set $regpath_DesktopSlideshow Shuffle 0 dword
-  ##2. set wallpaper: type=2 (slideshow) |
-  registry set $regpath_Wallpapers BackgroundType 2 dword
-  registry set $regpath_Wallpapers CurrentWallpaperPath "$regpath_imgdir" expand_sz
-  ##3. Not sure what this does (set lockscreen?)
-  registry set $regpath_Wallpapers SlideshowSourceDirectoriesSet 1 dword
 
-  exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
+  setWinTheme
 }
 
 ##################################################################
@@ -179,7 +162,7 @@ proc setWinTheme {} {
 DisplayName=BiblePix
 
 \[Control Panel\\Desktop\]
-Wallpaper=[file normalize $TwdTIF]
+Wallpaper=[file normalize $TwdBMP]
 TileWallpaper=0
 WallpaperStyle=2
 
