@@ -39,6 +39,7 @@ set regpath_policies        [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows 
 set regpath_wallpapers      [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
 set regpath_desktop         [join {HKEY_CLASSES_ROOT DesktopBackground Shell Biblepix} \\]
 set regpath_controlpanel    [join {HKEY_CURRENT_USER {Control Panel} Desktop} \\]
+set regpath_slideshow       [join {HKEY_CURRENT_USER {Control Panel} Personalization {Desktop Slideshow}} \\]
 
 append setupCmdpath "$reg_wishpath" { } \u0022 "$reg_setuppath" \u0022
 append bpCmdpath "$reg_wishpath" { } \u0022 "$reg_bppath" \u0022
@@ -72,12 +73,15 @@ proc regAutorun args {
 ##sets initial paths, later to be renewed by setWinBg
 ##called by?
 proc regInitialWallpaper {} {
-  global reg_imgdir regpath_controlpanel
+  global reg_imgdir regpath_controlpanel regpath_slideshow slideshow
   
-  #set wallpaper path, to be renewed by setWinBg
+  ##set wallpaper path, to be renewed by setWinBg
   registry set $regpath_controlpanel Wallpaper $reg_imgdir expand_sz
-  #set wallpaper style to 0 (=zentriert)
+  ##set wallpaper style to 0 (=zentriert)
   registry set $regpath_controlpanel WallpaperStyle 0
+  ##set slideshow interval (only useful if Windows slideshow is activated, which is Plan B!)
+  registry set $regpath_slideshow Interval [expr $slideshow * 1000] dword
+  registry set $regpath_slideshow Shuffle 0 dword
   #This setting may be redundent
   catch {registry set $regpath_wallpapers SlideshowSourceDirectoriesSet 0 dword}
 }
