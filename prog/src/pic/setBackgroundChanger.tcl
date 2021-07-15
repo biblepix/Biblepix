@@ -2,7 +2,7 @@
 # Searches system for current Desktop manager, gives out appropriate BG changing command
 # Called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14jul21
+# Updated: 15jul21 pv
 
 ########################################################################
 # WINDOWS: accepts command through RUNDLL32.EXE - a bit buggy still...
@@ -65,12 +65,23 @@ proc detectRunningLinuxDesktop {} {
 
 
 # B a c k g r o u n d  c h a n g e r s
-proc setWinBg {} {
 
-#TODO adapt PATH to %LOCALAPPDATA% !
+# setWinBg
+##called by setBg
+proc setWinBg {} {
+  global TwdBMP 
   package require registry
+
+  #try to use %LOCALAPPDATA% var in Reg string
+  #set LAD $env(localappdata)
+  if [regexp {AppData.Local} $TwdBMP] {
+    append picpath %LOCALAPPDATA% \\ Biblepix \\ TodaysPicture \\ theword.bmp
+  } else {
+    set picpath [file nativename $TwdBMP]
+  }    
+  #reset picpath every $slideshow secs
   set regpath [join {HKEY_CURRENT_USER {Control Panel} Desktop} \\]
-  registry set $regpath Wallpaper [file nativename $::TwdBMP]
+  registry set "$regpath" Wallpaper "$picpath" expand_sz
 }
 
 proc getSwayOutputName {} {
@@ -97,15 +108,15 @@ proc getSwayOutputName {} {
 
 # C r e a t e  ' s e t B g '   p r o c   i f   a p p l i c a b l e
 
-#Create setBg proc for Windows 
+#Create setBg proc for Windows
+##this runs setWinBg and RUNDLL32 7x to update new Registry entry
 if {$platform=="windows"} {
   setWinBg
- 
-  proc setBg {} {
 
-    for {set i 0} {$i < 10} {incr i} {
-      sleep 100
-      exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
+  proc setBg {} {
+    for {set i 0} {$i < 7} {incr i} {
+    after 150
+    exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters
     }
   }
   return

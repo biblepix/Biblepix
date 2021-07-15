@@ -10,27 +10,22 @@ set winpath "[file nativename $windir]"
 set setuppath "[file nativename $Setup]"
 set wishpath "[file nativename $wishpath]"
 
-##TODO testing
-set regpath_Wallpapers $regpath_backgroundtype
-set regpath_DesktopSlideshow [join {HKEY_CURRENT_USER {Control Panel} Personalization {Desktop Slideshow}} \\]
-
-##admin privileges needed for this one (therefore need install.reg, commandline doesn't work)
-set regpath_desktop         [join {HKEY_CLASSES_ROOT DesktopBackground Shell Biblepix} \\]
-
-set LAD $env(localappdata)
+set LADpath $env(localappdata)
+set LADsearchstring {AppData.Local}
+set reg_rootpath [string map { \u007B {} \u007D {} } $rootpath]
+set reg_wishpath [string map { \u007B {} \u007D {} } $wishpath]
 
 #REGify wishpath (ActiveTcl, Magicsplat or any), checking if within %LOCALAPPDATA%
 ##probably: %LOCALAPPDATA%\Apps\Tcl86\bin\wish.EXE
-if ![catch {string first $LAD $wishpath}] {
-  set reg_wishpath [string replace $wishpath 0 [string length $LAD] %LOCALAPPDATA%]
+if [regexp $LADsearchstring $wishpath] {
+  set reg_wishpath [string replace $reg_wishpath 0 [string length $LADpath] %LOCALAPPDATA%\\]
 }
-set reg_wishpath [string map { \u007B {} \u007D {} } $reg_wishpath]
 
 ##REGify rootpath (standard or git), checking if within %LOCALAPPDATA%
-if ![catch {string first $LAD $rootpath}] {
-  set reg_rootpath [string replace "$rootdir" 0 [string length $LAD] %LOCALAPPDATA%]
+if [regexp $LADsearchstring $rootpath] {
+  #set reg_rootpath [string replace $rootpath 0 [string length $LAD] %LOCALAPPDATA%\\]
+  set reg_rootpath %LOCALAPPDATA%\\Biblepix\\
 }
-set reg_rootpath [string map { \u007B {} \u007D {} } $reg_rootpath]
 
 #REGify all paths
 append reg_srcpath "$reg_rootpath" \\ prog \\ src
@@ -41,7 +36,10 @@ append reg_imgdir "$reg_rootpath" \\ TodaysPicture
 #set Registry paths
 set regpath_autorun         [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Run} \\]
 set regpath_policies        [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Policies System} \\]
-set regpath_backgroundtype  [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
+set regpath_wallpapers      [join {HKEY_CURRENT_USER SOFTWARE Microsoft Windows CurrentVersion Explorer Wallpapers} \\]
+set regpath_desktop         [join {HKEY_CLASSES_ROOT DesktopBackground Shell Biblepix} \\]
+set regpath_controlpanel    [join {HKEY_CURRENT_USER {Control Panel} Desktop} \\]
+
 append setupCmdpath "$reg_wishpath" { } \u0022 "$reg_setuppath" \u0022
 append bpCmdpath "$reg_wishpath" { } \u0022 "$reg_bppath" \u0022
 
@@ -69,15 +67,33 @@ proc regAutorun args {
   registry set "$regpath_autorun" "Biblepix" "$bpCmdpath" expand_sz
 } ;#END regAutorun
 
-proc getBackgroundType {} {
-  global regpath_backgroundtype
+
+# regInitialWallpaper
+##sets initial paths, later to be renewed by setWinBg
+##called by?
+proc regInitialWallpaper {} {
+  global reg_imgdir regpath_controlpanel
   
-  set error [catch {set BackgroundType [registry get $regpath_backgroundtype BackgroundType]}]
+  #set wallpaper path, to be renewed by setWinBg
+  registry set $regpath_controlpanel Wallpaper $reg_imgdir expand_sz
+  #set wallpaper style to 0 (=zentriert)
+  registry set $regpath_controlpanel WallpaperStyle 0
+  #This setting may be redundent
+  catch {registry set $regpath_wallpapers SlideshowSourceDirectoriesSet 0 dword}
+}
+
+# getBackgroundType
+##Runs Win Theme if running slideshow detected
+##called by SaveWin
+proc getBackgroundType {} {
+  global regpath_wallpapers
+  
+  set error [catch {set BackgroundType [registry get $regpath_wallpapers BackgroundType]}]
   
   if {!$error && $BackgroundType == 0} {
     return
   }
-
+  
   setWinTheme
 }
 
@@ -152,7 +168,7 @@ proc regContextMenu args {
 ##run only if Initial OR if slideshow settings have changed
 ##called by SaveWin
 proc setWinTheme {} {
-  global env TwdTIF windir winIgnorePopup
+  global env TwdBMP windir winIgnorePopup
   set themepath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Biblepix.theme]
 
   #Warn of Designs window popping up
@@ -187,6 +203,7 @@ MTSM=DABJDKT"
   exec cmd /c $themepath
 
   #Register slideshow, interval & pipaths
-  regDesktopBg
+  #regDesktopBg
+
 } ;#END setWinTheme
 

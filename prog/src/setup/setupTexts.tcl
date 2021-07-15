@@ -2,7 +2,7 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10jul21 pv
+# Updated: 12jul21 pv
 
 proc setTexts {lang} {
   global Bidi platform jahr TwdTIF TwdBMP TwdPNG 
@@ -382,8 +382,8 @@ Example:"
   set linChangingDesktop(en) "BiblePix will now try to register with your Desktop Background. If you can't see a new background picture after that, find a solution in the Manual."
   set ::linChangingDesktop $linChangingDesktop($lang)
 
-  set winIgnorePopup(en) "Please dismiss any pop-up windows without changes so $bp can finish registration!"
-  set winIgnorePopup(de) "Schliessen Sie bitte aufspringende Fenster ohne Aenderung, damit $bp die Registrierung abschliessen kann!"
+  set winIgnorePopup(en) "Please dismiss (close) any pop-up windows so $bp can finish registration!"
+  set winIgnorePopup(de) "Schliessen Sie bitte aufspringende Fenster ohne Änderung, damit $bp die Registrierung abschliessen kann!"
   set ::winIgnorePopup $winIgnorePopup($lang)
   
   set winChangingDesktop(de) "$linChangingDesktop($lang)\n\n$winIgnorePopup($lang)"
