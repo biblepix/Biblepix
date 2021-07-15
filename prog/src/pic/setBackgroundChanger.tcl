@@ -109,14 +109,14 @@ proc getSwayOutputName {} {
 # C r e a t e  ' s e t B g '   p r o c   i f   a p p l i c a b l e
 
 #Create setBg proc for Windows
-##this runs setWinBg and RUNDLL32 7x to update new Registry entry
+##this runs setWinBg and RUNDLL32 7x to update changed Registry entry
 if {$platform=="windows"} {
   setWinBg
 
   proc setBg {} {
     for {set i 0} {$i < 7} {incr i} {
-    after 150
-    exec RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters
+      after 150
+      exec RUNDLL32.EXE user32.DLL,UpdatePerUserSystemParameters
     }
   }
   return

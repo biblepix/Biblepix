@@ -121,13 +121,17 @@ if {$enablepic} {
   } else {
 
     if {$platform=="windows"} {
+    
+    #TODO testing
+    setBg
       
       #run every 10s up to 15x so Windows has time to update      
-      for {set limit 0} {$limit < 15} {incr limit} {
-        sleep 10000
-        catch setBg
-      }
+#      for {set limit 0} {$limit < 15} {incr limit} {
+#        sleep 10000
+#        catch setBg
+#      }
     }
+    
   } ;#END if slideshow
 } ;#END if enablepic
 

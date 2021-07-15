@@ -33,11 +33,14 @@ Als Installationsort wählt BibelPix automatisch den empfohlenen Standard, näml
 
 W I N D O W S
 
-1. Das Paket 'ActiveTcl' von 
+A) Der schwere Weg:
 
-	www.activestate.com/activetcl/downloads 
+1. Das aktuelle Paket 'Tcl/Tk' von Magicsplat oder ActiveTcl herunterladen und ausführen:
 
-herunterladen und ausführen. Es enthält alle nötigen Tcl-Programme.
+	° www.magicsplat.com/tcl-installer
+	° www.activestate.com/activetcl/downloads
+
+Diese Pakete enthalten alle nötigen Tcl-Programme.
 
 WICHTIG: vor dem nächsten Schritt Computer neu starten, damit Tcl registriert wird!
 
@@ -46,6 +49,11 @@ WICHTIG: vor dem nächsten Schritt Computer neu starten, damit Tcl registriert w
 	www.bible2.net
 
 herunterladen und ausführen (Rechtsklick auf die Datei > öffnen mit 'Wish application').
+
+B) Der leichte Weg:
+
+Laden Sie den "BiblePix Windows Installer" von biblepix.vollmar.ch herunter.
+Er installiert alles automatisch :-)
 
 
 L I N U X
@@ -184,8 +192,13 @@ Das BibelPix-Einrichtungsprogramm versucht, das neue Hintergrundbild für Ihr De
 automatisch einzurichten; berücksichtigt sind all Windows- und gängige Linux-Desktops.
 Sollten dabei Probleme entstehen, können Sie das leicht manuell nachholen, indem Sie
 auf Ihrer Arbeitsfläche rechtsklicken und Ihr System anweisen, künftig den obigen Bildpfad
-als Hintergrundbild zu verwenden. Die Einrichtung einer Diaschau übers System sollte nicht 
-nötig sein, da BibelPix selbsttätig das Bild im gewünschten Minutentakt ändert.
+als Hintergrundbild zu verwenden. 
+
+Die Einrichtung einer DIASCHAU übers System sollte nicht nötig sein, da BibelPix 
+selbsttätig das Bild im gewünschten Minutentakt ändert. 
+Achtung Windows: falls der Bildwechsel nicht richtig funktioniert, rechtsklicken Sie auf dem 
+Desktop und wählen Sie "Anpassen". Dort können Sie mit dem obigen Bildpfad leicht eine 
+Diaschau einrichten. Das Intervall wird automatisch aus dem BibelPix-Setup übernommen.
 
 EMAIL-SIGNATUR
 BibelPix bietet die Zusatzfunktion "Das Tageswort als E-Mail-Signatur". Diese 

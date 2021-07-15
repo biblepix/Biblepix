@@ -34,11 +34,14 @@ is the recommended standard (see further down, "Place of Installation").
 
 W I N D O W S
 
-1. Download the package 'ActiveTcl' from 
+A) The hard way:
 
-	www.activestate.com/activetcl/downloads 
+1. Download and run Tcl/Tk from Magicsplat or ActiveTcl: 
 
-and double-click it to install. It contains all necessary Tcl programs.
+	° www.magicsplat.com/tcl-installer
+	° www.activestate.com/activetcl/downloads
+
+These packages contain all required Tcl programs.
 
 NOTE: Before the next step, restart computer to make sure Tcl is properly registered!
 
@@ -47,6 +50,11 @@ NOTE: Before the next step, restart computer to make sure Tcl is properly regist
 	www.bible2.net
 
 and right-click to install (for option 'Open with...' choose 'Wish application').
+
+B) The easy way:
+
+Download the "BiblePix Windows Installer" from biblepix.vollmar.ch . 
+It will install everything automatically :-)
 
 
 L I N U X
@@ -177,9 +185,14 @@ are managed by the BiblePix main program.
 BiblePix Setup will try to automatically change the background picture of your Desktop; 
 all Windows and most common Linux Desktops have been taken into account. If you encounter
 problems you can easily set up your background picture manually by right-clicking on your
-Desktop and instructing your system to use the above image path from now on. It shouldn't be
-necessary to set up a slideshow via your system desktop control, since BiblePix takes care
-of changing the picture at a given interval.
+Desktop and instructing your system to use the above image path from now on. 
+
+It shouldn't be necessary to set up a SLIDESHOW via your system desktop control, 
+since BiblePix takes care of changing the picture at a given interval.
+Attention Windows users: if the picture doesn't change on time, right-click on your Desktop 
+and choose "Customize". There you can set up a slide show easily with the above picture path.
+The interval is taken automatically from the BiblePix Setup settings.
+
 
 EMAIL SIGNATURE
 
