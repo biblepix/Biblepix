@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/saveWin.tcl
 # Sourced by Save.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15jul21
+# Updated: 17jul21
 
 package require registry
 source $SaveWinHelpers
@@ -10,7 +10,7 @@ source $SaveWinHelpers
 if { [info exists Debug] && $Debug } {
   regAutorun
 } else {
-  set autorunError [catch regAutorun err]
+  set regAutorunError [catch regAutorun err]
   puts $err
 }
 
@@ -24,11 +24,11 @@ if $enablepic {
     set regInitialError [catch regInitialWallpaper err]
   }
 
-  #3. getBackgroundType: Run win theme only if running slideshow detected 
+  #3. Register BackgroundType: (win theme not run now!) 
   if { [info exists Debug] && $Debug } {
-    getBackgroundType
+    regBackgroundType
   } else {
-    set themeError [catch getBackgroundType err]
+    set regBackgroundError [catch regBackgroundType err]
   }
 
 } ;#END if enablepic
@@ -66,28 +66,26 @@ if {
 
 set ok 1
 
-#Final message if no errors
-if { [info exists autorunError] && $autorunError } {
+#Final Error messages
+if { [info exists regAutorunError] && $regAutorunError } {
   set ok 0
   tk_messageBox -type ok -icon error -title "BiblePix Autorun Installation" -message $winChangeDesktopProb
 }
-
-#Final Error messages
 if { [info exists regInitialError] && $regInitialError } {
   set ok 0
   tk_messageBox -type ok -icon error -title "BiblePix Registry Initial Wallpaper Installation" -icon error -message $winRegisterProb
 }
-
+if { [info exists regBackgroundError] && $regBackgroundError } {
+  set ok 0
+  tk_messageBox -type ok -icon error -title "BiblePix Background Theme Installation" -message $winChangeDesktopProb
+}
 if { [info exists contextMenuError] && $contextMenuError } {
   set ok 0
   tk_messageBox -type ok -icon error -title "BiblePix Registry Context Menu Installation" -icon error -message $winRegisterProb
 }
-
-if { [info exists themeError] && $themeError } {
-  set ok 0
-  tk_messageBox -type ok -icon error -title "BiblePix Theme Installation" -message $winChangeDesktopProb
-}
-
+#Final OK message
 if {$ok} {
-  tk_messageBox -type ok -title "BiblePix Installation" -icon info -message $changeDesktopOk
+  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $changeDesktopOk
+  exec RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters
 }
+

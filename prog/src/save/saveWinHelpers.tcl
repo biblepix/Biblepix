@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/saveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14jul21 pv
+# Updated: 17jul21 pv
 
 #set basic paths
 set rootpath "[file nativename $rootdir]"
@@ -20,7 +20,6 @@ set reg_wishpath [string map { \u007B {} \u007D {} } $wishpath]
 if [regexp $LADsearchstring $wishpath] {
   set reg_wishpath [string replace $reg_wishpath 0 [string length $LADpath] %LOCALAPPDATA%\\]
 }
-
 ##REGify rootpath (standard or git), checking if within %LOCALAPPDATA%
 if [regexp $LADsearchstring $rootpath] {
   #set reg_rootpath [string replace $rootpath 0 [string length $LAD] %LOCALAPPDATA%\\]
@@ -71,34 +70,49 @@ proc regAutorun args {
 
 # regInitialWallpaper
 ##sets initial paths, later to be renewed by setWinBg
-##called by?
+##this is for completeness only, effects not documented!
+##called by SaveWin
 proc regInitialWallpaper {} {
   global reg_imgdir regpath_controlpanel regpath_slideshow slideshow
   
-  ##set wallpaper path, to be renewed by setWinBg
+  #Set wallpaper path, to be renewed by setWinBg
   registry set $regpath_controlpanel Wallpaper $reg_imgdir expand_sz
-  ##set wallpaper style to 0 (=zentriert)
+  #Set wallpaper style to 0 (=zentriert)
   registry set $regpath_controlpanel WallpaperStyle 0
-  ##set slideshow interval (only useful if Windows slideshow is activated, which is Plan B!)
+
+  #Set Registry slideshow interval 
+  ##this is respected by Windows even if user sets background to the standard (1/10/30 mins.)
+  ##however after user intervention this setting must be reset by Biblepix Setup (see Manual)
+  ##only useful if Windows slideshow is activated
   registry set $regpath_slideshow Interval [expr $slideshow * 1000] dword
-  registry set $regpath_slideshow Shuffle 0 dword
-  #This setting may be redundent
+
+  #These settings may be redundent
+  catch {registry set $regpath_slideshow Shuffle 0 dword}
   catch {registry set $regpath_wallpapers SlideshowSourceDirectoriesSet 0 dword}
 }
 
-# getBackgroundType
+# regBackgroundType
 ##Runs Win Theme if running slideshow detected
+##types: 0=singlepic 1=colour 2=slideshow
+##types usually set by user action in Settings>Wallpaper, with right-click on Desktop >Customize/Anpassen
 ##called by SaveWin
-proc getBackgroundType {} {
-  global regpath_wallpapers
+proc regBackgroundType {} {
+  global regpath_wallpapers regpath_slideshow slideshow
   
   set error [catch {set BackgroundType [registry get $regpath_wallpapers BackgroundType]}]
   
   if {!$error && $BackgroundType == 0} {
     return
   }
+
+  #O B S O L E T E D ! ! !
+  #  setWinTheme
+
+  #Set registry background type to 0 = single pic
+  registry set $regpath_wallpapers BackgroundType 0 dword
   
-  setWinTheme
+  #Nützts nüt, so schadts nüt!
+  exec RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters
 }
 
 ##################################################################
@@ -117,7 +131,6 @@ proc regContextMenu args {
   puts "Registering BiblePix context menu..."
   ##setupCommand must have double \\ because of \" inside string, exactly like this (from $windir/install.reg):
   ## "C:\\Users\\USER NAME\\AppData\\Local\\Apüs\\Tcl86\\bin\\wish.EXE \"C:\\Users ... biblepix-setup.tcl\""
-  ##TODO?: variable expansion EXPAND_SZ (here needed for %%LOCALAPPDATA%) cannot be set easily via a REG file, for now leave paths as they are! 
   #double \\ (=\u005c)
   set wishpathRegfile [string map {\u005c \u005c\u005c \u007B {} \u007D {} } $wishpath]
   set setuppathRegfile [string map {\u005c \u005c\u005c} $setuppath]
@@ -147,9 +160,13 @@ proc regContextMenu args {
     append regtext {@="BiblePix Setup"} \n
     append regtext {"Icon"=} "$iconPathRegfile" \n
     append regtext {"Position"="Bottom"} \n\n
-    ##add Biblepix command
+    
+    ##add Biblepix command 
+    ##NOTE: 'reg_expand_sz' for %LOCALAPPDATA% would require comma-separated hex(2)
+    ##which produces a line longer than what we have now!
     append regtext {[HKEY_CLASSES_ROOT\DesktopBackground\Shell\Biblepix\Command]} \n
     append regtext {@=} "$setupCommandRegfile" \n\n
+
     ##remove Wallpaper value from System policies (needs to be done by regfile)
     append regtext {[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System]} \n
     append regtext {"Wallpaper"=-}
@@ -166,11 +183,20 @@ proc regContextMenu args {
 
 } ;#END regContextMenu
 
-# setWinTheme
-##sets & runs ?single pic? theme 
-##NOTE: .theme file required here TO ACTIVATE above Wallpaper settings!
-##run only if Initial OR if slideshow settings have changed
-##called by SaveWin
+# setWinTheme - O B S O L E T E !
+##sets & runs single pic theme
+#####################################################################
+## opens Settings>Theme window!
+## Note: Settings>Background window is only opened by user action and
+## only latter resets Background (see getBackgroundType)
+## NOTE: .theme file required here TO ACTIVATE above Wallpaper settings!
+## run only if Initial OR if slideshow settings have changed
+###############################################################################
+##-NOTE : AFTER A DAY'S TESTING THIS PROC DOES NOT SEEM TO MAKE ANY DIFFERENCE
+## TO THE BUGGY WAY WINDOWS RESPECTS INTERVALS - !!!
+## i.e. simple change by Setup also does the job !!!!!
+###############################################################################
+##called by RegBackgroundType
 proc setWinTheme {} {
   global env TwdBMP windir winIgnorePopup
   set themepath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Biblepix.theme]
@@ -205,6 +231,8 @@ MTSM=DABJDKT"
   close $chan
   
   exec cmd /c $themepath
+
+#TODO re-register interval after this!
 
   #Register slideshow, interval & pipaths
   #regDesktopBg

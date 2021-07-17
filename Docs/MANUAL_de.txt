@@ -196,8 +196,10 @@ als Hintergrundbild zu verwenden.
 Die Einrichtung einer DIASCHAU übers System sollte nicht nötig sein, da BibelPix 
 selbsttätig das Bild im gewünschten Minutentakt ändert. 
 Achtung Windows: falls der Bildwechsel nicht richtig funktioniert, rechtsklicken Sie auf dem 
-Desktop und wählen Sie "Anpassen". Dort können Sie mit dem obigen Bildpfad leicht eine 
-Diaschau einrichten. Das Intervall wird automatisch aus dem BibelPix-Setup übernommen.
+Desktop und wählen Sie "Anpassen > Hintergrund". Dort können Sie mit dem obigen Bildpfad leicht 
+eine Diaschau einrichten. Das Intervall wird automatisch aus dem BibelPix-Setup übernommen.
+Ev. müssen Sie es danach nochmals laufen lassen, um das gewünschte Intervall zu registrieren.
+ 
 
 EMAIL-SIGNATUR
 BibelPix bietet die Zusatzfunktion "Das Tageswort als E-Mail-Signatur". Diese 

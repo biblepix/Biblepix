@@ -189,8 +189,9 @@ Desktop and instructing your system to use the above image path from now on.
 It shouldn't be necessary to set up a SLIDESHOW via your system desktop control, 
 since BiblePix takes care of changing the picture at a given interval.
 Attention Windows users: if the picture doesn't change on time, right-click on your Desktop 
-and choose "Customize". There you can set up a slide show easily with the above picture path.
-The interval is taken automatically from the BiblePix Setup settings.
+and choose "Personalize > Wallpaper". There you can set up a slide show easily with the above 
+picture path. The interval is taken automatically from the BiblePix Setup settings. 
+You may have to rerun Setup for this to take effect.
 
 
 EMAIL SIGNATURE

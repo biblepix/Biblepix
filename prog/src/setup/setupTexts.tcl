@@ -390,9 +390,13 @@ Example:"
   set winChangingDesktop(en) "$linChangingDesktop($lang)\n\n$winIgnorePopup($lang)"
   set ::winChangingDesktop $winChangingDesktop($lang)
 
-  set winChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung des Desktophintergrunds.\nBitte rechtsklicken Sie auf Ihrem Desktop und wählen Sie \"Anpassen\"', dort finden Sie das BibelPix-Thema.\nKlicken Sie darauf, um es zu aktivieren, dann schliessen Sie das Fenster."
-  set winChangeDesktopProb(en) "We are having a problem changing your Desktop background.\nPlease right-click on your Desktop and select \"Customize\".\nFind the BiblePix theme, click on it and then close the window."
+
+#TODO Info falsch! - Designs=Themes!
+  set winChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung des Desktophintergrunds.\nRechtsklicken Sie auf ein leeres Feld auf Ihrem Desktop und wählen Sie \"Anpassen\". Unter \"Hintergrund\" (oder Designs?) finden Sie das BibelPix-Thema.\nKlicken Sie darauf, um es zu aktivieren, dann schliessen Sie das Fenster."
+  set winChangeDesktopProb(en) "We are having a problem changing your Desktop background.\nPlease right-click on an empty spot on your Desktop and select \"Personalize\".\nFind the BiblePix theme, click on it and then close the window."
   set ::winChangeDesktopProb $winChangeDesktopProb($lang)
+
+
 
   set linChangeDesktopProb(de) "Wir hatten ein Problem mit der Änderung der Desktopeinstellungen.\nBitte rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog für 'Hintergrundbild'. Dort geben Sie $imgdir als Bildpfad an."
   set linChangeDesktopProb(en) "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgdir as new image path."
