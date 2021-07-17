@@ -69,19 +69,19 @@ set ok 1
 #Final Error messages
 if { [info exists regAutorunError] && $regAutorunError } {
   set ok 0
-  tk_messageBox -type ok -icon error -title "BiblePix Autorun Installation" -message $winChangeDesktopProb
+  tk_messageBox -type ok -icon error -title "BiblePix Registry Autorun Installation" -message $winChangeDesktopProb
 }
 if { [info exists regInitialError] && $regInitialError } {
   set ok 0
-  tk_messageBox -type ok -icon error -title "BiblePix Registry Initial Wallpaper Installation" -icon error -message $winRegisterProb
+  tk_messageBox -type ok -icon error -title "BiblePix Registry Initial Wallpaper Installation" -message $winRegisterProb
 }
 if { [info exists regBackgroundError] && $regBackgroundError } {
   set ok 0
-  tk_messageBox -type ok -icon error -title "BiblePix Background Theme Installation" -message $winChangeDesktopProb
+  tk_messageBox -type ok -icon error -title "BiblePix Registry Background Theme Installation" -message $winChangeDesktopProb
 }
 if { [info exists contextMenuError] && $contextMenuError } {
   set ok 0
-  tk_messageBox -type ok -icon error -title "BiblePix Registry Context Menu Installation" -icon error -message $winRegisterProb
+  tk_messageBox -type ok -icon error -title "BiblePix Registry Context Menu Installation" -message $winRegisterProb
 }
 #Final OK message
 if {$ok} {
