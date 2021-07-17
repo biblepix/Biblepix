@@ -23,7 +23,6 @@ I  N  S  T  A  L  L  A  T  I  O  N
 Before installing BiblePix, make sure Tcl/Tk as well as the above-mentioned 
 extra packages are present on your PC. Tcl/Tk is a system independent platform 
 for many operating systems.
-For Windows: Download ActiveTcl (see below)
 
 BiblePix Installer (see below) should be executed only once for first installation, 
 since it overwrites all files. After that it is enough to run BiblePix Setup for updating.
@@ -49,7 +48,7 @@ NOTE: Before the next step, restart computer to make sure Tcl is properly regist
 
 	www.bible2.net
 
-and right-click to install (for option 'Open with...' choose 'Wish application').
+and right-click to install (for option 'Open with...' choose 'Wish' or 'Tcl' application).
 
 B) The easy way:
 
