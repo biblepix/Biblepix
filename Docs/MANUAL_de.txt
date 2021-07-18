@@ -13,7 +13,7 @@ BibelPix kann "Das Wort" auf vielfältige Weise anzeigen:
 	° im Linux-Terminal
 
 Systeme: Linux, Windows
-Systemvoraussetzungen: Tcl/Tk-Bibliothek, Zusatzpakete tls, tDom und tkimg
+Systemvoraussetzungen: Tcl/Tk-Bibliothek, Zusatzpakete tcllib, tls, tDom und tkimg
 ________________________________________________________________________________
 
 
@@ -45,7 +45,7 @@ WICHTIG: vor dem nächsten Schritt Computer neu starten, damit Tcl registriert w
 
 2. Den BibelPix-Installer von
 
-	www.bible2.net
+	biblepix.vollmar.ch
 
 herunterladen und ausführen (Rechtsklick auf die Datei > öffnen mit 'Wish' oder 'Tcl' application).
 
@@ -65,7 +65,7 @@ nachinstallieren, bevor Sie BibelPix einrichten. Die Installation erfolgt entwed
 
 2. Den BibelPix-Installer von
 
-	www.bible2.net
+	biblepix.vollmar.ch
 
 herunterladen und ausführen mit Doppelklick auf die Datei.***
 
@@ -222,7 +222,7 @@ müssen das erste Mal unter 'IMAP > Settings > General' (Trojitá) bzw. 'Einstel
 > Signaturen' (Evolution) die gewünschte Identität markieren und im Dialog 'Edit' eine neue 
 Zeile hinzufügen mit dem Ausdruck
 
-  www.bible2.net
+  biblepix.vollmar.ch
 
 Dort wird künftig 'Das Wort' automatisch eingesetzt. (s. Fussnote zu Evolution******)
   

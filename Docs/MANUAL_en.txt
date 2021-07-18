@@ -13,7 +13,7 @@ BiblePix can display "The Word" in various ways:
  * in the Linux terminal
  
 Systems: Linux, Windows 
-System requirements: Tcl/Tk library, additional packages tls, tDom and tkimg
+System requirements: Tcl/Tk library, additional packages tcllib, tls, tDom, tkimg
 
 ________________________________________________________________________________
 
@@ -46,7 +46,7 @@ NOTE: Before the next step, restart computer to make sure Tcl is properly regist
 
 2. Download the BiblePix Installer from
 
-	www.bible2.net
+	biblepix.vollmar.ch
 
 and right-click to install (for option 'Open with...' choose 'Wish' or 'Tcl' application).
 
@@ -66,7 +66,7 @@ by entering a short command in your terminal.**
 
 2. Download the BiblePix Installer from
 
-	www.bible2.net
+	biblepix.vollmar.ch
 
 and double-click it to install.***
 
@@ -214,7 +214,7 @@ external files), BiblePix can handle Trojitá and Evolution for now. First time 
 should go to 'IMAP > Settings > General' (Trojitá) / 'Settings > Editor > Signatures' 
 (Evolution) and mark the desired identity. In the 'Edit' dialog add a new line saying 
 
-  www.bible2.net
+  biblepix.vollmar.ch
   
 Henceforth BiblePix will insert 'The Word' in its place. (see footnote for Evolution******)
 
