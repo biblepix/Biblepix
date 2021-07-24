@@ -38,7 +38,7 @@ A) The hard way:
 1. Download and run Tcl/Tk from Magicsplat or ActiveTcl: 
 
 	° www.magicsplat.com/tcl-installer
-	° www.activestate.com/activetcl/downloads
+	° www.activestate.com/products/tcl/downloads
 
 These packages contain all required Tcl programs.
 

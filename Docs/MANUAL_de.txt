@@ -37,7 +37,7 @@ A) Der schwere Weg:
 1. Das aktuelle Paket 'Tcl/Tk' von Magicsplat oder ActiveTcl herunterladen und ausführen:
 
 	° www.magicsplat.com/tcl-installer
-	° www.activestate.com/activetcl/downloads
+	° www.activestate.com/products/tcl/downloads
 
 Diese Pakete enthalten alle nötigen Tcl-Programme.
 
