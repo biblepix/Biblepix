@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/uninstall.tcl
 # sourced by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12jul21 pv
+# Updated: 24jul21 pv
 
 set antwort [tk_messageBox -icon warning -type yesno -message $uninstall]
 
@@ -48,17 +48,15 @@ if {$antwort=="yes"} {
       #Message for sysadmin
       tk_messageBox -type ok -message $uninstalling
       
-      #1. restore custom.theme
+      #1. restore custom.theme -- !OBSOLETE now! but leaving for now for older installations
       set themepath [file join $env(appdata) Local Microsoft Windows Themes biblepix.theme]
       file delete -force $themepath
       catch {exec cmd /c [file join $windir Custom.theme]}
 
-      #2. unregister Autorun & Desktop Background
-      regAutorun delete
-      #regDesktopBg delete
-      
-      #3. unregister Context Menu
-      regContextMenu delete
+      #2. Unregister Initial_Wallpaper_Settings, Autorun & ContextMenu 
+      catch {regInitialWallpaper delete}
+      catch {regAutorun delete}
+      catch {regContextMenu delete}
 
     } ;#end if windows
     

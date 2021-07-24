@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/saveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17jul21 pv
+# Updated: 24jul21 pv
 
 #set basic paths
 set rootpath "[file nativename $rootdir]"
@@ -72,12 +72,20 @@ proc regAutorun args {
 ##sets initial paths, later to be renewed by setWinBg
 ##this is for completeness only, effects not documented!
 ##called by SaveWin
-proc regInitialWallpaper {} {
+proc regInitialWallpaper args {
   global reg_imgdir regpath_controlpanel regpath_slideshow slideshow
   
-  #Set wallpaper path, to be renewed by setWinBg
+  #A) with args: delete
+  if {$args != ""} {
+    registry delete $regpath_controlpanel Wallpaper
+    registry delete $regpath_slideshow Interval 0 dword
+    return
+  }
+  
+  #B) Set wallpaper path & style & interval
+
+  ##path renewed by setWinBg at each run / style set to 0 (=zentriert)
   registry set $regpath_controlpanel Wallpaper $reg_imgdir expand_sz
-  #Set wallpaper style to 0 (=zentriert)
   registry set $regpath_controlpanel WallpaperStyle 0
 
   #Set Registry slideshow interval 
