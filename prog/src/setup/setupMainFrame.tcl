@@ -3,10 +3,17 @@
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 10jun21 pv
+
 source -encoding utf-8 $SetupTexts
 setTexts $lang
 source $SetupTools
 source $TwdTools
+
+#Prepare msgcat environment
+package require msgcat
+namespace import msgcat::*
+mclocale $lang
+mcload $msgdir
 
 #Set general X vars & Main Window width
 set screenX [winfo screenwidth .]
@@ -33,14 +40,14 @@ ttk::label .ftop.titelmitlogo -textvar bpsetup -font bpfont4 -padding 5
 pack .ftop.titelmitlogo -side left
 
 #Create notebook Tabs
-.nb add [frame .welcomeF -padx $px -pady $py] -text Welcome
-.nb add [frame .internationalF -padx $px -pady $py] -text International
-.nb add [frame .desktopF -padx $px -pady $py] -text Desktop
-.nb add [frame .photosF -padx $px -pady $py] -text Photos
-.nb add [frame .emailF -padx $px -pady $py] -text E-Mail
-.nb add [frame .manualF -padx $px -pady $py] -text Manual
+.nb add [frame .welcomeF -padx $px -pady $py] -text "[mc welcome]"
+.nb add [frame .internationalF -padx $px -pady $py] -text "[mc bibletexts]"
+.nb add [frame .desktopF -padx $px -pady $py] -text "[mc desktop]"
+.nb add [frame .photosF -padx $px -pady $py] -text "[mc photos]"
+.nb add [frame .emailF -padx $px -pady $py] -text "[mc email]"
+.nb add [frame .manualF -padx $px -pady $py] -text "[mc manual]"
 if {$platform=="unix"} {
-  .nb insert 5 [frame .terminalF -padx $px -pady $py] -text Terminal
+  .nb insert 5 [frame .terminalF -padx $px -pady $py] -text [mc terminal]
 }
 
 #Reposition window to screen top
