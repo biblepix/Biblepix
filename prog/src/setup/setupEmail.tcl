@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 24pr21 pv
+# Updated 29jul21 pv
 
 #Create frames & titles
 pack [frame .emailF.topF] -fill x
@@ -43,7 +43,7 @@ proc toggleBtnstate {} {
 ##A) $sigLanglist exists, but files may have been deleted
 if {[info exists sigLanglist] && $sigLanglist != ""} {
   foreach code $sigLanglist {
-    if [file exists [glob -nocomplain -directory $twdDir ${code}*]] {
+    if [file exists [glob -nocomplain -directory $twddir ${code}*]] {
       set Btn .${code}Btn
       $Btn select
     }

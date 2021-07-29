@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 9jun21 pv
+# Updated: 29jul21 pv
 set version "4.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -48,7 +48,7 @@ lappend dirPathL [set setupdir [file join $srcdir setup]]
 lappend dirPathL [set sharedir [file join $srcdir share]]
 lappend dirPathL [set sigdir [file join $rootdir TodaysSignature]]
 lappend dirPathL [set termdir [file join $srcdir term]]
-lappend dirPathL [set twdDir [file join $rootdir BibleTexts]]
+lappend dirPathL [set twddir [file join $rootdir BibleTexts]]
 lappend dirPathL [set unixdir [file join $progdir unix]]
 lappend dirPathL [set windir [file join $progdir win]]
 

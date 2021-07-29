@@ -6,7 +6,7 @@
 
 proc setTexts {lang} {
   global Bidi platform jahr TwdTIF TwdBMP TwdPNG 
-  global twdDir imgdir sigdir confdir windir
+  global twddir imgdir sigdir confdir windir
   set ::lang $lang
   
   #### G E N E R A L ###############################
@@ -114,7 +114,7 @@ set ::packageRequireTls $packageRequireTls($lang)
   #Create RtL info on text positioning
   set RtlInfo ""
   ##Hebrew
-  if ![catch "glob $twdDir/he_*"] {
+  if ![catch "glob $twddir/he_*"] {
     set RtlHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
     if {$platform=="unix"} {
       set RtlHe [string reverse $RtlHe]
@@ -122,7 +122,7 @@ set ::packageRequireTls $packageRequireTls($lang)
     append RtlInfo $RtlHe
   }
   ##Arabic
-  if ![catch "glob $twdDir/ar_*"] {
+  if ![catch "glob $twddir/ar_*"] {
     set RtlAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
     if {$platform=="unix"} {
       source $Bidi

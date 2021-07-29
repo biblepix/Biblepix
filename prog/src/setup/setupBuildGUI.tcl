@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9jun21 pv
+# Updated: 29jul21 pv
 
 setFlags
 source $TwdTools

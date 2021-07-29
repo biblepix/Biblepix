@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10jun21 pv
+# Updated: 29jul21 pv
 package require http
 
 # checkTls
@@ -129,7 +129,7 @@ proc downloadFileFromUrl {filePath url} {
 }
 
 proc downloadTwdFile {twdFile year} {
-  global twdDir
+  global twddir
   
   checkTls
   
@@ -138,7 +138,7 @@ proc downloadTwdFile {twdFile year} {
   lset nameParts 2 "$year.twd"
   set fileName [join $nameParts "_"]
 
-  set filePath $twdDir/$fileName
+  set filePath $twddir/$fileName
   set url $::twdBaseUrl/$fileName
 
   #Register SSL connection
@@ -287,14 +287,14 @@ proc getRemoteTWDFileList {} {
 
 #TODO called by?
 proc downloadTWDFiles {} {
-  global twdDir jahr
+  global twddir jahr
   
   if [catch {set root [getRemoteRoot]}] {
     NewsHandler::QueryNews $::noConnTwd red
     return 1
   }
   
-  cd $twdDir
+  cd $twddir
   #get hrefs alphabetically ordered
   set urllist [$root selectNodes {//tr/td/a}]
   set hrefs ""

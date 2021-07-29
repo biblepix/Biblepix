@@ -1,13 +1,13 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12jul21 pv
+# Updated: 29jul21 pv
 source $SetupResizeTools
 source $JList
 
 # addPic - called by SetupPhoto
-# adds new Picture to BiblePix Photo collection
-# setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
+##adds new Picture to BiblePix Photo collection
+##setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
 ##called by SetupPhotos:addPic Button
 proc addPic {origPicPath} {
   
@@ -274,13 +274,13 @@ proc setManText {lang} {
 #List language codes of installed TWD files
 #called here & in SetupInternational 
 proc updateMailBtnList {window} {
-  global twdDir
+  global twddir
   set twdList [getTwdList]
   if {$twdList == ""} {return}
   
   foreach e $twdList {
     #files may have been deleted after creating langcodeL!
-    if [file exists $twdDir/$e] {
+    if [file exists $twddir/$e] {
       lappend codeL [string range $e 0 1]
     }
   }
@@ -688,8 +688,11 @@ proc copyAndResizeSamplePhotos {} {
 ##### P r o c s   f o r   S e t u p W e l c o m e  #############################
 ################################################################################
 
-proc fillWidgetWithTodaysTwd twdWidget {
-  global TwdTools twdDir
+# insertTodaysTwd
+##inserts text into text widget
+##called by SetupWelcome
+proc insertTodaysTwd twdWidget {
+  global TwdTools twddir
 
   if {[info procs getRandomTwdFile] == ""} {
     source $TwdTools
@@ -703,15 +706,16 @@ proc fillWidgetWithTodaysTwd twdWidget {
   } else {    
     
     set twdText [getTodaysTwdText $twdFileName]
-    $twdWidget conf -justify left
+    $twdWidget tag add direction 1.0 end
+    $twdWidget tag conf direction -justify left
     
     if [isBidi $twdText] {
-      $twdWidget conf -justify right
+      $twdWidget tag conf direction -justify right
     }
 
   }
+  $twdWidget insert 1.0 $twdText
   
-  $twdWidget conf -text $twdText
   ##export for other Setup widgets
   set ::setupTwdText $twdText
 }
