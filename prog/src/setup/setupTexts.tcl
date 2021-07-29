@@ -466,20 +466,20 @@ Example:"
 } ;#END setTexts
 
 proc copiedPicMsg {picPath} {
-  global lang photosDir
+  global lang photosdir
   if {$lang == "en"} {
-    return "Copied [file tail $picPath] to [file nativename $photosDir]"
+    return "Copied [file tail $picPath] to [file nativename $photosdir]"
   } elseif {$lang == "de"} {
-    return "[file tail $picPath] nach [file nativename $photosDir] kopiert"
+    return "[file tail $picPath] nach [file nativename $photosdir] kopiert"
   }
 }
 
 proc deletedPicMsg {picPath} {
-  global photosDir lang
+  global photosdir lang
   if {$lang == "en"} {
-    return "Deleted [file tail $picPath] from [file nativename $photosDir]"
+    return "Deleted [file tail $picPath] from [file nativename $photosdir]"
   } elseif {$lang == "de"} {
-    return "[file tail $picPath] aus [file nativename $photosDir] gelöscht"
+    return "[file tail $picPath] aus [file nativename $photosdir] gelöscht"
   }
 }
 

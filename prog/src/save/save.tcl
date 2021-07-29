@@ -11,7 +11,7 @@ if { [catch {glob $twdDir/*$jahr.twd}] } {
   return
 
 # Return to PHOTOS section if $picsdir empty
-} elseif { [catch {glob $photosDir/*}] } {
+} elseif { [catch {glob $photosdir/*}] } {
  .nb select .photosF
   NewsHandler::QueryNews "$noPhotosFound" red
   return

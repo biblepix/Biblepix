@@ -89,7 +89,7 @@ if { [info exists Debug] && $Debug } {
 }
 
 #Preset number of photos (to be changed later by proc)
-set numPhotos [llength [glob $photosDir/*]]
+set numPhotos [llength [glob $photosdir/*]]
 
 #6. Terminal
 if {$platform=="unix"} {

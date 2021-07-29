@@ -11,12 +11,12 @@ source $JList
 ##called by SetupPhotos:addPic Button
 proc addPic {origPicPath} {
   
-  global photosDir v
+  global photosdir v
   source $::SetupResizePhoto
   source $::SetupResizeTools
 
   #Set path & exit if already there
-  set targetPicPath [file join $photosDir [setPngFileName [file tail $origPicPath]]]
+  set targetPicPath [file join $photosdir [setPngFileName [file tail $origPicPath]]]
   if [file exists $targetPicPath] {
     NewsHandler::QueryNews $::picSchonDa red
     return 1
@@ -65,15 +65,15 @@ proc addPic {origPicPath} {
     openResizeWindow
   }
 
-  set ::numPhotos [llength [glob $photosDir/*]]
+  set ::numPhotos [llength [glob $photosdir/*]]
 } ;#END addPic
 
 proc delPic {c} {
-  global photosDir fileJList picPath
+  global photosdir fileJList picPath
   file delete $picPath
   set fileJList [deleteImg $fileJList $c]
   NewsHandler::QueryNews "[deletedPicMsg $picPath]" orange
-  set ::numPhotos [llength [glob $photosDir/*]]
+  set ::numPhotos [llength [glob $photosdir/*]]
 }
 
 #######################################################################
@@ -543,15 +543,15 @@ proc openFileDialog {bildordner} {
 }
 
 proc refreshFileList {} {
-  global tcl_platform photosDir
+  global tcl_platform photosdir
   set storage ""
   set parted 0
   set localJList ""
 
   if {$tcl_platform(os) == "Linux"} {
-    set fileNames [glob -nocomplain -directory $photosDir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
+    set fileNames [glob -nocomplain -directory $photosdir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
   } elseif {$tcl_platform(platform) == "windows"} {
-    set fileNames [glob -nocomplain -directory $photosDir *.jpg *.jpeg *.png]
+    set fileNames [glob -nocomplain -directory $photosdir *.jpg *.jpeg *.png]
   }
 
   foreach fileName $fileNames {
@@ -647,7 +647,7 @@ proc deleteImg {localJList canv} {
 ## no cutting intended because these pics can be stretched
 ## called by BiblepixSetup
 proc copyAndResizeSamplePhotos {} {
-  global sampleJpgL photosDir sampleJpgDir
+  global sampleJpgL photosdir sampleJpgDir
   source $::ImgTools
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
@@ -655,10 +655,10 @@ proc copyAndResizeSamplePhotos {} {
   foreach filePath $sampleJpgL {
     set fileName [file tail $filePath]
     set origJpgPath $filePath
-    set newJpgPath [file join $photosDir $fileName]
+    set newJpgPath [file join $photosdir $fileName]
     set newPngPath [setPngFileName $newJpgPath]
 
-    #Skip if JPG or PNG found in $photosDir
+    #Skip if JPG or PNG found in $photosdir
     if { [file exists $newJpgPath] || [file exists $newPngPath] } {
       puts "Skipping $fileName"
       continue
