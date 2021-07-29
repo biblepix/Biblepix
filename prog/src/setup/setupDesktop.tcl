@@ -178,7 +178,23 @@ setCanvasFontColour $textposC $fontcolortext
 #setCanvasFontColour $textposC $fontcolortext $lum
 
 #Footnote for Arabic+Hebrew text shift (only if found)
-label .textposFN -width 50 -font "Serif 10" -textvar ::textposFN
+##create RtL info on text positioning
+set RtlInfo ""
+##Hebrew
+if ![catch "glob $twddir/he_*"] {
+  if {$platform=="unix"} {
+    set RtlHe [string reverse $RtlHe]
+  }
+  lappend RtlInfo $RtlInfoHe
+}
+##Arabic
+if ![catch "glob $twddir/ar_*"] {
+  if {$platform=="unix"} {
+    source $Bidi
+  }
+  lappend RtlInfo $RtlInfoAr
+}
+label .textposFN -width 50 -font "Serif 10" -textvar RtlInfo
 
 # P A C K   R I G H T
 ##top

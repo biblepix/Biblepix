@@ -5,10 +5,10 @@
 source $SetupResizeTools
 source $JList
 
-# addPic - called by SetupPhoto
+# addPic
 ##adds new Picture to BiblePix Photo collection
 ##setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
-##called by SetupPhotos:addPic Button
+##called by SetupPhotos
 proc addPic {origPicPath} {
   
   global photosdir v
@@ -40,7 +40,7 @@ proc addPic {origPicPath} {
 
     $addpicture::curPic write $targetPicPath -format PNG
 
-    NewsHandler::QueryNews "[copiedPicMsg $origPicPath]" lightgreen
+    NewsHandler::QueryNews "[mc copiedPicMsg] $origPicPath" lightgreen
 
     openReposWindow $addpicture::curPic
 
@@ -49,13 +49,13 @@ proc addPic {origPicPath} {
 
     set screenX [winfo screenwidth .]
     set screenY [winfo screenheight .]
-    NewsHandler::QueryNews "Resizing... wait a moment..." orange
+    NewsHandler::QueryNews "[mc resizingPic]" orange
 
     set newpic [resizePic $addpicture::curPic $screenX $screenY]
     set addpicture::curPic $newpic
 
     $newpic write $targetPicPath -format PNG
-    NewsHandler::QueryNews "[copiedPicMsg $origPicPath]" lightblue
+    NewsHandler::QueryNews "[mc copiedPicMsg] $origPicPath" lightgreen
 
     openReposWindow $newpic
 
@@ -68,11 +68,14 @@ proc addPic {origPicPath} {
   set ::numPhotos [llength [glob $photosdir/*]]
 } ;#END addPic
 
+# delPic
+##deletes picture from photo collection
+##called by SetupPhotos
 proc delPic {c} {
   global photosdir fileJList picPath
   file delete $picPath
   set fileJList [deleteImg $fileJList $c]
-  NewsHandler::QueryNews "[deletedPicMsg $picPath]" orange
+  NewsHandler::QueryNews "[mc deletedPicMsg] $picPath" orange
   set ::numPhotos [llength [glob $photosdir/*]]
 }
 
@@ -466,7 +469,7 @@ proc doOpen {bildordner canv} {
     pack .addBtn -in .photosF.mainf.right.unten -side left -fill x
   }
 
-  pack .picPath -in .photosF.mainf.right.unten -side left -fill x
+  pack .picPathL -in .photosF.mainf.right.unten -side left -fill x
   pack .photosF.mainf.right.bar.collect -side right -fill x
   pack forget .delBtn .photosF.mainf.right.bar.count1 .photosF.mainf.right.bar.count2
 

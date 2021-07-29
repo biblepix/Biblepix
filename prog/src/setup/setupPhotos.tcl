@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 18feb21 pv
+# Updated 29jul21 pv
 
 set fileJList ""
 
@@ -37,10 +37,9 @@ pack .photosF.mainf.right.bar.> -side left
 canvas .photosC
 pack .photosC -in .photosF.mainf.right.bild -side left
 
-label .picPath -textvar picPath
+label .picPathL -textvar picPath
 button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic $::picPath}
 button .delBtn -textvar f6.del -activebackground red -command {delPic .photosC}
 button .rotateBtn -activebackground orange -textvar rotatePic -command {source $::SetupRotate}
-
 
 set fileJList [doCollect .photosC]
