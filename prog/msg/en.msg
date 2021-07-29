@@ -1,0 +1,331 @@
+# ~/Biblepix/prog/src/setup/setupTexts.tcl
+# Provides German & English text snippets
+# sourced by setupGUI.tcl & error messages
+# Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
+# Updated: 12jul21 pv
+
+  
+  
+#### G E N E R A L ###############################
+
+mcset en DW {'The Word'}
+mcset en BP "BiblePix"
+
+#Buttons
+mcset en cancel "Cancel"
+mcset en save "Save"
+mcset en saveSettings "Save settings"
+mcset en random "accidental"
+
+# U N I N S T A L L
+mcset en uninstall "Do you really want to remove BiblePix from your computer?"
+mcset en uninstalling "BiblePix will now be uninstalled. To clear system settings made, you must confirm any upcoming dialogue boxes with \"Yes\"."
+mcset en uninstalled "$bp has been removed safely from your system. To reinstall, visit our website, www.bible2.net, and download $bp Installer." 
+
+# # # #  M I S S I N G   P A C K A G E  # # # # # # # # # # # #                               
+
+#TODO move to global space
+set packageRequireImg(all) "\n* apt-get install libtk-img (Debian/Ubuntu)\n* emerge tkimg (Gentoo)\n* zypper install tkimg (openSUSE)\n* yum install tkimg (Fedora)\n* urpmi tkimg (Mandriva)"
+mcset en packageRequireImg "$bp needs the Tcl 'tkimg' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n$packageRequireImg(all)"
+
+set packageRequireTDom(all) "\n* apt-get install tdom (Debian/Ubuntu)\n* emerge tdom (Gentoo)\n* zypper install tdom (openSUSE)\n* yum install tdom (Fedora)\n* urpmi tdom (Mandriva)" 
+mcset en packageRequireTDom "$bp needs the Tcl 'tDom' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n$packageRequireTDom(all)"
+
+
+set packageRequireTls(all) "\n* apt-get install tcl-tls (Debian/Ubuntu)\n* emerge dev-tcltk/tls (Gentoo)"
+
+mcset en packageRequireTls "$bp benötigt die Tcl-Erweiterung 'TLS'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n$packageRequireTls(all)"
+
+
+#### S E T U P   G U I ################################
+
+mcset en downloadingHttp "Downloading $bp program files..."
+mcset en updatingHttp "Updating $bp program files..."
+mcset en uptodateHTTP "Your program files are up-to-date."
+mcset en noConnHTTP "No Internet connection for program update, please try later."
+mcset en gettingTwd "Fetching current list of Bible text files from bible2.net..."
+mcset en noTwdFilesFound "No current Bible text files are installed.\nIn the BiblePix Setup, choose at least \n one language text file from the 'International' section."
+mcset en connTwd "Connection to bible2.net established."
+mcset en noConnTwd "No connection to bible2.net. Try later."
+mcset en bpsetup "$bp Setup"
+mcset en refresh "Update"
+mcset en delete "Delete file"
+
+#Create RtL info on text positioning
+set RtlInfo ""
+##Hebrew
+if ![catch "glob $twdDir/he_*"] {
+  mcset en RtlHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
+  if {$platform=="unix"} {
+    set RtlHe [string reverse $RtlHe]
+  }
+  append RtlInfo $RtlHe
+}
+##Arabic
+if ![catch "glob $twdDir/ar_*"] {
+  set RtlAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
+  if {$platform=="unix"} {
+    source $Bidi
+  }
+  append RtlInfo $RtlAr
+}
+mcset en rtlinfo $RtlInfo
+
+mcset en textposlabel "mcset en general text position"
+mcset en textposAdjust "Do you want to adjust the text position for this picture before saving?"
+
+mcset en welcClickTwd "Click yor way through $dw!"
+mcset en welcTit "Welcome to the $bp setup program!"
+mcset en welcSubtit1 "What is $bp?"
+mcset en welcTxt1 "$bp is a Tcl program developed for the 'Bible 2.0' project which aims to publish $dw\nin a growing number of languages.\n\n$dw consists of two selected Bible verses for each day of the year.\n\n$bp can display $dw in various ways on your computer."
+mcset en welcSubtit2 "What are your options?"
+mcset en welcTxt2 "° INTERNATIONAL:\tChoose one or several Bible text languages for $dw\n° DESKTOP:\t\tGet $dw on your personal background pictures, incl. slide show\n° PHOTOS:\t\tOrganise your background pictures for $bp\n° E-MAIL:\t\t\tGet $dw added to your e-mail signatures each day"
+mcset en welcTxt3 "° TERMINAL:\t\tShow $dw in your Linux terminals"
+mcset en welcTxt4 "° MANUAL:\t\tStudy the Complete Guide to the $bp program"
+
+mcset en uninst "Uninstall $bp"
+
+mcset en f1Tit "Current list of languages for $dw"
+mcset en TwdLocalTit "Bible text files installed for $jahr"
+mcset en TwdRemoteTit "Bible text files for download"
+mcset en language "Language"
+mcset en year "Year"
+mcset en bibleversion "Bible version"
+mcset en biblename "Bible name"
+mcset en f1Txt "$bp will create $dw in any language or Bible version installed on your computer. If several language files are found, $bp will randomly pick one at each run. Any new language files you select for download (see below) will be downloaded upon clicking the 'Download' button. Pay attention to the year (current or next)!"
+
+mcset en f2Tit "Put $dw on your background images"
+
+
+
+mcset en f2Box "Create background image"
+
+  
+        
+mcset en f2Farbe "Font colour: "
+
+
+
+mcset en f2Slideshow "Enable slide show"
+
+
+
+mcset en f2Interval "Slide show interval: "
+
+
+
+mcset en f2Introline "Show date"
+
+
+
+mcset en f2Fontsize "Font size: "
+
+
+
+mcset en f2Fontweight "bold"
+
+
+
+mcset en f2Fontfamily "Font family: "
+
+
+
+mcset en f2Fontexpl "Adjust Font"
+
+
+
+
+
+if {$platform=="unix"} {
+  
+  
+}
+
+
+
+if {$platform=="unix"} {
+#unix needs BMP+PNG
+  mcset en formats "'[file tail $TwdBMP]' & '[file tail $TwdPNG]'"
+  
+  mcset en picN "in 2 formats: $formats"
+  
+} else {
+#win has only TIF
+  mcset en picNo ": '[file tail $TwdBMP]'"
+}
+
+mcset en f2Txt "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image $picNo will be put in \n\n\t [file nativename $imgdir] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will 
+
+
+
+### S E T U P   P H O T O S ##############################
+mcset en f6Tit "Manage your photos for $bp"
+
+
+
+mcset en f6Txt "Here you can add any suitable photos from your Pictures directory and put them into the $bp photo collection, or remove them from there. Photos should ideally be in landscape format and have some plain-colour surface for good visibility of the Bible text.\n\nIf the size of a photo does not agree with the screen dimensions, $bp will fit it to size and save it to the $bp Photos directory. If refitting is required, you will be asked to choose the desired section of the photo as well as the position of future Bible texts.\n\nAt any rate, the original photo remains unchanged."
+
+  
+
+
+mcset en f6numPhotosTxt "Number of pictures: "
+ 
+
+mcset en f6Add "Add to $bp Photo Collection:"
+
+
+
+mcset en f6Show "Show $bp Photo Collection"
+
+
+
+mcset en f6Find "Find new photos"
+
+  
+
+mcset en f6Del "Delete from $bp Photo Collection:"
+
+
+
+#RESIZING
+
+mcset en resizeF_txt "The size of your photo does not correspond to the screen size and has to be trimmed. Move to select the desired section and press Ok to save."
+
+
+mcset en movePicToResize "Move picure section to desired position and press Ok to resize."
+
+
+
+mcset en resizingPic "Resizing photo to fit screen \u2014 please wait a moment..."
+
+ 
+
+
+mcset en movePic "Move picture section \u21CA"
+
+
+mcset en picSchonDa "Photo already in $bp Photos folder"
+
+
+
+### S E T U P   S I G N A T U R E  #######################
+mcset en f3Tit "Add $dw to your e-mail signatures"
+
+
+
+
+mcset en f3Btn "Create e-mail signature"
+
+
+
+
+mcset en f3Sprachen "Desired languages for my signatures"
+
+
+mcset en f3Txt "If activated, $bp will add $dw at the end of your e-mail signatures once a day for any language text files present on your computer. Signature files are stored by language shortcut (e.g. signature-en_Englis.txt) in the directory \n\n\t$sigdir \n\nYou can edit these files from your e-mail program, or in a text editor, and add any personal information (greetings, address etc.) at the top. Any text above the separating line ==== will remain untouched when 'The Word' changes. \n\nYou may not desire $dw to appear in your mails in all languages installed. In the checkboxes top right, please choose those languages you deem appropriate for your mail recipients.\n\nFinally you must instruct your e-mail program to use these signature files (generally under Options>Signatures).\n\nCertain programs like Seamonkey Mail, Evolution or Trojitá manage signatures internally. Among these $bp can handle Trojitá and Evolution for now."
+
+
+
+mcset en f3Expl "
+Yours faithfully,
+Bible & Pix Brothers
+Homepage: www.biblepix.vollmar.ch
+"
+
+
+Mit freundlichem Gruß
+Gebr. Bibel & Pix
+Homepage: www.biblepix.vollmar.ch
+"  
+
+
+mcset en f4Tit  "Display $dw in your Linux terminals"
+
+
+
+mcset en f4Btn "Create $dw for display in terminal"
+
+
+
+mcset en f4Txt "If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nColours for display etc. may be changed in \n\n\t $confdir/term.conf \n\nNote that in order to display Arabic or Hebrew script correctly, you will need one of the following: 'QTerminal', 'mlterm', 'gnome-terminal', 'Konsole' (KDE) or 'xfce4-terminal'; these are known to work with bidirectional text.\n\nFor $dw to be displayed automatically in your terminals, $bp Setup makes an entry in ~/.bashrc for your convenience."
+
+
+
+
+Beispiel:"
+
+
+Example:"
+
+
+######## S E T U P S A V E   T E X T S  ################################
+
+#Changing Desktops Info
+
+mcset en linChangingDesktop "BiblePix will now try to register with your Desktop Background. If you can't see a new background picture after that, find a solution in the Manual."
+
+
+mcset en winIgnorePopup "Please dismiss (close) any pop-up windows so $bp can finish registration!"
+
+
+
+mcset en winChangeDesktopProb "We are having a problem changing your Desktop background.\nPlease right-click on an empty spot on your Desktop and select \"Personalize\".\nUnder \"Wallpaper\" either set as single pic path $TwdBMP or \n$TwdPNG \nor else set up a slideshow setting the directory to \n$imgdir ."
+
+
+mcset en linChangeDesktopProb "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgdir as new image path."
+
+
+mcset en linNoDesktopFound "No Llinux Desktop detected! Please find out in the manual how to manually set up the $bp background picture."
+
+
+mcset en linReloadingDesktop "We shall now try to reload your Desktop. If this fails, please log out and in again for the BiblePix settings to take effect."
+
+
+
+mcset en changeDesktopOk "$bp has been configured successfully and will start shortly.\n\nYou can run the $bp Setup program anytime by selecting the \"BiblePix Setup\" icon in the Program Menu (Linux) or by right-click on your Desktop (Windows)."
+
+
+
+mcset en winRegister "BiblePix will no try to register with your system.\nYou must confirm any dialogue boxes with \"Yes\"."
+
+#TODO stimmt nicht
+  mcset en winRegisterProb "BiblePix has not been registered properly on your computer.\nPlease find the location $windir and execute $windir/install.reg by double-clicking on it, or restart Setup."
+  
+  
+
+#PHOTOS
+
+mcset en reposSaved "Picture saved with Info."
+ 
+
+
+mcset en reposNotSaved "Picture not saved."
+
+
+
+mcset en noPhotosFound "No photos were found in the $bp Photos folder. Please copy some pictures into the folder."
+
+
+
+mcset en rotatePic "Rotate picture"
+
+
+
+mcset en preview90 "\u21B7 Preview 90° rotation"
+
+
+
+mcset en preview180 "\u21BB Preview 180° rotation"
+
+
+
+mcset en computePreview "\u21B6 \u21B7 Preview any rotation"
+
+
+
+mcset en rotateWait "Please wait patiently while rotating original picture..."
+
+
+
+mcset en rotateInfo "Note: by saving and reloading, a picture can be rotated in several steps!"
+
