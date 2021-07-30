@@ -11,7 +11,7 @@ source $TwdTools
 
 #Set up msgcat environment
 package require msgcat
-namespace import msgcat::mc
+namespace import msgcat::mc msgcat::mcset
 msgcat::mclocale $lang
 msgcat::mcload $msgdir
 

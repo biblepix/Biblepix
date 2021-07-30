@@ -182,17 +182,20 @@ setCanvasFontColour $textposC $fontcolortext
 set RtlInfo ""
 ##Hebrew
 if ![catch "glob $twddir/he_*"] {
-  if {$platform=="unix"} {
-    set RtlHe [string reverse $RtlHe]
+  set msgHe [mc RtlMsgHe]
+  if {$os=="linux"} {
+    set msgHe [string reverse $msgHe]
   }
-  lappend RtlInfo $RtlInfoHe
+  lappend RtlInfo $msgHe
 }
 ##Arabic
 if ![catch "glob $twddir/ar_*"] {
-  if {$platform=="unix"} {
+  set msgAr [mc RtlMsgHe]
+  if {$os=="linux"} {
     source $Bidi
+    set msgAr [bidi::fixbidi $msgAr] 
   }
-  lappend RtlInfo $RtlInfoAr
+  lappend RtlInfo $msgAr
 }
 label .textposFN -width 50 -font "Serif 10" -textvar RtlInfo
 

@@ -484,7 +484,7 @@ proc doCollect {canv} {
   set localJList [step $localJList 0 $canv]
   refreshImg $localJList $canv
 
-  pack .delBtn .picPath -in .photosF.mainf.right.unten -side left -fill x
+  pack .delBtn .picPathL -in .photosF.mainf.right.unten -side left -fill x
   pack .photosF.mainf.right.bar.count1 .photosF.mainf.right.bar.count2 -side right
   pack forget .addBtn .photosF.mainf.right.bar.collect .rotateBtn
 
@@ -694,7 +694,7 @@ proc copyAndResizeSamplePhotos {} {
 # insertTodaysTwd
 ##inserts text into text widget
 ##called by SetupWelcome
-proc insertTodaysTwd twdWidget {
+proc insertTodaysTwd {twdWidget} {
   global TwdTools twddir
 
   if {[info procs getRandomTwdFile] == ""} {
@@ -706,8 +706,8 @@ proc insertTodaysTwd twdWidget {
     $twdWidget conf -activebackground orange
     set twdText $::noTwdFilesFound
     
-  } else {    
-    
+  } else {
+
     set twdText [getTodaysTwdText $twdFileName]
     $twdWidget tag add direction 1.0 end
     $twdWidget tag conf direction -justify left
@@ -715,9 +715,28 @@ proc insertTodaysTwd twdWidget {
     if [isBidi $twdText] {
       $twdWidget tag conf direction -justify right
     }
-
   }
+  
+  $twdWidget tag conf bold -font TkHeadingFont
+  $twdWidget tag conf reffont -font TkCaptionFont
+  $twdWidget tag conf refjust -justify right
+
+  #insert new text
+  $twdWidget delete 1.0 end
   $twdWidget insert 1.0 $twdText
+  set lastline [$twdWidget count -lines 1.0 end]  
+  $twdWidget conf -height $lastline
+  
+  #format 1st line
+  $twdWidget tag add bold 1.0 1.end
+  
+  #locate + format ref1
+  set refline [string index [$twdWidget search -regexp {[0-9]} 2.0] 0]
+  $twdWidget tag add refjust $refline.0 $refline.end
+  $twdWidget tag add reffont $refline.0 $refline.end
+  ##locate + format ref2 (=last line)
+  $twdWidget tag add refjust $lastline.0 end
+  $twdWidget tag add reffont $lastline.0 end
   
   ##export for other Setup widgets
   set ::setupTwdText $twdText

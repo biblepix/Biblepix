@@ -1,22 +1,30 @@
 # ~/Biblepix/prog/msg/en.msg
 # English texts for msgcat
-# sourced by setupGUI.tcl & error messages
+# sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 # Updated: 29jul21 pv
-
   
   
 #### G E N E R A L ###############################
 
-mcset en DW {'The Word'}
-mcset en BP "BiblePix"
+#UNTRANSLATABLE
+set dw {'The Word'}
+set bp "BiblePix"
 
 #Buttons
 mcset en cancel "Cancel"
 mcset en save "Save"
 mcset en saveSettings "Save settings"
 mcset en random "accidental"
-
+mcset en welcome "Welcome"
+mcset en bibletexts "Bible texts"
+mcset en desktop "Wallpaper"
+mcset en photos "Manage your photos"
+mcset en email "E-mail signature"
+mcset en terminal "Terminal"
+mcset en manual "Manual"
+mcset de uninst "Uninstall $bp"
+  
 # U N I N S T A L L
 mcset en uninstall "Do you really want to remove BiblePix from your computer?"
 mcset en uninstalling "BiblePix will now be uninstalled. To clear system settings made, you must confirm any upcoming dialogue boxes with \"Yes\"."
@@ -62,8 +70,6 @@ mcset en welcSubtit2 "What are your options?"
 mcset en welcTxt2 "° INTERNATIONAL:\tChoose one or several Bible text languages for $dw\n° DESKTOP:\t\tGet $dw on your personal background pictures, incl. slide show\n° PHOTOS:\t\tOrganise your background pictures for $bp\n° E-MAIL:\t\t\tGet $dw added to your e-mail signatures each day"
 mcset en welcTxt3 "° TERMINAL:\t\tShow $dw in your Linux terminals"
 mcset en welcTxt4 "° MANUAL:\t\tStudy the Complete Guide to the $bp program"
-
-mcset en uninst "Uninstall $bp"
 
 mcset en f1Tit "Current list of languages for $dw"
 mcset en TwdLocalTit "Bible text files installed for $jahr"

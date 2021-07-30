@@ -1,6 +1,6 @@
 Ü  B  E  R  B  L  I  C  K
 
-BibelPix ist ein Tcl-Programm, das für das Projekt "Bibel 2.0" geschrieben wurde. 
+BibelPix ist ein Tcl-Programm, das für das Projekt "Bibel 2.0" entwickelt wird. 
 Bibel 2.0 setzt sich zum Ziel, "Das Wort" - 2 ausgewählte Bibelsprüche für jeden 
 Tag des Jahres - in einer wachsenden Anzahl von Sprachen zu verbreiten.
 

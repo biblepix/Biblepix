@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupWelcome.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24apr21 pv
+# Updated: 30jul21 pv
 
 #Pack flags defined elsewhere
 pack .en .de -in .ftop -side right
@@ -13,11 +13,11 @@ pack [frame .leftTopF] -in .welcomeLeftMainF -anchor nw
 pack [frame .leftBotF] -in .welcomeLeftMainF -anchor nw -fill y -expand 1
 
 #Set headings & messages
-label .welcomeTit -font bpfont3 -text "[mc welc.tit]"
+label .welcomeTit -font bpfont3 -text "[mc welcTit]"
 pack .welcomeTit -in .leftTopF -anchor nw
 
-label .welcomeSubtit1 -font bpfont2 -textvar welc.subtit1 -padx $px -pady $py
-message .welcomeWhatisTxt -textvar welc.txt1 -font bpfont1 -width [expr $wWidth/2] -justify left -padx $px
+label .welcomeSubtit1 -font bpfont2 -text "[mc welcSubtit1]" -padx $px -pady $py
+message .welcomeWhatisTxt -text "[mc welcTxt1]" -font bpfont1 -width [expr $wWidth/2] -justify left -padx $px
 pack .welcomeSubtit1 -in .leftTopF -anchor nw
 pack .welcomeWhatisTxt -in .leftTopF -anchor nw
 
@@ -31,30 +31,34 @@ if {[llength $twdL] <2 } {
 
 #TODO Linux:Arabic + Hebrew vowels are never placed correctly, needs at least Serif, but perhaps there are better fonts...
 #set twdWidget [button .welcomeTwdBtn -font twdwidgetfont -bg $bg -activebackground lightblue -fg blue -pady 20 -padx 20 -bd 7] 
-text .twdWidgetT -font twdwidgetfont -background $bg -foreground lightblue -pady 20 -padx 20 -border 7
+text .twdWidgetT -width 70 -font twdwidgetfont -background beige -foreground maroon -pady 20 -padx 20 -border 5 -tabs 7c
 pack .twdClickBtn .twdWidgetT -in .welcomeRightMainF -anchor n -pady 15
 .twdClickBtn conf -command {insertTodaysTwd .twdWidgetT}
 
 insertTodaysTwd .twdWidgetT
 .twdWidgetT tag add intro 1.0 1.end 
-.twdWidgetT tag conf intro -background lightgreen -font bold
+.twdWidgetT tag conf intro -font "TkCaptionFont 20"
  
 #Set text2 bottom left
-text .welcomeTxt 
-.welcomeTxt insert 1.0 "[mc welc.subtit2]"
-.welcomeTxt insert 1.end "[mc welc.txt2]"
-.welcomeTxt insert 1.end "[mc welc.txt3]" 
+label .welcomeSubtit2 -font bpfont2 -text "[mc welcSubtit2]" -padx $px -pady $py
+pack .welcomeSubtit2 -in .leftTopF -anchor nw
 
-#label .welcomeSubtit2 -font bpfont2 -textvar welc.subtit2 -padx $px -pady $py
-#message .possibilities1Txt -textvar welc.txt2 -font bpfont1 -width $tw -justify left -pady 0 -padx $px
-#message .possibilities2Txt -textvar welc.txt3 -font bpfont1 -width $tw -justify left -pady 0 -padx $px
-#message .possibilities3Txt -textvar welc.txt4 -font bpfont1 -width $tw -justify left -pady 0 -padx $px
-#pack as needed by OS
-#pack .welcomeSubtit2 .possibilities1Txt -anchor nw -in .leftBotF
+#Create text widget
+text .welcomeTxt -width 80 -padx $px -pady $py -border 0 -bg $bg -font bpfont1 -tabs {5c left}	
+pack .welcomeTxt -in .leftTopF -anchor nw
+.welcomeTxt insert 1.0 "[mc welcTxt2]"
+.welcomeTxt tag conf bold -font TkCaptionFont
 
-#if {$platform=="unix"} {pack .possibilities2Txt -anchor nw -in .leftBotF}
-#pack .possibilities3Txt -anchor nw -in .leftBotF
+#Set keyword: to bold
+set lines [.welcomeTxt count -lines 1.0 end]
+puts $lines
+for {set line 1} {$line <= $lines} {incr line} {
+puts $line
+  set colon [.welcomeTxt search : $line.0 $line.end]
+  puts $colon
+  .welcomeTxt tag add bold $line.0 $colon 
+}
 
 #Uninstall button
-button .uninstallBtn -textvar uninst -command {source $Uninstall}
+button .uninstallBtn -text "[mc uninst]" -command {source $Uninstall}
 pack .uninstallBtn -in .leftBotF -anchor sw -side bottom

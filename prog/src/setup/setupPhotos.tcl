@@ -38,6 +38,9 @@ canvas .photosC
 pack .photosC -in .photosF.mainf.right.bild -side left
 
 label .picPathL -textvar picPath
+##wird später von doCollect gepackt
+#pack .picPathL -in .photosF.mainf.right
+  
 button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic $::picPath}
 button .delBtn -textvar f6.del -activebackground red -command {delPic .photosC}
 button .rotateBtn -activebackground orange -textvar rotatePic -command {source $::SetupRotate}
