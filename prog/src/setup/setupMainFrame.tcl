@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29jul21 pv
+# Updated: 31jul21 pv
 
 source -encoding utf-8 $SetupTexts
 setTexts $lang
@@ -27,7 +27,7 @@ set px 10
 set py 10
 set bg LightGrey
 set fg blue
-font create bpfont4 -family TkCaptionFont -size 30 -weight bold
+catch {font create bpfont4 -family TkCaptionFont -size 30 -weight bold}
 
 #Create frames
 pack [frame .fbottom] -fill x -side bottom
@@ -64,7 +64,7 @@ if {![info exists version]} {set version ""}
 label .label -text "BiblePix Version $version"
 pack .label -in .fbottom -side left
 
-message .news -textvariable news -width [expr $wWidth - 350]
+message .news -textvar news -width [expr $wWidth - 350] -borderwidth 1 -relief sunken
 
 #Validate error msg issued by Setup
 if [info exists httpError] {
@@ -77,4 +77,4 @@ if [info exists httpError] {
 pack .news -in .fbottom -fill x
 
 #Fill tabs
-source $SetupBuild
+#source $SetupBuild

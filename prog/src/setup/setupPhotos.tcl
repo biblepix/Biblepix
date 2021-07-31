@@ -6,7 +6,7 @@
 set fileJList ""
 
 #Create title
-label .photosF.l1 -textvar f6.tit -font bpfont3 -justify left
+label .photosF.l1 -text "[mc f6Tit]" -font bpfont3 -justify left
 pack .photosF.l1 -anchor w
 
 #Create frames
@@ -18,16 +18,16 @@ pack [frame .photosF.mainf.right.unten -pady 7] -side bottom -anchor nw -fill bo
 pack [frame .photosF.mainf.right.bild -relief sunken -bd 3] -anchor e -pady 3 -expand 1 -fill x
 
 #Create Text left
-message .photosF.mainf.left.t1 -textvar f6.txt -font bpfont1 -padx $px -pady $py
+message .photosF.mainf.left.t1 -text "[mc f6Txt]" -font bpfont1 -padx $px -pady $py
 pack .photosF.mainf.left.t1 -anchor nw -side left -padx {10 40} -pady 40
 
 #Build Photo bar right
-button .photosF.mainf.right.bar.open -width 30 -textvar f6.find -height 1 -command {set fileJList [doOpen $DesktopPicturesDir .photosC]}
+button .photosF.mainf.right.bar.open -width 30 -text "[mc f6Find]" -height 1 -command {set fileJList [doOpen $DesktopPicturesDir .photosC]}
 button .photosF.mainf.right.bar.< -text < -height 1 -command {set fileJList [step $fileJList 1 .photosC]}
 button .photosF.mainf.right.bar.> -text > -height 1 -command {set fileJList [step $fileJList 0 .photosC]}
-button .photosF.mainf.right.bar.collect -textvar f6.show -height 1 -command {set fileJList [doCollect .photosC]}
+button .photosF.mainf.right.bar.collect -text "[mc f6Show]" -height 1 -command {set fileJList [doCollect .photosC]}
 label .photosF.mainf.right.bar.count1 -textvar numPhotos -bg lightblue
-label .photosF.mainf.right.bar.count2 -textvar numPhotosTxt -bg lightblue
+label .photosF.mainf.right.bar.count2 -text "[mc f6numPhotosTxt]" -bg lightblue
 
 pack .photosF.mainf.right.bar.open -side left
 pack .photosF.mainf.right.bar.< -side left
@@ -41,8 +41,8 @@ label .picPathL -textvar picPath
 ##wird später von doCollect gepackt
 #pack .picPathL -in .photosF.mainf.right
   
-button .addBtn -textvar f6.add -activebackground lightgreen -command {addPic $::picPath}
-button .delBtn -textvar f6.del -activebackground red -command {delPic .photosC}
-button .rotateBtn -activebackground orange -textvar rotatePic -command {source $::SetupRotate}
+button .addBtn -text "[mc f6Add]" -activebackground lightgreen -command {addPic $::picPath}
+button .delBtn -text "[mc f6Del]" -activebackground red -command {delPic .photosC}
+button .rotateBtn -activebackground orange -text "[mc rotatePic]" -command {source $::SetupRotate}
 
 set fileJList [doCollect .photosC]

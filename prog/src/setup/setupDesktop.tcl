@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 12jul21 pv
+# Updated 31jul21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -24,11 +24,11 @@ font create intCanvFont -family $fontfamily -size $fontsize -weight $fontweight
 # F I L L   L E F T 
 
 #Create title + main text
-label .title -textvar f2.tit -font bpfont3
-message .mainTxt -textvar f2.txt -font bpfont1 -width 700 -padx $px -pady $py -justify left
+label .title -text "[mc f2Tit]" -font bpfont3
+message .mainTxt -text "[mc f2Txt]" -font bpfont1 -width 700 -padx $px -pady $py -justify left
 
 #Create ImageYesno checkbutton 
-checkbutton .imgyesnoCB -textvar f2.box -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
+checkbutton .imgyesnoCB -text "[mc f2Box]" -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
 if $enablepic {set imgyesState 1} else {set imgyesState 0}
 
 #P A C K   L E F T 
@@ -44,7 +44,7 @@ set textposC [canvas .textposCanv -bg lightgrey -borderwidth 1]
 set inttextC [canvas .inttextCanv -width 700 -height 150 -borderwidth 0]
 
 #3. ShowDate checkbutton
-checkbutton .showdateBtn -textvar f2.introline -variable enabletitle
+checkbutton .showdateBtn -text "[mc f2Introline]" -variable enabletitle
 .showdateBtn configure -command {
   if {$setupTwdFileName != ""} {
     $textposC itemconf mv -text [getTodaysTwdText $setupTwdFileName]
@@ -52,10 +52,10 @@ checkbutton .showdateBtn -textvar f2.introline -variable enabletitle
 }
 
 #4. SlideshowYesNo checkbutton
-checkbutton .slideBtn -textvar f2.slideshow -variable slideshowState -command {setSlideSpin $slideshowState}
+checkbutton .slideBtn -text "[mc f2Slideshow]" -variable slideshowState -command {setSlideSpin $slideshowState}
 
 #5. Slideshow spinbox
-message .slideTxt -textvar f2.int -width 200
+message .slideTxt -text "[mc f2Interval]" -width 200
 message .slideSecTxt -text sec -width 100
 spinbox .slideSpin -from 10 -to 600 -increment 10 -width 3
 .slideSpin set $slideshow
@@ -76,7 +76,7 @@ if !$slideshow {
 image create photo intTextBG -file $SetupDesktopPng
 $inttextC create image 0 0 -image intTextBG -anchor nw 
 ##set international text
-label .adjFontT -font TkCaptionFont -textvar f2.fontexpl
+label .adjFontT -font TkCaptionFont -text "[mc f2Fontexpl]"
 set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
 ##get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
 puts "Computing fontcolor..."
@@ -89,7 +89,7 @@ setCanvasFontColour $textposC $fontcolortext
 setCanvasFontColour $inttextC $fontcolortext
 
 #1. Fontcolour spinbox
-message .fontcolorTxt -width 150 -textvar f2.farbe ;#-font widgetFont
+message .fontcolorTxt -width 150 -text "[mc f2Farbe]" ;#-font widgetFont
 foreach colname $fontcolourL {
   set $colname [set colour::${colname}]
 }
@@ -115,13 +115,13 @@ spinbox .fontcolorSpin -width 7 -values $fontcolourL
 setFontcolSpinState
 
 #set Fontsize spinbox
-message .fontsizeTxt -width 200 -textvar f2.fontsizetext
+message .fontsizeTxt -width 200 -text "[mc f2Fontsize]"
 spinbox .fontsizeSpin -width 2 -values $fontSizeL -bg lightgrey
 .fontsizeSpin conf -command {setCanvasFontSize %s}
 .fontsizeSpin set $fontsize
 
 #set Fontweight checkbutton
-checkbutton .fontweightBtn -variable fontweightState -textvar f2.fontweight 
+checkbutton .fontweightBtn -variable fontweightState -text "[mc f2Fontweight]"
 .fontweightBtn conf -command {
   if {$fontweightState} {
     setCanvasFontSize bold
@@ -132,17 +132,17 @@ checkbutton .fontweightBtn -variable fontweightState -textvar f2.fontweight
 }
 
 #Random fontcolour change checkbutton
-checkbutton .randomfontcolorCB -anchor w -variable enableRandomFontcolor -textvar random
+checkbutton .randomfontcolorCB -anchor w -variable enableRandomFontcolor -text "[mc random]"
 .randomfontcolorCB conf -command setFontcolSpinState
 
 #set Fontfamily spinbox
-message .fontfamilyTxt -width 200 -textvar f2.fontfamilytext
+message .fontfamilyTxt -width 200 -text "[mc f2Fontfamily]"
 lappend Fontlist Serif Sans
 spinbox .fontfamilySpin -width 7 -bg lightgrey
 .fontfamilySpin conf -values $Fontlist -command {setCanvasFontSize %s}
 .fontfamilySpin set $fontfamily
 
-label .textposL -textvar textposlabel -font TkCaptionFont
+label .textposL -text "[mc textposlabel]" -font TkCaptionFont
 
 #2. Create TextPos Canvas
 set textPosFactor 3 ;#Verkleinerungsfaktor gegenüber real font size
@@ -197,7 +197,7 @@ if ![catch "glob $twddir/ar_*"] {
   }
   lappend RtlInfo $msgAr
 }
-label .textposFN -width 50 -font "Serif 10" -textvar RtlInfo
+label .textposFN -width 50 -font "Serif 10" -textvar $RtlInfo
 
 # P A C K   R I G H T
 ##top

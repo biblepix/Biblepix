@@ -10,6 +10,9 @@
 #UNTRANSLATABLE
 set dw {'Das Wort'}
 set bp "BibelPix"
+mcset de bpsetup "$bp Einrichtungsprogramm"
+mcset de refresh "Aktualisieren"
+mcset de delete "Datei löschen"
 
 #Buttons
 mcset de cancel "Abbruch"
@@ -33,7 +36,7 @@ mcset de welcTxt1 "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' en
 mcset de welcSubtit2 "Was sind Ihre Möglichkeiten?"
 
 mcset de welcTxt2 "* [mc bibletexts]: Wählen Sie beliebig viele Bibelausgaben und -sprachen für $dw
-* [mc desktop]: Betrachten Sie $dw auf Ihren persönlichen Hintergrundbildern
+* [mc desktop]: Betrachten Sie $dw auf Ihren persönlichen Fotos
 * [mc photos]: Wählen Sie eigene Hintergrundbilder für $bp aus
 * [mc email]: Fügen Sie $dw an Ihre E-Mails an
 * [mc terminal]: Betrachten Sie $dw in Ihren Linux-Konsolen
@@ -55,7 +58,7 @@ set packageRequireTls "\n* apt-get install tcl-tls (Debian/Ubuntu)\n* emerge dev
 mcset de packageRequireTls "$bp needs the Tcl 'TLS' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n$packageRequireTls"
 
 
-#INTERNATIONAL
+#SETUP INTERNATIONAL
 mcset de downloadingHttp "Lade $bp-Programmdateien herunter..."
 mcset de updatingHttp "Aktualisiere $bp-Programmdateien..."
 mcset de uptodateHTTP "Ihre Programmdateien sind auf dem neusten Stand."
@@ -64,11 +67,7 @@ mcset de gettingTwd "Hole aktuelle Bibeltext-Liste von bible2.net..."
 mcset de noTwdFilesFound "Es sind keine aktuellen Bibeltextdateien installiert.\nBitte wählen Sie im BibelPix-Setup mindestens \n1 Sprachdatei aus der Rubrik 'International'."
 mcset de connTwd "Verbindung zu bible2.net hergestellt."
 mcset de noConnTwd "Keine Verbindung zu bible2.net. Versuchen Sie es später."
-
-mcset de bpsetup "$bp Einrichtungsprogramm"
-mcset de refresh "Aktualisieren"
-mcset de delete "Datei löschen"
-mcset de f1Tit "Aktuelle Sprachliste für $dw"
+mcset de f1Tit "Aktuelle Bibeltextliste für $dw"
 mcset de TwdLocalTit "Für $jahr installierte Bibeltextdateien"
 mcset de TwdRemoteTit "Bibeltextdateien zum Herunterladen"
 mcset de language "Sprache"
@@ -119,7 +118,7 @@ mcset de f3Txt "Wenn aktiviert, fügt $bp einmal täglich für jede installierte
 mcset de f3Expl "
 Mit freundlichem Gruß
 Gebr. Bibel & Pix
-Homepage: www.biblepix.vollmar.ch
+Homepage: biblepix.vollmar.ch
 "  
 
 #SETUP TERMINAL

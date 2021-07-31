@@ -71,7 +71,7 @@ mcset en welcTxt2 "° INTERNATIONAL:\tChoose one or several Bible text languages
 mcset en welcTxt3 "° TERMINAL:\t\tShow $dw in your Linux terminals"
 mcset en welcTxt4 "° MANUAL:\t\tStudy the Complete Guide to the $bp program"
 
-mcset en f1Tit "Current list of languages for $dw"
+mcset en f1Tit "Current list of Bible texts for $dw"
 mcset en TwdLocalTit "Bible text files installed for $jahr"
 mcset en TwdRemoteTit "Bible text files for download"
 mcset en language "Language"
@@ -91,7 +91,7 @@ mcset en f2Fontweight "bold"
 mcset en f2Fontfamily "Font family: "
 mcset en f2Fontexpl "Adjust Font"
 
-mcset en f2Txt "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image will be put in \n\n\t [file nativename $imgdir] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will 
+mcset en f2Txt "\nIf activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see Photos section), and a new background image will be put in \n\n\t [file nativename $imgdir] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. For only 1 picture per day, unset this feature (see above).\n\nThe TEXT POSITION window allows you to put $dw wherever you like on your screen. Moreover, when adding a photograph to the $bp photo collection, you can position the text individually. \n\nFONT SIZE is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters = better contrast).\n\nFONT COLOUR can be accidental or set by you. Note that $bp may adjust colour luminance on the basis of background brightness. This takes effect only after a photo has been added to the $bp collection. \n\nShould the new background image fail to appear, please consult the Manual page for a solution."
 
 # S E T U P   P H O T O S 
 mcset en f6Tit "Manage your photos for $bp"
@@ -128,7 +128,8 @@ mcset en f3Txt "If activated, $bp will add $dw at the end of your e-mail signatu
 mcset en f3Expl "
 Yours faithfully,
 Bible & Pix Brothers
-Homepage: www.biblepix.vollmar.ch
+Homepage: 
+biblepix.vollmar.ch
 "
 
 

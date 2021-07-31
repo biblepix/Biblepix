@@ -134,11 +134,9 @@ namespace eval NewsHandler {
 
   proc FinishShowing {} {
     variable isShowing
-
-    .news configure -bg grey
+    .news conf -fg green -bg lightgrey
     set ::news "biblepix.vollmar.ch"
     set isShowing 0
-
     ShowNews
   }
 }
@@ -183,7 +181,8 @@ proc setSlideSpin {state} {
 }
 
 proc setFlags {} {
-global Flags
+  global Flags
+  
   #Configure language flags
   source $Flags
   flag::show .en -flag {hori blue; x white red; cross white red}
@@ -194,7 +193,10 @@ global Flags
   #Configure English button
   bind .en <ButtonPress-1> {
     set lang en
-    setTexts en
+  #  setTexts en
+  
+  msgcat::mclocale en
+  msgcat::mcload $msgdir
     .manualF.man configure -state normal
     .manualF.man replace 1.1 end [setManText en]
     .manualF.man configure -state disabled
@@ -205,7 +207,9 @@ global Flags
   #Configure Deutsch button
   bind .de <ButtonPress-1> {
     set lang de
-    setTexts de
+  #  setTexts de
+  msgcat::mclocale de
+  msgcat::mcload $msgdir
     .manualF.man configure -state normal
     .manualF.man replace 1.1 end [setManText de]
     .de configure -relief flat
@@ -705,39 +709,54 @@ proc insertTodaysTwd {twdWidget} {
   if {$twdFileName == ""} {
     $twdWidget conf -activebackground orange
     set twdText $::noTwdFilesFound
-    
-  } else {
-
-    set twdText [getTodaysTwdText $twdFileName]
-    $twdWidget tag add direction 1.0 end
-    $twdWidget tag conf direction -justify left
-    
-    if [isBidi $twdText] {
-      $twdWidget tag conf direction -justify right
-    }
+    return
   }
+
+  set twdText [getTodaysTwdText $twdFileName]
+
+  #reposition tags defined in SetupWelcome
+  #$twdWidget tag add direction 1.0 end
   
-  $twdWidget tag conf bold -font TkHeadingFont
-  $twdWidget tag conf reffont -font TkCaptionFont
-  $twdWidget tag conf refjust -justify right
+#  $twdWidget tag conf direction -justify left
 
   #insert new text
   $twdWidget delete 1.0 end
   $twdWidget insert 1.0 $twdText
+
+  #add preconfigured tags  
+#  $twdWidget tag add direction 1.0 end  
+  $twdWidget tag add head 1.0 1.end
+
+  
   set lastline [$twdWidget count -lines 1.0 end]  
-  $twdWidget conf -height $lastline
+  #$twdWidget conf -height $lastline]
   
-  #format 1st line
-  $twdWidget tag add bold 1.0 1.end
+  #locate + format ref1, repeating search for rtl
+  set refindices [$twdWidget search -all -regexp {[0-9][:,]} 2.0]
+  set refline1 [string index [lindex $refindices 0] 0]
+  set refline2 [string index [lindex $refindices 1] 0]
+  puts $refline1
+  puts $refline2
   
-  #locate + format ref1
-  set refline [string index [$twdWidget search -regexp {[0-9]} 2.0] 0]
-  $twdWidget tag add refjust $refline.0 $refline.end
-  $twdWidget tag add reffont $refline.0 $refline.end
-  ##locate + format ref2 (=last line)
-  $twdWidget tag add refjust $lastline.0 end
-  $twdWidget tag add reffont $lastline.0 end
-  
+  $twdWidget tag add ref $refline1.0 $refline1.end
+  $twdWidget tag add ref $refline2.0 $refline2.end
+
+  ##locate + format ref2 (=last line) - TODO funzt nicht bei RTL
+  lappend text1 2.0 [expr $refline1 - 1].end
+  lappend text2 [expr $refline1 + 1.0] [expr $refline2 - 1].end
+  $twdWidget tag add text [lindex $text1 0] [lindex $text1 1]
+  $twdWidget tag add text [lindex $text2 0] [lindex $text2 1]
+
+  if [isBidi $twdText] {
+    $twdWidget tag conf text -justify right
+    $twdWidget tag conf head -justify right
+    $twdWidget tag conf ref -justify left
+  } else {
+    $twdWidget tag conf text -justify left
+    $twdWidget tag conf head -justify left
+    $twdWidget tag conf ref -justify right
+  }
+    
   ##export for other Setup widgets
   set ::setupTwdText $twdText
 }
