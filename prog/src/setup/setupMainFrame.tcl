@@ -2,18 +2,18 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 31jul21 pv
-
+# Updated: 1aug21 pv
 source -encoding utf-8 $SetupTexts
-setTexts $lang
 source $SetupTools
 source $TwdTools
 
+setTexts $lang
+
 #Set up msgcat environment
-package require msgcat
-namespace import msgcat::mc msgcat::mcset
-msgcat::mclocale $lang
-msgcat::mcload $msgdir
+#package require msgcat
+#namespace import msgcat::mc msgcat::mcset
+#msgcat::mclocale $lang
+#msgcat::mcload $msgdir
 
 #Set general X vars & Main Window width
 set screenX [winfo screenwidth .]
@@ -36,18 +36,18 @@ pack [frame .ftop] -fill x
 ttk::notebook .nb -width [expr $wWidth - 50] -height [expr $wHeight - 200]
 pack .nb -fill y -expand true -padx $px -pady $py
 #Create Title (LOGO to be created later)
-ttk::label .ftop.titelmitlogo -textvar bpsetup -font bpfont4 -padding 5
+ttk::label .ftop.titelmitlogo -textvar msg::bpsetup -font bpfont4 -padding 5
 pack .ftop.titelmitlogo -side left
 
 #Create notebook Tabs
-.nb add [frame .welcomeF -padx $px -pady $py] -text "[mc welcome]"
-.nb add [frame .internationalF -padx $px -pady $py] -text "[mc bibletexts]"
-.nb add [frame .desktopF -padx $px -pady $py] -text "[mc desktop]"
-.nb add [frame .photosF -padx $px -pady $py] -text "[mc photos]"
-.nb add [frame .emailF -padx $px -pady $py] -text "[mc email]"
-.nb add [frame .manualF -padx $px -pady $py] -text "[mc manual]"
+.nb add [frame .welcomeF -padx $px -pady $py] -text $msg::welcome
+.nb add [frame .internationalF -padx $px -pady $py] -text $msg::bibletexts
+.nb add [frame .desktopF -padx $px -pady $py] -text $msg::desktop
+.nb add [frame .photosF -padx $px -pady $py] -text $msg::photos
+.nb add [frame .emailF -padx $px -pady $py] -text $msg::email
+.nb add [frame .manualF -padx $px -pady $py] -text $msg::manual
 if {$platform=="unix"} {
-  .nb insert 5 [frame .terminalF -padx $px -pady $py] -text [mc terminal]
+  .nb insert 5 [frame .terminalF -padx $px -pady $py] -text $msg::terminal
 }
 
 #Reposition window to screen top
@@ -56,8 +56,8 @@ if { [winfo y .] > 20 } {
 }
 
 #Fill .fbottom
-button .mainSaveB -activebackground lightgreen -textvar ::saveSettings -width 20 -command {source $Save}
-button .mainCloseB -activebackground red -textvar ::cancel -width 20 -command exit
+button .mainSaveB -activebackground lightgreen -textvar msg::saveSettings -width 20 -command {source $Save}
+button .mainCloseB -activebackground red -textvar msg::cancel -width 20 -command exit
 pack .mainCloseB .mainSaveB -in .fbottom -side right
 
 if {![info exists version]} {set version ""}
@@ -77,4 +77,4 @@ if [info exists httpError] {
 pack .news -in .fbottom -fill x
 
 #Fill tabs
-#source $SetupBuild
+source $SetupBuild

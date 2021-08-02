@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 31jul21 pv
+# Updated 1aug21 pv
 
 #Statusbar
 frame .internationalF.f0 -padx $px
@@ -10,19 +10,19 @@ label .internationalF.status -textvar status -font bpfont1 -height 1 -bg $bg -re
 pack .internationalF.status -in .internationalF.f0 -fill x
 
 #Refresh button
-button .internationalF.refbtn -text "[mc refresh]" -bg orange -activebackground orange -command {set status [getRemoteTWDFileList]}
+button .internationalF.refbtn -textvar msg::refresh -bg orange -activebackground orange -command {set status [getRemoteTWDFileList]}
 pack .internationalF.refbtn -side bottom -fill x -padx $px
 
 #Title
-label .internationalF.titel -text "[mc f1Tit]" -font bpfont3
-message .internationalF.txt -text "[mc f1Txt]" -width $tw -font bpfont1 -padx $px -pady $py
+label .internationalF.titel -textvar msg::f1Tit -font bpfont3
+message .internationalF.txt -textvar msg::f1Txt -width $tw -font bpfont1 -padx $px -pady $py
 pack .internationalF.titel .internationalF.txt -anchor w
 
 #Locallist
 frame .internationalF.f1 -padx $px
 pack .internationalF.f1 -anchor w -fill x
 
-label .internationalF.f1.twdlocaltit -text "[mc TwdLocalTit]" -bg $bg -font bpfont2
+label .internationalF.f1.twdlocaltit -textvar msg::TwdLocalTit -bg $bg -font bpfont2
 pack .internationalF.f1.twdlocaltit -anchor w -fill x
 #set listbox
 listbox .internationalF.f1.twdlocal -bg lightgreen -width $tw -height 0 -selectmode single -activestyle none
@@ -30,7 +30,7 @@ set twdlist [getTwdList]
 foreach i [lsort $twdlist] { .internationalF.f1.twdlocal insert end $i }
 
 #Set delete button
-button .internationalF.f1.delbtn -bg $bg -text "[mc delete]" -command {
+button .internationalF.f1.delbtn -bg $bg -textvar msg::delete -command {
   set lbIndex [.internationalF.f1.twdlocal cursel]
   if {$lbIndex != ""} {
     set fileName [.internationalF.f1.twdlocal get active]
@@ -46,15 +46,15 @@ pack .internationalF.f1.twdlocal -anchor w
 #Remotelist
 frame .internationalF.f2 -padx $px
 pack .internationalF.f2 -anchor w -fill x
-label .internationalF.f2.twdremotetit -text "[mc TwdRemoteTit]" -bg $bg -justify left -font bpfont2 -padx $px -pady $py
+label .internationalF.f2.twdremotetit -textvar msg::TwdRemoteTit -bg $bg -justify left -font bpfont2 -padx $px -pady $py
 pack .internationalF.f2.twdremotetit -fill x
 pack [frame .internationalF.f3] -anchor w -fill x -padx $px
 #Titel frame
 pack [frame .twdremoteTitleF -bg beige] -in .internationalF.f3 -fill x -anchor w
-label .twdremote1L -font "SmallCaptionFont 8" -text "[mc language]" -font TkFixedFont -bg beige -anchor w -width 20
-label .twdremote2L -font "SmallCaptionFont 8" -text "[mc year]" -font TkFixedFont -bg beige -anchor w -width 14
-label .twdremote3L -font "SmallCaptionFont 8" -text "[mc biblename]" -font TkFixedFont -bg beige -anchor w -width 59
-label .twdremote4L -font "SmallCaptionFont 8" -text "[mc bibleversion]" -font TkFixedFont -bg beige -anchor w
+label .twdremote1L -font "SmallCaptionFont 8" -textvar msg::language -font TkFixedFont -bg beige -anchor w -width 20
+label .twdremote2L -font "SmallCaptionFont 8" -textvar msg::year -font TkFixedFont -bg beige -anchor w -width 14
+label .twdremote3L -font "SmallCaptionFont 8" -textvar msg::biblename -font TkFixedFont -bg beige -anchor w -width 59
+label .twdremote4L -font "SmallCaptionFont 8" -textvar msg::bibleversion -font TkFixedFont -bg beige -anchor w
 pack .twdremote1L .twdremote2L .twdremote3L .twdremote4L -in .twdremoteTitleF -side left
 
 #setup remotelist (inserted later by http.tcl)

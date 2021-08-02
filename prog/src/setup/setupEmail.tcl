@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 31jul21 pv
+# Updated 1aug21 pv
 
 #Create frames & titles
 pack [frame .emailF.topF] -fill x
@@ -11,13 +11,10 @@ pack [frame .emailF.botF] -fill both
 pack [frame .emailF.botF.left] -side left -anchor nw
 pack [frame .emailF.botF.right -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -side right -padx 100 
 
-#TODO testing variable
 #Create labels & widgets
-set f3Tit "[mc f3Tit]"
-label .mainTit -textvar f3Tit -font bpfont3
-
-label .wunschsprachenTit -text "[mc f3Sprachen]" -font bpfont1 -bg beige -bd 1 -relief sunken -padx 7 -pady 3 ;#-fg [gradient beige -0.3]
-checkbutton .sigyesnoBtn -text "[mc f3Btn]" -variable sigyesState -command {toggleBtnstate}
+label .mainTit -textvar msg::f3Tit -font bpfont3
+label .wunschsprachenTit -textvar msg::f3Sprachen -font bpfont1 -bg beige -bd 1 -relief sunken -padx 7 -pady 3 ;#-fg [gradient beige -0.3]
+checkbutton .sigyesnoBtn -textvar msg::f3Btn -variable sigyesState -command {toggleBtnstate}
 pack .mainTit -in .emailF.topF.f1 -side left
 pack .wunschsprachenTit -in .emailF.topF.f1 -side right -anchor ne -pady 10 -padx 100
 pack .sigyesnoBtn -in .emailF.topF.f2 -side left -anchor nw
@@ -73,14 +70,14 @@ if $enablesig {
 }
 
 #Create Message
-message .emailMsg -font bpfont1 -padx $px -pady $py -text "[mc f3Txt]" 
+message .emailMsg -font bpfont1 -padx $px -pady $py -textvar msg::f3Txt 
 pack .emailMsg -in .emailF.botF.left -anchor nw
 #Create Twd text
 set twdfile [getRandomTwdFile 0]
 set dwsig [getTodaysTwdSig $twdfile 1]
 
 #Create E-Mail widgets
-label .sigL -font twdwidgetfont -bg $bg -fg blue -justify left -text "[mc f3Expl]"
+label .sigL -font twdwidgetfont -bg $bg -fg blue -justify left -textvar msg::f3Expl
 text .sigT -font twdwidgetfont -background $bg -foreground blue -bd 0
 .sigT insert 1.0 $dwsig
 

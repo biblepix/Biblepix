@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 31jul21 pv
+# Updated 1aug21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -24,11 +24,11 @@ font create intCanvFont -family $fontfamily -size $fontsize -weight $fontweight
 # F I L L   L E F T 
 
 #Create title + main text
-label .title -text "[mc f2Tit]" -font bpfont3
-message .mainTxt -text "[mc f2Txt]" -font bpfont1 -width 700 -padx $px -pady $py -justify left
+label .title -textvar msg::f2Tit -font bpfont3
+message .mainTxt -textvar msg::f2Txt -font bpfont1 -width 700 -padx $px -pady $py -justify left
 
 #Create ImageYesno checkbutton 
-checkbutton .imgyesnoCB -text "[mc f2Box]" -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
+checkbutton .imgyesnoCB -textvar msg::f2Box -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
 if $enablepic {set imgyesState 1} else {set imgyesState 0}
 
 #P A C K   L E F T 
@@ -44,7 +44,7 @@ set textposC [canvas .textposCanv -bg lightgrey -borderwidth 1]
 set inttextC [canvas .inttextCanv -width 700 -height 150 -borderwidth 0]
 
 #3. ShowDate checkbutton
-checkbutton .showdateBtn -text "[mc f2Introline]" -variable enabletitle
+checkbutton .showdateBtn -textvar msg::f2Introline -variable enabletitle
 .showdateBtn configure -command {
   if {$setupTwdFileName != ""} {
     $textposC itemconf mv -text [getTodaysTwdText $setupTwdFileName]
@@ -52,10 +52,10 @@ checkbutton .showdateBtn -text "[mc f2Introline]" -variable enabletitle
 }
 
 #4. SlideshowYesNo checkbutton
-checkbutton .slideBtn -text "[mc f2Slideshow]" -variable slideshowState -command {setSlideSpin $slideshowState}
+checkbutton .slideBtn -textvar msg::f2Slideshow -variable slideshowState -command {setSlideSpin $slideshowState}
 
 #5. Slideshow spinbox
-message .slideTxt -text "[mc f2Interval]" -width 200
+message .slideTxt -textvar msg::f2Interval -width 200
 message .slideSecTxt -text sec -width 100
 spinbox .slideSpin -from 10 -to 600 -increment 10 -width 3
 .slideSpin set $slideshow
@@ -76,8 +76,17 @@ if !$slideshow {
 image create photo intTextBG -file $SetupDesktopPng
 $inttextC create image 0 0 -image intTextBG -anchor nw 
 ##set international text
-label .adjFontT -font TkCaptionFont -text "[mc f2Fontexpl]"
+set f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94"
+set ::f2he_txt "הדבר"
+if {$platform=="unix"} {
+  set ::f2ar_txt [string reverse $f2ar_txt]
+  set ::f2he_txt [string reverse $::f2he_txt]
+}
+set ::f2ltr_txt "The Word 每日金句 Калом"
+set ::f2thai_txt "พระคำสำหรับวันศุกร์ Слово"
+label .adjFontT -font TkCaptionFont -textvar msg::f2Fontexpl
 set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
+
 ##get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
 puts "Computing fontcolor..."
 source $ImgTools
@@ -89,7 +98,7 @@ setCanvasFontColour $textposC $fontcolortext
 setCanvasFontColour $inttextC $fontcolortext
 
 #1. Fontcolour spinbox
-message .fontcolorTxt -width 150 -text "[mc f2Farbe]" ;#-font widgetFont
+message .fontcolorTxt -width 150 -textvar msg::f2Farbe ;#-font widgetFont
 foreach colname $fontcolourL {
   set $colname [set colour::${colname}]
 }
@@ -115,13 +124,13 @@ spinbox .fontcolorSpin -width 7 -values $fontcolourL
 setFontcolSpinState
 
 #set Fontsize spinbox
-message .fontsizeTxt -width 200 -text "[mc f2Fontsize]"
+message .fontsizeTxt -width 200 -textvar msg::f2Fontsize
 spinbox .fontsizeSpin -width 2 -values $fontSizeL -bg lightgrey
 .fontsizeSpin conf -command {setCanvasFontSize %s}
 .fontsizeSpin set $fontsize
 
 #set Fontweight checkbutton
-checkbutton .fontweightBtn -variable fontweightState -text "[mc f2Fontweight]"
+checkbutton .fontweightBtn -variable fontweightState -textvar msg::f2Fontweight
 .fontweightBtn conf -command {
   if {$fontweightState} {
     setCanvasFontSize bold
@@ -132,17 +141,17 @@ checkbutton .fontweightBtn -variable fontweightState -text "[mc f2Fontweight]"
 }
 
 #Random fontcolour change checkbutton
-checkbutton .randomfontcolorCB -anchor w -variable enableRandomFontcolor -text "[mc random]"
+checkbutton .randomfontcolorCB -anchor w -variable enableRandomFontcolor -textvar msg::random
 .randomfontcolorCB conf -command setFontcolSpinState
 
 #set Fontfamily spinbox
-message .fontfamilyTxt -width 200 -text "[mc f2Fontfamily]"
+message .fontfamilyTxt -width 200 -textvar msg::f2Fontfamily
 lappend Fontlist Serif Sans
 spinbox .fontfamilySpin -width 7 -bg lightgrey
 .fontfamilySpin conf -values $Fontlist -command {setCanvasFontSize %s}
 .fontfamilySpin set $fontfamily
 
-label .textposL -text "[mc textposlabel]" -font TkCaptionFont
+label .textposL -textvar msg::textposlabel -font TkCaptionFont
 
 #2. Create TextPos Canvas
 set textPosFactor 3 ;#Verkleinerungsfaktor gegenüber real font size
@@ -179,10 +188,13 @@ setCanvasFontColour $textposC $fontcolortext
 
 #Footnote for Arabic+Hebrew text shift (only if found)
 ##create RtL info on text positioning
+set RtlInfoHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
+set RtlInfoAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
+
 set RtlInfo ""
 ##Hebrew
 if ![catch "glob $twddir/he_*"] {
-  set msgHe [mc RtlMsgHe]
+  set msgHe $RtlInfoHe
   if {$os=="linux"} {
     set msgHe [string reverse $msgHe]
   }
@@ -190,14 +202,14 @@ if ![catch "glob $twddir/he_*"] {
 }
 ##Arabic
 if ![catch "glob $twddir/ar_*"] {
-  set msgAr [mc RtlMsgHe]
+  set msgAr $RtlInfoAr
   if {$os=="linux"} {
     source $Bidi
     set msgAr [bidi::fixbidi $msgAr] 
   }
   lappend RtlInfo $msgAr
 }
-label .textposFN -width 50 -font "Serif 10" -textvar $RtlInfo
+label .textposFN -width 50 -font "Serif 10" -textvar RtlInfo
 
 # P A C K   R I G H T
 ##top

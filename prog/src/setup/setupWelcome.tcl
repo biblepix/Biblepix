@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/gui/setupWelcome.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 31jul21 pv
+# Updated: 2aug21 pv
 
 #Pack flags defined elsewhere
 pack .en .de -in .ftop -side right
@@ -13,22 +13,21 @@ pack [frame .leftTopF] -in .welcomeLeftMainF -anchor nw
 pack [frame .leftBotF] -in .welcomeLeftMainF -anchor nw -fill y -expand 1
 
 #Set headings & messages
-label .welcomeTit -font bpfont3 -text "[mc welcTit]"
+label .welcomeTit -font bpfont3 -textvar msg::welcTit
 pack .welcomeTit -in .leftTopF -anchor nw
 
-label .welcomeSubtit1 -font bpfont2 -text "[mc welcSubtit1]" -padx $px -pady $py
+label .welcomeSubtit1 -font bpfont2 -textvar msg::welcSubtit1 -padx $px -pady $py
 
-message .welcomeWhatisTxt -text "[mc welcTxt1]" -font bpfont1 -width [expr $wWidth/2] -justify left -padx $px
+message .welcomeWhatisTxt -textvar msg::welcTxt1 -font bpfont1 -width [expr $wWidth/2] -justify left -padx $px
 pack .welcomeSubtit1 -in .leftTopF -anchor nw
 pack .welcomeWhatisTxt -in .leftTopF -anchor nw
 
 #Set TheWord Button right
-button .twdClickBtn -text "[mc welcClickTwd]" -font bpfont2
+button .twdClickBtn -textvar msg::next -font bpfont2
 set twdL [glob -nocomplain $twddir/*.twd]
 if {[llength $twdL] <2 } {
   .twdClickBtn conf -state disabled
 }
-
 
 #set up twd text widget
 text .twdWidgetT -width 80 -background beige -foreground maroon -pady 30 -padx 30 -border 5 -tabs 7c
@@ -41,13 +40,17 @@ pack .twdClickBtn .twdWidgetT -in .welcomeRightMainF -anchor n -pady 15
 insertTodaysTwd .twdWidgetT
  
 #Set text2 bottom left
-label .welcomeSubtit2 -font bpfont2 -text "[mc welcSubtit2]" -padx $px -pady $py
+label .welcomeSubtit2 -font bpfont2 -textvar msg::welcSubtit2 -padx $px -pady $py
 pack .welcomeSubtit2 -in .leftTopF -anchor nw
 
 #Create text widget
 text .welcomeTxt -width 80 -padx $px -pady $py -border 0 -bg #d9d9d9 -font bpfont1 -tabs {5c left}	
 pack .welcomeTxt -in .leftTopF -anchor nw
-.welcomeTxt insert 1.0 "[mc welcTxt2]"
+.welcomeTxt insert 1.0 $msg::welcTxt2
+##delete "Terminal" line if not Unix
+if {$os=="windows"} {
+  .welcomeTxt delete 5.0 5.end
+}
 .welcomeTxt tag conf bold -font TkCaptionFont
 
 #Set keyword: to bold
@@ -61,5 +64,5 @@ puts $line
 }
 
 #Uninstall button
-button .uninstallBtn -text "[mc uninst]" -command {source $Uninstall}
+button .uninstallBtn -textvar msg::uninst -command {source $Uninstall}
 pack .uninstallBtn -in .leftBotF -anchor sw -side bottom

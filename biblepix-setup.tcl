@@ -6,7 +6,7 @@
 ################################################################################
 # Version: 4.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10jun21 pv
+# Updated: 1aug21 pv
 package require Tk
 
 #Verify location & source vars
@@ -18,7 +18,7 @@ set Globals "[file join $srcdir share globals.tcl]"
 destroy .updateFrame
 frame .updateFrame -padx 40 -pady 50 -borderwidth 20
 pack .updateFrame -fill y -expand true
-label .updateFrame.pbTitle -justify center -bg lightblue -fg black -borderwidth 10 -textvariable pbTitle
+label .updateFrame.pbTitle -justify center -bg lightblue -fg black -borderwidth 10 -textvar pbTitle
 ttk::progressbar .updateFrame.progbar -mode indeterminate -length 200
 pack .updateFrame.pbTitle .updateFrame.progbar
 
@@ -32,16 +32,19 @@ if [catch {source $Globals}] {
 
 } else {
 
-  #Get current version before update (var used in UpdateInjection)
+  #?Get current version before update (var used in UpdateInjection)?
   set curVersion $version
 
   #In case of GIT download: makeDirs
   makeDirs
 
   #Set initial texts if missing
-  if [catch {source -encoding utf-8 $SetupTexts ; setTexts $lang}] {
+  if [catch {setTexts $lang}] {
     set updatingHttp "Updating BiblePix program files..."
     set noConnHttp "No connection for BiblePix update."
+  } else {
+    set updatingHttp $msg::updatingHttp
+    set noConnHttp $msg::noConnHttp
   }
 
   # 1.  D O   H T T P  U P D A T E   (if not initial)
@@ -63,7 +66,7 @@ if [catch {source $Globals}] {
 
     #Copy photos after first run of Installer or if Config missing
     if { [info exists InitialJustDone] || ![file exists $Config] } {
-      source $SetupTexts
+      #source $SetupTexts
       source $SetupTools
       after idle {
         catch {NewsHandler::QueryNews $resizingPic orange}

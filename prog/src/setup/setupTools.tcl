@@ -1,9 +1,30 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29jul21 pv
+# Updated: 2aug21 pv
 source $SetupResizeTools
 source $JList
+
+# setTexts
+##sources .msg file from msgdir according to current lang
+##loads all text vars into ::msg namespace
+##called by SetupMainFrame 
+proc setTexts {lang} {
+  global msgdir
+  package require msgcat
+  namespace import msgcat::mc msgcat::mcset
+  msgcat::mclocale $lang
+  msgcat::mcload $msgdir
+  
+  #TODO Why isn't this done by above?
+  source $msgdir/global.msg
+#  set filename [file join $msgdir ${lang}.msg]
+#  if [file exists $filename] {
+#    source $filename
+#  } else {
+#    source $msgdir/en.msg
+#  }
+}
 
 # addPic
 ##adds new Picture to BiblePix Photo collection
@@ -40,7 +61,7 @@ proc addPic {origPicPath} {
 
     $addpicture::curPic write $targetPicPath -format PNG
 
-    NewsHandler::QueryNews "[mc copiedPicMsg] $origPicPath" lightgreen
+    NewsHandler::QueryNews "$msg::copiedPicMsg $origPicPath" lightgreen
 
     openReposWindow $addpicture::curPic
 
@@ -49,13 +70,13 @@ proc addPic {origPicPath} {
 
     set screenX [winfo screenwidth .]
     set screenY [winfo screenheight .]
-    NewsHandler::QueryNews "[mc resizingPic]" orange
+    NewsHandler::QueryNews "$msg::resizingPic" orange
 
     set newpic [resizePic $addpicture::curPic $screenX $screenY]
     set addpicture::curPic $newpic
 
     $newpic write $targetPicPath -format PNG
-    NewsHandler::QueryNews "[mc copiedPicMsg] $origPicPath" lightgreen
+    NewsHandler::QueryNews "$msg::copiedPicMsg $origPicPath" lightgreen
 
     openReposWindow $newpic
 
@@ -75,7 +96,7 @@ proc delPic {c} {
   global photosdir fileJList picPath
   file delete $picPath
   set fileJList [deleteImg $fileJList $c]
-  NewsHandler::QueryNews "[mc deletedPicMsg] $picPath" orange
+  NewsHandler::QueryNews "msg::deletedPicMsg $picPath" orange
   set ::numPhotos [llength [glob $photosdir/*]]
 }
 
@@ -134,7 +155,7 @@ namespace eval NewsHandler {
 
   proc FinishShowing {} {
     variable isShowing
-    .news conf -fg green -bg lightgrey
+    .news conf -fg lightgreen -bg green
     set ::news "biblepix.vollmar.ch"
     set isShowing 0
     ShowNews
@@ -180,6 +201,25 @@ proc setSlideSpin {state} {
   }
 }
 
+# renameTabs
+##resets Notebook tab names according to lang
+##note: Notebook doesn't accept text variables
+##called by setFlags
+proc renameNotebookTabs {} {
+  .nb tab .welcomeF -text $msg::welcome
+  .nb tab .internationalF -text $msg::bibletexts
+  .nb tab .desktopF -text $msg::desktop
+  .nb tab .photosF -text $msg::photos
+  .nb tab .emailF -text $msg::email
+  if [winfo exists .terminalF] {
+    .nb tab .terminalF -text $msg::terminal
+  }
+  .nb tab .manualF -text $msg::manual
+}
+
+# setFlags
+##draws flags & resets texts upon mouseclick
+##called by SetupBuildGui
 proc setFlags {} {
   global Flags
   
@@ -189,27 +229,25 @@ proc setFlags {} {
   flag::show .de -flag {hori black red yellow}
   .en config -relief raised
   .de config -relief raised
-
+  
   #Configure English button
   bind .en <ButtonPress-1> {
     set lang en
-  #  setTexts en
-  
-  msgcat::mclocale en
-  msgcat::mcload $msgdir
+    setTexts en
+    renameNotebookTabs
     .manualF.man configure -state normal
     .manualF.man replace 1.1 end [setManText en]
     .manualF.man configure -state disabled
     .en configure -relief flat
   }
+  
   bind .en <ButtonRelease> { .en configure -relief raised}
 
   #Configure Deutsch button
   bind .de <ButtonPress-1> {
     set lang de
-  #  setTexts de
-  msgcat::mclocale de
-  msgcat::mcload $msgdir
+    setTexts de
+    renameNotebookTabs
     .manualF.man configure -state normal
     .manualF.man replace 1.1 end [setManText de]
     .de configure -relief flat

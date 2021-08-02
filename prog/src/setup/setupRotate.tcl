@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16may21
+# Updated: 1aug21
 
 source $RotateTools
 namespace eval rotatepic {}
@@ -99,7 +99,7 @@ set confirmBtnAction {
   photosCanvPic copy $rotatepic::rotateCanvPic -shrink
 
   #Create message window on top
-  set res [tk_messageBox -type yesno -message $rotateWait]
+  set res [tk_messageBox -type yesno -message $msg::rotateWait]
   if {$res == "no"} {
     allsetnormal
     return 0

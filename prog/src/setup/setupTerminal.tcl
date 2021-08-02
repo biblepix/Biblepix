@@ -1,11 +1,11 @@
 # ~/Biblepix/prog/src/setup/setupTerminal.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 31jul21 pv
+# Updated: 1aug21 pv
 
 #Create label & checkbutton
-label .terminalF.t1 -text "[mc f4Tit]" -font bpfont3
-checkbutton .terminalF.termyesno -text "[mc f4Btn]" -variable termyesnoState
+label .terminalF.t1 -textvar msg::f4Tit -font bpfont3
+checkbutton .terminalF.termyesno -textvar msg::f4Btn -variable termyesnoState
 pack .terminalF.t1 .terminalF.termyesno -anchor w
 if {[info exists enableterm]} {
   if {$enableterm==1} {
@@ -19,7 +19,7 @@ pack [frame .terminalF.mainF.left] -side left -expand 1 -anchor nw
 pack [frame .terminalF.mainF.right] -side right -anchor ne -padx 25 -pady 25
 
 # F i l l   l e f t   f r a m e
-message .termMsg -text "[mc f4Txt]" -font bpfont1 -width 500 -padx $px -pady $py
+message .termMsg -textvar msg::f4Txt -font bpfont1 -width 500 -padx $px -pady $py
 pack .termMsg -in .terminalF.mainF.left -anchor nw
 
 # F i l l   r i g h t   f r a m e

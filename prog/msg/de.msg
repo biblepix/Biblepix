@@ -2,19 +2,17 @@
 # German texts in msgcat format
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 29jul21 pv
- 
-  
-#### G E N E R A L ###############################
-
-#UNTRANSLATABLE
+# Updated: 2aug21 pv
+set bp {BibelPix}
 set dw {'Das Wort'}
-set bp "BibelPix"
+
+mcset de dw $dw
+mcset de bp $bp
 mcset de bpsetup "$bp Einrichtungsprogramm"
 mcset de refresh "Aktualisieren"
 mcset de delete "Datei löschen"
-
 #Buttons
+mcset de ok "Ok"
 mcset de cancel "Abbruch"
 mcset de save "Speichern"
 mcset de saveSettings "Einstellungen speichern"
@@ -26,38 +24,28 @@ mcset de desktop "Hintergrundbild"
 mcset de photos "Fotos verwalten"
 mcset de email "E-Mail-Signatur"
 mcset de terminal "Terminal/Konsole"
-mcset de manual "Nachschlagwerk"
-
+mcset de manual "Handbuch"
+mcset de next "Nächstes"
 # W E L C O M E 
 mcset de welcClickTwd "Klick dich durch $dw!"  
 mcset de welcTit "Willkommen beim Einrichtungsprogramm von $bp!"
 mcset de welcSubtit1 "Was ist $bp?"
 mcset de welcTxt1 "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' entwickelt wird.\n\n'Bibel 2.0' setzt sich zum Ziel, $dw in einer wachsenden Anzahl von Sprachen zu verbreiten.\n$dw besteht aus 2 ausgewählten Bibelsprüchen für jeden Tag des Jahres.\n\n$bp kann $dw in vielfältiger Weise auf Ihrem PC anzeigen."
 mcset de welcSubtit2 "Was sind Ihre Möglichkeiten?"
-
 mcset de welcTxt2 "* [mc bibletexts]: Wählen Sie beliebig viele Bibelausgaben und -sprachen für $dw
 * [mc desktop]: Betrachten Sie $dw auf Ihren persönlichen Fotos
 * [mc photos]: Wählen Sie eigene Hintergrundbilder für $bp aus
 * [mc email]: Fügen Sie $dw an Ihre E-Mails an
 * [mc terminal]: Betrachten Sie $dw in Ihren Linux-Konsolen
 * [mc manual]: Studieren Sie das komplette Handbuch von $bp"
-
-
 # U N I N S T A L L
 mcset de uninstall "Wollen Sie wirklich BibelPix von Ihrem Computer entfernen?"
 mcset de uninstalling "BiblePix wird nun deinstalliert. Zum Löschen der Systemeinstellungen müssen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\" beantworten!"
 mcset de uninstalled "$bp ist sicher von Ihrem System entfernt worden. Um es neu zu installieren, besuchen Sie uns auf www.bible2.net und laden Sie den $bp Installer herunter."
-  
-    
 #  M I S S I N G   P A C K A G E
-set packageRequireImg "\n* apt-get install libtk-img (Debian/Ubuntu)\n* emerge tkimg (Gentoo)\n* zypper install tkimg (openSUSE)\n* yum install tkimg (Fedora)\n* urpmi tkimg (Mandriva)"
-mcset de packageRequireImg "$bp benötigt die Tcl-Erweiterung 'tkimg'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n$packageRequireImg"
-set packageRequireTDom "\n* apt-get install tdom (Debian/Ubuntu)\n* emerge tdom (Gentoo)\n* zypper install tdom (openSUSE)\n* yum install tdom (Fedora)\n* urpmi tdom (Mandriva)" 
-mcset de packageRequireTDom "$bp benötigt die Tcl-Erweiterung 'tDom'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n$packageRequireTDom"
-set packageRequireTls "\n* apt-get install tcl-tls (Debian/Ubuntu)\n* emerge dev-tcltk/tls (Gentoo)"
-mcset de packageRequireTls "$bp needs the Tcl 'TLS' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n$packageRequireTls"
-
-
+mcset de packageRequireImg "$bp benötigt die Tcl-Erweiterung 'tkimg'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireImg_fix]"
+mcset de packageRequireTDom "$bp benötigt die Tcl-Erweiterung 'tDom'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireTDom_fix]"
+mcset de packageRequireTls "$bp benötigt die Tcl-Erweiterung 'TLS'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireTls_fix]"
 #SETUP INTERNATIONAL
 mcset de downloadingHttp "Lade $bp-Programmdateien herunter..."
 mcset de updatingHttp "Aktualisiere $bp-Programmdateien..."
@@ -75,8 +63,6 @@ mcset de year "Jahr"
 mcset de bibleversion "Bibelausgabe"
 mcset de biblename "Bibelname"
 mcset de f1Txt "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien zum Download markieren (s. unten), werden diese heruntergeladen, sobald Sie die Taste 'Download' drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)!"  
-
-
 #SETUP DESKTOP
 mcset de f2Tit "$dw auf Desktop-Hintergrundbild"
 mcset de f2Box "Hintergrundbild erzeugen"
@@ -89,8 +75,6 @@ mcset de f2Fontweight "fett"
 mcset de f2Fontfamily "Schriftart: "
 mcset de f2Fontexpl "Schrift anpassen"
 mcset de f2Txt "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik Photos). Ein neues Hintergrundbild steht jeweils in \n\n\t [file nativename $imgdir] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine DIASCHAU mit Wechselbild ein. Soll nur 1 Bild pro Tag angezeigt werden, kann die Diaschau deaktiviert werden (s.o.).\n\nIm Fenster TEXTPOSITION können Sie $dw an die gewünschte Stelle auf dem Bildschirm verschieben. Beim Hinzufügen von Bildern kan die Textposition auch individuell bestimmt werden. \n\nDie SCHRIFTGRÖSSE wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, Grösse und Dicke anzupassen (grössere Buchstaben = besserer Kontrast).\n\nDie SCHRIFTFARBE können Sie fest bestimmen oder dem Zufall überlassen. $bp kann zusätzlich eine Farbanpassung anhand der Hintergrundhelligkeit vornehmen. Dieser Effekt kommt erst nach Speichern neuer Fotos zum Tragen.\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, finden Sie im Manual eine Lösung."
-  
-
 # S E T U P   P H O T O S 
 mcset de textposlabel "Textposition bestimmen"
 mcset de textposAdjust "Wollen Sie vor dem Speichern die Textposition für dieses Bild ändern?"
@@ -101,48 +85,33 @@ mcset de f6Add "Zur $bp-Fotosammlung hinzufügen:"
 mcset de f6Show "$bp-Fotosammlung anzeigen"
 mcset de f6Find "Neue Fotos suchen"
 mcset de f6Del "Aus der $bp-Fotosammlung löschen:"
-
 #RESIZING
 mcset de resizeF_txt "Ihr Foto passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. Verschieben Sie den Bildausschnitt nach Wunsch und drücken Sie Ok zum Speichern."
 mcset de movePicToResize "Verschieben Sie den Bildausschnitt nach Wunsch und bestätigen Sie mit Ok zum Speichern."
 mcset de resizingPic "Passe Bildgrösse dem Bildschirm an \u2014 bitte haben Sie einen Augenblick Geduld..."
 mcset de movePic "Bildausschnitt verschieben \u21CA"
 mcset de picSchonDa "Foto bereits im $bp-Bildordner"
-
-
 # S E T U P   S I G N A T U R E
 mcset de f3Tit "$dw auf Ihren E-Mail-Signaturen"
 mcset de f3Btn "E-Mail-Signatur erzeugen"
 mcset de f3Sprachen "Gewünschte Sprachen für meine Signaturen"
 mcset de f3Txt "Wenn aktiviert, fügt $bp einmal täglich für jede installierte Bibeltextdatei $dw an Ihre E-Mail-Signaturen an. Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. signature-de_Schlac.txt) im folgenden Ordner gespeichert: \n\n\t$sigdir \n\nSie können diese Dateien aus Ihrem E-Mail-Programm oder in einem Texteditor bearbeiten und persönliche Grussformeln, Adressen usw. oben einfügen. Text oberhalb der Trennlinie ==== bleibt beim Wechsel von $dw unbehelligt. \n\nVielleicht möchten Sie nicht, dass Ihre Mail-Empfänger $dw in allen Sprachen lesen, die Sie installiert haben. Wählen Sie oben rechts die gewünschte(n) Sprache(n) aus.\n\nDamit $dw künftig auf Ihren Mails erscheint, müssen Sie Ihrem Mail-Programm beibringen, die oben beschriebenen Dateien zu verwenden (meist unter Einstellungen>Signatur).\n\nGewisse Programme wie Seamonkey Mail, Evolution oder Trojitá verwalten Signaturen intern. $bp kann darunter vorläufig Trojitá und Evolution  berücksichtigen."
-mcset de f3Expl "
-Mit freundlichem Gruß
-Gebr. Bibel & Pix
-Homepage: biblepix.vollmar.ch
-"  
-
 #SETUP TERMINAL
 mcset de f4Tit  "$dw in Ihren Linux-Terminals"
 mcset de f4Btn "$dw zur Anzeige im Terminal erzeugen"
 mcset de f4Txt "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDarstellung und Farben können in \n\n\t $confdir/term.conf \n\ngeändert werden.\n\nFür die Darstellung in hebräischer oder arabischer Schrift kommen nur Terminals wie 'QTerminal', 'mlterm', 'gnome-terminal', 'xfce4-terminal' oder 'Konsole' (KDE) in Frage, welche bidirektionellen Text korrekt anzeigen. \n\nDamit $dw automatisch im Terminal angezeigt wird, macht das $bp-Setup einen Eintrag in ~/.bashrc."
-  
 
-######## S E T U P S A V E   T E X T S  ################################
-
+# S E T U P S A V E   T E X T S
 #Changing Desktops Info
-mcset de linChangingDesktop "BibelPix versucht nun, Ihre Desktop-Einstellungen zu ändern. Falls Sie danach kein neues Hintergrundbild sehen, finden Sie eine Lösung im Manual."
+mcset de linChangingDesktop "$bp versucht nun, Ihre Desktop-Einstellungen zu ändern. Falls Sie danach kein neues Hintergrundbild sehen, finden Sie eine Lösung im Manual."
 mcset de winIgnorePopup "Schliessen Sie bitte aufspringende Fenster ohne Änderung, damit $bp die Registrierung abschliessen kann!"
 mcset de winChangeDesktopProb "Wir hatten ein Problem mit der Änderung des Desktophintergrunds.\nRechtsklicken Sie auf ein leeres Feld auf Ihrem Desktop und \"Anpassen\". Unter \"Hintergrund\" setzen Sie als Hintergrund-Einzelbild $TwdBMP oder \n$TwdPNG \noder für Slidesho\n$imgdir ."
 mcset de linChangeDesktopProb "Wir hatten ein Problem mit der Änderung der Desktopeinstellungen.\nBitte rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog für 'Hintergrundbild'. Dort geben Sie $imgdir als Bildpfad an."
 mcset de linNoDesktopFound "Kein Linux-Desktop gefunden! Suchen Sie im Manual eine Lösung zum manuellen Einrichten des $bp-Hintergrundbilds."
 mcset de linReloadingDesktop "Wir versuchen nun, Ihre Arbeitsfläche neu einzulesen. Falls dies fehlschlägt, müssen Sie sich kurz ab- und wieder anmelden, damit die BibelPix-Einstellungen wirksam werden."
 mcset de changeDesktopOk "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\n\nDas ${bp}-Einrichtungsprogramm können Sie jederzeit starten, indem Sie im Programmmenü das ${bp}-Symbol wählen (Linux) bzw. auf Ihrer Arbeitsoberfläche rechtsklicken und das ${bp}-Symbol wählen (Windows)."
-mcset de winRegister "BiblePix muss nun auf Ihrem System registriert werden.\nBitte bestätigen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\"!"
-
-#!TODO stimmt nicht
-
-mcset de winRegisterProb "BibelPix ist auf Ihrem Computer noch nicht korrekt installiert.\nBitte gehen Sie nach $windir und führen Sie die Datei $windir/install.reg durch Doppelklick aus, oder starten Sie das Setup nochmals."
-
+mcset de winRegister "$bp muss nun auf Ihrem System registriert werden.\nBitte bestätigen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\"!"
+mcset de winRegisterProb "$bp ist auf Ihrem Computer noch nicht korrekt installiert.\nStarten Sie das Setup nochmals oder fügen Sie \n$Biblepix\n in \"Automatisch gestartete Programme\" an."
 #PHOTOS
 mcset de reposSaved "Bild mit Info gespeichert."
 mcset de reposNotSaved "Bild nicht gespeichert."
@@ -155,6 +124,3 @@ mcset de rotateWait "Bitte haben Sie eine Weile Geduld, bis die Drehung am Origi
 mcset de rotateInfo "Achtung: durch Abspeichern und Neuladen kann ein Bild in mehreren Schritten gedreht werden!"
 mcset de deletedPicMsg "Bild aus $bp-Fotoalbum gelöscht:"
 mcset de copiedPicMsg "Neues Bild nach $bp-Fotoalbum kopiert:"
-
-# N O N   T R A N S L A T A B L E S
-

@@ -2,9 +2,28 @@
 # Provides German & English text snippets
 # sourced by setupGUI.tcl & error messages
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12jul21 pv
+# Updated: 1aug21 pv
 
 proc setTexts {lang} {
+  global msgdir
+  
+  set filename [file join $msgdir ${lang}.msg]
+  if [file exists $filename] {
+  
+  #make new vars available in ::msg namespace
+  source $filename
+ 
+  
+  } else {
+    source $msgdir/en.msg
+  }
+  
+}
+
+
+
+proc meyutar {} { 
+
   global Bidi platform jahr TwdTIF TwdBMP TwdPNG 
   global twddir imgdir sigdir confdir windir
   set ::lang $lang
