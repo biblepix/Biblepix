@@ -2,12 +2,12 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 29jul21 pv 
+# Updated : 2aug21 pv 
 
-# Return to INTERNATIONAL section if $twdDir empty
-if { [catch {glob $twdDir/*$jahr.twd}] } {
+# Return to INTERNATIONAL section if $twddir empty
+if [catch {glob $twddir/*$jahr.twd}] {
   .nb select .internationalF
-  NewsHandler::QueryNews "$msg::noTWDFilesFound" red
+  NewsHandler::QueryNews "$msg::noTwdFilesFound" red
   return
 
 # Return to PHOTOS section if $picsdir empty

@@ -29,7 +29,8 @@ mcset en uninstalled "$bp has been removed safely from your system. To reinstall
 # M I S S I N G   P A C K A G E
 mcset en packageRequireImg "$bp needs the Tcl 'tkimg' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireImg_fix]"
 mcset en packageRequireTDom "$bp needs the Tcl 'tDom' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireTDom_fix]"
-mcset en packageRequireTls_en "$bp needs the Tcl 'TLS' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireTls_fix]"
+mcset en packageRequireTls "$bp needs the Tcl 'TLS' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireTls_fix]"
+mcset en packageRequireLibtcl "$bp needs the Tcl 'libtcl' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireLibtcl_fix]"
 #### S E T U P   G U I ################################
 mcset en downloadingHttp "Downloading $bp program files..."
 mcset en updatingHttp "Updating $bp program files..."
@@ -48,12 +49,12 @@ mcset en welcTit "Welcome to the $bp setup program!"
 mcset en welcSubtit1 "What is $bp?"
 mcset en welcTxt1 "$bp is a Tcl program developed for the 'Bible 2.0' project which aims to publish $dw\nin a growing number of languages.\n\n$dw consists of two selected Bible verses for each day of the year.\n\n$bp can display $dw in various ways on your computer."
 mcset en welcSubtit2 "What are your options?"
-mcset en welcTxt2 "* [mc bibletexts]: Choose one or several Bible text languages for $dw
-* [mc desktop]: Get $dw on your personal background images, incl. slide show
-* [mc photos]: Organise your photos for use in $bp
-* [mc email]: Get $dw added to your e-mail signatures
-* [mc terminal]: Display $dw in your Linux terminals
-* [mc manual]: Study the Complete Guide to the $bp program"
+mcset en welcTxt2 "\u27a4 [mc bibletexts]: Choose one or several Bible text languages for $dw
+\u27a4 [mc desktop]: Get $dw on your personal background images, incl. slide show
+\u27a4 [mc photos]: Organise your photos for use in $bp
+\u27a4 [mc email]: Get $dw added to your e-mail signatures
+\u27a4 [mc terminal]: Display $dw in your Linux terminals
+\u27a4 [mc manual]: Study the Complete Guide to the $bp program"
 mcset en f1Tit "Current list of Bible texts for $dw"
 mcset en TwdLocalTit "Bible text files installed for $jahr"
 mcset en TwdRemoteTit "Bible text files for download"

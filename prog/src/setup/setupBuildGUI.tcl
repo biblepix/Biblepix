@@ -2,14 +2,14 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29jul21 pv
+# Updated: 2aug21 pv
 
 setFlags
 source $TwdTools
 
 set setupTwdFileName [getRandomTwdFile]
 if {$setupTwdFileName == ""} {
-  set setupTwdText $noTwdFilesFound
+  set setupTwdText $msg::noTwdFilesFound
 } else {
   set setupTwdText [getTodaysTwdText $setupTwdFileName]
 }

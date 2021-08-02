@@ -32,12 +32,12 @@ mcset de welcTit "Willkommen beim Einrichtungsprogramm von $bp!"
 mcset de welcSubtit1 "Was ist $bp?"
 mcset de welcTxt1 "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' entwickelt wird.\n\n'Bibel 2.0' setzt sich zum Ziel, $dw in einer wachsenden Anzahl von Sprachen zu verbreiten.\n$dw besteht aus 2 ausgewählten Bibelsprüchen für jeden Tag des Jahres.\n\n$bp kann $dw in vielfältiger Weise auf Ihrem PC anzeigen."
 mcset de welcSubtit2 "Was sind Ihre Möglichkeiten?"
-mcset de welcTxt2 "* [mc bibletexts]: Wählen Sie beliebig viele Bibelausgaben und -sprachen für $dw
-* [mc desktop]: Betrachten Sie $dw auf Ihren persönlichen Fotos
-* [mc photos]: Wählen Sie eigene Hintergrundbilder für $bp aus
-* [mc email]: Fügen Sie $dw an Ihre E-Mails an
-* [mc terminal]: Betrachten Sie $dw in Ihren Linux-Konsolen
-* [mc manual]: Studieren Sie das komplette Handbuch von $bp"
+mcset de welcTxt2 "\u27a4 [mc bibletexts]: Wählen Sie beliebig viele Bibelausgaben und -sprachen für $dw
+\u27a4 [mc desktop]: Betrachten Sie $dw auf Ihren persönlichen Fotos
+\u27a4 [mc photos]: Wählen Sie eigene Hintergrundbilder für $bp aus
+\u27a4 [mc email]: Fügen Sie $dw an Ihre E-Mails an
+\u27a4 [mc terminal]: Betrachten Sie $dw in Ihren Linux-Konsolen
+\u27a4 [mc manual]: Studieren Sie das komplette Handbuch von $bp"
 # U N I N S T A L L
 mcset de uninstall "Wollen Sie wirklich BibelPix von Ihrem Computer entfernen?"
 mcset de uninstalling "BiblePix wird nun deinstalliert. Zum Löschen der Systemeinstellungen müssen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\" beantworten!"
@@ -46,6 +46,7 @@ mcset de uninstalled "$bp ist sicher von Ihrem System entfernt worden. Um es neu
 mcset de packageRequireImg "$bp benötigt die Tcl-Erweiterung 'tkimg'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireImg_fix]"
 mcset de packageRequireTDom "$bp benötigt die Tcl-Erweiterung 'tDom'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireTDom_fix]"
 mcset de packageRequireTls "$bp benötigt die Tcl-Erweiterung 'TLS'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireTls_fix]"
+mcset de packageRequireLibtcl "$bp benötigt die Tcl-Erweiterung 'libtcl'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireLibtcl_fix]"
 #SETUP INTERNATIONAL
 mcset de downloadingHttp "Lade $bp-Programmdateien herunter..."
 mcset de updatingHttp "Aktualisiere $bp-Programmdateien..."

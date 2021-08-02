@@ -16,6 +16,7 @@ Homepage: biblepix.vollmar.ch
 mcset $lang packageRequireImg_fix "\n* apt-get install libtk-img (Debian/Ubuntu)\n* emerge tkimg (Gentoo)\n* zypper install tkimg (openSUSE)\n* yum install tkimg (Fedora)\n* urpmi tkimg (Mandriva)"
 mcset $lang packageRequireTDom_fix "\n* apt-get install tdom (Debian/Ubuntu)\n* emerge tdom (Gentoo)\n* zypper install tdom (openSUSE)\n* yum install tdom (Fedora)\n* urpmi tdom (Mandriva)"
 mcset $lang packageRequireTls_fix "\n* apt-get install tcl-tls (Debian/Ubuntu)\n* emerge dev-tcltk/tls (Gentoo)"
+mcset $lang packageRequireLibtcl_fix "\n*apt-get install libtcl (Debian/Ubuntu)\n* emerge libtcl (Gentoo)\n* zypper install libtcl (openSUSE)\n* yum install libtcl (Fedora)\n* urpmi libtcl (Mandriva)"
 mcset $lang f3Expl "Yours faithfully, $grussformel"
 mcset de f3Expl "Mit freundlichem Gruss, $grussformel"
 

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 1aug21 pv
+# Updated 2aug21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -195,7 +195,7 @@ set RtlInfo ""
 ##Hebrew
 if ![catch "glob $twddir/he_*"] {
   set msgHe $RtlInfoHe
-  if {$os=="linux"} {
+  if {$os=="Linux"} {
     set msgHe [string reverse $msgHe]
   }
   lappend RtlInfo $msgHe
@@ -203,14 +203,13 @@ if ![catch "glob $twddir/he_*"] {
 ##Arabic
 if ![catch "glob $twddir/ar_*"] {
   set msgAr $RtlInfoAr
-  if {$os=="linux"} {
+  if {$os=="Linux"} {
     source $Bidi
-    set msgAr [bidi::fixbidi $msgAr] 
+    set msgAr [bidi::fixBidi $msgAr] 
   }
   lappend RtlInfo $msgAr
 }
 label .textposFN -width 50 -font "Serif 10" -textvar RtlInfo
-
 # P A C K   R I G H T
 ##top
 pack .showdateBtn -in .topMainF1 -anchor w

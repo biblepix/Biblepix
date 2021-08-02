@@ -6,7 +6,7 @@
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
   package require Tk
-  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $packageRequireTDom
+  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message "$msg::packageRequireTDom"
   exit
 }
 
@@ -74,7 +74,7 @@ proc updateTwd {} {
   global twddir
   
   if [catch {package require json}] {
-	  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message "Missing package: json - please install latest version of tcllib!"
+	  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message "$msg::packageRequireLibtcl"
     exit
   }
   
@@ -396,13 +396,13 @@ proc getTodaysTwdText {TwdFileName} {
 ##args=='html' for Evolution
 ##called by Signature & SigTools (Trojita+Evolution) & Setup!
 proc getTodaysTwdSig {TwdFileName {setup 0}} {
-  global ind tab noTwdFilesFound Bidi
+  global ind tab Bidi
   
   # G e t  d o m D o c  & exit if empty
   set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   if {$twdTodayNode == ""} {
-    return $noTwdFilesFound
+    return $msg::noTwdFilesFound
   }
   
   # P a r s e   d o m D o c
@@ -475,6 +475,5 @@ proc getTwdHex {dw} {
     set hexCode [format %x $uniCode]
     append dwhex \\x${hexCode}
   }
-
   return $dwhex
 }

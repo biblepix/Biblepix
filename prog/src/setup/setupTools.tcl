@@ -28,12 +28,12 @@ proc setTexts {lang} {
 ##sets & resets .WelcomeT text acc. to language
 ##called by SetupWelcome & setTexts
 proc fillWelcomeTWidget {T} {
-  global os
+  global platform
   $T delete 1.0 end
   $T insert 1.0 $msg::welcTxt2
 
   #delete "Terminal" line if not Unix
-  if {$os=="windows"} {
+  if {$platform=="windows"} {
     $T delete 5.0 5.end
   }
   $T tag conf bold -font TkCaptionFont
@@ -175,7 +175,7 @@ namespace eval NewsHandler {
 
   proc FinishShowing {} {
     variable isShowing
-    .news conf -fg black -bg lightgreen
+    .news conf -fg black -bg #bab86c
     set ::news "biblepix.vollmar.ch"
     set isShowing 0
     ShowNews
@@ -561,7 +561,7 @@ proc step {localJList fwd canv} {
 }
 
 proc openFileDialog {bildordner} {
-  global types tcl_platform
+  global types platform
 
   set storage ""
   set parted 0
@@ -572,7 +572,7 @@ proc openFileDialog {bildordner} {
     set pos [string last "/" $selectedFile]
     set folder [string range $selectedFile 0 [expr $pos - 1]]
 
-    if {$os == "Linux"} {
+    if {$platform == "unix"} {
       set fileNames [glob -nocomplain -directory $folder *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
     } elseif {$platform == "windows"} {
       set fileNames [glob -nocomplain -directory $folder *.jpg *.jpeg *.png]
@@ -608,12 +608,12 @@ proc openFileDialog {bildordner} {
 }
 
 proc refreshFileList {} {
-  global tcl_platform photosdir
+  global platform photosdir
   set storage ""
   set parted 0
   set localJList ""
 
-  if {$os == "Linux"} {
+  if {$platform == "unix"} {
     set fileNames [glob -nocomplain -directory $photosdir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
   } elseif {$platform == "windows"} {
     set fileNames [glob -nocomplain -directory $photosdir *.jpg *.jpeg *.png]
