@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 1aug21 pv
+# Updated 2aug21 pv
 
 source $::AnnotatePng
   
@@ -31,7 +31,7 @@ proc openResizeWindow {} {
   #Create title & buttons
   set cancelBtnAction {
     set ::Modal.Result "Cancelled"
-    NewsHandler::QueryNews "Bild nicht gespeichert" red
+    NewsHandler::QueryNews "$msg::reposNotSaved" red
     catch {image delete $resizePic::resizeCanvPic}
     namespace delete resizePic
   }
@@ -104,7 +104,7 @@ proc openReposWindow {pic} {
   #Define button actions
   set cancelBtnAction {
     set ::Modal.Result "Cancelled"
-    NewsHandler::QueryNews "$::reposNotSaved" red
+    NewsHandler::QueryNews "$msg::reposNotSaved" red
     file delete $addpicture::targetPicPath
     catch {image delete $reposPic::reposCanvPic}
     namespace delete reposPic
@@ -121,13 +121,13 @@ proc openReposWindow {pic} {
     set y [expr $y * $reposPic::scaleFactor]
     processPngComment $addpicture::targetPicPath $x $y $lum
 
-    NewsHandler::QueryNews "$::reposSaved" lightgreen
+    NewsHandler::QueryNews "$msg::reposSaved" lightgreen
     catch {image delete $reposPic::reposCanvPic}
     namespace delete reposPic
   }
 
-  set confBtn [button $reposPic::w.moveTxtBtn -command $confirmBtnAction -text OK]
-  set cancBtn [button $reposPic::w.cancelBtn -textvar cancel -command $cancelBtnAction]
+  set confBtn [button $reposPic::w.moveTxtBtn -command $confirmBtnAction -textvar msg::ok]
+  set cancBtn [button $reposPic::w.cancelBtn -command $cancelBtnAction -textvar msg::cancel]
   pack $cancBtn $confBtn -side right
   
 #  $reposPic::canv create window -15 15 -anchor nw -window $confBtn
@@ -167,7 +167,7 @@ proc openReposWindow {pic} {
   if {$res == "no"} {
     set lum [getAreaLuminacy $reposPic::canv canvTxt]
     processPngComment $addpicture::targetPicPath 0 0 $lum
-    NewsHandler::QueryNews $::reposSaved lightgreen
+    NewsHandler::QueryNews "$msg::reposSaved" lightgreen
     destroy $reposPic::w
   }
 

@@ -42,7 +42,7 @@ mcset en noConnTwd "No connection to bible2.net. Try later."
 mcset en bpsetup "$bp Setup"
 mcset en refresh "Update"
 mcset en delete "Delete file"
-mcset en textposlabel "set general text position"
+mcset en textposlabel "Set general text position"
 mcset en textposAdjust "Do you want to adjust the text position for this picture before saving?"
 mcset en welcTit "Welcome to the $bp setup program!"
 mcset en welcSubtit1 "What is $bp?"
@@ -95,8 +95,7 @@ mcset en f3Txt "If activated, $bp will add $dw at the end of your e-mail signatu
 mcset en f4Tit  "Display $dw in your Linux terminals"
 mcset en f4Btn "Create $dw for display in terminal"
 mcset en f4Txt "If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nColours for display etc. may be changed in \n\n\t $confdir/term.conf \n\nNote that in order to display Arabic or Hebrew script correctly, you will need one of the following: 'QTerminal', 'mlterm', 'gnome-terminal', 'Konsole' (KDE) or 'xfce4-terminal'; these are known to work with bidirectional text.\n\nFor $dw to be displayed automatically in your terminals, $bp Setup makes an entry in ~/.bashrc for your convenience."
-# S E T U P S A V E
-#Changing Desktops Info
+# S A V E
 mcset en linChangingDesktop "BiblePix will now try to register with your Desktop Background. If you can't see a new background picture after that, find a solution in the Manual."
 mcset en winIgnorePopup "Please dismiss (close) any pop-up windows so $bp can finish registration!"
 mcset en winChangeDesktopProb "We are having a problem changing your Desktop background.\nPlease right-click on an empty spot on your Desktop and select \"Personalize\".\nUnder \"Wallpaper\" either set as single pic path $TwdBMP or \n$TwdPNG \nor else set up a slideshow setting the directory to \n$imgdir ."
@@ -106,7 +105,6 @@ mcset en linReloadingDesktop "We shall now try to reload your Desktop. If this f
 mcset en changeDesktopOk "$bp has been configured successfully and will start shortly.\n\nYou can run the $bp Setup program anytime by selecting the \"BiblePix Setup\" icon in the Program Menu (Linux) or by right-click on your Desktop (Windows)."
 mcset en winRegister "BiblePix will no try to register with your system.\nYou must confirm any dialogue boxes with \"Yes\"."
 mcset en winRegisterProb "BiblePix has not been registered properly on your computer.\nPlease try rerunning Setup, or add \n$Biblepix\n to your Autostart folder."
-
 # P H O T O S
 mcset en deletedPicMsg "Deleted picture from $bp photo collection:"
 mcset en copiedPicMsg "Copied picture to $bp photo collection:"

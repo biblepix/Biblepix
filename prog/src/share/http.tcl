@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29jul21 pv
+# Updated: 2aug21 pv
 package require http
 
 # checkTls
@@ -10,7 +10,7 @@ package require http
 proc checkTls {} {
   if [catch {package require tls}] {
     package require Tk
-    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $::packageRequireTls
+    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $msg::packageRequireTls
     return 1
   }
 }
@@ -25,7 +25,7 @@ proc checkTls {} {
 proc runHTTP isInitial {
   #Test connexion & start download
   if [catch testHttpCon Error] {
-    set ::ftpStatus $::noConnHttp
+    set ::ftpStatus $msg::noConnHttp
     catch {NewsHandler::QueryNews $::noConnHttp red}
     puts "ERROR: http.tcl -> runHTTP($isInitial): $Error"
     error $Error
@@ -47,8 +47,8 @@ proc runHTTP isInitial {
 
     #Success message (source Texts again for Initial)
     catch {.if.initialMsg configure -bg lightgreen}
-    catch {NewsHandler::QueryNews $::uptodateHttp blue}
-    catch {set ::ftpStatus $::uptodateHttp}
+    catch {NewsHandler::QueryNews $msg::uptodateHttp blue}
+    catch {set ::ftpStatus $msg::uptodateHttp}
   }
 } ;#end runHTTP
 
@@ -188,13 +188,13 @@ proc getRemoteRoot {} {
   #These are standard in ActiveTcl, Linux distros vary
   if [catch {package require tdom}] {
     package require Tk
-    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $::packageRequireTDom
+    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $msg::packageRequireTDom
     return 1
   }
 
   if [catch {package require tls}] {
     package require Tk
-    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $::packageRequireTls
+    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $msg::packageRequireTls
     return 1
   }
 
@@ -271,15 +271,15 @@ proc listRemoteTWDFiles {lBox} {
 proc getRemoteTWDFileList {} {
   if [catch testHttpCon Error] {
     .internationalF.status conf -bg red
-    set status $::noConnTwd
+    set status $msg::noConnTwd
     puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
   } else {
     if ![catch {listRemoteTWDFiles .twdremoteLB}] {
       .internationalF.status conf -bg lightgreen
-      set status $::connTwd
+      set status $msg::connTwd
     } else {
       .internationalF.status conf -bg red
-      set status $::noConnTwd
+      set status $msg::noConnTwd
     }
   }
   return $status
@@ -290,7 +290,7 @@ proc downloadTWDFiles {} {
   global twddir jahr
   
   if [catch {set root [getRemoteRoot]}] {
-    NewsHandler::QueryNews $::noConnTwd red
+    NewsHandler::QueryNews $msg::noConnTwd red
     return 1
   }
   

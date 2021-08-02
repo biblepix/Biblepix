@@ -7,13 +7,13 @@
 # Return to INTERNATIONAL section if $twdDir empty
 if { [catch {glob $twdDir/*$jahr.twd}] } {
   .nb select .internationalF
-  NewsHandler::QueryNews "$noTWDFilesFound" red
+  NewsHandler::QueryNews "$msg::noTWDFilesFound" red
   return
 
 # Return to PHOTOS section if $picsdir empty
 } elseif { [catch {glob $photosdir/*}] } {
  .nb select .photosF
-  NewsHandler::QueryNews "$noPhotosFound" red
+  NewsHandler::QueryNews "$msg::noPhotosFound" red
   return
 }
 

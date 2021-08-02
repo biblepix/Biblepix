@@ -2,7 +2,7 @@
 # Procs used in Resizing + Repositioning processes
 # sourced by SetupPhotos & ???
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25may21 pv
+# Updated: 2aug21 pv
 
 # needsResize
 ##compares photosOrigPic OR rotateOrigPic with screen dimensions
@@ -266,7 +266,7 @@ proc doResize {canv scaleFactor} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
 
-  NewsHandler::QueryNews "$::resizingPic" orange
+  NewsHandler::QueryNews "$msg::resizingPic" orange
 
   set finalImage [resizePic $cutImg $screenX $screenY]
 
@@ -275,7 +275,7 @@ proc doResize {canv scaleFactor} {
 
   $finalImage write $addpicture::targetPicPath -format PNG
 
-  NewsHandler::QueryNews "[copiedPicMsg $picPath]" lightblue
+  NewsHandler::QueryNews "$msg::copiedPicMsg $picPath" lightblue
   
   return $finalImage
 } ;#END processResize

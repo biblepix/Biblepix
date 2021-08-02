@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1aug21
+# Updated: 2aug21
 
 source $RotateTools
 namespace eval rotatepic {}
@@ -65,20 +65,20 @@ proc allsetnormal {} {
   $::scale conf -state normal
 }
 
-button $anyBtn -textvar computePreview -activebackground beige \
+button $anyBtn -textvar msg::computePreview -activebackground beige \
 -command {
   anysetnormal
   vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
 }
  
-button $90Btn -textvar preview90 -activebackground beige \
+button $90Btn -textvar msg::preview90 -activebackground beige \
 -command {
   90-180setnormal
   vorschau $rotatepic::rotateCanvPic 90 $canv
   set rotatepic::angle 90
 }
 
-button $180Btn -textvar preview180 -activebackground beige \
+button $180Btn -textvar msg::preview180 -activebackground beige \
 -command {
   90-180setnormal
   vorschau $rotatepic::rotateCanvPic 180 $canv
@@ -117,11 +117,11 @@ set confirmBtnAction {
 }
 
 #Create Info label & buttons
-set infoL [label .rotateW.infoL -textvar rotateInfo -font TkCaptionFont -bg beige -fg green -padx 5 -pady 10]
+set infoL [label .rotateW.infoL -textvar msg::rotateInfo -font TkCaptionFont -bg beige -fg green -padx 5 -pady 10]
 set saveBtn $rotatepic::W.saveBtn
 set cancelBtn $rotatepic::W.cancelBtn
-button $saveBtn -textvar save -activebackground lightgreen -command $confirmBtnAction
-button $cancelBtn -textvar cancel -activebackground red -command $cancelBtnAction
+button $saveBtn -textvar msg::save -activebackground lightgreen -command $confirmBtnAction
+button $cancelBtn -textvar msg::cancel -activebackground red -command $cancelBtnAction
 
 catch { canvas $canv }
 $canv create image 6 6 -image $rotatepic::rotateCanvPic -anchor nw -tags img

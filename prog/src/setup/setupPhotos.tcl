@@ -26,7 +26,7 @@ button .photosF.mainf.right.bar.open -width 30 -textvar msg::f6Find -height 1 -c
 button .photosF.mainf.right.bar.< -text < -height 1 -command {set fileJList [step $fileJList 1 .photosC]}
 button .photosF.mainf.right.bar.> -text > -height 1 -command {set fileJList [step $fileJList 0 .photosC]}
 button .photosF.mainf.right.bar.collect -textvar msg::f6Show -height 1 -command {set fileJList [doCollect .photosC]}
-label .photosF.mainf.right.bar.count1 -textvar msg::numPhotos -bg lightblue
+label .photosF.mainf.right.bar.count1 -textvar numPhotos -bg lightblue
 label .photosF.mainf.right.bar.count2 -textvar msg::f6numPhotosTxt -bg lightblue
 
 pack .photosF.mainf.right.bar.open -side left

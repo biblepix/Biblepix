@@ -1,9 +1,9 @@
 # ~/Biblepix/prog/src/save/uninstall.tcl
 # sourced by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24jul21 pv
+# Updated: 2aug21 pv
 
-set antwort [tk_messageBox -icon warning -type yesno -message $uninstall]
+set antwort [tk_messageBox -title "Uninstalling BiblePix" -icon warning -type yesno -message $msg::uninstall]
 
 if {$antwort=="yes"} {
                   
@@ -16,7 +16,7 @@ if {$antwort=="yes"} {
       }
     }
 
-    NewsHandler::QueryNews "Removing BiblePix from your computer..." red
+    NewsHandler::QueryNews "$msg::uninstall ..." red
     
     # L I N U X
     if {$os=="Linux"} {
@@ -46,7 +46,7 @@ if {$antwort=="yes"} {
       source $SaveWinHelpers
       
       #Message for sysadmin
-      tk_messageBox -type ok -message $uninstalling
+      tk_messageBox -title "Uninstalling BiblePix" -type ok -message $msg::uninstalling
       
       #1. restore custom.theme -- !OBSOLETE now! but leaving for now for older installations
       set themepath [file join $env(appdata) Local Microsoft Windows Themes biblepix.theme]
@@ -64,7 +64,7 @@ if {$antwort=="yes"} {
     catch {file delete -force $rootdir}
     
     #Final message
-    tk_messageBox -type ok -title "Uninstalling BiblePix" -message $uninstalled
+    tk_messageBox -type ok -title "Uninstalling BiblePix" -message $msg::uninstalled
 
     exit
 } ;#end if "yes"

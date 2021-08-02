@@ -44,24 +44,9 @@ label .welcomeSubtit2 -font bpfont2 -textvar msg::welcSubtit2 -padx $px -pady $p
 pack .welcomeSubtit2 -in .leftTopF -anchor nw
 
 #Create text widget
-text .welcomeTxt -width 80 -padx $px -pady $py -border 0 -bg #d9d9d9 -font bpfont1 -tabs {5c left}	
-pack .welcomeTxt -in .leftTopF -anchor nw
-.welcomeTxt insert 1.0 $msg::welcTxt2
-##delete "Terminal" line if not Unix
-if {$os=="windows"} {
-  .welcomeTxt delete 5.0 5.end
-}
-.welcomeTxt tag conf bold -font TkCaptionFont
-
-#Set keyword: to bold
-set lines [.welcomeTxt count -lines 1.0 end]
-puts $lines
-for {set line 1} {$line <= $lines} {incr line} {
-puts $line
-  set colon [.welcomeTxt search : $line.0 $line.end]
-  puts $colon
-  .welcomeTxt tag add bold $line.0 $colon 
-}
+text .welcomeT -width 80 -padx $px -pady $py -borderwidth 0 -bg #d9d9d9 -font bpfont1 -tabs {5c left}	
+pack .welcomeT -in .leftTopF -anchor nw
+fillWelcomeTWidget .welcomeT
 
 #Uninstall button
 button .uninstallBtn -textvar msg::uninst -command {source $Uninstall}

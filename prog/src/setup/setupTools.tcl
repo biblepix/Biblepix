@@ -10,20 +10,40 @@ source $JList
 ##loads all text vars into ::msg namespace
 ##called by SetupMainFrame 
 proc setTexts {lang} {
-  global msgdir
+  global msgdir os
   package require msgcat
   namespace import msgcat::mc msgcat::mcset
   msgcat::mclocale $lang
-  msgcat::mcload $msgdir
   
+  #replace text variables
+  msgcat::mcload $msgdir
   #TODO Why isn't this done by above?
   source $msgdir/global.msg
-#  set filename [file join $msgdir ${lang}.msg]
-#  if [file exists $filename] {
-#    source $filename
-#  } else {
-#    source $msgdir/en.msg
-#  }
+
+  #replace text in Welcome text widget
+  catch {fillWelcomeTWidget .welcomeT}
+}
+
+# fillWelcomeTWidget
+##sets & resets .WelcomeT text acc. to language
+##called by SetupWelcome & setTexts
+proc fillWelcomeTWidget {T} {
+  global os
+  $T delete 1.0 end
+  $T insert 1.0 $msg::welcTxt2
+
+  #delete "Terminal" line if not Unix
+  if {$os=="windows"} {
+    $T delete 5.0 5.end
+  }
+  $T tag conf bold -font TkCaptionFont
+
+  #Set keywords: to bold
+  set lines [$T count -lines 1.0 end]
+  for {set line 1} {$line <= $lines} {incr line} {
+    set colon [$T search : $line.0 $line.end]
+    $T tag add bold $line.0 $colon 
+  }
 }
 
 # addPic
@@ -155,7 +175,7 @@ namespace eval NewsHandler {
 
   proc FinishShowing {} {
     variable isShowing
-    .news conf -fg lightgreen -bg green
+    .news conf -fg black -bg lightgreen
     set ::news "biblepix.vollmar.ch"
     set isShowing 0
     ShowNews
@@ -552,9 +572,9 @@ proc openFileDialog {bildordner} {
     set pos [string last "/" $selectedFile]
     set folder [string range $selectedFile 0 [expr $pos - 1]]
 
-    if {$tcl_platform(os) == "Linux"} {
+    if {$os == "Linux"} {
       set fileNames [glob -nocomplain -directory $folder *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
-    } elseif {$tcl_platform(platform) == "windows"} {
+    } elseif {$platform == "windows"} {
       set fileNames [glob -nocomplain -directory $folder *.jpg *.jpeg *.png]
     }
 
@@ -593,9 +613,9 @@ proc refreshFileList {} {
   set parted 0
   set localJList ""
 
-  if {$tcl_platform(os) == "Linux"} {
+  if {$os == "Linux"} {
     set fileNames [glob -nocomplain -directory $photosdir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
-  } elseif {$tcl_platform(platform) == "windows"} {
+  } elseif {$platform == "windows"} {
     set fileNames [glob -nocomplain -directory $photosdir *.jpg *.jpeg *.png]
   }
 
