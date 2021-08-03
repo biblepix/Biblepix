@@ -25,7 +25,7 @@ label .welcomeSubtit2 -font bpfont2 -textvar msg::welcSubtit2 -padx $px -pady $p
 pack .welcomeSubtit2 -in .leftTopF -anchor nw
 text .welcomeT -padx $px -pady $py -borderwidth 0 -bg #d9d9d9 -font bpfont1 -tabs {5c left} -wrap word
 pack .welcomeT -in .leftTopF -anchor nw
-fillWelcomeTWidget .welcomeT
+catch {fillWelcomeTWidget .welcomeT}
 
 #Set Next button right
 button .twdClickBtn -textvar msg::next -font bpfont2
@@ -41,7 +41,7 @@ pack .twdClickBtn .twdWidgetT -in .welcomeRightMainF -anchor n -pady 15
 .twdWidgetT tag conf text -justify left -font "TkTextFont 14"
 .twdWidgetT tag conf head -font "TkHeadingFont 16 bold" -justify left
 .twdWidgetT tag conf ref -font "TkCaptionFont 12 italic" -justify right
-insertTodaysTwd .twdWidgetT
+catch {insertTodaysTwd .twdWidgetT}
 
 #Set Uninstall button
 button .uninstallBtn -textvar msg::uninst -command {source $Uninstall}

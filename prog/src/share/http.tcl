@@ -52,8 +52,6 @@ proc runHTTP isInitial {
   }
 } ;#end runHTTP
 
-
-
 # downloadSampleJpegs
 ##Called by Installer for sample Jpg List
 proc downloadSampleJpegs {sampleJpgL url} {
@@ -94,12 +92,14 @@ proc downloadFileFromRelease {filePath isInitial} {
     catch {clock scan $newtime} newsecs
     catch {file mtime $filePath} oldsecs
 
-    #download if times incorrect OR if oldfile is older/non-existent
-    if { ! [string is digit $newsecs] ||
-         ! [string is digit $oldsecs] ||
-         $oldsecs<$newsecs } {
-       puts "Updating $filename..."
-       downloadFileFromUrl $filePath $::bpxReleaseUrl/$filename
+    #download if file is new OR times incorrect OR if oldfile is older/non-existent
+    if { 
+      ![string is digit $newsecs] ||
+      ![string is digit $oldsecs] ||
+      $oldsecs<$newsecs
+    } {
+      puts "Updating $filename..."
+      downloadFileFromUrl $filePath $::bpxReleaseUrl/$filename
     }
   }
 

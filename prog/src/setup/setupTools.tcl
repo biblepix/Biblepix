@@ -16,10 +16,10 @@ proc setTexts {lang} {
   msgcat::mclocale $lang
   
   #replace text variables
-  msgcat::mcload $msgdir
+  msgcat::mcload "$msgdir"
   
   #TODO Why isn't this done by above?
-  source $msgdir/global.msg
+  source "$msgdir/global.msg"
 
   #replace text in Welcome text widget
   catch {fillWelcomeTWidget .welcomeT}

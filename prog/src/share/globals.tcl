@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 29jul21 pv
+# Updated: 3aug21 pv
 set version "4.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -59,7 +59,6 @@ set filePathL {}
 lappend filePathL [set AnnotatePng [file join $picdir annotatePng.tcl]]
 lappend filePathL [set Globals [file join $sharedir globals.tcl]]
 lappend filePathL [set Http [file join $sharedir http.tcl]]
-#lappend filePathL [set UpdateInjection [file join $srcdir updateInjection.tcl]]
 lappend filePathL [set Readme [file join $rootdir README.txt]]
 lappend filePathL [set Setup [file join $rootdir biblepix-setup.tcl]]
 lappend filePathL [set ManualD [file join $docdir MANUAL_de.txt]]
@@ -109,10 +108,10 @@ lappend filePathL [set TerminalShell [file join $unixdir term.sh]]
 lappend filePathL [set LinIcon [file join $unixdir biblepix.png]]
 lappend filePathL [set LinIconSvg [file join $unixdir biblepix.svg]]
 lappend filePathL [set WinIcon [file join $windir biblepix.ico]]
-##msg files
-foreach filepath [glob -nocomplain $msgdir/*] {
-  lappend filePathL $filepath
-}
+##Msgcat msg files
+lappend filePathL [file join $msgdir global.msg]
+lappend filePathL [file join $msgdir en.msg]
+lappend filePathL [file join $msgdir de.msg]
 
 ##make complete pathlist for use in makeDirs
 ##export name vars for use in all procs
