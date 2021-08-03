@@ -17,6 +17,7 @@ proc setTexts {lang} {
   
   #replace text variables
   msgcat::mcload $msgdir
+  
   #TODO Why isn't this done by above?
   source $msgdir/global.msg
 
@@ -24,27 +25,6 @@ proc setTexts {lang} {
   catch {fillWelcomeTWidget .welcomeT}
 }
 
-# fillWelcomeTWidget
-##sets & resets .WelcomeT text acc. to language
-##called by SetupWelcome & setTexts
-proc fillWelcomeTWidget {T} {
-  global platform
-  $T delete 1.0 end
-  $T insert 1.0 $msg::welcTxt2
-
-  #delete "Terminal" line if not Unix
-  if {$platform=="windows"} {
-    $T delete 5.0 5.end
-  }
-  $T tag conf bold -font TkCaptionFont
-
-  #Set keywords: to bold
-  set lines [$T count -lines 1.0 end]
-  for {set line 1} {$line <= $lines} {incr line} {
-    set colon [$T search : $line.0 $line.end]
-    $T tag add bold $line.0 $colon 
-  }
-}
 
 # addPic
 ##adds new Picture to BiblePix Photo collection
@@ -175,7 +155,7 @@ namespace eval NewsHandler {
 
   proc FinishShowing {} {
     variable isShowing
-    .news conf -fg black -bg #bab86c
+    .news conf -fg black -bg #bab86c ;#light olive
     set ::news "biblepix.vollmar.ch"
     set isShowing 0
     ShowNews
@@ -753,6 +733,28 @@ proc copyAndResizeSamplePhotos {} {
 ##### P r o c s   f o r   S e t u p W e l c o m e  #############################
 ################################################################################
 
+# fillWelcomeTWidget
+##sets & resets .WelcomeT text acc. to language
+##called by SetupWelcome & setTexts
+proc fillWelcomeTWidget {T} {
+  global platform
+  $T delete 1.0 end
+  $T insert 1.0 $msg::welcTxt2
+
+  #delete "Terminal" line if not Unix
+  if {$platform=="windows"} {
+    $T delete 5.0 5.end
+  }
+  $T tag conf bold -font TkCaptionFont
+
+  #Set keywords: to bold
+  set lines [$T count -lines 1.0 end]
+  for {set line 1} {$line <= $lines} {incr line} {
+    set colon [$T search : $line.0 $line.end]
+    $T tag add bold $line.0 $colon 
+  }
+}
+
 # insertTodaysTwd
 ##inserts text into text widget
 ##called by SetupWelcome
@@ -782,20 +784,19 @@ proc insertTodaysTwd {twdWidget} {
   $twdWidget insert 1.0 $twdText
 
   #add preconfigured tags  
-#  $twdWidget tag add direction 1.0 end  
   $twdWidget tag add head 1.0 1.end
-
   
-  set lastline [$twdWidget count -lines 1.0 end]  
+  #set lastline [$twdWidget count -lines 1.0 end]  
   #$twdWidget conf -height $lastline]
   
   #locate + format ref1, repeating search for rtl
-  set refindices [$twdWidget search -all -regexp {[0-9][:,]} 2.0]
+  set refindices [$twdWidget search -all -regexp {[0-9][:, ]} 2.0]
+  
+  set refindices [$twdWidget search -all \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0 2.0]
+
   set refline1 [string index [lindex $refindices 0] 0]
   set refline2 [string index [lindex $refindices 1] 0]
-  puts $refline1
-  puts $refline2
-  
+
   $twdWidget tag add ref $refline1.0 $refline1.end
   $twdWidget tag add ref $refline2.0 $refline2.end
 
