@@ -13,13 +13,11 @@ proc setTexts {lang} {
   global msgdir os
   package require msgcat
   namespace import msgcat::mc msgcat::mcset
+  ##replace text variables
   msgcat::mclocale $lang
-  
-  #replace text variables
   msgcat::mcload "$msgdir"
   source -encoding utf-8 "$msgdir/global.msg"
-
-  #replace text in Welcome text widget
+  ##replace text in Welcome text widget
   catch {fillWelcomeTWidget .welcomeT}
 }
 

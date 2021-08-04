@@ -86,7 +86,7 @@ if {$platform=="unix"} {
   set ar_txt [bidi::fixBidi $ar_txt]
   set he_txt [bidi::fixBidi $he_txt]
 }
-set internationalText "[mc f2ltr1_txt] $ar_txt $he_txt [mc f2ltr2_txt]"
+set internationalText "[mc f2ltr1_txt] $ar_txt $he_txt \br [mc f2ltr2_txt]"
 
 ##get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
 puts "Computing fontcolor..."
