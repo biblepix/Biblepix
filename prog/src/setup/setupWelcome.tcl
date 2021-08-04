@@ -35,10 +35,10 @@ if {[llength $twdL] <2 } {
 }
 
 #Set up Twd widget right
-text .twdWidgetT -width 150 -background #bab86c -foreground maroon -pady 30 -padx 30 -border 7 -tabs 7c
+text .twdWidgetT -width 150 -background #bab86c -foreground maroon -pady 30 -padx 30 -border 7 -tabs 7c -font "TkTextFont 14"
 pack .twdClickBtn .twdWidgetT -in .welcomeRightMainF -anchor n -pady 15
 .twdClickBtn conf -command {insertTodaysTwd .twdWidgetT}
-.twdWidgetT tag conf text -justify left -font "TkTextFont 14"
+.twdWidgetT tag conf text -font "TkTextFont 14" -justify left
 .twdWidgetT tag conf head -font "TkHeadingFont 16 bold" -justify left
 .twdWidgetT tag conf ref -font "TkCaptionFont 12 italic" -justify right
 catch {insertTodaysTwd .twdWidgetT}

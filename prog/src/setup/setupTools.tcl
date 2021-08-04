@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2aug21 pv
+# Updated: 4aug21 pv
 source $SetupResizeTools
 source $JList
 
@@ -743,7 +743,7 @@ proc fillWelcomeTWidget {T} {
 
   #delete "Terminal" line if not Unix
   if {$platform=="windows"} {
-    $T delete 5.0 5.end
+    $T delete 6.0 end
   }
   $T tag conf bold -font TkCaptionFont
 
@@ -774,33 +774,21 @@ proc insertTodaysTwd {twdWidget} {
 
   set twdText [getTodaysTwdText $twdFileName]
 
-  #reposition tags defined in SetupWelcome
-  #$twdWidget tag add direction 1.0 end
-  
-#  $twdWidget tag conf direction -justify left
-
   #insert new text
   $twdWidget delete 1.0 end
   $twdWidget insert 1.0 $twdText
 
-  #add preconfigured tags  
+  ##locate & format Head
   $twdWidget tag add head 1.0 1.end
-  
-  #set lastline [$twdWidget count -lines 1.0 end]  
-  #$twdWidget conf -height $lastline]
-  
-  #locate + format ref1, repeating search for rtl
-  set refindices [$twdWidget search -all -regexp {[0-9][:, ]} 2.0]
-  
-  set refindices [$twdWidget search -all \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0 2.0]
-
-  set refline1 [string index [lindex $refindices 0] 0]
-  set refline2 [string index [lindex $refindices 1] 0]
-
+  ##locate + format reflines
+  set refindices [$twdWidget search -all \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0 3.0 end]
+  lassign [split $refindices] ref1 ref2
+  ##get plain line numbers before dot
+  set refline1 [regsub {([0-9]?)(\..*$)} $ref1 {\1}]
+  set refline2 [regsub {([0-9]?)(\..*$)} $ref2 {\1}]
   $twdWidget tag add ref $refline1.0 $refline1.end
   $twdWidget tag add ref $refline2.0 $refline2.end
-
-  ##locate + format ref2 (=last line) - TODO funzt nicht bei RTL
+  ##locate + format text blocks
   lappend text1 2.0 [expr $refline1 - 1].end
   lappend text2 [expr $refline1 + 1.0] [expr $refline2 - 1].end
   $twdWidget tag add text [lindex $text1 0] [lindex $text1 1]

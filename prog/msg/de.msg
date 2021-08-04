@@ -2,6 +2,7 @@
 # German texts in msgcat format
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
+#INFO: Textmenge - 100 mcset * 3 W. = 300 W.
 # Updated: 2aug21 pv
 set bp {BibelPix}
 set dw {'Das Wort'}
@@ -21,11 +22,11 @@ mcset de uninst "$bp deinstallieren"
 mcset de welcome "Willkommen"
 mcset de bibletexts "Bibeltexte"
 mcset de desktop "Hintergrundbild"
-mcset de photos "Fotos verwalten"
+mcset de photos "Fotos"
 mcset de email "E-Mail-Signatur"
 mcset de terminal "Terminal/Konsole"
 mcset de manual "Handbuch"
-mcset de next "Nächstes"
+mcset de next "Nächstes \u25bc"
 # W E L C O M E 
 mcset de welcClickTwd "Klick dich durch $dw!"  
 mcset de welcTit "Willkommen beim Einrichtungsprogramm von $bp!"
@@ -36,8 +37,8 @@ mcset de welcTxt2 "\u27a4 [mc bibletexts]: Wählen Sie beliebig viele Bibelausga
 \u27a4 [mc desktop]: Betrachten Sie $dw auf Ihren persönlichen Fotos
 \u27a4 [mc photos]: Wählen Sie eigene Hintergrundbilder für $bp aus
 \u27a4 [mc email]: Fügen Sie $dw an Ihre E-Mails an
-\u27a4 [mc terminal]: Betrachten Sie $dw in Ihren Linux-Konsolen
-\u27a4 [mc manual]: Studieren Sie das komplette Handbuch von $bp"
+\u27a4 [mc manual]: Studieren Sie das komplette Handbuch von $bp
+\u27a4 [mc terminal]: Betrachten Sie $dw in Ihren Linux-Konsolen"
 # U N I N S T A L L
 mcset de uninstall "Wollen Sie wirklich BibelPix von Ihrem Computer entfernen?"
 mcset de uninstalling "BiblePix wird nun deinstalliert. Zum Löschen der Systemeinstellungen müssen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\" beantworten!"
