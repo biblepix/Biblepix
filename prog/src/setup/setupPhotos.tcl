@@ -1,8 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 1aug21 pv
-
+# Updated 4aug21 pv
 set fileJList ""
 
 #Create title
@@ -17,7 +16,7 @@ pack [frame .photosF.mainf.right.bar] -anchor w -fill x
 pack [frame .photosF.mainf.right.unten -pady 7] -side bottom -anchor nw -fill both
 pack [frame .photosF.mainf.right.bild -relief sunken -bd 3] -anchor e -pady 3 -expand 1 -fill x
 
-#Create Text left - TODO why doesn't text show up?
+#Create Text left
 message .photosF.mainf.left.t1 -textvar msg::f6Txt -font bpfont1 -padx $px -pady $py
 pack .photosF.mainf.left.t1 -anchor nw -side left -padx {10 40} -pady 40
 
@@ -45,4 +44,5 @@ button .addBtn -textvar msg::f6Add -activebackground lightgreen -command {addPic
 button .delBtn -textvar msg::f6Del -activebackground red -command {delPic .photosC}
 button .rotateBtn -activebackground orange -textvar msg::rotatePic -command {source $::SetupRotate}
 
+#TODO Bild nicht angezeigt bei Programmstart!
 set fileJList [doCollect .photosC]

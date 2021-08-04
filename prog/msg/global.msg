@@ -1,26 +1,34 @@
 #Biblepix/prog/msg/global.msg
 # loaded by msgcat for untranslatables
 # sourced by setTexts with lang variable
-# Updated 2aug21 pv
-namespace eval msg {
-
-variable lang $::lang
-namespace import ::msgcat::mc ::msgcat::mcset
+# Updated 4aug21 pv
 
 set grussformel "
 Bible & Pix Brothers
 Homepage: biblepix.vollmar.ch
 "
-  
+
 #Untranslatable fix texts for msgcat
+mcset $lang f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94"
+mcset $lang f2he_txt "הדבר"
+mcset $lang f2ltr1_txt "The Word 每日金句 Калом"
+mcset $lang f2ltr2_txt "พระคำสำหรับวันศุกร์ Слово An Briathar"
+mcset $lang RtlInfoHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
+mcset $lang RtlInfoAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
 mcset $lang packageRequireImg_fix "\n* apt-get install libtk-img (Debian/Ubuntu)\n* emerge tkimg (Gentoo)\n* zypper install tkimg (openSUSE)\n* yum install tkimg (Fedora)\n* urpmi tkimg (Mandriva)"
 mcset $lang packageRequireTDom_fix "\n* apt-get install tdom (Debian/Ubuntu)\n* emerge tdom (Gentoo)\n* zypper install tdom (openSUSE)\n* yum install tdom (Fedora)\n* urpmi tdom (Mandriva)"
 mcset $lang packageRequireTls_fix "\n* apt-get install tcl-tls (Debian/Ubuntu)\n* emerge dev-tcltk/tls (Gentoo)"
 mcset $lang packageRequireLibtcl_fix "\n*apt-get install libtcl (Debian/Ubuntu)\n* emerge libtcl (Gentoo)\n* zypper install libtcl (openSUSE)\n* yum install libtcl (Fedora)\n* urpmi libtcl (Mandriva)"
 mcset $lang f3Expl "Yours faithfully, $grussformel"
-mcset de f3Expl "Mit freundlichem Gruss, $grussformel"
-
+if {$lang == "de"} {
+  mcset $lang f3Expl "Mit freundlichem Gruss, $grussformel"
+}
 #Set textvars for ::msg namespace (msgcat can't provide global vars!)
+namespace eval msg {
+
+#variable lang $::lang
+#namespace import ::msgcat::mc ::msgcat::mcset
+
 set packageRequireImg [mc packageRequireImg]
 set packageRequireTDom [mc packageRequireTDom]
 set packageRequireTls [mc packageRequireTls]
@@ -97,7 +105,7 @@ set movePic [mc movePic]
 set picSchonDa [mc picSchonDa]
 set f3Tit [mc f3Tit]
 set f3Btn [mc f3Btn]
-set f3Sprachen [mc f3Sprachen]
+set f3Sprach$lang [mc f3Sprachen]
 set f3Txt [mc f3Txt]
 set f3Expl [mc f3Expl]
 set f4Tit  [mc f4Tit]

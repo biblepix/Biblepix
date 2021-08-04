@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 2aug21 pv
+# Updated 4aug21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -75,17 +75,18 @@ if !$slideshow {
 ##create background image
 image create photo intTextBG -file $SetupDesktopPng
 $inttextC create image 0 0 -image intTextBG -anchor nw 
-##set international text
-set f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94"
-set ::f2he_txt "הדבר"
+
+#set up international texts
+set ar_txt [mc f2ar_txt]
+set he_txt [mc f2he_txt]
 if {$platform=="unix"} {
-  set ::f2ar_txt [string reverse $f2ar_txt]
-  set ::f2he_txt [string reverse $::f2he_txt]
+  if ![namespace exists bidi] {
+    source $Bidi
+  }
+  set ar_txt [bidi::fixBidi $ar_txt]
+  set he_txt [bidi::fixBidi $he_txt]
 }
-set ::f2ltr_txt "The Word 每日金句 Калом"
-set ::f2thai_txt "พระคำสำหรับวันศุกร์ Слово"
-label .adjFontT -font TkCaptionFont -textvar msg::f2Fontexpl
-set internationalText "$f2ltr_txt $f2ar_txt $f2he_txt\n$f2thai_txt\nAn Briathar"
+set internationalText "[mc f2ltr1_txt] $ar_txt $he_txt [mc f2ltr2_txt]"
 
 ##get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
 puts "Computing fontcolor..."
@@ -188,13 +189,10 @@ setCanvasFontColour $textposC $fontcolortext
 
 #Footnote for Arabic+Hebrew text shift (only if found)
 ##create RtL info on text positioning
-set RtlInfoHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
-set RtlInfoAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
-
 set RtlInfo ""
 ##Hebrew
 if ![catch "glob $twddir/he_*"] {
-  set msgHe $RtlInfoHe
+  set msgHe "[mc RtlInfoHe]"
   if {$os=="Linux"} {
     set msgHe [string reverse $msgHe]
   }
@@ -202,7 +200,7 @@ if ![catch "glob $twddir/he_*"] {
 }
 ##Arabic
 if ![catch "glob $twddir/ar_*"] {
-  set msgAr $RtlInfoAr
+  set msgAr [mc RtlInfoAr]
   if {$os=="Linux"} {
     source $Bidi
     set msgAr [bidi::fixBidi $msgAr] 
@@ -215,7 +213,10 @@ label .textposFN -width 50 -font "Serif 10" -textvar RtlInfo
 pack .showdateBtn -in .topMainF1 -anchor w
 pack .slideBtn -in .topMainF1 -anchor w -side left
 pack .slideSecTxt .slideSpin .slideTxt -in .topMainF1 -anchor nw -side right
-pack .adjFontT -in .topMainF2
+
+#TODO error?
+#pack .adjFontT -in .topMainF2
+
 pack $inttextC -in .topMainF2 -fill x -anchor n
 ##middle
 pack .fontcolorTxt .fontcolorSpin .randomfontcolorCB -in .leftF -side left

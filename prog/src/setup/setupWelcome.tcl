@@ -23,7 +23,7 @@ pack .welcomeWhatisTxt -in .leftTopF -anchor nw
 #Set up text widget left
 label .welcomeSubtit2 -font bpfont2 -textvar msg::welcSubtit2 -padx $px -pady $py
 pack .welcomeSubtit2 -in .leftTopF -anchor nw
-text .welcomeT -padx $px -pady $py -borderwidth 0 -bg #d9d9d9 -font bpfont1 -tabs {5c left} -wrap word
+text .welcomeT -padx $px -pady $py -borderwidth 0 -bg [. cget -bg] -font bpfont1 -tabs {5c left} -wrap word
 pack .welcomeT -in .leftTopF -anchor nw
 catch {fillWelcomeTWidget .welcomeT}
 
@@ -35,7 +35,7 @@ if {[llength $twdL] <2 } {
 }
 
 #Set up Twd widget right
-text .twdWidgetT -width 150 -background #bab86c -foreground maroon -pady 30 -padx 30 -border 7 -tabs 7c -font "TkTextFont 14"
+text .twdWidgetT -width 150 -background olive -foreground maroon -pady 30 -padx 30 -border 7 -tabs 7c -font "TkTextFont 14"
 pack .twdClickBtn .twdWidgetT -in .welcomeRightMainF -anchor n -pady 15
 .twdClickBtn conf -command {insertTodaysTwd .twdWidgetT}
 .twdWidgetT tag conf text -font "TkTextFont 14" -justify left

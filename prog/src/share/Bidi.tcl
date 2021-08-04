@@ -3,7 +3,7 @@
 # called by BdfPrint + several Setup widgets
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 17may21
+# Updated: 4aug21 pv
 
 namespace eval bidi {
   
@@ -124,6 +124,11 @@ namespace eval bidi {
       set lang ar
     }
 
+    #return text unchanged if $lang not identified
+    if ![info exists lang] {
+      return $s
+    }
+    
     #Devowelise if $vowelled=0, 
     ##NOTE: double-vowel Fathatân is not cleared since listed as regular letter (see above) 
     if !$vowelled {
