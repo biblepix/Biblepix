@@ -17,9 +17,7 @@ proc setTexts {lang} {
   
   #replace text variables
   msgcat::mcload "$msgdir"
-  
-  #TODO Why isn't this done by above?
-  source "$msgdir/global.msg"
+  source -encoding utf-8 "$msgdir/global.msg"
 
   #replace text in Welcome text widget
   catch {fillWelcomeTWidget .welcomeT}

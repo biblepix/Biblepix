@@ -2,18 +2,10 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1aug21 pv
-source -encoding utf-8 $SetupTexts
+# Updated: 4aug21 pv
 source $SetupTools
 source $TwdTools
-
 setTexts $lang
-
-#Set up msgcat environment
-#package require msgcat
-#namespace import msgcat::mc msgcat::mcset
-#msgcat::mclocale $lang
-#msgcat::mcload $msgdir
 
 #Set general X vars & Main Window width
 set screenX [winfo screenwidth .]
