@@ -97,8 +97,9 @@ mcset en f4Tit  "Display $dw in your Linux terminals"
 mcset en f4Btn "Create $dw for display in terminal"
 mcset en f4Txt "If activated, $bp will create $dw to be displayed at the top of your terminals. If more than one language file are present, Bible text will alternate randomly whenever a new shell is opened. \n\nColours for display etc. may be changed in \n\n\t $confdir/term.conf \n\nNote that in order to display Arabic or Hebrew script correctly, you will need one of the following: 'QTerminal', 'mlterm', 'gnome-terminal', 'Konsole' (KDE) or 'xfce4-terminal'; these are known to work with bidirectional text.\n\nFor $dw to be displayed automatically in your terminals, $bp Setup makes an entry in ~/.bashrc for your convenience."
 # S A V E
-mcset en linChangingDesktop "BiblePix will now try to register with your Desktop Background. If you can't see a new background picture after that, find a solution in the Manual."
+mcset en linChangingDesktop "$bp will now try to register with your Desktop Background. If you can't see a new background picture after that, find a solution in the Manual."
 mcset en winIgnorePopup "Please dismiss (close) any pop-up windows so $bp can finish registration!"
+mcset en winChangingDesktop [mc linChangingDesktop]
 mcset en winChangeDesktopProb "We are having a problem changing your Desktop background.\nPlease right-click on an empty spot on your Desktop and select \"Personalize\".\nUnder \"Wallpaper\" either set as single pic path $TwdBMP or \n$TwdPNG \nor else set up a slideshow setting the directory to \n$imgdir ."
 mcset en linChangeDesktopProb "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgdir as new image path."
 mcset en linNoDesktopFound "No Llinux Desktop detected! Please find out in the manual how to manually set up the $bp background picture."

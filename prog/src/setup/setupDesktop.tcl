@@ -86,7 +86,7 @@ if {$platform=="unix"} {
   set ar_txt [bidi::fixBidi $ar_txt]
   set he_txt [bidi::fixBidi $he_txt]
 }
-set internationalText "[mc f2ltr1_txt] $ar_txt $he_txt \br [mc f2ltr2_txt]"
+set internationalText "[mc f2ltr1_txt] $ar_txt $he_txt \n [mc f2ltr2_txt]"
 
 ##get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
 puts "Computing fontcolor..."
@@ -213,10 +213,6 @@ label .textposFN -width 50 -font "Serif 10" -textvar RtlInfo
 pack .showdateBtn -in .topMainF1 -anchor w
 pack .slideBtn -in .topMainF1 -anchor w -side left
 pack .slideSecTxt .slideSpin .slideTxt -in .topMainF1 -anchor nw -side right
-
-#TODO error?
-#pack .adjFontT -in .topMainF2
-
 pack $inttextC -in .topMainF2 -fill x -anchor n
 ##middle
 pack .fontcolorTxt .fontcolorSpin .randomfontcolorCB -in .leftF -side left
