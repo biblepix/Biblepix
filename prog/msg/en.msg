@@ -99,7 +99,7 @@ mcset en f4Txt "If activated, $bp will create $dw to be displayed at the top of 
 # S A V E
 mcset en linChangingDesktop "$bp will now try to register with your Desktop Background. If you can't see a new background picture after that, find a solution in the Manual."
 mcset en winIgnorePopup "Please dismiss (close) any pop-up windows so $bp can finish registration!"
-mcset en winChangingDesktop [mc linChangingDesktop]
+mcset en winChangingDesktop "$bp will now try to register with your Desktop Background"
 mcset en winChangeDesktopProb "We are having a problem changing your Desktop background.\nPlease right-click on an empty spot on your Desktop and select \"Personalize\".\nUnder \"Wallpaper\" either set as single pic path $TwdBMP or \n$TwdPNG \nor else set up a slideshow setting the directory to \n$imgdir ."
 mcset en linChangeDesktopProb "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgdir as new image path."
 mcset en linNoDesktopFound "No Llinux Desktop detected! Please find out in the manual how to manually set up the $bp background picture."

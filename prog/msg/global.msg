@@ -26,9 +26,6 @@ if {$lang == "de"} {
 #Set textvars for ::msg namespace (msgcat can't provide global vars!)
 namespace eval msg {
 
-#variable lang $::lang
-#namespace import ::msgcat::mc ::msgcat::mcset
-
 set packageRequireImg [mc packageRequireImg]
 set packageRequireTDom [mc packageRequireTDom]
 set packageRequireTls [mc packageRequireTls]
