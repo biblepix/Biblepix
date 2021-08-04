@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 29jul21 pv
+# Updated 4aug21 pv
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
@@ -429,7 +429,11 @@ proc getTodaysTwdSig {TwdFileName {setup 0}} {
 
   $twdDomDoc delete
 
+
   if $RtL {
+    if ![namespace exists bidi] {
+      source $Bidi
+    }
     set TwdSig [bidi::fixBidi $TwdSig]
   }  
 
