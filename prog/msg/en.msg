@@ -21,7 +21,7 @@ mcset en email "E-mail signature"
 mcset en terminal "Terminal"
 mcset en manual "Manual"
 mcset en uninst "Uninstall $bp"
-mcset en next "Next {\u25bc}"
+mcset en next "Next \u25bc"
 # U N I N S T A L L
 mcset en uninstall "Do you really want to remove BiblePix from your computer?"
 mcset en uninstalling "BiblePix will now be uninstalled. To clear system settings made, you must confirm any upcoming dialogue boxes with \"Yes\"."
