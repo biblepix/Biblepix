@@ -13,7 +13,7 @@ proc setTexts {lang} {
   global msgdir os
   package require msgcat
   namespace import msgcat::mc msgcat::mcset
-  ##replace text variables
+  ##replace msgcat text variables
   msgcat::mclocale $lang
   msgcat::mcload "$msgdir"
   source -encoding utf-8 "$msgdir/global.msg"
