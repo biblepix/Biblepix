@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/gui/setupWelcome.tcl
+# ~/Biblepix/prog/src/setup/setupWelcome.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3aug21 pv
+# Updated: 6aug21 pv
 
 #Pack flags defined elsewhere
 pack .en .de -in .ftop -side right
@@ -35,12 +35,12 @@ if {[llength $twdL] <2 } {
 }
 
 #Set up Twd widget right
-text .twdWidgetT -width 150 -background #bab86c -foreground maroon -pady 30 -padx 30 -border 7 -tabs 7c -font "TkTextFont 14"
+text .twdWidgetT -width 150 -background #bab86c -foreground maroon -pady 30 -padx 30 -border 7 -tabs 7c -font twdwidgetfont
 pack .twdClickBtn .twdWidgetT -in .welcomeRightMainF -anchor n -pady 15
 .twdClickBtn conf -command {insertTodaysTwd .twdWidgetT}
-.twdWidgetT tag conf text -font "TkTextFont 14" -justify left
+.twdWidgetT tag conf text -font twdwidgetfont -justify left
 .twdWidgetT tag conf head -font "TkHeadingFont 16 bold" -justify left
-.twdWidgetT tag conf ref -font "TkCaptionFont 12 italic" -justify right
+.twdWidgetT tag conf ref -font TkCaptionFont -justify right
 catch {insertTodaysTwd .twdWidgetT}
 
 #Set Uninstall button
