@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 4aug21 pv
+# Updated 6aug21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
@@ -86,7 +86,7 @@ if {$platform=="unix"} {
   set ar_txt [bidi::fixBidi $ar_txt]
   set he_txt [bidi::fixBidi $he_txt]
 }
-set internationalText "[mc f2ltr1_txt] $ar_txt $he_txt \n [mc f2ltr2_txt]"
+set internationalText "[mc f2ltr1_txt] $ar_txt $he_txt [mc f2ltr2_txt]"
 
 ##get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
 puts "Computing fontcolor..."
@@ -153,6 +153,7 @@ spinbox .fontfamilySpin -width 7 -bg lightgrey
 .fontfamilySpin set $fontfamily
 
 label .textposL -textvar msg::textposlabel -font TkCaptionFont
+label .fontAdaptL -textvar msg::f2Fontexpl -font TkCaptionFont
 
 #2. Create TextPos Canvas
 set textPosFactor 3 ;#Verkleinerungsfaktor gegenüber real font size
@@ -213,6 +214,8 @@ label .textposFN -width 50 -font "Serif 10" -textvar RtlInfo
 pack .showdateBtn -in .topMainF1 -anchor w
 pack .slideBtn -in .topMainF1 -anchor w -side left
 pack .slideSecTxt .slideSpin .slideTxt -in .topMainF1 -anchor nw -side right
+
+pack .fontAdaptL -in .topMainF2 -anchor n
 pack $inttextC -in .topMainF2 -fill x -anchor n
 ##middle
 pack .fontcolorTxt .fontcolorSpin .randomfontcolorCB -in .leftF -side left
