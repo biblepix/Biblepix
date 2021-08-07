@@ -4,12 +4,12 @@
 # Updated 6aug21 pv
 
 #Create left & right main frames
-pack [frame .desktopF.leftF] -fill y -side left
-pack [frame .desktopF.rightF] -fill y -side right -expand 1
+pack [frame .desktopF.leftF] -fill y -side left -padx 20
+pack [frame .desktopF.rightF] -fill both -side right -expand 1
 
 ##Create right top frames
 pack [frame .topMainF1] -in .desktopF.rightF -fill x
-pack [frame .topMainF2 -relief ridge -borderwidth 3 -padx $px -pady $py] -in .desktopF.rightF -fill x
+pack [frame .topMainF2 -relief ridge -bd 3 -padx $px -pady $py] -in .desktopF.rightF -fill x
 ##Create right middle frames
 pack [frame .midMainF -padx $px -pady $py] -in .desktopF.rightF -fill x
 pack [frame .leftF] -in .midMainF -side left
@@ -26,7 +26,7 @@ font create intCanvFont -family $fontfamily -size $fontsize -weight $fontweight
 #Create title + main text
 label .title -textvar msg::f2Tit -font bpfont3
 message .mainTxt -textvar msg::f2Txt -font bpfont1 -width 700 -padx $px -pady $py -justify left
-
+.mainTxt conf -padx 30
 #Create ImageYesno checkbutton 
 checkbutton .imgyesnoCB -textvar msg::f2Box -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
 if $enablepic {set imgyesState 1} else {set imgyesState 0}
@@ -41,7 +41,7 @@ pack .mainTxt -in .desktopF.leftF -anchor nw
 
 ##create canvases
 set textposC [canvas .textposCanv -bg lightgrey -borderwidth 1]
-set inttextC [canvas .inttextCanv -width 700 -height 150 -borderwidth 0]
+set inttextC [canvas .inttextCanv]
 
 #3. ShowDate checkbutton
 checkbutton .showdateBtn -textvar msg::f2Introline -variable enabletitle
@@ -56,7 +56,7 @@ checkbutton .slideBtn -textvar msg::f2Slideshow -variable slideshowState -comman
 
 #5. Slideshow spinbox
 message .slideTxt -textvar msg::f2Interval -width 200
-message .slideSecTxt -text sec -width 100
+message .slideSecTxt -textvar msg::sec -width 100
 spinbox .slideSpin -from 10 -to 600 -increment 10 -width 3
 .slideSpin set $slideshow
 
@@ -73,20 +73,29 @@ if !$slideshow {
 #1. Create InternationalText Canvas - Fonts based on System fonts, not Bdf!!!!
 ## Tk picks any available Sans or Serif font from the system
 ##create background image
-image create photo intTextBG -file $SetupDesktopPng
-$inttextC create image 0 0 -image intTextBG -anchor nw 
 
+image create photo intTextBG -file $SetupDesktopPng -width [expr int(0.6 * $screenX)]
+$inttextC conf -height 100 -width [expr int(0.6 * $screenX)] 
+#$inttextC create image 0 0 -image intTextBG -anchor nw -tag img 
+#TODO testing polygon instead
+#TODO watch out flexible width!
+##hill contour
+$inttextC conf -bg skyblue
+$inttextC create polygon 0 100 100 90 200 80 300 70 400 60 500 40 650 20 700 10 750 40 800 60 900 80 1000 100 -fill green
+##sun right
+$inttextC create oval 750 50 800 0 -fill orange -outline gold
+##cross on top
+$inttextC create line 700 0 700 15 -fill brown -width 2
+$inttextC create line 695 5 705 5 -fill brown -width 2
+ 
 #set up international texts
 set ar_txt [mc f2ar_txt]
 set he_txt [mc f2he_txt]
 if {$platform=="unix"} {
-  if ![namespace exists bidi] {
-    source $Bidi
-  }
-  set ar_txt [bidi::fixBidi $ar_txt]
-  set he_txt [bidi::fixBidi $he_txt]
+  set ar_txt [string reverse $ar_txt]
+  set he_txt [string reverse $he_txt]
 }
-set internationalText "[mc f2ltr1_txt] $ar_txt $he_txt [mc f2ltr2_txt]"
+set internationalText "[mc f2ltr1_txt]   $ar_txt   $he_txt \n [mc f2ltr2_txt]"
 
 ##get fontcolour arrayname & compute shade+sun hex (fontcolorHex already exists)
 puts "Computing fontcolor..."
@@ -214,7 +223,6 @@ label .textposFN -width 50 -font "Serif 10" -textvar RtlInfo
 pack .showdateBtn -in .topMainF1 -anchor w
 pack .slideBtn -in .topMainF1 -anchor w -side left
 pack .slideSecTxt .slideSpin .slideTxt -in .topMainF1 -anchor nw -side right
-
 pack .fontAdaptL -in .topMainF2 -anchor n
 pack $inttextC -in .topMainF2 -fill x -anchor n
 ##middle
