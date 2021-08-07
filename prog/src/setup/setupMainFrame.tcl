@@ -49,7 +49,7 @@ if { [winfo y .] > 20 } {
 
 #Fill .fbottom
 button .mainSaveB -activebackground lightgreen -textvar msg::saveSettings -width 20 -command {source $Save}
-button .mainCloseB -activebackground red -textvar msg::cancel -width 20 -command exit
+button .mainCloseB -activebackground red -textvar msg::close -width 20 -command exit
 pack .mainCloseB .mainSaveB -in .fbottom -side right
 
 if {![info exists version]} {set version ""}
