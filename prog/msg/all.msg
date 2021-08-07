@@ -1,10 +1,10 @@
 #Biblepix/prog/msg/all.msg
 # loaded by msgcat for untranslatables
 # sourced by setTexts with lang variable
-# Updated 5aug21 pv
+# Updated 7aug21 pv
 
 #Untranslatable fix texts for msgcat
-mcset $lang f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94"
+mcset $lang f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94" ;#formatted letter forms!
 mcset $lang f2he_txt "הדבר"
 mcset $lang f2ltr1_txt "The Word 每日金句 Калом"
 mcset $lang f2ltr2_txt "พระคำสำหรับวันศุกร์ Слово An Briathar"
@@ -33,10 +33,12 @@ set packageRequireTls [mc packageRequireTls]
 set ok [mc ok]
 set dw [mc dw]
 set bp [mc bp]
+set sec [mc sec]
 set bpsetup [mc bpsetup]
 set refresh [mc refresh]
 set delete [mc delete]
 set cancel [mc cancel]
+set close [mc close]
 set save [mc save]
 set saveSettings [mc saveSettings]
 set random [mc random]

@@ -2,7 +2,7 @@
 # English texts for msgcat
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 2aug21 pv
+# Updated: 7aug21 pv
 set bp {BiblePix}
 set dw {'The Word'}
 
@@ -10,6 +10,7 @@ mcset en dw $dw
 mcset en bp $bp
 mcset en ok "Ok"
 mcset en cancel "Cancel"
+mcset en close "Close"
 mcset en save "Save"
 mcset en saveSettings "Save settings"
 mcset en random "accidental"
@@ -68,6 +69,7 @@ mcset en f2Box "Create background image"
 mcset en f2Farbe "Font colour: "
 mcset en f2Slideshow "Enable slide show"
 mcset en f2Interval "Slide show interval: "
+mcset en sec "seconds"
 mcset en f2Introline "Show date"
 mcset en f2Fontsize "Font size: "
 mcset en f2Fontweight "bold"

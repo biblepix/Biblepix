@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 2aug21 pv
+# Updated: 7aug21 pv
 set bp {BibelPix}
 set dw {'Das Wort'}
 
@@ -15,6 +15,7 @@ mcset de delete "Datei löschen"
 #Buttons
 mcset de ok "Ok"
 mcset de cancel "Abbruch"
+mcset de close "Schliessen"
 mcset de save "Speichern"
 mcset de saveSettings "Einstellungen speichern"
 mcset de random "zufällig"
@@ -72,6 +73,7 @@ mcset de f2Box "Hintergrundbild erzeugen"
 mcset de f2Farbe "Schriftfarbe: "
 mcset de f2Slideshow "Diaschau aktivieren"
 mcset de f2Interval "Bildwechsel alle "
+mcset de sec "Sekunden"
 mcset de f2Introline "Datum anzeigen"
 mcset de f2Fontsize "Schriftgrösse: "
 mcset de f2Fontweight "fett"
