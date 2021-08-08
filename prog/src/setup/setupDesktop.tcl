@@ -1,10 +1,10 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 6aug21 pv
+# Updated 7aug21 pv
 
 #Create left & right main frames
-pack [frame .desktopF.leftF] -fill y -side left -padx 20
+pack [frame .desktopF.leftF] -fill y -side left
 pack [frame .desktopF.rightF] -fill both -side right -expand 1
 
 ##Create right top frames
@@ -25,7 +25,7 @@ font create intCanvFont -family $fontfamily -size $fontsize -weight $fontweight
 
 #Create title + main text
 label .title -textvar msg::f2Tit -font bpfont3
-message .mainTxt -textvar msg::f2Txt -font bpfont1 -width 700 -padx $px -pady $py -justify left
+message .mainTxt -textvar msg::f2Txt -font bpfont1 -width [expr int(0.3 * $wWidth)] -padx $px -pady $py -justify left
 .mainTxt conf -padx 30
 #Create ImageYesno checkbutton 
 checkbutton .imgyesnoCB -textvar msg::f2Box -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
@@ -74,19 +74,33 @@ if !$slideshow {
 ## Tk picks any available Sans or Serif font from the system
 ##create background image
 
-image create photo intTextBG -file $SetupDesktopPng -width [expr int(0.6 * $screenX)]
-$inttextC conf -height 100 -width [expr int(0.6 * $screenX)] 
-#$inttextC create image 0 0 -image intTextBG -anchor nw -tag img 
-#TODO testing polygon instead
-#TODO watch out flexible width!
-##hill contour
-$inttextC conf -bg skyblue
-$inttextC create polygon 0 100 100 90 200 80 300 70 400 60 500 40 650 20 700 10 750 40 800 60 900 80 1000 100 -fill green
+#Create international text canvas
+#set relW [expr int(0.7 * $wWidth)]
+$inttextC conf -height 100 -width 1000 
+##sky + hill contour
+$inttextC conf -bg green
+$inttextC create polygon 0 0 0 100 100 90 200 80 300 70 400 60 500 40 650 20 700 10 750 30 800 50 900 70 1000 0 -tags poly -fill skyblue
+##sun
+$inttextC create oval 850 40 900 -10 -fill orange -outline gold -width 2 -tags poly
+# -tags [list sun poly]
+#$inttextC lower sun
+##scale width if window too narrow
+if {$screenX <= 1400} {
+  set scalefactor 0.6
+} elseif {$screenX <= 1600} {
+  set scalefactor 0.8
+} else {
+  set scalefactor 1.0
+}
+$inttextC scale poly 0 0 $scalefactor $scalefactor
+#$inttextC create polygon 0 100 100 90 200 80 300 70 400 60 500 40 650 20 700 10 750 40 800 60 900 80 1000 100 -fill skyblue
+#$inttextC create polygon 0 0   100 10 200 20 300 30 400 40 500 50 650 80 700 90 750 60 800 40 900 20 1000 0 -fill skyblue
 ##sun right
-$inttextC create oval 750 50 800 0 -fill orange -outline gold
+
+
 ##cross on top
-$inttextC create line 700 0 700 15 -fill brown -width 2
-$inttextC create line 695 5 705 5 -fill brown -width 2
+#$inttextC create line 700 0 700 15 -fill brown -width 2
+#$inttextC create line 695 5 705 5 -fill brown -width 2
  
 #set up international texts
 set ar_txt [mc f2ar_txt]
