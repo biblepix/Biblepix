@@ -366,7 +366,6 @@ proc resizePic {src newx newy} {
       # This section covers shrinking an image where
       # more than 1 source pixel may be required to
       # define the destination pixel
-
       set xr 0
       set xg 0
       set xb 0
@@ -414,7 +413,7 @@ proc resizePic {src newx newy} {
     # Do vertical resize
     #
 
-    if {[info exists prevrow]} {
+    if [info exists prevrow] {
       set nrow [list]
 
       # Add whole lines as necessary

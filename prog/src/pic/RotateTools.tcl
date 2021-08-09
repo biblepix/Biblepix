@@ -174,8 +174,7 @@ proc vorschau {im angle canv} {
 ##called by SetupRotate Save button
 proc doRotateOrig {pic angle} {
   namespace eval addpicture {}
-
-  puts orig:$angle
+#  puts orig:$angle
 
   #1. rotate (takes a long time!)
   set rotPic [imageRotate $pic $angle]

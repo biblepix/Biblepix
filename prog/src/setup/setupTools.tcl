@@ -27,7 +27,6 @@ proc setTexts {lang} {
 ##setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
 ##called by SetupPhotos
 proc addPic {origPicPath} {
-  
   global photosdir v
   source $::SetupResizePhoto
   source $::SetupResizeTools
@@ -35,7 +34,7 @@ proc addPic {origPicPath} {
   #Set path & exit if already there
   set targetPicPath [file join $photosdir [setPngFileName [file tail $origPicPath]]]
   if [file exists $targetPicPath] {
-    NewsHandler::QueryNews $::picSchonDa red
+    NewsHandler::QueryNews $msg::picSchonDa red
     return 1
   }
   
@@ -54,11 +53,8 @@ proc addPic {origPicPath} {
   
   #A): right dimensions, right size: save pic
   if {$resize == 0} {
-
     $addpicture::curPic write $targetPicPath -format PNG
-
     NewsHandler::QueryNews "$msg::copiedPicMsg $origPicPath" lightgreen
-
     openReposWindow $addpicture::curPic
 
   #B) right dimensions, wrong size: start resizing & open reposWindow
@@ -78,10 +74,8 @@ proc addPic {origPicPath} {
 
   #C) open resize window, resize later
   } else {
-
     openResizeWindow
   }
-
   set ::numPhotos [llength [glob $photosdir/*]]
 } ;#END addPic
 
