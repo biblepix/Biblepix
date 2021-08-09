@@ -1,21 +1,20 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 7aug21 pv
+# Updated 9aug21 pv
 
 #Create left & right main frames
 pack [frame .desktopF.leftF] -fill y -side left
 pack [frame .desktopF.rightF] -fill both -side right -expand 1
-
-##Create right top frames
+##right top frames
 pack [frame .topMainF1] -in .desktopF.rightF -fill x
 pack [frame .topMainF2 -relief ridge -bd 3 -padx $px -pady $py] -in .desktopF.rightF -fill x
-##Create right middle frames
+##right middle frames
 pack [frame .midMainF -padx $px -pady $py] -in .desktopF.rightF -fill x
 pack [frame .leftF] -in .midMainF -side left
 pack [frame .midF] -in .midMainF -expand 1 -side left
 pack [frame .rightF] -in .midMainF -side right
-##Create right bottom frame
+##right bottom frame
 pack [frame .botMainF -relief ridge -borderwidth 3] -in .desktopF.rightF -pady $py -padx $px -fill x
 
 ##Create generic Serif or Sans font
@@ -36,9 +35,7 @@ pack .title -in .desktopF.leftF -anchor w
 pack .imgyesnoCB -in .desktopF.leftF -side top -anchor w
 pack .mainTxt -in .desktopF.leftF -anchor nw
 
-
 # F I L L   R I G H T
-
 ##create canvases
 set textposC [canvas .textposCanv -bg lightgrey -borderwidth 1]
 set inttextC [canvas .inttextCanv]
@@ -52,7 +49,7 @@ checkbutton .showdateBtn -textvar msg::f2Introline -variable enabletitle
 }
 
 #4. SlideshowYesNo checkbutton
-checkbutton .slideBtn -textvar msg::f2Slideshow -variable slideshowState -command {setSlideSpin $slideshowState}
+checkbutton .slideBtn -textvar msg::f2Slideshow -variable slideshowState -command {setSlideSpin $slideshowState} -padx 20
 
 #5. Slideshow spinbox
 message .slideTxt -textvar msg::f2Interval -width 200
@@ -79,11 +76,9 @@ if !$slideshow {
 $inttextC conf -height 100 -width 1000 
 ##sky + hill contour
 $inttextC conf -bg green
-$inttextC create polygon 0 0 0 100 100 90 200 80 300 70 400 60 500 40 650 20 700 10 750 30 800 50 900 70 1000 0 -tags poly -fill skyblue
+$inttextC create polygon 0 0 0 100 100 95 200 90 300 85 400 80 500 70 650 20 700 10 750 30 800 50 900 70 1000 0 -tags {poly} -fill skyblue
 ##sun
-$inttextC create oval 850 40 900 -10 -fill orange -outline gold -width 2 -tags poly
-# -tags [list sun poly]
-#$inttextC lower sun
+$inttextC create oval 850 60 900 10 -fill orange -outline gold -width 2 -tags poly
 ##scale width if window too narrow
 if {$screenX <= 1400} {
   set scalefactor 0.6
@@ -93,16 +88,8 @@ if {$screenX <= 1400} {
   set scalefactor 1.0
 }
 $inttextC scale poly 0 0 $scalefactor $scalefactor
-#$inttextC create polygon 0 100 100 90 200 80 300 70 400 60 500 40 650 20 700 10 750 40 800 60 900 80 1000 100 -fill skyblue
-#$inttextC create polygon 0 0   100 10 200 20 300 30 400 40 500 50 650 80 700 90 750 60 800 40 900 20 1000 0 -fill skyblue
-##sun right
 
-
-##cross on top
-#$inttextC create line 700 0 700 15 -fill brown -width 2
-#$inttextC create line 695 5 705 5 -fill brown -width 2
- 
-#set up international texts
+#Set up international texts
 set ar_txt [mc f2ar_txt]
 set he_txt [mc f2he_txt]
 if {$platform=="unix"} {
@@ -234,9 +221,8 @@ if ![catch "glob $twddir/ar_*"] {
 label .textposFN -width 50 -font "Serif 10" -textvar RtlInfo
 # P A C K   R I G H T
 ##top
-pack .showdateBtn -in .topMainF1 -anchor w
-pack .slideBtn -in .topMainF1 -anchor w -side left
-pack .slideSecTxt .slideSpin .slideTxt -in .topMainF1 -anchor nw -side right
+pack .showdateBtn -in .topMainF1 -anchor w -side left
+pack .slideSecTxt .slideSpin .slideTxt .slideBtn -in .topMainF1 -anchor nw -side right
 pack .fontAdaptL -in .topMainF2 -anchor n
 pack $inttextC -in .topMainF2 -fill x -anchor n
 ##middle
