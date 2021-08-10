@@ -1,7 +1,7 @@
 #Biblepix/prog/msg/all.msg
 # loaded by msgcat for untranslatables
 # sourced by setTexts with lang variable
-# Updated 7aug21 pv
+# Updated 9aug21 pv
 
 #Untranslatable fix texts for msgcat
 mcset $lang f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94" ;#formatted letter forms!
@@ -62,6 +62,7 @@ set uninstalled [mc uninstalled]
 set packageRequireImg [mc packageRequireImg]
 set packageRequireTDom [mc packageRequireTDom]
 set packageRequireTls [mc packageRequireTls]
+set download [mc download]
 set downloadingHttp [mc downloadingHttp]
 set updatingHttp [mc updatingHttp]
 set uptodateHTTP [mc uptodateHTTP]

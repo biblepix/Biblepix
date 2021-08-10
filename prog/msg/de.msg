@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 7aug21 pv
+# Updated: 9aug21 pv
 set bp {BibelPix}
 set dw {'Das Wort'}
 
@@ -27,9 +27,8 @@ mcset de photos "Fotos"
 mcset de email "E-Mail-Signatur"
 mcset de terminal "Terminal/Konsole"
 mcset de manual "Handbuch"
-mcset de next "Nächstes \u25bc"
 # W E L C O M E 
-mcset de welcClickTwd "Klick dich durch $dw!"  
+mcset de next "Nächstes \u25bc"
 mcset de welcTit "Willkommen beim Einrichtungsprogramm von $bp!"
 mcset de welcSubtit1 "Was ist $bp?"
 mcset de welcTxt1 "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' entwickelt wird.\n\n'Bibel 2.0' setzt sich zum Ziel, $dw in einer wachsenden Anzahl von Sprachen zu verbreiten.\n$dw besteht aus 2 ausgewählten Bibelsprüchen für jeden Tag des Jahres.\n\n$bp kann $dw in vielfältiger Weise auf Ihrem PC anzeigen."
@@ -51,6 +50,7 @@ mcset de packageRequireTDom "$bp benötigt die Tcl-Erweiterung 'tDom'.\nBitte in
 mcset de packageRequireTls "$bp benötigt die Tcl-Erweiterung 'TLS'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireTls_fix]"
 mcset de packageRequireLibtcl "$bp benötigt die Tcl-Erweiterung 'libtcl'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireLibtcl_fix]"
 #SETUP INTERNATIONAL
+mcset de download "Download"
 mcset de downloadingHttp "Lade $bp-Programmdateien herunter..."
 mcset de updatingHttp "Aktualisiere $bp-Programmdateien..."
 mcset de uptodateHTTP "Ihre Programmdateien sind auf dem neusten Stand."
@@ -66,7 +66,7 @@ mcset de language "Sprache"
 mcset de year "Jahr"
 mcset de bibleversion "Bibelausgabe"
 mcset de biblename "Bibelname"
-mcset de f1Txt "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien zum Download markieren (s. unten), werden diese heruntergeladen, sobald Sie die Taste 'Download' drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)!"  
+mcset de f1Txt "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien zum Download markieren (s. unten), werden diese heruntergeladen, sobald Sie die Taste '[mc download]' drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)!"  
 #SETUP DESKTOP
 mcset de f2Tit "$dw auf Desktop-Hintergrundbild"
 mcset de f2Box "Hintergrundbild erzeugen"
@@ -91,7 +91,7 @@ mcset de f6Show "$bp-Fotosammlung anzeigen"
 mcset de f6Find "Neue Fotos suchen"
 mcset de f6Del "Aus der $bp-Fotosammlung löschen:"
 #RESIZING
-mcset de resizeF_txt "Ihr Foto passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. Verschieben Sie den Bildausschnitt nach Wunsch und drücken Sie Ok zum Speichern."
+mcset de resizeF_txt "Ihr Foto passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. [mc movePicToResize]"
 mcset de movePicToResize "Verschieben Sie den Bildausschnitt nach Wunsch und bestätigen Sie mit Ok zum Speichern."
 mcset de resizingPic "Passe Bildgrösse dem Bildschirm an \u2014 bitte haben Sie einen Augenblick Geduld..."
 mcset de movePic "Bildausschnitt verschieben \u21CA"

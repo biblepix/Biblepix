@@ -2,7 +2,7 @@
 # English texts for msgcat
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 7aug21 pv
+# Updated: 9aug21 pv
 set bp {BiblePix}
 set dw {'The Word'}
 
@@ -25,7 +25,7 @@ mcset en uninst "Uninstall $bp"
 mcset en next "Next \u25bc"
 # U N I N S T A L L
 mcset en uninstall "Do you really want to remove BiblePix from your computer?"
-mcset en uninstalling "BiblePix will now be uninstalled. To clear system settings made, you must confirm any upcoming dialogue boxes with \"Yes\"."
+mcset en uninstalling "$bp will now be uninstalled. To clear system settings made, you must confirm any upcoming dialogue boxes with \"Yes\"."
 mcset en uninstalled "$bp has been removed safely from your system. To reinstall, visit our website, www.bible2.net, and download $bp Installer." 
 # M I S S I N G   P A C K A G E
 mcset en packageRequireImg "$bp needs the Tcl 'tkimg' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireImg_fix]"
@@ -33,6 +33,7 @@ mcset en packageRequireTDom "$bp needs the Tcl 'tDom' extension.\nPlease install
 mcset en packageRequireTls "$bp needs the Tcl 'TLS' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireTls_fix]"
 mcset en packageRequireLibtcl "$bp needs the Tcl 'libtcl' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireLibtcl_fix]"
 #### S E T U P   G U I ################################
+mcset en download "Download"
 mcset en downloadingHttp "Downloading $bp program files..."
 mcset en updatingHttp "Updating $bp program files..."
 mcset en uptodateHTTP "Your program files are up-to-date."
@@ -63,7 +64,7 @@ mcset en language "Language"
 mcset en year "Year"
 mcset en bibleversion "Bible version"
 mcset en biblename "Bible name"
-mcset en f1Txt "$bp will create $dw in any language or Bible version installed on your computer. If several language files are found, $bp will randomly pick one at each run. Any new language files you select for download (see below) will be downloaded upon clicking the 'Download' button. Pay attention to the year (current or next)!"
+mcset en f1Txt "$bp will create $dw in any language or Bible version installed on your computer. If several language files are found, $bp will randomly pick one at each run. Any new language files you select for download (see below) will be downloaded upon clicking the '[mc download]' button. Pay attention to the year (current or next)!"
 mcset en f2Tit "Put $dw on your background images"
 mcset en f2Box "Create background image"
 mcset en f2Farbe "Font colour: "
@@ -85,7 +86,7 @@ mcset en f6Show "Show $bp Photo Collection"
 mcset en f6Find "Find new photos"
 mcset en f6Del "Delete from $bp Photo Collection:"
 #RESIZING
-mcset en resizeF_txt "The size of your photo does not correspond to the screen size and has to be trimmed. Move to select the desired section and press Ok to save."
+mcset en resizeF_txt "The size of your photo does not correspond to the screen size and has to be trimmed. [mc movePicToResize]"
 mcset en movePicToResize "Move picure section to desired position and press Ok to resize."
 mcset en resizingPic "Resizing photo to fit screen \u2014 please wait a moment..."
 mcset en movePic "Move picture section \u21CA"
