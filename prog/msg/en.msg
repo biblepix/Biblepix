@@ -2,7 +2,7 @@
 # English texts for msgcat
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 9aug21 pv
+# Updated: 11aug21 pv
 set bp {BiblePix}
 set dw {'The Word'}
 
@@ -26,7 +26,7 @@ mcset en next "Next \u25bc"
 # U N I N S T A L L
 mcset en uninstall "Do you really want to remove BiblePix from your computer?"
 mcset en uninstalling "$bp will now be uninstalled. To clear system settings made, you must confirm any upcoming dialogue boxes with \"Yes\"."
-mcset en uninstalled "$bp has been removed safely from your system. To reinstall, visit our website, www.bible2.net, and download $bp Installer." 
+mcset en uninstalled "$bp has been removed safely from your system. To reinstall, visit our website [mc www] and download $bp Installer." 
 # M I S S I N G   P A C K A G E
 mcset en packageRequireImg "$bp needs the Tcl 'tkimg' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireImg_fix]"
 mcset en packageRequireTDom "$bp needs the Tcl 'tDom' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireTDom_fix]"

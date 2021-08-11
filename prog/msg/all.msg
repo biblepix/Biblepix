@@ -1,9 +1,10 @@
 #Biblepix/prog/msg/all.msg
 # loaded by msgcat for untranslatables
 # sourced by setTexts with lang variable
-# Updated 9aug21 pv
+# Updated 11aug21 pv
 
 #Untranslatable fix texts for msgcat
+mcset $lang www {https://biblepix.vollmar.ch}
 mcset $lang f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94" ;#formatted letter forms!
 mcset $lang f2he_txt "הדבר"
 mcset $lang f2ltr1_txt "The Word 每日金句 Калом"

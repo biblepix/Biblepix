@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 9aug21 pv
+# Updated: 11aug21 pv
 set bp {BibelPix}
 set dw {'Das Wort'}
 
@@ -43,7 +43,7 @@ mcset de welcTxt2 "\u27a4 [mc bibletexts]: Wählen Sie beliebig viele Bibelausga
 # U N I N S T A L L
 mcset de uninstall "Wollen Sie wirklich BibelPix von Ihrem Computer entfernen?"
 mcset de uninstalling "BiblePix wird nun deinstalliert. Zum Löschen der Systemeinstellungen müssen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\" beantworten!"
-mcset de uninstalled "$bp ist sicher von Ihrem System entfernt worden. Um es neu zu installieren, besuchen Sie uns auf www.bible2.net und laden Sie den $bp Installer herunter."
+mcset de uninstalled "$bp ist sicher von Ihrem System entfernt worden. Um es neu zu installieren, besuchen Sie uns auf [mc www] und laden Sie den $bp Installer herunter."
 #  M I S S I N G   P A C K A G E
 mcset de packageRequireImg "$bp benötigt die Tcl-Erweiterung 'tkimg'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireImg_fix]"
 mcset de packageRequireTDom "$bp benötigt die Tcl-Erweiterung 'tDom'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireTDom_fix]"
