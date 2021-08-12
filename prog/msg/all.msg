@@ -1,27 +1,33 @@
 #Biblepix/prog/msg/all.msg
 # loaded by msgcat for untranslatables
 # sourced by setTexts with lang variable
-# Updated 11aug21 pv
+# Updated 12aug21 pv
 
 #Untranslatable fix texts for msgcat
-mcset $lang www {https://biblepix.vollmar.ch}
-mcset $lang f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94" ;#formatted letter forms!
-mcset $lang f2he_txt "הדבר"
-mcset $lang f2ltr1_txt "The Word 每日金句 Калом"
-mcset $lang f2ltr2_txt "พระคำสำหรับวันศุกร์ Слово An Briathar"
-mcset $lang RtlInfoHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
-mcset $lang RtlInfoAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
-mcset $lang packageRequireImg_fix "\n* apt-get install libtk-img (Debian/Ubuntu)\n* emerge tkimg (Gentoo)\n* zypper install tkimg (openSUSE)\n* yum install tkimg (Fedora)\n* urpmi tkimg (Mandriva)"
-mcset $lang packageRequireTDom_fix "\n* apt-get install tdom (Debian/Ubuntu)\n* emerge tdom (Gentoo)\n* zypper install tdom (openSUSE)\n* yum install tdom (Fedora)\n* urpmi tdom (Mandriva)"
-mcset $lang packageRequireTls_fix "\n* apt-get install tcl-tls (Debian/Ubuntu)\n* emerge dev-tcltk/tls (Gentoo)"
-mcset $lang packageRequireLibtcl_fix "\n*apt-get install libtcl (Debian/Ubuntu)\n* emerge libtcl (Gentoo)\n* zypper install libtcl (openSUSE)\n* yum install libtcl (Fedora)\n* urpmi libtcl (Mandriva)"
+mcset {} www {https://biblepix.vollmar.ch}
+mcset {} f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94" ;#formatted letter forms!
+mcset {} f2he_txt "הדבר"
+mcset {} f2ltr1_txt "The Word 每日金句 Калом"
+mcset {} f2ltr2_txt "พระคำสำหรับวันศุกร์ Слово An Briathar"
+mcset {} RtlInfoHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
+mcset {} RtlInfoAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
+
+#Missing -testing! - needs 5 args!
+mcset {} packageRequire "\n* apt-get install lib%s (Debian/Ubuntu)\n* emerge %s (Gentoo)\n* zypper install %s (openSUSE)\n* yum install %s (Fedora)\n* urpmi %s (Mandriva)"
+
+
+mcset {} packageRequireTkimg "\n* apt-get install libtk-img (Debian/Ubuntu)\n* emerge tkimg (Gentoo)\n* zypper install tkimg (openSUSE)\n* yum install tkimg (Fedora)\n* urpmi tkimg (Mandriva)"
+mcset {} packageRequireTDom "\n* apt-get install tdom (Debian/Ubuntu)\n* emerge tdom (Gentoo)\n* zypper install tdom (openSUSE)\n* yum install tdom (Fedora)\n* urpmi tdom (Mandriva)"
+mcset {} packageRequireTls "\n* apt-get install tcl-tls (Debian/Ubuntu)\n* emerge dev-tcltk/tls (Gentoo)"
+mcset {} packageRequireLibtcl "\n* apt-get install libtcl (Debian/Ubuntu)\n* emerge libtcl (Gentoo)\n* zypper install libtcl (openSUSE)\n* yum install libtcl (Fedora)\n* urpmi libtcl (Mandriva)"
+
 set grussformel "
 Bible & Pix Brothers
 Homepage: biblepix.vollmar.ch
 "
-mcset $lang f3Expl "Yours faithfully, $grussformel"
-if {$lang == "de"} {
-  mcset $lang f3Expl "Mit freundlichem Gruss, $grussformel"
+mcset {} f3Expl "Yours faithfully, $grussformel"
+if {{} == "de"} {
+  mcset {} f3Expl "Mit freundlichem Gruss, $grussformel"
 }
 
 #Set textvars for ::msg namespace

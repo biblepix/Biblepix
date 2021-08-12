@@ -1,5 +1,5 @@
-# ~/Biblepix/prog/msg/en.msg
 # English texts for msgcat
+# ~/Biblepix/prog/msg/en.msg
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 # Updated: 11aug21 pv
@@ -24,7 +24,7 @@ mcset en manual "Manual"
 mcset en uninst "Uninstall $bp"
 mcset en next "Next \u25bc"
 # U N I N S T A L L
-mcset en uninstall "Do you really want to remove BiblePix from your computer?"
+mcset en uninstall "Do you really want to remove $bp from your computer?"
 mcset en uninstalling "$bp will now be uninstalled. To clear system settings made, you must confirm any upcoming dialogue boxes with \"Yes\"."
 mcset en uninstalled "$bp has been removed safely from your system. To reinstall, visit our website [mc www] and download $bp Installer." 
 # M I S S I N G   P A C K A G E
@@ -39,7 +39,7 @@ mcset en updatingHttp "Updating $bp program files..."
 mcset en uptodateHTTP "Your program files are up-to-date."
 mcset en noConnHTTP "No Internet connection for program update, please try later."
 mcset en gettingTwd "Fetching current list of Bible text files from bible2.net..."
-mcset en noTwdFilesFound "No current Bible text files are installed.\nIn the BiblePix Setup, choose at least \n one language text file from the 'International' section."
+mcset en noTwdFilesFound "No current Bible text files are installed.\nIn the $bp Setup, choose at least \n one language text file from the 'International' section."
 mcset en connTwd "Connection to bible2.net established."
 mcset en noConnTwd "No connection to bible2.net. Try later."
 mcset en bpsetup "$bp Setup"
@@ -106,10 +106,10 @@ mcset en winChangingDesktop "$bp will now try to register with your Desktop Back
 mcset en winChangeDesktopProb "We are having a problem changing your Desktop background.\nPlease right-click on an empty spot on your Desktop and select \"Personalize\".\nUnder \"Wallpaper\" either set as single pic path $TwdBMP or \n$TwdPNG \nor else set up a slideshow setting the directory to \n$imgdir ."
 mcset en linChangeDesktopProb "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgdir as new image path."
 mcset en linNoDesktopFound "No Llinux Desktop detected! Please find out in the manual how to manually set up the $bp background picture."
-mcset en linReloadingDesktop "We shall now try to reload your Desktop. If this fails, please log out and in again for the BiblePix settings to take effect."
-mcset en changeDesktopOk "$bp has been configured successfully and will start shortly.\n\nYou can run the $bp Setup program anytime by selecting the \"BiblePix Setup\" icon in the Program Menu (Linux) or by right-click on your Desktop (Windows)."
-mcset en winRegister "BiblePix will no try to register with your system.\nYou must confirm any dialogue boxes with \"Yes\"."
-mcset en winRegisterProb "BiblePix has not been registered properly on your computer.\nPlease try rerunning Setup, or add \n$Biblepix\n to your Autostart folder."
+mcset en linReloadingDesktop "We shall now try to reload your Desktop. If this fails, please log out and in again for the $bp settings to take effect."
+mcset en changeDesktopOk "$bp has been configured successfully and will start shortly.\n\nYou can run the $bp Setup program anytime by selecting the \"$bp Setup\" icon in the Program Menu (Linux) or by right-click on your Desktop (Windows)."
+mcset en winRegister "$bp will no try to register with your system.\nYou must confirm any dialogue boxes with \"Yes\"."
+mcset en winRegisterProb "$bp has not been registered properly on your computer.\nPlease try rerunning Setup, or add \n$$bp\n to your Autostart folder."
 # P H O T O S
 mcset en deletedPicMsg "Deleted picture from $bp photo collection:"
 mcset en copiedPicMsg "Copied picture to $bp photo collection:"

@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 11aug21 pv
+# Updated: 12aug21 pv
 set bp {BibelPix}
 set dw {'Das Wort'}
 
@@ -41,14 +41,21 @@ mcset de welcTxt2 "\u27a4 [mc bibletexts]: Wählen Sie beliebig viele Bibelausga
 \u27a4 [mc terminal]: Betrachten Sie $dw in Ihren Linux-Konsolen
 "
 # U N I N S T A L L
-mcset de uninstall "Wollen Sie wirklich BibelPix von Ihrem Computer entfernen?"
+mcset de uninstall "Wollen Sie wirklich $bp von Ihrem Computer entfernen?"
 mcset de uninstalling "BiblePix wird nun deinstalliert. Zum Löschen der Systemeinstellungen müssen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\" beantworten!"
 mcset de uninstalled "$bp ist sicher von Ihrem System entfernt worden. Um es neu zu installieren, besuchen Sie uns auf [mc www] und laden Sie den $bp Installer herunter."
-#  M I S S I N G   P A C K A G E
-mcset de packageRequireImg "$bp benötigt die Tcl-Erweiterung 'tkimg'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireImg_fix]"
-mcset de packageRequireTDom "$bp benötigt die Tcl-Erweiterung 'tDom'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireTDom_fix]"
-mcset de packageRequireTls "$bp benötigt die Tcl-Erweiterung 'TLS'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireTls_fix]"
-mcset de packageRequireLibtcl "$bp benötigt die Tcl-Erweiterung 'libtcl'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireLibtcl_fix]"
+
+#  M I S S I N G   P A C K A G E -TODO needs testing!
+set missing [mc missing]
+
+mcset de packageRequireMissing "$bp benötigt die Tcl-Erweiterung [mc missing]. Bitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in eine Konsole (als root oder sudo):\n [mc packageRequire [mc miss	ing]]
+"
+
+#mcset de packageRequireImg "$bp benötigt die Tcl-Erweiterung 'tkimg'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireImg_fix]"
+#mcset de packageRequireTDom "$bp benötigt die Tcl-Erweiterung 'tDom'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireTDom_fix]"
+#mcset de packageRequireTls "$bp benötigt die Tcl-Erweiterung 'TLS'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireTls_fix]"
+#mcset de packageRequireLibtcl "$bp benötigt die Tcl-Erweiterung 'libtcl'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireLibtcl_fix]"
+
 #SETUP INTERNATIONAL
 mcset de download "Download"
 mcset de downloadingHttp "Lade $bp-Programmdateien herunter..."
@@ -56,7 +63,7 @@ mcset de updatingHttp "Aktualisiere $bp-Programmdateien..."
 mcset de uptodateHTTP "Ihre Programmdateien sind auf dem neusten Stand."
 mcset de noConnHTTP "Keine Internetverbindung für Programmaktualisierung, bitte versuchen Sie es später."
 mcset de gettingTwd "Hole aktuelle Bibeltext-Liste von bible2.net..."
-mcset de noTwdFilesFound "Es sind keine aktuellen Bibeltextdateien installiert.\nBitte wählen Sie im BibelPix-Setup mindestens \n1 Sprachdatei aus der Rubrik 'International'."
+mcset de noTwdFilesFound "Es sind keine aktuellen Bibeltextdateien installiert.\nBitte wählen Sie im $bp-Setup mindestens \n1 Sprachdatei aus der Rubrik 'International'."
 mcset de connTwd "Verbindung zu bible2.net hergestellt."
 mcset de noConnTwd "Keine Verbindung zu bible2.net. Versuchen Sie es später."
 mcset de f1Tit "Aktuelle Bibeltextliste für $dw"
@@ -114,7 +121,7 @@ mcset de winChangingDesktop "$bp versucht nun, Ihren Desktop-Hintergrund zu änd
 mcset de winChangeDesktopProb "Wir hatten ein Problem mit der Änderung des Desktophintergrunds.\nRechtsklicken Sie auf ein leeres Feld auf Ihrem Desktop und \"Anpassen\". Unter \"Hintergrund\" setzen Sie als Hintergrund-Einzelbild $TwdBMP oder \n$TwdPNG \noder für Slidesho\n$imgdir ."
 mcset de linChangeDesktopProb "Wir hatten ein Problem mit der Änderung der Desktopeinstellungen.\nBitte rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog für 'Hintergrundbild'. Dort geben Sie $imgdir als Bildpfad an."
 mcset de linNoDesktopFound "Kein Linux-Desktop gefunden! Suchen Sie im Manual eine Lösung zum manuellen Einrichten des $bp-Hintergrundbilds."
-mcset de linReloadingDesktop "Wir versuchen nun, Ihre Arbeitsfläche neu einzulesen. Falls dies fehlschlägt, müssen Sie sich kurz ab- und wieder anmelden, damit die BibelPix-Einstellungen wirksam werden."
+mcset de linReloadingDesktop "Wir versuchen nun, Ihre Arbeitsfläche neu einzulesen. Falls dies fehlschlägt, müssen Sie sich kurz ab- und wieder anmelden, damit die $bp-Einstellungen wirksam werden."
 mcset de changeDesktopOk "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\n\nDas ${bp}-Einrichtungsprogramm können Sie jederzeit starten, indem Sie im Programmmenü das ${bp}-Symbol wählen (Linux) bzw. auf Ihrer Arbeitsoberfläche rechtsklicken und das ${bp}-Symbol wählen (Windows)."
 mcset de winRegister "$bp muss nun auf Ihrem System registriert werden.\nBitte bestätigen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\"!"
 mcset de winRegisterProb "$bp ist auf Ihrem Computer noch nicht korrekt installiert.\nStarten Sie das Setup nochmals oder fügen Sie \n$Biblepix\n in \"Automatisch gestartete Programme\" an."
