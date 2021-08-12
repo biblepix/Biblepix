@@ -28,10 +28,11 @@ mcset en uninstall "Do you really want to remove $bp from your computer?"
 mcset en uninstalling "$bp will now be uninstalled. To clear system settings made, you must confirm any upcoming dialogue boxes with \"Yes\"."
 mcset en uninstalled "$bp has been removed safely from your system. To reinstall, visit our website [mc www] and download $bp Installer." 
 # M I S S I N G   P A C K A G E
-mcset en packageRequireImg "$bp needs the Tcl 'tkimg' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireImg_fix]"
-mcset en packageRequireTDom "$bp needs the Tcl 'tDom' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireTDom_fix]"
-mcset en packageRequireTls "$bp needs the Tcl 'TLS' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireTls_fix]"
-mcset en packageRequireLibtcl "$bp needs the Tcl 'libtcl' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireLibtcl_fix]"
+mcset en packageRequireMissing "$bp needs the Tcl extension '%s'.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo): [mc packageRequire]"
+#mcset en packageRequireTDom "$bp needs the Tcl 'tDom' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireTDom_fix]"
+#mcset en packageRequireTls "$bp needs the Tcl 'TLS' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireTls_fix]"
+#mcset en packageRequireLibtcl "$bp needs the Tcl 'libtcl' extension.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo):\n [mc packageRequireLibtcl_fix]"
+
 #### S E T U P   G U I ################################
 mcset en download "Download"
 mcset en downloadingHttp "Downloading $bp program files..."

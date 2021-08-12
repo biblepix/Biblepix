@@ -12,14 +12,14 @@ mcset {} f2ltr2_txt "พระคำสำหรับวันศุกร์ �
 mcset {} RtlInfoHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
 mcset {} RtlInfoAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
 
-#Missing -testing! - needs 5 args!
-mcset {} packageRequire "\n* apt-get install lib%s (Debian/Ubuntu)\n* emerge %s (Gentoo)\n* zypper install %s (openSUSE)\n* yum install %s (Fedora)\n* urpmi %s (Mandriva)"
+#Missing -testing! -called by packageRequiredMissing
+mcset {} packageRequire "\n* apt-get install [PACKAGE NAME] (Debian/Ubuntu)\n* emerge [PACKAGE NAME] (Gentoo)"
 
 
-mcset {} packageRequireTkimg "\n* apt-get install libtk-img (Debian/Ubuntu)\n* emerge tkimg (Gentoo)\n* zypper install tkimg (openSUSE)\n* yum install tkimg (Fedora)\n* urpmi tkimg (Mandriva)"
-mcset {} packageRequireTDom "\n* apt-get install tdom (Debian/Ubuntu)\n* emerge tdom (Gentoo)\n* zypper install tdom (openSUSE)\n* yum install tdom (Fedora)\n* urpmi tdom (Mandriva)"
-mcset {} packageRequireTls "\n* apt-get install tcl-tls (Debian/Ubuntu)\n* emerge dev-tcltk/tls (Gentoo)"
-mcset {} packageRequireLibtcl "\n* apt-get install libtcl (Debian/Ubuntu)\n* emerge libtcl (Gentoo)\n* zypper install libtcl (openSUSE)\n* yum install libtcl (Fedora)\n* urpmi libtcl (Mandriva)"
+#mcset {} packageRequireTkimg "\n* apt-get install libtk-img (Debian/Ubuntu)\n* emerge tkimg (Gentoo)\n* zypper install tkimg (openSUSE)\n* yum install tkimg (Fedora)\n* urpmi tkimg (Mandriva)"
+#mcset {} packageRequireTDom "\n* apt-get install tdom (Debian/Ubuntu)\n* emerge tdom (Gentoo)\n* zypper install tdom (openSUSE)\n* yum install tdom (Fedora)\n* urpmi tdom (Mandriva)"
+#mcset {} packageRequireTls "\n* apt-get install tcl-tls (Debian/Ubuntu)\n* emerge dev-tcltk/tls (Gentoo)"
+#mcset {} packageRequireLibtcl "\n* apt-get install libtcl (Debian/Ubuntu)\n* emerge libtcl (Gentoo)\n* zypper install libtcl (openSUSE)\n* yum install libtcl (Fedora)\n* urpmi libtcl (Mandriva)"
 
 set grussformel "
 Bible & Pix Brothers
