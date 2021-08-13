@@ -3,16 +3,20 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 12aug21 pv
-set bp {BibelPix}
-set dw {'Das Wort'}
+# Updated: 13aug21 pv
 
-mcset de dw $dw
-mcset de bp $bp
+# U N T R A N S L A T A B L E S
+mcset {} packageRequire {
+* apt-get install [PACKAGE NAME] (Debian/Ubuntu)
+* emerge [PACKAGE NAME] (Gentoo)
+}
+
+# G E N E R A L
+set bp "BibelPix"
+set dw {'Das Wort'}
 mcset de bpsetup "$bp Einrichtungsprogramm"
 mcset de refresh "Aktualisieren"
 mcset de delete "Datei löschen"
-#Buttons
 mcset de ok "Ok"
 mcset de cancel "Abbruch"
 mcset de close "Schliessen"
@@ -27,6 +31,11 @@ mcset de photos "Fotos"
 mcset de email "E-Mail-Signatur"
 mcset de terminal "Terminal/Konsole"
 mcset de manual "Handbuch"
+mcset de packageRequireMissing "$bp benötigt die Tcl-Erweiterung '%s'. Bitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in eine Konsole (als root oder sudo): [mc packageRequire]"
+##untranslatable
+mcset de dw $dw
+mcset de bp $bp
+
 # W E L C O M E 
 mcset de next "Nächstes \u25bc"
 mcset de welcTit "Willkommen beim Einrichtungsprogramm von $bp!"
@@ -44,16 +53,6 @@ mcset de welcTxt2 "\u27a4 [mc bibletexts]: Wählen Sie beliebig viele Bibelausga
 mcset de uninstall "Wollen Sie wirklich $bp von Ihrem Computer entfernen?"
 mcset de uninstalling "BiblePix wird nun deinstalliert. Zum Löschen der Systemeinstellungen müssen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\" beantworten!"
 mcset de uninstalled "$bp ist sicher von Ihrem System entfernt worden. Um es neu zu installieren, besuchen Sie uns auf [mc www] und laden Sie den $bp Installer herunter."
-
-#  M I S S I N G   P A C K A G E -TODO needs testing!
-#set missing [mc missing]
-
-mcset de packageRequireMissing "$bp benötigt die Tcl-Erweiterung '%s'. Bitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in eine Konsole (als root oder sudo): [mc packageRequire]"
-
-#mcset de packageRequireImg "$bp benötigt die Tcl-Erweiterung 'tkimg'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireImg_fix]"
-#mcset de packageRequireTDom "$bp benötigt die Tcl-Erweiterung 'tDom'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireTDom_fix]"
-#mcset de packageRequireTls "$bp benötigt die Tcl-Erweiterung 'TLS'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireTls_fix]"
-#mcset de packageRequireLibtcl "$bp benötigt die Tcl-Erweiterung 'libtcl'.\nBitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in einer Konsole (als root oder sudo):\n [mc packageRequireLibtcl_fix]"
 
 #SETUP INTERNATIONAL
 mcset de download "Download"
@@ -97,8 +96,9 @@ mcset de f6Show "$bp-Fotosammlung anzeigen"
 mcset de f6Find "Neue Fotos suchen"
 mcset de f6Del "Aus der $bp-Fotosammlung löschen:"
 #RESIZING
-mcset de resizeF_txt "Ihr Foto passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. [mc movePicToResize]"
 mcset de movePicToResize "Verschieben Sie den Bildausschnitt nach Wunsch und bestätigen Sie mit Ok zum Speichern."
+mcset de resizeF_txt "Ihr Foto passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. [mc movePicToResize]"
+
 mcset de resizingPic "Passe Bildgrösse dem Bildschirm an \u2014 bitte haben Sie einen Augenblick Geduld..."
 mcset de movePic "Bildausschnitt verschieben \u21CA"
 mcset de picSchonDa "Foto bereits im $bp-Bildordner"
@@ -113,7 +113,6 @@ mcset de f4Btn "$dw zur Anzeige im Terminal erzeugen"
 mcset de f4Txt "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDarstellung und Farben können in \n\n\t $confdir/term.conf \n\ngeändert werden.\n\nFür die Darstellung in hebräischer oder arabischer Schrift kommen nur Terminals wie 'QTerminal', 'mlterm', 'gnome-terminal', 'xfce4-terminal' oder 'Konsole' (KDE) in Frage, welche bidirektionellen Text korrekt anzeigen. \n\nDamit $dw automatisch im Terminal angezeigt wird, macht das $bp-Setup einen Eintrag in ~/.bashrc."
 
 # S E T U P S A V E   T E X T S
-#Changing Desktops Info
 mcset de linChangingDesktop "$bp versucht nun, Ihre Desktop-Einstellungen zu ändern. Falls Sie danach kein neues Hintergrundbild sehen, finden Sie eine Lösung im Manual."
 mcset de winIgnorePopup "Schliessen Sie bitte aufspringende Fenster ohne Änderung, damit $bp die Registrierung abschliessen kann!"
 mcset de winChangingDesktop "$bp versucht nun, Ihren Desktop-Hintergrund zu ändern"

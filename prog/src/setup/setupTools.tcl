@@ -217,8 +217,10 @@ proc setFlags {} {
   source $Flags
   flag::show .en -flag {hori blue; x white red; cross white red}
   flag::show .de -flag {hori black red yellow}
+  flag::show .es -flag {hori red gold red}
   .en config -relief raised
   .de config -relief raised
+  .es conf -relief raised
   
   #Configure English button
   bind .en <ButtonPress-1> {
@@ -243,6 +245,18 @@ proc setFlags {} {
     .de configure -relief flat
   }
   bind .de <ButtonRelease> { .de configure -relief raised}
+
+#TODO testing spanish
+  bind .es <ButtonPress-1> {
+    set lang es
+    setTexts es
+    renameNotebookTabs
+    .manualF.man configure -state normal
+    .manualF.man replace 1.1 end [setManText en]
+    .es configure -relief flat
+  }
+  bind .es <ButtonRelease> { .de configure -relief raised}
+
 }
 
 # setManText

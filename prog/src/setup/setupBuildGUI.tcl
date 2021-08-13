@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2aug21 pv
+# Updated: 11aug21 pv
 
 setFlags
 source $TwdTools
@@ -16,7 +16,7 @@ if {$setupTwdFileName == ""} {
 
 #Create title logo with icon
 if [catch {package require Img} ]  {
-  NewsHandler::QueryNews $packageRequireImg red
+  NewsHandler::QueryNews "$msg::packageRequireImg" red
 } else {
   image create photo Logo -file $WinIcon -format ICO
   wm iconphoto . -default Logo
@@ -83,7 +83,7 @@ if { [info exists Debug] && $Debug } {
 
   if [catch {source $SetupPhotos} ] {
     if [catch {package require Img}] {
-      NewsHandler::QueryNews $packageRequireImg red
+      NewsHandler::QueryNews "$msg::packageRequireImg" red
     }
   }
 }

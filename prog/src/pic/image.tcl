@@ -1,18 +1,17 @@
 # ~/Biblepix/progs/src/pic/image.tcl
 # Initiates BdfPrint, called by biblepix.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 18may21 pv
-
+# Updated 12aug21 pv
 source $ImgTools
 source $AnnotatePng
 namespace eval colour {}
 package require Tk
-    
+    	
 #Load Img/tkimg (part of ActiveTcl, Linux distros need to install separately)
 if [catch {package require Img}] {
   source -encoding utf-8 $Texts
   setTexts $lang
-  if [catch {tk_messageBox -title BiblePix -type ok -icon error -message $packageRequireImg} {
+  if [catch {tk_messageBox -title BiblePix -type ok -icon error -message [mc packageRequireMissing tkimg]} {
     return -error "Packages Tk and Img cannot be loaded. Exiting."
   }
 }

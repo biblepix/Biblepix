@@ -1,7 +1,7 @@
 #Biblepix/prog/msg/all.msg
 # loaded by msgcat for untranslatables
 # sourced by setTexts with lang variable
-# Updated 12aug21 pv
+# Updated 13aug21 pv
 
 #Untranslatable fix texts for msgcat
 mcset {} www {https://biblepix.vollmar.ch}
@@ -11,16 +11,6 @@ mcset {} f2ltr1_txt "The Word 每日金句 Калом"
 mcset {} f2ltr2_txt "พระคำสำหรับวันศุกร์ Слово An Briathar"
 mcset {} RtlInfoHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
 mcset {} RtlInfoAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
-
-#Missing -testing! -called by packageRequiredMissing
-mcset {} packageRequire "\n* apt-get install [PACKAGE NAME] (Debian/Ubuntu)\n* emerge [PACKAGE NAME] (Gentoo)"
-
-
-#mcset {} packageRequireTkimg "\n* apt-get install libtk-img (Debian/Ubuntu)\n* emerge tkimg (Gentoo)\n* zypper install tkimg (openSUSE)\n* yum install tkimg (Fedora)\n* urpmi tkimg (Mandriva)"
-#mcset {} packageRequireTDom "\n* apt-get install tdom (Debian/Ubuntu)\n* emerge tdom (Gentoo)\n* zypper install tdom (openSUSE)\n* yum install tdom (Fedora)\n* urpmi tdom (Mandriva)"
-#mcset {} packageRequireTls "\n* apt-get install tcl-tls (Debian/Ubuntu)\n* emerge dev-tcltk/tls (Gentoo)"
-#mcset {} packageRequireLibtcl "\n* apt-get install libtcl (Debian/Ubuntu)\n* emerge libtcl (Gentoo)\n* zypper install libtcl (openSUSE)\n* yum install libtcl (Fedora)\n* urpmi libtcl (Mandriva)"
-
 set grussformel "
 Bible & Pix Brothers
 Homepage: biblepix.vollmar.ch
@@ -34,9 +24,9 @@ if {{} == "de"} {
 ##Msgcat can't provide global vars!
 namespace eval msg {
 
-set packageRequireImg [mc packageRequireImg]
-set packageRequireTDom [mc packageRequireTDom]
-set packageRequireTls [mc packageRequireTls]
+#TODO this is a no-go, cmd needs argument! - aborting 
+#set packageRequireMissing [mc packageRequireMissing]
+
 set ok [mc ok]
 set dw [mc dw]
 set bp [mc bp]
@@ -66,9 +56,6 @@ set welcTxt2 [mc welcTxt2]
 set uninstall [mc uninstall]
 set uninstalling [mc uninstalling]
 set uninstalled [mc uninstalled]
-set packageRequireImg [mc packageRequireImg]
-set packageRequireTDom [mc packageRequireTDom]
-set packageRequireTls [mc packageRequireTls]
 set download [mc download]
 set downloadingHttp [mc downloadingHttp]
 set updatingHttp [mc updatingHttp]
