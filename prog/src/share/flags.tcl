@@ -7,7 +7,6 @@
 #Usage: flag::show canvas args    
 # for example:
 # flag::show .gb -flag {hori blue; x white red; cross white red}
-
  namespace eval flag {
     proc show {c args} {
         array set opt [concat {-x 0 -y 0 -w 0 -h 0 -flag {}} $args]
@@ -162,5 +161,3 @@
         $c create oval [expr $x1-$r] [expr $y0-$r] [expr $x1+$r] [expr $y0+$r] -fill $bg -outline $bg
     }
  }
-
-
