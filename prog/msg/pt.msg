@@ -34,7 +34,7 @@ mcset pt delete "Borrar"
 mcset pt next "Siguiente \u25bc"
 mcset pt welcTit "¡Bienvindo à [mc bpsetup]!"
 mcset pt welcSubtit1 "¿O qué é $bp?"
-mcset pt welcTxt1 "$bp es un programa Tcl que es desarrollado para el proyecto 'Biblia 2.0' \n\n'Biblia 2.0' tiene como objetivo difundir $dw en un número creciente de idiomas. \n $dw consta de 2 versículos bíblicos seleccionados para cada día del año. \n\n$bp puede visualizar $dw de muchas formas en tu ordenardor:"
+mcset pt welcTxt1 "$bp é um programa Tcl que é desenvolvido para o projeto 'Bíblia 2.0' cujo objetivo é divulgar $dw em mais e mais línguas do mundo.\n\n$dw consiste em dois versículos da Bíblia selecionados para cada dia do ano.\n\n$bp pode mostrar $dw de várias maneiras em seu computador:"
 mcset pt welcSubtit2 "¿Cuáles son tus opciones?"
 mcset pt welcTxt2 "\u27a4 [mc bibletexts]: selecciona cualquier número de ediciones o idiomas de la Biblia para $dw
 \u27a4 [mc desktop]: mira $dw en tus fotos personales

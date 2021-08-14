@@ -1,10 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupWelcome.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6aug21 pv
-
-#Pack flags defined & built in SetupBuildGui!
-pack .en .de .es -in .ftop -side right
+# Updated: 14aug21 pv
 
 #Set frames MainLeft + MainRight
 pack [frame .welcomeLeftMainF]  -in .welcomeF -fill y -anchor nw -side left -padx $px

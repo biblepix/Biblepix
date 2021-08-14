@@ -6,6 +6,7 @@
 source $SetupTools
 source $TwdTools
 setTexts $lang
+#set flagL [setFlags]
 
 #Set general X vars & Main Window width
 set screenX [winfo screenwidth .]
@@ -24,6 +25,7 @@ catch {font create bpfont4 -family TkCaptionFont -size 30 -weight bold}
 #Create frames
 pack [frame .fbottom] -fill x -side bottom
 pack [frame .ftop] -fill x
+
 #Create notebook
 ttk::notebook .nb -width [expr $wWidth - 50] -height [expr $wHeight - 200]
 pack .nb -fill y -expand true -padx $px -pady $py

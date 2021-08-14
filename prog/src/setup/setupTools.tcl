@@ -209,77 +209,38 @@ proc renameNotebookTabs {} {
 
 # setFlags
 ##draws flags & resets texts upon mouseclick
-##called by SetupBuildGui
+##countries: de en es pt fr
+##called by SetupMainFrame & SetupBuildGui
 proc setFlags {} {
   source $::Flags
 
-#TODO draw + pack globally - best in SetupMainFrameé!!
-  ##draw flag canvases, later packed by...? 
-  flag::show .en -flag {hori blue; x white red; cross white red}
-  flag::show .de -flag {hori black red yellow}
-  flag::show .es -flag {hori red gold+ red}
-  flag::show .fr -flag {vert blue white red}
-  flag::show .pt -flag {vert green red+}
+  lappend flagL .de .es .fr .pt .en
   
-  #Configure English button
-  bind .en <ButtonPress-1> {
-    set lang en
-    setTexts en
+  flag::show .en -flag {hori blue; x white red; cross white red}
+  flag::show .de -flag {hori black red yellow} 
+  flag::show .es -flag {hori red gold+ red} 
+  flag::show .fr -flag {vert blue white red} 
+  flag::show .pt -flag {vert green red+}
+
+  proc btnPress {flag} {
+    set lang [string range $flag 1 2]
+    setTexts $lang
+    $flag conf -relief raised -bd 1
     renameNotebookTabs
-    .manualF.man conf -state normal
-    .manualF.man replace 1.1 end [setManText en]
-    .manualF.man conf -state disabled
-    .en configure -relief flat
+    catch {.manualF.man conf -state normal}
+    catch {.manualF.man replace 1.1 end [setManText $lang]}
   }
-  #Configure Deutsch button
-  bind .de <ButtonPress-1> {
-    set lang de
-    setTexts de
-    renameNotebookTabs
-    .manualF.man conf -state normal
-    .manualF.man replace 1.1 end [setManText de]
-    .de configure -relief flat
-  }
-  #Spanish
-  bind .es <ButtonPress-1> {
-    set lang es
-    setTexts es
-    renameNotebookTabs
-    .manualF.man configure -state normal
-    .manualF.man replace 1.1 end [setManText en]
-    .es conf -relief flat
-  }
-  #French  
-  bind .fr <ButtonPress-1> {
-    set lang fr
-    setTexts fr
-    renameNotebookTabs
-    .manualF.man conf -state normal
-    .manualF.man replace 1.1 end [setManText en]
-    .fr conf -relief flat
-  }
-  #Portuguese
-  bind .pt <ButtonPress-1> {
-    set lang pt
-    setTexts pt
-    renameNotebookTabs
-    .manualF.man conf -state normal
-    .manualF.man replace 1.1 end [setManText en]
-    .pt configure -relief flat
+  proc btnRelease {flag} {
+    $flag conf -relief flat -bd 0
+    catch {.manualF.man conf -state disabled}
   }
 
-#All button release
-  bind .de <ButtonRelease> { .de conf -relief raised}
-  bind .es <ButtonRelease> { .de conf -relief raised}
-  bind .en <ButtonRelease> { .en conf -relief raised}
-  bind .fr <ButtonRelease> { .de conf -relief raised}
-  bind .pt <ButtonRelease> { .de conf -relief raised}
-  .en conf -relief raised
-  .de conf -relief raised
-  .es conf -relief raised
-  .fr conf -relief raised
-  .pt conf -relief raised
-
+  foreach flag $flagL {
+    bind $flag <1> "btnPress $flag"
+    bind $flag <ButtonRelease-1> "btnRelease $flag"
+    #pack $flag -in .ftop -side right
+  }
+  return $flagL
 }
 
 # setManText
@@ -293,7 +254,8 @@ proc setManText {lang} {
 
   if {$lang=="de"} {
     set manFile $ManualD
-  } elseif {$lang=="en"} {
+  #set all else to English for now
+  } else {
     set manFile $ManualE
   }
 
