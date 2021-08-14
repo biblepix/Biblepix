@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9aug21 pv
+# Updated: 14aug21 pv
 source $SetupResizeTools
 source $JList
 
@@ -211,51 +211,74 @@ proc renameNotebookTabs {} {
 ##draws flags & resets texts upon mouseclick
 ##called by SetupBuildGui
 proc setFlags {} {
-  global Flags
-  
-  #Configure language flags
-  source $Flags
+  source $::Flags
+
+#TODO draw + pack globally - best in SetupMainFrameé!!
+  ##draw flag canvases, later packed by...? 
   flag::show .en -flag {hori blue; x white red; cross white red}
   flag::show .de -flag {hori black red yellow}
-  flag::show .es -flag {hori red gold red}
-  .en config -relief raised
-  .de config -relief raised
-  .es conf -relief raised
+  flag::show .es -flag {hori red gold+ red}
+  flag::show .fr -flag {vert blue white red}
+  flag::show .pt -flag {vert green red+}
   
   #Configure English button
   bind .en <ButtonPress-1> {
     set lang en
     setTexts en
     renameNotebookTabs
-    .manualF.man configure -state normal
+    .manualF.man conf -state normal
     .manualF.man replace 1.1 end [setManText en]
-    .manualF.man configure -state disabled
+    .manualF.man conf -state disabled
     .en configure -relief flat
   }
-  
-  bind .en <ButtonRelease> { .en configure -relief raised}
-
   #Configure Deutsch button
   bind .de <ButtonPress-1> {
     set lang de
     setTexts de
     renameNotebookTabs
-    .manualF.man configure -state normal
+    .manualF.man conf -state normal
     .manualF.man replace 1.1 end [setManText de]
     .de configure -relief flat
   }
-  bind .de <ButtonRelease> { .de configure -relief raised}
-
-#TODO testing spanish
+  #Spanish
   bind .es <ButtonPress-1> {
     set lang es
     setTexts es
     renameNotebookTabs
     .manualF.man configure -state normal
     .manualF.man replace 1.1 end [setManText en]
-    .es configure -relief flat
+    .es conf -relief flat
   }
-  bind .es <ButtonRelease> { .de configure -relief raised}
+  #French  
+  bind .fr <ButtonPress-1> {
+    set lang fr
+    setTexts fr
+    renameNotebookTabs
+    .manualF.man conf -state normal
+    .manualF.man replace 1.1 end [setManText en]
+    .fr conf -relief flat
+  }
+  #Portuguese
+  bind .pt <ButtonPress-1> {
+    set lang pt
+    setTexts pt
+    renameNotebookTabs
+    .manualF.man conf -state normal
+    .manualF.man replace 1.1 end [setManText en]
+    .pt configure -relief flat
+  }
+
+#All button release
+  bind .de <ButtonRelease> { .de conf -relief raised}
+  bind .es <ButtonRelease> { .de conf -relief raised}
+  bind .en <ButtonRelease> { .en conf -relief raised}
+  bind .fr <ButtonRelease> { .de conf -relief raised}
+  bind .pt <ButtonRelease> { .de conf -relief raised}
+  .en conf -relief raised
+  .de conf -relief raised
+  .es conf -relief raised
+  .fr conf -relief raised
+  .pt conf -relief raised
 
 }
 

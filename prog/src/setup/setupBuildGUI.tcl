@@ -4,6 +4,7 @@
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 11aug21 pv
 
+#Set up flags on righ
 setFlags
 source $TwdTools
 
@@ -35,7 +36,7 @@ if {$wHeight < 700} {
 font create bpfont2 -family TkHeadingFont -size 12 -weight bold
 font create bpfont3 -family TkCaptionFont -size 18
 
-#TODO this must be tested for Ar. and Hebrew on all platforms!
+#TODO tested for Ar. and Hebrew on Unix, some display probs with Heb. font
 font create twdwidgetfont
 set avfontsize [font conf bpfont1 -size]
 font conf twdwidgetfont -family TkTextFont -size [expr int($avfontsize * 1.3)]

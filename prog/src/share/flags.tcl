@@ -3,10 +3,13 @@
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 6apr2017
 
-#Thanks to Richard Suchenwirth, wiki.tcl.tk
-#Usage: flag::show canvas args    
-# for example:
-# flag::show .gb -flag {hori blue; x white red; cross white red}
+#Thanks to Richard Suchenwirth, https://wiki.tcl-lang.org/page/Describing+and+rendering+flags+in+Tcl
+#Usage: flag::show canvas args
+##example:
+##flag::show .gb -flag {hori blue; x white red; cross white red}
+##flag::show .pt -flag {hori green red+} -- (+)plus sign widens area
+
+#called by setFlags in SetupBuildGui
  namespace eval flag {
     proc show {c args} {
         array set opt [concat {-x 0 -y 0 -w 0 -h 0 -flag {}} $args]
@@ -22,7 +25,7 @@
             if [regexp " *set " $i] {eval $i}
         } ;# do changes in geometry before creation
         if ![winfo exists $c] {
-            canvas $c -width $w -height $h -bg white -relief raised -borderwidth 1
+          canvas $c -width $w -height $h -bg white -relief raised -borderwidth 1
         }
         set b [$c cget -borderwidth]
         eval $opt(-flag)

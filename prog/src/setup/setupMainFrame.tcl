@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4aug21 pv
+# Updated: 14aug21 pv
 source $SetupTools
 source $TwdTools
 setTexts $lang
@@ -27,7 +27,7 @@ pack [frame .ftop] -fill x
 #Create notebook
 ttk::notebook .nb -width [expr $wWidth - 50] -height [expr $wHeight - 200]
 pack .nb -fill y -expand true -padx $px -pady $py
-#Create Title (LOGO to be created later)
+#Create notebook title (LOGO + Flags to be created later)
 ttk::label .ftop.titelmitlogo -textvar msg::bpsetup -font bpfont4 -padding 5
 pack .ftop.titelmitlogo -side left
 

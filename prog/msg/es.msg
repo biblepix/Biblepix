@@ -1,15 +1,17 @@
-# ~/Biblepix/prog/msg/de.msg
+# ~/Biblepix/prog/msg/es.msg
 # German texts in msgcat format
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 13aug21 pv
+# Updated: 14aug21 pv
+
+# U N T R A N S L A T A B L E S
 set bp {BiblePix}
 set dw {'La Palabra'}
-
 mcset es dw $dw
 mcset es bp $bp
-mcset es bpsetup "Programa de instalación de $bp"
+
+mcset es bpsetup "Configuración de $bp"
 mcset es actualiza "Actualizar"
 mcset es eliminar "Eliminar archivo"
 #Buttons
@@ -30,9 +32,9 @@ mcset es manual "Manual"
 mcset es delete "Borrar"
 # W E L C O M E 
 mcset es next "Siguiente \u25bc"
-mcset es welcTit "¡Bienvenido al programa de instalación de $bp!"
+mcset es welcTit "¡Bienvenido a la [mc bpsetup]!"
 mcset es welcSubtit1 "¿Qué es $bp?"
-mcset es welcTxt1 "$bp es un programa Tcl que se está desarrollando para el proyecto 'Biblia 2.0' \n\n'Biblia 2.0' tiene como objetivo difundir $dw en un número creciente de idiomas. \n $dw consta de 2 versículos bíblicos seleccionados para cada día del año. \n\n$bp puede visualizar $dw de muchas formas en tu ordenardor:"
+mcset es welcTxt1 "$bp es un programa Tcl que es desarrollado para el proyecto 'Biblia 2.0' \n\n'Biblia 2.0' tiene como objetivo difundir $dw en un número creciente de idiomas. \n $dw consta de 2 versículos bíblicos seleccionados para cada día del año. \n\n$bp puede visualizar $dw de muchas formas en tu ordenardor:"
 mcset es welcSubtit2 "¿Cuáles son tus opciones?"
 mcset es welcTxt2 "\u27a4 [mc bibletexts]: selecciona cualquier número de ediciones o idiomas de la Biblia para $dw
 \u27a4 [mc desktop]: mira $dw en tus fotos personales
@@ -69,7 +71,7 @@ mcset es f1Txt "$bp ofrece $dw en todas las lenguas y ediciones de la Biblia ins
 mcset es f2Tit "$dw en el fondo de escritorio"
 mcset es f2Box "Generar imagen de fondo"
 mcset es f2Farbe "Color de fuente: "
-mcset es f2Slideshow "Activar presentación de diapositivas"
+mcset es f2Slideshow "Activar presentaci³n de diapositivas"
 mcset es f2Interval "Cambio de imagen cada "
 mcset es sec "segundos"
 mcset es f2Introline "Mostrar fecha"
