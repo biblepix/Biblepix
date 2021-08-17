@@ -31,7 +31,7 @@ mcset pt terminal "Console"
 mcset pt manual "Manual"
 # W E L C O M E 
 mcset pt next "Seguinte \u25bc"
-mcset pt welcTit "Bem-vindo a [mc bpsetup]!"
+mcset pt welcTit "[mc welcome] á [mc bpsetup]!"
 mcset pt welcSubtit1 "O que é $bp?"
 mcset pt welcTxt1 "$bp é um programa Tcl que é desenvolvido para o projeto 'Bíblia 2.0' cujo objetivo é divulgar $dw em cada vez mais línguas do mundo. \n\n$dw consiste em dois versículos bíblicos selecionados para cada dia do ano. \n\n$bp pode exibir $dw de várias maneiras em seu computador: "
 mcset pt welcSubtit2 "Quais são suas opções?"

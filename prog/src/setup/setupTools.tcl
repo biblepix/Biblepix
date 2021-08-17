@@ -209,18 +209,21 @@ proc renameNotebookTabs {} {
 
 # setFlags
 ##draws flags & resets texts upon mouseclick
-##countries: de en es pt fr
+##countries: de en es pt fr ar zh (it)
 ##called by SetupMainFrame & SetupBuildGui
 proc setFlags {} {
   source $::Flags
 
   #Draw flag canvasses
-  lappend flagL .de .fr .es .pt .en
+  lappend flagL .de .fr .es .pt .en .zh
   flag::show .en -flag {hori blue; x white red; cross white red}
   flag::show .de -flag {hori black red yellow} 
-  flag::show .es -flag {hori red gold+ red} 
+  flag::show .es -flag {hori red gold+ red; circle brown} 
   flag::show .fr -flag {vert blue white red} 
-  flag::show .pt -flag {vert green red+}
+  flag::show .pt -flag {vert green red+ ; circle gold}
+  #flag::show .it -flag {vert green3 white red}
+  #flag::show .ar -flag {}
+  flag::show .zh -flag {hori red; tlsq red; circle gold}
 
   proc btnPress {flag} {
     set lang [string range $flag 1 2]
@@ -229,6 +232,8 @@ proc setFlags {} {
     renameNotebookTabs
     catch {.manualF.man conf -state normal}
     catch {.manualF.man replace 1.1 end [setManText $lang]}
+    ##set lang globally
+    set ::lang $lang
   }
   proc btnRelease {flag} {
     $flag conf -relief flat -bd 0
@@ -237,7 +242,6 @@ proc setFlags {} {
   
   #TODO TESTING - this interacts badly with above 2 procs!
   # Create a menu
-  
   proc btnHover {lang} 	{
 
               set m [menu .popupMenu]

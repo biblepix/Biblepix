@@ -3,18 +3,15 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 14aug21 pv
+# Updated: 17aug21 pv
 
 # U N T R A N S L A T A B L E S
-mcset {} packageRequire {
-* apt-get install [PACKAGE NAME] (Debian/Ubuntu)
-* emerge [PACKAGE NAME] (Gentoo)
-}
-
-# G E N E R A L
 set bp "BiblePix"
 set dw {'La Parole'}
-mcset fr bpsetup "$bp Einrichtungsprogramm"
+mcset fr dw $dw
+mcset fr bp $bp
+# G E N E R A L
+mcset fr bpsetup "$Configuration de $bp"
 mcset fr refresh "Aktualisieren"
 mcset fr delete "Datei löschen"
 mcset fr ok "Ok"
@@ -32,13 +29,10 @@ mcset fr email "E-Mail-Signatur"
 mcset fr terminal "Terminal/Konsole"
 mcset fr manual "Handbuch"
 mcset fr packageRequireMissing "$bp benötigt die Tcl-Erweiterung '%s'. Bitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in eine Konsole (als root oder sudo): [mc packageRequire]"
-##untranslatable
-mcset fr dw $dw
-mcset fr bp $bp
 
 # W E L C O M E 
 mcset fr next "Nächstes \u25bc"
-mcset fr welcTit "Willkommen beim Einrichtungsprogramm von $bp!"
+mcset fr welcTit "Willkommen beim $bpsetup!"
 mcset fr welcSubtit1 "Was ist $bp?"
 mcset fr welcTxt1 "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' entwickelt wird.\n\n'Bibel 2.0' setzt sich zum Ziel, $dw in einer wachsenden Anzahl von Sprachen zu verbreiten.\n$dw besteht aus 2 ausgewählten Bibelsprüchen für jeden Tag des Jahres.\n\n$bp kann $dw in vielfältiger Weise auf Ihrem PC anzeigen."
 mcset fr welcSubtit2 "Was sind Ihre Möglichkeiten?"

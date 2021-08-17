@@ -1,26 +1,35 @@
 # ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 6jun21 pv
+# Updated: 17aug21 pv
 
 #Source Config and LoadConfig for defaults
 if [catch {source $Config}] {
   file mkdir $confdir
 }
 
-#Set lang var to English or German, depending if system lang found
+#Set system lang from Conf (fallback: en)
 if ![info exists lang] {
   set lang en
 
+  #reset for Win
   if {$platform=="windows"} {
+  
+    #set Win user lang from registry
     package require registry
-    if ![catch {set userlang [registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\] InstallLanguage]} ] {
-      #code 4stellig, alle Deutsch enden mit 07
-      if { [string range $userlang 2 3] == 07 } {
-        set lang de
-      }
+    if ![catch {set locale [registry get [join {HKEY_CURRENT_USER {Control Panel} International} \\] LocaleName]} ] {
+      set lang [string range $locale 0 1]
     }
+  
+#THIS WAS FOR SYSTEM INSTALL LANGUAGE, ABOVE SHOULD WORK BETTER FOR ANY LANGUAGE!
+#    if ![catch {set userlang [registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\] InstallLanguage]} ] {
+#      #code 4stellig, alle Deutsch enden mit 07
+#      if { [string range $userlang 2 3] == 07 } {
+#        set lang de
+#      }
+#    }
     
+  #reset for Linux
   } elseif {$platform=="unix"} {
   
     if [info exists env(LANG)] {
@@ -29,6 +38,7 @@ if ![info exists lang] {
     if {[info exists syslangCode] && $syslangCode == "de"} {
       set lang de
     }
+    #set Pictures dir for Linux
     if ![info exists DesktopPicturesDir] {
       set DesktopPicturesDir $HOME
     }

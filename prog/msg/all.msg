@@ -1,7 +1,7 @@
 #Biblepix/prog/msg/all.msg
 # loaded by msgcat for untranslatables
 # sourced by setTexts with lang variable
-# Updated 13aug21 pv
+# Updated 17aug21 pv
 
 #Untranslatable fix texts for msgcat
 mcset {} www {https://biblepix.vollmar.ch}
