@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 13aug21 pv
+# Updated: 14aug21 pv
 
 # U N T R A N S L A T A B L E S
 mcset {} packageRequire {

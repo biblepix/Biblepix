@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 14aug21 pv
+# Updated: 17aug21 pv
 
 # U N T R A N S L A T A B L E S
 set bp {BiblePix}
@@ -12,8 +12,8 @@ mcset es dw $dw
 mcset es bp $bp
 
 mcset es bpsetup "Configuración de $bp"
-mcset es actualiza "Actualizar"
-mcset es eliminar "Eliminar archivo"
+mcset es refresh "Actualizar"
+mcset es delete "Borrar"
 #Buttons
 mcset es ok "Ok"
 mcset es cancel "Abortar"
@@ -29,7 +29,7 @@ mcset es photos "Fotos"
 mcset es email "Firma de correo electrónico"
 mcset es terminal "Consola"
 mcset es manual "Manual"
-mcset es delete "Borrar"
+
 # W E L C O M E 
 mcset es next "Siguiente \u25bc"
 mcset es welcTit "¡Bienvenido a la [mc bpsetup]!"

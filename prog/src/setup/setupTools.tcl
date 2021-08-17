@@ -214,8 +214,8 @@ proc renameNotebookTabs {} {
 proc setFlags {} {
   source $::Flags
 
-  lappend flagL .de .es .fr .pt .en
-  
+  #Draw flag canvasses
+  lappend flagL .de .fr .es .pt .en
   flag::show .en -flag {hori blue; x white red; cross white red}
   flag::show .de -flag {hori black red yellow} 
   flag::show .es -flag {hori red gold+ red} 
@@ -234,14 +234,36 @@ proc setFlags {} {
     $flag conf -relief flat -bd 0
     catch {.manualF.man conf -state disabled}
   }
+  
+  #TODO TESTING - this interacts badly with above 2 procs!
+  # Create a menu
+  
+  proc btnHover {lang} 	{
+
+              set m [menu .popupMenu]
+              $m add command -label "Example 1" -command bell
+              $m add command -label "Example 2" -command bell
+
+              # Create something to attach it to
+              pack [label .l -text "Click me!"]
+
+              # Arrange for the menu to pop up when the label is clicked
+              bind .l <1> {tk_popup .popupMenu %X %Y}
+          
+  
+  
+}
 
   foreach flag $flagL {
     bind $flag <1> "btnPress $flag"
     bind $flag <ButtonRelease-1> "btnRelease $flag"
-    #pack $flag -in .ftop -side right
+#    bind $flag <Enter> "btnHover $flag"
+#    bind $flag <Leave> "btnLeave $flag"
   }
+  
   return $flagL
-}
+  
+} ;#END setFlags
 
 # setManText
 ## Formats Manual & switches between languages
