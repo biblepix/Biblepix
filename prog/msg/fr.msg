@@ -11,31 +11,31 @@ set dw {'La Parole'}
 mcset fr dw $dw
 mcset fr bp $bp
 # G E N E R A L
-mcset fr bpsetup "$Configuration de $bp"
-mcset fr refresh "Aktualisieren"
+mcset fr bpsetup "Configurateur de $bp"
+mcset fr refresh "Actualiser"
 mcset fr delete "Datei löschen"
 mcset fr ok "Ok"
 mcset fr cancel "Abbruch"
-mcset fr close "Schliessen"
+mcset fr close "Fermer"
 mcset fr save "Speichern"
 mcset fr saveSettings "Einstellungen speichern"
 mcset fr random "zufällig"
 mcset fr uninst "$bp deinstallieren"
-mcset fr welcome "Willkommen"
-mcset fr bibletexts "Bibeltexte"
-mcset fr desktop "Hintergrundbild"
+mcset fr welcome "Bienvenu"
+mcset fr bibletexts "Textes bibliques"
+mcset fr desktop "Image de fond"
 mcset fr photos "Fotos"
-mcset fr email "E-Mail-Signatur"
-mcset fr terminal "Terminal/Konsole"
+mcset fr email "Signature e-mail"
+mcset fr terminal "Terminal"
 mcset fr manual "Handbuch"
-mcset fr packageRequireMissing "$bp benötigt die Tcl-Erweiterung '%s'. Bitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in eine Konsole (als root oder sudo): [mc packageRequire]"
+mcset fr packageRequireMissing "$bp a besoin de l'extension Tcl '%s'. Veuillez l'installer  Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in eine Konsole (als root oder sudo): [mc packageRequire]"
 
 # W E L C O M E 
 mcset fr next "Nächstes \u25bc"
-mcset fr welcTit "Willkommen beim $bpsetup!"
+mcset fr welcTit "[mc welcome] au $bpsetup!"
 mcset fr welcSubtit1 "Was ist $bp?"
 mcset fr welcTxt1 "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' entwickelt wird.\n\n'Bibel 2.0' setzt sich zum Ziel, $dw in einer wachsenden Anzahl von Sprachen zu verbreiten.\n$dw besteht aus 2 ausgewählten Bibelsprüchen für jeden Tag des Jahres.\n\n$bp kann $dw in vielfältiger Weise auf Ihrem PC anzeigen."
-mcset fr welcSubtit2 "Was sind Ihre Möglichkeiten?"
+mcset fr welcSubtit2 "Quelles sont vos possibilités?"
 mcset fr welcTxt2 "\u27a4 [mc bibletexts]: Wählen Sie beliebig viele Bibelausgaben und -sprachen für $dw
 \u27a4 [mc desktop]: Betrachten Sie $dw auf Ihren persönlichen Fotos
 \u27a4 [mc photos]: Wählen Sie eigene Hintergrundbilder für $bp aus

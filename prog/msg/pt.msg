@@ -2,8 +2,10 @@
 # German texts in msgcat format
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
-#INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 17aug21 pv
+##INFO: Textmenge ca. 1900 W. -
+## (100 mcset * 3 W. =) -300 W.
+## (Comments) -20 (variables ($) -80 = 1500 W.
+# Updated: 19aug21 pv
 
 #UNTRANSLATABLES
 set bp {BiblePix}
