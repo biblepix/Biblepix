@@ -7,7 +7,7 @@
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S "......"
 ## e.g.:  of  
-##    mcset yourlanguage "..."    - only replace quoted text  "....."
+##    mcset yourlanguage code "..."    - only replace quoted text  "....."
 ############################################################################################################
 
 ################################################################################
@@ -18,6 +18,7 @@
 ## - ANY PHRASE WITHIN SQUARE BRACKETS [...]
 ## - ANY FORMATTING MARKERS LIKE \n \n\n \t \u... etc.
 ## - ANY PHRASE STARTING WITH 'set'
+## - ANY WORD STARTING WITH %
 ################################################################################
 set bp "BiblePix"
 set dw {'Słowo'}

@@ -22,6 +22,7 @@
 ## - ANY PHRASE WITHIN SQUARE BRACKETS [...]
 ## - ANY FORMATTING MARKERS LIKE \n \n\n \t \u... etc.
 ## - ANY PHRASE STARTING WITH 'set'
+## - ANY WORD STARTING WITH %
 ################################################################################
 
 set bp "圣经图文"
