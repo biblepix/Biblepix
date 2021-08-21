@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 17aug21 pv
+# Updated: 21aug21 pv
 
 # U N T R A N S L A T A B L E S
 set bp "BibelPix"
@@ -15,7 +15,7 @@ mcset {} packageRequire {
 * emerge [PACKAGE NAME] (Gentoo)
 }
 # G E N E R A L
-mcset de bpsetup "$bp-Einrichtungsprogramm"
+mcset de bpsetup "$bp einrichten"
 mcset de refresh "Aktualisieren"
 mcset de delete "Datei löschen"
 mcset de ok "Ok"

@@ -32,7 +32,7 @@ mcset fr packageRequireMissing "$bp a besoin de l'extension Tcl '%s'. Veuillez l
 
 # W E L C O M E 
 mcset fr next "Prochain \u25bc"
-mcset fr welcTit "[mc welcome] au [mc bpsetup]!"
+mcset fr welcTit "[mc welcome] à la [mc bpsetup]!"
 mcset fr welcSubtit1 "Qu'est-ce qui est $bp?"
 mcset fr welcTxt1 "$bp est un programme Tcl qui est développé pour le projet 'Bible 2.0'. \n\n'Bible 2.0' vise à diffuser $dw dans un nombre croissant de langues. \n$dw se compose de 2 versets de la Bible sélectionnés pour chaque jour de l'année. \n\n$bp peut visualiser $dw de plusieurs manières sur votre PC:"
 mcset fr welcSubtit2 "Quelles sont vos possibilités?"
