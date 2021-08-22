@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14aug21 pv
+# Updated: 22aug21 pv
 source $SetupResizeTools
 source $JList
 
@@ -215,12 +215,13 @@ proc setFlags {} {
   source $::Flags
 
   #Draw flag canvasses
-  lappend flagL .de .fr .es .pt .en .zh
+  lappend flagL .de .fr .pl .es .pt .en .zh
   flag::show .en -flag {hori blue; x white red; cross white red}
   flag::show .de -flag {hori black red yellow} 
   flag::show .es -flag {hori red gold+ red; circle brown} 
   flag::show .fr -flag {vert blue white red} 
   flag::show .pt -flag {vert green red+ ; circle gold}
+  flag::show .pl -flag {hori white red}
   #flag::show .it -flag {vert green3 white red}
   #flag::show .ar -flag {}
   flag::show .zh -flag {hori red; tlsq red; circle gold}
