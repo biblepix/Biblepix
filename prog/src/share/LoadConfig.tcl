@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/share/LoadConfig.tcl
+	# ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 17aug21 pv
+# Updated: 24aug21 pv
 
 #Source Config and LoadConfig for defaults
 if [catch {source $Config}] {
@@ -10,44 +10,46 @@ if [catch {source $Config}] {
 
 #Set system lang from Conf (fallback: en)
 if ![info exists lang] {
-  set lang en
 
   #reset for Win
   if {$platform=="windows"} {
   
-    #set Win user lang from registry
+    ##get user lang from registry
     package require registry
     if ![catch {set locale [registry get [join {HKEY_CURRENT_USER {Control Panel} International} \\] LocaleName]} ] {
-      set lang [string range $locale 0 1]
+      set syslangCode [string range $locale 0 1]
     }
-  
-#THIS WAS FOR SYSTEM INSTALL LANGUAGE, ABOVE SHOULD WORK BETTER FOR ANY LANGUAGE!
-#    if ![catch {set userlang [registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\] InstallLanguage]} ] {
-#      #code 4stellig, alle Deutsch enden mit 07
-#      if { [string range $userlang 2 3] == 07 } {
-#        set lang de
-#      }
-#    }
-    
+#NOTE: THIS WAS TO EXTRACT SYSTEM INSTALL LANGUAGE NUMBER CODE, but above gets user lang
+## registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\	] InstallLanguage    
   #reset for Linux
   } elseif {$platform=="unix"} {
   
     if [info exists env(LANG)] {
       set syslangCode [string range $env(LANG) 0 1]
     }
-    if {[info exists syslangCode] && $syslangCode == "de"} {
-      set lang de
-    }
-    #set Pictures dir for Linux
-    if ![info exists DesktopPicturesDir] {
-      set DesktopPicturesDir $HOME
+  }
+
+  #compare syslangCode with langs in $msgdir
+  if [info exists syslangCode] {
+    set msgL [glob -directory $msgdir -tail *.msg]
+    if {[string first $syslangCode $msgL] >= 0} {
+      set lang $syslangCode
+    } else {
+      set lang "en"
     }
   }
 }
+
+#Populate sigLangList with at least $lang
 if ![info exists sigLanglist] {
   set sigLanglist $lang
 }
- 
+
+#Linux: set user picdir to $HOME
+if ![info exists DesktopPicturesDir] {
+  set DesktopPicturesDir "$env(HOME)"
+}
+
 #Set Intro
 if ![info exists enabletitle] {
   set enabletitle 1

@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 2aug21 pv 
+# Updated : 24aug21 pv 
 
 # Return to INTERNATIONAL section if $twddir empty
 if [catch {glob $twddir/*$jahr.twd}] {
@@ -86,7 +86,7 @@ if ![info exists Httpmock] {
   set Httpmock 0
 }
 puts $chan "set Debug $Debug"
-puts $chan "set Httmock $Httpmock"
+puts $chan "set Httpmock $Httpmock"
 
 #3.Write Linux vars to $Config
 if {$os == "Linux"} {

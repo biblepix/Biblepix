@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 14aug21 pv
+# Updated: 24aug21 pv
 set version "4.0"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -118,7 +118,7 @@ lappend filePathL [set pt_msg [file join $msgdir pt.msg]]
 lappend filePathL [set pl_msg [file join $msgdir pl.msg]]
 #lappend filePathL [set ar_msg [file join $msgdir ar.msg]]
 #lappend filePathL [set ru_msg [file join $msgdir ru.msg]]
-#lappend filePathL [set zh_msg [file join $msgdir zh.msg]]
+lappend filePathL [set zh_msg [file join $msgdir zh.msg]]
 
 ##make complete pathlist for use in makeDirs
 ##export name vars for use in all procs
@@ -183,7 +183,7 @@ set lumFactor3 0.2
 #Bildformate & DesktopPicturesDir
 if {$platform == "unix"} {
   set HOME $env(HOME)
-  #DesktopPicturesDir changes with languages > variable in Config & switch in LoadConfig
+  ##Note:DesktopPicturesDir changes with languages > variable in Config & switch in LoadConfig
   set types {
     { {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
   }
