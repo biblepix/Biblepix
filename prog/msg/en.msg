@@ -135,6 +135,12 @@ mcset en winChangeDesktopProb "We are having a problem changing your Desktop bac
 mcset en linChangeDesktopProb "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgdir as new image path."
 mcset en linNoDesktopFound "No Llinux Desktop detected! Please find out in the manual how to manually set up the $bp background picture."
 mcset en linReloadingDesktop "We shall now try to reload your Desktop. If this fails, please log out and in again for the $bp settings to take effect."
-mcset en changeDesktopOk "$bp has been configured successfully and will start shortly.\n\nYou can run the $bp Setup program anytime by selecting the \"$bp Setup\" icon in the Program Menu (Linux) or by right-click on your Desktop (Windows)."
+
+if {$os=="Linux"} {
+  mcset en changeDesktopOk "$bp has been configured successfully and will start shortly.\n\nYou can run the $bp Setup program anytime by selecting the \"$bp Setup\" icon in the Program Menu"
+} else {
+  mcset en changeDesktopOk "$bp has been configured successfully and will start shortly.\n\nYou can run the $bp Setup program anytime by right-clicking on an free spot on your Desktop and choosing the \"$bp Setup\" icon."
+}
+
 mcset en winRegister "$bp will no try to register with your system.\nYou must confirm any dialogue boxes with \"Yes\"."
 mcset en winRegisterProb "$bp has not been registered properly on your computer.\nPlease try rerunning Setup, or add \n\t$Biblepix\n to your Autostart folder."

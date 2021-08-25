@@ -139,6 +139,7 @@ mcset zh winChangeDesktopProb "我们在更改您的桌面背景遇到了问题.
 mcset zh linChangeDesktopProb "我们在更改您的桌面设置遇到了问题.\n请用右键点击您桌面并找到'背景图像'对话框. 将$imgdir作为新的图像路径."
 mcset zh linNoDesktopFound "没有找到Llinux桌面!请参阅手册以了解如何手动设置$bp背景图."
 mcset zh linReloadingDesktop "我们现在将尝试重新加载您的桌面.如果失败,请注销并重新登陆以使$bp设置生效."
+
 mcset zh changeDesktopOk "$bp已成功配置，将很快启动.\n\n您可以随时运行$bp安装程序,方法是在程序菜单(Linux)中选择 \"$bp Setup\" 图标或右键单击您的桌面(窗口)."
 mcset zh winRegister "$bp将不会尝试在您的系统中注册.\n您必须用\"是\"确认所有对话框."
 mcset zh winRegisterProb "$bp未在您的计算机上正确注册.\n请尝试重新运行安装程序,或将\n$$bp\n添加到您的自动文件夹中."
