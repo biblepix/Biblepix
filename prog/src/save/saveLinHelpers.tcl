@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25may21 pv
+# Updated: 28aug21 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -378,7 +378,7 @@ proc setupLinMenu {} {
   set desktopText "\[Desktop Entry\]
 Name=$bp Setup
 Type=Application
-Icon=$LinIcon
+Icon=$LinIconSvg
 Categories=$categories
 Comment=Runs & configures $bp
 Exec=$Setup
@@ -652,17 +652,17 @@ proc setupXfce4Background {} {
 } ;#END setupXfce4Background
 
 # setupGnomeBackground
-##configures Gnome single pic
-##setting up slideshow not needed because Gnome detects picture change automatically
+##configures Gnome single pic PNG (BMP would also work)
+##Slideshow not needed because Gnome detects picture change automatically
 ##called by SaveLin
 ##return codes: 0 = success / 1 = Gnome not found / 2 = error  
 proc setupGnomeBackground {} {
-  #Gnome2
-  if {[auto_execok gconftool-2] != ""} {
-    catch {exec gconftool-2 --type=string --set /desktop/gnome/background/picture_filename $::TwdPNG} errCode
   #Gnome3
-  } elseif {[auto_execok gsettings] != ""} {
-    catch {exec gsettings set org.gnome.desktop.background picture-uri file:///$::TwdBMP} errCode
+  if {[auto_execok gsettings] != ""} {
+    catch {exec gsettings set org.gnome.desktop.background picture-uri file://$::TwdPNG} errCode
+  #Gnome2
+  } elseif {[auto_execok gconftool-2] != ""} {
+    catch {exec gconftool-2 --type=string --set /desktop/gnome/background/picture_filename $::TwdPNG} errCode
   #no Gnome
   } else {
     return 1
