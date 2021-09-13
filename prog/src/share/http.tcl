@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2aug21 pv
+# Updated: 8sep21 pv
 package require http
 
 # checkTls
@@ -38,11 +38,11 @@ proc runHTTP isInitial {
     #Download all registered files & fonts
     foreach filepath $filePathList {
     
-      ##avoid Chinese if not needed (rechecked in downloadTwdFile)
-      if {$filepath == $::ChinaFont} {
-        continue
-      }
-    downloadFileFromRelease $filepath $isInitial
+##avoid Chinese if not needed (rechecked in downloadTwdFile)
+#      if {$filepath == $::ChinaFont} {
+#        continue
+#      }
+      downloadFileFromRelease $filepath $isInitial
     }
 
     #Success message (source Texts again for Initial)
@@ -285,7 +285,7 @@ proc getRemoteTWDFileList {} {
   return $status
 }
 
-#TODO called by?
+#TODO called by ??
 proc downloadTWDFiles {} {
   global twddir jahr
   
@@ -309,20 +309,47 @@ proc downloadTWDFiles {} {
 
     NewsHandler::QueryNews "Downloading $filename..." lightblue
 
-    if [regexp zh- $url] {
-      set filePath $::ChinaFont
-      downloadFileFromRelease $filePath 0
-    }
-
     #Download file & recreate Twd lists
     downloadTwdFile $filename $jahr
     after 3000
-    .internationalF.f1.twdlocal insert end $filename
-  }
+    .internationalF.f1.twdlocal insert end $filename  
+    
+    #If Chinese or Thai: download font files also 
+    set lang [string range $filename 0 1]
+    if {$lang == "zh" || $lang == "th"} {
+      after 2000 source $Globals
+      after idle downloadAsianFont $lang
+    }
+  
+  } ;#END foreach
+  
   #deselect all downloaded files
   .twdremoteLB selection clear 0 end
-}
 
+} ;#END downloadTWDFiles
+
+# downloadAsianFont
+##downloads Chinese or Thai fonts if required
+##called by downloadTWDFiles 
+proc downloadAsianFont {lang} {
+  global fontPathL
+  
+  #Get font list indices
+  if {$lang == "zh"} {
+    set indexL [lsearch -all -regexp {Chinafont} $fontPathL]
+  } elseif {$lang == "th"} {
+    set indexL [lsearch -all -regexp {Thaifont} $fontPathL]
+  } else {
+    return 1
+  }
+  NewsHandler::QueryNews "[mc downloadingAsianFont]" orange
+  
+  #Download fonts if new
+  foreach ind $indexL {
+    downloadFileFromRelease [lindex $ind $indexL]
+  }
+  NewsHandler::QueryNews "[mc downloadComplete]" lightgreen
+}
 
 ###############################################################################
 ########## BASIC PROCS ########################################################

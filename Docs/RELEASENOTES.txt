@@ -1,5 +1,10 @@
 B i b l e P i x   R e l e a s e   N o t e s
 
+Version 4.1
+
+* 5 font sizes available (added 12pt)
+* Thai and Chinese fonts in all sizes and variants
+
 Shift from version 3.1 to 4.0
 
 F i x e d   b u g s

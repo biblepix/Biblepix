@@ -2,89 +2,74 @@
 # Top level BDF printing prog
 # sourced by Image
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 14jul21 pv
+# Updated: 13sep21 pv
 source $TwdTools
 source $BdfTools
 source $ImgTools
-
 set TwdLang [getTwdLang $TwdFileName]
 set RtL [isRtL $TwdLang]
 puts $TwdLang
 
-set fw ""
-if {$fontweight == "bold"} {
-  set fw B
-}
-
 # S O U R C E   F O N T S   I N T O   N A M E S P A C E S
 
-##Chinese: (regular_24)
+#Add fontfamily to fontname
 if {$TwdLang == "zh"} {
-  set ::prefix Z
-
-  if ![namespace exists Z] {
-    namespace eval Z {
-      source -encoding utf-8 $ChinaFont
-    }
-  }
-##Thai: (regular_20)
+  set fontfam Chinafont
 } elseif {$TwdLang == "th"} {
-  set ::prefix T
-  if ![namespace exists T] {
-    namespace eval T {
-      source -encoding utf-8 $ThaiFont
-    }
-  }
+  set fontfam Thaifont
+} elseif {$fontfamily == "Serif"} {
+  set fontfam Times
+} elseif {$fontfamily == "Sans"} {
+  set fontfam Arial
+}
 
-##All else: Regular / Bold / Italic
+#Add fontweight to fontname
+if {$fontweight == "bold"} {
+  set ::prefix B
 } else {
+  set ::prefix R
+}
 
-  if {$fontfamily == "Serif" } {
-    set fontfam Times
-  } {
-    set fontfam Arial
-  }
-
-  if {$fontweight == "bold"} {
-    set ::prefix B
-  } else {
-    set ::prefix R
-  }
-
-  if {! [namespace exists R] && $fontweight != "bold"} {
-  
-    catch {unset fontname}  
-    append fontname $fontfam $fontsize 
-    set fnpath [set $fontname]
-    namespace eval R {
-      source -encoding utf-8 $::fnpath
-    }
-  }
-  
-  #Source Italic for all except Asian
-  if ![namespace exists I] {
-  
+#Set Regular namespace
+if { $fontweight != "bold"} {
+  namespace eval R {}
   catch {unset fontname}
-  append fontname $fontfam I $fontsize 
-    set fnpath [set $fontname]
-    namespace eval I {
-      source -encoding utf-8 $::fnpath
-    }
-  }
+  append fontname $fontfam $fontsize 
+  set R::fontpath [set $fontname]
   
-  #Source Bold if $enabletitle OR $fontweight==bold
-  if {$enabletitle || $fontweight == "bold"} { 
-    if ![namespace exists B] {
-    catch {unset fontname}
-    append fontname $fontfam B $fontsize 
-    set fnpath [set $fontname]
-      namespace eval B {
-        source -encoding utf-8 $::fnpath
-      }
-    }
+  namespace eval R {
+    source -encoding utf-8 $fontpath
   }
-
-} ;#END source fonts
+}
+  
+#Set Italic namespace
+namespace eval I {}
+catch {unset fontname}
+if {$TwdLang == "XXzh"} {
+  ##Chinese italic = next smaller
+ # set I::fontpath [setChinafontItalic $fontsize]  
+} else { 
+  append fontname $fontfam I $fontsize 
+  set I::fontpath [set $fontname]
+  namespace eval I {
+    source -encoding utf-8 $fontpath
+  }
+}
+#Set Bold namespace
+if {$enabletitle || $fontweight == "bold"} { 
+  namespace eval B {}
+  catch {unset fontname fnpath}
+  ##Chinese bold = next bigger
+  if {$TwdLang == "zh"} {
+     set B::fontpath [setChinafontBold $fontsize]  
+  } else { 
+    append fontname $fontfam B $fontsize   
+    set B::fontpath [set $fontname]
+  } 
+  namespace eval B {
+    source -encoding utf-8 $fontpath
+  }
+}
 
 
 # 2) C O M P U T E   C O L O U R S   A N D   M A R G I N S

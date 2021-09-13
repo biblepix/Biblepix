@@ -1,12 +1,15 @@
 # ~/Biblepix/prog/font/tools/BdfFontConverters.tcl
 # Tools to provide new fonts for BiblePix BDF version
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29Apr19
+# Updated: aug21
 
 ################ To convert TTF fonts follow these steps: ##################
-# 1. convert TTF to OTF online (https://onlinefontconverter.com: click just OTF, then Select files...)
-# 2. run convertOtf2Bdf
+# PREREQUISITES: emerge dev-python/fonttols dev-libs/libotf
+# 1. convert TTF to OTF online: https://fontconverter.org
+# 2. run convertOtf2Bdf (otf2bdf from dev-libs/libotf)
 # 3. run convertBdf2Tcl
+##NOTE: $Globals and this file must be sourced prior to execution!
+##NOTE: Don't use otftobdf from Linux fonttools!!!!!!!!!!
 ############################################################################
 
 set fontToolsDir [file dirname [file normalize [info script]]]
@@ -16,7 +19,7 @@ source $sharedir/globals.tcl
 puts "
 S Y N T A X :
 * To convert 1 OTF file to any number of BDF files:
-    \[convertOtf2Bdf OtfFilePath PtSize \[Ptsize\] ...\]
+    \[convertOtf2Bdf OtfFilePath -p PtSize \[Ptsize\] ... -o OUTFILE.bdf]
 * To convert a number of BDF files from any directory to Tcl files in the $fontdir directory:
 
     \[convertBdf2Tcl BdfFontDir\]
@@ -26,16 +29,17 @@ S Y N T A X :
 ##Batch program to make any number of BDF fonts out of an OTF font file
 ##required arguments: filepath & point size(s)
 ##the second argument {args} can contain any number of desired point sizes for output
-##the Python prog 'otf2bdf' must be installed (part of Linux Fonttols)
+##the Python prog 'otf2bdf' must be installed 
 ##Execute manually; Syntax: [convertOtf2Bdf INFILENAME PTSIZE [PTSIZE] [PTSIZE] ...]
 proc convertOtf2Bdf {OtfFilePath {args}} {
   global fontdir
+  set prog otf2bdf
   set bdfdir $fontdir/bdf
   set OtfFileName [file tail $OtfFilePath]
   set OtfFilePath [file normalize $OtfFilePath]
 
-  if {[auto_execok otf2bdf] == ""} {
-    return "Program 'otf2bdf' not found. Please install Linux Fonttols first."
+  if {[auto_execok $prog] == ""} {
+    return "Program '$prog' not found. Please install through download or from $bp/prog/font/tools."
   }
   if {$args == ""} {
     return "You must indicate at least one desired point size for BDF output."
@@ -44,13 +48,13 @@ proc convertOtf2Bdf {OtfFilePath {args}} {
   foreach ptsize $args {
     set BdfFileName "[file root $OtfFileName]${ptsize}.bdf"
     set BdfFilePath $bdfdir/$BdfFileName
-    exec otf2bdf $OtfFilePath -p $ptsize -o $BdfFilePath &
+    exec $proc $OtfFilePath -p $ptsize -o $BdfFilePath 
     puts "Created $BdfFileName"
   }
 }
 
 # convertBdf2Tcl
-##converts all Bdf files in a directory to Tcl format for Biblepix use
+##converts all Bdf files in a directory to Tcl format for BiblePix use
 ##Tcl files are saved to $fontdir
 ##required arg: BdfFontDir (e.g. $fontdir/bdf)
 proc convertBdf2Tcl {BdfFontDir} {

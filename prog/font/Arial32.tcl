@@ -4,7 +4,7 @@
 # Font size: 32 100 100
 # Font Specification: -FreeType-Arial-Medium-R-Normal--44-320-100-100-P-213-ISO10646-1
 # Copyright: "© 2006 The Monotype Corporation. All Rights Reserved."
-# Created: 02-05-2019
+# Created: 02-09-2021
 # Arabic shadows removed
 
 # FONTBOUNDINGBOX INFO

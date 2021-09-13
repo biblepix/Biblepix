@@ -237,12 +237,12 @@ namespace eval bdf {
       set markRef $markText
     }
 
-    #No marking for Asian
-    if {$TwdLang == "th" || $TwdLang == "zh" } {
-      set markTitle ""
-      set markRef ""
-      set markText ""
-    }
+#    #No marking for Asian - THIS IS OBSOLETE!
+#    if {$TwdLang == "th" || $TwdLang == "zh" } {
+#      set markTitle ""
+#      set markRef ""
+#      set markText ""
+#    }
 
     #3) START PRINTING
 

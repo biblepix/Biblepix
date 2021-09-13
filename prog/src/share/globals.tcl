@@ -2,8 +2,8 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 24aug21 pv
-set version "4.0"
+# Updated: 13sep21 pv
+set version "4.1"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
@@ -35,7 +35,8 @@ lappend dirPathL [set srcdir [file join $progdir src]]
 lappend dirPathL [set confdir [file join $progdir conf]]
 lappend dirPathL [set docdir [file join $rootdir Docs]]
 lappend dirPathL [set fontdir [file join $progdir font]]
-lappend dirPathL [set fontasiandir [file join $fontdir asian]]
+lappend dirPathL [set fontchinadir [file join $fontdir china]]
+lappend dirPathL [set fontthaidir [file join $fontdir thai]]
 lappend dirPathL [set imgdir [file join $rootdir TodaysPicture]]
 lappend dirPathL [set maildir [file join $srcdir sig]]
 lappend dirPathL [set msgdir [file join $progdir msg]]
@@ -117,7 +118,7 @@ lappend filePathL [set fr_msg [file join $msgdir fr.msg]]
 lappend filePathL [set pt_msg [file join $msgdir pt.msg]]
 lappend filePathL [set pl_msg [file join $msgdir pl.msg]]
 #lappend filePathL [set ar_msg [file join $msgdir ar.msg]]
-#lappend filePathL [set ru_msg [file join $msgdir ru.msg]]
+lappend filePathL [set ru_msg [file join $msgdir ru.msg]]
 lappend filePathL [set zh_msg [file join $msgdir zh.msg]]
 
 ##make complete pathlist for use in makeDirs
@@ -132,8 +133,13 @@ lappend sampleJpgL [set Mountain [file join $sampleJpgDir mountain.jpg]]
 lappend sampleJpgL [set Nevada [file join $sampleJpgDir nevada.jpg]]
 
 #Set font size list (in pts)
-set fontSizeL {16 20 26 32}
+lappend fontSizeL 12 16 20 26 32
 set fontPathL {}
+
+##TODO to be removed soon: delete old asiandir & create 2 new
+file delete -force [file join $fontdir asian]
+file mkdir $fontthaidir $fontchinadir
+
 foreach ptsize $fontSizeL {
   lappend fontPathL [set Arial${ptsize}  [file join $fontdir Arial${ptsize}.tcl]]
   lappend fontPathL [set ArialI${ptsize} [file join $fontdir ArialI${ptsize}.tcl]]
@@ -142,10 +148,25 @@ foreach ptsize $fontSizeL {
   lappend fontPathL [set TimesI${ptsize} [file join $fontdir TimesI${ptsize}.tcl]]
   lappend fontPathL [set TimesB${ptsize} [file join $fontdir TimesB${ptsize}.tcl]]
 }
-#One size fonts
-lappend fontPathL [set ChinaFont [file join $fontasiandir WenQuanYi_ZenHei_24.tcl]]
-lappend fontPathL [set ThaiFont [file join $fontasiandir Kinnari_Bold_20.tcl]]
 
+#Append regular Chinese fonts to fontPathL if $twddir has Chinese file
+##bold & italic construed in LoadConfig
+if ![catch {glob -tails -directory $twddir zh*} ] {
+  ##append regular (italic same as regular, managed in LoadConfig))
+  foreach ptsize $fontSizeL {
+    lappend fontPathL [set Chinafont${ptsize}  [file join $fontchinadir Wenquanyi${ptsize}.tcl]]
+  }
+} 
+  
+#Append Thai fonts to fontPathL if twddir has Thai file
+if ![catch {glob -tails -directory $twddir th*} ] {
+  foreach ptsize $fontSizeL {  
+    lappend fontPathL [set Thaifont${ptsize}  [file join $fontthaidir Kinnari${ptsize}.tcl]]
+    lappend fontPathL [set ThaifontB${ptsize} [file join $fontthaidir KinnariB${ptsize}.tcl]]
+    lappend fontPathL [set ThaifontI${ptsize} [file join $fontthaidir KinnariI${ptsize}.tcl]]
+  }
+}
+  
 #Set TWD picture paths
 set TwdBMP [file join $imgdir theword.bmp]
 set TwdTIF [file join $imgdir theword.tif]

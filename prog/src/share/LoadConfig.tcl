@@ -1,7 +1,7 @@
 	# ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 24aug21 pv
+# Updated: 13sep21 pv
 
 #Source Config and LoadConfig for defaults
 if [catch {source $Config}] {
@@ -70,10 +70,47 @@ if ![info exists slideshow] {
 if {![info exists fontfamily] || ($fontfamily != "Sans" && $fontfamily != "Serif")} {
   set fontfamily "Sans"
 }
-#Set fontsize (must exist and be digits and be listed in fontSizeL)
+
+# F O N T S I Z E
+
+##Set GENERAL fontsize (must exist and be digits and be listed in fontSizeL)
 if {![info exists fontsize] || ![string is digit $fontsize] || ![regexp $fontsize $fontSizeL]} {
   set fontsize [lindex $fontSizeL 1]
 }
+
+
+##Set CHINESE ITALIC: use regular
+set ChinafontI${fontsize} [file join $fontchinadir Wenquanyi${fontsize}.tcl]
+
+# setChinafontBold
+##sets Chinese Bold font to next bigger regular if exists
+##called by BdfPrint
+proc setChinafontBold {fontsize} {
+  global fontSizeL fontchinadir
+  set curInd [lsearch $fontSizeL $fontsize]
+  set nextsize [lindex $fontSizeL [incr curInd]]
+  if {$nextsize != ""} {
+    set ChinafontB [file join $fontchinadir Wenquanyi${nextsize}.tcl]
+  } else {
+    set ChinafontB [file join $fontchinadir Wenquanyi${fontsize}.tcl]
+  }
+  return $ChinafontB
+}
+# setCinafontItalic - TODO geht noch nicht! - possible unnecessary
+##sets Chinese Italic font (refs) to next smaller regular if exists
+##called by BdfPrint
+proc setChinafontItalic {fontsize} {
+  global fontSizeL fontchinadir
+  set curInd [lsearch $fontSizeL $fontsize]
+  set prevsize [lindex $fontSizeL [incr curInd -1]]
+  if {$prevsize != ""} {
+    set ChinafontI [file join $fontchinadir Wenquanyi${prevsize}.tcl]
+  } else {
+    set ChinafontI [file join $fontchinadir Wenquanyi${fontsize}.tcl]
+  }
+  return $ChinafontI
+}
+
 #Set fontweight
 if ![info exists fontweight] {
   set fontweight normal
