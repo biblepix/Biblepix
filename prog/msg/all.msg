@@ -1,7 +1,7 @@
 #Biblepix/prog/msg/all.msg
 # loaded by msgcat for untranslatables
 # sourced by setTexts with lang variable
-# Updated 17aug21 pv
+# Updated 10sep21 pv
 
 #Untranslatable fix texts for msgcat
 mcset {} www {https://biblepix.vollmar.ch}
@@ -23,9 +23,6 @@ if {{} == "de"} {
 #Set textvars for ::msg namespace
 ##Msgcat can't provide global vars!
 namespace eval msg {
-
-#TODO this is a no-go, cmd needs argument! - aborting 
-#set packageRequireMissing [mc packageRequireMissing]
 
 set ok [mc ok]
 set dw [mc dw]
@@ -58,6 +55,8 @@ set uninstalling [mc uninstalling]
 set uninstalled [mc uninstalled]
 set download [mc download]
 set downloadingHttp [mc downloadingHttp]
+set downloadingAsianFont [mc downloadingAsianFont]
+set downloadComplete [mc downloadComplete]
 set updatingHttp [mc updatingHttp]
 set uptodateHTTP [mc uptodateHTTP]
 set noConnHTTP [mc noConnHTTP]

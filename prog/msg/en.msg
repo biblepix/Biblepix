@@ -2,7 +2,7 @@
 # ~/Biblepix/prog/msg/en.msg
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 19aug21 pv
+# Updated: 10sep21 pv
 
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S   "......"
@@ -52,6 +52,8 @@ mcset en uninstalled "$bp has been removed safely from your system. To reinstall
 #### S E T U P DOWNLOAD 
 mcset en download "Download"
 mcset en downloadingHttp "Downloading $bp program files..."
+mcset en downloadingAsianFont "Downloading Asian font files..."
+mcset en downloadComplete "Download completed"
 mcset en updatingHttp "Updating $bp program files..."
 mcset en uptodateHTTP "Your program files are up-to-date."
 mcset en noConnHTTP "No Internet connection for program update, please try later."

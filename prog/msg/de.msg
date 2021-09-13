@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 25aug21 pv
+# Updated: 10aug21 pv
 
 # U N T R A N S L A T A B L E S
 set bp "BibelPix"
@@ -53,6 +53,8 @@ mcset de uninstalled "$bp ist sicher von Ihrem System entfernt worden. Um es neu
 #SETUP INTERNATIONAL
 mcset de download "Download"
 mcset de downloadingHttp "Lade $bp-Programmdateien herunter..."
+mcset de downloadingAsianFont "Lade asiatische Schriftdateien herunter..."
+mcset de downloadComplete "Download abgeschlossen."
 mcset de updatingHttp "Aktualisiere $bp-Programmdateien..."
 mcset de uptodateHTTP "Ihre Programmdateien sind auf dem neusten Stand."
 mcset de noConnHTTP "Keine Internetverbindung für Programmaktualisierung, bitte versuchen Sie es später."
