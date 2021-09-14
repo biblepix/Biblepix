@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8sep21 pv
+# Updated: 14sep21 pv
 package require http
 
 # checkTls
@@ -287,7 +287,7 @@ proc getRemoteTWDFileList {} {
 
 #TODO called by ??
 proc downloadTWDFiles {} {
-  global twddir jahr
+  global twddir jahr Globals
   
   if [catch {set root [getRemoteRoot]}] {
     NewsHandler::QueryNews $msg::noConnTwd red

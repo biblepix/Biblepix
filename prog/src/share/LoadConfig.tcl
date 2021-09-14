@@ -1,7 +1,7 @@
 	# ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 13sep21 pv
+# Updated: 14sep21 pv
 
 #Source Config and LoadConfig for defaults
 if [catch {source $Config}] {
@@ -68,7 +68,7 @@ if ![info exists slideshow] {
 }
 #Set fontfamily
 if {![info exists fontfamily] || ($fontfamily != "Sans" && $fontfamily != "Serif")} {
-  set fontfamily "Sans"
+  set fontfamily "Serif"
 }
 
 # F O N T S I Z E
@@ -96,7 +96,7 @@ proc setChinafontBold {fontsize} {
   }
   return $ChinafontB
 }
-# setCinafontItalic - TODO geht noch nicht! - possible unnecessary
+# setCinafontItalic - TODO geht noch nicht! - probably unnecessary anyway
 ##sets Chinese Italic font (refs) to next smaller regular if exists
 ##called by BdfPrint
 proc setChinafontItalic {fontsize} {
