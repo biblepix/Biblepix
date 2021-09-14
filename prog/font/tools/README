@@ -1,0 +1,7 @@
+#Updated Sep21 pv
+## Notes on otf2bdf
+
+otf2bdf compilieren & installieren
+kann auch ttf, Umwandlung in otf nicht mehr nötig!!!
+
+'otftobdf' von 'fonttools' taugt nicht!
