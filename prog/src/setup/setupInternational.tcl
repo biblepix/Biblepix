@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 13aug21 pv
+# Updated 8sept21 pv
 
 #Statusbar
 frame .internationalF.f0 -padx $px
@@ -63,7 +63,6 @@ listbox .twdremoteLB -yscrollcommand {.twdremoteScr set} -selectmode multiple -a
 scrollbar .twdremoteScr -command {.twdremoteLB yview}
 button .downloadBtn -textvar msg::download -command {
   downloadTWDFiles
-  ##window may not exist yet!
   catch {updateMailBtnList .emailF.topF.f2.rightF}
 }
 pack .internationalF.twdremoteframe -anchor w
