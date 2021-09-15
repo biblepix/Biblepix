@@ -285,7 +285,7 @@ proc getRemoteTWDFileList {} {
   return $status
 }
 
-#TODO called by ??
+#called by ??
 proc downloadTWDFiles {} {
   global twddir jahr Globals
   
@@ -311,16 +311,13 @@ proc downloadTWDFiles {} {
 
     #Download file & recreate Twd lists
     downloadTwdFile $filename $jahr
-    after 3000
-    .internationalF.f1.twdlocal insert end $filename  
+    after idle  .internationalF.f1.twdlocal insert end $filename  
     
-    #If Chinese or Thai: download font files also 
-    set lang [string range $filename 0 1]
-    if {$lang == "zh" || $lang == "th"} {
-      after 2000 source $Globals
-      after idle downloadAsianFont $lang
+    #If Chinese or Thai: update font files also 
+    set twdlang [string range $filename 0 1]
+    if {$twdlang == "zh" || $twdlang == "th"} {
+      downloadAsianFont $twdlang
     }
-  
   } ;#END foreach
   
   #deselect all downloaded files
@@ -329,24 +326,30 @@ proc downloadTWDFiles {} {
 } ;#END downloadTWDFiles
 
 # downloadAsianFont
-##downloads Chinese or Thai fonts if required
+##updates Chinese or Thai fonts if required
 ##called by downloadTWDFiles 
-proc downloadAsianFont {lang} {
-  global fontPathL
-  
-  #Get font list indices
-  if {$lang == "zh"} {
-    set indexL [lsearch -all -regexp {Chinafont} $fontPathL]
-  } elseif {$lang == "th"} {
-    set indexL [lsearch -all -regexp {Thaifont} $fontPathL]
-  } else {
-    return 1
+proc downloadAsianFont {twdlang} {
+  global fontSizeL fontdir
+
+  #Create Asian font lists (Global fontpathL not yet updated)
+  if {$twdlang == "zh"} {
+    foreach ptsize $fontSizeL {
+      lappend asiafontL [file join $fontdir Wenquanyi${ptsize}.tcl]
+    }
+
+  } elseif {$twdlang == "th"} {
+     foreach ptsize $fontSizeL {  
+       lappend asiafontL [file join $fontdir Kinnari${ptsize}.tcl]
+       lappend asiafontL [file join $fontdir KinnariB${ptsize}.tcl]
+       lappend asiafontL [file join $fontdir KinnariI${ptsize}.tcl]
+     }
   }
+
   NewsHandler::QueryNews "[mc downloadingAsianFont]" orange
   
   #Download fonts if new
-  foreach ind $indexL {
-    downloadFileFromRelease [lindex $ind $indexL]
+  foreach filepath $asiafontL {
+    downloadFileFromRelease $filepath 0
   }
   NewsHandler::QueryNews "[mc downloadComplete]" lightgreen
 }

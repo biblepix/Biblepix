@@ -2,15 +2,15 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 13sep21 pv
+# Updated: 15sep21 pv
 set version "4.1"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
 set bpxJpegUrl "http://vollmar.ch/biblepix/jpeg"
 set bpxIconUrl "http://vollmar.ch/biblepix"
-set platform $tcl_platform(platform)
-set os $tcl_platform(os)
+set platform $::tcl_platform(platform)
+set os $::tcl_platform(os)
 set tclpath [auto_execok tclsh]
 set wishpath [auto_execok wish]
 
@@ -19,11 +19,11 @@ set wishpath [auto_execok wish]
 if [info exists srcdir] {
   set rootdir "[file dirname [file dirname [file normalize $srcdir ]]]"
 ##Windows
-} elseif [info exists env(LOCALAPPDATA)] {
+} elseif [info exists ::env(LOCALAPPDATA)] {
   set rootdir "[file normalize [file join $env(LOCALAPPDATA) Biblepix]]"
 ##Unix
 } else {
-  set rootdir "[file join $env(HOME) Biblepix]"
+  set rootdir "[file join $::env(HOME) Biblepix]"
 }
 
 #S e t   d i r n a m e s
@@ -35,8 +35,6 @@ lappend dirPathL [set srcdir [file join $progdir src]]
 lappend dirPathL [set confdir [file join $progdir conf]]
 lappend dirPathL [set docdir [file join $rootdir Docs]]
 lappend dirPathL [set fontdir [file join $progdir font]]
-lappend dirPathL [set fontchinadir [file join $fontdir china]]
-lappend dirPathL [set fontthaidir [file join $fontdir thai]]
 lappend dirPathL [set imgdir [file join $rootdir TodaysPicture]]
 lappend dirPathL [set maildir [file join $srcdir sig]]
 lappend dirPathL [set msgdir [file join $progdir msg]]
@@ -136,10 +134,6 @@ lappend sampleJpgL [set Nevada [file join $sampleJpgDir nevada.jpg]]
 lappend fontSizeL 12 16 20 26 32
 set fontPathL {}
 
-##TODO to be removed soon: delete old asiandir & create 2 new
-file delete -force [file join $fontdir asian]
-file mkdir $fontthaidir $fontchinadir
-
 foreach ptsize $fontSizeL {
   lappend fontPathL [set Arial${ptsize}  [file join $fontdir Arial${ptsize}.tcl]]
   lappend fontPathL [set ArialI${ptsize} [file join $fontdir ArialI${ptsize}.tcl]]
@@ -154,16 +148,15 @@ foreach ptsize $fontSizeL {
 if ![catch {glob -tails -directory $twddir zh*} ] {
   ##append regular (italic same as regular, managed in LoadConfig))
   foreach ptsize $fontSizeL {
-    lappend fontPathL [set Chinafont${ptsize}  [file join $fontchinadir Wenquanyi${ptsize}.tcl]]
+    lappend fontPathL [set Chinafont${ptsize}  [file join $fontdir Wenquanyi${ptsize}.tcl]]
   }
 } 
-  
 #Append Thai fonts to fontPathL if twddir has Thai file
 if ![catch {glob -tails -directory $twddir th*} ] {
   foreach ptsize $fontSizeL {  
-    lappend fontPathL [set Thaifont${ptsize}  [file join $fontthaidir Kinnari${ptsize}.tcl]]
-    lappend fontPathL [set ThaifontB${ptsize} [file join $fontthaidir KinnariB${ptsize}.tcl]]
-    lappend fontPathL [set ThaifontI${ptsize} [file join $fontthaidir KinnariI${ptsize}.tcl]]
+    lappend fontPathL [set Thaifont${ptsize}  [file join $fontdir Kinnari${ptsize}.tcl]]
+    lappend fontPathL [set ThaifontB${ptsize} [file join $fontdir KinnariB${ptsize}.tcl]]
+    lappend fontPathL [set ThaifontI${ptsize} [file join $fontdir KinnariI${ptsize}.tcl]]
   }
 }
   
@@ -203,7 +196,7 @@ set lumFactor3 0.2
 
 #Bildformate & DesktopPicturesDir
 if {$platform == "unix"} {
-  set HOME $env(HOME)
+  set HOME $::env(HOME)
   ##Note:DesktopPicturesDir changes with languages > variable in Config & switch in LoadConfig
   set types {
     { {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
@@ -211,7 +204,7 @@ if {$platform == "unix"} {
 
 } elseif {$platform == "windows"} {
   #DesktopPicturesDir is always "Pictures"
-  set DesktopPicturesDir $env(USERPROFILE)/Pictures
+  set DesktopPicturesDir $::env(USERPROFILE)/Pictures
   set types {
     { {Image Files} {.jpg .jpeg .png} }
   }

@@ -80,19 +80,19 @@ if {![info exists fontsize] || ![string is digit $fontsize] || ![regexp $fontsiz
 
 
 ##Set CHINESE ITALIC: use regular
-set ChinafontI${fontsize} [file join $fontchinadir Wenquanyi${fontsize}.tcl]
+set ChinafontI${fontsize} [file join $fontdir Wenquanyi${fontsize}.tcl]
 
 # setChinafontBold
 ##sets Chinese Bold font to next bigger regular if exists
 ##called by BdfPrint
 proc setChinafontBold {fontsize} {
-  global fontSizeL fontchinadir
+  global fontSizeL fontdir
   set curInd [lsearch $fontSizeL $fontsize]
   set nextsize [lindex $fontSizeL [incr curInd]]
   if {$nextsize != ""} {
-    set ChinafontB [file join $fontchinadir Wenquanyi${nextsize}.tcl]
+    set ChinafontB [file join $fontdir Wenquanyi${nextsize}.tcl]
   } else {
-    set ChinafontB [file join $fontchinadir Wenquanyi${fontsize}.tcl]
+    set ChinafontB [file join $fontdir Wenquanyi${fontsize}.tcl]
   }
   return $ChinafontB
 }

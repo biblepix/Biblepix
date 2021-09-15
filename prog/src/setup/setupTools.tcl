@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22aug21 pv
+# Updated: 15sep21 pv
 source $SetupResizeTools
 source $JList
 
@@ -20,7 +20,6 @@ proc setTexts {lang} {
   ##replace text in Welcome text widget
   catch {fillWelcomeTWidget .welcomeT}
 }
-
 
 # addPic
 ##adds new Picture to BiblePix Photo collection
@@ -829,7 +828,10 @@ proc insertTodaysTwd {twdWidget} {
 ##Removes stale prog files & dirs not listed in Globals
 ##called by Setup
 proc deleteOldStuff {} {
-  global dirPathL filePathL fontPathL progdir srcdir piddir confdir
+  global dirPathL filePathL fontdir fontPathL progdir srcdir piddir confdir
+
+  #Delete any obsolete Asian font dirs - all files now in fontdir
+  file delete -force $fontdir/asian $fontdir/china $fontdir/thai
 
   #combine all file & font lists
   set filePathL [list {*}$filePathL {*}$fontPathL]
