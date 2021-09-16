@@ -14,10 +14,7 @@ proc setTexts {lang} {
   package require msgcat
   namespace import msgcat::mc msgcat::mcset
 
-#TODO msgcat doesn't recognise English for any missing messages in other langs
-#Why doesn't msgcat::unknown work?
-
-  ##replace msgcat text variables
+  #Load msgcat texts & set locale, set global vars for '-textvar' function
   msgcat::mcload "$msgdir"
   msgcat::mclocale $lang
   source -encoding utf-8 $Textvars
