@@ -10,7 +10,7 @@ source $JList
 ##loads all text vars into ::msg namespace
 ##called by SetupMainFrame 
 proc setTexts {lang} {
-  global msgdir os all_msg
+  global msgdir os Textvars
   package require msgcat
   namespace import msgcat::mc msgcat::mcset
 
