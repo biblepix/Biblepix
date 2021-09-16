@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15sep21 pv
+# Updated: 16sep21 pv
 source $SetupResizeTools
 source $JList
 
@@ -13,10 +13,15 @@ proc setTexts {lang} {
   global msgdir os all_msg
   package require msgcat
   namespace import msgcat::mc msgcat::mcset
+
+#TODO msgcat doesn't recognise English for any missing messages in other langs
+#Why doesn't msgcat::unknown work?
+
   ##replace msgcat text variables
-  msgcat::mclocale $lang
   msgcat::mcload "$msgdir"
-  source -encoding utf-8 $all_msg
+  msgcat::mclocale $lang
+  source -encoding utf-8 $Textvars
+
   ##replace text in Welcome text widget
   catch {fillWelcomeTWidget .welcomeT}
 }

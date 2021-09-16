@@ -108,7 +108,7 @@ lappend filePathL [set LinIcon [file join $unixdir biblepix.png]]
 lappend filePathL [set LinIconSvg [file join $unixdir biblepix.svg]]
 lappend filePathL [set WinIcon [file join $windir biblepix.ico]]
 ##Msgcat msg files
-lappend filePathL [set all_msg [file join $msgdir all.msg]]
+lappend filePathL [set Textvars [file join $msgdir textvars.tcl]]
 lappend filePathL [set de_msg [file join $msgdir de.msg]]
 lappend filePathL [set en_msg [file join $msgdir en.msg]]
 lappend filePathL [set es_msg [file join $msgdir es.msg]]
