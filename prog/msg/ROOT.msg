@@ -34,7 +34,7 @@ Bible & Pix Brothers
 Homepage: biblepix.vollmar.ch
 "
 mcset {} f3Expl "Yours faithfully, $grussformel"
-if {{} == "de"} {
+if {$lang == "de"} {
   mcset {} f3Expl "Mit freundlichem Gruss, $grussformel"
 }
 
