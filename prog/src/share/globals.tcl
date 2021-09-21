@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 15sep21 pv
+# Updated: 21sep21 pv
 set version "4.1"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -131,7 +131,7 @@ lappend sampleJpgL [set Mountain [file join $sampleJpgDir mountain.jpg]]
 lappend sampleJpgL [set Nevada [file join $sampleJpgDir nevada.jpg]]
 
 #Set font size list (in pts)
-lappend fontSizeL 12 16 20 26 32
+lappend fontSizeL 12 16 20 24 28 32
 set fontPathL {}
 
 foreach ptsize $fontSizeL {
@@ -154,9 +154,9 @@ if ![catch {glob -tails -directory $twddir zh*} ] {
 #Append Thai fonts to fontPathL if twddir has Thai file
 if ![catch {glob -tails -directory $twddir th*} ] {
   foreach ptsize $fontSizeL {  
-    lappend fontPathL [set Thaifont${ptsize}  [file join $fontdir Kinnari${ptsize}.tcl]]
-    lappend fontPathL [set ThaifontB${ptsize} [file join $fontdir KinnariB${ptsize}.tcl]]
-    lappend fontPathL [set ThaifontI${ptsize} [file join $fontdir KinnariI${ptsize}.tcl]]
+    lappend fontPathL [set Thaifont${ptsize}  [file join $fontdir Garuda${ptsize}.tcl]]
+    lappend fontPathL [set ThaifontB${ptsize} [file join $fontdir GarudaB${ptsize}.tcl]]
+    lappend fontPathL [set ThaifontI${ptsize} [file join $fontdir GarudaI${ptsize}.tcl]]
   }
 }
   
