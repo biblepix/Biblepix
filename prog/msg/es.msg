@@ -108,6 +108,11 @@ mcset es f4Txt "Si está activado, $bp generará $dw para mostrar en tus consola
 
 # S E T U P S A V E   T E X T S
 #Changing Desktops Info
+if {$os=="Linux"} {
+  mcset en changeDesktopOk "$bp está configurado en tu ordenardor y ahora se iniciará. \n\nPuedes iniciar el programa de configuración en cualquier momento seleccionando el símbolo $bp en el menú del programa."
+} else {
+  mcset en changeDesktopOk "$bp está configurado en tu ordenardor y ahora se iniciará. \n\nPuedes iniciar el programa de configuración en cualquier momento seleccionando sobre tu escritorio el icono $bp con clic derecho."
+}
 mcset es linChangingDesktop "$bp ahora intentará cambiar la configuración de tu escritorio. Si no ves una nueva imagen de fondo después, encontrarás una solución en el manual."
 mcset es winIgnorePopup "¡Por favor, cierra cualquier ventana emergente sin hacer ningún cambio para que $bp pueda completar el registro!"
 mcset es winChangingDesktop "$bp ahora intentará cambiar el fondo de tu escritorio."
@@ -115,7 +120,6 @@ mcset es winChangeDesktopProb "Tuvimos un problema al cambiar el fondo del escri
 mcset es linChangeDesktopProb "Tuvimos un problema al cambiar la configuración del escritorio. Haz clic derecho en tu escritorio y busca el cuadro de diálogo 'Imagen de fondo' y especifica $imgdir como ruta de la imagen."
 mcset es linNoDesktopFound "¡No se ha encontrado ningún escritorio Linux! Busca en el manual una solución para configurar la imagen de fondo de $bp manualmente."
 mcset es linReloadingDesktop "Ahora intentaremos recargar tu espacio de trabajo. Si esto falla, debes cerrar la sesión y volver a iniciarla para que la configuración de $bp tenga efecto."
-mcset es changeDesktopOk "$bp está configurado en tu ordenardor y ahora se iniciará. \n\nPuedes iniciar el programa de configuración en cualquier momento seleccionando el símbolo $bp en el menú del programa (Linux) o seleccionando sobre tu escritorio el icono $bp (Windows) con clic derecho."
 mcset es winRegister "$bp ahora debe estar registrado en tu sistema. Confirma cualquier ventana de notificación con \"Sí\"!"
 mcset es winRegisterProb "$bp aún no está instalado correctamente en tu ordenador. Vuelve a iniciar la instalación o agrega \n\t$Biblepix \na \"Programas iniciados automáticamente\""
 #PHOTOS

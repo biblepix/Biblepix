@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 21sep21 pv
+# Updated: 22sep21 pv
 set version "4.1"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -109,6 +109,7 @@ lappend filePathL [set LinIconSvg [file join $unixdir biblepix.svg]]
 lappend filePathL [set WinIcon [file join $windir biblepix.ico]]
 ##Msgcat msg files
 lappend filePathL [set Textvars [file join $msgdir textvars.tcl]]
+lappend filePathL [set de_msg [file join $msgdir ROOT.msg]]
 lappend filePathL [set de_msg [file join $msgdir de.msg]]
 lappend filePathL [set en_msg [file join $msgdir en.msg]]
 lappend filePathL [set es_msg [file join $msgdir es.msg]]
