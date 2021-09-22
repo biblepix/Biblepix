@@ -1,7 +1,7 @@
 	# ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 14sep21 pv
+# Updated: 22sep21 pv
 
 #Source Config and LoadConfig for defaults
 if [catch {source $Config}] {
@@ -15,12 +15,13 @@ if ![info exists lang] {
   if {$platform=="windows"} {
   
     ##get user lang from registry
+    ##NOTE: old solution was to extract SYSTEM INSTALL LANGUAGE NUMBER CODE, but new gets user lang
+    ##OBSOLETE: registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\	] InstallLanguage    
     package require registry
     if ![catch {set locale [registry get [join {HKEY_CURRENT_USER {Control Panel} International} \\] LocaleName]} ] {
       set syslangCode [string range $locale 0 1]
     }
-#NOTE: THIS WAS TO EXTRACT SYSTEM INSTALL LANGUAGE NUMBER CODE, but above gets user lang
-## registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\	] InstallLanguage    
+
   #reset for Linux
   } elseif {$platform=="unix"} {
   
@@ -73,11 +74,10 @@ if {![info exists fontfamily] || ($fontfamily != "Sans" && $fontfamily != "Serif
 
 # F O N T S I Z E
 
-##Set GENERAL fontsize (must exist and be digits and be listed in fontSizeL)
-if {![info exists fontsize] || ![string is digit $fontsize] || ![regexp $fontsize $fontSizeL]} {
-  set fontsize [lindex $fontSizeL 1]
+##Set GENERAL fontsize to 20pt if not defined or not in fontsizeL
+if {![info exists fontsize] || [lsearch $fontSizeL $fontsize] == "-1" } {
+  set fontsize [lindex $fontSizeL 2]
 }
-
 
 ##Set CHINESE ITALIC: use regular
 set ChinafontI${fontsize} [file join $fontdir Wenquanyi${fontsize}.tcl]

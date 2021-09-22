@@ -48,7 +48,7 @@ proc convertOtf2Bdf {OtfFilePath {args}} {
   foreach ptsize $args {
     set BdfFileName "[file root $OtfFileName]${ptsize}.bdf"
     set BdfFilePath $bdfdir/$BdfFileName
-    exec $proc $OtfFilePath -p $ptsize -o $BdfFilePath 
+    exec $prog $OtfFilePath -p $ptsize -o $BdfFilePath 
     puts "Created $BdfFileName"
   }
 }
