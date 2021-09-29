@@ -216,7 +216,7 @@ proc setFlags {} {
   source $::Flags
 
   #Draw flag canvasses
-  lappend flagL .de .fr .pl .es .pt .en .zh .ru .ar
+  lappend flagL .de .fr .pl .es .pt .it .ru .ar .en .zh
   flag::show .en -flag {hori blue; x white red; cross white red}
   flag::show .de -flag {hori black red yellow} 
   flag::show .es -flag {hori red gold+ red; circle brown} 
@@ -224,7 +224,7 @@ proc setFlags {} {
   flag::show .pt -flag {vert green red+ ; circle gold}
   flag::show .pl -flag {hori white red}
   flag::show .ru -flag {hori white blue red}
-  #flag::show .it -flag {vert green3 white red}
+  flag::show .it -flag {vert green3 white red}
   flag::show .ar -flag {hori red white black; circle gold}
   flag::show .zh -flag {hori red; tlsq red; circle gold}
 
