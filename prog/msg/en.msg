@@ -33,10 +33,6 @@ set grussformel "
 Bible & Pix Brothers
 Homepage: biblepix.vollmar.ch
 "
-mcset en f3Expl "Yours faithfully, $grussformel"
-if {$lang == "de"} {
-  mcset en f3Expl "Mit freundlichem Gruss, $grussformel"
-}
 
 #############################################################
 # All English translations 

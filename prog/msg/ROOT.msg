@@ -64,6 +64,10 @@ mcset {} terminal "Terminal"
 mcset {} manual "Manual"
 mcset {} uninst "Uninstall $bp"
 mcset {} next "Next \u25bc"
+mcset {} packageRequire {
+* apt-get install [PACKAGE NAME] (Debian/Ubuntu)
+* emerge [PACKAGE NAME] (Gentoo)
+}
 mcset {} packageRequireMissing "$bp needs the Tcl extension '%s'.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo): [mc packageRequire]"
 
 # U N I N S T A L L
