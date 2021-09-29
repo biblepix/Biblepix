@@ -116,9 +116,11 @@ lappend filePathL [set es_msg [file join $msgdir es.msg]]
 lappend filePathL [set fr_msg [file join $msgdir fr.msg]]
 lappend filePathL [set pt_msg [file join $msgdir pt.msg]]
 lappend filePathL [set pl_msg [file join $msgdir pl.msg]]
-#lappend filePathL [set ar_msg [file join $msgdir ar.msg]]
+lappend filePathL [set ar_msg [file join $msgdir ar.msg]]
 lappend filePathL [set ru_msg [file join $msgdir ru.msg]]
 lappend filePathL [set zh_msg [file join $msgdir zh.msg]]
+#lappend filePathL [set ro_msg [file join $msgdir ro.msg]]
+#lappend filePathL [set it_msg [file join $msgdir it.msg]]
 
 ##make complete pathlist for use in makeDirs
 ##export name vars for use in all procs

@@ -39,7 +39,8 @@ proc toggleBtnstate {} {
   }
 }
 
-#Preselect language Buttons:
+# PRESELECT LANGUAGE BUTTONS
+
 ##A) $sigLanglist exists, but files may have been deleted
 if {[info exists sigLanglist] && $sigLanglist != ""} {
   foreach code $sigLanglist {
@@ -48,13 +49,14 @@ if {[info exists sigLanglist] && $sigLanglist != ""} {
       $Btn select
     }
   }
-
 ##B) $sigLanglist not found
 } else {
   #select language button if system language is different from $lang var
   if {[info exists syslangCode] && [winfo exists .${syslangCode}Btn]} {
     .${syslangCode}Btn select
   }
+
+
   #select $lang button if it exists
   if {$lang == "de" && [winfo exists .deBtn]} {
     .deBtn select

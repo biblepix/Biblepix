@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22sep21 pv
+# Updated: 29sep21 pv
 source $SetupResizeTools
 source $JList
 
@@ -338,7 +338,8 @@ proc updateMailBtnList {window} {
   set ::langcodeL $langcodeL
   set ::sigLangBtnList $sigLangBtnList
   #return $sigLangBtnList
-}
+} ;#END updateMailBtnList
+
 # updateSelectedMailBtnList
 #Lists selected sigLangBtn's
 ##called by Save
@@ -757,7 +758,7 @@ proc fillWelcomeTWidget {T} {
 ##inserts text into text widget
 ##called by SetupWelcome
 proc insertTodaysTwd {twdWidget} {
-  global TwdTools twddir
+  global TwdTools twddir enabletitle
 
   if {[info procs getRandomTwdFile] == ""} {
     source $TwdTools
@@ -776,11 +777,13 @@ proc insertTodaysTwd {twdWidget} {
   $twdWidget delete 1.0 end
   $twdWidget insert 1.0 $twdText
 
-  ##locate & format Head
+  ##locate + format Head (even if !enabletitle)
   $twdWidget tag add head 1.0 1.end
-  ##locate + format reflines
-  set refindices [$twdWidget search -all \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0 3.0 end]
+
+  ##locate + format reflines (searching ?geschützte Leerzeichen? from 2nd line)
+  set refindices [$twdWidget search -all \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0 2.0 end]
   lassign [split $refindices] ref1 ref2
+
   ##get plain line numbers before dot
   set refline1 [regsub {([0-9]?)(\..*$)} $ref1 {\1}]
   set refline2 [regsub {([0-9]?)(\..*$)} $ref2 {\1}]
