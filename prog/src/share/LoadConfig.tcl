@@ -1,40 +1,40 @@
-	# ~/Biblepix/prog/src/share/LoadConfig.tcl
+# ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 22sep21 pv
+# Updated: 1oct21 pv
 
 #Source Config and LoadConfig for defaults
 if [catch {source $Config}] {
   file mkdir $confdir
 }
 
-#Set system lang from Conf (fallback: en)
+#Set Setup lang from Conf, else from system
 if ![info exists lang] {
 
-  #reset for Win
+  ##get system lang for Win
   if {$platform=="windows"} {
   
-    ##get user lang from registry
-    ##NOTE: old solution was to extract SYSTEM INSTALL LANGUAGE NUMBER CODE, but new gets user lang
-    ##OBSOLETE: registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\	] InstallLanguage    
+    #get user lang from registry
+    ## NOTE: old solution was to extract SYSTEM INSTALL LANGUAGE NUMBER CODE, but new gets user lang
+    ## (OBSOLETE CODE: registry get [join {HKEY_LOCAL_MACHINE System CurrentControlSet Control Nls Language} \\	] InstallLanguage)
     package require registry
     if ![catch {set locale [registry get [join {HKEY_CURRENT_USER {Control Panel} International} \\] LocaleName]} ] {
-      set syslangCode [string range $locale 0 1]
+      set syslang [string range $locale 0 1]
     }
 
-  #reset for Linux
+  ##get system lang for Linux
   } elseif {$platform=="unix"} {
   
     if [info exists env(LANG)] {
-      set syslangCode [string range $env(LANG) 0 1]
+      set syslang [string range $env(LANG) 0 1]
     }
   }
 
-  #compare syslangCode with langs in $msgdir
-  if [info exists syslangCode] {
+  #compare syslang with langs in $msgdir, fallback: en
+  if [info exists syslang] {
     set msgL [glob -directory $msgdir -tail *.msg]
-    if {[string first $syslangCode $msgL] >= 0} {
-      set lang $syslangCode
+    if {[string first $syslang $msgL] >= 0} {
+      set lang $syslang
     } else {
       set lang "en"
     }

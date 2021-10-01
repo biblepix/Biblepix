@@ -17,11 +17,11 @@ message .welcomeWhatisTxt -textvar msg::welcTxt1 -font bpfont1 -width [expr $wWi
 pack .welcomeSubtit1 -in .leftTopF -anchor nw
 pack .welcomeWhatisTxt -in .leftTopF -anchor nw
 
-#Set up text widget left
+#Set up label left
 label .welcomeSubtit2 -font bpfont2 -textvar msg::welcSubtit2 -padx $px -pady $py 
 pack .welcomeSubtit2 -in .leftTopF -anchor nw
+#Set up text widget left 
 text .welcomeT -padx $px -pady $py -borderwidth 0 -bg [. cget -bg] -font bpfont1 -tabs {5c left} -wrap word
-
 pack .welcomeT -in .leftTopF -anchor nw
 catch {fillWelcomeTextWidget .welcomeT}
 

@@ -20,7 +20,7 @@ proc setTexts {lang} {
   source -encoding utf-8 $Textvars
 
   ##replace text in Welcome text widget
-  catch {fillWelcomeTWidget .welcomeT}
+  catch {fillWelcomeTextWidget .welcomeT}
   
   ##set widget justification
   if [isRtL $lang] {
@@ -798,24 +798,29 @@ proc copyAndResizeSamplePhotos {} {
 ##called by SetupWelcome & setTexts
 proc fillWelcomeTextWidget {w} {
   global platform
+  
+  #Insert text, deleting any previous
+  set msg $msg::welcTxt2
   $w delete 1.0 end
-  $w insert 1.0 $msg::welcTxt2
+  $w insert 1.0 $msg 
+  
+  #set Bidi justification to right
+  if [isBidi $msg] {
+    $w tag conf dir -justify right
+    $w tag add dir 1.0 end
+  }
 
-  #delete "Terminal" line if not Unix
+  #delete "TERMINAL" line if not Unix
   if {$platform=="windows"} {
     $w delete 6.0 end
   }
-  $w tag conf bold -font TkCaptionFont
 
-  #Set keywords: to bold
-  set lines [$T count -lines 1.0 end]
+  #Set [KEYWORDS]: to bold
+  $w tag conf bold -font TkCaptionFont
+  set lines [$w count -lines 1.0 end]
   for {set line 1} {$line <= $lines} {incr line} {
-    set colon [$T search : $line.0 $line.end]
-    $T tag add bold $line.0 $colon 
-  }
-  if [isBidi $w] {
-    $w tag add dir 1.0 end
-    $w tag conf dir -justify right
+    set colon [$w search : $line.0 $line.end]
+    $w tag add bold $line.0 $colon 
   }
 }
 
