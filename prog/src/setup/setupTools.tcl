@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29sep21 pv
+# Updated: 1oct21 pv
 source $SetupResizeTools
 source $JList
 
@@ -21,7 +21,65 @@ proc setTexts {lang} {
 
   ##replace text in Welcome text widget
   catch {fillWelcomeTWidget .welcomeT}
-}
+  
+  ##set widget justification
+  if [isRtL $lang] {
+    catch {setWidgetDirection right}
+  } {
+    catch {setWidgetDirection left}
+  }
+
+} ;#END setTexts
+
+# setWidgetDirection
+##sets direction of text widgets to right-justifying || left-justifying
+##called by ?setLang ?setFlag
+proc setWidgetDirection {dir} {
+########################################
+# TODO Unify frame + widget paths & names
+# For info:  set notebookList [.nb tabs]
+########################################
+
+  #Extract text widgets from .nb subframes
+  ##.welcomeF tab
+  lappend frameL .leftTopF .leftBotF
+  ##.internationalF tab
+  lappend frameL .internationalF.titel .internationalF.txt
+  ##.desktopF tab
+  lappend frameL .desktopF.leftF
+  ##.photosF tab
+  lappend frameL .photosF .photosF.mainf.left
+  ##.emailF tab
+  lappend frameL .emailF.topF.f1 .emailF.botF.left
+  ##.terminalF tab
+  lappend frameL .terminalF .terminalF.mainF.left
+  
+  #Scan frame list for message+label widgets
+  foreach F $frameL {
+    
+    set winL [pack slaves $F]
+
+    #Adjust justification 
+    foreach w $winL {
+      if { [winfo class $w] == "Label" ||
+           [winfo class $w] == "Message"
+      } {
+          $w conf -justify $dir 
+      }
+    }
+  }
+  
+  #Scan . for lost text widgets! - TODO zis aynt workin!
+  foreach w [winfo children .] {
+    if { [winfo class $w] == "Label" ||
+         [winfo class $w] == "Message"
+    } {
+      $w conf -justify $dir
+    }
+  }
+  
+} ;#END setWidgetDirection
+
 
 # addPic
 ##adds new Picture to BiblePix Photo collection
@@ -212,11 +270,12 @@ proc renameNotebookTabs {} {
 ##draws flags & resets texts upon mouseclick
 ##countries: de en es pt fr ar zh ru pl it)
 ##called by SetupMainFrame & SetupBuildGui
+##Many thanks to Suchenwirth ....
 proc setFlags {} {
   source $::Flags
 
   #Draw flag canvasses
-  lappend flagL .de .fr .pl .es .pt .it .ru .ar .en .zh
+  lappend flagL .de .fr .pl .es .pt .it .ru .ar .zh .en
   flag::show .en -flag {hori blue; x white red; cross white red}
   flag::show .de -flag {hori black red yellow} 
   flag::show .es -flag {hori red gold+ red; circle brown} 
@@ -315,29 +374,32 @@ proc setManText {lang} {
 
 # updateMailBtnList
 #List language codes of installed TWD files
-#called here & in SetupInternational 
-proc updateMailBtnList {window} {
+#called by SetupEmail & SetupInternational 
+proc updateMailBtnList {w} {
   global twddir
+  	
   set twdList [getTwdList]
   if {$twdList == ""} {return}
-  
-  foreach e $twdList {
-    #files may have been deleted after creating langcodeL!
-    if [file exists $twddir/$e] {
-      lappend codeL [string range $e 0 1]
+
+  ##files may have been deleted after creating langcodeL!  
+  foreach filename $twdList {
+    if [file exists $twddir/$filename] {
+      lappend codeL [string range $filename 0 1]
     }
   }
   set langcodeL [lsort -decreasing -unique $codeL]
+  
   #Create language buttons for each language code
-  foreach slave [pack slaves $window] {pack forget $slave}
+  foreach slave [pack slaves $w] {pack forget $slave}
   foreach code $langcodeL {
     catch {  checkbutton .${code}Btn -text $code -width 5 -selectcolor beige -indicatoron 0 -variable sel${code} }
     pack .${code}Btn -in .emailF.topF.f2.rightF -side right -padx 3
-    lappend sigLangBtnList .${code}Btn
+    lappend sigLangBtnL .${code}Btn
   }
+  ##TODO unify var names! > siglangL + siglangBtnL
   set ::langcodeL $langcodeL
-  set ::sigLangBtnList $sigLangBtnList
-  #return $sigLangBtnList
+  set ::sigLangBtnList $sigLangBtnL
+
 } ;#END updateMailBtnList
 
 # updateSelectedMailBtnList
@@ -413,7 +475,6 @@ proc createMovingTextBox {c} {
 ##called by various Setup procs
 proc isBidi s {
   if [regexp {[\u05D0-\u06FC]} $s] {
-    #$widget conf -justify right
     return 1
   } else {
     return 0
@@ -732,25 +793,29 @@ proc copyAndResizeSamplePhotos {} {
 ##### P r o c s   f o r   S e t u p W e l c o m e  #############################
 ################################################################################
 
-# fillWelcomeTWidget
+# fillWelcomeTextWidget
 ##sets & resets .WelcomeT text acc. to language
 ##called by SetupWelcome & setTexts
-proc fillWelcomeTWidget {T} {
+proc fillWelcomeTextWidget {w} {
   global platform
-  $T delete 1.0 end
-  $T insert 1.0 $msg::welcTxt2
+  $w delete 1.0 end
+  $w insert 1.0 $msg::welcTxt2
 
   #delete "Terminal" line if not Unix
   if {$platform=="windows"} {
-    $T delete 6.0 end
+    $w delete 6.0 end
   }
-  $T tag conf bold -font TkCaptionFont
+  $w tag conf bold -font TkCaptionFont
 
   #Set keywords: to bold
   set lines [$T count -lines 1.0 end]
   for {set line 1} {$line <= $lines} {incr line} {
     set colon [$T search : $line.0 $line.end]
     $T tag add bold $line.0 $colon 
+  }
+  if [isBidi $w] {
+    $w tag add dir 1.0 end
+    $w tag conf dir -justify right
   }
 }
 

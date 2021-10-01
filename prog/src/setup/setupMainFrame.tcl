@@ -72,3 +72,10 @@ pack .news -in .fbottom -fill x
 
 #Fill tabs
 source $SetupBuild
+
+##set widget justification
+  if [isBidi $lang] {
+    setWidgetDirection right
+  } {
+    setWidgetDirection left
+  }

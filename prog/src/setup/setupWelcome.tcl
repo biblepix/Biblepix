@@ -1,9 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupWelcome.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28sep21 pv
-
-set dir left
+# Updated: 1oct21 pv
 
 #Set frames MainLeft + MainRight
 pack [frame .welcomeLeftMainF]  -in .welcomeF -fill y -anchor nw -side left -padx $px
@@ -25,7 +23,7 @@ pack .welcomeSubtit2 -in .leftTopF -anchor nw
 text .welcomeT -padx $px -pady $py -borderwidth 0 -bg [. cget -bg] -font bpfont1 -tabs {5c left} -wrap word
 
 pack .welcomeT -in .leftTopF -anchor nw
-catch {fillWelcomeTWidget .welcomeT}
+catch {fillWelcomeTextWidget .welcomeT}
 
 #Set Next button right
 button .twdClickBtn -textvar msg::next -font bpfont2

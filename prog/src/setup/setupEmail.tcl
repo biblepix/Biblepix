@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/gui/setupEmail.tcl
+	# ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 1aug21 pv
+# Updated 1oct21 pv
 
 #Create frames & titles
 pack [frame .emailF.topF] -fill x
@@ -20,6 +20,7 @@ pack .wunschsprachenTit -in .emailF.topF.f1 -side right -anchor ne -pady 10 -pad
 pack .sigyesnoBtn -in .emailF.topF.f2 -side left -anchor nw
 pack [frame .emailF.topF.f2.rightF] -side right -padx 100 -pady $py
 
+#Set button list
 updateMailBtnList .emailF.topF.f2.rightF
 
 ##called by .sigyes Btn to enable/disable lang checkbuttons
@@ -43,25 +44,18 @@ proc toggleBtnstate {} {
 
 ##A) $sigLanglist exists, but files may have been deleted
 if {[info exists sigLanglist] && $sigLanglist != ""} {
+  
   foreach code $sigLanglist {
-    if [file exists [glob -nocomplain -directory $twddir ${code}*]] {
       set Btn .${code}Btn
       $Btn select
-    }
   }
+
 ##B) $sigLanglist not found
 } else {
-  #select language button if system language is different from $lang var
-  if {[info exists syslangCode] && [winfo exists .${syslangCode}Btn]} {
-    .${syslangCode}Btn select
-  }
 
-
-  #select $lang button if it exists
-  if {$lang == "de" && [winfo exists .deBtn]} {
-    .deBtn select
-  } elseif {$lang == "en" && [winfo exists .enBtn]} {
-    .enBtn select
+  #select language button for lang var
+  if [winfo exists .${lang}Btn] {
+    .${lang}Btn select
   }
 }
 
