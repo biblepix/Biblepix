@@ -1,10 +1,10 @@
-#Biblepix/prog/msg/all.msg
-# loaded by msgcat for untranslatables
+# Biblepix/prog/msg/exportTextvars.tcl
+# Exports all textvars for a language to ::msg namespace, 
+# needed for '-textvar' functions in Setup widgets
+# (Msgcat can't provide global vars!)
 # sourced by setTexts with lang variable
-# Updated 16sep21 pv
-
-#Set textvars for ::msg namespace, used for all '-textvar' functions in widgets
-##Msgcat can't provide global vars!
+# Updated 1oct21 pv
+ 
 namespace eval msg {
 
 set ok [mc ok]

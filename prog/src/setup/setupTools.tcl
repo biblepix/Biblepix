@@ -10,14 +10,14 @@ source $JList
 ##loads all text vars into ::msg namespace
 ##called by SetupMainFrame 
 proc setTexts {lang} {
-  global msgdir os Textvars
+  global msgdir os ExportTextvars
   package require msgcat
   namespace import msgcat::mc msgcat::mcset
 
   #Load msgcat texts & set locale, set global vars for '-textvar' function
   msgcat::mcload "$msgdir"
   msgcat::mclocale $lang
-  source -encoding utf-8 $Textvars
+  source -encoding utf-8 $ExportTextvars
 
   ##replace text in Welcome text widget
   catch {fillWelcomeTextWidget .welcomeT}
