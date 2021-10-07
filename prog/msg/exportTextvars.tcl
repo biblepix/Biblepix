@@ -3,7 +3,7 @@
 # needed for '-textvar' functions in Setup widgets
 # (Msgcat can't provide global vars!)
 # sourced by setTexts with lang variable
-# Updated 4oct21 pv
+# Updated 7oct21 pv
  
 namespace eval msg {
 #  variable lang $::lang
@@ -121,14 +121,19 @@ puts $lang
 #TODO provide paths!
 source /home/pv/Biblepix/prog/src/share/globals.tcl
 
-if [isRtL $lang] {
-    source $Bidi
-    foreach var [info vars msg::*] {
+proc msgbidi {} {
+  source $::Bidi
+  foreach var [info vars msg::*] {
       set T [set $var]
   puts $T
   
   #TODO some texts are not recognised!
-      catch {set $var [bidi::fixBidi $T]}
+      #catch {set $var [bidi::fixBidi $T]}
+      set $var [bidi::fixBidi $T]
     }
-  }
+}
+
+if [isRtL $lang] {
+  msgbidi    
+}
 
