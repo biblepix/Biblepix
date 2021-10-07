@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1oct21 pv
+# Updated: 4oct21 pv
 source $SetupResizeTools
 source $JList
 
@@ -250,21 +250,6 @@ proc setSlideSpin {state} {
   }
 }
 
-# renameTabs
-##resets Notebook tab names according to lang
-##note: Notebook doesn't accept text variables
-##called by setFlags
-proc renameNotebookTabs {} {
-  .nb tab .welcomeF -text $msg::welcome
-  .nb tab .internationalF -text $msg::bibletexts
-  .nb tab .desktopF -text $msg::desktop
-  .nb tab .photosF -text $msg::photos
-  .nb tab .emailF -text $msg::email
-  if [winfo exists .terminalF] {
-    .nb tab .terminalF -text $msg::terminal
-  }
-  .nb tab .manualF -text $msg::manual
-}
 
 # setFlags
 ##draws flags & resets texts upon mouseclick
@@ -294,8 +279,10 @@ proc setFlags {} {
     renameNotebookTabs
     catch {.manualF.man conf -state normal}
     catch {.manualF.man replace 1.1 end [setManText $lang]}
+    
     ##set lang globally
     set ::lang $lang
+    #set ::msg::lang $lang
   }
   proc btnRelease {flag} {
     $flag conf -relief flat -bd 0
@@ -310,6 +297,22 @@ proc setFlags {} {
   return $flagL
   
 } ;#END setFlags
+
+# renameTabs
+##resets Notebook tab names according to lang
+##note: Notebook doesn't accept text variables
+##called by setFlags
+proc renameNotebookTabs {} {
+  .nb tab .welcomeF -text $msg::welcome
+  .nb tab .internationalF -text $msg::bibletexts
+  .nb tab .desktopF -text $msg::desktop
+  .nb tab .photosF -text $msg::photos
+  .nb tab .emailF -text $msg::email
+  if [winfo exists .terminalF] {
+    .nb tab .terminalF -text $msg::terminal
+  }
+  .nb tab .manualF -text $msg::manual
+}
 
 # setManText
 ## Formats Manual & switches between languages
@@ -797,7 +800,7 @@ proc copyAndResizeSamplePhotos {} {
 ##sets & resets .WelcomeT text acc. to language
 ##called by SetupWelcome & setTexts
 proc fillWelcomeTextWidget {w} {
-  global platform
+  global platform lang
   
   #Insert text, deleting any previous
   set msg $msg::welcTxt2
@@ -815,14 +818,21 @@ proc fillWelcomeTextWidget {w} {
     $w delete 6.0 end
   }
 
-  #Set [KEYWORDS]: to bold
+  #Set [KEYWORDS:] to bold
   $w tag conf bold -font TkCaptionFont
   set lines [$w count -lines 1.0 end]
   for {set line 1} {$line <= $lines} {incr line} {
     set colon [$w search : $line.0 $line.end]
-    $w tag add bold $line.0 $colon 
+    
+    #TODO testing
+    if [isRtL $lang] {
+      $w tag add bold $colon $line.end  
+    } else {
+      $w tag add bold $line.0 $colon
+    }
+    
   }
-}
+} ;#END fillWelcomeTextWidget
 
 # insertTodaysTwd
 ##inserts text into text widget

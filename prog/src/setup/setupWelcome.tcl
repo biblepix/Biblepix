@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupWelcome.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1oct21 pv
+# Updated: 4oct21 pv
 
 #Set frames MainLeft + MainRight
 pack [frame .welcomeLeftMainF]  -in .welcomeF -fill y -anchor nw -side left -padx $px
@@ -32,9 +32,9 @@ if {[llength $twdL] <2 } {
   .twdClickBtn conf -state disabled
 }
 
-#Set up Twd widget right
-text .twdWidgetT -width 150 -background #bab86c -foreground maroon -pady 30 -padx 30 -border 7 -tabs 7c -font twdwidgetfont
-pack .twdClickBtn .twdWidgetT -in .welcomeRightMainF -anchor n -pady 15
+#Set up Twd widget right (variable width & height, defined in frame)
+text .twdWidgetT -foreground maroon -pady 30 -padx 30 -border 7 -tabs 7c -font twdwidgetfont -background #bab86c 
+pack .twdClickBtn .twdWidgetT -in .welcomeRightMainF -anchor n -pady 15 -expand 1
 .twdClickBtn conf -command {insertTodaysTwd .twdWidgetT}
 .twdWidgetT tag conf text -font twdwidgetfont -justify left
 if $enabletitle {

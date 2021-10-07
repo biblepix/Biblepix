@@ -3,7 +3,9 @@
 # called by BdfPrint + several Setup widgets
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 4aug21 pv
+# Updated: 5oct21 pv
+
+#TODO Ya + Hamza \u0621 at end of word makes Ya non-final! > set final letter to one before if final=Hamza! 
 
 namespace eval bidi {
   
@@ -13,9 +15,14 @@ namespace eval bidi {
   variable ar_range {[\u0620-\u06FF]}
   ##all LTR range
   variable ltr_range {[\u0590-\u05FF\u0620-\u06FF]}
+  
   #Letters only range, including Hamza & all presentation forms, 
   ##excluding Tatwil, numerals, punctuation & vowels
-  variable ar_letters {[\u0620-\u063F\u0641-\u064A\u0671-\u06D3\uFE81-\uFEFC]}
+  #variable ar_letters {[\u0620-\u063F\u0641-\u064A\u0671-\u06D3\uFE81-\uFEFC]}
+ 
+ #TODO testing exluding Hamza
+ variable ar_letters {[\u0620\u0622-\u063F\u0641-\u064A\u0671-\u06D3\uFE81-\uFEFC]}
+ 
   ##vowels only range, excluding Fathatân & Hamza
   variable ar_vowels {[\u064C-\u065F]}
   variable ar_numerals {[\u0660-\u0669]}
@@ -100,7 +107,9 @@ namespace eval bidi {
   array set 1681 {n rre l 0 m \ufb8d f \ufb8d}
   array set 1731 {n te_marbuta_goal l 0 f \u06c3} ;#=ta_marbuta?
 
-
+#TODO testing Hamza
+#  array set 1569 {n hamza l 0 i \u0621 m \u0621 f \u0621}
+  
 ### P R O C S  ##############################################################
 
   # fixBidi main process - called by several displaying widgets
@@ -223,17 +232,42 @@ regsub -all {[\u0022\u0027\u00AB\u00BB\u2018\u2019]} $s {} s
     set firstLetterPos [lindex $arLetterL 0]
     set lastLetterPos [lindex $arLetterL end]
 
+#TODO Testingn hamza
+#set lastlettercode [scan $lastLetterPos %c]
+#if {$lastlettercode == 1569} {
+#  incr lastLetterPos -1
+#}
+
     #Scan word for coded & non-coded characters
     foreach char $letterL {
       
       set htmcode [scan $char %c]
  
+# if {$htmcode == 1569} {
+# puts bulduk
+# set lastLetterPos [expr $pos - 1]
+#incr lastLetterPos -1
+#append newword $char
+
+#continue
+# }
       #A) Skip if not listed
       if ![info exists [namespace current]::$htmcode] {
         append newword $char
-        incr pos
-        continue
+   
+        
+ #TODO testing Hamza final pos.
+# if {$htmcode == 1569} {
+# puts $htmcode
+# incr lastLetterPos -1
+          #continue
+  #      } else {
+          incr pos
+   #       continue
+  #      }
+      continue
       }
+      
 
       #B) Evaluate form from position:
       ##set 1st letter form
@@ -353,7 +387,7 @@ regsub -all {[\u0022\u0027\u00AB\u00BB\u2018\u2019]} $s {} s
 	    #7. Eliminate all remaining vowels
       regsub -all {[\u0591-\u05C7]} $s {} s
 
-#TODO double waw if ...? נתודה>>נתוודה   | usw.  עולה > עוולה
+#TODO Heb. double waw if ...? נתודה>>נתוודה   | usw.  עולה > עוולה
     
     # A r a b i c  / U r d u  /  F a r s i
     ##cuts out all vowel signs as common in modern texts
