@@ -1,21 +1,21 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 9aug21 pv
+# Updated 9oct21 pv
 
 #Create left & right main frames
-pack [frame .desktopF.leftF] -fill y -side left
-pack [frame .desktopF.rightF] -fill both -side right -expand 1
+pack [frame .desktopLeftF] -in .desktopF -fill y -side left
+pack [frame .desktopRightF] -in .desktopF -fill both -side right -expand 1
 ##right top frames
-pack [frame .topMainF1] -in .desktopF.rightF -fill x
-pack [frame .topMainF2 -relief ridge -bd 3 -padx $px -pady $py] -in .desktopF.rightF -fill x
+pack [frame .dtTopMainF1] -in .desktopRightF -fill x
+pack [frame .dtTopMainF2 -relief ridge -bd 3 -padx $px -pady $py] -in .desktopRightF -fill x
 ##right middle frames
-pack [frame .midMainF -padx $px -pady $py] -in .desktopF.rightF -fill x
-pack [frame .leftF] -in .midMainF -side left
-pack [frame .midF] -in .midMainF -expand 1 -side left
-pack [frame .rightF] -in .midMainF -side right
+pack [frame .dtMidMainF -padx $px -pady $py] -in .desktopRightF -fill x
+pack [frame .dtMidLeftF] -in .dtMidMainF -side left
+pack [frame .dtMidMidF] -in .dtMidMainF -expand 1 -side left
+pack [frame .dtMidRightF] -in .dtMidMainF -side right
 ##right bottom frame
-pack [frame .botMainF -relief ridge -borderwidth 3] -in .desktopF.rightF -pady $py -padx $px -fill x
+pack [frame .dtBotMainF -relief ridge -borderwidth 3] -in .desktopRightF -pady $py -padx $px -fill x
 
 ##Create generic Serif or Sans font
 font create intCanvFont -family $fontfamily -size $fontsize -weight $fontweight
@@ -23,26 +23,26 @@ font create intCanvFont -family $fontfamily -size $fontsize -weight $fontweight
 # F I L L   L E F T 
 
 #Create title + main text
-label .title -textvar msg::f2Tit -font bpfont3
-message .mainTxt -textvar msg::f2Txt -font bpfont1 -width [expr int(0.3 * $wWidth)] -padx $px -pady $py -justify left
-.mainTxt conf -padx 30
+label .dtMainTitleL -textvar msg::f2Tit -font bpfont3
+message .dtMainM -textvar msg::f2Txt -font bpfont1 -width [expr int(0.3 * $wWidth)] -padx $px -pady $py -justify left
+.dtMainM conf -padx 30
 #Create ImageYesno checkbutton 
-checkbutton .imgyesnoCB -textvar msg::f2Box -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
+checkbutton .dtImgyesnoCB -textvar msg::f2Box -variable imgyesState -width 20 -justify left -command {setSpinState $imgyesState}
 if $enablepic {set imgyesState 1} else {set imgyesState 0}
 
 #P A C K   L E F T 
-pack .title -in .desktopF.leftF -anchor w
-pack .imgyesnoCB -in .desktopF.leftF -side top -anchor w
-pack .mainTxt -in .desktopF.leftF -anchor nw
+pack .dtMainTitleL -in .desktopLeftF -anchor w
+pack .dtImgyesnoCB -in .desktopLeftF -side top -anchor w
+pack .dtMainM -in .desktopLeftF -anchor nw
 
 # F I L L   R I G H T
 ##create canvases
-set textposC [canvas .textposCanv -bg lightgrey -borderwidth 1]
-set inttextC [canvas .inttextCanv]
+set textposC [canvas .dtTextposC -bg lightgrey -borderwidth 1]
+set inttextC [canvas .dtIntttextC]
 
 #3. ShowDate checkbutton
 checkbutton .showdateBtn -textvar msg::f2Introline -variable enabletitle
-.showdateBtn configure -command {
+.showdateBtn conf -command {
   if {$setupTwdFileName != ""} {
     $textposC itemconf mv -text [getTodaysTwdText $setupTwdFileName]
   }
@@ -219,17 +219,18 @@ if ![catch "glob $twddir/ar_*"] {
   lappend RtlInfo $msgAr
 }
 label .textposFN -width 50 -font "Serif 10" -textvar RtlInfo
+
 # P A C K   R I G H T
 ##top
-pack .showdateBtn -in .topMainF1 -anchor w -side left
-pack .slideSecTxt .slideSpin .slideTxt .slideBtn -in .topMainF1 -anchor nw -side right
-pack .fontAdaptL -in .topMainF2 -anchor n
-pack $inttextC -in .topMainF2 -fill x -anchor n
+pack .showdateBtn -in .dtTopMainF1 -anchor w -side left
+pack .slideSecTxt .slideSpin .slideTxt .slideBtn -in .dtTopMainF1 -anchor nw -side right
+pack .fontAdaptL -in .dtTopMainF2 -anchor n
+pack $inttextC -in .dtTopMainF2 -fill x -anchor n
 ##middle
-pack .fontcolorTxt .fontcolorSpin .randomfontcolorCB -in .leftF -side left
-pack .fontsizeSpin .fontsizeTxt -in .midF -side right
-pack .fontfamilyTxt .fontfamilySpin .fontweightBtn -in .rightF -side left
+pack .fontcolorTxt .fontcolorSpin .randomfontcolorCB -in .dtMidLeftF -side left
+pack .fontsizeSpin .fontsizeTxt -in .dtMidMidF -side right
+pack .fontfamilyTxt .fontfamilySpin .fontweightBtn -in .dtMidRightF -side left
 ##bottom
-pack .textposL -in .botMainF -pady 7
-pack $textposC -in .botMainF -fill y
-pack .textposFN -in .botMainF -fill x
+pack .textposL -in .dtBotMainF -pady 7
+pack $textposC -in .dtBotMainF -fill y
+pack .textposFN -in .dtBotMainF -fill x

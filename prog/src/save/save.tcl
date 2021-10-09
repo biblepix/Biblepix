@@ -2,7 +2,7 @@
 # Records settings & downloads TWD files
 # called by biblepix-setup.tcl
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated : 24aug21 pv 
+# Updated : 9oct21 pv 
 
 # Return to INTERNATIONAL section if $twddir empty
 if [catch {glob $twddir/*$jahr.twd}] {
@@ -48,7 +48,7 @@ set rgb [hex2rgb $fontcolor]
 set slidestatus [.slideSpin get]
 
 ##textpos coordinates
-lassign [.textposCanv coords mv] x y - -
+lassign [$textposC coords mv] x y - -
 set marginleftstatus [expr int($x*$textPosFactor)]
 set margintopstatus [expr int($y*$textPosFactor)]
 

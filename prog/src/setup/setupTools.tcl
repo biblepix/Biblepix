@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4oct21 pv
+# Updated: 7oct21 pv
 source $SetupResizeTools
 source $JList
 
@@ -32,14 +32,28 @@ proc setTexts {lang} {
 } ;#END setTexts
 
 # setWidgetDirection
-##sets direction of text widgets to right-justifying || left-justifying
-##called by ?setLang ?setFlag
+##A)sets direction of text widgets to right/left-justifying
+##B)packs them as west/east-anchoring
+##called by setTexts
 proc setWidgetDirection {dir} {
 ########################################
 # TODO Unify frame + widget paths & names
 # For info:  set notebookList [.nb tabs]
 ########################################
 
+  #set anchor var
+  if {$dir == "right"} {
+    set anc e
+  } {
+    set anc w
+  }
+
+#other commands to use: winfo children .
+# pack $w -anchor e/w
+foreach f  [winfo children .] {
+  lappend frameL $f
+}
+ 
   #Extract text widgets from .nb subframes
   ##.welcomeF tab
   lappend frameL .leftTopF .leftBotF
@@ -54,6 +68,9 @@ proc setWidgetDirection {dir} {
   ##.terminalF tab
   lappend frameL .terminalF .terminalF.mainF.left
   
+#  set frameL [lsort -unique $frameL]
+  
+  #TODO this sucks, not all chilren of frames recognised!
   #Scan frame list for message+label widgets
   foreach F $frameL {
     
@@ -65,18 +82,22 @@ proc setWidgetDirection {dir} {
            [winfo class $w] == "Message"
       } {
           $w conf -justify $dir 
+          pack $w -anchor $anc
       }
     }
   }
   
+#TODO add repacking for main frames & widget order where there are several in a line!
+
   #Scan . for lost text widgets! - TODO zis aynt workin!
-  foreach w [winfo children .] {
-    if { [winfo class $w] == "Label" ||
-         [winfo class $w] == "Message"
-    } {
-      $w conf -justify $dir
-    }
-  }
+#  foreach w [winfo children .] {
+#    if { [winfo class $w] == "Label" ||
+#         [winfo class $w] == "Message"
+#    } {
+#      $w conf -justify $dir
+#      pack $w -anchor $anc
+#    }
+#  }
   
 } ;#END setWidgetDirection
 
@@ -113,7 +134,7 @@ proc addPic {origPicPath} {
   #A): right dimensions, right size: save pic
   if {$resize == 0} {
     $addpicture::curPic write $targetPicPath -format PNG
-    NewsHandler::QueryNews "$msg::copiedPicMsg $origPicPath" lightgreen
+    NewsHandler::QueryNews "[mc copiedPicMsg] $origPicPath" lightgreen
     openReposWindow $addpicture::curPic
 
   #B) right dimensions, wrong size: start resizing & open reposWindow

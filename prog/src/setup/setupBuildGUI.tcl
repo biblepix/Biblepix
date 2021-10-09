@@ -2,12 +2,12 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14aug21 pv
+# Updated: 9oct21 pv
 
 #Set up flags top right
 set flagL [setFlags]
 foreach flag $flagL {
-  pack $flag -in .ftop -side right
+  pack $flag -in .topMainF -side right
 }
 
 set setupTwdFileName [getRandomTwdFile]
@@ -23,7 +23,7 @@ if [catch {package require Img} ]  {
 } else {
   image create photo Logo -file $WinIcon -format ICO
   wm iconphoto . -default Logo
-  .ftop.titelmitlogo configure -compound left -image Logo
+  .mainTitleL conf -compound left -image Logo
 }
 
 #Configure Fonts

@@ -1,56 +1,65 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 8sept21 pv
+# Updated 9oct21 pv
 
-#Statusbar
-frame .internationalF.f0 -padx $px
-pack .internationalF.f0 -side bottom -fill x
-label .internationalF.status -textvar status -font bpfont1 -height 1 -bg $bg -relief sunken
-pack .internationalF.status -in .internationalF.f0 -fill x
+#Create Title & msg in main frame
+label .intTitleL -textvar msg::f1Tit -font bpfont3
+message .intTxtM -textvar msg::f1Txt -width $tw -font bpfont1 -padx $px -pady $py
+pack .intTitleL .intTxtM -in .internationalF -side top -anchor w
 
+#Create frames
+pack [frame .intTopF -padx $px] -in .internationalF -anchor w -fill x
+pack [frame .intMidF -padx $px] -in .internationalF -anchor w -fill x
+pack [frame .intBotF -padx $px] -in .internationalF -anchor w -fill x
 #Refresh button
-button .internationalF.refbtn -textvar msg::refresh -bg orange -activebackground orange -command {set status [getRemoteTWDFileList]}
-pack .internationalF.refbtn -side bottom -fill x -padx $px
+button .intRefreshBtn -textvar msg::refresh -bg orange -activebackground orange -command {set status [getRemoteTWDFileList]}
+pack .intRefreshBtn -in .intBotF -side bottom -fill x -padx $px
 
-#Title
-label .internationalF.titel -textvar msg::f1Tit -font bpfont3
-message .internationalF.txt -textvar msg::f1Txt -width $tw -font bpfont1 -padx $px -pady $py
-pack .internationalF.titel .internationalF.txt -anchor w
+##subframes
+pack [frame .twdremoteTitleF -bg beige] -in .intBotF -side top -fill x -anchor w
+pack [frame .twdremoteF -padx $px] -in .intBotF
+
+label .intStatusL -textvar status -font bpfont1 -height 1 -bg $bg -relief sunken
+pack .intStatusL -in .internationalF -fill x
+
+
 
 #Locallist
-frame .internationalF.f1 -padx $px
-pack .internationalF.f1 -anchor w -fill x
+label .intTwdlocalTit -textvar msg::TwdLocalTit -bg $bg -font bpfont2
+pack .intTwdlocalTit -in .intTopF -side top -anchor w -fill x
 
-label .internationalF.f1.twdlocaltit -textvar msg::TwdLocalTit -bg $bg -font bpfont2
-pack .internationalF.f1.twdlocaltit -anchor w -fill x
 #set listbox
-listbox .internationalF.f1.twdlocal -bg lightgreen -width $tw -height 0 -selectmode single -activestyle none
+set localLB [listbox .intTwdlocalLB -bg lightgreen -width $tw -height 0 -selectmode single -activestyle none]
 set twdlist [getTwdList]
-foreach i [lsort $twdlist] { .internationalF.f1.twdlocal insert end $i }
-
-#Set delete button
-button .internationalF.f1.delbtn -bg $bg -textvar msg::delete -command {
-  set lbIndex [.internationalF.f1.twdlocal cursel]
-  if {$lbIndex != ""} {
-    set fileName [.internationalF.f1.twdlocal get active]
-    file delete $twddir/$fileName
-    .internationalF.f1.twdlocal delete $lbIndex
-  }
-  updateMailBtnList .emailF.topF.f2.rightF
+foreach i [lsort $twdlist] {
+  $localLB insert end $i 
 }
 
-pack .internationalF.f1.delbtn -side right -fill none
-pack .internationalF.f1.twdlocal -anchor w
+#Set delete button
+button .intDelBtn -bg $bg -textvar msg::delete -command {
+  set lbIndex [$localLB cursel]
+  if {$lbIndex != ""} {
+    set fileName [$localLB get active]
+    file delete $twddir/$fileName
+    $localLB delete $lbIndex
+  }
+#TODO rectify path!
+#  updateMailBtnList .emailF.topF.f2.rightF
+}
+
+#TODO get frames right!
+pack .intDelBtn -in .intTopF -side right -fill none
+pack $localLB -in .intTopF -side left -anchor w
 
 #Remotelist
-frame .internationalF.f2 -padx $px
-pack .internationalF.f2 -anchor w -fill x
-label .internationalF.f2.twdremotetit -textvar msg::TwdRemoteTit -bg $bg -justify left -font bpfont2 -padx $px -pady $py
-pack .internationalF.f2.twdremotetit -fill x
-pack [frame .internationalF.f3] -anchor w -fill x -padx $px
+label .intTwdremoteTit -textvar msg::TwdRemoteTit -bg $bg -justify left -font bpfont2 -padx $px -pady $py
+pack .intTwdremoteTit -in .intMidF -side top -fill x
+
+#pack [frame .internationalF.f3] -anchor w -fill x -padx $px
+
 #Titel frame
-pack [frame .twdremoteTitleF -bg beige] -in .internationalF.f3 -fill x -anchor w
+#pack [frame .twdremoteTitleF -bg beige] -in .internationalF.f3 -fill x -anchor w
 label .twdremote1L -font "SmallCaptionFont 8" -textvar msg::language -font TkFixedFont -bg beige -anchor w -width 20
 label .twdremote2L -font "SmallCaptionFont 8" -textvar msg::year -font TkFixedFont -bg beige -anchor w -width 14
 label .twdremote3L -font "SmallCaptionFont 8" -textvar msg::biblename -font TkFixedFont -bg beige -anchor w -width 59
@@ -58,13 +67,14 @@ label .twdremote4L -font "SmallCaptionFont 8" -textvar msg::bibleversion -font T
 pack .twdremote1L .twdremote2L .twdremote3L .twdremote4L -in .twdremoteTitleF -side left
 
 #setup remotelist (inserted later by http.tcl)
-frame .internationalF.twdremoteframe -padx $px
-listbox .twdremoteLB -yscrollcommand {.twdremoteScr set} -selectmode multiple -activestyle none -font TkFixedFont -width [expr $wWidth - 50] -height [expr $wHeight - 300] -bg lightblue
-scrollbar .twdremoteScr -command {.twdremoteLB yview}
+#frame .internationalF.twdremoteframe -padx $px
+listbox .twdremoteLB -yscrollcommand {.twdremoteSB set} -selectmode multiple -activestyle none -font TkFixedFont -width [expr $wWidth - 50] -height [expr $wHeight - 300] -bg lightblue
+scrollbar .twdremoteSB -command {.twdremoteLB yview}
 button .downloadBtn -textvar msg::download -command {
   downloadTWDFiles
   catch {updateMailBtnList .emailF.topF.f2.rightF}
 }
-pack .internationalF.twdremoteframe -anchor w
-pack .downloadBtn -in .internationalF.twdremoteframe -side right -fill x
-pack .twdremoteScr .twdremoteLB -in .internationalF.twdremoteframe -side right -fill y
+
+#pack .internationalF.twdremoteframe -anchor w
+pack .downloadBtn -in .twdremoteF -side right -fill x
+pack .twdremoteSB .twdremoteLB -in .twdremoteF -side right -fill y
