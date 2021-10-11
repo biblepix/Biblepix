@@ -17,26 +17,22 @@ button .intRefreshBtn -textvar msg::refresh -bg orange -activebackground orange 
 pack .intRefreshBtn -in .intBotF -side bottom -fill x -padx $px
 
 ##subframes
-pack [frame .twdremoteTitleF -bg beige] -in .intBotF -side top -fill x -anchor w
+pack [frame .twdremoteTitleF -bg beige] -in .intBotF -side top -fill x -anchor w -padx $px
 pack [frame .twdremoteF -padx $px] -in .intBotF
 
 label .intStatusL -textvar status -font bpfont1 -height 1 -bg $bg -relief sunken
 pack .intStatusL -in .internationalF -fill x
 
-
-
-#Locallist
-label .intTwdlocalTit -textvar msg::TwdLocalTit -bg $bg -font bpfont2
+# Local TWD list
+label .intTwdlocalTit -textvar msg::TwdLocalTit -font bpfont2
 pack .intTwdlocalTit -in .intTopF -side top -anchor w -fill x
-
-#set listbox
-set localLB [listbox .intTwdlocalLB -bg lightgreen -width $tw -height 0 -selectmode single -activestyle none]
+##set listbox
+set localLB [listbox .intTwdlocalLB -bg lightgreen -width [expr $tw - $px] -selectmode single -activestyle none]
 set twdlist [getTwdList]
 foreach i [lsort $twdlist] {
   $localLB insert end $i 
 }
-
-#Set delete button
+##set delete button
 button .intDelBtn -bg $bg -textvar msg::delete -command {
   set lbIndex [$localLB cursel]
   if {$lbIndex != ""} {
@@ -44,22 +40,17 @@ button .intDelBtn -bg $bg -textvar msg::delete -command {
     file delete $twddir/$fileName
     $localLB delete $lbIndex
   }
-#TODO rectify path!
-#  updateMailBtnList .emailF.topF.f2.rightF
+
+  updateMailBtnList .emailF.topF.f2.rightF
 }
-
-#TODO get frames right!
 pack .intDelBtn -in .intTopF -side right -fill none
-pack $localLB -in .intTopF -side left -anchor w
+pack $localLB -in .intTopF -side left -anchor n -padx $px
 
-#Remotelist
-label .intTwdremoteTit -textvar msg::TwdRemoteTit -bg $bg -justify left -font bpfont2 -padx $px -pady $py
+# Remote TWD list
+label .intTwdremoteTit -textvar msg::TwdRemoteTit -justify left -font bpfont2 -padx $px -pady $py
 pack .intTwdremoteTit -in .intMidF -side top -fill x
 
-#pack [frame .internationalF.f3] -anchor w -fill x -padx $px
-
 #Titel frame
-#pack [frame .twdremoteTitleF -bg beige] -in .internationalF.f3 -fill x -anchor w
 label .twdremote1L -font "SmallCaptionFont 8" -textvar msg::language -font TkFixedFont -bg beige -anchor w -width 20
 label .twdremote2L -font "SmallCaptionFont 8" -textvar msg::year -font TkFixedFont -bg beige -anchor w -width 14
 label .twdremote3L -font "SmallCaptionFont 8" -textvar msg::biblename -font TkFixedFont -bg beige -anchor w -width 59

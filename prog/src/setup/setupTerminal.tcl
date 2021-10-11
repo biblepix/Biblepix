@@ -1,12 +1,12 @@
 # ~/Biblepix/prog/src/setup/setupTerminal.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1aug21 pv
+# Updated: 11oct21 pv
 
 #Create label & checkbutton
-label .terminalF.t1 -textvar msg::f4Tit -font bpfont3
-checkbutton .terminalF.termyesno -textvar msg::f4Btn -variable termyesnoState
-pack .terminalF.t1 .terminalF.termyesno -anchor w
+label .termMainTit -textvar msg::f4Tit -font bpfont3
+checkbutton .termYesnoCB -textvar msg::f4Btn -variable termyesnoState
+pack .termMainTit .termYesnoCB -in .terminalF -anchor w
 if {[info exists enableterm]} {
   if {$enableterm==1} {
     set termyesnoState 1
@@ -14,19 +14,19 @@ if {[info exists enableterm]} {
 }
 
 # C r e a t e  m a i n  f r a m e s
-pack [frame .terminalF.mainF] -fill both -expand 1
-pack [frame .terminalF.mainF.left] -side left -expand 1 -anchor nw 
-pack [frame .terminalF.mainF.right] -side right -anchor ne -padx 25 -pady 25
+pack [frame .termMainF] -in .terminalF -fill both -expand 1
+pack [frame .termLeftF] -in .termMainF -side left -expand 1 -anchor nw 
+pack [frame .termRightF] -in .termMainF -side right -anchor ne -padx 25 -pady 25
 
 # F i l l   l e f t   f r a m e
-message .termMsg -textvar msg::f4Txt -font bpfont1 -width 500 -padx $px -pady $py
-pack .termMsg -in .terminalF.mainF.left -anchor nw
+message .termMainM -textvar msg::f4Txt -font bpfont1 -width 500 -padx $px -pady $py
+pack .termMainM -in .termLeftF -anchor nw
 
 # F i l l   r i g h t   f r a m e
 #Create bp text widget 
 text .termTwdT -width 70 -borderwidth 7
 set t .termTwdT
-pack $t -in .terminalF.mainF.right -anchor ne -pady 25 -pady 25
+pack $t -in .termRightF -anchor ne -pady 25 -pady 25
 
 ##insert whole TWD text from line 1.0
 $t insert 1.0 $setupTwdText

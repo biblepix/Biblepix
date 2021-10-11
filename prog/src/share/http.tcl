@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
-# called by Installer / Setup
+# Procs called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14sep21 pv
+# Updated: 11oct21 pv
 package require http
 
 # checkTls
@@ -267,25 +267,26 @@ proc listRemoteTWDFiles {lBox} {
 }
 
 # getRemoteTWDFileList
-#TODO called by?......
+#called by SetupInternational
 proc getRemoteTWDFileList {} {
   if [catch testHttpCon Error] {
-    .internationalF.status conf -bg red
+    .intStatus conf -bg red
     set status $msg::noConnTwd
     puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
   } else {
     if ![catch {listRemoteTWDFiles .twdremoteLB}] {
-      .internationalF.status conf -bg lightgreen
+      .intStatus conf -bg lightgreen
       set status $msg::connTwd
     } else {
-      .internationalF.status conf -bg red
+      .intStatus conf -bg red
       set status $msg::noConnTwd
     }
   }
   return $status
 }
 
-#called by ??
+# downloadTWDFiles
+#called by SetupInternational
 proc downloadTWDFiles {} {
   global twddir jahr Globals
   

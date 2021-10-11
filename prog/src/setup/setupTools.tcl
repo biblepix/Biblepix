@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7oct21 pv
+# Updated: 11oct21 pv
 source $SetupResizeTools
 source $JList
 
@@ -417,7 +417,7 @@ proc updateMailBtnList {w} {
   foreach slave [pack slaves $w] {pack forget $slave}
   foreach code $langcodeL {
     catch {  checkbutton .${code}Btn -text $code -width 5 -selectcolor beige -indicatoron 0 -variable sel${code} }
-    pack .${code}Btn -in .emailF.topF.f2.rightF -side right -padx 3
+    pack .${code}Btn -in .mailTop2F -side right -padx 3
     lappend sigLangBtnL .${code}Btn
   }
   ##TODO unify var names! > siglangL + siglangBtnL
@@ -592,15 +592,15 @@ proc doOpen {bildordner canv} {
   refreshImg $localJList $canv
 
   if {$localJList != ""} {
-    pack .addBtn -in .photosF.mainf.right.unten -side left -fill x
+    pack .phAddBtn -in .phBotF -side left -fill x
   }
 
-  pack .picPathL -in .photosF.mainf.right.unten -side left -fill x
-  pack .photosF.mainf.right.bar.collect -side right -fill x
-  pack forget .delBtn .photosF.mainf.right.bar.count1 .photosF.mainf.right.bar.count2
+  pack .phPicpathL -in .phBotF -side left -fill x
+  pack .phCollectBtn -side right -fill x
+  pack forget .phDelBtn .phCount1 .phCount2
 
   #Add Rotate button
-  pack .rotateBtn -in .photosF.mainf.right.unten -side right
+  pack .rotateBtn -in .phBotF -side right
 
   return $localJList
 }
@@ -610,9 +610,9 @@ proc doCollect {canv} {
   set localJList [step $localJList 0 $canv]
   refreshImg $localJList $canv
 
-  pack .delBtn .picPathL -in .photosF.mainf.right.unten -side left -fill x
-  pack .photosF.mainf.right.bar.count1 .photosF.mainf.right.bar.count2 -side right
-  pack forget .addBtn .photosF.mainf.right.bar.collect .rotateBtn
+  pack .phDelBtn .phPicpathL -in .phBotF -side left -fill x
+  pack .phCount1 -in .phBarF -side right
+  pack forget .phAddBtn .phCollectBtn .phRotateBtn
 
   return $localJList
 }

@@ -1,27 +1,27 @@
 	# ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 1oct21 pv
+# Updated 11oct21 pv
 
 #Create frames & titles
-pack [frame .emailF.topF] -fill x
-pack [frame .emailF.topF.f1] -fill x
-pack [frame .emailF.topF.f2] -fill x
-pack [frame .emailF.botF] -fill both
-pack [frame .emailF.botF.left] -side left -anchor nw
-pack [frame .emailF.botF.right -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -side right -padx 100 
+pack [frame .mailTopF] -in .emailF -fill x
+pack [frame .mailTop1F] -in .mailTopF -fill x
+pack [frame .mailTop2F] -in .mailTopF -fill x
+pack [frame .mailBotF] -in .emailF -fill both
+pack [frame .mailBotLeftF] -in .mailBotF -side left -anchor nw
+pack [frame .mailBotRightF -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -in .mailBotF -side right -padx 100 
 
 #Create labels & widgets
-label .mainTit -textvar msg::f3Tit -font bpfont3
-label .wunschsprachenTit -textvar msg::f3Sprachen -font bpfont1 -bg beige -bd 1 -relief sunken -padx 7 -pady 3 ;#-fg [gradient beige -0.3]
-checkbutton .sigyesnoBtn -textvar msg::f3Btn -variable sigyesState -command {toggleBtnstate}
-pack .mainTit -in .emailF.topF.f1 -side left
-pack .wunschsprachenTit -in .emailF.topF.f1 -side right -anchor ne -pady 10 -padx 100
-pack .sigyesnoBtn -in .emailF.topF.f2 -side left -anchor nw
-pack [frame .emailF.topF.f2.rightF] -side right -padx 100 -pady $py
+label .mailMainTit -textvar msg::f3Tit -font bpfont3
+label .mailDesiredlangL -textvar msg::f3Sprachen -font bpfont1 -bg beige -bd 1 -relief sunken -padx 7 -pady 3
+checkbutton .mailSigyesnoCB -textvar msg::f3Btn -variable sigyesState -command {toggleBtnstate}
+pack .mailMainTit -in .mailTop1F -side left
+pack .mailDesiredlangL -in .mailTop1F -side right -anchor ne -pady 10 -padx 100
+pack .mailSigyesnoCB -in .mailTop2F -side left -anchor nw
+pack [frame .mailRight2F] -in .mailTop2F -side right -padx 100 -pady $py
 
 #Set button list
-updateMailBtnList .emailF.topF.f2.rightF
+updateMailBtnList .mailRight2F
 
 ##called by .sigyes Btn to enable/disable lang checkbuttons
 proc toggleBtnstate {} {
@@ -66,30 +66,30 @@ if $enablesig {
 }
 
 #Create Message
-message .emailMsg -font bpfont1 -padx $px -pady $py -textvar msg::f3Txt 
-pack .emailMsg -in .emailF.botF.left -anchor nw
+message .mailMainM -font bpfont1 -padx $px -pady $py -textvar msg::f3Txt 
+pack .mailMainM -in .mailBotLeftF -anchor nw
 #Create Twd text
 set twdfile [getRandomTwdFile 0]
 set dwsig [getTodaysTwdSig $twdfile 1]
 
 #Create E-Mail widgets
-label .sigL -font twdwidgetfont -bg $bg -fg blue -justify left -textvar msg::f3Expl
-text .sigT -font twdwidgetfont -background $bg -foreground blue -bd 0
-.sigT insert 1.0 $dwsig
+label .mailSigL -font twdwidgetfont -bg $bg -fg blue -justify left -textvar msg::f3Expl
+text .mailSigT -font twdwidgetfont -background $bg -foreground blue -bd 0
+.mailSigT insert 1.0 $dwsig
 
 ##right justify www line
-set wwwline [.sigT search bible2 5.0]
+set wwwline [.mailSigT search bible2 5.0]
 set dotpos [string first . $wwwline]
 set lineNo [string range $wwwline 0 $dotpos-1]
-.sigT tag add www $lineNo.0 end
-.sigT tag conf www -justify right
-.sigT conf -height $lineNo
+.mailSigT tag add www $lineNo.0 end
+.mailSigT tag conf www -justify right
+.mailSigT conf -height $lineNo
 
 ##justify right for Hebrew & Arabic
 if [isBidi $dwsig] {
-  .sigT tag add rtl 1.0 end
-  .sigT tag conf rtl -justify right
-  .sigT tag conf www -justify left
+  .mailSigT tag add rtl 1.0 end
+  .mailSigT tag conf rtl -justify right
+  .mailSigT tag conf www -justify left
 }
 
-pack .sigL .sigT -in .emailF.botF.right -anchor w
+pack .mailSigL .mailSigT -in .mailBotRightF -anchor w
