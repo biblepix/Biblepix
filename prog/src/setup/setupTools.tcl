@@ -31,15 +31,12 @@ proc setTexts {lang} {
 
 } ;#END setTexts
 
+#TODO move to exportTextvars?
 # setWidgetDirection
 ##A)sets direction of text widgets to right/left-justifying
 ##B)packs them as west/east-anchoring
 ##called by setTexts
 proc setWidgetDirection {dir} {
-########################################
-# TODO Unify frame + widget paths & names
-# For info:  set notebookList [.nb tabs]
-########################################
 
   #set anchor var
   if {$dir == "right"} {
@@ -48,57 +45,19 @@ proc setWidgetDirection {dir} {
     set anc w
   }
 
-#other commands to use: winfo children .
-# pack $w -anchor e/w
-foreach f  [winfo children .] {
-  lappend frameL $f
-}
- 
-  #Extract text widgets from .nb subframes
-  ##.welcomeF tab
-  lappend frameL .leftTopF .leftBotF
-  ##.internationalF tab
-  lappend frameL .internationalF.titel .internationalF.txt
-  ##.desktopF tab
-  lappend frameL .desktopF.leftF
-  ##.photosF tab
-  lappend frameL .photosF .photosF.mainf.left
-  ##.emailF tab
-  lappend frameL .emailF.topF.f1 .emailF.botF.left
-  ##.terminalF tab
-  lappend frameL .terminalF .terminalF.mainF.left
+  #TODO add some right-left switching for main frames
+  #incl. pic num in Photos etc.
   
-#  set frameL [lsort -unique $frameL]
-  
-  #TODO this sucks, not all chilren of frames recognised!
-  #Scan frame list for message+label widgets
-  foreach F $frameL {
-    
-    set winL [pack slaves $F]
-
     #Adjust justification 
-    foreach w $winL {
+    foreach w [winfo children .] {
       if { [winfo class $w] == "Label" ||
            [winfo class $w] == "Message"
       } {
-          $w conf -justify $dir 
+          $w conf -justify $dir
           pack $w -anchor $anc
       }
     }
-  }
-  
-#TODO add repacking for main frames & widget order where there are several in a line!
 
-  #Scan . for lost text widgets! - TODO zis aynt workin!
-#  foreach w [winfo children .] {
-#    if { [winfo class $w] == "Label" ||
-#         [winfo class $w] == "Message"
-#    } {
-#      $w conf -justify $dir
-#      pack $w -anchor $anc
-#    }
-#  }
-  
 } ;#END setWidgetDirection
 
 
@@ -417,7 +376,7 @@ proc updateMailBtnList {w} {
   foreach slave [pack slaves $w] {pack forget $slave}
   foreach code $langcodeL {
     catch {  checkbutton .${code}Btn -text $code -width 5 -selectcolor beige -indicatoron 0 -variable sel${code} }
-    pack .${code}Btn -in .mailTop2F -side right -padx 3
+    pack .${code}Btn -in .mailTop2F -side right -padx 3 -anchor e
     lappend sigLangBtnL .${code}Btn
   }
   ##TODO unify var names! > siglangL + siglangBtnL
@@ -611,7 +570,7 @@ proc doCollect {canv} {
   refreshImg $localJList $canv
 
   pack .phDelBtn .phPicpathL -in .phBotF -side left -fill x
-  pack .phCount1 -in .phBarF -side right
+  pack .phCountNum .phCountTxt -in .phBarF -side right
   pack forget .phAddBtn .phCollectBtn .phRotateBtn
 
   return $localJList

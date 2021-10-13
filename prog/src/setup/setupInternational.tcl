@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 9oct21 pv
+# Updated 13oct21 pv
 
 #Create Title & msg in main frame
 label .intTitleL -textvar msg::f1Tit -font bpfont3
@@ -9,7 +9,8 @@ message .intTxtM -textvar msg::f1Txt -width $tw -font bpfont1 -padx $px -pady $p
 pack .intTitleL .intTxtM -in .internationalF -side top -anchor w
 
 #Create frames
-pack [frame .intTopF -padx $px] -in .internationalF -anchor w -fill x
+#TODO Listbox can get too heigh! > add scrollbar??
+pack [frame .intTopF -padx $px] -in .internationalF -anchor w -fill x -expand 1
 pack [frame .intMidF -padx $px] -in .internationalF -anchor w -fill x
 pack [frame .intBotF -padx $px] -in .internationalF -anchor w -fill x
 #Refresh button
@@ -40,8 +41,7 @@ button .intDelBtn -bg $bg -textvar msg::delete -command {
     file delete $twddir/$fileName
     $localLB delete $lbIndex
   }
-
-  updateMailBtnList .emailF.topF.f2.rightF
+  updateMailBtnList .mailTop2F
 }
 pack .intDelBtn -in .intTopF -side right -fill none
 pack $localLB -in .intTopF -side left -anchor n -padx $px
@@ -63,7 +63,7 @@ listbox .twdremoteLB -yscrollcommand {.twdremoteSB set} -selectmode multiple -ac
 scrollbar .twdremoteSB -command {.twdremoteLB yview}
 button .downloadBtn -textvar msg::download -command {
   downloadTWDFiles
-  catch {updateMailBtnList .emailF.topF.f2.rightF}
+  catch {updateMailBtnList .mailTop2F}
 }
 
 #pack .internationalF.twdremoteframe -anchor w

@@ -1,12 +1,15 @@
 	# ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 11oct21 pv
+# Updated 13oct21 pv
 
 #Create frames & titles
 pack [frame .mailTopF] -in .emailF -fill x
-pack [frame .mailTop1F] -in .mailTopF -fill x
-pack [frame .mailTop2F] -in .mailTopF -fill x
+
+#TODO get mailBtn list righ!
+#strangely it comes right when deleting a btn in SetupInternational, caused by [updateMailBtnList]!!!
+pack [frame .mailTop1F -bg red] -in .mailTopF -fill x
+pack [frame .mailTop2F -bg green] -in .mailTopF -fill x -anchor e
 pack [frame .mailBotF] -in .emailF -fill both
 pack [frame .mailBotLeftF] -in .mailBotF -side left -anchor nw
 pack [frame .mailBotRightF -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -in .mailBotF -side right -padx 100 

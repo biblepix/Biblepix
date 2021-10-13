@@ -29,8 +29,10 @@ button .ph> -text > -height 1 -command {set fileJList [step $fileJList 0 .photos
 button .phCollectBtn -textvar msg::f6Show -height 1 -command {
   set fileJList [doCollect .photosC]
 }
-label .phCount1 -textvar numPhotos -bg lightblue
-label .phCount2 -textvar msg::f6numPhotosTxt -bg lightblue
+#Pack bar
+##(Count pictures number & text labels packed later by doCollect)
+label .phCountNum -textvar numPhotos -bg lightblue
+label .phCountTxt -textvar msg::f6numPhotosTxt -bg lightblue
 pack .phOpen -in .phBarF -side left
 pack .ph< -in .phBarF -side left
 pack .ph> -in .phBarF -side left
