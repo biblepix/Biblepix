@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 13oct21 pv
+# Updated 16oct21 pv
 
 #Create Title & msg in main frame
 label .intTitleL -textvar msg::f1Tit -font bpfont3
@@ -28,7 +28,9 @@ pack .intStatusL -in .internationalF -fill x
 label .intTwdlocalTit -textvar msg::TwdLocalTit -font bpfont2
 pack .intTwdlocalTit -in .intTopF -side top -anchor w -fill x
 ##set listbox
-set localLB [listbox .intTwdlocalLB -bg lightgreen -width [expr $tw - $px] -selectmode single -activestyle none]
+set localLB [listbox .intTwdlocalLB -bg lightgreen -width [expr $tw - $px] -selectmode single -activestyle none -yscrollcommand {.intTwdlocalSB set}]
+scrollbar .intTwdlocalSB -command {$localLB yview}
+
 set twdlist [getTwdList]
 foreach i [lsort $twdlist] {
   $localLB insert end $i 
@@ -43,7 +45,7 @@ button .intDelBtn -bg $bg -textvar msg::delete -command {
   }
   updateMailBtnList .mailTop2F
 }
-pack .intDelBtn -in .intTopF -side right -fill none
+pack .intDelBtn .intTwdlocalSB -in .intTopF -side right -fill none
 pack $localLB -in .intTopF -side left -anchor n -padx $px
 
 # Remote TWD list
