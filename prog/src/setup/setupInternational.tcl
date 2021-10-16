@@ -27,15 +27,15 @@ pack .intStatusL -in .internationalF -fill x
 # Local TWD list
 label .intTwdlocalTit -textvar msg::TwdLocalTit -font bpfont2
 pack .intTwdlocalTit -in .intTopF -side top -anchor w -fill x
-##set listbox
+##create local listbox & scrollbar
 set localLB [listbox .intTwdlocalLB -bg lightgreen -width [expr $tw - $px] -selectmode single -activestyle none -yscrollcommand {.intTwdlocalSB set}]
 scrollbar .intTwdlocalSB -command {$localLB yview}
-
+##fill listbox
 set twdlist [getTwdList]
 foreach i [lsort $twdlist] {
   $localLB insert end $i 
 }
-##set delete button
+##create delete button
 button .intDelBtn -bg $bg -textvar msg::delete -command {
   set lbIndex [$localLB cursel]
   if {$lbIndex != ""} {
@@ -45,29 +45,26 @@ button .intDelBtn -bg $bg -textvar msg::delete -command {
   }
   updateMailBtnList .mailTop2F
 }
-pack .intDelBtn .intTwdlocalSB -in .intTopF -side right -fill none
-pack $localLB -in .intTopF -side left -anchor n -padx $px
+pack .intDelBtn -in .intTopF -side right 
+pack .intTwdlocalSB -in .intTopF -side right -fill y
+pack $localLB -in .intTopF -side left -padx $px
 
-# Remote TWD list
+# R E M O T E   T W D   l i s t 
 label .intTwdremoteTit -textvar msg::TwdRemoteTit -justify left -font bpfont2 -padx $px -pady $py
 pack .intTwdremoteTit -in .intMidF -side top -fill x
-
-#Titel frame
+##Titel frame
 label .twdremote1L -font "SmallCaptionFont 8" -textvar msg::language -font TkFixedFont -bg beige -anchor w -width 20
 label .twdremote2L -font "SmallCaptionFont 8" -textvar msg::year -font TkFixedFont -bg beige -anchor w -width 14
 label .twdremote3L -font "SmallCaptionFont 8" -textvar msg::biblename -font TkFixedFont -bg beige -anchor w -width 59
 label .twdremote4L -font "SmallCaptionFont 8" -textvar msg::bibleversion -font TkFixedFont -bg beige -anchor w
 pack .twdremote1L .twdremote2L .twdremote3L .twdremote4L -in .twdremoteTitleF -side left
-
-#setup remotelist (inserted later by http.tcl)
-#frame .internationalF.twdremoteframe -padx $px
+#Create remote listbox & scrollbar
+##content inserted later by http.tcl
 listbox .twdremoteLB -yscrollcommand {.twdremoteSB set} -selectmode multiple -activestyle none -font TkFixedFont -width [expr $wWidth - 50] -height [expr $wHeight - 300] -bg lightblue
 scrollbar .twdremoteSB -command {.twdremoteLB yview}
 button .downloadBtn -textvar msg::download -command {
   downloadTWDFiles
   catch {updateMailBtnList .mailTop2F}
 }
-
-#pack .internationalF.twdremoteframe -anchor w
 pack .downloadBtn -in .twdremoteF -side right -fill x
 pack .twdremoteSB .twdremoteLB -in .twdremoteF -side right -fill y

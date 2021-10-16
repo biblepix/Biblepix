@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # Procs called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 11oct21 pv
+# Updated: 16oct21 pv
 package require http
 
 # checkTls
@@ -312,7 +312,7 @@ proc downloadTWDFiles {} {
 
     #Download file & recreate Twd lists
     downloadTwdFile $filename $jahr
-    after idle  .internationalF.f1.twdlocal insert end $filename  
+    after idle .intTwdlocalLB insert end $filename  
     
     #If Chinese or Thai: update font files also 
     set twdlang [string range $filename 0 1]
