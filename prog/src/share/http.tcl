@@ -270,15 +270,15 @@ proc listRemoteTWDFiles {lBox} {
 #called by SetupInternational
 proc getRemoteTWDFileList {} {
   if [catch testHttpCon Error] {
-    .intStatus conf -bg red
+    .intStatusL conf -bg red
     set status $msg::noConnTwd
     puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
   } else {
     if ![catch {listRemoteTWDFiles .twdremoteLB}] {
-      .intStatus conf -bg lightgreen
+      .intStatusL conf -bg lightgreen
       set status $msg::connTwd
     } else {
-      .intStatus conf -bg red
+      .intStatusL conf -bg red
       set status $msg::noConnTwd
     }
   }
