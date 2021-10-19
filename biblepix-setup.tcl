@@ -6,13 +6,12 @@
 ################################################################################
 # Version: 4.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1aug21 pv
+# Updated: 19oct21 pv
 package require Tk
 
 #Verify location & source vars
-set rootdir [file dirname [info script]]
-set srcdir [file join $rootdir prog src]
-set Globals "[file join $srcdir share globals.tcl]"
+set rootdir "[file dirname [info script]]"
+set Globals "[file join $rootdir prog src share globals.tcl]"
 
 #Set initial FTP message & progress bar
 destroy .updateFrame
@@ -22,23 +21,30 @@ label .updateFrame.pbTitle -justify center -bg lightblue -fg black -borderwidth 
 ttk::progressbar .updateFrame.progbar -mode indeterminate -length 200
 pack .updateFrame.pbTitle .updateFrame.progbar
 
-lappend errText "Update not possible!\nYou must download and rerun the BiblePix Installer from bible2.net."
-if {[info exists lang] && $lang == "de"} {
-  lappend errText \n "Aktualisierung nicht möglich!\nSie müssen den BibelPix-Installer herunterladen und neu laufen lassen."
-}
-if [catch {source $Globals}] {
-  set pbTitle $errText 
+append errText {Update not possible! You must download and rerun the BiblePix Installer from www.vollmar.ch/biblepix} \n {Aktualisierung nicht möglich!Sie müssen den BibelPix-Installer herunterladen und neu laufen lassen.}
+
+#Exit if Globals not found
+if [catch {source $Globals} res] {
+  lappend pbTitle $errText $res
+  .updateFrame.pbTitle conf -bg orange
   after 7000 {exit}
 
 } else {
 
-  #?Get current version before update (var used in UpdateInjection)?
+  #Get current version before update
   set curVersion $version
 
   #In case of GIT download: makeDirs
   makeDirs
 
   #Set initial texts if missing
+  source $SetupTools
+  if [info exists lang] {
+    set lang $lang
+  } {
+    set lang en
+  }
+
   if [catch {setTexts $lang}] {
     set updatingHttp "Updating BiblePix program files..."
     set noConnHttp "No connection for BiblePix update."
@@ -48,8 +54,9 @@ if [catch {source $Globals}] {
   }
 
   # 1.  D O   H T T P  U P D A T E   (if not initial)
-  if [catch {sourceHTTP}] {
+  if [catch {sourceHTTP} res] {
     set pbTitle $errText
+    .updateFrame.pbTitle conf -bg orange
     after 7000 {exit}
 
   } else {
@@ -57,9 +64,9 @@ if [catch {source $Globals}] {
     .updateFrame.progbar start
 
     if [info exists InitialJustDone] {
-      set pbTitle $uptodateHttp
+      set pbTitle $msg::uptodateHttp
     } else {
-      set pbTitle $updatingHttp
+      set pbTitle $msg::updatingHttp
       ##start downloading process; $httpError is validated by SetupMainFrame
       catch {runHTTP 0} httpError
     }
@@ -67,9 +74,9 @@ if [catch {source $Globals}] {
     #Copy photos after first run of Installer or if Config missing
     if { [info exists InitialJustDone] || ![file exists $Config] } {
       #source $SetupTexts
-      source $SetupTools
+      #source $SetupTools
       after idle {
-        catch {NewsHandler::QueryNews $resizingPic orange}
+        catch {NewsHandler::QueryNews $msg::resizingPic orange}
         copyAndResizeSamplePhotos
       }
     }
