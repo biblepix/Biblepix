@@ -6,7 +6,7 @@
 ################################################################################
 # Version: 4.0
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19oct21 pv
+# Updated: 21oct21 pv
 package require Tk
 
 #Verify location & source vars

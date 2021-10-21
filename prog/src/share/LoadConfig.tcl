@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 1oct21 pv
+# Updated: 21oct21 pv
 
 #Source Config and LoadConfig for defaults
 if [catch {source $Config}] {
@@ -138,6 +138,17 @@ if ![info exists Debug] {
 #Set Httpmock
 if ![info exists Httpmock] {
   set Httpmock 0
+}
+#Debug & HttpMock
+if { [info exists Debug] && $Debug && [info exists Httpmock] && $Httpmock} {
+  proc sourceHTTP {} {
+    source $::Http
+    source $::HttpMock
+  }
+} else {
+  proc sourceHTTP {} {
+    source $::Http
+  }
 }
 
 #Set colour hex values & export to ::colour namespace

@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 19oct21 pv
+# Updated: 21oct21 pv
 set version "4.1"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -254,19 +254,6 @@ proc Show.Modal {win args} {
   grab release $win
   if {$options(-destroy)} {destroy $win}
   return ${::Modal.Result}
-}
-
-#Debug & HttpMock - TODO these progs are never called! - TODO separate Debug from Mock!
-#TODO these vars don't exist at this stage! (see  below)
-if { [info exists Debug] && $Debug && [info exists Httpmock] && $Httpmock} {
-  proc sourceHTTP {} {
-    source $::Http
-    source $::HttpMock
-  }
-} else {
-  proc sourceHTTP {} {
-    source $::Http
-  }
 }
 
 #Global functions
