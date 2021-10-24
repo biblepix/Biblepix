@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 11oct21 pv
+# Updated: 24oct21 pv
 source $SetupResizeTools
 source $JList
 
@@ -22,7 +22,7 @@ proc setTexts {lang} {
   ##replace text in Welcome text widget
   catch {fillWelcomeTextWidget .welcomeT}
   
-  ##set widget justification
+  ##set widget justification (catch in case widgets aren't set yet)
   if [isRtL $lang] {
     catch {setWidgetDirection right}
   } {
@@ -446,7 +446,7 @@ proc createMovingTextBox {c} {
     font conf movingTextFont -family Luxi
   } 
 
-  if {$c == ".textposCanv"} {
+  if {$c == ".dtTextposC"} {
     $c itemconf canvTxt -font movingTextFont -activefill red
   } elseif {$c == ".reposPhoto.reposCanv"} {
     $c itemconf canvTxt -font movingTextReposFont -activefill orange
