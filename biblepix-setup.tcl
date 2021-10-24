@@ -4,9 +4,9 @@
 # Called by User via Windows/Unix Desktop entry
 # If called by BiblePix-Installer, this is the first file downloaded + executed
 ################################################################################
-# Version: 4.0
+# Version: 4.1
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21oct21 pv
+# Updated: 24oct21 pv
 package require Tk
 
 #Verify location & source vars
@@ -39,19 +39,8 @@ if [catch {source $Globals} res] {
 
   #Set initial texts if missing
   source $SetupTools
-  if [info exists lang] {
-    set lang $lang
-  } {
-    set lang en
-  }
-
-  if [catch {setTexts $lang}] {
-    set updatingHttp "Updating BiblePix program files..."
-    set noConnHttp "No connection for BiblePix update."
-  } else {
-    set updatingHttp $msg::updatingHttp
-    set noConnHttp $msg::noConnHttp
-  }
+  set updatingHttp "Updating BiblePix program files..."
+  set noConnHttp "No connection for BiblePix update"
 
   # 1.  D O   H T T P  U P D A T E   (if not initial)
   if [catch {sourceHTTP} res] {
@@ -64,9 +53,9 @@ if [catch {source $Globals} res] {
     .updateFrame.progbar start
 
     if [info exists InitialJustDone] {
-      set pbTitle $msg::uptodateHttp
+      set pbTitle $uptodateHttp
     } else {
-      set pbTitle $msg::updatingHttp
+      set pbTitle $updatingHttp
       ##start downloading process; $httpError is validated by SetupMainFrame
       catch {runHTTP 0} httpError
     }
