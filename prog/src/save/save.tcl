@@ -48,7 +48,7 @@ set rgb [hex2rgb $fontcolor]
 set slidestatus [.slideSpin get]
 
 ##textpos coordinates
-lassign [$textposC coords mv] x y - -
+lassign [.dtTextposC coords mv] x y - -
 set marginleftstatus [expr int($x*$textPosFactor)]
 set margintopstatus [expr int($y*$textPosFactor)]
 
