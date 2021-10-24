@@ -1,7 +1,7 @@
 	# ~/Biblepix/prog/src/gui/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 13oct21 pv
+# Updated 24oct21 pv
 
 #Create frames & titles
 pack [frame .mailTopF] -in .emailF -fill x
@@ -50,7 +50,7 @@ if {[info exists sigLanglist] && $sigLanglist != ""} {
   
   foreach code $sigLanglist {
       set Btn .${code}Btn
-      $Btn select
+      catch {$Btn select}
   }
 
 ##B) $sigLanglist not found
@@ -58,7 +58,7 @@ if {[info exists sigLanglist] && $sigLanglist != ""} {
 
   #select language button for lang var
   if [winfo exists .${lang}Btn] {
-    .${lang}Btn select
+    catch {.${lang}Btn select}
   }
 }
 
