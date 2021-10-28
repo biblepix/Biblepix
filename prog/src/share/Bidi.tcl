@@ -3,9 +3,7 @@
 # called by BdfPrint + several Setup widgets
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 5oct21 pv
-
-#TODO Ya + Hamza \u0621 at end of word makes Ya non-final! > set final letter to one before if final=Hamza! 
+# Updated: 28oct21 pv
 
 namespace eval bidi {
   
@@ -115,11 +113,15 @@ namespace eval bidi {
   # fixBidi main process - called by several displaying widgets
   ##fixes bi-directional text for Tcl/Tk applications
   ##usable with Hebrew/Arabic/Farsi/Urdu 
-  ##compulsary args: s (text string) 
-  ## vowelled(1/0): 0 = strip of all vowels 
-  ## bdf(1/0): 1 = don't reverse line order (BDF printing is from right to left)
-  ##called by ... ...
-  proc fixBidi {s {vowelled 1} {bdf 0}} {
+  ##compulsary args: s (text string)
+  ##optional args: 
+  
+  ## 1. reqW: required line width of widget (default: 60)
+  ## 2. vowelled(1/0): 0 = strip of all vowels 
+  ## 3. bdf(1/0): (don't) reverse line order (BDF printing is from right to left)
+  ##called by BiblePix Setup program
+  proc fixBidi {s {vowelled 1} {bdf 0} {reqW 0} } {
+
     global os
     global [namespace current]::he_range
     global [namespace current]::ar_range
@@ -158,27 +160,56 @@ namespace eval bidi {
       regsub -all {[\u05BE]} $s { } s
     }
     
-    #GENERAL BOTH LANGS:
-##eliminate control characters:
-##left/right/Ar. letter signs
-regsub -all {[\U061C\U200E\U200F]} $s {} s
-##all quotation marks since Tcl thinks they're for them!
-regsub -all {[\u0022\u0027\u00AB\u00BB\u2018\u2019]} $s {} s
+    # G E N E R A L  O P E R A T I O N S  F O R   B O T H   L A N G S
 
-  #Klammern umkehren	
-  set s [string map {( ) ) (} $s]
+    #Eliminate control characters:
+    ##left/right/Ar. letter signs
+    regsub -all {[\U061C\U200E\U200F]} $s {} s
+    ##all quotation marks since Tcl thinks they're for them!
+    regsub -all {[\u0022\u0027\u00AB\u00BB\u2018\u2019]} $s {} s
+    #Revert brackets	
+    set s [string map {( ) ) (} $s]
 
-  #split text into lines
-  set linesplit [split $s \u000A]
+    #Split text into lines
+    set linesplit1 [split $s \u000A]
 
-  foreach line $linesplit {
-  
+    foreach line $linesplit1 {
+    
+    #If Setup: Compute line length & fit to any required width
+    ##this works with BiblePix Bdf & Twd texts
+      if {$bdf || !$reqW} {
+      
+        lappend linesplit2 $line
+      
+      } elseif $reqW {
+
+        set curW [string length $line]
+        
+        #A) width ok: append line
+        if {$curW <= $reqW} {
+          lappend linesplit2 $line
+
+        #B) width too long: split line & append
+        } else {
+
+          foreach line [splitLine $line $reqW] {
+            lappend linesplit2 $line
+          }
+        }      
+        
+      } ;#END if bdf/reqW 
+
+    } ;#END foreach line I
+
+
+    #Start restrucuring words line per line
+    foreach line $linesplit2 {
+
       #handle text per word
       foreach word $line {
-  
+
         #add to line pre-reverted if ASCII (=probably a number)
         #TODO reverting is only needed if Bdf! - why?
-        
         if [string is ascii $word] {
           lappend newline [string reverse $word]
           continue  
@@ -187,36 +218,86 @@ regsub -all {[\u0022\u0027\u00AB\u00BB\u2018\u2019]} $s {} s
         } elseif {$lang == "he"} {
           
           set newword $word
- 
+
         #format Arabic script word
         } elseif {$lang == "ar"} {
+
           #pre-revert Arabic numerals, no formatting
           if [regexp $ar_numerals $word] {
+            
             set newword [string reverse $newword]
+
           } else {
+
             set newword [formatArabicWord $word]
+
           }
         }
         lappend newline $newword
-      }
       
+      } ;#END foreach word
+        
       #Revert Hebrew+Arabic text line for Setup widgets
       if {$os=="Linux" && !$bdf} {
         set newline [string reverse $newline]
       }
-      
-      lappend newtext $newline \n
+      #append with trailing break
+      set br \u000A
+      append newtext $newline $br
       unset newline
+        
+    } ;#END foreach line II
     
-    } ;#end foreach line
-    
-    #remove any unwanted formatting chars: \ { }
+    #F i n a l   o p e r a t i o n s
+    ##remove any unwanted formatting chars: \ { } & remove trailing break
     set newtext [string map { \{ {} \} {} \\ {} } $newtext]
-    
+    set newtext [string trimright $newtext $br]
+      
     return $newtext
     
   } ;#END fixBidi
  
+  # splitLine
+  ##splits up any over-long text line into several usable lines defined by reqW,
+  ##based on counting words per line
+  ##called by fixBidi if $reqW is given
+  proc splitLine {line reqW} {
+
+    set wortmenge [llength $line]
+    set linelength 0
+    
+    for {set lineI 0;set wordI 0} {$wordI < $wortmenge} {incr wordI} {
+
+      set word [lindex $line $wordI]
+      lappend newline $word
+
+      set linelength [string length $newline] 
+      
+      if {$linelength > $reqW} {
+        array set linesArr "$lineI [list $newline]"  
+        incr lineI
+        unset newline
+      }
+puts $word
+    }
+    
+    #Add final line to array - ?catch for empty line?
+    catch {array set linesArr "$lineI [list $newline]"}
+
+    #Lines array auswerten
+    set arrL [array names linesArr]
+
+parray linesArr
+    
+    foreach arrName $arrL {
+        lappend splitL $linesArr($arrName)
+    }
+
+    #Return split text as list of lines
+    return $splitL
+    
+  } ;#END splitLine
+
   # formatArabicWord
   ##puts letters of a word into correct form
   ##called by fixBidi
@@ -242,32 +323,13 @@ regsub -all {[\u0022\u0027\u00AB\u00BB\u2018\u2019]} $s {} s
     foreach char $letterL {
       
       set htmcode [scan $char %c]
- 
-# if {$htmcode == 1569} {
-# puts bulduk
-# set lastLetterPos [expr $pos - 1]
-#incr lastLetterPos -1
-#append newword $char
 
-#continue
-# }
       #A) Skip if not listed
       if ![info exists [namespace current]::$htmcode] {
         append newword $char
-   
-        
- #TODO testing Hamza final pos.
-# if {$htmcode == 1569} {
-# puts $htmcode
-# incr lastLetterPos -1
-          #continue
-  #      } else {
-          incr pos
-   #       continue
-  #      }
-      continue
+        incr pos
+        continue
       }
-      
 
       #B) Evaluate form from position:
       ##set 1st letter form
@@ -323,83 +385,88 @@ regsub -all {[\u0022\u0027\u00AB\u00BB\u2018\u2019]} $s {} s
     } else {
       set utfchar $letterArr(i)
     }
-  return $utfchar
+    return $utfchar
   }
   
   # devowelise
-  ##clears all vowels from Hebrew (he), Arabic (ar), Urdu (ur) or Persian (fa) text
+  ##clears all vowel signs from Hebrew (he), Arabic (ar), Urdu (ur) or Persian (fa) text
   ##producing readable modern type text from poetic or religious vowelled text
   ##necessary arguments: s = text string / lang = 'he' OR 'ar' (including Urdu+Farsi)
   ##called by fixBidi
-
-#TODO make separate proc for Heb substitution!
   proc devowelise {s lang} {
     global [namespace current]::ar_vowels        
- 
-    # H e b r e w
-    ##attempts to convert vowelled standard text to "ktiv male" (כתיב מלא) = "modern full spelling"
-    ##as common in modern Hebrew, by replacing some vowel signs by the letters Jud (י) or Wav (ו)
-    if {$lang == "he"} {
-      ##Mosche
-      regsub -all {מֹשֶה} $s משה s
-      ##Yaaqov
-      regsub -all {עֲקֹב} $s עקב s
-      ##Shlomoh, koh etc. : Cholam+He -> He
-      regsub -all {\U05B9\U05D4} $s \U05D4 s
-      ##Zion
-      regsub -all {צִיּו} $s {ציו} s
-      ##Noach
-      regsub -all {נֹח} $s {נח} s
-      ##kol, ..chol
-      regsub -all {כֹּל} $s {כל} s
-      regsub -all {כֹל} $s {כל} s
-      ##imm.
-      regsub -all {ע\u05b4מ\u05bc} $s {עמ} s
-      regsub -all {א\u05b4מ\u05bc} $s {אמ} s
-      #2. Vorsilbe mi- ohne Jod: mem+chirik+?+dagesh -> mem
-      regsub -all {\U05DE\U05B4} $s \U05DE s
-      #3. change chirik to yod for Pi'el, excluding Hif'il+Hitpa'el
-      regsub -all {הִ} $s {ה} s
-      regsub -all {\U05B4.\U05BC} $s \U05D9& s
-      
-      #TODO warum wird nicht: זהר > זוהר
-      #? Schwa -TODO testing new rule geth gar nicth!!
-      #change schwa+waw to double waw
-      regsub -all {\u05B0\u05D5} $s \u05D5\u05D5 s
-      
-      
-      #4. Cholam
-      ##change all alef+cholam to alef
-      regsub -all {\u5D0\u05b9} $s \u5D0 s
-      
-      ##change all cholam+alef to alef
-      regsub -all {\u05b9\u5D0} $s \u5D0 s
-      
-      ##change remaining waw+cholam to waw
-      regsub -all {\u05D5\U05B9} $s \U05D5 s
-      
-      #5. Kubutz
-      #change all cholam/kubutz to waw
-      regsub -all {\u05DC\U05B9\u05D0} $s \u05DC\u05D0 s
-      regsub -all {[\U05B9\U05BB]} $s \U05D5 s
-      #6. Change all Maqaf to Space
-      regsub -all {\u05BE} $s { } s
-	    #7. Eliminate all remaining vowels
-      regsub -all {[\u0591-\u05C7]} $s {} s
 
-#TODO Heb. double waw if ...? נתודה>>נתוודה   | usw.  עולה > עוולה
-    
-    # A r a b i c  / U r d u  /  F a r s i
+    # A r a b i c 
     ##cuts out all vowel signs as common in modern texts
     ##excluding Fathatân & Hamza (see vowel range above)
-    } elseif {$lang == "ar"} {
-
-      regsub -all $ar_vowels $s {} s
-   
+    if {$lang == "ar"} {
+      regsub -all $ar_vowels $s {} newtext
+      
+    # H e b r e w
+    } elseif {$lang == "he"} {
+      
+      set newtext [chaser>male $s]
+      
     }
+    return $newtext
+  }
+  
+  # chaser>male
+  ##attempts to convert vowelled standard text in "ktiv chaser" to "ktiv male" (כתיב מלא) = "modern full spelling"
+  ##as common in modern Hebrew, by replacing some vowel signs by the letters Jud (י) or Wav (ו)
+  ##called by devowelise
+  proc chaser>male s {
+
+  #TODO Heb. double waw if ...? נתודה>>נתוודה   | usw.  עולה > עוולה
+    ##Mosche
+    regsub -all {מֹשֶה} $s משה s
+    ##Yaaqov
+    regsub -all {עֲקֹב} $s עקב s
+    ##Shlomoh, koh etc. : Cholam+He -> He
+    regsub -all {\U05B9\U05D4} $s \U05D4 s
+    ##Zion
+    regsub -all {צִיּו} $s {ציו} s
+    ##Noach
+    regsub -all {נֹח} $s {נח} s
+    ##kol, ..chol
+    regsub -all {כֹּל} $s {כל} s
+    regsub -all {כֹל} $s {כל} s
+    ##imm.
+    regsub -all {ע\u05b4מ\u05bc} $s {עמ} s
+    regsub -all {א\u05b4מ\u05bc} $s {אמ} s
+    #2. Vorsilbe mi- ohne Jod: mem+chirik+?+dagesh -> mem
+    regsub -all {\U05DE\U05B4} $s \U05DE s
+    #3. change chirik to yod for Pi'el, excluding Hif'il+Hitpa'el
+    regsub -all {הִ} $s {ה} s
+    regsub -all {\U05B4.\U05BC} $s \U05D9& s
+    
+    #TODO warum wird nicht: זהר > זוהר
+    #? Schwa -TODO testing new rule geth gar nicth!!
+    #change schwa+waw to double waw
+    regsub -all {\u05B0\u05D5} $s \u05D5\u05D5 s
+    
+    #4. Cholam
+    ##change all alef+cholam to alef
+    regsub -all {\u5D0\u05b9} $s \u5D0 s
+    ##change all cholam+alef to alef
+    regsub -all {\u05b9\u5D0} $s \u5D0 s
+    ##change remaining waw+cholam to waw
+    regsub -all {\u05D5\U05B9} $s \U05D5 s
+    
+    #5. Kubutz
+    ##change all cholam/kubutz to waw
+    regsub -all {\u05DC\U05B9\u05D0} $s \u05DC\u05D0 s
+    regsub -all {[\U05B9\U05BB]} $s \U05D5 s
+    
+    #6. Change all Maqaf to Space
+    regsub -all {\u05BE} $s { } s
+    
+    #7. Eliminate all remaining vowels
+    regsub -all {[\u0591-\u05C7]} $s {} s
 
     return $s
-  }  ;#END devowelise
-  
+    
+  } ;#END chaser>male
+
 } ;#END ::bidi ns
 
