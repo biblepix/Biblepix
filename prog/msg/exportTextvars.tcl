@@ -113,24 +113,42 @@ puts $lang
   set deletedPicMsg [mc deletedPicMsg]
   set copiedPicMsg [mc copiedPicMsg]
 
-  #Fix Arabic & Hebrew 
-  
+
+#  if [isRtL $lang] {
+#    msgbidi    
+#  }
 
 } ;#END ::msg namespace
 
-#TODO provide paths!
-source /home/pv/Biblepix/prog/src/share/globals.tcl
+set ::reqW 60
 
+# msgBidi
+#Fix Arabic & Hebrew 
+##runs per message
+##called here below
 proc msgbidi {} {
-  source $::Bidi
-  foreach var [info vars msg::*] {
+    source $::Bidi
+    global ::reqW
+
+    foreach var [info vars msg::*] {
       set T [set $var]
-  puts $T
-  
-  #TODO some texts are not recognised!
-      #catch {set $var [bidi::fixBidi $T]}
-      set $var [bidi::fixBidi $T]
+      
+       #reset width for wide windows
+       if [regexp f1Txt $var] {	
+         set reqW 100
+       } elseif [regexp f6Txt $var] {
+         set reqW 40
+       }
+     
+     #args vovelled|bdf|reqW
+    if [catch {set $var [bidi::fixBidi $T 1 0 $reqW]} res] {
+      puts "PROBLEMTEXT $var: $T"
+      puts $res
     }
+   # set $var [bidi::fixBidi $T] 
+   #set $var [bidi::fixBidi $T 1 0 $reqW]
+  #puts [set $var]
+  }
 }
 
 if [isRtL $lang] {
