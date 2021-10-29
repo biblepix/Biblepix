@@ -5,13 +5,13 @@
 # Updated: 29oct21 pv
 
 # U N T R A N S L A T A B L E S
-set dw {الكلمة}
+set dw "الكلمة"
 mcset ar dw $dw
-set bp بيبلبيكس
+set bp "آية على صورة"
 mcset ar bp $bp
 
 # G E N E R A L
-mcset ar bpsetup " قم بإعداد موقع $bp"
+mcset ar bpsetup " قم بإعداد $bp"
 mcset ar refresh "تحديث"
 mcset ar delete "حذف ملف"
 mcset ar ok "موافق" 
@@ -28,20 +28,20 @@ mcset ar photos "صور"
 mcset ar email "توقيع البريد الإلكتروني"
 mcset ar terminal "محطة لينكس"
 mcset ar manual "دليل الاعداد"
-mcset ar packageRequireMissing "يتطلب $bp امتداد Tcl '%s' يرجى تثبيته عبر لوحة التحكم الخاصة بك أو كتابة أحد الأوامر التالية في وحدة التحكم (root أو sudo): [mc packageRequire]"
+mcset ar packageRequireMissing "يتطلب $bp امتداد تي سي إل '%s' يرجى تثبيته عبر لوحة التحكم الخاصة بك أو كتابة أحد الأوامر التالية في وحدة التحكم (root أو sudo): [mc packageRequire]"
 
 # W E L C O M E 
-mcset ar next "بعد \u25bc"
+mcset ar next " التالي \u25bc"
 mcset ar welcTit "مرحبًا بك في برنامج إعداد $bp !"
 mcset ar welcSubtit1 "ما هو برنامج $bp ؟"
-mcset ar welcTxt1 "$bp هو برنامج Tcl تم تطويره لمشروع الكتاب المقدس 2.0 ، والذي يهدف إلى نشر الكلمة في عدد متزايد من اللغات.  الكلمة يتكون من آيتين مختارين من الكتاب المقدس لكل يوم من أيام السنة. يمكن أن يعرض موقع $bp الكلمة بعدة طرق على جهاز الكمبيوتر الشخصي الخاص بك."
-mcset ar welcSubtit2 "ما هي خياراتك؟"
+mcset ar welcTxt1 "$bp هو برنامج تي سي إل تم تطويره لمشروع الكتاب المقدس 2.0 ، والذي يهدف إلى نشر الكلمة في عدد متزايد من اللغات. الكلمة يتكون من آيتين مختارتين من الكتاب المقدس لكل يوم من أيام السنة. يمكن أن يعرض $bp الكلمة بعدة طرق على جهاز الكمبيوتر الشخصي الخاص بك."
+mcset ar welcSubtit2 "ما هي خياراتك ؟"
 mcset ar welcTxt2 "\u21e6 [mc bibletexts]: اختر المفضل لديك من إصدارات ولغات الكتاب المقدس 
 \u21e6 خلفية شاشة: شاهد $dw مع صورك الشخصية 
 \u21e6 [mc photos]: اختر صور الخلفية الخاصة بك لـ $bp 
 \u21E6 [mc email]: أضف $dw إلى رسائلك الإلكترونية 
 \u21E6 [mc manual]: ادرس دليل $bp الكامل 
-\u21E6 [mc terminal] : انظر إلى $dw في وحدات تحكم لينكس الخاصة بك"
+\u21E6 [mc terminal] : انظر إلى $dw في ترمينال لينكس"
 
 # U N I N S T A L L
 mcset ar uninstall "هل تريد حقاًإزالة $bp من جهاز الكمبيوتر الخاص بك؟"
