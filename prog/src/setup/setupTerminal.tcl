@@ -1,10 +1,10 @@
 # ~/Biblepix/prog/src/setup/setupTerminal.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 11oct21 pv
+# Updated: 31oct21 pv
 
 #Create label & checkbutton
-label .termMainTit -textvar msg::f4Tit -font bpfont3
+label .termMainTit -textvar msg::f4Tit -font bpfont3 -pady 15
 checkbutton .termYesnoCB -textvar msg::f4Btn -variable termyesnoState
 pack .termMainTit .termYesnoCB -in .terminalF -anchor w
 if {[info exists enableterm]} {
