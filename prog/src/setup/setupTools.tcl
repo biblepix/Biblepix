@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24oct21 pv
+# Updated: 31oct21 pv
 source $SetupResizeTools
 source $JList
 
@@ -559,7 +559,7 @@ proc doOpen {bildordner canv} {
   pack forget .phDelBtn .phCount1 .phCount2
 
   #Add Rotate button
-  pack .rotateBtn -in .phBotF -side right
+  pack .phRotateBtn -in .phBotF -side right
 
   return $localJList
 }

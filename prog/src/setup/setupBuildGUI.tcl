@@ -109,3 +109,6 @@ if { [info exists Debug] && $Debug } {
 } else {
   catch {source $SetupManual}
 }
+
+#TODO this is too frequent!
+setTexts $lang
