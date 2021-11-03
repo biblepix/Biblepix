@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 26mch21 pv
+# Updated: 3nov21 pv
 source $TwdTools
 source $SigTools
 
@@ -13,15 +13,31 @@ source $SigTools
 puts "Updating signatures..."
 
 set twdFileList [getTwdSigList]
+set surpriseFile signature-SURPRISE.txt
+
+if ![file exists $sigdir/$surpriseFile] {
+  lappend twdFileList SURPRISE
+  set chan [open $sigdir/$surpriseFile w]
+  close $chan 
+}
+
 if {$twdFileList == ""} {
   return "No corresponding TWD language files found!\n Please rerun Setup to define which languages your desire for your e-mail signatures."
 }
 
+# Prepare signatures for all selected langs
 foreach twdFileName $twdFileList {
+
+  if {$twdFileName == "SURPRISE"} {
+
+    set sigFile $surpriseFile
+    
+  } else {
   
-  #set endung mit 8 Extrabuchstaben nach Sprache_
-  set endung [string range $twdFileName 0 8] 
-  set sigFile [file join $sigdir signature-$endung.txt]
+    #set endung mit 8 Extrabuchstaben nach Sprache_
+    set endung [string range $twdFileName 0 8] 
+    set sigFile [file join $sigdir signature-$endung.txt]
+  }
   
   #check presence of file
   if ![file exists $sigFile] {
@@ -30,13 +46,16 @@ foreach twdFileName $twdFileList {
   
   #check date, skip if today's & sig present
   set dateidatum [clock format [file mtime $sigFile] -format %d]
-
   if {$heute == $dateidatum && [sig::checkSigPresent $sigFile] } {
     puts " [file tail $sigFile] is up-to-date"
     continue
   }
 
   #Recreate The Word for each file
+  if {$sigFile == $surpriseFile} {
+    ##if SURPRISE, get one out of siglist (=1)
+    set twdFileName [getRandomTwdFile 1]
+  }
   set dwsig [getTodaysTwdSig $twdFileName]
   set sigPath [file join $sigdir $sigFile]
   set cleanSig [sig::cleanSigfile $sigPath]
@@ -48,6 +67,7 @@ foreach twdFileName $twdFileList {
   close $chan
   
   puts "Created signature for signature-$endung"
+
 } ;#END main loop
 
 
