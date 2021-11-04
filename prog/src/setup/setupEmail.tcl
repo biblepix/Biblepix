@@ -1,30 +1,27 @@
-	# ~/Biblepix/prog/src/gui/setupEmail.tcl
+# ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 24oct21 pv
+# Updated 4nov21 pv
 
 #Create frames & titles
 pack [frame .mailTopF] -in .emailF -fill x
-
-#TODO get mailBtn list righ!
-#strangely it comes right when deleting a btn in SetupInternational, caused by [updateMailBtnList]!!!
-pack [frame .mailTop1F -bg red] -in .mailTopF -fill x
-pack [frame .mailTop2F -bg green] -in .mailTopF -fill x -anchor e
+pack [frame .mailTop1F] -in .mailTopF -fill x
+pack [frame .mailTop2F] -in .mailTopF -fill x
 pack [frame .mailBotF] -in .emailF -fill both
 pack [frame .mailBotLeftF] -in .mailBotF -side left -anchor nw
-pack [frame .mailBotRightF -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -in .mailBotF -side right -padx 100 
+pack [frame .mailBotRightF -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -in .mailBotF -side right -padx $px -pady $py 
 
 #Create labels & widgets
 label .mailMainTit -textvar msg::f3Tit -font bpfont3
 label .mailDesiredlangL -textvar msg::f3Sprachen -font bpfont1 -bg beige -bd 1 -relief sunken -padx 7 -pady 3
 checkbutton .mailSigyesnoCB -textvar msg::f3Btn -variable sigyesState -command {toggleBtnstate}
 pack .mailMainTit -in .mailTop1F -side left
-pack .mailDesiredlangL -in .mailTop1F -side right -anchor ne -pady 10 -padx 100
-pack .mailSigyesnoCB -in .mailTop2F -side left -anchor nw
-pack [frame .mailRight2F] -in .mailTop2F -side right -padx 100 -pady $py
+pack .mailDesiredlangL -in .mailTop1F -side right -anchor ne
+pack .mailSigyesnoCB -in .mailTop2F -anchor w -side left
 
-#Set button list
-updateMailBtnList .mailRight2F
+#Set up button list
+pack [frame .mailTop2RightF] -in .mailTop2F -side right -anchor e
+updateMailBtnList .mailTop2RightF
 
 ##called by .sigyes Btn to enable/disable lang checkbuttons
 proc toggleBtnstate {} {
