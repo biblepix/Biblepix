@@ -97,7 +97,8 @@ mcset de resizeF_txt "Ihr Foto passt nicht zur Bildschirmgrösse und muss zugesc
 mcset de resizingPic "Passe Bildgrösse dem Bildschirm an \u2014 bitte haben Sie einen Augenblick Geduld..."
 mcset de movePic "Bildausschnitt verschieben \u21CA"
 mcset de picSchonDa "Foto bereits im $bp-Bildordner"
-# S E T U P   S I G N A T U R E
+
+# S I G N A T U R E
 mcset de f3Tit "$dw auf Ihren E-Mail-Signaturen"
 mcset de f3Btn "E-Mail-Signatur erzeugen"
 mcset de f3Sprachen "Gewünschte Sprachen für meine Signaturen"
@@ -109,7 +110,7 @@ mcset de f4Tit  "$dw in Ihren Linux-Terminals"
 mcset de f4Btn "$dw zur Anzeige im Terminal erzeugen"
 mcset de f4Txt "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDarstellung und Farben können in \n\n\t $confdir/term.conf \n\ngeändert werden.\n\nFür die Darstellung in hebräischer oder arabischer Schrift kommen nur Terminals wie 'QTerminal', 'mlterm', 'gnome-terminal', 'xfce4-terminal' oder 'Konsole' (KDE) in Frage, welche bidirektionellen Text korrekt anzeigen. \n\nDamit $dw automatisch im Terminal angezeigt wird, macht das $bp-Setup einen Eintrag in ~/.bashrc."
 
-# S E T U P S A V E   T E X T S
+# S E T U P S A V E
 mcset de linChangingDesktop "$bp versucht nun, Ihre Desktop-Einstellungen zu ändern. Falls Sie danach kein neues Hintergrundbild sehen, finden Sie eine Lösung im Manual."
 mcset de winIgnorePopup "Schliessen Sie bitte aufspringende Fenster ohne Änderung, damit $bp die Registrierung abschliessen kann!"
 mcset de winChangingDesktop "$bp versucht nun, Ihren Desktop-Hintergrund zu ändern"
@@ -117,13 +118,11 @@ mcset de winChangeDesktopProb "Wir hatten ein Problem mit der Änderung des Desk
 mcset de linChangeDesktopProb "Wir hatten ein Problem mit der Änderung der Desktopeinstellungen.\nBitte rechtsklicken Sie auf Ihrer Arbeitsfläche und finden Sie den Dialog für 'Hintergrundbild'. Dort geben Sie $imgdir als Bildpfad an."
 mcset de linNoDesktopFound "Kein Linux-Desktop gefunden! Suchen Sie im Manual eine Lösung zum manuellen Einrichten des $bp-Hintergrundbilds."
 mcset de linReloadingDesktop "Wir versuchen nun, Ihre Arbeitsfläche neu einzulesen. Falls dies fehlschlägt, müssen Sie sich kurz ab- und wieder anmelden, damit die $bp-Einstellungen wirksam werden."
-
 if {$os=="Linux"} {
   mcset de changeDesktopOk "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\n\nDas ${bp}-Einrichtungsprogramm können Sie jederzeit starten, indem Sie im Programmmenü das ${bp}-Symbol wählen."
 } else {
   mcset de changeDesktopOk "$bp ist auf Ihrem Computer eingerichtet und wird jetzt gestartet.\n\nDas ${bp}-Einrichtungsprogramm können Sie jederzeit starten, indem Sie auf Ihrer Arbeitsoberfläche rechtsklicken und das ${bp}-Symbol wählen."
 }
-
 mcset de winRegister "$bp muss nun auf Ihrem System registriert werden.\nBitte bestätigen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\"!"
 mcset de winRegisterProb "$bp ist auf Ihrem Computer noch nicht korrekt installiert.\nStarten Sie das Setup nochmals oder fügen Sie \n$Biblepix\n in \"Automatisch gestartete Programme\" an."
 #PHOTOS

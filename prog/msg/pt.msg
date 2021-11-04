@@ -5,7 +5,7 @@
 ##INFO: Textmenge ca. 1900 W. -
 ## (100 mcset * 3 W. =) -300 W.
 ## (Comments) -20 (variables ($) -80 = 1500 W.
-# Updated: 19aug21 pv
+# Updated: 4nov21 pv
 
 #UNTRANSLATABLES
 set bp {BiblePix}
@@ -101,7 +101,9 @@ mcset pt picSchonDa "A foto já está na pasta de imagens de $bp"
 mcset pt f3Tit "$dw em suas assinaturas de e-mail"
 mcset pt f3Btn "Gerar assinatura de e-mail"
 mcset pt f3Sprachen "Idiomas desejados para minhas assinaturas"
-mcset pt f3Txt "Se ativado, $bp adicionará $dw às suas assinaturas de e-mail uma vez por dia para cada arquivo de texto bíblico instalado. Os arquivos de assinatura criados são classificados de acordo com as abreviações de idioma (por exemplo, signature-pt_Portug.txt) na siguenta pasta: \n\n\t $sigdir \n\nVocê pode editar esses arquivos de seu programa de e-mail ou em um editor de texto e adicionar saudações pessoais, endereços, etc. O texto acima da linha que divide ==== não é afetado quando alterna $dw.\n\nTalvez você pode não quera que seus destinatários de e-mail leiam $dw em todos os idiomas que você instalou. Selecione os idiomas desejados no canto superior direito. \n\nPara que $dw apareça nos seus e-mails no futuro, você deve ensinar seu programa de e-mail a usar os arquivos descritos acima (geralmente em Configuração>Assinaturas). \n\nAlguns programas como Seamonkey Mail, Evolution ou Trojitá gerenciam sinhaturas internamente. Entre eles, $bp pode levar em conta Trojitá e Evolution por enquanto."
+mcset pt f3Txt "Se ativado, $bp adicionará $dw às suas assinaturas de e-mail uma vez por dia para cada arquivo de texto bíblico instalado. Os arquivos de assinatura criados são classificados de acordo com as abreviações de idioma (por exemplo, signature-pt_Portug.txt) na siguenta pasta: \n\n\t $sigdir \n\nVocê pode editar esses arquivos de seu programa de e-mail ou em um editor de texto e adicionar saudações pessoais, endereços, etc. O texto acima da linha que divide ==== não é afetado quando alterna $dw.\n\nTalvez você pode não quera que seus destinatários de e-mail leiam $dw em todos os idiomas que você instalou. Selecione os idiomas desejados no canto superior direito. \n\nPara que $dw apareça nos seus e-mails no futuro, você deve ensinar seu programa de e-mail a usar os arquivos descritos acima (geralmente em Configuração>Assinaturas). Se em vez duma lingua, você escolhe o arquivo 
+\n\t signature-SURPRISE.txt
+\n$dw rotará por acaso.\n\nAlguns programas como Seamonkey Mail, Evolution ou Trojitá gerenciam sinhaturas internamente. Entre eles, $bp pode levar em conta Trojitá e Evolution por enquanto."
 #SETUP TERMINAL
 mcset pt f4Tit "$dw nos seus consoles Linux"
 mcset pt f4Btn "Gerar $dw para exibir no console"

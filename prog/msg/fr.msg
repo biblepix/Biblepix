@@ -2,8 +2,7 @@
 # French texts in msgcat format
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
-#INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 20aug21 pv
+# Updated: 4nov21 pv
 
 # U N T R A N S L A T A B L E S
 set bp "BiblePix"
@@ -65,8 +64,9 @@ mcset fr language "Langue"
 mcset fr year "Année"
 mcset fr bibleversion "Edition Bible"
 mcset fr biblename "Désignation"
-mcset fr f1Txt "$bp fournit $dw dans toutes les langues et éditions de la Bible installées sur votre ordinateur. Si plusieurs fichiers de texte biblique sont installés, $bp en choisira un au hasard. Si vous marquez de nouveaux fichiers de texte biblique à télécharger (voir ci-dessous ), ils seront téléchargés dès que vous appuyez sur le bouton '[mc download]'. Faites attention à l'année (en cours ou prochaine)!"
-#SETUP DESKTOP
+mcset fr f1Txt "$bp fournit $dw dans toutes les langues et éditions de la Bible installées sur votre ordinateur. Si plusieurs fichiers de texte biblique sont installés, $bp en choisira un par hasard. Si vous marquez de nouveaux fichiers de texte biblique à télécharger (voir ci-dessous ), ils seront téléchargés dès que vous appuyez sur le bouton '[mc download]'. Faites attention à l'année (en cours ou prochaine)!"
+
+# D E S K T O P
 mcset fr f2Tit "$dw sur l'image de fond"
 mcset fr f2Box "Générer une image de fond"
 mcset fr f2Farbe "Couleur de la police: "
@@ -79,7 +79,8 @@ mcset fr f2Fontweight "gras"
 mcset fr f2Fontfamily "Police de charactères: "
 mcset fr f2Fontexpl "Adapter la police"
 mcset fr f2Txt "Si activé, $bp fait apparaître $dw sur une image de fond. La photo est sélectionnée au hasard dans la collection de photos $bp (voir section [mc photos]). Une nouvelle image de fond est toujours disponible dans \n\n\t [file nativename $imgdir] \n\npour l'affichage par le gestionnaire de bureau.\n\nSi plusieurs fichiers texte de la Bible sont installés, la langue ou la version de la Bible change au hasard à chaque changement d'image.\n\nPar défaut, $bp installe un DIAPORAMA avec une image changeante. Si une seule image par jour est désirée, le diaporama peut être désactivé (voir ci-dessus).\n\nDans la fenêtre POSITION TEXTE, vous pouvez déplacer $dw à la position désirée sur l'écran. Lors de l'ajout d'images à la collection, la position du texte peut être déterminée individuellement. \n\nLa TAILLE DE LA POLICE est automatiquement définie selon la hauteur de l'écran. Cependant, vous avez la possibilité d'adapter la taille et l'épaisseur individuellement (lettres plus grosses = meilleures contraste). \n\nLa COULEUR DE LA POLICE, vous pouvez la déterminer de manière permanente ou aléatoire. $bp peut également effectuer un ajustement des couleurs en fonction de la luminosité de l'arrière-plan. Cet effet n'entre en jeu qu'après avoir enregistré de nouvelles photos. \n\nSi la nouvelle image de fond n'apparaît pas automatiquement, vous trouverez une solution dans le manuel. "
-# S E T U P   P H O T O S 
+
+# P H O T O S 
 mcset fr textposlabel "Déterminer la position du texte"
 mcset fr textposAdjust "Voulez-vous changer la position du texte pour cette image avant de l'enregistrer?"
 mcset fr f6Tit "Organiser les photos pour $bp"
@@ -92,21 +93,25 @@ mcset fr f6Del "Supprimer de la collection de photos $bp:"
 #RESIZING
 mcset fr movePicToResize "Déplacez la section d'image comme vous le souhaitez et confirmez avec OK pour l'enregistrer."
 mcset fr resizeF_txt "Votre photo ne correspond pas à la taille de l'écran et doit être recadrée. [mc movePicToResize]"
-
 mcset fr resizingPic "Nous allons ajuster la taille de l'image à celle de l'écran \u2014 s'il vous plaît patientez un instant ..."
 mcset fr movePic "Déplacer la section de l'image \u21CA"
 mcset fr picSchonDa "Photo déjà dans le dossier image $bp"
-# S E T U P   S I G N A T U R E
+
+# S I G N A T U R E
 mcset fr f3Tit "$dw sur vos signatures email"
 mcset fr f3Btn "Générer une signature électronique"
 mcset fr f3Sprachen "Langues désirées pour mes signatures"
-mcset fr f3Txt "Si activé, $bp ajoute $dw à vos signatures électroniques une fois par jour pour chaque fichier texte biblique installé. Les fichiers de signature créés sont triés par abréviations de langue (par exemple signature-fr_Segond.txt) et enregistrés dans le dossier suivant: \n\n\t $sigdir \n\nVous pouvez modifier ces fichiers à partir de votre programme de messagerie ou dans un éditeur de texte et ajouter des salutations personnelles, des adresses, etc. Le texte au-dessus de la ligne de séparation ==== reste inchangé lors du changement de $dw. \n\nPeut-être que vous ne voulez pas que vos destinataires de courrier lisent $dw dans toutes les langues que vous avez installées. Sélectionnez la ou les langues que vous voulez dans le coin supérieur droit. \n\nPour que $dw aparaisse sur vos mails à l'avenir, vous devez instruer votre logiciel de courrier électronique à utiliser les fichiers décrits ci-dessus (généralement sous Paramètres>Signature). \n\nCertains programmes tels que Seamonkey Mail, Evolution ou Trojitá gèrent les signatures en interne. Pour le moment, $bp en peut prendre en compte Trojitá et Evolution. "
-#SETUP TERMINAL
+mcset fr f3Txt "Si activé, $bp ajoute $dw à vos signatures électroniques une fois par jour pour chaque fichier texte biblique installé. Les fichiers de signature créés sont triés par abréviations de langue (par exemple signature-fr_Segond.txt) et enregistrés dans le dossier suivant: \n\n\t $sigdir \n\nVous pouvez modifier ces fichiers à partir de votre programme de messagerie ou dans un éditeur de texte et ajouter des salutations personnelles, des adresses, etc. Le texte au-dessus de la ligne de séparation ==== reste inchangé lors du changement de $dw. \n\nPeut-être que vous ne voulez pas que vos destinataires de courrier lisent $dw dans toutes les langues que vous avez installées. Sélectionnez la ou les langues que vous voulez dans le coin supérieur droit. \n\nPour que $dw aparaisse sur vos mails à l'avenir, vous devez instruer votre logiciel de courrier électronique à utiliser les fichiers décrits ci-dessus (généralement sous Paramètres>Signature). Si, au lieu d'une langue, vous choisissez le fichier
+\n\tsignature-SURPRISE.txt
+\n$dw tournera par hasard.
+\nCertains programmes tels que Seamonkey Mail, Evolution ou Trojitá gèrent les signatures en interne. Pour le moment, $bp en peut prendre en compte Trojitá et Evolution."
+
+# T E R M I N A L
 mcset fr f4Tit "$dw dans vos terminaux Linux"
 mcset fr f4Btn "Générer $dw pour l'affichage dans le terminal"
 mcset fr f4Txt "Si activé, $bp génère $dw pour l'affichage dans vos consoles. S'il y a plusieurs fichiers texte biblique, le texte changera à chaque ouverture d'un terminal. \n\nLe dessin et les couleurs peuvent être modifiés dans \n\n\t ${confdir}/term.conf \n\nQuant au texte en écriture hébraïque ou arabe, seuls les terminaux comme 'QTerminal', 'mlterm', 'gnome-terminal', 'xfce4-terminal' ou 'Console ' (KDE) qui s'y connaissent en textes bidirectionneaux, savent l'afficher correctement. \n\nPour s'assurer que $dw s'affiche automatiquement dans le terminal, le configurateur $bp crée une entrée dans ~/.bashrc."
 
-# S E T U P S A V E   T E X T S
+# S A V E
 mcset fr linChangingDesktop "$bp essaie maintenant de modifier les paramètres de votre bureau. Si vous ne voyez pas de nouvelle image d'arrière-plan par la suite, vous trouverez une solution dans le manuel."
 mcset fr winIgnorePopup "Veuillez fermer toute fenêtre qui s'ouvre sans apporter de modifications, afin que $bp puisse terminer l'enregistrement!"
 mcset fr winChangingDesktop "$bp essaie maintenant de changer l'arrière-plan de votre bureau"
@@ -117,7 +122,8 @@ mcset fr linReloadingDesktop "Nous essayons maintenant de recharger votre espace
 mcset fr changeDesktopOk "$bp a été configuré sur votre ordinateur et va maintenant être démarré. \n\nVous pouvez démarrer le programme d'installation ${bp} à tout moment en sélectionnant l'icône ${bp} dans le menu de programme (Linux) ou en cliquant avec le bouton droit sur le bureau ou vous sélectionnez l'icône ${bp} (Windows). "
 mcset fr winRegister "$bp doit maintenant être enregistré sur votre système. \nVous devez confirmer toute fenêtre de notification avec \"Oui\"!"
 mcset fr winRegisterProb "$bp n'est pas encore correctement installé sur votre ordinateur. \nDémarrez l'installation à nouveau ou ajoutez \n$Biblepix \n aux programmes démarrés automatiquement de votre système."
-#PHOTOS
+
+# P H O T O S
 mcset fr reposSaved "Image enregistrée avec info."
 mcset fr reposNotSaved "Image pas enregistrée."
 mcset fr noPhotosFound "Aucune photo n'a été trouvée dans le dossier photos $bp. Veuillez copier quelques images au dossier."
@@ -127,5 +133,5 @@ mcset fr preview180 "\u21BB aperçu rotation 180°"
 mcset fr computePreview "\u21B6 \u21B7 Aperçu de rotation libre"
 mcset fr rotateWait "Veuillez patienter un moment jusqu'à ce que la rotation de l'image originale soit terminée ..."
 mcset fr rotateInfo "Attention : en sauvegardant et en rechargeant une image peut être tournée en plusieurs étapes!"
-mcset fr deletePicMsg "Image supprimée de l'album photo $bp :"
-mcset fr copiedPicMsg "Nouvelle image copiée dans l'album photo $bp :"
+mcset fr deletePicMsg "Image supprimée de l'album photo $bp :"
+mcset fr copiedPicMsg "Nouvelle image copiée dans l'album photo $bp :"
