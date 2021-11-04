@@ -5,7 +5,7 @@
 ##INFO: Textmenge ca. 1900 W. -
 ## (100 mcset * 3 W. =) -300 W.
 ## (Comments) -20 (variables ($) -80 = 1500 W.
-# Updated: 24aug21 pv
+# Updated: 3nov21 pv
 
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S   "......"
@@ -127,7 +127,11 @@ mcset zh picSchonDa "照片已在$bp照片文件夹中"
 mcset zh f3Tit "在您的电子邮件签名中添加金句"
 mcset zh f3Btn "创建电子邮件签名"
 mcset zh f3Sprachen "我的签名所需的语言"
-mcset zh f3Txt "如果激活,$bp将每天一次在您的电子邮件签名末尾为您计算机上的任何语言文本文件添加金句.签名文件通过语言快捷方式储存(例如.signature-en_Englis.txt)在目录\n\n\t$sigdir \n\n您可以通过电子邮件程序或文本编辑这些文件,并在顶部添加个人信息(问候语,地址等.) 当文本“The Word”更改时,分隔线 ==== 上方的任何文本都将保持不变.\n\n您可能不希望金句出现在您安装的所有语言的邮件中.在右上角的复选框中,请选择您认为适合邮件收件人的语言.\n\n最后,您必须指示您的电子邮件程序使用这些签名文件(通常在选¹>签名下).\n\n某些程序,如Seamonkey Mail、Evolution或Trojitá 在内部管理签名.其中$bp现在可以处理Trojitá和Evolution."
+mcset zh f3Txt "如果激活,$bp将每天一次在您的电子邮件签名末尾为您计算机上的任何语言文本文件添加金句.签名文件通过语言快捷方式储存(例如 signature-zh-Hans_C.txt)在目录\n\n\t$sigdir \n\n您可以通过电子邮件程序或文本编辑这些文件,并在顶部添加个人信息(问候语,地址等.) 当文本“金句”更改时,分隔线 ==== 上方的任何文本都将保持不变.\n\n您可能不希望金句出现在您安装的所有语言的邮件中.在右上角的复选框中,请选择您认为适合邮件收件人的语言.\n\n最后,您必须指示您的电子邮件程序使用这些签名文件(通常在选 > 签名下).
+如果您选择这个文件
+\n\tsignature-SURPRISE.txt
+\n“金句”会随机旋转。
+\n\n某些程序,如 Seamonkey Mail、Evolution 或 Trojitá 在内部管理签名.其中$bp现在可以处理 Trojitá 和 Evolution."
 mcset zh f4Tit  "在您的Linux终端中显示金句"
 mcset zh f4Btn "创建金句以在终端中显示"
 mcset zh f4Txt "如果激活,$bp将创建金句显示在您的终端顶部. 如果存在多个语言文件,每当打开新外壳时圣经文本将随机更变. \n\n显示颜色等可能在\n\n\t $confdir/term.conf中更改\n\n请注意,为了正确显示阿拉伯语或希伯来语脚本,您将需要以下内容之一: 'QTerminal', 'mlterm', 'gnome-terminal', 'Konsole' (KDE) 或 'xfce4-terminal'; 已知这些可以处理双向文本.\n\n为了在终端自动显示金句,$bp Setup在~/.bashrc中为您提供了一个条目."

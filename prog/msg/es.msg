@@ -96,11 +96,14 @@ mcset es movePicToResize "Mueve la sección de la imagen como desees y confirma 
 mcset es resizingPic "Ajustando el tamaño de la imagen a la pantalla \u2014 por favor ten paciencia por un momento ..."
 mcset es movePic "Mover sección de imagen \u21CA"
 mcset es picSchonDa "La foto ya está en la carpeta de imágenes de $bp"
+
 # S E T U P   S I G N A T U R E
 mcset es f3Tit "$dw en tus firmas de correo electrónico"
 mcset es f3Btn "Generar firma de correo electrónico"
 mcset es f3Sprachen "Idiomas deseados para mis firmas"
-mcset es f3Txt "Si está activado, $bp agregará $dw a tus firmas de e-mail una vez al día para cada archivo de texto bíblico instalado. Los archivos de firmas creados se ordenan según las abreviaturas del idioma (por ejemplo, firma-es_ReinaV.txt) en la siguiente carpeta : \n\n\t $sigdir \n\nPuedes editar estos archivos desde tu programa de correo electrónico o en un editor de texto y agregar saludos personales, direcciones, etc. El texto sobre la línea divisoria ==== no se ve afectado al cambiar de $dw. \n\nTal vez no desees que los destinatarios de tu correo lean $dw en todos los idiomas que has instalado. Selecciona los idiomas que desees en la esquina superior derecha. \n\n Para que $dw aparezca en tus correos en el futuro, debes enseñarle a tu programa de correo a usar los archivos descritos anteriormente (generalmente en Configuración>Signaturas). \n\nCiertos programas como Seamonkey Mail, Evolution o Trojitá administran las firmas internamente. Entre ellos $bp puede tomar en cuenta a Trojitá y Evolution por el momento."
+mcset es f3Txt "Si está activado, $bp agregará $dw a tus firmas de e-mail una vez al día para cada archivo de texto bíblico instalado. Los archivos de firmas creados se ordenan según las abreviaturas del idioma (por ejemplo, firma-es_ReinaV.txt) en la siguiente carpeta : \n\n\t $sigdir \n\nPuedes editar estos archivos desde tu programa de correo electrónico o en un editor de texto y agregar saludos personales, direcciones, etc. El texto sobre la línea divisoria ==== no se ve afectado al cambiar de $dw. \n\nTal vez no desees que los destinatarios de tu correo lean $dw en todos los idiomas que has instalado. Selecciona los idiomas que desees en la esquina superior derecha. \n\nPara que $dw aparezca en tus correos en el futuro, debes enseñarle a tu programa de correo a usar los archivos descritos anteriormente (generalmente en Configuración>Signaturas). Si en lugar de una lengua, seleccionas el fichero 
+\n\t signature-SURPRISE.txt
+\n$dw rotará por casualidad. \n\nCiertos programas como Seamonkey Mail, Evolution o Trojitá administran las firmas internamente. Entre ellos $bp puede tomar en cuenta a Trojitá y Evolution por el momento."
 #SETUP TERMINAL
 mcset es f4Tit "$dw en tus consolas de Linux"
 mcset es f4Btn "Generar $dw para mostrar en la consola"

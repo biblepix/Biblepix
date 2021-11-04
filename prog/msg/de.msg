@@ -103,7 +103,7 @@ mcset de f3Btn "E-Mail-Signatur erzeugen"
 mcset de f3Sprachen "Gewünschte Sprachen für meine Signaturen"
 mcset de f3Txt "Wenn aktiviert, fügt $bp einmal täglich für jede installierte Bibeltextdatei $dw an Ihre E-Mail-Signaturen an. Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. signature-de_Schlac.txt) im folgenden Ordner gespeichert: \n\n\t$sigdir \n\nSie können diese Dateien aus Ihrem E-Mail-Programm oder in einem Texteditor bearbeiten und persönliche Grussformeln, Adressen usw. oben einfügen. Text oberhalb der Trennlinie ==== bleibt beim Wechsel von $dw unbehelligt. \n\nVielleicht möchten Sie nicht, dass Ihre Mail-Empfänger $dw in allen Sprachen lesen, die Sie installiert haben. Wählen Sie oben rechts die gewünschte(n) Sprache(n) aus.\n\nDamit $dw künftig auf Ihren Mails erscheint, müssen Sie Ihrem Mail-Programm beibringen, die oben beschriebenen Dateien zu verwenden (meist unter Einstellungen>Signatur). Wenn Sie statt einer bestimmen Sprache die Datei 
 \n\t signature-SURPRISE.txt
-\nwählen, rotiert $dw im Zufallsprinzip.\n\nGewisse Programme wie Seamonkey Mail, Evolution oder Trojitá verwalten Signaturen intern. $bp kann darunter vorläufig Trojitá und Evolution  ber¼cksichtigen."
+\nwählen, rotiert $dw im Zufallsprinzip.\n\nGewisse Programme wie Seamonkey Mail, Evolution oder Trojitá verwalten Signaturen intern. $bp kann darunter vorläufig Trojitá und Evolution  berücksichtigen."
 #SETUP TERMINAL
 mcset de f4Tit  "$dw in Ihren Linux-Terminals"
 mcset de f4Btn "$dw zur Anzeige im Terminal erzeugen"

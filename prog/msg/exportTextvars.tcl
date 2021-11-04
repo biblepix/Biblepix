@@ -133,11 +133,14 @@ proc msgbidi {} {
     foreach var [info vars msg::*] {
       set T [set $var]
       
-       #reset width for wide windows
+       #reset width for ?wide windows
+       ##TODO this is a hack! Try to unify widget widths!
        if [regexp f1Txt $var] {	
          set reqW 100
        } elseif [regexp f6Txt $var] {
-         set reqW 40
+         set reqW 45
+       } elseif [regexp welcTxt1 $var] {
+         set reqW 80
        }
      
      #args vovelled|bdf|reqW
