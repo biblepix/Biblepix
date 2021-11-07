@@ -5,8 +5,10 @@
 # Updated: 14aug21 pv
 source $SetupTools
 source $TwdTools
+
+#TODO move to ?
 setTexts $lang
-#set flagL [setFlags]
+
 
 #Set general X vars & Main Window width
 set screenX [winfo screenwidth .]
@@ -73,11 +75,3 @@ if [info exists httpError] {
 
 #Fill tabs
 source $SetupBuild
-
-##set widget justification
-#TODO testing!
-#  if [isBidi $lang] {
-#    setWidgetDirection right
-#  } {
-#    setWidgetDirection left
-#  }
