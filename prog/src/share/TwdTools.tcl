@@ -37,10 +37,14 @@ proc getTwdSigList {} {
         lappend twdsigL $item
       }
     }
-  } 
+  }
+  
+#  lappend twdsigL signature-SURPRISE.txt
+  
   if [info exists twdsigL] {
     return $twdsigL
   }
+
 }
 
 #R a n d o m i z e r s

@@ -13,10 +13,12 @@ source $SigTools
 puts "Updating signatures..."
 
 set twdFileList [getTwdSigList]
-set surpriseFile signature-SURPRISE.txt
 
+#TODO change surprise file each time BP runs, not only once a day!
+set surpriseFile signature-SURPRISE.txt
+lappend twdFileList $surpriseFile
+  
 if ![file exists $sigdir/$surpriseFile] {
-  lappend twdFileList SURPRISE
   set chan [open $sigdir/$surpriseFile w]
   close $chan 
 }
@@ -28,7 +30,7 @@ if {$twdFileList == ""} {
 # Prepare signatures for all selected langs
 foreach twdFileName $twdFileList {
 
-  if {$twdFileName == "SURPRISE"} {
+  if {$twdFileName == "$surpriseFile"} {
 
     set sigFile $surpriseFile
     
