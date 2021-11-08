@@ -110,7 +110,7 @@ if { $GnomeErr == 1 && $KdeErr == 1 && $XfceErr == 1} {
   
   #XFCE4 (only 0)
   if !$XfceErr {
-    set msg "XFCE4: $msg::changeDesktopOk"
+    set msg "XFCE4: $msgbox::changeDesktopOk"
     tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg
   } 
 }
