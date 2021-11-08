@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # Procs called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16oct21 pv
+# Updated: 8nov21 pv
 package require http
 
 # checkTls
@@ -10,7 +10,7 @@ package require http
 proc checkTls {} {
   if [catch {package require tls}] {
     package require Tk
-    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $msg::packageRequireTls
+    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message [mc packageRequireMissing tls]
     return 1
   }
 }
@@ -188,13 +188,13 @@ proc getRemoteRoot {} {
   #These are standard in ActiveTcl, Linux distros vary
   if [catch {package require tdom}] {
     package require Tk
-    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $msg::packageRequireTDom
+    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message [mc packageRequireMissing TDom]
     return 1
   }
 
   if [catch {package require tls}] {
     package require Tk
-    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $msg::packageRequireTls
+    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message [mc packageRequireMissing Tls]
     return 1
   }
 

@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28aug21 pv
+# Updated: 8nov21 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -690,7 +690,7 @@ proc reloadKdeDesktop {} {
   } elseif {$k4 != ""} {
     set command $k4
   }
-#  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "TODO:MUSTRELOADDESKTOP"
+  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msgbox::linReloadingDesktop
   exec $command
 }
 
@@ -698,7 +698,7 @@ proc reloadKdeDesktop {} {
 ##Rereads XFCE4 Desktop configuration
 ##Called by SetupSaveLin after changing config files
 proc reloadXfce4Desktop {} {
-  tk_messageBox -type yesno -icon info -title "BiblePix Installation" -message "Reload XFCE4 desktop settings" -parent .
+  tk_messageBox -type yesno -icon info -title "BiblePix Installation" -message "XFCE4: $msgbox::linReloadingDesktop" -parent .
   catch {exec xfdesktop --reload}
 }
 

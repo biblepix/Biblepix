@@ -1,12 +1,12 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 4aug21 pv
+# Updated 8nov21 pv
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
   package require Tk
-  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message "$msg::packageRequireTDom"
+  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message [mc packageRequireMissing TDom]
   exit
 }
 
@@ -78,7 +78,7 @@ proc updateTwd {} {
   global twddir
   
   if [catch {package require json}] {
-	  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message "$msg::packageRequireLibtcl"
+	  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message [mc packageRequireMissing Libtcl]
     exit
   }
   

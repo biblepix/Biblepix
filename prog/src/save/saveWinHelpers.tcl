@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/saveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24jul21 pv
+# Updated: 8nov21 pv
 
 #set basic paths
 set rootpath "[file nativename $rootdir]"
@@ -210,7 +210,7 @@ proc setWinTheme {} {
   set themepath [file join $env(LOCALAPPDATA) Microsoft Windows Themes Biblepix.theme]
 
   #Warn of Designs window popping up
-  tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $winIgnorePopup
+  tk_messageBox -type ok -icon info -title "BiblePix Theme Installation" -message $msgbox::winIgnorePopup
 
   set themetext "\[Theme\]
 DisplayName=BiblePix

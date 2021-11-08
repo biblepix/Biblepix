@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/saveLin.tcl
 # Sourced by Save.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2aug21 pv
+# Updated: 8nov21 pv
 source $SaveLinHelpers
 source $SetupTools
 source $SetBackgroundChanger
@@ -16,7 +16,7 @@ catch {formatLinuxExecutables} Error
 ##################################################
 if [catch {setupLinAutostart} Err] {
   puts $Err
-  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $msg::linSetAutostartProb
+  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message $msgbox::linSetAutostartProb
 }
 
 ####################################################
@@ -73,7 +73,7 @@ if !$enablepic {
 ## 4 Set up Desktop Background Image - with error handling
 #####################################################
 
-tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg::linChangingDesktop
+tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msgbox::linChangingDesktop
 
 #Error codes: 0 = success | 1 = not found | 2 = error
 set GnomeErr [setupGnomeBackground]
@@ -83,16 +83,16 @@ set XfceErr  [setupXfce4Background]
 #Fire up message box for each Desktop configured
 ##A) None detected
 if { $GnomeErr == 1 && $KdeErr == 1 && $XfceErr == 1} {
-  tk_messageBox -type ok -icon warning -title "BiblePix Installation" -message $msg::linNoDesktopFound 
+  tk_messageBox -type ok -icon warning -title "BiblePix Installation" -message $msgbox::linNoDesktopFound 
 
 ##B) each individually if installation detected
 } else {
 
   #GNOME (0 or 2)
   if !$GnomeErr {
-    set msg "GNOME: $msg::changeDesktopOk"
+    set msg "GNOME: $msgbox::changeDesktopOk"
   } elseif {$GnomeErr == 2} {
-    set msg "GNOME: $msg::linChangeDesktopProb"
+    set msg "GNOME: $msgbox::linChangeDesktopProb"
   }
   if {$GnomeErr != 1} {
     tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg
@@ -100,9 +100,9 @@ if { $GnomeErr == 1 && $KdeErr == 1 && $XfceErr == 1} {
 
   #KDE (0 or 2)
   if !$KdeErr {
-    set msg "KDE: $msg::changeDesktopOk"
+    set msg "KDE: $msgbox::changeDesktopOk"
   } elseif {$KdeErr == 2} {
-    set msg "KDE: $msg::linChangeDesktopProb"
+    set msg "KDE: $msgbox::linChangeDesktopProb"
   }
   if {$KdeErr != 1} {
     tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg
@@ -128,7 +128,7 @@ if {$runningDesktop !=2 && $runningDesktop !=3} {
   set desktopName "XFCE4"
 }
 
-tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "$desktopName: $msg::linReloadingDesktop"
+tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "$desktopName: $msgbox::linReloadingDesktop"
 
 #Run progs end finish
 if {$runningDesktop==2} {

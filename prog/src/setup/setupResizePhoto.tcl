@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 2aug21 pv
+# Updated 8nov21 pv
 
 source $::AnnotatePng
   
@@ -9,7 +9,7 @@ source $::AnnotatePng
 ##opens new toplevel window if [needsResize]
 ##called by addPic
 proc openResizeWindow {} {
-  tk_messageBox -type ok -message $msg::movePicToResize
+  tk_messageBox -type ok -message $msgbox::movePicToResize
   global fontsize
   set margin 10
   namespace eval resizePic {}
@@ -163,7 +163,7 @@ proc openReposWindow {pic} {
 
   #Ask if text should be moved
   ##if no, set margins to 0 & save & close window
-  set res [tk_messageBox -type yesno -message $msg::textposAdjust] 
+  set res [tk_messageBox -type yesno -message $msgbox::textposAdjust] 
   if {$res == "no"} {
     set lum [getAreaLuminacy $reposPic::canv canvTxt]
     processPngComment $addpicture::targetPicPath 0 0 $lum
@@ -174,4 +174,3 @@ proc openReposWindow {pic} {
   catch {Show.Modal $reposPic::w -destroy 1 -onclose $cancelBtnAction}
   
 } ;#END openReposWindow
-

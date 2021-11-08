@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTerminal.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 31oct21 pv
+# Updated: 6nov21 pv
 
 #Create label & checkbutton
 label .termMainTit -textvar msg::f4Tit -font bpfont3 -pady 15
@@ -14,17 +14,17 @@ if {[info exists enableterm]} {
 }
 
 # C r e a t e  m a i n  f r a m e s
-pack [frame .termMainF] -in .terminalF -fill both -expand 1
-pack [frame .termLeftF] -in .termMainF -side left -expand 1 -anchor nw 
+pack [frame .termMainF] -in .terminalF -fill both
+pack [frame .termLeftF] -in .termMainF -side left -anchor nw 
 pack [frame .termRightF] -in .termMainF -side right -anchor ne -padx 25 -pady 25
 
 # F i l l   l e f t   f r a m e
-message .termMainM -textvar msg::f4Txt -font bpfont1 -width 500 -padx $px -pady $py
+message .termMainM -textvar msg::f4Txt -font bpfont1 -width 700 -padx $px -pady $py
 pack .termMainM -in .termLeftF -anchor nw
 
 # F i l l   r i g h t   f r a m e
 #Create bp text widget 
-text .termTwdT -width 70 -borderwidth 7
+text .termTwdT -width 60 -borderwidth 7
 set t .termTwdT
 pack $t -in .termRightF -anchor ne -pady 25 -pady 25
 

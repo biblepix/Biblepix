@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/saveWin.tcl
 # Sourced by Save.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 4aug21
+# Updated: 8nov21
 
 package require registry
 source $SaveWinHelpers
@@ -15,7 +15,7 @@ if { [info exists Debug] && $Debug } {
 }
 
 if $enablepic {
-  tk_messageBox -type ok -icon info -title "BiblePix Background Registration" -message $msg::winChangingDesktop
+  tk_messageBox -type ok -icon info -title "BiblePix Background Registration" -message $msgbox::winChangingDesktop
   
   #2. Register initial Wallpaper parameters 
   if { [info exists Debug] && $Debug } {
@@ -54,7 +54,7 @@ if {
   
 } {
 
-  tk_messageBox -type ok -title "BiblePix Registry Installation" -icon info -message $msg::winRegister
+  tk_messageBox -type ok -title "BiblePix Registry Installation" -icon info -message $msgbox::winRegister
   
   if { [info exists Debug] && $Debug } {
     regContextMenu
@@ -69,23 +69,23 @@ set ok 1
 #Final Error messages
 if { [info exists regAutorunError] && $regAutorunError } {
   set ok 0
-  tk_messageBox -type ok -icon error -title "BiblePix Registry Autorun Installation" -message $msg::winChangeDesktopProb
+  tk_messageBox -type ok -icon error -title "BiblePix Registry Autorun Installation" -message $msgbox::winChangeDesktopProb
 }
 if { [info exists regInitialError] && $regInitialError } {
   set ok 0
-  tk_messageBox -type ok -icon error -title "BiblePix Registry Initial Wallpaper Installation" -message $msg::winRegisterProb
+  tk_messageBox -type ok -icon error -title "BiblePix Registry Initial Wallpaper Installation" -message $msgbox::winRegisterProb
 }
 if { [info exists regBackgroundError] && $regBackgroundError } {
   set ok 0
-  tk_messageBox -type ok -icon error -title "BiblePix Registry Background Theme Installation" -message $msg::winChangeDesktopProb
+  tk_messageBox -type ok -icon error -title "BiblePix Registry Background Theme Installation" -message $msgbox::winChangeDesktopProb
 }
 if { [info exists contextMenuError] && $contextMenuError } {
   set ok 0
-  tk_messageBox -type ok -icon error -title "BiblePix Registry Context Menu Installation" -message $msg::winRegisterProb
+  tk_messageBox -type ok -icon error -title "BiblePix Registry Context Menu Installation" -message $msgbox::winRegisterProb
 }
 #Final OK message
 if {$ok} {
-  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msg::changeDesktopOk
+  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msgbox::changeDesktopOk
   exec RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters
 }
 
