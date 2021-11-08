@@ -28,7 +28,6 @@ proc setTexts {lang} {
   } {
     catch {setWidgetDirection left}
   }
-
 } ;#END setTexts
 
 #TODO move to exportTextvars?

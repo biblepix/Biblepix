@@ -3,12 +3,10 @@
 # needed for '-textvar' functions in Setup widgets
 # (Msgcat can't provide global vars!)
 # sourced by setTexts with lang variable
-# Updated 7oct21 pv
+# Updated 8nov21 pv
  
 namespace eval msg {
-#  variable lang $::lang
-#  variable Bidi $::Bidi
-puts $lang
+	puts $lang
 
   set ok [mc ok]
   set dw [mc dw]
@@ -47,7 +45,7 @@ puts $lang
   set uptodateHTTP [mc uptodateHTTP]
   set noConnHTTP [mc noConnHTTP]
   set gettingTwd [mc gettingTwd]
-  set noTwdFilesFound [mc noTwdFilesFound]
+  #set noTwdFilesFoundM [mc noTwdFilesFound]
   set connTwd [mc connTwd]
   set noConnTwd [mc noConnTwd]
   set f1Tit [mc f1Tit]
@@ -91,16 +89,16 @@ puts $lang
   set f4Tit  [mc f4Tit]
   set f4Btn [mc f4Btn]
   set f4Txt [mc f4Txt]
-  set winIgnorePopup [mc winIgnorePopup]
-  set winChangingDesktop [mc winChangingDesktop]
-  set winChangeDesktopProb [mc winChangeDesktopProb]
-  set winRegister [mc winRegister]
-  set winRegisterProb [mc winRegisterProb]
-  set linChangingDesktop [mc linChangingDesktop]
-  set linChangeDesktopProb [mc linChangeDesktopProb]
-  set linNoDesktopFound [mc linNoDesktopFound]
-  set linReloadingDesktop [mc linReloadingDesktop]
-  set changeDesktopOk [mc changeDesktopOk]
+  #set winIgnorePopup [mc winIgnorePopup]
+ # set winChangingDesktop [mc winChangingDesktop]
+  #set winChangeDesktopProb [mc winChangeDesktopProb]
+  #set winRegister [mc winRegister]
+  #set winRegisterProb [mc winRegisterProb]
+  #set linChangingDesktop [mc linChangingDesktop]
+  #set linChangeDesktopProb [mc linChangeDesktopProb]
+  #set linNoDesktopFound [mc linNoDesktopFound]
+  #set linReloadingDesktop [mc linReloadingDesktop]
+  #set changeDesktopOk [mc changeDesktopOk]
   set reposSaved [mc reposSaved]
   set reposNotSaved [mc reposNotSaved]
   set noPhotosFound [mc noPhotosFound]
@@ -108,17 +106,28 @@ puts $lang
   set preview90 [mc preview90]
   set preview180 [mc preview180]
   set computePreview [mc computePreview]
-  set rotateWait [mc rotateWait]
+  #set rotateWait [mc rotateWait]
   set rotateInfo [mc rotateInfo]
   set deletedPicMsg [mc deletedPicMsg]
   set copiedPicMsg [mc copiedPicMsg]
 
-
-#  if [isRtL $lang] {
-#    msgbidi    
-#  }
-
 } ;#END ::msg namespace
+
+namespace eval msgbox {
+		
+	set noTwdFilesFound [mc noTwdFilesFound]
+	set changeDesktopOk [mc changeDesktopOk]
+	set winIgnorePopup [mc winIgnorePopup]
+	set rotateWait [mc rotateWait]
+	set winChangingDesktop [mc winChangingDesktop]
+ 	set winChangeDesktopProb [mc winChangeDesktopProb]
+  set winRegister [mc winRegister]
+  set winRegisterProb [mc winRegisterProb]
+  set linChangingDesktop [mc linChangingDesktop]
+  set linChangeDesktopProb [mc linChangeDesktopProb]
+  set linNoDesktopFound [mc linNoDesktopFound]
+  set linReloadingDesktop [mc linReloadingDesktop]
+}
 
 set ::reqW 60
 
@@ -128,33 +137,61 @@ set ::reqW 60
 ##called here below
 proc msgbidi {} {
     source $::Bidi
-    global ::reqW
+    #global ::reqW
 
     foreach var [info vars msg::*] {
       set T [set $var]
-      
-       #reset width for ?wide windows
-       ##TODO this is a hack! Try to unify widget widths!
-       if [regexp f1Txt $var] {	
-         set reqW 100
-       } elseif [regexp f6Txt $var] {
-         set reqW 45
-       } elseif [regexp welcTxt1 $var] {
-         set reqW 80
-       }
+      puts $var
+
+            
+		if [regexp f1Txt $var] {	
+  		set reqW 150
+ 		} else {
+  		set reqW $::reqW
+  	}    
      
      #args vovelled|bdf|reqW
-    if [catch {set $var [bidi::fixBidi $T 1 0 $reqW]} res] {
-      puts "PROBLEMTEXT $var: $T"
-      puts $res
-    }
-   # set $var [bidi::fixBidi $T] 
-   #set $var [bidi::fixBidi $T 1 0 $reqW]
-  #puts [set $var]
+   # if [catch {set $var [bidi::fixBidi $T 1 0 $reqW]} res] {
+   #   puts "PROBLEMTEXT $var: $T"
+   #   puts $res
+   # }
+   	catch {set $var [bidi::fixBidi $T 1 0 $reqW]}
   }
+
+  foreach var [info vars msgbox::*] {  
+    set T [set $var]
+    puts $var
+    set reqW 25
+    catch {set $var [bidi::fixBidi $T 1 0 $reqW]}
+  }
+
 }
 
 if [isRtL $lang] {
   msgbidi    
 }
 
+
+       proc meyut? {} {
+       if [regexp f1Txt $var] {	
+         set reqW 100
+       } elseif [regexp f6Txt $var] {
+         set reqW 45
+       } elseif [regexp welcTxt1 $var] {
+         set reqW 80
+       } elseif [regexp f4Txt $var] {
+       	 set reqW 70
+       #Tk_messageBox popups
+       } elseif { 
+       		[regexp package $var] || 
+       		[string match noTwdFilesFound $var] || 
+       		[regexp ^resiz $var] || 
+       		[regexp ^lin $var] || 
+       		[regexp ^win $var] || 
+       		[regexp changeDesktop $var] || 
+       		[regexp ^noPhotos $var] || 
+       		[regexp ^rotateWait $var] 
+       } {
+       	 set reqW 20
+       }
+     }
