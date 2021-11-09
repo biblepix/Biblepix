@@ -4,25 +4,28 @@
 # Updated 4nov21 pv
 
 #Create frames & titles
-pack [frame .mailTopF] -in .emailF -fill x
-pack [frame .mailTop1F] -in .mailTopF -fill x
-pack [frame .mailTop2F] -in .mailTopF -fill x
-pack [frame .mailBotF] -in .emailF -fill both
-pack [frame .mailBotLeftF] -in .mailBotF -side left -anchor nw
-pack [frame .mailBotRightF -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -in .mailBotF -side right -padx $px -pady $py 
+pack [frame .mailLeftF] -in .emailF -side left -anchor nw
+pack [frame .mailRightF] -in .emailF -side right -anchor ne
+pack [frame .mailTop1F] -in .mailRightF -fill x
+pack [frame .mailTop2F] -in .mailRightF -fill x
 
 #Create labels & widgets
 label .mailMainTit -textvar msg::f3Tit -font bpfont3
 label .mailDesiredlangL -textvar msg::f3Sprachen -font bpfont1 -bg beige -bd 1 -relief sunken -padx 7 -pady 3
 checkbutton .mailSigyesnoCB -textvar msg::f3Btn -variable sigyesState -command {toggleBtnstate}
-pack .mailMainTit -in .mailTop1F -side left
+pack .mailMainTit -in .mailLeftF -anchor w
+pack .mailSigyesnoCB -in .mailLeftF -anchor w 
+
+#pack [frame .mailBotF] -in .emailF -fill both
+#pack [frame .mailBotLeftF] -in .mailLeftF -anchor nw
+#pack [frame .mailBotRightF -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -in .mailRightF -padx $px -pady $py 
+
+#pack .mailMainTit -in .mailLeftF -anchor w
+#pack .mailSigyesnoCB -in .mailLeftF -anchor w
 pack .mailDesiredlangL -in .mailTop1F -side right -anchor ne
-pack .mailSigyesnoCB -in .mailTop2F -anchor w -side left
+updateMailBtnList .mailTop2F
 
-#Set up button list
-pack [frame .mailTop2RightF] -in .mailTop2F -side right -anchor e
-updateMailBtnList .mailTop2RightF
-
+#TODO move to=? - make globally usable for any buttons?
 ##called by .sigyes Btn to enable/disable lang checkbuttons
 proc toggleBtnstate {} {
   global sigLangBtnList sigyesState
@@ -67,7 +70,7 @@ if $enablesig {
 
 #Create Message
 message .mailMainM -font bpfont1 -padx $px -pady $py -textvar msg::f3Txt 
-pack .mailMainM -in .mailBotLeftF -anchor nw
+pack .mailMainM -in .mailLeftF -anchor nw
 #Create Twd text
 set twdfile [getRandomTwdFile 0]
 set dwsig [getTodaysTwdSig $twdfile 1]
@@ -92,4 +95,4 @@ if [isBidi $dwsig] {
   .mailSigT tag conf www -justify left
 }
 
-pack .mailSigL .mailSigT -in .mailBotRightF -anchor w
+pack .mailSigL .mailSigT -in .mailRightF -anchor e

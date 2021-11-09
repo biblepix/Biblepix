@@ -37,20 +37,36 @@ proc setTexts {lang} {
 ##called by setTexts
 proc setWidgetDirection {dir} {
 
+
   #set anchor var
   if {$dir == "right"} {
     set anc e
+    set side right
   } {
     set anc w
+    set side left
   }
+  
+	#A) Shift frames
+	
+	##Welcome
+	pack .welcomeLeftMainF -side $side
+	##Desktop
+	pack .desktopLeftF -side $side
+	##Photos
+	pack .phLeftF -side $side
+	##Mail
+	pack .mailLeftF -side $side
+	##Terminal
+	pack .termLeftF -side $side
 
-  #TODO add some right-left switching for main frames
-  #incl. pic num in Photos etc.
+#B) Shift widgets  #incl. pic num in Photos etc.
   
     #Adjust justification 
     foreach w [winfo children .] {
       if { [winfo class $w] == "Label" ||
-           [winfo class $w] == "Message"
+           [winfo class $w] == "Message" ||
+           [winfo class $w] == "Checkbutton"
       } {
           $w conf -justify $dir
           pack $w -anchor $anc
@@ -375,7 +391,7 @@ proc updateMailBtnList {w} {
   foreach slave [pack slaves $w] {pack forget $slave}
   foreach code $langcodeL {
     catch {  checkbutton .${code}Btn -text $code -width 5 -selectcolor beige -indicatoron 0 -variable sel${code} }
-    pack .${code}Btn -in .mailTop2F -side right -padx 3 -anchor e
+    pack .${code}Btn -in $w -side right -padx 3 -anchor e
     lappend sigLangBtnL .${code}Btn
   }
   ##TODO unify var names! > siglangL + siglangBtnL
