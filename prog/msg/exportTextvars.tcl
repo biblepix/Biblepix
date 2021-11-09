@@ -132,18 +132,19 @@ namespace eval msgbox {
 set ::reqW 60
 
 # msgBidi
-#Fix Arabic & Hebrew 
-##runs per message
+#Fix Arabic & Hebrew
+##runs throu msg:: & msgbox:: namespaces 
+##setting each message with reqW
 ##called here below
 proc msgbidi {} {
     source $::Bidi
     #global ::reqW
 
-    foreach var [info vars msg::*] {
-      set T [set $var]
-      puts $var
-
-            
+	#A) Run through msg:: namespace
+  foreach var [info vars msg::*] {
+    set T [set $var]
+    puts $var
+          
 		if [regexp f1Txt $var] {	
   		set reqW 150
  		} else {
@@ -158,6 +159,7 @@ proc msgbidi {} {
    	catch {set $var [bidi::fixBidi $T 1 0 $reqW]}
   }
 
+	#B) Run through msgbox:: namespace
   foreach var [info vars msgbox::*] {  
     set T [set $var]
     puts $var

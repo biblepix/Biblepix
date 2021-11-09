@@ -24,6 +24,7 @@ if ![file exists $sigdir/$surpriseFile] {
 }
 
 if {$twdFileList == ""} {
+#TODO who can read this?!
   return "No corresponding TWD language files found!\n Please rerun Setup to define which languages your desire for your e-mail signatures."
 }
 
