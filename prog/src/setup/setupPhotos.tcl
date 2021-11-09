@@ -1,14 +1,13 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 11oct21 pv
+# Updated 9nov21 pv
 set fileJList ""
-
 
 #Create frames
 pack [frame .phMainF] -in .photosF -fill x -pady $py -padx $px
 pack [frame .phLeftF] -in .phMainF -side left -anchor nw -pady $py -padx $px
-pack [frame .phRightF] -in .phMainF -side right -anchor e -fill both -pady $py -padx $px
+pack [frame .phRightF] -in .phMainF -side right -anchor e -pady $py -padx $px
 
 #Create main title
 label .phMainTit -textvar msg::f6Tit -font bpfont3 -justify left
@@ -19,8 +18,8 @@ pack [frame .phBotF -pady 7] -in .phRightF -side bottom -anchor nw -fill both
 pack [frame .phBildF -relief sunken -bd 3] -in .phRightF -anchor e -pady 3 -expand 1 -fill x
 
 #Create Text left, limit width to 1/3
-message .phMainM -textvar msg::f6Txt -font bpfont1 -width [expr [winfo width .phMainF] / 3 ]
-pack .phMainM -in .phLeftF -anchor nw -side left ;# -padx {10 40} -pady 40
+message .phMainM -textvar msg::f6Txt -font bpfont1 -width 500 -pady $py -padx $px
+pack .phMainM -in .phLeftF -anchor nw -side left
 
 #Build Photo bar right
 button .phOpen -width 30 -textvar msg::f6Find -height 1 -command {
