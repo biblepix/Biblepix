@@ -107,7 +107,7 @@ mcset es f3Txt "Si está activado, $bp agregará $dw a tus firmas de e-mail una 
 #SETUP TERMINAL
 mcset es f4Tit "$dw en tus consolas de Linux"
 mcset es f4Btn "Generar $dw para mostrar en la consola"
-mcset es f4Txt "Si está activado, $bp generará $dw para mostrar en tus consolas. Si están instalados varios archivos de textos bíblicos, el texto cambia cada vez que se abre una consola. \n\nEl diseño y los colores pueden ser ajustados a gusto en \n\n\t $confdir/term.conf \n\nPara la representación en escritura hebrea o árabe solo terminales como 'QTerminal', 'mlterm', 'gnome-terminal', 'xfce4-terminal' o 'Konsole' (KDE) que pueden visualizar texto bidireccional correctamente, pueden ser tomados en cuenta. \n\nPara garantizar que $dw aparezca automáticamente en la consola, el $bp Setup hace una entrada en ~/.bash_profile."
+mcset es f4Txt "Si está activado, $bp generará $dw para mostrar en tus consolas. Si están instalados varios archivos de textos bíblicos, el texto cambia cada vez que se abre una consola. \n\nEl diseño y los colores pueden ser ajustados a gusto en \n\n\t $confdir/term.conf \n\nPara la representación en escritura hebrea o árabe solo terminales como 'QTerminal', 'mlterm', 'gnome-terminal', 'xfce4-terminal' o 'Konsole' (KDE) que pueden visualizar texto bidireccional correctamente, pueden ser tomados en cuenta. \n\nPara garantizar que $dw aparezca automáticamente en la consola, el $bp Setup hace una entrada en \n\n\t~/.bashrc"
 
 # S E T U P S A V E   T E X T S
 #Changing Desktops Info
