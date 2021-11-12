@@ -143,7 +143,7 @@ proc msgbidi {} {
 	#A) Run through msg:: namespace
   foreach var [info vars msg::*] {
     set T [set $var]
-    puts $var
+#    puts $var
           
 		if [regexp f1Txt $var] {	
   		set reqW 150
@@ -162,7 +162,7 @@ proc msgbidi {} {
 	#B) Run through msgbox:: namespace
   foreach var [info vars msgbox::*] {  
     set T [set $var]
-    puts $var
+ #   puts $var
     set reqW 25
     catch {set $var [bidi::fixBidi $T 1 0 $reqW]}
   }
