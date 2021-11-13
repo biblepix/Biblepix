@@ -81,7 +81,7 @@ mcset pt f2Fontweight "negrito"
 mcset pt f2Fontfamily "Fonte: "
 mcset pt f2Fontexpl "Adaptar fonte"
 mcset pt f2Txt "Se ativado, $bp criará uma imagem de fundo com $dw. A foto é selecionada aleatoriamente da coleção de fotos de $bp (consulte a seção Fotos). Uma nova imagem de fundo está sempre disponível em \n\n\t [file nativename $imgdir] \n\npara ser exibido pelo gerenciador de desktop. \n\nSe vários arquivos de texto bíblico forem instalados, o idioma ou versão da Bíblia muda aleatoriamente com cada mudança de imagem. \n\n$bp normalmente organiza um SLIDE SHOW com uma imagem variável. Se desejar apenas uma imagem por dia, a apresentação de slides pode ser desativada (veja acima). \n\nNa janela POSIÇÃO DO TEXTO você pode mover $dw para a posição desejada na tela. Ao adicionar imagens para a coleção, a posição do texto também pode ser determinada individualmente. \n\nO TAMANHO DA FONTE é definido automaticamente de acordo com a altura da tela. No entanto, você tem a opção de ajustar o tamanho e a espessura (letras maiores = melhor contraste). \n\nVocê também pode determinar a COR DA FONTE permanente ou aleatoriamente. Além disso, $bp pode realizar um ajuste de cor com base no brilho do fundo. Este efeito só tem efeito depois que uma nova foto for gravada. \n\nSe a nova imagem de fundo não aparecer automaticamente, você encontrará uma solução no manual."
-# S E T U P   P H O T O S 
+# P H O T O S 
 mcset pt textposlabel "Determinar a posição do texto"
 mcset pt textposAdjust "Deseja alterar a posição do texto nesta imagem antes de gravá-la?"
 mcset pt f6Tit "Organizar fotos por $bp"
@@ -91,25 +91,25 @@ mcset pt f6Add "Adicionar à coleção de fotos de $bp:"
 mcset pt f6Show "Ver coleção de fotos de $bp"
 mcset pt f6Find "Procurar novas fotos"
 mcset pt f6Del "Eliminar da coleção de fotos $bp:"
-#RESIZING
+# R E S I Z I N G
 mcset pt resizeF_txt "Sua foto não corresponde ao tamanho da tela e precisa ser cortada. [mc movePicToResize]"
 mcset pt movePicToResize "Mova a seção da imagem como desejar e confirme com OK para gravar"
 mcset pt resizingPic "Ajustando o tamanho da imagem à tela \u2014 aguarde um momento ..."
 mcset pt movePic "Mover seção de imagem \u21CA"
 mcset pt picSchonDa "A foto já está na pasta de imagens de $bp"
-# S E T U P   S I G N A T U R E
+# S I G N A T U R E
 mcset pt f3Tit "$dw em suas assinaturas de e-mail"
 mcset pt f3Btn "Gerar assinatura de e-mail"
 mcset pt f3Sprachen "Idiomas desejados para minhas assinaturas"
 mcset pt f3Txt "Se ativado, $bp adicionará $dw às suas assinaturas de e-mail uma vez por dia para cada arquivo de texto bíblico instalado. Os arquivos de assinatura criados são classificados de acordo com as abreviações de idioma (por exemplo, signature-pt_Portug.txt) na siguenta pasta: \n\n\t $sigdir \n\nVocê pode editar esses arquivos de seu programa de e-mail ou em um editor de texto e adicionar saudações pessoais, endereços, etc. O texto acima da linha que divide ==== não é afetado quando alterna $dw.\n\nTalvez você pode não quera que seus destinatários de e-mail leiam $dw em todos os idiomas que você instalou. Selecione os idiomas desejados no canto superior direito. \n\nPara que $dw apareça nos seus e-mails no futuro, você deve ensinar seu programa de e-mail a usar os arquivos descritos acima (geralmente em Configuração>Assinaturas). Se em vez duma lingua, você escolhe o arquivo 
 \n\t signature-SURPRISE.txt
 \n$dw rotará por acaso.\n\nAlguns programas como Seamonkey Mail, Evolution ou Trojitá gerenciam sinhaturas internamente. Entre eles, $bp pode levar em conta Trojitá e Evolution por enquanto."
-#SETUP TERMINAL
+# T E R M I N A L
 mcset pt f4Tit "$dw nos seus consoles Linux"
 mcset pt f4Btn "Gerar $dw para exibir no console"
 mcset pt f4Txt "Se ativado, $bp gerará $dw para exibir nos seus consoles. Se vários arquivos de texto bíblico estiverem instalados, o texto muda toda vez que um console é aberto. \n\nO layout e as cores podem ser ajustados editando \n\n\t $confdir/term.conf \n\nPara renderizar em escrita hebraica ou árabe apenas terminais como 'QTerminal', 'mlterm', 'gnome-terminal', 'xfce4-terminal' ou 'Konsole' (KDE) que podem exibir texto bidirecional corretamente podem ser levados em consideração. \n\nPara garantir que $dw apareça automaticamente no console, a configuração de $bp cria uma entrada em\n\n\t ~/.bashrc"
 
-# S E T U P S A V E   T E X T S
+# S E T U P S A V E
 #Changing Desktops Info
 mcset pt linChangingDesktop "$bp irá agora tentar alterar as configurações do seu desktop. Se você não vir uma nova imagem de fundo depois, encontrará uma solução no manual."
 mcset pt winIgnorePopup "Por favor, feche qualquer pop-up sem fazer nenhuma alteração para que $bp possa completar o registro!"
@@ -121,7 +121,7 @@ mcset pt linReloadingDesktop "Agora tentaremos recarregar sua área de trabalho.
 mcset pt changeDesktopOk "$bp está configurado no seu computador e irá iniciar agora. \n\nVocê pode iniciar o programa de configuração a qualquer momento selecionando o símbolo $bp no menu do programa (Linux) ou selecionando o ícone $bp no seu desktop com o botão direito (Windows)."
 mcset pt winRegister "$bp agora deve ser registrado em seu sistema. Confirme qualquer janela de notificação com \"Sim\"!"
 mcset pt winRegisterProb "$bp ainda não está instalado corretamente no seu computador. Reinicie a instalação ou adicione \n\t $Biblepix \n ao Autostart (Programas iniciados automaticamente)"
-#PHOTOS
+# P H O T O S
 mcset pt reposSaved "Imagem gravada com informações"
 mcset pt reposNotSaved "Imagem não gravada"
 mcset pt noPhotosFound "Não se encontram fotos na pasta de fotos de $bp. Copie algumas imagens à pasta"

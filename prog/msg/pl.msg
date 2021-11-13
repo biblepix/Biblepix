@@ -2,7 +2,7 @@
 # ~/Biblepix/prog/msg/pl.msg
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 22aug21 pv
+# Updated: 13nov21 pv
 
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S "......"
@@ -110,7 +110,10 @@ mcset pl picSchonDa "Zdjęcie należy już do kolekcji zdjęć $bp"
 mcset pl f3Tit "Ustaw 'Słowo' jako podpis swojego e-maila"
 mcset pl f3Btn "Stwórz podpis e-mail"
 mcset pl f3Sprachen "Języki wybrane do moich podpisów"
-mcset pl f3Txt "Program $bp doda 'Słowo' na końcu Twojego podpisu e-mail raz na dzień w każdym języku obecnym na twoim komputerze. Pliki podpisów są przechowywane przy pomocy skrótów językowych (np. podpis_English.txt) w katalogu \n\n\t$sigdir \n\nMasz możliwość edytowania tych plików z poziomu Twojej skrzynki mailowej, lub w edytorze tekstowym, oraz możliwość dodania dowolnej osobistej wiadomości na początku podpisu (pozdrowienia, adresy itd.) Każdy tekst powyżej linii separacyjnej  ==== pozostanie niezmieniony po każdej zmianie 'Słowa'. \n\nMożesz nie chcieć, aby 'Słowo' pojawiało się w różnych wersjach językowych. W polach wyboru w prawym górnym rogu wybierz języki, które są odpowiednie dla odbiorców Twoich wiadomości e-mail.\n\nPamiętaj, aby ustawić w swojej skrzynce mailowej wybrane pliki podpisów (zwykle poprzez Opcje>Podpisy).\n\nNiektóre skrzynki tj. Seamonkey Mail, Evolution lub Trojitá zarządzają podpisami wewnętrznie. Spośród wyżej wymienionych, na dzień dzisiejszy $bp współpracuje z Trojitá oraz Evolution."
+mcset pl f3Txt "Program $bp doda 'Słowo' na końcu Twojego podpisu e-mail raz na dzień w każdym języku obecnym na twoim komputerze. Pliki podpisów są przechowywane przy pomocy skrótów językowych (np. podpis_English.txt) w katalogu \n\n\t$sigdir \n\nMasz możliwość edytowania tych plików z poziomu Twojej skrzynki mailowej, lub w edytorze tekstowym, oraz możliwość dodania dowolnej osobistej wiadomości na początku podpisu (pozdrowienia, adresy itd.) Każdy tekst powyżej linii separacyjnej  ==== pozostanie niezmieniony po każdej zmianie 'Słowa'. \n\nMożesz nie chcieć, aby 'Słowo' pojawiało się w różnych wersjach językowych. W polach wyboru w prawym górnym rogu wybierz języki, które są odpowiednie dla odbiorców Twoich wiadomości e-mail.\n\nPamiętaj, aby ustawić w swojej skrzynce mailowej wybrane pliki podpisów (zwykle poprzez Opcje>Podpisy).
+\nJeśli zamiast języka wybierzesz plik 
+\n\t signature-SURPRISE.txt
+\nobraca się 'Słowo' losowo.\n\nNiektóre skrzynki tj. Seamonkey Mail, Evolution lub Trojitá zarządzają podpisami wewnętrznie. Spośród wyżej wymienionych, na dzień dzisiejszy $bp współpracuje z Trojitá oraz Evolution."
 mcset pl f4Tit  "Wyświetl 'Słowo' w terminalu Linux"
 mcset pl f4Btn "Utwórz 'Słowo' do wyswietlenia w terminalu"
 mcset pl f4Txt "Po uruchomieniu $bp utworzy 'Słowo' do wyświetlenia na górze Twojego terminalu. Jeśli zainstalowano więcej niż jeden pakiet językowy, teksty Biblijne będą zmieniane losowo przy każdym uruchomieniu nowego okna. \n\nWyświetlane kolory itp. mogą być zmieniane w \n\n\t $confdir/term.conf \n\nAby wyświetlić poprawnie zapis w języku Arabskim lub Hebrajskim potrzebny będzie jeden z następujących: 'QTerminal', 'mlterm', 'gnome-terminal', 'Konsole' (KDE) lub 'xfce4-terminal'; te sprawdzają się w pracy z tekstem dwukierunkowym.\n\nW celu wyświetlenia 'Słowa' automatycznie w Twoich terminalach, [mc bpsetup] tworzy wpis w ~/.bashrc dla Twojej wygody."
