@@ -47,22 +47,7 @@ proc setWidgetDirection {dir} {
     set side left
   }
   
-	#A) Shift frames
-	
-	##Welcome
-	pack .welcomeLeftMainF -side $side
-	##Desktop
-	pack .desktopLeftF -side $side
-	##Photos
-	pack .phLeftF -side $side
-	##Mail
-	pack .mailLeftF -side $side
-	##Terminal
-	pack .termLeftF -side $side
-
-#B) Shift widgets  #incl. pic num in Photos etc.
-  
-    #Adjust justification 
+  #A) Adjust justification 
     foreach w [winfo children .] {
       if { [winfo class $w] == "Label" ||
            [winfo class $w] == "Message" ||
@@ -72,6 +57,35 @@ proc setWidgetDirection {dir} {
           pack $w -anchor $anc
       }
     }
+
+	#B) Shift frames & horizontal widgets
+	
+	##Welcome
+	pack .welcomeLeftMainF -side $side
+	
+	##Desktop - TODO this is a mess!!!!!!!!!!!!!!!!!!!!!!!!
+	pack .desktopLeftF -side $side -anchor $anc
+	pack .showdateBtn -anchor $anc -side $side
+	##umgekehrte Reihenfolge
+	if {$side == "right"} {
+		set seite "left"
+  } else {
+		set seite "right"
+	}
+	pack .slideBtn .slideSecTxt .slideSpin .slideTxt -side $seite -anchor $seite
+	
+	pack .fontcolorTxt .fontcolorSpin .randomfontcolorCB -side $side
+	pack .fontsizeSpin .fontsizeTxt -side $side
+	pack .fontfamilyTxt .fontfamilySpin .fontweightBtn -side $side
+	##Photos
+	pack .phLeftF -side $side
+	##Mail
+	pack .mailLeftF -side $side
+	##Terminal
+	pack .termLeftF -side $side
+
+	#C) Shift widgets  #incl. pic num in Photos etc.
+  
 
 } ;#END setWidgetDirection
 

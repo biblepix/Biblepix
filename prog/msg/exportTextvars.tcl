@@ -34,9 +34,7 @@ namespace eval msg {
   set welcSubtit2 [mc welcSubtit2]
   set welcTxt1 [mc welcTxt1]
   set welcTxt2 [mc welcTxt2]
-  set uninstall [mc uninstall]
-  set uninstalling [mc uninstalling]
-  set uninstalled [mc uninstalled]
+  
   set download [mc download]
   set downloadingHttp [mc downloadingHttp]
   set downloadingAsianFont [mc downloadingAsianFont]
@@ -114,7 +112,9 @@ namespace eval msg {
 } ;#END ::msg namespace
 
 namespace eval msgbox {
-		
+	set uninstall [mc uninstall]
+  set uninstalling [mc uninstalling]
+  set uninstalled [mc uninstalled]
 	set noTwdFilesFound [mc noTwdFilesFound]
 	set changeDesktopOk [mc changeDesktopOk]
 	set winIgnorePopup [mc winIgnorePopup]
