@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 13nov21 pv
+# Updated: 14nov21 pv
 
 # U N T R A N S L A T A B L E S
 set bp {BiblePix}
@@ -75,9 +75,9 @@ mcset es f2Slideshow "Activar presentación de diapositivas"
 mcset es f2Interval "Cambio de imagen cada "
 mcset es sec "segundos"
 mcset es f2Introline "Mostrar fecha"
-mcset es f2Fontsize "Tamaño de fuente: "
+mcset es f2Fontsize "Tamaño de letra: "
 mcset es f2Fontweight "en negrilla"
-mcset es f2Fontfamily "Fuente: "
+mcset es f2Fontfamily "Tipo de letra: "
 mcset es f2Fontexpl "Adaptar fuente"
 mcset es f2Txt "Si está activado, $bp creará una imagen de fondo con $dw. La foto se selecciona al azar de la colección de fotos de $bp (ver la sección Fotos). Siempre hay una nueva imagen de fondo disponible en \n\n\t [file nativename $imgdir] \n\npara que la muestre el administrador de escritorio. \n\nSi están instalados varios archivos de textos bíblicos, el idioma o la versión de la Biblia cambia al azar con cada cambio de imagen. \n\n$bp organiza normalmente una PRESENTACION DE DIAPOSITIVAS con una imagen cambiante. Si se desea solo una imagen por día, la presentación de diapositivas se puede desactivar (ver arriba). \n\nEn la ventana POSICIÓN DE TEXTO puedes mover $dw a la posición deseada en la pantalla. Al agregar imágenes a la colección, la posición del texto también se puede determinar individualmente. \n\nEl TAMAÑO DE LA FUENTE se establece automáticamente según la altura de la pantalla. Sin embargo, tú tienes la opción de ajustar el tamaño y el grosor (letras más grandes = mejor contraste). \n\n Puedes también determinar el COLOR DE LA FUENTE de forma permanente o aleatoria. Además $bp puede realizar un ajuste de color basado en el brillo del fondo. Este efecto solo tiene efecto después de que se haya guardado una foto nueva. \n\nSi la nueva imagen de fondo no aparece automáticamente, encontrarás una solución en el manual."
 # S E T U P   P H O T O S 

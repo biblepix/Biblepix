@@ -78,7 +78,7 @@ mcset pt sec "segundos"
 mcset pt f2Introline "Mostrar data"
 mcset pt f2Fontsize "Tamanho da fonte: "
 mcset pt f2Fontweight "negrito"
-mcset pt f2Fontfamily "Fonte: "
+mcset pt f2Fontfamily "Tipo de letra: "
 mcset pt f2Fontexpl "Adaptar fonte"
 mcset pt f2Txt "Se ativado, $bp criará uma imagem de fundo com $dw. A foto é selecionada aleatoriamente da coleção de fotos de $bp (consulte a seção Fotos). Uma nova imagem de fundo está sempre disponível em \n\n\t [file nativename $imgdir] \n\npara ser exibido pelo gerenciador de desktop. \n\nSe vários arquivos de texto bíblico forem instalados, o idioma ou versão da Bíblia muda aleatoriamente com cada mudança de imagem. \n\n$bp normalmente organiza um SLIDE SHOW com uma imagem variável. Se desejar apenas uma imagem por dia, a apresentação de slides pode ser desativada (veja acima). \n\nNa janela POSIÇÃO DO TEXTO você pode mover $dw para a posição desejada na tela. Ao adicionar imagens para a coleção, a posição do texto também pode ser determinada individualmente. \n\nO TAMANHO DA FONTE é definido automaticamente de acordo com a altura da tela. No entanto, você tem a opção de ajustar o tamanho e a espessura (letras maiores = melhor contraste). \n\nVocê também pode determinar a COR DA FONTE permanente ou aleatoriamente. Além disso, $bp pode realizar um ajuste de cor com base no brilho do fundo. Este efeito só tem efeito depois que uma nova foto for gravada. \n\nSe a nova imagem de fundo não aparecer automaticamente, você encontrará uma solução no manual."
 # P H O T O S 
