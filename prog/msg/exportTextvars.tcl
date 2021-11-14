@@ -3,7 +3,7 @@
 # needed for '-textvar' functions in Setup widgets
 # (Msgcat can't provide global vars!)
 # sourced by setTexts with lang variable
-# Updated 8nov21 pv
+# Updated 14nov21 pv
  
 namespace eval msg {
 	puts $lang
@@ -87,16 +87,6 @@ namespace eval msg {
   set f4Tit  [mc f4Tit]
   set f4Btn [mc f4Btn]
   set f4Txt [mc f4Txt]
-  #set winIgnorePopup [mc winIgnorePopup]
- # set winChangingDesktop [mc winChangingDesktop]
-  #set winChangeDesktopProb [mc winChangeDesktopProb]
-  #set winRegister [mc winRegister]
-  #set winRegisterProb [mc winRegisterProb]
-  #set linChangingDesktop [mc linChangingDesktop]
-  #set linChangeDesktopProb [mc linChangeDesktopProb]
-  #set linNoDesktopFound [mc linNoDesktopFound]
-  #set linReloadingDesktop [mc linReloadingDesktop]
-  #set changeDesktopOk [mc changeDesktopOk]
   set reposSaved [mc reposSaved]
   set reposNotSaved [mc reposNotSaved]
   set noPhotosFound [mc noPhotosFound]
@@ -104,7 +94,6 @@ namespace eval msg {
   set preview90 [mc preview90]
   set preview180 [mc preview180]
   set computePreview [mc computePreview]
-  #set rotateWait [mc rotateWait]
   set rotateInfo [mc rotateInfo]
   set deletedPicMsg [mc deletedPicMsg]
   set copiedPicMsg [mc copiedPicMsg]
@@ -127,9 +116,7 @@ namespace eval msgbox {
   set linChangeDesktopProb [mc linChangeDesktopProb]
   set linNoDesktopFound [mc linNoDesktopFound]
   set linReloadingDesktop [mc linReloadingDesktop]
-}
-
-set ::reqW 60
+} ;#END ::msgbox namespace
 
 # msgBidi
 #Fix Arabic & Hebrew
@@ -137,8 +124,8 @@ set ::reqW 60
 ##setting each message with reqW
 ##called here below
 proc msgbidi {} {
-    source $::Bidi
-    #global ::reqW
+  source $::Bidi
+	set ::reqW 60
 
 	#A) Run through msg:: namespace
   foreach var [info vars msg::*] {
@@ -173,27 +160,61 @@ if [isRtL $lang] {
   msgbidi    
 }
 
+# setWidgetDirection
+##A)sets direction of text widgets to right/left-justifying
+##B)packs them as west/east-anchoring
+##called by setTexts
+proc setWidgetDirection {dir} {
 
-       proc meyut? {} {
-       if [regexp f1Txt $var] {	
-         set reqW 100
-       } elseif [regexp f6Txt $var] {
-         set reqW 45
-       } elseif [regexp welcTxt1 $var] {
-         set reqW 80
-       } elseif [regexp f4Txt $var] {
-       	 set reqW 70
-       #Tk_messageBox popups
-       } elseif { 
-       		[regexp package $var] || 
-       		[string match noTwdFilesFound $var] || 
-       		[regexp ^resiz $var] || 
-       		[regexp ^lin $var] || 
-       		[regexp ^win $var] || 
-       		[regexp changeDesktop $var] || 
-       		[regexp ^noPhotos $var] || 
-       		[regexp ^rotateWait $var] 
-       } {
-       	 set reqW 20
-       }
-     }
+  #set anchor + side vars
+  if {$dir == "right"} {
+    set anc e
+    set side right
+  } {
+    set anc w
+    set side left
+  }
+  
+  #A) Adjust justification 
+  foreach w [winfo children .] {
+    if { [winfo class $w] == "Label" ||
+          [winfo class $w] == "Message" ||
+          [winfo class $w] == "Checkbutton"
+    } {
+        $w conf -justify $dir
+        pack $w -anchor $anc
+    }
+  }
+
+	#correct some centered titles
+	pack .textposTit .fontAdaptTit -anchor center
+	
+	#B) Shift frames & horizontal widgets
+	
+	##Welcome
+	pack .welcomeLeftMainF -side $side
+	
+	##Desktop
+	pack .desktopLeftF -side $side -anchor $anc
+	##revert left/right for some widgets
+	if {$side == "right"} {
+		set umgekehrt "left"
+  } else {
+		set umgekehrt "right"
+	}
+	pack .slideBtn -side $side
+	pack .slideSecTxt -side $umgekehrt
+	pack .slideSpin -side $umgekehrt
+	pack .slideTxt -side $umgekehrt
+	pack .fontcolorTxt .fontcolorSpin .randomfontcolorCB -side $side
+	pack .fontsizeSpin .fontsizeTxt -side $side
+	pack .fontfamilyTxt .fontfamilySpin .fontweightBtn -side $side
+	
+	##Photos
+	pack .phLeftF -side $side
+	##Mail
+	pack .mailLeftF -side $side
+	##Terminal
+	pack .termLeftF -side $side
+	
+} ;#END setWidgetDirection

@@ -5,7 +5,7 @@
 ##INFO: Textmenge ca. 1900 W. -
 ## (100 mcset * 3 W. =) -300 W.
 ## (Comments) -20 (variables ($) -80 = 1500 W.
-# Updated: 3nov21 pv
+# Updated: 14nov21 pv
 
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S   "......"
@@ -90,7 +90,7 @@ mcset zh f2Tit "将金句放在您的背景图片上"
 mcset zh f2Box "创建背景图像"
 mcset zh f2Farbe "字体颜色: "
 mcset zh f2Slideshow "激活幻灯"
-mcset zh f2Interval "幻灯片间隔: "
+mcset zh f2Interval "幻灯片间隔 "
 mcset zh sec "秒"
 mcset zh f2Introline "显示日期"
 mcset zh f2Fontsize "字体大小: "
