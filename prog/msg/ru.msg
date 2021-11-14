@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge Reintext ca. 1500 Wörter
-# Updated: 12nov21 pv
+# Updated: 14nov21 pv
 
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S   "......"
@@ -87,7 +87,7 @@ mcset ru f2Tit "'Слово' на фоновом изображении"
 mcset ru f2Box "Создать фоновое изображение"
 mcset ru f2Farbe "Цвет текста: "
 mcset ru f2Slideshow "Включить слайд-шоу"
-mcset ru f2Interval "Менять изобра¶ение каждые "
+mcset ru f2Interval "Менять изображение каждые "
 mcset ru sec "секунд"
 mcset ru f2Introline "Показать дату"
 mcset ru f2Fontsize "Размер шрифта: "

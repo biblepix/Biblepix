@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 4nov21 pv
+# Updated: 13nov21 pv
 
 # U N T R A N S L A T A B L E S
 set bp {BiblePix}
@@ -71,7 +71,7 @@ mcset es f1Txt "$bp ofrece $dw en todas las lenguas y ediciones de la Biblia ins
 mcset es f2Tit "$dw en el fondo de escritorio"
 mcset es f2Box "Generar imagen de fondo"
 mcset es f2Farbe "Color de fuente: "
-mcset es f2Slideshow "Activar presentaci³n de diapositivas"
+mcset es f2Slideshow "Activar presentación de diapositivas"
 mcset es f2Interval "Cambio de imagen cada "
 mcset es sec "segundos"
 mcset es f2Introline "Mostrar fecha"
