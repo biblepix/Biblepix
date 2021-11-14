@@ -278,7 +278,7 @@ namespace eval bidi {
         incr lineI
         unset newline
       }
-puts $word
+#puts $word
     }
     
     #Add final line to array - ?catch for empty line?

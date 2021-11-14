@@ -1,19 +1,22 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 9oct21 pv
+# Updated 14nov21 pv
 
 #Create left & right main frames
 pack [frame .desktopLeftF] -in .desktopF -fill y -side left
 pack [frame .desktopRightF] -in .desktopF -fill both -side right -expand 1
-##right top frames
+
 pack [frame .dtTopMainF1] -in .desktopRightF -fill x
+
 pack [frame .dtTopMainF2 -relief ridge -bd 3 -padx $px -pady $py] -in .desktopRightF -fill x
 ##right middle frames
-pack [frame .dtMidMainF -padx $px -pady $py] -in .desktopRightF -fill x
-pack [frame .dtMidLeftF] -in .dtMidMainF -side left
-pack [frame .dtMidMidF] -in .dtMidMainF -expand 1 -side left
-pack [frame .dtMidRightF] -in .dtMidMainF -side right
+pack [frame .dtMidF -padx $px -pady $py] -in .desktopRightF -fill x
+pack [frame .dtMid1F] -in .dtMidF -side left -padx $px -expand 1
+pack [frame .dtMid2F] -in .dtMidF -side left -padx $px -expand 1
+pack [frame .dtMid3F] -in .dtMidF -side left -padx $px -expand 1
+pack [frame .dtMid4F] -in .dtMidF -side left -padx $px -expand 1
+
 ##right bottom frame
 pack [frame .dtBotMainF -relief ridge -borderwidth 3] -in .desktopRightF -pady $py -padx $px -fill x
 
@@ -49,7 +52,7 @@ checkbutton .showdateBtn -textvar msg::f2Introline -variable enabletitle
 }
 
 #4. SlideshowYesNo checkbutton
-checkbutton .slideBtn -textvar msg::f2Slideshow -variable slideshowState -command {setSlideSpin $slideshowState} -padx 20
+checkbutton .slideBtn -textvar msg::f2Slideshow -variable slideshowState -command {setSlideSpin $slideshowState}
 
 #5. Slideshow spinbox
 message .slideTxt -textvar msg::f2Interval -width 200
@@ -162,8 +165,8 @@ spinbox .fontfamilySpin -width 7 -bg lightgrey
 .fontfamilySpin conf -values $Fontlist -command {setCanvasFontSize %s}
 .fontfamilySpin set $fontfamily
 
-label .textposL -textvar msg::textposlabel -font TkCaptionFont
-label .fontAdaptL -textvar msg::f2Fontexpl -font TkCaptionFont
+label .textposTit -textvar msg::textposlabel -font TkCaptionFont
+label .fontAdaptTit -textvar msg::f2Fontexpl -font TkCaptionFont
 
 #2. Create TextPos Canvas
 set textPosFactor 3 ;#Verkleinerungsfaktor gegenüber real font size
@@ -222,15 +225,20 @@ label .textposFN -width 50 -font "Serif 10" -textvar RtlInfo
 
 # P A C K   R I G H T
 ##top
-pack .showdateBtn -in .dtTopMainF1 -anchor w -side left
-pack .slideSecTxt .slideSpin .slideTxt .slideBtn -in .dtTopMainF1 -anchor nw -side right
-pack .fontAdaptL -in .dtTopMainF2 -anchor n
+pack .slideSecTxt .slideSpin .slideTxt -in .dtTopMainF1 -anchor nw -side right
+pack .slideBtn -in .dtTopMainF1 -side left
+
+pack .fontAdaptTit -in .dtTopMainF2 -anchor center
 pack $inttextC -in .dtTopMainF2 -fill x -anchor n
+
 ##middle
-pack .fontcolorTxt .fontcolorSpin .randomfontcolorCB -in .dtMidLeftF -side left
-pack .fontsizeSpin .fontsizeTxt -in .dtMidMidF -side right
-pack .fontfamilyTxt .fontfamilySpin .fontweightBtn -in .dtMidRightF -side left
+#TODO testing
+pack .showdateBtn -in .dtMid1F -side left
+pack .fontcolorTxt .fontcolorSpin .randomfontcolorCB -in .dtMid2F -side left
+pack .fontsizeTxt .fontsizeSpin -in .dtMid4F -side left
+pack .fontfamilyTxt .fontfamilySpin .fontweightBtn -in .dtMid3F -side left
+
 ##bottom
-pack .textposL -in .dtBotMainF -pady 7
+pack .textposTit -in .dtBotMainF -pady 7 -anchor center
 pack $textposC -in .dtBotMainF -fill y
 pack .textposFN -in .dtBotMainF -fill x

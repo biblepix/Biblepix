@@ -11,6 +11,7 @@ source $JList
 ##called by SetupMainFrame 
 proc setTexts {lang} {
   global msgdir os ExportTextvars
+  #source $ExportTextvars
   package require msgcat
   namespace import msgcat::mc msgcat::mcset
 
@@ -29,66 +30,6 @@ proc setTexts {lang} {
     catch {setWidgetDirection left}
   }
 } ;#END setTexts
-
-#TODO move to exportTextvars?
-# setWidgetDirection
-##A)sets direction of text widgets to right/left-justifying
-##B)packs them as west/east-anchoring
-##called by setTexts
-proc setWidgetDirection {dir} {
-
-
-  #set anchor var
-  if {$dir == "right"} {
-    set anc e
-    set side right
-  } {
-    set anc w
-    set side left
-  }
-  
-  #A) Adjust justification 
-    foreach w [winfo children .] {
-      if { [winfo class $w] == "Label" ||
-           [winfo class $w] == "Message" ||
-           [winfo class $w] == "Checkbutton"
-      } {
-          $w conf -justify $dir
-          pack $w -anchor $anc
-      }
-    }
-
-	#B) Shift frames & horizontal widgets
-	
-	##Welcome
-	pack .welcomeLeftMainF -side $side
-	
-	##Desktop - TODO this is a mess!!!!!!!!!!!!!!!!!!!!!!!!
-	pack .desktopLeftF -side $side -anchor $anc
-	pack .showdateBtn -anchor $anc -side $side
-	##umgekehrte Reihenfolge
-	if {$side == "right"} {
-		set seite "left"
-  } else {
-		set seite "right"
-	}
-	pack .slideBtn .slideSecTxt .slideSpin .slideTxt -side $seite -anchor $seite
-	
-	pack .fontcolorTxt .fontcolorSpin .randomfontcolorCB -side $side
-	pack .fontsizeSpin .fontsizeTxt -side $side
-	pack .fontfamilyTxt .fontfamilySpin .fontweightBtn -side $side
-	##Photos
-	pack .phLeftF -side $side
-	##Mail
-	pack .mailLeftF -side $side
-	##Terminal
-	pack .termLeftF -side $side
-
-	#C) Shift widgets  #incl. pic num in Photos etc.
-  
-
-} ;#END setWidgetDirection
-
 
 # addPic
 ##adds new Picture to BiblePix Photo collection

@@ -14,9 +14,9 @@ if {[info exists enableterm]} {
 }
 
 # C r e a t e  m a i n  f r a m e s
-#pack [frame .termMainF] -in .terminalF -fill both
-pack [frame .termLeftF] -in .terminalF -side left -anchor nw -fill both 
-pack [frame .termRightF] -in .terminalF -side right -anchor ne -padx 25 -pady 25 -fill both
+pack [frame .termMainF] -in .terminalF -fill both
+pack [frame .termLeftF] -in .termMainF -side left -anchor nw
+pack [frame .termRightF] -in .termMainF -side right -anchor ne -padx 25 -pady 25
 
 # F i l l   l e f t   f r a m e
 message .termMainM -textvar msg::f4Txt -font bpfont1 -width 600 -padx $px -pady $py
