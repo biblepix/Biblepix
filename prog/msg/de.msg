@@ -36,7 +36,7 @@ mcset de welcTit "Willkommen beim Einrichtungsprogramm von $bp!"
 mcset de welcSubtit1 "Was ist $bp?"
 mcset de welcTxt1 "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' entwickelt wird.\n\n'Bibel 2.0' setzt sich zum Ziel, $dw in einer wachsenden Anzahl von Sprachen zu verbreiten.\n$dw besteht aus 2 ausgewählten Bibelsprüchen für jeden Tag des Jahres.\n\n$bp kann $dw in vielfältiger Weise auf Ihrem PC anzeigen."
 mcset de welcSubtit2 "Was sind Ihre Möglichkeiten?"
-mcset de welcTxt2 "\u27a4 [mc bibletexts] : Wählen Sie beliebig viele Bibelausgaben und -sprachen für $dw
+mcset de welcTxt2 "\u27a4 [mc bibletexts]: Wählen Sie beliebig viele Bibelausgaben und -sprachen für $dw
 \u27a4 [mc desktop]: Betrachten Sie $dw auf Ihren persönlichen Fotos
 \u27a4 [mc photos]: Wählen Sie eigene Hintergrundbilder für $bp aus
 \u27a4 [mc email]: Fügen Sie $dw an Ihre E-Mails an
@@ -105,7 +105,7 @@ mcset de f3Sprachen "Gewünschte Sprachen für meine Signaturen"
 mcset de f3Txt "Wenn aktiviert, fügt $bp einmal täglich für jede installierte Bibeltextdatei $dw an Ihre E-Mail-Signaturen an. Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. signature-de_Schlac.txt) im folgenden Ordner gespeichert: \n\n\t$sigdir \n\nSie können diese Dateien aus Ihrem E-Mail-Programm oder in einem Texteditor bearbeiten und persönliche Grussformeln, Adressen usw. oben einfügen. Text oberhalb der Trennlinie ==== bleibt beim Wechsel von $dw unbehelligt. \n\nVielleicht möchten Sie nicht, dass Ihre Mail-Empfänger $dw in allen Sprachen lesen, die Sie installiert haben. Wählen Sie oben rechts die gewünschte(n) Sprache(n) aus.\n\nDamit $dw künftig auf Ihren Mails erscheint, müssen Sie Ihrem Mail-Programm beibringen, die oben beschriebenen Dateien zu verwenden (meist unter Einstellungen>Signatur). Wenn Sie statt einer bestimmen Sprache die Datei 
 \n\t signature-SURPRISE.txt
 \nwählen, rotiert $dw im Zufallsprinzip.\n\nGewisse Programme wie Seamonkey Mail, Evolution oder Trojitá verwalten Signaturen intern. $bp kann darunter vorläufig Trojitá und Evolution  berücksichtigen."
-#SETUP TERMINAL
+# T E R M I N A L
 mcset de f4Tit  "$dw in Ihren Linux-Terminals"
 mcset de f4Btn "$dw zur Anzeige im Terminal erzeugen"
 mcset de f4Txt "Wenn aktiviert, erzeugt $bp $dw für die Anzeige in Ihren Konsolen. Sind mehrere Bibeltextdateien vorhanden, wechselt der Text bei jedem Öffnen eines Terminals. \n\nDarstellung und Farben können in \n\n\t $confdir/term.conf \n\ngeändert werden.\n\nFür die Darstellung in hebräischer oder arabischer Schrift kommen nur Terminals wie 'QTerminal', 'mlterm', 'gnome-terminal', 'xfce4-terminal' oder 'Konsole' (KDE) in Frage, welche bidirektionellen Text korrekt anzeigen. \n\nDamit $dw automatisch im Terminal angezeigt wird, macht das $bp-Setup einen Eintrag in ~/.bashrc."
@@ -125,7 +125,7 @@ if {$os=="Linux"} {
 }
 mcset de winRegister "$bp muss nun auf Ihrem System registriert werden.\nBitte bestätigen Sie allfällige Benachrichtigungsfenster unbedingt mit \"Ja\"!"
 mcset de winRegisterProb "$bp ist auf Ihrem Computer noch nicht korrekt installiert.\nStarten Sie das Setup nochmals oder fügen Sie \n$Biblepix\n in \"Automatisch gestartete Programme\" an."
-#PHOTOS
+# P H O T O S
 mcset de reposSaved "Bild mit Info gespeichert."
 mcset de reposNotSaved "Bild nicht gespeichert."
 mcset de noPhotosFound "Im $bp-Fotoordner wurden keine Fotos gefunden. Kopieren Sie bitte einige Bilder in den Ordner."

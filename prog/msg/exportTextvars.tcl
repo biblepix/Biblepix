@@ -130,7 +130,6 @@ proc msgbidi {} {
 	#A) Run through msg:: namespace
   foreach var [info vars msg::*] {
     set T [set $var]
-#    puts $var
           
 		if [regexp f1Txt $var] {	
   		set reqW 150
@@ -149,11 +148,9 @@ proc msgbidi {} {
 	#B) Run through msgbox:: namespace
   foreach var [info vars msgbox::*] {  
     set T [set $var]
- #   puts $var
     set reqW 25
     catch {set $var [bidi::fixBidi $T 1 0 $reqW]}
   }
-
 }
 
 if [isRtL $lang] {
@@ -164,8 +161,11 @@ if [isRtL $lang] {
 ##A)sets direction of text widgets to right/left-justifying
 ##B)packs them as west/east-anchoring
 ##called by setTexts
-proc setWidgetDirection {dir} {
 
+#TODO this shouldn't be called unless a direction change has previously occurred!!!!!!!!!!!!!!!
+proc setWidgetDirection {dir} {
+	global flagL tabL
+	
   #set anchor + side vars
   if {$dir == "right"} {
     set anc e
@@ -175,7 +175,22 @@ proc setWidgetDirection {dir} {
     set side left
   }
   
-  #A) Adjust justification 
+  #A) Switch main title direction
+  .mainTitleL conf -compound $side
+  pack .mainTitleL -side $side
+  
+#TODO ? Revert Notebook tab order
+proc çalishmiyor {} {
+foreach nbtab $tabL {
+	.nb forget $nbtab
+}
+set tabL [lreverse $tabL]
+foreach tab $nbtabL {
+	.nb add $nbtab
+}
+}
+	 
+  #B) Switch widget justification 
   foreach w [winfo children .] {
     if { [winfo class $w] == "Label" ||
           [winfo class $w] == "Message" ||
@@ -185,11 +200,10 @@ proc setWidgetDirection {dir} {
         pack $w -anchor $anc
     }
   }
-
-	#correct some centered titles
+	##correct some centered titles
 	pack .textposTit .fontAdaptTit -anchor center
 	
-	#B) Shift frames & horizontal widgets
+	#C) Switch frames & horizontal widgets
 	
 	##Welcome
 	pack .welcomeLeftMainF -side $side
@@ -202,6 +216,12 @@ proc setWidgetDirection {dir} {
   } else {
 		set umgekehrt "right"
 	}
+
+	##revert flag direction	
+  foreach i $flagL {
+  	pack $i -side $umgekehrt
+  }
+
 	pack .slideBtn -side $side
 	pack .slideSecTxt -side $umgekehrt
 	pack .slideSpin -side $umgekehrt

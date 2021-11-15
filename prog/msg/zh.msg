@@ -5,7 +5,7 @@
 ##INFO: Textmenge ca. 1900 W. -
 ## (100 mcset * 3 W. =) -300 W.
 ## (Comments) -20 (variables ($) -80 = 1500 W.
-# Updated: 14nov21 pv
+# Updated: 15nov21 pv
 
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S   "......"
@@ -134,7 +134,7 @@ mcset zh f3Txt "如果激活,$bp将每天一次在您的电子邮件签名末尾
 \n\n某些程序,如 Seamonkey Mail、Evolution 或 Trojitá 在内部管理签名.其中$bp现在可以处理 Trojitá 和 Evolution."
 mcset zh f4Tit  "在您的Linux终端中显示金句"
 mcset zh f4Btn "创建金句以在终端中显示"
-mcset zh f4Txt "如果激活,$bp将创建金句显示在您的终端顶部. 如果存在多个语言文件,每当打开新外壳时圣经文本将随机更变. \n\n显示颜色等可能在\n\n\t $confdir/term.conf中更改\n\n请注意,为了正确显示阿拉伯语或希伯来语脚本,您将需要以下内容之一: 'QTerminal', 'mlterm', 'gnome-terminal', 'Konsole' (KDE) 或 'xfce4-terminal'; 已知这些可以处理双向文本.\n\n为了在终端自动显示金句,$bp Setup在~/.bashrc中为您提供了一个条目."
+mcset zh f4Txt "如果激活,$bp将创建金句显示在您的终端顶部. 如果存在多个语言文件,每当打开新外壳时圣经文本将随机更变. \n\n显示颜色等可能在\n\n\t $confdir/term.conf\n\n中更改\n\n请注意,为了正确显示阿拉伯语或希伯来语脚本,您将需要以下内容之一: 'QTerminal', 'mlterm', 'gnome-terminal', 'Konsole' (KDE) 或 'xfce4-terminal'; 已知这些可以处理双向文本.\n\n为了在终端自动显示金句, [mc bpsetup] 在\n\n\t~/.bashrc\n\n中为您提供了一个条目."
 # S A V E 保存
 mcset zh linChangingDesktop "$bp现在将尝试使用您的桌面背景进行注册.如果之后看不到新的背景图片,请您参阅手册以获取解决方案."
 mcset zh winIgnorePopup "请关闭(关闭)所有弹出窗口,以便$bp可以完成注册!"

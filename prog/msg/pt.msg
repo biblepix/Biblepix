@@ -5,7 +5,7 @@
 ##INFO: Textmenge ca. 1900 W. -
 ## (100 mcset * 3 W. =) -300 W.
 ## (Comments) -20 (variables ($) -80 = 1500 W.
-# Updated: 4nov21 pv
+# Updated: 15nov21 pv
 
 #UNTRANSLATABLES
 set bp {BiblePix}
@@ -82,7 +82,7 @@ mcset pt f2Fontfamily "Tipo de letra: "
 mcset pt f2Fontexpl "Adaptar fonte"
 mcset pt f2Txt "Se ativado, $bp criará uma imagem de fundo com $dw. A foto é selecionada aleatoriamente da coleção de fotos de $bp (consulte a seção Fotos). Uma nova imagem de fundo está sempre disponível em \n\n\t [file nativename $imgdir] \n\npara ser exibido pelo gerenciador de desktop. \n\nSe vários arquivos de texto bíblico forem instalados, o idioma ou versão da Bíblia muda aleatoriamente com cada mudança de imagem. \n\n$bp normalmente organiza um SLIDE SHOW com uma imagem variável. Se desejar apenas uma imagem por dia, a apresentação de slides pode ser desativada (veja acima). \n\nNa janela POSIÇÃO DO TEXTO você pode mover $dw para a posição desejada na tela. Ao adicionar imagens para a coleção, a posição do texto também pode ser determinada individualmente. \n\nO TAMANHO DA FONTE é definido automaticamente de acordo com a altura da tela. No entanto, você tem a opção de ajustar o tamanho e a espessura (letras maiores = melhor contraste). \n\nVocê também pode determinar a COR DA FONTE permanente ou aleatoriamente. Além disso, $bp pode realizar um ajuste de cor com base no brilho do fundo. Este efeito só tem efeito depois que uma nova foto for gravada. \n\nSe a nova imagem de fundo não aparecer automaticamente, você encontrará uma solução no manual."
 # P H O T O S 
-mcset pt textposlabel "Determinar a posição do texto"
+mcset pt textposlabel "Determinar posição do texto"
 mcset pt textposAdjust "Deseja alterar a posição do texto nesta imagem antes de gravá-la?"
 mcset pt f6Tit "Organizar fotos por $bp"
 mcset pt f6Txt "Aqui você pode arrastar quantas fotos quiser da sua pasta de fotos pessoal para a coleção de fotos de $bp. As fotos devem ser tiradas no formato paisagem e ter uma área de cor uniforme para facilitar a leitura do versículo bíblico. \n\n$bp guarda uma cópia da imagem na pasta de fotos de $bp e altera o formato e o tamanho da imagem se ela não corresponder às dimensões da tela. Neste caso, você tem a opção de determinar a seção apropriada da imagem, bem como a posição desejada do texto bíblico. \n\nEm ningum caso a imagem original é alterada. "
@@ -98,9 +98,9 @@ mcset pt resizingPic "Ajustando o tamanho da imagem à tela \u2014 aguarde um mo
 mcset pt movePic "Mover seção de imagem \u21CA"
 mcset pt picSchonDa "A foto já está na pasta de imagens de $bp"
 # S I G N A T U R E
-mcset pt f3Tit "$dw em suas assinaturas de e-mail"
+mcset pt f3Tit "$dw nas suas assinaturas de e-mail"
 mcset pt f3Btn "Gerar assinatura de e-mail"
-mcset pt f3Sprachen "Idiomas desejados para minhas assinaturas"
+mcset pt f3Sprachen "Idiomas desejados para as minhas assinaturas"
 mcset pt f3Txt "Se ativado, $bp adicionará $dw às suas assinaturas de e-mail uma vez por dia para cada arquivo de texto bíblico instalado. Os arquivos de assinatura criados são classificados de acordo com as abreviações de idioma (por exemplo, signature-pt_Portug.txt) na siguenta pasta: \n\n\t $sigdir \n\nVocê pode editar esses arquivos de seu programa de e-mail ou em um editor de texto e adicionar saudações pessoais, endereços, etc. O texto acima da linha que divide ==== não é afetado quando alterna $dw.\n\nTalvez você pode não quera que seus destinatários de e-mail leiam $dw em todos os idiomas que você instalou. Selecione os idiomas desejados no canto superior direito. \n\nPara que $dw apareça nos seus e-mails no futuro, você deve ensinar seu programa de e-mail a usar os arquivos descritos acima (geralmente em Configuração>Assinaturas). Se em vez duma lingua, você escolhe o arquivo 
 \n\t signature-SURPRISE.txt
 \n$dw rotará por acaso.\n\nAlguns programas como Seamonkey Mail, Evolution ou Trojitá gerenciam sinhaturas internamente. Entre eles, $bp pode levar em conta Trojitá e Evolution por enquanto."
