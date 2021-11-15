@@ -131,7 +131,7 @@ In case of problems:
 	° double click on the shell script in ~/bin (Linux)
 
 In the 'Welcome' section you can view The Word in any installed language (to switch
-click on the text surface).
+click on arrow sign).
 By pressing the OK button the BiblePix configuration as well as the system settings**** 
 for Autostart and background picture are saved. BiblePix is restarted.
 

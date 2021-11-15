@@ -245,16 +245,16 @@ proc setFlags {} {
     set lang [string range $flag 1 2]
     setTexts $lang
     $flag conf -relief raised -bd 1
-    
+    #Name Notebook tabs
     renameNotebookTabs
-    
-    catch {.manualF.man conf -state normal}
-    catch {.manualF.man replace 1.1 end [setManText $lang]}
+    #Fill manpage (en or de)
+    catch {.manT conf -state normal}
+    catch {.manT replace 1.1 end [setManText $lang]}
     set ::lang $lang
   }
   proc btnRelease {flag} {
     $flag conf -relief flat -bd 0
-    catch {.manualF.man conf -state disabled}
+    catch {.manT conf -state disabled}
   }
   
   foreach flag $flagL {
@@ -288,8 +288,7 @@ proc renameNotebookTabs {} {
 proc setManText {lang} {
   global ManualD ManualE
 
-  set manW .manualF.man
-  $manW configure -state normal
+  .manT conf -state normal
 
   if {$lang=="de"} {
     set manFile $ManualD
@@ -303,42 +302,41 @@ proc setManText {lang} {
   set manText [read $chan]
   close $chan
 
-  $manW replace 1.0 end $manText
+  .manT replace 1.0 end $manText
 
   #Determine & tag headers
-  set numLines [$manW count -lines 1.0 end]
+  set numLines [.manT count -lines 1.0 end]
 
   for {set line 1} {$line <= $numLines} {incr line} {
 
     ##Level H3 (all caps header) if min. 2 caps at beg. of line
-    if { [$manW search -regexp {^[[:upper:]]{2}} $line.0 $line.end] != ""} {
-      $manW tag add H3 $line.0 $line.end
+    if { [.manT search -regexp {^[[:upper:]]{2}} $line.0 $line.end] != ""} {
+      .manT tag add H3 $line.0 $line.end
 
     ##Level H2 (1x spaced Header)
-    } elseif { [$manW search -regexp {^[[:upper:]] [[:upper:]]} $line.0 $line.end] != ""} {
-      $manW tag add H2 $line.0 $line.end
+    } elseif { [.manT search -regexp {^[[:upper:]] [[:upper:]]} $line.0 $line.end] != ""} {
+      .manT tag add H2 $line.0 $line.end
 
     ##Level H1 (2x spaced Header)
-    } elseif { [$manW search -regexp {^[[:upper:]]  [[:upper:]]} $line.0 $line.end] != ""} {
-      $manW tag add H1 $line.0 $line.end
+    } elseif { [.manT search -regexp {^[[:upper:]]  [[:upper:]]} $line.0 $line.end] != ""} {
+      .manT tag add H1 $line.0 $line.end
 
     ##Level Addenda (dash at line start > all following in small script)
-    } elseif { [$manW search -regexp {^-} $line.0 $line.end] != ""} {
-      $manW tag add Addenda $line.0 end
+    } elseif { [.manT search -regexp {^-} $line.0 $line.end] != ""} {
+      .manT tag add Addenda $line.0 end
     }
   }
-
-
   #Configure font tags
-  $manW tag conf H1 -font "TkCaptionFont 20 bold"
-  $manW tag conf H2 -font "TkHeadingFont 16 bold"
-  $manW tag conf H3 -font "TkSmallCaptionFont 14 bold"
-  $manW tag conf Addenda -font "TkTooltipFont"
+  .manT tag conf H1 -font "TkCaptionFont 20 bold"
+  .manT tag conf H2 -font "TkHeadingFont 16 bold"
+  .manT tag conf H3 -font "TkSmallCaptionFont 14 bold"
+  .manT tag conf Addenda -font "TkTooltipFont"
   ##tabs in pixels?
-  $manW configure -tabs 30
-  $manW configure -state disabled
+  .manT configure -tabs 30
+  .manT configure -state disabled
 
-}
+} ;#END setManText
+
 #####################################################################
 # S E T U P   M A I L   P R O C S
 #####################################################################

@@ -131,7 +131,7 @@ Bei Problemen:
 	° als Shell-Skript in ~/bin (Linux)
 
 In der Rubrik 'Welcome' können Sie das aktuelle Tageswort in allen installierten 
-Sprachen lesen (zum Wechsel auf die Textfläche klicken).
+Sprachen lesen (zum Wechsel auf Pfeilsymbol klicken).
 Durch Betätigung der OK-Taste werden die BibelPix-Konfiguration sowie die System-
 einstellungen**** für Autostart und Hintergrundbild gespeichert. BibelPix wird neu 
 gestartet.
