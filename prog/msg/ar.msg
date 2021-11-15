@@ -2,7 +2,7 @@
 # Arabic texts in msgcat format
 # sourced by SetupTools:[setTexts]
 # Author: Peter Vollmar, $bp.vollmar.ch
-# Updated: 13nov21 pv
+# Updated: 15nov21 pv
 
 # U N T R A N S L A T A B L E S
 set dw "الْكَلِمَة" 
@@ -11,6 +11,9 @@ mcset ar dw $dw
 #\u060d - numbering sign
 #\u061e - triple dot
 #\u060e - poetic
+#\u066d - star
+#\u06d4 - Arabic full stop
+
 set bp "\u061eآية بصورة\u061e"
 mcset ar bp $bp
 
@@ -40,12 +43,12 @@ mcset ar welcTit "مرحبًا بك في برنامج إعداد $bp !"
 mcset ar welcSubtit1 "ما هو برنامج $bp ؟"
 mcset ar welcTxt1 "$bp هو برنامج تي سي إل تم تطويره لمشروع الكتاب المقدس 2.0 ، والذي يهدف إلى نشر $dw في عدد متزايد من اللغات. $dw يتكون من آيتين مختارتين من الكتاب المقدس لكل يوم من أيام السنة. يمكن أن يعرض $bp $dw بعدة طرق على جهاز الكمبيوتر الشخصي الخاص بك."
 mcset ar welcSubtit2 "ما هي خياراتك ؟"
-mcset ar welcTxt2 "\u060d[mc bibletexts]: اختر المفضل لديك من إصدارات ولغات الكتاب المقدس 
-\u060d[mc desktop]: شاهد $dw مع صورك الشخصية على خلفية الشاشة 
-\u060d[mc photos]: اختر صور الخلفية الخاصة بك لـ $bp 
-\u060d[mc email]: أضف $dw إلى رسائلك الإلكترونية 
-\u060d[mc manual]: ادرس دليل $bp الكامل 
-\u060d[mc terminal]: انظر إلى $dw في ترمينال لينكس"
+mcset ar welcTxt2 "\u066d[mc bibletexts]: اختر المفضل لديك من إصدارات ولغات الكتاب المقدس 
+\u066d[mc desktop]: شاهد $dw مع صورك الشخصية على خلفية الشاشة 
+\u066d[mc photos]: اختر صور الخلفية الخاصة بك لـ $bp 
+\u066d[mc email]: أضف $dw إلى رسائلك الإلكترونية 
+\u066d[mc manual]: ادرس دليل $bp الكامل 
+\u066d[mc terminal]: انظر إلى $dw في ترمينال لينكس"
 
 # U N I N S T A L L
 mcset ar uninstall "هل تريد حقاًإزالة $bp من جهاز الكمبيوتر الخاص بك؟"

@@ -34,7 +34,7 @@ mcset it packageRequireMissing "$bp necessita dell'estensione Tcl '%s'. Installa
 mcset it next "\u25bc Successivo"
 mcset it welcTit "Benvenuto nel programma di configurazione di $bp!"
 mcset it welcSubtit1 "Che cos'è $bp?"
-mcset it welcTxt1 "$bp è un programma Tcl sviluppato per il progetto 'Bible 2.0'.\n\n'Bible 2.0' ha lo scopo di diffondere $dw in un numero crescente di lingue.\n$dw consiste di 2 specifici versetti biblici per ciascun giorno dell'anno.\n\n$bp è in grado di visualizzare $dw in diversi modi sul vostro PC."
+mcset it welcTxt1 "$bp è un programma Tcl sviluppato per il progetto 'Bibbia 2.0'.\n\n'Bibbia 2.0' ha lo scopo di diffondere $dw in un numero crescente di lingue.\n$dw consiste di 2 specifici versetti biblici per ciascun giorno dell'anno.\n\n$bp è in grado di visualizzare $dw in diversi modi sul vostro PC."
 mcset it welcSubtit2 "Cosa potete fare?"
 mcset it welcTxt2 "\u27a4 [mc bibletexts] : Selezionare un numero a piacere di edizioni della Bibbia e di relative lingue per $dw
 \u27a4 [mc desktop]: Consultare $dw sulle immagini personali
