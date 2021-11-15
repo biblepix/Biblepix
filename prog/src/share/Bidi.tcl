@@ -3,7 +3,7 @@
 # called by BdfPrint + several Setup widgets
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 28oct21 pv
+# Updated: 14nov21 pv
 
 namespace eval bidi {
   
@@ -286,8 +286,6 @@ namespace eval bidi {
 
     #Lines array auswerten
     set arrL [array names linesArr]
-
-parray linesArr
     
     foreach arrName $arrL {
         lappend splitL $linesArr($arrName)

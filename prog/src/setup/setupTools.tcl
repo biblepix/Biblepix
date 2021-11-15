@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 31oct21 pv
+# Updated: 15nov21 pv
 source $SetupResizeTools
 source $JList
 
@@ -165,6 +165,22 @@ namespace eval NewsHandler {
 ###### P r o c s   f o r   S e t u p G U I   +   S e t u p D e s k t o p #
 ##########################################################################
 
+# toggleBtnState
+##called by SetupEmail: .sigyes Btn to enable/disable lang checkbuttons
+proc toggleBtnstate {} {
+  global sigLangBtnList sigyesState
+  
+  if {![info exists sigLangBtnList] || $sigLangBtnList== ""} {
+    return
+  }
+  foreach cb $sigLangBtnList {
+    if $sigyesState {
+      $cb conf -state normal
+    } else {
+      $cb conf -state disabled
+    }
+  }
+}
 
 # Grey out all spinboxes if !$enablepic
 proc setSpinState {imgyesState} {
@@ -222,17 +238,19 @@ proc setFlags {} {
   flag::show .ar -flag {hori red white black; circle gold}
   flag::show .zh -flag {hori red; tlsq red; circle gold}
 
+	#(Re)name Notebook tabs according to lang
+	renameNotebookTabs
+
   proc btnPress {flag} {
     set lang [string range $flag 1 2]
     setTexts $lang
     $flag conf -relief raised -bd 1
+    
     renameNotebookTabs
+    
     catch {.manualF.man conf -state normal}
     catch {.manualF.man replace 1.1 end [setManText $lang]}
-    
-    ##set lang globally
     set ::lang $lang
-    #set ::msg::lang $lang
   }
   proc btnRelease {flag} {
     $flag conf -relief flat -bd 0
@@ -248,7 +266,7 @@ proc setFlags {} {
   
 } ;#END setFlags
 
-# renameTabs
+# renameNotebookTabs
 ##resets Notebook tab names according to lang
 ##note: Notebook doesn't accept text variables
 ##called by setFlags
@@ -768,7 +786,8 @@ proc fillWelcomeTextWidget {w} {
     $w delete 6.0 end
   }
 
-  #Set [KEYWORDS:] to bold
+  #Set [KEYWORDS:] to bold - TODO zis aynt workin properly!
+proc olmadi {} {
   $w tag conf bold -font TkCaptionFont
   set lines [$w count -lines 1.0 end]
   for {set line 1} {$line <= $lines} {incr line} {
@@ -782,11 +801,13 @@ proc fillWelcomeTextWidget {w} {
     }
     
   }
+}
+
 } ;#END fillWelcomeTextWidget
 
 # insertTodaysTwd
 ##inserts text into text widget
-##called by SetupWelcome
+##called by SetupWelcome & "Next" btn
 proc insertTodaysTwd {twdWidget} {
   global TwdTools twddir enabletitle
 

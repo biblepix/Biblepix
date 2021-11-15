@@ -1,13 +1,14 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 4nov21 pv
+# Updated 15nov21 pv
 
 #Create frames & titles
 pack [frame .mailLeftF] -in .emailF -side left -anchor nw
-pack [frame .mailRightF] -in .emailF -side right -anchor ne
+pack [frame .mailRightF] -in .emailF -side right -anchor ne -fill both
 pack [frame .mailTop1F] -in .mailRightF -fill x
 pack [frame .mailTop2F] -in .mailRightF -fill x
+pack [frame .mailBotRightF -bg $bg -bd 5 -relief sunken -pady 30 -padx 30] -in .mailRightF -fill both -padx 30 -pady 30 -anchor center
 
 #Create labels & widgets
 label .mailMainTit -textvar msg::f3Tit -font bpfont3
@@ -15,33 +16,8 @@ label .mailDesiredlangL -textvar msg::f3Sprachen -font bpfont1 -bg beige -bd 1 -
 checkbutton .mailSigyesnoCB -textvar msg::f3Btn -variable sigyesState -command {toggleBtnstate}
 pack .mailMainTit -in .mailLeftF -anchor w
 pack .mailSigyesnoCB -in .mailLeftF -anchor w 
-
-#pack [frame .mailBotF] -in .emailF -fill both
-#pack [frame .mailBotLeftF] -in .mailLeftF -anchor nw
-#pack [frame .mailBotRightF -padx 30 -pady 30 -bd 5 -bg $bg -relief sunken] -in .mailRightF -padx $px -pady $py 
-
-#pack .mailMainTit -in .mailLeftF -anchor w
-#pack .mailSigyesnoCB -in .mailLeftF -anchor w
-pack .mailDesiredlangL -in .mailTop1F -side right -anchor ne
+pack .mailDesiredlangL -in .mailTop1F -side right -anchor ne -pady $py
 updateMailBtnList .mailTop2F
-
-#TODO move to=? - make globally usable for any buttons?
-##called by .sigyes Btn to enable/disable lang checkbuttons
-proc toggleBtnstate {} {
-  global sigLangBtnList sigyesState
-  
-  if {![info exists sigLangBtnList] || $sigLangBtnList== ""} {
-    return
-  }
-
-  foreach cb $sigLangBtnList {
-    if $sigyesState {
-      $cb conf -state normal
-    } else {
-      $cb conf -state disabled
-    }
-  }
-}
 
 # PRESELECT LANGUAGE BUTTONS
 
@@ -76,7 +52,7 @@ set twdfile [getRandomTwdFile 0]
 set dwsig [getTodaysTwdSig $twdfile 1]
 
 #Create E-Mail widgets
-label .mailSigL -font twdwidgetfont -bg $bg -fg blue -justify left -textvar msg::f3Expl
+label .mailSigL -font twdwidgetfont -bg $bg -fg blue -textvar msg::f3Expl -justify left
 text .mailSigT -font twdwidgetfont -background $bg -foreground blue -bd 0
 .mailSigT insert 1.0 $dwsig
 
@@ -95,4 +71,4 @@ if [isBidi $dwsig] {
   .mailSigT tag conf www -justify left
 }
 
-pack .mailSigL .mailSigT -in .mailRightF -anchor e
+pack .mailSigL .mailSigT -in .mailBotRightF -anchor w

@@ -2,13 +2,10 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 14aug21 pv
+# Updated: 15nov21 pv
 source $SetupTools
 source $TwdTools
-
-#TODO move to ?
 setTexts $lang
-
 
 #Set general X vars & Main Window width
 set screenX [winfo screenwidth .]
@@ -35,16 +32,25 @@ pack .nb -fill y -expand true -padx $px -pady $py
 ttk::label .mainTitleL -textvar msg::bpsetup -font bpfont4 -padding 5
 pack .mainTitleL -in .topMainF -side left
 
-#Create notebook Tabs
-.nb add [frame .welcomeF -padx $px -pady $py] -text $msg::welcome
-.nb add [frame .internationalF -padx $px -pady $py] -text $msg::bibletexts
-.nb add [frame .desktopF -padx $px -pady $py] -text $msg::desktop
-.nb add [frame .photosF -padx $px -pady $py] -text $msg::photos
-.nb add [frame .emailF -padx $px -pady $py] -text $msg::email
-.nb add [frame .manualF -padx $px -pady $py] -text $msg::manual
-if {$platform=="unix"} {
-  .nb insert 5 [frame .terminalF -padx $px -pady $py] -text $msg::terminal
+##Create notebook tab list (revert order for RTL)
+lappend tabL .welcomeF .internationalF .desktopF .photosF .emailF .manualF
+if [isRtL $lang] {
+	set tabL [lreverse $tabL]
 }
+##Insert Terminal tab if Unix
+if {$platform=="unix"} {
+  linsert $tabL 4 .terminalF
+  frame .terminalF -padx $px -pady $py
+}
+##Create Notebook tabs (Title texts inserted later by setFlags)
+foreach tab $tabL {
+	.nb add [frame $tab -padx $px -pady $py] 
+}
+##Unix
+if [winfo exists .terminalF] {
+  .nb insert .manualF .terminalF
+}
+
 
 #Reposition window to screen top
 if { [winfo y .] > 20 } {
