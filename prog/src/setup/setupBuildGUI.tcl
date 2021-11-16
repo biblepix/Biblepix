@@ -110,3 +110,7 @@ if { [info exists Debug] && $Debug } {
   catch {source $SetupManual}
 }
 
+#Reset direction for RtL lang
+if [isRtL $lang] {
+	setWidgetDirection right
+}

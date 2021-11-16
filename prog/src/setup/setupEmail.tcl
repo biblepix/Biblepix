@@ -17,6 +17,7 @@ checkbutton .mailSigyesnoCB -textvar msg::f3Btn -variable sigyesState -command {
 pack .mailMainTit -in .mailLeftF -anchor w
 pack .mailSigyesnoCB -in .mailLeftF -anchor w 
 pack .mailDesiredlangL -in .mailTop1F -side right -anchor ne -pady $py
+
 updateMailBtnList .mailTop2F
 
 # PRESELECT LANGUAGE BUTTONS

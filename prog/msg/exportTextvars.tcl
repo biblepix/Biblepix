@@ -232,8 +232,16 @@ foreach tab $nbtabL {
 	
 	##Photos
 	pack .phLeftF -side $side
+	
 	##Mail
 	pack .mailLeftF -side $side
+	#TODO zis aynt workin:
+	#foreach w [slaves .mailTop2F] {
+	#	pack $w -side $umgekehrt
+	#}
+	#pack .mailTop2F ?
+	#pack .mailDesiredLangL -side $umgekehrt
+	
 	##Terminal
 	pack .termLeftF -side $side
 	

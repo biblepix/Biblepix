@@ -33,24 +33,24 @@ ttk::label .mainTitleL -textvar msg::bpsetup -font bpfont4 -padding 5
 pack .mainTitleL -in .topMainF -side left
 
 ##Create notebook tab list (revert order for RTL)
-lappend tabL .welcomeF .internationalF .desktopF .photosF .emailF .manualF
+lappend nbtabL .welcomeF .internationalF .desktopF .photosF .emailF .manualF
 if [isRtL $lang] {
-	set tabL [lreverse $tabL]
+	set nbtabL [lreverse $nbtabL]
 }
 ##Insert Terminal tab if Unix
 if {$platform=="unix"} {
-  linsert $tabL 4 .terminalF
+  linsert $nbtabL 4 .terminalF
   frame .terminalF -padx $px -pady $py
 }
 ##Create Notebook tabs (Title texts inserted later by setFlags)
-foreach tab $tabL {
-	.nb add [frame $tab -padx $px -pady $py] 
+foreach nbtab $nbtabL {
+	.nb add [frame $nbtab -padx $px -pady $py] 
 }
 ##Unix
 if [winfo exists .terminalF] {
   .nb insert .manualF .terminalF
 }
-
+.nb select .welcomeF
 
 #Reposition window to screen top
 if { [winfo y .] > 20 } {
@@ -68,7 +68,6 @@ pack .versionL -in .botMainF -side left
 
 message .news -textvar news -width [expr $wWidth - 350] -borderwidth 1 -relief sunken
 pack .news -in .botMainF -fill x
-
 
 #Validate error msg issued by Setup
 if [info exists httpError] {

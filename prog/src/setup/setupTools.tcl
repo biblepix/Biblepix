@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15nov21 pv
+# Updated: 16nov21 pv
 source $SetupResizeTools
 source $JList
 
@@ -11,6 +11,8 @@ source $JList
 ##called by SetupMainFrame 
 proc setTexts {lang} {
   global msgdir os ExportTextvars
+  set curLang $::lang
+  
   #source $ExportTextvars
   package require msgcat
   namespace import msgcat::mc msgcat::mcset
@@ -23,12 +25,13 @@ proc setTexts {lang} {
   ##replace text in Welcome text widget
   catch {fillWelcomeTextWidget .welcomeT}
   
-  ##set widget justification (catch in case widgets aren't set yet)
+  ##set widget justification (catch in case widgets aren't set at startup)
   if [isRtL $lang] {
-    catch {setWidgetDirection right}
-  } {
-    catch {setWidgetDirection left}
+  	catch {setWidgetDirection right}
+  } else {
+   	catch {setWidgetDirection left}
   }
+  
 } ;#END setTexts
 
 # addPic
