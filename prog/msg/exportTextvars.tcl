@@ -242,7 +242,7 @@ foreach tab $nbtabL {
 	#pack .mailTop2F ?
 	#pack .mailDesiredLangL -side $umgekehrt
 	
-	##Terminal
-	pack .termLeftF -side $side
+	##Terminal (catch for Windows)
+	catch {pack .termLeftF -side $side}
 	
 } ;#END setWidgetDirection
