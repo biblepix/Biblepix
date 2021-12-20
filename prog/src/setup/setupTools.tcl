@@ -1,25 +1,26 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16nov21 pv
+# Updated: 20dec21 pv
 source $SetupResizeTools
 source $JList
+
 
 # setTexts
 ##sources .msg file from msgdir according to current lang
 ##loads all text vars into ::msg namespace
 ##called by SetupMainFrame 
 proc setTexts {lang} {
-  global msgdir os ExportTextvars
-  set curLang $::lang
-  
-  #source $ExportTextvars
+  global msgdir os ExportTextvars TwdTools
   package require msgcat
+
+  #Initiate msgcat  
+  source $TwdTools
+  set curLang $::lang
+  msgcatInit $lang
   namespace import msgcat::mc msgcat::mcset
 
   #Load msgcat texts & set locale, set global vars for '-textvar' function
-  msgcat::mcload "$msgdir"
-  msgcat::mclocale $lang
   source -encoding utf-8 $ExportTextvars
 
   ##replace text in Welcome text widget
@@ -441,17 +442,6 @@ proc createMovingTextBox {c} {
     $c itemconf canvTxt -font movingTextReposFont -activefill orange
   }
 } ;#END createMovingTextBox
-
-# isBidi
-##checks test range for bidi characters & sets widget to justify=right
-##called by various Setup procs
-proc isBidi s {
-  if [regexp {[\u05D0-\u06FC]} $s] {
-    return 1
-  } else {
-    return 0
-  }
-}
 
 # dragCanvasItem
 ##adapted from a proc by ? ...THANKS TO  ...

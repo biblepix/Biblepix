@@ -297,8 +297,6 @@ namespace eval sig {
     set dwsig [getTodaysTwdSig $file]    
     set dwhex [getTwdHex $dwsig]
 
-
-
     #get start & end positions
     set idNo 1
     lappend indexList 0

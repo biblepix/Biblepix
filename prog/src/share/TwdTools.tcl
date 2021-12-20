@@ -1,16 +1,35 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 8nov21 pv
+# Updated 20dec	21 pv
+
+# msgcatInit
+##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
+##'args' represents a language, if empty English is set
+##called by setTexts & several error levels in Biblepix & Biblepix-Setup
+package require msgcat
+namespace import msgcat::mc msgcat::mcset
+ 
+proc msgcatInit args {
+	global msgdir ExportTextvars
+	
+	if {$args != ""} {
+		set lang $args
+	} else {
+	  set lang en
+	}
+	msgcat::mcload "$msgdir"
+  msgcat::mclocale $lang
+}
 
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom}] {
+  msgcatInit $lang
   package require Tk
-  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message [mc packageRequireMissing TDom]
+  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message [msgcat::mc packageRequireMissing tDom]
   exit
 }
 
-source $SetupTools
 
 ################################################################################
 ######################### G E N E R A L   T O O L S  ###########################
@@ -75,10 +94,12 @@ proc getRandomFontcolor {} {
 }
 
 proc updateTwd {} {
-  global twddir
+  global twddir lang
   
   if [catch {package require json}] {
-	  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message [mc packageRequireMissing Libtcl]
+	  package require Tk
+	  msgcatInit $lang
+	  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message [msgcat::mc packageRequireMissing tcllib/libtcl]
     exit
   }
   
@@ -401,7 +422,7 @@ proc getTodaysTwdText {TwdFileName} {
 ##called by Signature & SigTools (Trojita+Evolution) & Setup!
 proc getTodaysTwdSig {TwdFileName {setup 0}} {
   global ind tab Bidi
-  
+   
   # G e t  d o m D o c  & exit if empty
   set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
@@ -484,4 +505,15 @@ proc getTwdHex {dw} {
     append dwhex \\x${hexCode}
   }
   return $dwhex
+}
+
+# isBidi
+##checks test range for bidi characters & sets widget to justify=right
+##called by various Setup procs
+proc isBidi s {
+  if [regexp {[\u05D0-\u06FC]} $s] {
+    return 1
+  } else {
+    return 0
+  }
 }

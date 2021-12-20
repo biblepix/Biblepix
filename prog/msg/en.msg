@@ -2,7 +2,7 @@
 # English texts for BiblePix Setup
 # sourced by SetupGui
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 16sep21 pv
+# Updated: 20dec21 pv
 
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S   "......"
@@ -60,7 +60,7 @@ mcset en terminal "Terminal"
 mcset en manual "Manual"
 mcset en uninst "Uninstall $bp"
 mcset en next "Next \u25bc"
-mcset en packageRequireMissing "$bp needs the Tcl extension '%s'.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo): [mc packageRequire]"
+mcset en packageRequireMissing "$bp needs the Tcl extension '%s'. Please install via system management, or type one of the following commands in a terminal (as root or sudo): [mc packageRequire]"
 
 # U N I N S T A L L
 mcset en uninstall "Do you really want to remove $bp from your computer?"

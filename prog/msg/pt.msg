@@ -5,7 +5,7 @@
 ##INFO: Textmenge ca. 1900 W. -
 ## (100 mcset * 3 W. =) -300 W.
 ## (Comments) -20 (variables ($) -80 = 1500 W.
-# Updated: 15nov21 pv
+# Updated: 20dec21 pv
 
 #UNTRANSLATABLES
 set bp {BiblePix}
@@ -49,7 +49,7 @@ mcset pt uninstall "Tem certeza de que deseja remover $bp do seu computador?"
 mcset pt uninstalling "$bp será desinstalado agora. Para limpar a respectiva configuração do sistema, você deve responder a qualquer janela de notificação com \"Sim\"!"
 mcset pt uninstalled "$bp foi desinstalado com segurança do seu sistema. Para reinstalá-lo, visite-nos em [mc www] e baixe o instalador do $bp."
 #  M I S S I N G   P A C K A G E
-mcset pt packageRequireMissing "$bp requer a extensão Tcl '%s'. \nInstale-a através de seu painel de controle ou digite um dos seguintes comandos em um console (como root ou sudo): [mc packageRequire]"
+mcset pt packageRequireMissing "$bp requer a extensão Tcl '%s'. Instale-a através de seu painel de controle ou digite um dos seguintes comandos em um console (como root ou sudo): [mc packageRequire]"
 #SETUP INTERNATIONAL
 mcset pt download "Baixar"
 mcset pt downloadingHttp "Baixando arquivos de programa de $bp ..."
