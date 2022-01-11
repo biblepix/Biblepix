@@ -2,7 +2,7 @@
 # Procs for Trojitá & Evolution mail clients
 # Called by Signature if any of above found
 # Authors: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 24mch21 pv
+# Updated: 11jan22 pv
 
 namespace eval sig {
   
@@ -69,11 +69,11 @@ namespace eval sig {
   # doSigEvolution
   ##checks signature files for DW or trigger present & calls updateSigEvolution
   ##called by Signature
-  ##NOTE: Evolution sig files must be (partly) formatted as HTML neuerdings
+  ##NOTE TODO?: Evolution sig files must be (partly) formatted as HTML neuerdings
   proc doSigEvolution {} {
     global env sig::dayOTY
     global sig::addedsigT sig::catchword sig::ev sig::nosigfoundT sig::evolSigdir sig::triggerRef sig::startcatch sig::addednum
-    
+  	
     #Check all Evolution sig files for triggers
     foreach sigFilePath [glob -directory $evolSigdir *] {
 
@@ -86,6 +86,7 @@ namespace eval sig {
       if { [regexp $startcatch $t] && $mtimeDay < $dayOTY } {
         set cleanSig [cleanSigfile $sigFilePath]
       } 
+      
       #2) Remove any catchword/triggerRef & >>cleanSig
       if [regexp $catchword $t] {
         regsub $catchword $t {} cleanSig
@@ -111,20 +112,25 @@ namespace eval sig {
     
   } ;#END doSigEvolution
 
-  # updateSigEvolution
+  # updateSigEvolution 
   ##called by doSigEvolution for each sig file
   proc updateSigEvolution {sigfile cleanSig} {
 
     set twdFile [getRandomTwdFile 1]
     set dw [getTodaysTwdSig $twdFile]
 
-    #format to html  
+
+
+    #format to html  TODO make this work for plain text!
     regsub -all \n $dw {<br>} dwhtm
     set dwhtm [string map {{ } &#160\;} $dwhtm]
 
     set chan [open $sigfile w]
     puts $chan $cleanSig
+    #puts $chan <div id="signature">
     puts $chan $dwhtm
+    #puts $chan </div>
+    #puts $chan $dw
     close $chan
   }
 

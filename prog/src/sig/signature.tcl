@@ -87,14 +87,14 @@ if {$os=="Windows NT"} {
   package require registry
   
   if [catch {registry keys $trojitaWinRegpath}] {
-    return "No Registry entry for Trojitá found. Exiting."
+    puts "No Registry entry for Trojitá found. Exiting."
   }
   catch sig::doSigTrojitaWin err
 
 } elseif {$os=="Linux"} {
 
   if {[auto_execok trojita] == "" || ![file exists $sig::trojitaLinConfFile]} {
-    return "No Trojitá executable/configuration file found. Exiting."
+    puts "No Trojitá executable/configuration file found. Exiting."
   }
   catch sig::doSigTrojitaLin err
 }
