@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 14nov21 pv
+# Updated: 14jan21 pv
 
 # U N T R A N S L A T A B L E S
 set bp {BiblePix}
@@ -132,7 +132,7 @@ mcset es noPhotosFound "No hemos encontrado fotos en la carpeta de fotos $bp. Co
 mcset es rotatePic "Girar imagen"
 mcset es preview90 "\u21B7 Vista previa de rotación de 90°"
 mcset es preview180 "\u21BB Vista previa de rotación de 180°"
-mcset es computePreview "\u21B6 \u21B7 Vista previa de cualquier rotación"
+mcset es computePreview "\u21B6 \u21B7 Vista previa de rotación libre"
 mcset es rotateWait "Por favor, ten paciencia hasta que se complete la rotación de la imagen original..."
 mcset es rotateInfo "Atención: guardando y recargando una imagen se puede rotar en varios pasos!"
 mcset es deletedPicMsg "Imagen borrada del álbum de fotos de $bp:"

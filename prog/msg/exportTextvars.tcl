@@ -3,7 +3,7 @@
 # needed for '-textvar' functions in Setup widgets
 # (Msgcat can't provide global vars!)
 # sourced by setTexts with lang variable
-# Updated 14nov21 pv
+# Updated 14jan22 pv
  
 namespace eval msg {
 	puts $lang
@@ -66,7 +66,6 @@ namespace eval msg {
   set f2Fontexpl [mc f2Fontexpl]
   set f2Txt [mc f2Txt]
   set textposlabel [mc textposlabel]
-  set textposAdjust [mc textposAdjust]
   set f6Tit [mc f6Tit]
   set f6Txt [mc f6Txt]
   set f6numPhotosTxt [mc f6numPhotosTxt]
@@ -75,9 +74,7 @@ namespace eval msg {
   set f6Find [mc f6Find]
   set f6Del [mc f6Del]
   set resizeF_txt [mc resizeF_txt]
-  set movePicToResize [mc movePicToResize]
   set resizingPic [mc resizingPic]
-  set movePic [mc movePic]
   set picSchonDa [mc picSchonDa]
   set f3Tit [mc f3Tit]
   set f3Btn [mc f3Btn]
@@ -101,6 +98,10 @@ namespace eval msg {
 } ;#END ::msg namespace
 
 namespace eval msgbox {
+set textposAdjust [mc textposAdjust]
+  set movePicToResize [mc movePicToResize]
+  set resizingPic [mc resizingPic]
+  set movePic [mc movePic]
 	set uninstall [mc uninstall]
   set uninstalling [mc uninstalling]
   set uninstalled [mc uninstalled]

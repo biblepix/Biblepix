@@ -308,6 +308,57 @@ proc setManText {lang} {
 
   .manT replace 1.0 end $manText
 
+
+  #Convert .md to text
+  
+  #HEADAERS
+  set h1 {#} 
+  set h2 {##}
+  set h3 {###}
+  set h4 {####}
+ 
+lappend header1L [.manT search -all -regexp {^# } 1.0]
+lappend header2L [.manT search -all -regexp {^## } 1.0]
+lappend header3L [.manT search -all -regexp {^### } 1.0]
+lappend header4L [.manT search -all -regexp {^#### } 1.0]
+
+.manT tag conf h1 -font {TkHeaderFont 20}
+.manT tag conf h2 -font {TkHeaderFont 16}
+.manT tag conf h3 -font {TkCaptionFont 16}
+.manT tag conf h4 -font {TkCaptionFont 14}
+foreach i $header1L {
+  .manT tag add h1 $i end
+}
+foreach i $header2L {
+  .manT tag add h2 $i end
+}
+foreach i $header3L {
+  .manT tag add h3 $i end
+}
+foreach i $header4L {
+  .manT tag add h4 $i end
+}
+
+ #BOLD & ITALICS & FOOTNOTES
+  set italic  {\*.*\*}
+  set bold    {\*\*.*\*\*}
+ 
+ #TODO what to do with these? 
+#  set footnote1 {\[\^::digit::]}
+  #set footnote2 {\[\^::digit::]:}
+
+array set italicArr [.manT search -all $italic 1.0]
+array set boldArr   [.manT search -all $bold 1.0]
+
+#TODO gibt Indexpaare aus - what to do?
+foreach arrname [array names italicArr] {
+  .manT tag add italic [array get italicArr $arrname]
+}
+
+foreach i $boldL {
+
+}
+#TODO obsolete
   #Determine & tag headers
   set numLines [.manT count -lines 1.0 end]
 
