@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 3nov21 pv
+# Updated: 20jan22 pv
 source $TwdTools
 source $SigTools
 
@@ -110,7 +110,11 @@ if [info exists err] {
 
 #Check presence of Evolution
 if {[auto_execok evolution] != ""} {
-  sig::doSigEvolution
+  catch sig::doSigEvolution err
 }
+if [info exists err] {
+  puts $err
+}
+
 #Clean up
 namespace delete sig

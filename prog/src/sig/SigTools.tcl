@@ -69,7 +69,7 @@ namespace eval sig {
   # doSigEvolution
   ##checks signature files for DW or trigger present & calls updateSigEvolution
   ##called by Signature
-  ##NOTE TODO?: Evolution sig files must be (partly) formatted as HTML neuerdings
+  ##NOTE: Evolution sig files must be (partly) formatted as HTML neuerdings
   proc doSigEvolution {} {
     global env sig::dayOTY
     global sig::addedsigT sig::catchword sig::ev sig::nosigfoundT sig::evolSigdir sig::triggerRef sig::startcatch sig::addednum
