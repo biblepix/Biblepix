@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 20dec21 pv
+# Updated: 17jan22 pv
 source $SetupResizeTools
 source $JList
 
@@ -286,13 +286,24 @@ proc renameNotebookTabs {} {
   .nb tab .manualF -text $msg::manual
 }
 
+# incrFraction
+##vergrössert Kommastelle für Textpositionen um $charNo
+##called by setManText
+proc incrFraction {pos charNo} {
+  lassign [split $pos .] fix fraction
+  incr fraction $charNo
+  set endpos $fix.$fraction
+  return $endpos
+}
+
 # setManText
 ## Formats Manual & switches between languages
 ## called by [bind] above
 proc setManText {lang} {
   global ManualD ManualE
 
-  .manT conf -state normal
+  
+  .manT conf -state normal -bg beige 
 
   if {$lang=="de"} {
     set manFile $ManualD
@@ -301,96 +312,201 @@ proc setManText {lang} {
     set manFile $ManualE
   }
 
+#TODO TESTING
+set manFile ~/Biblepix/Docs/MANUAL_de.md
+  
   set chan [open $manFile]
   chan configure $chan -encoding utf-8
   set manText [read $chan]
   close $chan
 
   .manT replace 1.0 end $manText
-
-
-  #Convert .md to text
   
-  #HEADAERS
-  set h1 {#} 
-  set h2 {##}
-  set h3 {###}
-  set h4 {####}
- 
-lappend header1L [.manT search -all -regexp {^# } 1.0]
-lappend header2L [.manT search -all -regexp {^## } 1.0]
-lappend header3L [.manT search -all -regexp {^### } 1.0]
-lappend header4L [.manT search -all -regexp {^#### } 1.0]
-
-.manT tag conf h1 -font {TkHeaderFont 20}
-.manT tag conf h2 -font {TkHeaderFont 16}
-.manT tag conf h3 -font {TkCaptionFont 16}
-.manT tag conf h4 -font {TkCaptionFont 14}
-foreach i $header1L {
-  .manT tag add h1 $i end
-}
-foreach i $header2L {
-  .manT tag add h2 $i end
-}
-foreach i $header3L {
-  .manT tag add h3 $i end
-}
-foreach i $header4L {
-  .manT tag add h4 $i end
-}
-
- #BOLD & ITALICS & FOOTNOTES
-  set italic  {\*.*\*}
-  set bold    {\*\*.*\*\*}
- 
- #TODO what to do with these? 
-#  set footnote1 {\[\^::digit::]}
-  #set footnote2 {\[\^::digit::]:}
-
-array set italicArr [.manT search -all $italic 1.0]
-array set boldArr   [.manT search -all $bold 1.0]
-
-#TODO gibt Indexpaare aus - what to do?
-foreach arrname [array names italicArr] {
-  .manT tag add italic [array get italicArr $arrname]
-}
-
-foreach i $boldL {
-
-}
-#TODO obsolete
-  #Determine & tag headers
-  set numLines [.manT count -lines 1.0 end]
-
-  for {set line 1} {$line <= $numLines} {incr line} {
-
-    ##Level H3 (all caps header) if min. 2 caps at beg. of line
-    if { [.manT search -regexp {^[[:upper:]]{2}} $line.0 $line.end] != ""} {
-      .manT tag add H3 $line.0 $line.end
-
-    ##Level H2 (1x spaced Header)
-    } elseif { [.manT search -regexp {^[[:upper:]] [[:upper:]]} $line.0 $line.end] != ""} {
-      .manT tag add H2 $line.0 $line.end
-
-    ##Level H1 (2x spaced Header)
-    } elseif { [.manT search -regexp {^[[:upper:]]  [[:upper:]]} $line.0 $line.end] != ""} {
-      .manT tag add H1 $line.0 $line.end
-
-    ##Level Addenda (dash at line start > all following in small script)
-    } elseif { [.manT search -regexp {^-} $line.0 $line.end] != ""} {
-      .manT tag add Addenda $line.0 end
-    }
+  # A ) set H E A D E R S
+  set h1 "^# " 
+  set h2 "^## "
+  set h3 "^### "
+  set h4 "^#### "
+  set code "^>"
+  
+  #Configure header tags
+  .manT tag conf h1 -font {TkHeaderFont 20} -justify left
+  .manT tag conf h2 -font {TkHeaderFont 18} -justify left
+  .manT tag conf h3 -font {TkCaptionFont 16} -justify left
+  .manT tag conf h4 -font {TkCaptionFont 14} -justify left
+  .manT tag conf code -background lightgrey -lmargin1 20
+  
+  #Determine header positions (h1-h4)
+  set h1L [.manT search -all -regexp $h1 1.0 end]
+  foreach pos $h1L {
+    set line [expr int($pos)]
+    .manT delete $pos [expr $pos + .1]
+    .manT tag add h1 $pos $line.end
   }
-  #Configure font tags
-  .manT tag conf H1 -font "TkCaptionFont 20 bold"
-  .manT tag conf H2 -font "TkHeadingFont 16 bold"
-  .manT tag conf H3 -font "TkSmallCaptionFont 14 bold"
-  .manT tag conf Addenda -font "TkTooltipFont"
-  ##tabs in pixels?
-  .manT configure -tabs 30
-  .manT configure -state disabled
+
+  set h2L [.manT search -all -regexp $h2 2.0 end]
+  foreach pos $h2L {
+    set line [expr int($pos)]
+    .manT delete $pos [expr $pos + .2]
+    .manT tag add h2 $pos $line.end 
+  }
+  
+  set h3L [.manT search -all -regexp $h3 1.0 end]
+  foreach pos $h3L {
+    set line [expr int($pos)]
+    .manT delete $pos [expr $pos + .3]
+    .manT tag add h3 $pos $line.end 
+  }
+
+  set h4L [.manT search -all -regexp $h4 1.0 end]
+  foreach pos $h4L {
+    set line [expr int($pos)]
+    .manT delete $pos [expr $pos + .4]
+    .manT tag add h4 $pos $line.end 
+  }
+ 
+  set codeL [.manT search -all -regexp $code 1.0 end]
+  foreach pos $codeL {
+    set line [expr int($pos)]
+    .manT delete $pos
+    .manT tag add code $pos $line.end
+  }
+
+
+# B ) S E T  B O L D
+
+	#1. Set ** array for pairs
+  .manT tag conf bold -font italic -foreground grey
+  
+  set boldL [.manT search -all ** 1.0]
+  array set boldArr $boldL
+  
+  #2. Traverse ** list & tag pairs
+  foreach arrname [array names boldArr] {
+  	lassign [array get boldArr $arrname] a b
+  	set pos1 $a
+  	set pos2 [incrFraction $b 2]
+  	.manT tag add bold $pos1 $pos2
+  }
+
+	#3. Delete all **
+	
+	proc cmd pos {
+	  .manT search ** $pos
+  }
+	#set max [llength $boldL]
+	set pos [.manT search ** 1.0 end]
+	
+	while { [cmd $pos] != ""} {
+	  set endpos [incrFraction $pos 2]
+  	.manT delete $pos $endpos
+  	set pos [.manT search ** [incrFraction $endpos 1]]
+	}
+ 	
+ 
+  
+  
+#  foreach line [.manT count -lines 1.0 end] {
+#    
+#    set pairL [.manT search -all ** $line.0 $line.end]
+#    
+#    
+#    set curpos [lindex [expr $n - 1]]
+#    set endpos [.manT search ** [incrFraction $endpos 1 ]] 
+#    set chunk  [.manT get $curpos $endpos] 
+#    
+#    set newchunk [string map {* {}} $chunk]
+#    .manT delete $curpos $endpos
+#    .manT insert $curpos $newchunk
+#  
+#  
+#  }
+  
+
+
+
+#  foreach arrname [array names ::boldArr] {
+#  
+#  #TODO renew list each time!
+# 
+#    lassign [array get ::boldArr $arrname] a b
+#    set endb [incrFraction $b 1]
+#    set s [.manT get $a $endb]
+#    .manT delete $a $endb
+#    
+#    set newS [string map "* {}" $s]
+##    regsub -all {[*]} $s {} newS
+# 
+# puts "$a $b $endb"
+# puts $newS
+
+#   .manT insert $a $newS
+#      
+#   .manT tag add bold $a $endb
+#  }
+
+
+
+#proc setital {} {
+## C )  s e t  i t a l i c s
+###remaining *'s are all single
+#  .manT tag conf ital -font italic
+#  ##NOTE: there are some single *'s in the footnotes (after 150)
+#  set italL [.manT search -all * 1.0 230.0]
+#  array set italArr $italL
+#  
+#  foreach arrname [array names italArr] {
+#    set range [array get italicArr $arrname]
+#    .manT tag add ital $range
+#   
+#  }
+#}
+
+  # D )  F O O T N O T E S
+  
+  #Tag & bind footnotes
+  ##see www.derekfountain.org/artikles/tktext.pdf
+  .manT tag conf fn -foreground blue
+  ##search footnotes in text, but not in Footnotes!
+  set fnL [.manT search -all -regexp {\[\^.\]} 1.0 end]
+  foreach pos $fnL {
+    set endpos [incrFraction $pos 4]
+    .manT tag add fn $pos $endpos
+  }
+  .manT tag bind fn <Enter> {.manT config -cursor center_ptr}
+  .manT tag bind fn <Leave> {.manT config -cursor xterm}
+  .manT tag bind fn <1> {.manT yview moveto 0.9}
+
+ 	#E ) Set Addenda & Footnotes to small font
+##TODO? get pos for more languages?
+ 	set pos [.manT search -regexp {ERG|ADD} 1.0 end]
+  .manT tag add small $pos end
+  .manT tag conf small -font small
+
+
+
+# E) Final cleanup 
+#proc clearallstar {} {
+#set starL [.manT search -all * 1.0]
+#set tot [llength $starL]
+#for {set n 0} {$n < $tot} {incr n} { 
+#  set pos [lindex $starL $n]
+#  .manT delete $pos
+#}
+#}
+ 
+  ## clear all extra front spaces
+  set spaceL [.manT search -all -regexp {^ } 1.0 end]
+  foreach pos $spaceL {
+    .manT delete $pos [incrFraction $pos 1]
+  }
+  
+  
+#TODO reactivate after testing
+#  .manT conf -state disabled
 
 } ;#END setManText
+
 
 #####################################################################
 # S E T U P   M A I L   P R O C S

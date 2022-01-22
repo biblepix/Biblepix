@@ -2,7 +2,7 @@
 # Loads README according to language setting
 # Sourced by imgtools.tcl (bind flag button) &
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15nov21
+# Updated: 15jan22
 
 #Create language buttons
 pack [frame .manualFlagF] -in .manualF -fill x
@@ -12,7 +12,7 @@ pack .manualFlagEn .manualFlagDe -in .manualFlagF -anchor nw -side left
 
 #Create text widget & scrollbar
 scrollbar .manSB -orient vertical -command {.manT yview}
-text .manT -bg $bg -fg $fg -yscrollcommand {.manSB set} -font "TkTextFont 14"
+text .manT -wrap word -bg $bg -fg $fg -yscrollcommand {.manSB set} -font "TkTextFont 14"
 
 #Pack text & scrollbar
 pack .manT -in .manualF -side left -fill both -expand 1
