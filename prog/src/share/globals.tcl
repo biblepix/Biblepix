@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 21oct21 pv
+# Updated: 24jan22 pv
 set version "4.1"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -60,8 +60,8 @@ lappend filePathL [set Globals [file join $sharedir globals.tcl]]
 lappend filePathL [set Http [file join $sharedir http.tcl]]
 lappend filePathL [set Readme [file join $rootdir README.txt]]
 lappend filePathL [set Setup [file join $rootdir biblepix-setup.tcl]]
-lappend filePathL [set ManualD [file join $docdir MANUAL_de.txt]]
-lappend filePathL [set ManualE [file join $docdir MANUAL_en.txt]]
+lappend filePathL [set ManualD [file join $docdir MANUAL_de.md]]
+lappend filePathL [set ManualE [file join $docdir MANUAL_en.md]]
 lappend filePathL [set Biblepix [file join $srcdir biblepix.tcl]]
 lappend filePathL [set BdfTools [file join $picdir BdfTools.tcl]]
 lappend filePathL [set BdfPrint [file join $picdir BdfPrint.tcl]]

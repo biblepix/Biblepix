@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17jan22 pv
+# Updated: 25jan22 pv
 source $SetupResizeTools
 source $JList
 
@@ -31,8 +31,7 @@ proc setTexts {lang} {
   	catch {setWidgetDirection right}
   } else {
    	catch {setWidgetDirection left}
-  }
-  
+  } 
 } ;#END setTexts
 
 # addPic
@@ -253,7 +252,7 @@ proc setFlags {} {
     renameNotebookTabs
     #Fill manpage (en or de)
     catch {.manT conf -state normal}
-    catch {.manT replace 1.1 end [setManText $lang]}
+    catch {setManText $lang}
     set ::lang $lang
   }
   proc btnRelease {flag} {
@@ -301,7 +300,6 @@ proc incrFraction {pos charNo} {
 ## called by [bind] above
 proc setManText {lang} {
   global ManualD ManualE
-
   
   .manT conf -state normal -bg beige 
 
@@ -311,9 +309,6 @@ proc setManText {lang} {
   } else {
     set manFile $ManualE
   }
-
-#TODO TESTING
-set manFile ~/Biblepix/Docs/MANUAL_de.md
   
   set chan [open $manFile]
   chan configure $chan -encoding utf-8
@@ -329,12 +324,14 @@ set manFile ~/Biblepix/Docs/MANUAL_de.md
   set h4 "^#### "
   set code "^>"
   
-  #Configure header tags
-  .manT tag conf h1 -font {TkHeaderFont 20} -justify left
-  .manT tag conf h2 -font {TkHeaderFont 18} -justify left
-  .manT tag conf h3 -font {TkCaptionFont 16} -justify left
+  #Configure tags
+  .manT tag conf h1 -font {TkHeaderFont 25} -justify left
+  .manT tag conf h2 -font {TkHeaderFont 20} -justify left
+  .manT tag conf h3 -font {TkCaptionFont 17} -justify left
   .manT tag conf h4 -font {TkCaptionFont 14} -justify left
-  .manT tag conf code -background lightgrey -lmargin1 20
+  .manT tag conf code -background gray90 -lmargin1 20
+ # .manT tag conf bold -font "TkTextFont 14" -foreground maroon
+  .manT tag conf small -foreground grey
   
   #Determine header positions (h1-h4)
   set h1L [.manT search -all -regexp $h1 1.0 end]
@@ -375,9 +372,7 @@ set manFile ~/Biblepix/Docs/MANUAL_de.md
 
 # B ) S E T  B O L D
 
-	#1. Set ** array for pairs
-  .manT tag conf bold -font italic -foreground grey
-  
+	#1. Set ** array for pairs  
   set boldL [.manT search -all ** 1.0]
   array set boldArr $boldL
   
@@ -390,83 +385,24 @@ set manFile ~/Biblepix/Docs/MANUAL_de.md
   }
 
 	#3. Delete all **
-	
-	proc cmd pos {
-	  .manT search ** $pos
+	proc cmd {pos} {
+	  set res [.manT search ** $pos]
+	  return $res
   }
-	#set max [llength $boldL]
 	set pos [.manT search ** 1.0 end]
 	
-	while { [cmd $pos] != ""} {
+	while { ![catch {cmd $pos}] } {
 	  set endpos [incrFraction $pos 2]
   	.manT delete $pos $endpos
   	set pos [.manT search ** [incrFraction $endpos 1]]
 	}
  	
- 
-  
-  
-#  foreach line [.manT count -lines 1.0 end] {
-#    
-#    set pairL [.manT search -all ** $line.0 $line.end]
-#    
-#    
-#    set curpos [lindex [expr $n - 1]]
-#    set endpos [.manT search ** [incrFraction $endpos 1 ]] 
-#    set chunk  [.manT get $curpos $endpos] 
-#    
-#    set newchunk [string map {* {}} $chunk]
-#    .manT delete $curpos $endpos
-#    .manT insert $curpos $newchunk
-#  
-#  
-#  }
-  
-
-
-
-#  foreach arrname [array names ::boldArr] {
-#  
-#  #TODO renew list each time!
-# 
-#    lassign [array get ::boldArr $arrname] a b
-#    set endb [incrFraction $b 1]
-#    set s [.manT get $a $endb]
-#    .manT delete $a $endb
-#    
-#    set newS [string map "* {}" $s]
-##    regsub -all {[*]} $s {} newS
-# 
-# puts "$a $b $endb"
-# puts $newS
-
-#   .manT insert $a $newS
-#      
-#   .manT tag add bold $a $endb
-#  }
-
-
-
-#proc setital {} {
-## C )  s e t  i t a l i c s
-###remaining *'s are all single
-#  .manT tag conf ital -font italic
-#  ##NOTE: there are some single *'s in the footnotes (after 150)
-#  set italL [.manT search -all * 1.0 230.0]
-#  array set italArr $italL
-#  
-#  foreach arrname [array names italArr] {
-#    set range [array get italicArr $arrname]
-#    .manT tag add ital $range
-#   
-#  }
-#}
 
   # D )  F O O T N O T E S
   
   #Tag & bind footnotes
   ##see www.derekfountain.org/artikles/tktext.pdf
-  .manT tag conf fn -foreground blue
+  .manT tag conf fn -foreground red
   ##search footnotes in text, but not in Footnotes!
   set fnL [.manT search -all -regexp {\[\^.\]} 1.0 end]
   foreach pos $fnL {
@@ -477,23 +413,9 @@ set manFile ~/Biblepix/Docs/MANUAL_de.md
   .manT tag bind fn <Leave> {.manT config -cursor xterm}
   .manT tag bind fn <1> {.manT yview moveto 0.9}
 
- 	#E ) Set Addenda & Footnotes to small font
-##TODO? get pos for more languages?
+ 	#E ) Set Addenda & Footnotes to grey font (EN/DE)
  	set pos [.manT search -regexp {ERG|ADD} 1.0 end]
   .manT tag add small $pos end
-  .manT tag conf small -font small
-
-
-
-# E) Final cleanup 
-#proc clearallstar {} {
-#set starL [.manT search -all * 1.0]
-#set tot [llength $starL]
-#for {set n 0} {$n < $tot} {incr n} { 
-#  set pos [lindex $starL $n]
-#  .manT delete $pos
-#}
-#}
  
   ## clear all extra front spaces
   set spaceL [.manT search -all -regexp {^ } 1.0 end]
@@ -501,7 +423,8 @@ set manFile ~/Biblepix/Docs/MANUAL_de.md
     .manT delete $pos [incrFraction $pos 1]
   }
   
-  
+   .manT tag conf bold -font "TkTextFont 14" -foreground maroon
+   
 #TODO reactivate after testing
 #  .manT conf -state disabled
 
