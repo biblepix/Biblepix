@@ -2,7 +2,7 @@
 # French texts in msgcat format
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 4nov21 pv
+# Updated: 31jan22 pv
 
 # U N T R A N S L A T A B L E S
 set bp "BiblePix"
@@ -86,7 +86,7 @@ mcset fr textposAdjust "Voulez-vous changer la position du texte pour cette imag
 mcset fr f6Tit "Organiser les photos pour $bp"
 mcset fr f6Txt "Ici, vous pouvez copier autant de photos que vous le souhaitez de votre dossier d'images personnel à la collection de photos de $bp. Les photos doivent être prises au format paysage et avoir une zone de couleur uniforme pour une lisibilité facile du verset de la Bible. \n\n$bp enregistre une copie de l'image dans le dossier photo $bp et modifie le format et la taille de l'image si elle ne correspond pas aux dimensions de l'écran. Dans ce cas, vous avez la possibilité de déterminer la section d'image appropriée et l'avenir position du texte de la Bible vous-même. \n\nL'image originale reste inchangée dans tous les cas. "
 mcset fr f6numPhotosTxt "Nombre d'images: "
-mcset fr f6Ajouter "Ajouter à la collection de photos $bp:"
+mcset fr f6Add "Ajouter à la collection de photos $bp:"
 mcset fr f6Show "Afficher la collection de photos $bp"
 mcset fr f6Find "Trouver de nouvelles photos"
 mcset fr f6Del "Supprimer de la collection de photos $bp:"

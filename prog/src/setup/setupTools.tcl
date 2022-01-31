@@ -1,10 +1,9 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 25jan22 pv
+# Updated: 31jan22 pv
 source $SetupResizeTools
 source $JList
-
 
 # setTexts
 ##sources .msg file from msgdir according to current lang
@@ -624,8 +623,8 @@ proc doOpen {bildordner canv} {
   }
 
   pack .phPicpathL -in .phBotF -side left -fill x
-  pack .phCollectBtn -side right -fill x
-  pack forget .phDelBtn .phCount1 .phCount2
+  pack .phCollectBtn -in .phBarF -side right -fill x
+  pack forget .phDelBtn .phCountNum .phCountTxt
 
   #Add Rotate button
   pack .phRotateBtn -in .phBotF -side right
