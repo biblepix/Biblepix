@@ -89,8 +89,7 @@ In case of problems:
 - Linux & Windows: double click the program file **~/Biblepix/biblepix-setup.tcl** from the file manager (full path see above)
 - Linux: execute the shell script **~/bin/biblepix-setup.sh** from the file manager or a terminal
 
-In the 'Welcome' section you can view **The Word** in any installed language (to switch click on arrow sign). By pressing the OK button the BiblePix configuration as well as the system settings [^4]
-for Autostart and background picture are saved. BiblePix is restarted.
+In the 'Welcome' section you can view **The Word** in any installed language (to switch click on arrow sign). By pressing the OK button the BiblePix configuration as well as the system settings for Autostart and background picture are saved. [^4] BiblePix is restarted.
 
 ### DOWNLOADING BIBLE TEXTS
 
@@ -266,7 +265,7 @@ Enter the following command as an ordinary user (no line breaks!):
 
 [^3]: The configuration file is written by Setup and should not normally be touched by users. If however after an update the Setup should no longer run, you can try deleting the file and then restart the Setup. The configuration file allows the so-called "debug modus", to detect program errors. To achieve this, set the value 'debug' to 1 and restart the Setup.
 
-[^4]: Setup makes entries in some system files for BiblePix to be run at system start (Autostart) and for the background image to change. If this fails you can make the necessary changes manually (see below under ADDENDA).
+[^4]: Setup makes entries in some system files for BiblePix to be run at system start (Autostart) and for the background image to change. If this fails you can make the necessary changes manually (see above: ADDENDA).
 
 [^5]: Arabic and Hebrew text is positioned automatically on the opposite side. To display such texts in terminals you need programs like 'mlterm', 'gnome-terminal', 'xfce4-terminal' or 'Konsole' (KDE) which can display bidirectional text correctly.
 
