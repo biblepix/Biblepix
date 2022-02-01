@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 8nov21 pv
+# Updated 1feb22 pv
 
 source $::AnnotatePng
   
@@ -12,27 +12,31 @@ proc openResizeWindow {} {
   tk_messageBox -type ok -message $msgbox::movePicToResize
   global fontsize
   set margin 10
-  namespace eval resizePic {}
+  namespace eval resizePic {
 
   #Copy addpicture::curPic to canvas
-  set resizePic::resizeCanvPic [image create photo]
-  set resizePic::scaleFactor [getResizeScalefactor]
-  $resizePic::resizeCanvPic copy $addpicture::curPic -subsample $resizePic::scaleFactor
+  #set resizePic::resizeCanvPic [image create photo]
+  #set resizePic::scaleFactor [getResizeScalefactor]
+  image create photo resizeCanvPic
+  set scaleFactor [getResizeScalefactor]
+  resizeCanvPic copy $addpicture::curPic -subsample $resizePic::scaleFactor
+}
 
-  lassign [getCanvSizeFromPic $resizePic::resizeCanvPic] canvX canvY
+  lassign [getCanvSizeFromPic resizeCanvPic] canvX canvY
   set winX [expr $canvX + 2*$margin]
   set winY [expr $canvY + 2*$margin]
 
   #Create toplevel window w/canvas & pic
   set w [toplevel .resizePhoto -bg lightblue -padx $margin -pady $margin -height $winX -width $winY]
   set resizePic::c [canvas $w.resizeCanv -bg lightblue -height $canvY -width $canvX]
-  $resizePic::c create image 0 0 -image $resizePic::resizeCanvPic -anchor nw -tags {img mv}
+  $resizePic::c create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
+
 
   #Create title & buttons
   set cancelBtnAction {
     set ::Modal.Result "Cancelled"
     NewsHandler::QueryNews "$msg::reposNotSaved" red
-    catch {image delete $resizePic::resizeCanvPic}
+    catch {image delete resizeCanvPic}
     namespace delete resizePic
   }
   
@@ -40,8 +44,8 @@ proc openResizeWindow {} {
     .resizePhoto.confirmBtn conf -state disabled
     .resizePhoto.cancelBtn  conf -state disabled
     set img [doResize $resizePic::c $resizePic::scaleFactor]
-    catch {image delete $resizePic::resizeCanvPic}
-    namespace delete resizePic
+    #catch {image delete $resizePic::resizeCanvPic}
+    #namespace delete resizePic
     set ::Modal.Result "Success"
     openReposWindow $img
   }

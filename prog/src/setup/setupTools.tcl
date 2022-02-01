@@ -85,7 +85,9 @@ proc addPic {origPicPath} {
 
   #C) open resize window, resize later
   } else {
+  
     openResizeWindow
+
   }
   set ::numPhotos [llength [glob $photosdir/*]]
 } ;#END addPic
