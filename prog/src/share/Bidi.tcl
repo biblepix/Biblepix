@@ -3,7 +3,7 @@
 # called by BdfPrint + several Setup widgets
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 14nov21 pv
+# Updated: 6may22
 
 namespace eval bidi {
   
@@ -90,23 +90,24 @@ namespace eval bidi {
   array set 1670 {n che l 1 i \ufb7c m \ufb7d f \ufb7b}
   array set 1711 {n gaf l 1 i \ufb94 m \ufb95 f \ufb93}
   array set 1657 {n tte l 1 i \ufb68 m \ufb69 f \ufb67}
+  
+  
+  #TODO test !!!!!!!!!!!!!!!!!!!!!!!!!!
   #Urdu special letters
   array set 1705 {n kaf_urdu l 1 i \uFEDB m \uFEDC f \uFEDA}
-  array set 1722 {n nun_ghunna l 1 i \u06ba f \ufb9f}
+  array set 1722 {n nun_ghunna l 1 i \u06ba m \u06ba f \ufb9f}
   array set 1740 {n choti_ye l 1 i \uFEF3 m \uFEF4 f \uFEF0}
-  array set 1746 {n bari_ye l 1 f \uFBAF}
-  array set 1747 {n bari_ye_hamza l 1 f \uFBB1}
+  array set 1746 {n bari_ye l 1  i \uFBAF m \uFBAF f \uFBAF}
+  array set 1747 {n bari_ye_hamza l 1 i \uFBB1 m \uFBB1 f \uFBB1}
   array set 1729 {n he_goal l 1 i \uFBA8 m \uFBA9 f \uFBA7} ;#= choti_he with hamza
-  array set 1730 {n he_goal_hamza l 1 f \u06c2}
-  array set 1726 {n do_chashmi_he l 1 i \uFEEB m \uFEEC}
+  array set 1730 {n he_goal_hamza l 1 i \u06c2 m \u06c2 f \u06c2}
+  array set 1726 {n do_chashmi_he l 1 i \uFEEB m \uFEEC f \uFEEC}
   ##Urdu non left-linking
-  array set 1688 {n zhe l 0 m \ufb8b f \ufb8b}
-  array set 1672 {n dde l 0 m \ufb89 f \ufb89}
-  array set 1681 {n rre l 0 m \ufb8d f \ufb8d}
-  array set 1731 {n te_marbuta_goal l 0 f \u06c3} ;#=ta_marbuta?
+  array set 1688 {n zhe l 0 i \ufb8b m \ufb8b f \ufb8b}
+  array set 1672 {n dde l 0 i \ufb89 m \ufb89 f \ufb89}
+  array set 1681 {n rre l 0 i \ufb8d m \ufb8d f \ufb8d}
+  array set 1731 {n te_marbuta_goal l 0 i \u06c3 m \u06c3 f \u06c3} ;#=ta_marbuta?
 
-#TODO testing Hamza
-#  array set 1569 {n hamza l 0 i \u0621 m \u0621 f \u0621}
   
 ### P R O C S  ##############################################################
 
@@ -225,7 +226,7 @@ namespace eval bidi {
           #pre-revert Arabic numerals, no formatting
           if [regexp $ar_numerals $word] {
             
-            set newword [string reverse $newword]
+            set newword [string reverse $word]
 
           } else {
 
