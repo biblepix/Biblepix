@@ -3,7 +3,7 @@
 # called by BdfPrint + several Setup widgets
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 6may22
+# Updated: 7may22
 
 namespace eval bidi {
   
@@ -18,8 +18,8 @@ namespace eval bidi {
   ##excluding Tatwil, numerals, punctuation & vowels
   #variable ar_letters {[\u0620-\u063F\u0641-\u064A\u0671-\u06D3\uFE81-\uFEFC]}
  
- #TODO testing exluding Hamza
- variable ar_letters {[\u0620\u0622-\u063F\u0641-\u064A\u0671-\u06D3\uFE81-\uFEFC]}
+  #All letters, exluding Hamza
+  variable ar_letters {[\u0620\u0622-\u063F\u0641-\u064A\u0671-\u06D5\uFE81-\uFEFC]}
  
   ##vowels only range, excluding Fathatân & Hamza
   variable ar_vowels {[\u064C-\u065F]}
@@ -84,6 +84,7 @@ namespace eval bidi {
   ##final only letters 
   array set 1577 {n ta_marbuta l 0 m \uFE93 f \uFE94}
   array set 1609 {n alif_maqsura l 0 \m \uFEF0 f \uFEF0}
+  
   #Persian special letters
   array set 1740 {n farsi-ye l 1 i \uFBFE m \uFBFF f \uFBFD} ;#Ya without dots in final form = ar. Ya_maqsura
   array set 1662 {n pe l 1 i \ufb58 m \ufb59 f \ufb57}
@@ -91,17 +92,20 @@ namespace eval bidi {
   array set 1711 {n gaf l 1 i \ufb94 m \ufb95 f \ufb93}
   array set 1657 {n tte l 1 i \ufb68 m \ufb69 f \ufb67}
   
-  
-  #TODO test !!!!!!!!!!!!!!!!!!!!!!!!!!
   #Urdu special letters
   array set 1705 {n kaf_urdu l 1 i \uFEDB m \uFEDC f \uFEDA}
   array set 1722 {n nun_ghunna l 1 i \u06ba m \u06ba f \ufb9f}
   array set 1740 {n choti_ye l 1 i \uFEF3 m \uFEF4 f \uFEF0}
   array set 1746 {n bari_ye l 1  i \uFBAF m \uFBAF f \uFBAF}
   array set 1747 {n bari_ye_hamza l 1 i \uFBB1 m \uFBB1 f \uFBB1}
-  array set 1729 {n he_goal l 1 i \uFBA8 m \uFBA9 f \uFBA7} ;#= choti_he with hamza
+  
+  ##choti_he + choti_he with hamza
+  array set 1729 {n he_goal l 1 i \uFBA8 m \uFBA9 f \uFBA7} 
+  
   array set 1730 {n he_goal_hamza l 1 i \u06c2 m \u06c2 f \u06c2}
+  
   array set 1726 {n do_chashmi_he l 1 i \uFEEB m \uFEEC f \uFEEC}
+  
   ##Urdu non left-linking
   array set 1688 {n zhe l 0 i \ufb8b m \ufb8b f \ufb8b}
   array set 1672 {n dde l 0 i \ufb89 m \ufb89 f \ufb89}
@@ -143,6 +147,7 @@ namespace eval bidi {
     
     #Devowelise if $vowelled=0, 
     ##NOTE: double-vowel Fathatân is not cleared since listed as regular letter (see above) 
+    ##TODO?: Why is Alif-Waw stripped in Urdu? 
     if !$vowelled {
       set s [devowelise $s $lang]
     }
@@ -223,8 +228,10 @@ namespace eval bidi {
         #format Arabic script word
         } elseif {$lang == "ar"} {
 
-          #pre-revert Arabic numerals, no formatting
-          if [regexp $ar_numerals $word] {
+          #pre-revert Arabic numerals, no formatting #TODO may not be needed at all!
+          if [regexp $ar_numerals $word] {}
+          
+          if [string is digit $word] {
             
             set newword [string reverse $word]
 
@@ -312,12 +319,6 @@ namespace eval bidi {
     set firstLetterPos [lindex $arLetterL 0]
     set lastLetterPos [lindex $arLetterL end]
 
-#TODO Testingn hamza
-#set lastlettercode [scan $lastLetterPos %c]
-#if {$lastlettercode == 1569} {
-#  incr lastLetterPos -1
-#}
-
     #Scan word for coded & non-coded characters
     foreach char $letterL {
       
@@ -331,6 +332,7 @@ namespace eval bidi {
       }
 
       #B) Evaluate form from position:
+
       ##set 1st letter form
       if {$pos == $firstLetterPos} {
         set utfchar [formatArabicLetter $htmcode i $prevLinking]
@@ -357,7 +359,7 @@ namespace eval bidi {
   
   } ;#END formatArabicWord
   
-  # getArLetter
+  # formatArabicLetter
   ##returns Arabic character with requested form as UTF 
   ##args: form = i|m|f & linking status of previous letter = 0|1
   ##called by formatArabicWord
