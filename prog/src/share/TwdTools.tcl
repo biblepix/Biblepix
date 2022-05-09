@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 20dec	21 pv
+# Updated 9may22 pv
 
 # msgcatInit
 ##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
@@ -58,12 +58,9 @@ proc getTwdSigList {} {
     }
   }
   
-#  lappend twdsigL signature-SURPRISE.txt
-  
   if [info exists twdsigL] {
     return $twdsigL
   }
-
 }
 
 #R a n d o m i z e r s

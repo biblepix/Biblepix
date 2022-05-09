@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 5may22 pv
+# Updated: 9may22 pv
 source $TwdTools
 source $SigTools
 
@@ -12,24 +12,29 @@ source $SigTools
 
 puts "Updating signatures..."
 
-set twdFileList [getTwdSigList]
+set twdSigfileL [getTwdSigList]
 
-#TODO change surprise file each time BP runs, not only once a day!
+if {$twdSigfileL == ""} {
+  package require Tk
+  set m "No corresponding Bible text files found! Please rerun Setup to define which languages you desire for your e-mail signatures."
+  tk_messageBox -message $m -title "BiblePix E-mail Signature"
+  return 1
+}
+
+#Add surprise file to twdSigfileL 
+#TODO run each time BP runs, not only once a day!
 set surpriseFile signature-SURPRISE.txt
-lappend twdFileList $surpriseFile
-  
-if ![file exists $sigdir/$surpriseFile] {
-  set chan [open $sigdir/$surpriseFile w]
+set surpriseFilePath [file join $sigdir $surpriseFile]
+
+lappend twdSigfileL $surpriseFile
+
+if ![file exists $surpriseFilePath] {
+  set chan [open $surpriseFilePath w]
   close $chan 
 }
 
-if {$twdFileList == ""} {
-#TODO who can read this?!
-  return "No corresponding TWD language files found!\n Please rerun Setup to define which languages your desire for your e-mail signatures."
-}
-
 # Prepare signatures for all selected langs
-foreach twdFileName $twdFileList {
+foreach twdFileName $twdSigfileL {
 
   if {$twdFileName == "$surpriseFile"} {
 
