@@ -16,8 +16,7 @@ set wishpath [auto_execok wish]
 
 #Rootdir location
 ##Git download (any place on PC)
-if [info exists srcdir] {
-  set rootdir "[file dirname [file dirname [file normalize $srcdir ]]]"
+if [info exists rootdir] {
 ##Windows
 } elseif [info exists ::env(LOCALAPPDATA)] {
   set rootdir "[file normalize [file join $env(LOCALAPPDATA) Biblepix]]"
