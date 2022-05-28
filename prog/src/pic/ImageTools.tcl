@@ -207,17 +207,19 @@ proc getAreaLuminacy {c item} {
    
   ##very shade
   if {$avLum <= $darkThreshold} {
-    set lum 1
+    set lumLevel 1
   ##very sun
   } elseif {$avLum >= $brightThreshold} {
-    set lum 3
+    set lumLevel 3
   ##normal
   } else {
-    set lum 2
+    set lumLevel 2
   }
   
-  puts "New luminance $lum"
-  return $lum
+  puts "New luminance $lumLevel"
+  
+  return "$lumLevel $avLum"
+  
 } ;#END getAreaLuminacy
 
 ################################################# 

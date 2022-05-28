@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 1feb22 pv
+# Updated 28may22 pv
 
 source $::AnnotatePng
   
@@ -13,14 +13,11 @@ proc openResizeWindow {} {
   global fontsize
   set margin 10
   namespace eval resizePic {
-
-  #Copy addpicture::curPic to canvas
-  #set resizePic::resizeCanvPic [image create photo]
-  #set resizePic::scaleFactor [getResizeScalefactor]
-  image create photo resizeCanvPic
-  set scaleFactor [getResizeScalefactor]
-  resizeCanvPic copy $addpicture::curPic -subsample $resizePic::scaleFactor
-}
+  	#Copy addpicture::curPic to canvas
+  	image create photo resizeCanvPic
+  	set scaleFactor [getResizeScalefactor]
+  	resizeCanvPic copy $addpicture::curPic -subsample $resizePic::scaleFactor
+	}
 
   lassign [getCanvSizeFromPic resizeCanvPic] canvX canvY
   set winX [expr $canvX + 2*$margin]
@@ -133,11 +130,7 @@ proc openReposWindow {pic} {
   set confBtn [button $reposPic::w.moveTxtBtn -command $confirmBtnAction -textvar msg::ok]
   set cancBtn [button $reposPic::w.cancelBtn -command $cancelBtnAction -textvar msg::cancel]
   pack $cancBtn $confBtn -side right
-  
-#  $reposPic::canv create window -15 15 -anchor nw -window $confBtn
-#  $reposPic::canv itemconf mv -state disabled
-#  $reposPic::w.moveTxtBtn conf -state disabled
-
+ 
   #Set bindings
   $reposPic::canv bind mv <1> {
      set ::x %X
