@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 24jan22 pv
+# Updated: 28may22 pv
 set version "4.1"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -177,13 +177,14 @@ set tab [string repeat $ind 4]
 
 #Define font colour names 
 set fontcolourL {Earth Gold Leaf Sea Silver Slate}
-##define rgb arrays
-array set SeaArr {r 30 g 100 b 244}
-array set EarthArr {r 160 g 105 b 0}
-array set GoldArr  {r 230 g 195 b 0}
-array set LeafArr {r 43 g 135 b 87}
-array set SilverArr {r 160 g 160 b 160}
-array set SlateArr {r 120 g 120 b 120}
+
+##define rgb arrays; l=luminance (sum of rgb)
+array set SeaArr {r 30 g 100 b 244 l 234}
+array set EarthArr {r 160 g 105 b 0 l 265}
+array set GoldArr  {r 230 g 195 b 0 l 425}
+array set LeafArr {r 43 g 135 b 87 l 265}
+array set SilverArr {r 150 g 150 b 150}
+array set SlateArr {r 120 g 120 b 120 l 360}
 
 #Define font shade values for above mean colours
 set sunFactor 0.45
