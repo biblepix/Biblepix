@@ -3,8 +3,9 @@
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 15nov21 pv
-source $SetupTools
-source $TwdTools
+
+#source $SetupTools
+#source $TwdTools
 setTexts $lang
 
 #Set general X vars & Main Window width
