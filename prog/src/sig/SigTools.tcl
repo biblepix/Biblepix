@@ -73,6 +73,8 @@ namespace eval sig {
   proc doSigEvolution {} {
     global env sig::dayOTY
     global sig::addedsigT sig::catchword sig::ev sig::nosigfoundT sig::evolSigdir sig::triggerRef sig::startcatch sig::addednum
+  
+  puts "Updating evolution signatures..."
   	
     #Check all Evolution sig files for triggers
     foreach sigFilePath [glob -directory $evolSigdir *] {

@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 9may22 pv
+# Updated: 16aug22 pv
 source $TwdTools
 source $SigTools
 
@@ -78,6 +78,14 @@ foreach twdFileName $twdSigfileL {
 
 } ;#END main loop
 
+#Clear stale sigs not in current list
+foreach f [glob -directory $sigdir *] {
+  set dateidatum [clock format [file mtime $f] -format %d]
+  if {$dateidatum != $heute} {
+    file delete $f
+  }
+}
+
 
 #####################################################################
 ### TROJITA IMAP MAILER 
@@ -93,7 +101,7 @@ if {$os=="Windows NT"} {
   
   if [catch {registry keys $trojitaWinRegpath}] {
     puts "No Registry entry for Trojitá found. Exiting."
-    return 1
+    #return 1
   }
   catch sig::doSigTrojitaWin err
 
@@ -101,7 +109,7 @@ if {$os=="Windows NT"} {
 
   if {[auto_execok trojita] == "" || ![file exists $sig::trojitaLinConfFile]} {
     puts "No Trojitá executable/configuration file found. Exiting."
-    return 1
+    #return 1
   }
   catch sig::doSigTrojitaLin err
 }
@@ -116,9 +124,15 @@ if [info exists err] {
 ###########################################################################
 
 #Check presence of Evolution
-if {[auto_execok evolution] != ""} {
+if {[auto_execok evolution] == ""} {
+  puts "No $ev executable found. Exiting."
+#  return 1
+
+} else {
+
   catch sig::doSigEvolution err
-}
+} 
+
 if [info exists err] {
   puts $err
 }
