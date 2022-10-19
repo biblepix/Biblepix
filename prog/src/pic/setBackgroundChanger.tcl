@@ -2,7 +2,7 @@
 # Searches system for current Desktop manager, gives out appropriate BG changing command
 # Called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15jul21 pv
+# Updated: 19oct22 pv
 
 ########################################################################
 # WINDOWS: accepts command through RUNDLL32.EXE - a bit buggy still...
@@ -126,11 +126,20 @@ if {$platform=="windows"} {
 set runningDesktop [detectRunningLinuxDesktop]
 
 #Set Sway Background
+##NOTE: the extra prog 'swaybg' must be present although not called directly here!
 if {$runningDesktop == 4} {
+  
+  if {[auto_execok swaybg] == ""} {
+    
+    package require Tk
+    tk_messageBox -type ok -icon warning -title BiblePix -message "Your Sway desktop needs the extra program 'swaybg' to change background image. Please install and rerun Sway." 
+    return 1
+  }
+
   set swayOutput [getSwayOutputName]
   proc setBg {} {
     upvar swayOutput swayOutput
-    exec swaymsg output $swayOutput bg $::TwdBMP center
+    exec swaymsg output $swayOutput bg $::TwdPNG fit
   }
   return
   
