@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 16aug22 pv
+# Updated: 16dec22 pv
 source $TwdTools
 source $SigTools
 
@@ -125,7 +125,7 @@ if [info exists err] {
 
 #Check presence of Evolution
 if {[auto_execok evolution] == ""} {
-  puts "No $ev executable found. Exiting."
+  puts "No $sig::ev executable found. Exiting."
 #  return 1
 
 } else {

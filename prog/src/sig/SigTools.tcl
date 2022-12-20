@@ -71,7 +71,7 @@ namespace eval sig {
   ##called by Signature
   ##NOTE: Evolution sig files must be (partly) formatted as HTML neuerdings
   proc doSigEvolution {} {
-    global env sig::dayOTY
+    global env sig::dayOTY ev
     global sig::addedsigT sig::catchword sig::ev sig::nosigfoundT sig::evolSigdir sig::triggerRef sig::startcatch sig::addednum
   
   puts "Updating evolution signatures..."
