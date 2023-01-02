@@ -9,7 +9,6 @@ message .intTxtM -textvar msg::f1Txt -width $tw -font bpfont1 -padx $px -pady $p
 pack .intTitleL .intTxtM -in .internationalF -side top -anchor w
 
 #Create frames
-#TODO Listbox can get too heigh! > add scrollbar??
 pack [frame .intTopF -padx $px] -in .internationalF -anchor w -fill x -expand 1
 pack [frame .intMidF -padx $px] -in .internationalF -anchor w -fill x
 pack [frame .intBotF -padx $px] -in .internationalF -anchor w -fill x

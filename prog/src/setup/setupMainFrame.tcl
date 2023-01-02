@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15nov21 pv
+# Updated: 2jan23 pv
 
 #source $SetupTools
 #source $TwdTools
@@ -73,9 +73,9 @@ pack .news -in .botMainF -fill x
 #Validate error msg issued by Setup
 if [info exists httpError] {
   if {$httpError == 0} {
-    NewsHandler::QueryNews "[mc uptodateHttp]" lightgreen
+    NewsHandler::QueryNews "[mc uptodateHTTP]" lightgreen
   } else {
-    NewsHandler::QueryNews "[mc noConnHttp]" red
+    NewsHandler::QueryNews "[mc noConnHTTP]" red
   }
 }
 
