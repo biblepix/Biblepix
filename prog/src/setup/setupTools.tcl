@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 31jan22 pv
+# Updated: 3jan23 pv
 source $SetupResizeTools
 source $JList
 
@@ -898,14 +898,13 @@ proc insertTodaysTwd {twdWidget} {
   }
   
   set twdFileName [getRandomTwdFile]
-  if {$twdFileName == ""} {
-    $twdWidget conf -activebackground orange
-    set twdText $::noTwdFilesFound
-    return
+  if {$twdFileName != ""} {
+    set twdText [getTodaysTwdText $twdFileName]
+  } else {
+    $twdWidget conf -fg red
+    set twdText "[mc noTwdFilesFound]"
   }
-
-  set twdText [getTodaysTwdText $twdFileName]
-
+  
   #insert new text
   $twdWidget delete 1.0 end
   $twdWidget insert 1.0 $twdText

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupWelcome.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 9oct21 pv
+# Updated: 3jan23 pv
 
 #Set frames MainLeft + MainRight
 pack [frame .welcomeLeftMainF]  -in .welcomeF -fill y -anchor nw -side left -padx $px
@@ -40,8 +40,9 @@ pack .twdClickBtn .twdWidgetT -in .welcomeRightMainF -anchor n -pady 15 -expand 
 if $enabletitle {
   .twdWidgetT tag conf head -font "TkHeadingFont 16 bold" -justify left
 }
+
 .twdWidgetT tag conf ref -font TkCaptionFont -justify right
-catch {insertTodaysTwd .twdWidgetT}
+insertTodaysTwd .twdWidgetT
 
 #Set Uninstall button
 button .uninstallBtn -textvar msg::uninst -command {source $Uninstall}
