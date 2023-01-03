@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29may22 pv
+# Updated: 3jan23 pv
 
 source $SetupTools
 source $TwdTools
