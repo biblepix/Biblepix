@@ -101,7 +101,7 @@ Any redundent text files from past years are deleted automatically by the Setup 
 
 ### PROGRAM UPDATES
 
-BiblePix has an automatic update mechanism. If an Internet connection is present, the Setup will check for any program updates and install them automatically. Thus your BiblePix is always up-to-date, re-installation is hardly ever needed.
+BiblePix has an automatic update mechanism. If an Internet connection is present, both the main program and the Setup program will check for any program updates and install them automatically. Thus your BiblePix is always up-to-date, re-installation is hardly ever needed.
 
 ### PHOTO MANAGEMENT
 
