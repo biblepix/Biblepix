@@ -36,13 +36,14 @@ if {[llength $twdL] <2 } {
 text .twdWidgetT -foreground maroon -pady 30 -padx 30 -border 7 -tabs 7c -font twdwidgetfont -background #bab86c 
 pack .twdClickBtn .twdWidgetT -in .welcomeRightMainF -anchor n -pady 15 -expand 1
 .twdClickBtn conf -command {insertTodaysTwd .twdWidgetT}
+
 .twdWidgetT tag conf text -font twdwidgetfont -justify left
 if $enabletitle {
   .twdWidgetT tag conf head -font "TkHeadingFont 16 bold" -justify left
 }
 
 .twdWidgetT tag conf ref -font TkCaptionFont -justify right
-insertTodaysTwd .twdWidgetT
+catch {insertTodaysTwd .twdWidgetT}
 
 #Set Uninstall button
 button .uninstallBtn -textvar msg::uninst -command {source $Uninstall}
