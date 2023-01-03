@@ -16,7 +16,7 @@ foreach flag $flagL {
 
 set setupTwdFileName [getRandomTwdFile]
 if {$setupTwdFileName == ""} {
-  set setupTwdText $msg::noTwdFilesFound
+  set setupTwdText "[mc noTwdFilesFound]"
 } else {
   set setupTwdText [getTodaysTwdText $setupTwdFileName]
 }
