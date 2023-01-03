@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 15nov21 pv
+# Updated 3jan23 pv
 
 #Create frames & titles
 pack [frame .mailLeftF] -in .emailF -side left -anchor nw
@@ -50,26 +50,32 @@ message .mailMainM -font bpfont1 -padx $px -pady $py -textvar msg::f3Txt
 pack .mailMainM -in .mailLeftF -anchor nw
 #Create Twd text
 set twdfile [getRandomTwdFile 0]
-set dwsig [getTodaysTwdSig $twdfile 1]
+
+if {$twdfile != ""} {
+  set dwsig [getTodaysTwdSig $twdfile 1]
+} else {
+  set dwsig "[mc noTwdFilesFound]"
+}
 
 #Create E-Mail widgets
 label .mailSigL -font twdwidgetfont -bg $bg -fg blue -textvar msg::f3Expl -justify left
 text .mailSigT -font twdwidgetfont -background $bg -foreground blue -bd 0
-.mailSigT insert 1.0 $dwsig
-
-##right justify www line
-set wwwline [.mailSigT search bible2 5.0]
-set dotpos [string first . $wwwline]
-set lineNo [string range $wwwline 0 $dotpos-1]
-.mailSigT tag add www $lineNo.0 end
-.mailSigT tag conf www -justify right
-.mailSigT conf -height $lineNo
-
-##justify right for Hebrew & Arabic
-if [isBidi $dwsig] {
-  .mailSigT tag add rtl 1.0 end
-  .mailSigT tag conf rtl -justify right
-  .mailSigT tag conf www -justify left
-}
-
+.mailSigT insert 1.0 "$dwsig"
 pack .mailSigL .mailSigT -in .mailBotRightF -anchor w
+
+if {$twdfile != ""} {
+  ##right justify www line
+  set wwwline [.mailSigT search bible2 5.0]
+  set dotpos [string first . $wwwline]
+  set lineNo [string range $wwwline 0 $dotpos-1]
+  .mailSigT tag add www $lineNo.0 end
+  .mailSigT tag conf www -justify right
+  .mailSigT conf -height $lineNo
+
+  ##justify right for Hebrew & Arabic
+  if [isBidi $dwsig] {
+    .mailSigT tag add rtl 1.0 end
+    .mailSigT tag conf rtl -justify right
+    .mailSigT tag conf www -justify left
+}
+}
