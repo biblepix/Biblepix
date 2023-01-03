@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # Procs called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2jan23 pv
+# Updated: 3jan23 pv
 package require http
 
 # checkTls
@@ -49,8 +49,8 @@ proc runHTTP isInitial {
 
     #Success message (source Texts again for Initial)
     catch {.if.initialMsg configure -bg lightgreen}
-    catch {NewsHandler::QueryNews "[mc uptodateHttp]" blue}
-    catch {set ::ftpStatus $msg::uptodateHttp}
+    catch {NewsHandler::QueryNews "[mc uptodateHTTP]" blue}
+    catch {set ::ftpStatus $msg::uptodateHTTP}
   }
 } ;#end runHTTP
 
@@ -273,11 +273,13 @@ proc listRemoteTWDFiles {lBox} {
 }
 
 # getRemoteTWDFileList
-#called by SetupInternational
+##called by SetupInternational
+##returns status for display in .news
 proc getRemoteTWDFileList {} {
   if [catch testHttpCon Error] {
     .intStatusL conf -bg red
     set status "[mc noConnTwd]"
+
     puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
     
   } else {
@@ -289,7 +291,6 @@ proc getRemoteTWDFileList {} {
       set status "[mc noConnTwd]"
     }
   }
-  set ::status $status
   return $status
 }
 

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16oct21 pv
+# Updated 3jan23 pv
 
 #Create Title & msg in main frame
 label .intTitleL -textvar msg::f1Tit -font bpfont3
@@ -12,14 +12,17 @@ pack .intTitleL .intTxtM -in .internationalF -side top -anchor w
 pack [frame .intTopF -padx $px] -in .internationalF -anchor w -fill x -expand 1
 pack [frame .intMidF -padx $px] -in .internationalF -anchor w -fill x
 pack [frame .intBotF -padx $px] -in .internationalF -anchor w -fill x
+
+
 #Refresh button
-button .intRefreshBtn -textvar msg::refresh -bg orange -activebackground orange -command {set status [getRemoteTWDFileList]}
+button .intRefreshBtn -textvar msg::refresh -bg orange -activebackground orange -command {
+  NewsHandler::QueryNews "[getRemoteTWDFileList]" orange
+}
 pack .intRefreshBtn -in .intBotF -side bottom -fill x -padx $px
 
 ##subframes
 pack [frame .twdremoteTitleF -bg beige] -in .intBotF -side top -fill x -anchor w -padx $px
 pack [frame .twdremoteF -padx $px] -in .intBotF
-
 label .intStatusL -textvar status -font bpfont1 -height 1 -bg $bg -relief sunken
 pack .intStatusL -in .internationalF -fill x
 
