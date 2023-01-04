@@ -49,7 +49,7 @@ proc runHTTP isInitial {
 
     #Success message (source Texts again for Initial)
     catch {.if.initialMsg configure -bg lightgreen}
-    catch {NewsHandler::QueryNews "[mc uptodateHTTP]" blue}
+    catch {NewsHandler::QueryNews "[mc uptodateHTTP]" lightblue}
     catch {set ::ftpStatus $msg::uptodateHTTP}
   }
 } ;#end runHTTP
@@ -276,13 +276,22 @@ proc listRemoteTWDFiles {lBox} {
 ##called by SetupInternational
 ##returns status for display in .news
 proc getRemoteTWDFileList {} {
+
+	#TODO this test is only valid for vollmar.ch !!!
+	proc saich {} {
   if [catch testHttpCon Error] {
     .intStatusL conf -bg red
     set status "[mc noConnTwd]"
-
     puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
     
   } else {
+  
+  }
+  }
+  
+  
+  	source $::Bidi
+  	
     if ![catch {listRemoteTWDFiles .twdremoteLB}] {
       .intStatusL conf -bg lightgreen
       set status "[mc connTwd]"
@@ -290,7 +299,7 @@ proc getRemoteTWDFileList {} {
       .intStatusL conf -bg red
       set status "[mc noConnTwd]"
     }
-  }
+  
   return $status
 }
 
@@ -369,7 +378,7 @@ proc downloadAsianFont {twdlang} {
 ###############################################################################
 
 # testHttpCon
-##tests Http connexion, returns error if connexion fails
+##tests Http connexion with vollmar.ch BP release, returns error if connexion fails
 ##called by runHTTP
 proc testHttpCon {} {
   if [catch getTesttoken error] {
