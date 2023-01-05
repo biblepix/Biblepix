@@ -6,7 +6,7 @@
 ################################################################################
 # Version: 4.1
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24oct21 pv
+# Updated: 5jan23 pv
 package require Tk
 
 #Verify location & source vars
@@ -53,10 +53,13 @@ if [catch {source $Globals} res] {
     .updateFrame.progbar start
 
     if [info exists InitialJustDone] {
+    
       set pbTitle $uptodateHttp
+    
     } else {
-      set pbTitle $updatingHttp
+    
       ##start downloading process; $httpError is validated by SetupMainFrame
+      set pbTitle $updatingHttp
       catch {runHTTP 0} httpError
     }
 
