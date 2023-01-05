@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/LoadConfig.tcl
 # Sets default values if Config missing - sourced by Globals
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 21may22 pv
+# Updated: 5jan23 pv
 
 #Source Config and LoadConfig for defaults
 if [catch {source $Config}] {
@@ -121,7 +121,7 @@ if {![info exists fontcolortext] || [lsearch $fontcolourL $fontcolortext] == -1}
 }
 #enable random fontcolor by default
 if ![info exists enableRandomFontcolor] {
-  set enableRandomFontcolor 0
+  set enableRandomFontcolor 1
 }
 #Set marginleft
 if ![info exists marginleft] {
@@ -131,6 +131,8 @@ if ![info exists marginleft] {
 if ![info exists margintop] {
   set margintop 30
 }
+
+## Prepare $Http sourcing for Setup
 #Set Debug
 if ![info exists Debug] {
   set Debug 0
@@ -139,18 +141,18 @@ if ![info exists Debug] {
 if ![info exists Httpmock] {
   set Httpmock 0
 }
-#Debug & HttpMock
-if { [info exists Debug] && $Debug && [info exists Httpmock] && $Httpmock} {
+
+#Handle Http & HttpMock
+if { [info exists Httpmock] && $Httpmock} {
   proc sourceHTTP {} {
-    source $::Http
     source $::HttpMock
   }
 } else {
   proc sourceHTTP {} {
     source $::Http
   }
-}
-
+} 
+  
 #Set colour hex values & export to ::colour namespace
 foreach c $fontcolourL {
   set arrname ${c}Arr

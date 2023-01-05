@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # Procs called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3jan23 pv
+# Updated: 5jan23 pv
 package require http
 
 # checkTls
@@ -24,14 +24,16 @@ proc checkTls {} {
 # runHTTP
 ## Main program for BiblePix Http download
 ## Called by Installer & Setup
+## isInitial must be set to 0 or 1
 proc runHTTP isInitial {
   #Test connexion & start download
   if [catch testHttpCon Error] {
-    set ::ftpStatus "[mc noConnHTTP]"
-    catch {NewsHandler::QueryNews "[mc noConnHTTP]" red}
+
     puts "ERROR: http.tcl -> runHTTP($isInitial): $Error"
     error $Error
 
+    return 1
+    
   } else {
 
     global filePathL fontPathL
@@ -39,18 +41,10 @@ proc runHTTP isInitial {
 
     #Download all registered files & fonts
     foreach filepath $filePathList {
-    
-##avoid Chinese if not needed (rechecked in downloadTwdFile)
-#      if {$filepath == $::ChinaFont} {
-#        continue
-#      }
       downloadFileFromRelease $filepath $isInitial
     }
 
-    #Success message (source Texts again for Initial)
-    catch {.if.initialMsg configure -bg lightgreen}
-    catch {NewsHandler::QueryNews "[mc uptodateHTTP]" lightblue}
-    catch {set ::ftpStatus $msg::uptodateHTTP}
+    return 0
   }
 } ;#end runHTTP
 
@@ -277,18 +271,13 @@ proc listRemoteTWDFiles {lBox} {
 ##returns status for display in .news
 proc getRemoteTWDFileList {} {
 
-	#TODO this test is only valid for vollmar.ch !!!
-	proc saich {} {
-  if [catch testHttpCon Error] {
-    .intStatusL conf -bg red
-    set status "[mc noConnTwd]"
-    puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
-    
-  } else {
-  
-  }
-  }
-  
+#TODO this test is only valid for vollmar.ch !!!
+#  if [catch testHttpCon Error] {
+#    .intStatusL conf -bg red
+#    set status "[mc noConnTwd]"
+#    puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
+#    
+#  } else {  }
   
   	source $::Bidi
   	
