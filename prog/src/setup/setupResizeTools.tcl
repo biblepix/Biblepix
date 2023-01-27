@@ -2,7 +2,7 @@
 # Procs used in Resizing + Repositioning processes
 # sourced by SetupPhotos & ???
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28may22 pv
+# Updated: 28jan23 pv
 
 # needsResize
 ##compares photosOrigPic OR rotateOrigPic with screen dimensions
@@ -102,18 +102,6 @@ proc getCanvSizeFromPic {pic} {
   #Get image dimensions
   set imgX [image width $pic]
   set imgY [image height $pic]
-  ##if above remain empty (whyever!), do this:
-  if {!$imgX || !$imgY} {
-    if [namespace exists resizePic] { 
-    set canv $::resizePic::c
-  } elseif [namespace exists reposPic] {
-    set canv $::reposPic::canv
-  }
-  lassign [$canv bbox img] {} {} imgX imgY
-  }
-  
-  puts "$imgX $imgY"
- 
   set imgFactor [expr $imgX. / $imgY]
 
   ##zu hoch
@@ -195,6 +183,9 @@ proc getResizeScalefactor {} {
   if {$factor > 0 && [expr $imgY / $factor] < $canvY} {
     set factor [expr int(floor($imgY. / $canvY))]
   }
+  
+  if {$factor <1} {set factor 1}
+  
   return $factor
 }
 

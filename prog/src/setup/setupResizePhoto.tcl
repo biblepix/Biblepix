@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 28may22 pv
+# Updated 28jan23 pv
 
 source $::AnnotatePng
   
@@ -9,17 +9,26 @@ source $::AnnotatePng
 ##opens new toplevel window if [needsResize]
 ##called by addPic
 proc openResizeWindow {} {
-  tk_messageBox -type ok -message $msgbox::movePicToResize
+
   global fontsize
   set margin 10
+
+  tk_messageBox -type ok -message $msgbox::movePicToResize
+  
+ 	#Copy addpicture::curPic to canvas
   namespace eval resizePic {
-  	#Copy addpicture::curPic to canvas
+
+    set origW [image width $addpicture::curPic]
+    set origH [image height $addpicture::curPic]
   	image create photo resizeCanvPic
   	set scaleFactor [getResizeScalefactor]
-  	resizeCanvPic copy $addpicture::curPic -subsample $resizePic::scaleFactor
+#  	if {$scaleFactor == 0}  {set scaleFactor 1}
+  	resizeCanvPic copy $addpicture::curPic -subsample $scaleFactor
+  	resizeCanvPic conf -width [expr $origW / $scaleFactor] -height [expr $origH / $scaleFactor]
 	}
 
   lassign [getCanvSizeFromPic resizeCanvPic] canvX canvY
+  
   set winX [expr $canvX + 2*$margin]
   set winY [expr $canvY + 2*$margin]
 
@@ -49,7 +58,7 @@ proc openResizeWindow {} {
 
   ttk::button $w.confirmBtn -textvar msg::ok -command $confirmBtnAction
   ttk::button $w.cancelBtn -textvar msg::cancel -command $cancelBtnAction
-  pack $w.confirmBtn $w.cancelBtn ;#will be repacked into canv window
+  pack $w.confirmBtn $w.cancelBtn
   set bildname [file tail $addpicture::targetPicPath]
 
   $resizePic::c create window [expr $canvX - 150] 50 -anchor ne -window $w.confirmBtn -tag okbtn
