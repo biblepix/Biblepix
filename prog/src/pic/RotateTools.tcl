@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/RotateTools.tcl
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
 # Procs for rotating picture, called by SetupRotate
-# Updated: 4feb21
+# Updated: 4feb23
 
 # imageRotate
 ##with many thanks to Richard Suchenwirth!
@@ -174,7 +174,6 @@ proc vorschau {im angle canv} {
 ##called by SetupRotate Save button
 proc doRotateOrig {pic angle} {
   namespace eval addpicture {}
-#  puts orig:$angle
 
   #1. rotate (takes a long time!)
   set rotPic [imageRotate $pic $angle]
