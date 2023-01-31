@@ -74,19 +74,20 @@ proc openResizeWindow {} {
   set cmd [list dragCanvasItem %W img %X %Y]
   $resizePic::c bind mv <B1-Motion> $cmd
 
-#TODO try to bind movements to Mousewheel + Arrow keys:
+#TODO Joel: try to bind movements to Mousewheel + Arrow keys:
 ## But how to define specific steps?????
 #$resizePic::c bind mv <MouseWheel> {%W yview scroll [expr {- (%D)}] units}
 set moveUD {%W yview scroll [expr {-%D/120}] units}
 set moveRL {%W xview scroll [expr {-%D/120}] units}
 
-#$resizePic::c bind mv <MouseWheel> $moveUD
+bind $resizePic::c <MouseWheel> $moveUD
 
 #  $resizePic::c bind mv <Key-Up> $moveUD
-  $resizePic::c bind mv <Key-uparrow> $cmd
+  bind $resizePic::c <Key-uparrow> $cmd
 #  $reposPic::canv bind mv <Down>
 #  $reposPic::canv bind mv <Right>
 #  $reposPic::canv bind mv <Left>
+    
     
   bind $w <Return> $confirmBtnAction
   bind $w <Escape> $cancelBtnAction
