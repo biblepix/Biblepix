@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3jan23 pv
+# Updated: 15feb23 pv
 source $SetupResizeTools
 source $JList
 
@@ -89,7 +89,10 @@ proc addPic {origPicPath} {
     openResizeWindow
 
   }
+  #Reset standards
   set ::numPhotos [llength [glob $photosdir/*]]
+  .phAddBtn conf -bg #d9d9d9
+  
 } ;#END addPic
 
 # delPic

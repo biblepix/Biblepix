@@ -22,7 +22,6 @@ proc openResizeWindow {} {
     set origH [image height $addpicture::curPic]
   	image create photo resizeCanvPic
   	set scaleFactor [getResizeScalefactor]
-#  	if {$scaleFactor == 0}  {set scaleFactor 1}
   	resizeCanvPic copy $addpicture::curPic -subsample $scaleFactor
   	resizeCanvPic conf -width [expr $origW / $scaleFactor] -height [expr $origH / $scaleFactor]
 	}
@@ -36,7 +35,8 @@ proc openResizeWindow {} {
   set w [toplevel .resizePhoto -bg lightblue -padx $margin -pady $margin -height $winX -width $winY]
   set resizePic::c [canvas $w.resizeCanv -bg lightblue -height $canvY -width $canvX]
   $resizePic::c create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
-
+	#Create progress bar
+	ttk::progressbar $w.pb -mode indeterminate -length 150
 
   #Create title & buttons
   set cancelBtnAction {
@@ -48,10 +48,8 @@ proc openResizeWindow {} {
   
   set confirmBtnAction {
     .resizePhoto.confirmBtn conf -state disabled
-    .resizePhoto.cancelBtn  conf -state disabled
+		.resizePhoto.pb start
     set img [doResize $resizePic::c $resizePic::scaleFactor]
-    #catch {image delete $resizePic::resizeCanvPic}
-    #namespace delete resizePic
     set ::Modal.Result "Success"
     openReposWindow $img
   }
@@ -61,10 +59,12 @@ proc openResizeWindow {} {
   pack $w.confirmBtn $w.cancelBtn
   set bildname [file tail $addpicture::targetPicPath]
 
+	#Place buttons onto canvas
   $resizePic::c create window [expr $canvX - 150] 50 -anchor ne -window $w.confirmBtn -tag okbtn
   $resizePic::c create window [expr $canvX - 80] 50 -anchor ne -window $w.cancelBtn -tag delbtn
   pack $resizePic::c -side top -fill none
-
+	pack $w.pb -pady 15
+	
   #Set bindings
   $resizePic::c bind mv <1> {
      set ::x %X
