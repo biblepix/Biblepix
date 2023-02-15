@@ -2,26 +2,27 @@
 # Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8nov21
+# Updated: 15feb23 pv
 
 source $RotateTools
 namespace eval rotatepic {}
 namespace eval addpicture {}
 
-if {![info exists addpicture::curPic]} {
+if ![info exists addpicture::curPic] {
   set addpicture::curPic photosOrigPic
 }
 
-#Create top window with 3 frames
+#Create top window with 4 frames
 set rotatepic::W [toplevel .rotateW -width 600 -height 400]
 catch {tk::PlaceWindow .rotateW center}
 tk::PlaceWindow .rotateW center
+set F0 [frame ${rotatepic::W}.infoF -bg beige]
 set F1 [frame ${rotatepic::W}.topF]
 set col1 [gradient beige -0.2]
 set col2 [gradient beige -0.1]
 set F2 [frame ${rotatepic::W}.midF -bg $col1 -bd 5]
 set F3 [frame ${rotatepic::W}.botF -bg $col2 -bd 5]
-pack $F1 $F2 $F3 -fill x -anchor n
+pack $F0 $F1 $F2 $F3 -fill x -anchor n
 
 #Create widget vars
 set scale $F3.scale
@@ -69,6 +70,7 @@ button $anyBtn -textvar msg::computePreview -activebackground beige \
 -command {
   anysetnormal
   vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
+  $saveBtn conf -bg lightgreen
 }
  
 button $90Btn -textvar msg::preview90 -activebackground beige \
@@ -76,6 +78,7 @@ button $90Btn -textvar msg::preview90 -activebackground beige \
   90-180setnormal
   vorschau $rotatepic::rotateCanvPic 90 $canv
   set rotatepic::angle 90
+  $saveBtn conf -bg lightgreen
 }
 
 button $180Btn -textvar msg::preview180 -activebackground beige \
@@ -83,6 +86,7 @@ button $180Btn -textvar msg::preview180 -activebackground beige \
   90-180setnormal
   vorschau $rotatepic::rotateCanvPic 180 $canv
   set rotatepic::angle 180
+  $saveBtn conf -bg lightgreen
 }
 
 set cancelBtnAction {
@@ -93,28 +97,35 @@ set cancelBtnAction {
 }
 
 set confirmBtnAction {
-  #Run foreground actions
-  vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
-  photosCanvPic blank
-  photosCanvPic copy $rotatepic::rotateCanvPic -shrink
-
+  
   #Create message window on top
   set res [tk_messageBox -type yesno -message $msgbox::rotateWait]
   if {$res == "no"} {
     allsetnormal
-    return 0
+    return 1
   }
   
-  #Initiate rotation in background, disable controls, close window when finished
-  after idle {
-    doRotateOrig $addpicture::curPic $rotatepic::angle
-    destroy $rotatepic::W
-    namespace delete rotatepic
-  }
+	#Run foreground actions
+  vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
+  photosCanvPic blank
+  photosCanvPic copy $rotatepic::rotateCanvPic -shrink
 
-  image delete $rotatepic::rotateCanvPic
+  #Initiate rotation in background, disable controls
+  $::saveBtn conf -state disabled
+  $::anyBtn conf -state disabled
+  .rotateW.infoL conf -fg black -bg orange
+  set msg::rotateInfo "[mc rotateWait]"
+  
+  $rotatepb start
+	doRotateOrig $addpicture::curPic $rotatepic::angle 1
+
+	#Cleanup
+  set msg::rotateInfo "[mc rotateInfo]"
+  destroy $rotatepic::W
+  namespace delete rotatepic
   set ::Modal.Result "Success"
-}
+	.phAddBtn conf -bg lightgreen -activebackground orange
+	}
 
 #Create Info label & buttons
 set infoL [label .rotateW.infoL -textvar msg::rotateInfo -font TkCaptionFont -bg beige -fg green -padx 5 -pady 10]
@@ -127,7 +138,9 @@ catch { canvas $canv }
 $canv create image 6 6 -image $rotatepic::rotateCanvPic -anchor nw -tags img
 $canv conf -width [image width $rotatepic::rotateCanvPic] -height [image height $rotatepic::rotateCanvPic]
 
-pack $infoL -in $F1 -fill x
+pack $infoL -in $F0 -side left -fill x -expand 1
+pack $cancelBtn $saveBtn -in $F0 -side right
+
 pack $canv -in $F1
 
 #Create scale
@@ -142,12 +155,17 @@ pack $scale
 trace add variable v write updateMeter
 trace add variable v write updateAngle
 
+#Create progress bar
+set rotatepb .rotateW.midF.pb
+ttk::progressbar $rotatepb -length 200 -orient horizontal -mode indeterminate
+
 #Pack all
 pack $90Btn -pady 5 -side left -expand 1
+pack $rotatepb -side left -expand 1  
 pack $180Btn -side left -expand 1
 pack $anyBtn -pady 10
-pack $cancelBtn $saveBtn -side right
 
+#Return & Escape bindings
 bind $rotatepic::W <Escape> $cancelBtnAction
 bind $rotatepic::W <Return> $confirmBtnAction
 Show.Modal $rotatepic::W -destroy 0 -onclose $cancelBtnAction

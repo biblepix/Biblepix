@@ -1,14 +1,14 @@
 # ~/Biblepix/prog/src/setup/RotateTools.tcl
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
 # Procs for rotating picture, called by SetupRotate
-# Updated: 4feb23
+# Updated: 15feb23 pv
 
 # imageRotate
 ##with many thanks to Richard Suchenwirth!
 ##from: https://wiki.tcl-lang.org/page/Photo+image+rotation
+##added 'update' variable to be set to 1 or 0 for GUI to update during process
 ##called by SetupRotate
-proc imageRotate {img angle} {
-  set ::update 0
+proc imageRotate {img angle update} {
   set rotatedImg [image create photo]
   set angle [expr {fmod($angle, 360.0)}]
 
@@ -17,6 +17,7 @@ proc imageRotate {img angle} {
     set w [image width  $img]
     set h [image height $img]
     set buf {}
+ 
     if {$angle == 90} {
 
       # This would be easier with lrepeat
@@ -35,14 +36,17 @@ proc imageRotate {img angle} {
         foreach pixel $row {
           lset buf $j $i $pixel
           incr j
-        }
+
+        }      
       }
 
       $rotatedImg config -width $h -height $w
       $rotatedImg put $buf
+    
     } elseif {$angle == 180} {
     
       $rotatedImg copy $img -subsample -1 -1
+    
     } elseif {$angle == 270} {
     
       # This would be easier with lrepeat
@@ -68,6 +72,7 @@ proc imageRotate {img angle} {
 
       $rotatedImg config -width $h -height $w
       $rotatedImg put $buf
+    
     } else {
 
       set angle [expr 360 - $angle]
@@ -82,6 +87,7 @@ proc imageRotate {img angle} {
       set rotatedImgUncut [image create photo]
       $rotatedImgUncut config -width $w2 -height $h2
       for {set i 0} {$i<$h2} {incr i} {
+
         set toX -1
         for {set j 0} {$j<$w2} {incr j} {
           set rad [expr {hypot($ym2-$i,$xm2-$j)}]
@@ -119,12 +125,10 @@ proc imageRotate {img angle} {
         if {$toX>=0} {
           $rotatedImgUncut put [list $buf] -to $toX $i
           set buf {}
-          if {$::update} { update }
+          if {$update} { update }
         }
       }
       
-      puts "a: $a, w: $w, h: $h, w2: $w2, h2: $h2"
-
       set w3 [expr ($h * $w) / cos($a) / ($h + $w * abs(tan($a)))]
       set h3 [expr ($h * $h) / cos($a) / ($h + $w * abs(tan($a)))]
 
@@ -136,11 +140,10 @@ proc imageRotate {img angle} {
       set x2 [expr round($w2 - ($dw / 2))]
       set y2 [expr round($h2 - ($dh / 2))]
 
-      puts "w3: $w3, h3: $h3, dw: $dw, dh: $dh, x1: $x1, y1: $y1, x2: $x2, y2: $y2"
-
       $rotatedImg config -width [expr $x2 - $x1] -height [expr $y2 - $y1]
       $rotatedImg copy $rotatedImgUncut -from $x1 $y1 $x2 $y2
     }
+
   } else {
     $rotatedImg copy $img
   }
@@ -156,9 +159,10 @@ proc imageRotate {img angle} {
 # vorschau
 ##called by SetupRotate
 proc vorschau {im angle canv} {
-  puts vorschau:$angle
+  
+	$::rotatepb start
 
-  set rotatedImg [imageRotate photosCanvPic $angle]
+  set rotatedImg [imageRotate photosCanvPic $angle 1]
 
   $im blank
   $im config -height [image height $rotatedImg] -width [image width $rotatedImg]
@@ -166,17 +170,20 @@ proc vorschau {im angle canv} {
   image delete $rotatedImg
 
   catch {$canv conf -height [image height $im] -width [image width $im]}
+
+	$::rotatepb stop
 }
 
 # doRotateOrig
 ##coordinates rotating & cutting processes
 ##creates rotateOrigPic from photosOrigPic
+##'update' variable must be 1 or 0, for updating GUI window during process
 ##called by SetupRotate Save button
-proc doRotateOrig {pic angle} {
+proc doRotateOrig {pic angle update} {
   namespace eval addpicture {}
 
   #1. rotate (takes a long time!)
-  set rotPic [imageRotate $pic $angle]
+  set rotPic [imageRotate $pic $angle $update]
 
   #2. cut and save
   set addpicture::curPic $rotPic
