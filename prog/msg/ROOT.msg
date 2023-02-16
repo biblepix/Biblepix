@@ -1,8 +1,8 @@
 # ~/Biblepix/prog/msg/ROOT.msg
-# English & general texts for BiblePix Setup
+# English texts for BiblePix Setup
 # sourced by SetupGui
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 28may22 pv
+# Updated: 16sep21 pv
 
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S   "......"
@@ -25,9 +25,9 @@
 mcset {} www {https://biblepix.vollmar.ch}
 mcset {} f2ar_txt "\ufe8d\ufedf\ufedc\ufee0\ufee4\ufe94" ;#formatted letter forms!
 mcset {} f2he_txt "הדבר"
-mcset {} f2ltr1_txt "The Word 每日金句 Калом Cugetarea zilei"
+mcset {} f2ltr1_txt "The Word 每日金句 Калом"
 mcset {} f2ltr2_txt "พระคำสำหรับวันศุกร์ Слово An Briathar"
-mcset {} RtlInfoHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי, אלא אם כן המיקום נקבע בפירוט תוך כדי הוספת תצלום לגלריה."
+mcset {} RtlInfoHe "טקסט בכתב עברי יוזז לצד הנגדי באופן אוטומטי."
 mcset {} RtlInfoAr "النص باللغة العربية ينتقل تلقائياً للجهة المقابلة."
 set grussformel "
 Bible & Pix Brothers
