@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15feb23 pv
+# Updated: 16feb23 pv
 
 source $RotateTools
 namespace eval rotatepic {}
@@ -115,6 +115,7 @@ set confirmBtnAction {
   $::anyBtn conf -state disabled
   .rotateW.infoL conf -fg black -bg orange
   set msg::rotateInfo "[mc rotateWait]"
+  if {$lang=="ar"} {set msg::rotateInfo [bidi::fixBidi "[mc rotateWait]"]}
   
   $rotatepb start
 	doRotateOrig $addpicture::curPic $rotatepic::angle 1

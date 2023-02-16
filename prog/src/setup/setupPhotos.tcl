@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 9nov21 pv
+# Updated 16feb23 pv
 set fileJList ""
 
 #Create frames
@@ -41,7 +41,7 @@ canvas .photosC
 pack .photosC -in .phBildF -side left
 label .phPicpathL -textvar picPath
 ##these are packed later by doCollect
-button .phAddBtn -textvar msg::f6Add -activebackground lightgreen -command {addPic $::picPath}
+button .phAddBtn -textvar msg::f6Add -activebackground orange -command {addPic $::picPath}
 button .phDelBtn -textvar msg::f6Del -activebackground red -command {delPic .photosC}
 button .phRotateBtn -activebackground orange -textvar msg::rotatePic -command {source $::SetupRotate}
 
