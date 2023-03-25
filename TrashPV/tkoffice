@@ -1,0 +1,73 @@
+#!/usr/bin/tclsh
+# ~/tkoffice/tkoffice
+# Main launcher prog for TktkoDir Business Software
+# Installation requirements: Tcl/Tk library, SQLite database
+# Updated: 19aug22
+
+#package require sqlite3
+
+package require msgcat
+namespace import msgcat::mc msgcat::mcset
+
+set tko "TkOffice"
+set tkoDir [file normalize [file dirname [info script]]]
+
+set confDir [file join $tkoDir conf]
+set confFile [file join $confDir config.tcl]
+set progDir [file join $tkoDir prog]
+set spoolDir [file join $tkoDir spool]
+set texDir [file join $tkoDir tex]
+set reportDir [file join $tkoDir reports]
+
+#TODO is tmpdir needed? - all latexing is done in texDir now!
+set tmpDir /tmp
+set templateDir [file join $tkoDir templates]
+
+set dumpDir [file join $tkoDir dump]
+set makeConfig [file join $progDir makeConfig.tcl]
+set vorlageTex [file join $templateDir invoice_template.tex]
+set reportTexFile "Abschluss.tex"
+set msgDir [file join $tkoDir msg]
+
+file mkdir $confDir $dumpDir $spoolDir $msgDir $texDir $templateDir $msgDir
+
+msgcat::mcload $msgDir
+  
+#TODO not used!
+proc chooseTkoLang {}  {
+  global tko
+  package require Tk
+  
+  toplevel .tl
+  wm title .tl "$tko Language Selection"
+  wm withdraw .
+
+  label .tl.msgL -width 70 -bg orange -text "* Please choose a language for $tko! \n* Bitte wählen Sie eine Sprache für $tko!"
+	radiobutton .tl.deRB -text Deutsch -value de -variable lang -command {wm forget .tl}
+  radiobutton .tl.enRB -text English -value en -variable lang -command {wm forget .tl}
+  
+  pack .tl.msgL .tl.deRB .tl.enRB -anchor center
+}
+
+#TODO test again! 
+if [catch {source $confFile} res] {
+
+	chooseTkoLang
+  
+  set dbname "Datenbankname eingeben"
+  set dbuser "Nutzername eingeben"
+  
+  source [file join $progDir tkoffice-gui.tcl]
+  after 7000 {
+    .n select 3
+  }
+  
+  
+  NewsHandler::QueryNews "Keine Konfigurationsdatei gefunden. Sie müssen das Programm erst einrichten." red
+
+} else {
+
+  source [file join $progDir tkoffice-gui.tcl]
+	msgcat::mclocale $lang
+
+}
