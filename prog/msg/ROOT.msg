@@ -2,7 +2,7 @@
 # English texts for BiblePix Setup
 # sourced by SetupGui
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 16sep21 pv
+# Updated: 12jul23 pv
 
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S   "......"
@@ -66,7 +66,7 @@ mcset {} uninst "Uninstall $bp"
 mcset {} next "Next \u25bc"
 mcset {} packageRequire {
 * apt-get install [PACKAGE NAME] (Debian/Ubuntu)
-* emerge [PACKAGE NAME] (Gentoo)
+* emerge tiff [PACKAGE NAME] (Gentoo)
 }
 mcset {} packageRequireMissing "$bp needs the Tcl extension '%s'.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo): [mc packageRequire]"
 
