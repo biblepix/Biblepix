@@ -2,13 +2,13 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 10dec21 pv
+# Updated: 27jul23 pv
 
 #Check for Img package
-if [catch {package require Img} ] {
+if [catch {package require Img} err ] {
   msgcatInit $lang
   package require Tk
-  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message [mc packageRequireMissing tkimg]
+  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message {Error message: "$err" \n[mc packageRequireMissing tkimg] }
   exit
 }
 
