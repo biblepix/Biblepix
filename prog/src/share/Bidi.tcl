@@ -3,7 +3,7 @@
 # called by BdfPrint + several Setup widgets
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 7may22
+# Updated: 17aug23
 
 namespace eval bidi {
   
@@ -429,6 +429,8 @@ namespace eval bidi {
     regsub -all {צִיּו} $s {ציו} s
     ##Noach
     regsub -all {נֹח} $s {נח} s
+    ##Job
+    regsub -all {אִיּוֹב} $s {איוב} s
     ##kol, ..chol
     regsub -all {כֹּל} $s {כל} s
     regsub -all {כֹל} $s {כל} s
