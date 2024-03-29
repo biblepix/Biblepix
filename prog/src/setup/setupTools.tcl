@@ -1,7 +1,8 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15feb23 pv
+# Updated: 29mch24 pv
+
 source $SetupResizeTools
 source $JList
 
@@ -428,9 +429,7 @@ proc setManText {lang} {
   }
   
    .manT tag conf bold -font "TkTextFont 14" -foreground maroon
-   
-#TODO reactivate after testing
-#  .manT conf -state disabled
+   .manT conf -state disabled
 
 } ;#END setManText
 
@@ -619,6 +618,269 @@ proc checkItemInside {c item xDiff yDiff args} {
 ###### P r o c s   f o r   S e t u p P h o t o s #########################
 ##########################################################################
 
+#Avoid showing hidden directories in tk_getOpenFile (only Linux?)
+namespace eval ::tk::dialog::file {
+  set showHiddenVar 0
+}
+
+
+#TODO the new step proc for proper tcl list - 
+#Check for canvpic::index OR create & set index to 1 (=next)
+# called by < OR > buttons setting $direction to 0 OR 1
+proc step {direction} {
+
+	namespace eval canvpic {
+		variable index
+		variable picdir
+		variable picL 
+	
+		#Scan picdir if var empty
+		if {$picdir == ""} {
+			set picdir $::desktopPicturesDir ;#if not set by tk_getOpenFile
+		}
+		if {$picL == ""} {
+			scanPicdir $picdir
+		}
+	}
+
+	global canvpic::index
+	global canvpic::picdir
+	global canvpic::picL
+			
+	if [info exists index] {
+		
+		if $direction {
+			incr index
+		} {
+			incr index -1
+		}
+		
+puts $index
+		#Provide looping at beginning / end of list
+		##careful: llength counts from 1, lindex from 0 !!!
+		## A) jump to end if index less than 0
+		if {$index < 0}  {
+		  set index [expr [llength $picL] - 1]
+		## B) jump to beginning if result empty
+		} elseif { [lindex $picL $index] == "" } {
+		  set index 0
+		} 
+puts $index
+
+  	set canvpic::index $index
+	
+	} else {
+	
+		set canvpic::index 1
+	}
+	
+	set picname [lindex $picL $index]
+	#set picpath [file join $picdir $picname]
+	
+	showImage $picname
+	
+} ;#END step
+
+# openFileDialog
+##
+##saves picL & current pic index to canvpic::
+##called by ...
+proc openFileDialog {picdir } {
+  global picTypes tempdir SetupPicThread
+  
+#TODO make global var?
+set imgCanvas .photosC
+  
+	namespace eval canvpic {
+	  variable index
+	}
+
+  #adapt type list to tk_getOpenFile syntax
+  foreach t $picTypes {
+    lappend typeL ".$t"
+  }
+  append gofL "{ {" Image files: "} {" $typeL "} }"
+	
+	set selectedFilePath [tk_getOpenFile -filetypes $gofL -initialdir $picdir]
+	
+	#exit if no result
+	if {$selectedFilePath == ""} {
+	  return
+	}
+	set selectedFileName [file tail $selectedFilePath]
+	
+#TODO export to openImg
+	#Create first image & load into canvas
+	image create photo $selectedFileName -file $selectedFilePath
+	image create photo thumbnail
+	set factor [scaleFactor $selectedFileName]
+	thumbnail copy $selectedFileName -subsample $factor -shrink
+	
+#TODO sort this out?
+#	image create photo photosCanvPic
+#	photosCanvPic copy $selectedFileName -
+  $imgCanvas delete img
+  $imgCanvas create image 0 0 -image thumbnail -anchor nw -tag img
+	
+	#Update picdir in case changed by user
+	set picdir [file dirname $selectedFilePath]
+
+	#Create proper pic list & update canvpic::index	
+	scanPicdir $picdir
+  set index 0
+  catch {set index [lsearch $canvpic::picL $selectedFileName] }
+	set canvpic::index $index 
+
+  
+  puts "Creating thumbnails in background (while watching first pic in list)"
+#  set tmpPicdir [file join $tempdir [file tail $picdir]]	
+#  file mkdir $tmpPicdir
+
+#TODO loadPicThread
+  source $SetupPicThread
+  
+
+#  return "Thumbnails being created in $tmpPicdir"
+  
+} ;#END openFileDialog
+
+
+# scaleFactor TODO for canv or pic???
+##called for each pic by openImg
+proc scaleFactor {pic} {
+    
+  global canvpic::imgCanv canvpic::canvX canvpic::canvY 
+  
+  set imgX [image width $pic]
+  set imgY [image height $pic]
+  set factor [expr int(ceil($imgX. / $canvX))]
+  if {[expr $imgY / $factor] > $canvY} {
+    set factor [expr int(ceil($imgY. / $canvY))]
+  }
+
+  return $factor
+}
+
+# scanPicdir
+##returns list of file names without paths
+##called by openFileDialog
+proc scanPicdir {picdir} {
+	global picTypes
+	
+	#create type list
+	foreach i $picTypes {
+		lappend typeL $i
+	}
+
+  #adapt type list to glob syntax
+  append globL * \{ [join $typeL ,] \} *
+  set picL [glob -nocomplain -tails -directory $picdir $globL]
+
+  #set picdir & picL vars in ::canvpic
+  namespace eval canvpic {
+    variable picdir
+    variable picL 
+  }
+  set canvpic::picdir $picdir
+  set canvpic::picL $picL
+	
+	return $picL
+	
+} ;#END scanPicdir
+
+# showImage
+# Creates 'photosCanvPic' from original pic
+##to be processed by all other progs (no vars!)
+##called by 'step' & 
+proc showImage {img} {
+
+  global os photosdir 
+  global canvpic::imgCanv
+  global canvpic::picdir
+  
+  set imgPath [file join $picdir $img]
+ 
+	#retrieve thumb data 
+#TODO data corrupt!
+	if ![catch { set picdata [tsv::get data $img] } ] {
+    
+    puts "Creating from thumblist..."
+    image create photo thumb
+    thumb put $picdata
+
+	#OR create pic from original 
+	} else { 
+	
+    puts "Creating from directory..."
+#    set factor [scaleFactor $img]
+#puts "Factor: $factor"
+set factor 5
+
+	  image create photo orig -file $imgPath
+    image create photo thumb	  
+    thumb copy orig -subsample $factor -shrink
+
+    orig blank
+  
+  }
+    
+  #Create canvas pic from thumb
+  $imgCanv delete img
+  $imgCanv create image 0 0 -image thumb -anchor nw -tag img
+
+#TODO testing
+thumb write /tmp/thumb.jpg -format JPEG
+#  thumb blank
+	
+	
+#TODO what do we need this for now?	
+#  namespace eval addpicture {}
+#  set addpicture::curPic $imgName
+  
+} ;#END showImg
+
+# showFirstPhoto
+## displays 1st pic as soon as Photos tab opens
+## picL made previously in SetupPhotos
+## called as a bind event in SetupMainFrame 
+proc showFirstPhoto {} {
+  #these vars were preset in SetupBuildGUI
+  global canvpic::picL
+  global canvpic::imgCanv
+  global canvpic::canvX canvpic::canvY
+  
+  $imgCanv conf -width $canvX -height $canvY
+
+  #Show pic in canvas
+  set picname [lindex $picL 0]
+
+#  return $picname
+  
+  showImage $picname
+  
+} ;#END showFirstPhoto
+
+# loadPicThread
+##loads Thread extension
+##called by openFileDialog & SetupPhotos for 1st display of photosdir
+proc loadPicThread {} {
+
+  global SetupPicThread
+  
+  if {  ! [catch {package require Thread}] } {
+    source $SetupPicThread
+    
+  } else {
+    NewsHandler::QueryNews "For faster image viewing: [mc packageRequireMissing 'thread']" red
+  }
+  
+} ;#END loadPicThread
+
+
+
+########################################
+# J O E L   O L D
+########################################
 proc doOpen {bildordner canv} {
   set localJList [openFileDialog $bildordner]
   refreshImg $localJList $canv
@@ -649,52 +911,55 @@ proc doCollect {canv} {
   return $localJList
 }
 
-proc step {localJList fwd canv} {
+proc step-joel {localJList fwd canv} {
   set localJList [jlstep $localJList $fwd]
   refreshImg $localJList $canv
 
   return $localJList
 }
 
-proc openFileDialog {bildordner} {
-  global types platform
-
-  set storage ""
+proc openfiledialog-joel {} {
+	set storage ""
   set parted 0
   set localJList ""
 
-  set selectedFile [tk_getOpenFile -filetypes $types -initialdir $bildordner]
   if {$selectedFile != ""} {
     set pos [string last "/" $selectedFile]
     set folder [string range $selectedFile 0 [expr $pos - 1]]
+	
+  	if {$platform == "unix"} {
+    	set fileNames [glob -nocomplain -directory $folder *.jp*g *.JP*G *.png *.PNG]
+  	} elseif {$platform == "windows"} {
+    	set fileNames [glob -nocomplain -directory $folder *.jpg *.jpeg *.png]
+  	}
+  	
+  	set partialFileName ""
+  	set parted 0
+  	set localJList ""
+  	
+  	foreach fileName $fileNames {
+    	if { [file exists $fileName] } {
+      	set localJList [jappend $localJList $fileName]
+    	} else {
+      	if {$parted} {
+        	append partialFileName " " $fileName
+        	if { [file exists $partialFileName] } {
+          	set parted 0
+          	set localJList [jappend $localJList $partialFileName]
+        	}
+      	} else {
+        	set parted 1
+        	set partialFileName $fileName
+      	}
+    	}
+  	}
 
-    if {$platform == "unix"} {
-      set fileNames [glob -nocomplain -directory $folder *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
-    } elseif {$platform == "windows"} {
-      set fileNames [glob -nocomplain -directory $folder *.jpg *.jpeg *.png]
-    }
-
-    foreach fileName $fileNames {
-      if { [file exists $fileName] } {
-        set localJList [jappend $localJList $fileName]
-      } else {
-        if {$parted} {
-          append storage " " $fileName
-          if { [file exists $storage] } {
-            set parted 0
-            set localJList [jappend $localJList $storage]
-          }
-        } else {
-          set parted 1
-          set storage $fileName
-        }
-      }
-    }
+		#loadImagesInThread $localJList
 
     set fn [string range [jlfirst $localJList] [expr $pos + 1] end]
     set selectedFN [string range $selectedFile [expr $pos + 1] end]
 
-    while {![string equal $fn $selectedFN]} {
+    while ![string equal $fn $selectedFN] {
       set localJList [jlstep $localJList 1]
       set fn [string range [jlfirst $localJList] [expr $pos + 1] end]
      }
@@ -705,9 +970,10 @@ proc openFileDialog {bildordner} {
 
 proc refreshFileList {} {
   global platform photosdir
-  set storage ""
+  set partialFileName ""
   set parted 0
   set localJList ""
+
 
   if {$platform == "unix"} {
     set fileNames [glob -nocomplain -directory $photosdir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
@@ -720,14 +986,14 @@ proc refreshFileList {} {
       set localJList [jappend $localJList $fileName]
     } else {
       if {$parted} {
-        append storage " " $fileName
-        if { [file exists $storage] } {
+        append partialFileName " " $fileName
+        if { [file exists $partialFileName] } {
           set parted 0
-          set localJList [jappend $localJList $storage]
+          set localJList [jappend $localJList $partialFileName] 
         }
       } else {
         set parted 1
-        set storage $fileName
+        set partialFileName $fileName
       }
     }
   }
@@ -758,32 +1024,6 @@ proc refreshImg {localJList canv} {
   set picPath $fn
 }
 
-# openImg - called by refreshImg
-#Creates functions 'photosOrigPic' and 'photosCanvPic'
-##to be processed by all other progs (no vars!)
-proc openImg {imgFilePath imgCanvas} {
-  image create photo photosOrigPic -file $imgFilePath
-
-  set canvX [lindex [$imgCanvas configure -width] end]
-  set canvY [lindex [$imgCanvas configure -height] end]
-  
-  #scale photosOrigPic to photosCanvPic
-  set imgX [image width photosOrigPic]
-  set imgY [image height photosOrigPic]
-  set factor [expr int(ceil($imgX. / $canvX))]
-
-  if {[expr $imgY / $factor] > $canvY} {
-    set factor [expr int(ceil($imgY. / $canvY))]
-  }
-
-  catch {image delete photosCanvPic}
-  image create photo photosCanvPic
-  photosCanvPic copy photosOrigPic -subsample $factor -shrink
-  $imgCanvas create image 0 0 -image photosCanvPic -anchor nw -tag img
-  
-  namespace eval addpicture {}
-  set addpicture::curPic photosOrigPic
-} ;#END openImg
 
 proc hideImg {imgCanvas} {
   $imgCanvas delete img

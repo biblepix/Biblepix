@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 3jan23 pv
+# Updated: 27mch24 pv
 
 source $SetupTools
 source $TwdTools
@@ -119,3 +119,17 @@ if { [info exists Debug] && $Debug } {
 if [isRtL $lang] {
 	setWidgetDirection right
 }
+
+#Prepare photos canvas size
+set screenX [winfo screenwidth .]
+set screenY [winfo screenheight .]
+set maxCanvX [expr round([winfo width .] / 1.5)]
+set factor [expr ceil($screenX. / $maxCanvX)]
+set canvX [expr round($screenX / $factor)]
+set canvY [expr round($screenY / $factor)]
+##export
+set canvpic::canvX $canvX
+set canvpic::canvY $canvY
+
+#Prepare photosdir thumbs in background
+source $SetupPicThread
