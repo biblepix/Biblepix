@@ -1,18 +1,18 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 3jan23 pv
+# Updated 30mch24 pv
 
 #Create frames & titles
 pack [frame .mailLeftF] -in .emailF -side left -anchor nw
 pack [frame .mailRightF] -in .emailF -side right -anchor ne -fill both
-pack [frame .mailTop1F] -in .mailRightF -fill x
-pack [frame .mailTop2F] -in .mailRightF -fill x
+pack [frame .mailTop1F] -in .mailRightF -fill none
+pack [frame .mailTop2F] -in .mailRightF -fill none
 pack [frame .mailBotRightF -bg $bg -bd 5 -relief sunken -pady 30 -padx 30] -in .mailRightF -fill both -padx 30 -pady 30 -anchor center
 
 #Create labels & widgets
 label .mailMainTit -textvar msg::f3Tit -font bpfont3
-label .mailDesiredlangL -textvar msg::f3Sprachen -font bpfont1 -bg beige -bd 1 -relief sunken -padx 7 -pady 3
+label .mailDesiredlangL -textvar msg::f3Sprachen -font TkHeadingFont -padx 7 -pady 3
 checkbutton .mailSigyesnoCB -textvar msg::f3Btn -variable sigyesState -command {toggleBtnstate}
 pack .mailMainTit -in .mailLeftF -anchor w
 pack .mailSigyesnoCB -in .mailLeftF -anchor w 
@@ -77,5 +77,5 @@ if {$twdfile != ""} {
     .mailSigT tag add rtl 1.0 end
     .mailSigT tag conf rtl -justify right
     .mailSigT tag conf www -justify left
-}
+  }
 }

@@ -3,7 +3,7 @@
 # called by BdfPrint + several Setup widgets
 # optional 'args' cuts out vowels (needed for BdfPrint)
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 17aug23
+# Updated: 19feb24
 
 namespace eval bidi {
   
@@ -466,6 +466,9 @@ namespace eval bidi {
     
     #7. Eliminate all remaining vowels
     regsub -all {[\u0591-\u05C7]} $s {} s
+    
+    #8. Allow max 2 yud's
+    regsub -all {ייי} $s {יי} s
 
     return $s
     

@@ -1,6 +1,6 @@
 # BiblePix Release Notes
 
-## Version 4.1 Top Features
+## Version 4.2 Top Features
 
 - Setup program runs in 10 languages
 - 5 font sizes for all languages (added 12pt)
@@ -24,6 +24,7 @@ Arabic & Hebrew display now faultless (fully vowelled text in the Setup, devowel
 - Setup (Photos): Text position can now be set for each individual picture when adding to the BiblePix photo collection
 - Setup (Photos): Ill-dimensioned pictures can be fitted to screen dimensions before saving
 - Setup (e-mail): desired language(s) for mail signatures now choosable
+- Setup (Photos): faster image loading through implementation of threads
 
 ### New colour management
 
