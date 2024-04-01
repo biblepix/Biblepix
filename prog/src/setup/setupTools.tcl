@@ -731,12 +731,11 @@ set imgCanvas .photosC
   catch {set index [lsearch $canvpic::picL $selectedFileName] }
 	set canvpic::index $index 
 
-  
-  puts "Creating thumbnails in background (while watching first pic in list)"
+#  puts "Creating thumbnails in background (while watching first pic in list)"
 #  set tmpPicdir [file join $tempdir [file tail $picdir]]	
 #  file mkdir $tmpPicdir
 
-#TODO loadPicThread
+#loadPicThread
   source $SetupPicThread
   
 
@@ -744,12 +743,46 @@ set imgCanvas .photosC
   
 } ;#END openFileDialog
 
+# setPhotosCanvSize
+##sets canv size after GUI is ready
+##called by ShowFirstPhoto
+proc setPhotosCanvSize {} {
+  
+  namespace eval canvpic {
+    variable canvX
+    variable canvY  
+  }
+  
+  set screenX [winfo screenwidth .]
+  set screenY [winfo screenheight .]
+  set maxCanvX [expr round([winfo width .] / 1.5)]
 
-# scaleFactor TODO for canv or pic???
-##called for each pic by openImg
+ 
+##TODO round rather than ceil here?
+  #set factor [expr ceil($screenX. / $maxCanvX)]
+  set factor [expr round($screenX. / $maxCanvX)]
+
+  set canvX [expr round($screenX / $factor)]
+  set canvY [expr round($screenY / $factor)]
+
+  ##export
+
+  set canvpic::canvX $canvX
+  set canvpic::canvY $canvY
+  
+} ;#END setPhotosCanvSize
+
+# scaleFactor (for pic on canvas)
+## scales original pic down to canvas size
+## called by openImg for each pic
 proc scaleFactor {pic} {
     
   global canvpic::imgCanv canvpic::canvX canvpic::canvY 
+ 
+  #make sure canv size up-to-date
+  if {$canvX < 500} {
+    setPhotosCanvSize
+  }
   
   set imgX [image width $pic]
   set imgY [image height $pic]
@@ -801,22 +834,22 @@ proc showImage {img} {
   set imgPath [file join $picdir $img]
  
 	#retrieve thumb data 
-#TODO data corrupt!
 	if ![catch { set picdata [tsv::get data $img] } ] {
     
-    puts "Creating from thumblist..."
+    puts "Creating $img from thumblist..."
     image create photo thumb
     thumb put $picdata
 
 	#OR create pic from original 
 	} else { 
 	
-    puts "Creating from directory..."
-#    set factor [scaleFactor $img]
+    puts "Creating $imgPath from directory..."
+ 
 #puts "Factor: $factor"
-set factor 5
+#set factor 5
 
-	  image create photo orig -file $imgPath
+	  image create photo orig -file $imgPath   
+	  set factor [scaleFactor orig]
     image create photo thumb	  
     thumb copy orig -subsample $factor -shrink
 
@@ -828,8 +861,8 @@ set factor 5
   $imgCanv delete img
   $imgCanv create image 0 0 -image thumb -anchor nw -tag img
 
-#TODO testing
-thumb write /tmp/thumb.jpg -format JPEG
+#TODO testing -OK
+#thumb write /tmp/thumb.jpg -format JPEG
 #  thumb blank
 	
 	
@@ -844,20 +877,22 @@ thumb write /tmp/thumb.jpg -format JPEG
 ## picL made previously in SetupPhotos
 ## called as a bind event in SetupMainFrame 
 proc showFirstPhoto {} {
-  #these vars were preset in SetupBuildGUI
+  
   global canvpic::picL
   global canvpic::imgCanv
   global canvpic::canvX canvpic::canvY
   
+  #Set canv size 
+  setPhotosCanvSize
   $imgCanv conf -width $canvX -height $canvY
-
+  
+  #Load thumbs in background
+  after idle loadPicThread
+  
   #Show pic in canvas
   set picname [lindex $picL 0]
-
-#  return $picname
-  
   showImage $picname
-  
+
 } ;#END showFirstPhoto
 
 # loadPicThread
