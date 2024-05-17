@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds Main Frame
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5jan23 pv
+# Updated: 27mch24 pv
 
 #source $SetupTools
 #source $TwdTools
@@ -81,3 +81,10 @@ if [info exists httpError] {
 
 #Fill tabs
 source $SetupBuild
+
+#Check notebook tab changes for Photos to load first canv pic
+bind .nb <<NotebookTabChanged>> {
+  if {[.nb select] == ".photosF"} {
+    showFirstPhoto
+  }
+}

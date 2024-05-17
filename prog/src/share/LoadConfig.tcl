@@ -96,7 +96,7 @@ proc setChinafontBold {fontsize} {
   }
   return $ChinafontB
 }
-# setCinafontItalic - TODO geht noch nicht! - probably unnecessary anyway
+# setChinafontItalic - TODO geht noch nicht! - probably unnecessary anyway
 ##sets Chinese Italic font (refs) to next smaller regular if exists
 ##called by BdfPrint
 proc setChinafontItalic {fontsize} {

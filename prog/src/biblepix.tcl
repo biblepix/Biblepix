@@ -71,11 +71,15 @@ set pidfile [open $piddir/[pid] w]
 close $pidfile
 
 #4. C r e a t e   i m a g e   & start slideshow
+
 if {$enablepic} {
 
   #Run once for all Desktops
   if { [info exists Debug] && $Debug } {
+#after 30000 {
     source $Image
+#}
+
   } else {
     catch {source $Image}
   }
@@ -88,12 +92,23 @@ if {$enablepic} {
  
   #Run multiple times if $slideshow
   if {$slideshow > 0} {
+
+puts $slideshow
   
     #rerun until pidfile renamed by new instance
     set pidfile $piddir/[pid]
     set pidfiledatum [clock format [file mtime $pidfile] -format %d]
-    while {[file exists $pidfile]} {
+   
+    
+    
+#TODO öppis stimmt do nöd: 'sleep' rechnet nach Sekunden!!!!!!!!!!!!!!
+    while [file exists $pidfile] {
+    
       if {$pidfiledatum==$heute} {
+
+
+#after [expr $slideshow * 1000] {}
+   
         sleep [expr $slideshow * 1000]
 
         #export new TwdFile
@@ -109,7 +124,8 @@ if {$enablepic} {
         if { [info exists Debug] && $Debug } {
           puts $err
         }
-  
+
+ 
       } else {
       
         #Calling new instance of myself

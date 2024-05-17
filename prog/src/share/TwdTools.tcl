@@ -435,8 +435,7 @@ proc getTodaysTwdSig {TwdFileName {setup 0}} {
   ##check if Bidi (needed for Setup)
   set RtL [isBidi $TwdSig]
   if !$setup {set RtL 0}
-    puts "twdsigrtl $RtL"
-    
+      
   ##get 1st parole
   set parolNode [getTwdParolNode 1 $twdTodayNode]
   set TwdSig [appendParolToText $parolNode $TwdSig $ind $RtL]

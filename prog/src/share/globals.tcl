@@ -2,8 +2,8 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 28may22 pv
-set version "4.1"
+# Updated: 22mch24 pv
+set version "4.2"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
@@ -13,6 +13,13 @@ set platform $::tcl_platform(platform)
 set os $::tcl_platform(os)
 set tclpath [auto_execok tclsh]
 set wishpath [auto_execok wish]
+
+#Temporary files (used in setupPhotos, ...)
+if {$os == "Linux"} {
+  set tempdir "/tmp"
+} elseif {$os == "Windows"} {
+  set tempdir [file normalize [file join %localappdata% Temp]]
+}
 
 #Rootdir location
 ##Git download (any place on PC)
@@ -77,6 +84,7 @@ lappend filePathL [set SetupDesktopPng [file join $setupdir setupDesktop.png]]
 lappend filePathL [set SetupEmail [file join $setupdir setupEmail.tcl]]
 lappend filePathL [set SetupInternational [file join $setupdir setupInternational.tcl]]
 lappend filePathL [set SetupPhotos [file join $setupdir setupPhotos.tcl]]
+lappend filePathL [set SetupPicThread [file join $setupdir setupPicThread.tcl]]
 lappend filePathL [set SetupManual [file join $setupdir setupManual.tcl]]
 lappend filePathL [set SetupResizePhoto [file join $setupdir setupResizePhoto.tcl]]
 lappend filePathL [set SetupResizeTools [file join $setupdir setupResizeTools.tcl]]
@@ -200,19 +208,16 @@ set lumFactor1 -0.2
 set lumFactor3 0.2
 
 #Bildformate & DesktopPicturesDir
+##the 'types' variable is used by tk_getOpenFile and scanPicdir
 if {$platform == "unix"} {
   set HOME $::env(HOME)
   ##Note:DesktopPicturesDir changes with languages > variable in Config & switch in LoadConfig
-  set types {
-    { {Image Files} {.jpg .jpeg .JPG .JPEG .png .PNG} }
-  }
-
+  lappend picTypes jpg jpeg JPG JPEG png PNG bmp BMP gif GIF ppm tif tiff TIF TIFF
+    
 } elseif {$platform == "windows"} {
   #DesktopPicturesDir is always "Pictures"
   set DesktopPicturesDir $::env(USERPROFILE)/Pictures
-  set types {
-    { {Image Files} {.jpg .jpeg .png} }
-  }
+  lappend picTypes jpg jpeg png bmp gif ppm tif tiff
 }
 
   #-----------------------------------------------------------------------------

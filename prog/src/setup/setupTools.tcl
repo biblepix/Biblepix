@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29mch24 pv
+# Updated: 5may24 pv
 
 source $SetupResizeTools
 source $JList
@@ -38,13 +38,20 @@ proc setTexts {lang} {
 ##adds new Picture to BiblePix Photo collection
 ##setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
 ##called by SetupPhotos
-proc addPic {origPicPath} {
+proc addPic {} {
   global photosdir v
+  global canvpic::curpic
+  global canvpic::picdir
+
+  #Create original pic for processing
+  set origPicPath [file join $picdir $curpic]
+  image create photo photosOrigPic -file $origPicPath
+
   source $::SetupResizePhoto
   source $::SetupResizeTools
 
   #Set path & exit if already there
-  set targetPicPath [file join $photosdir [setPngFileName [file tail $origPicPath]]]
+  set targetPicPath [file join $photosdir $curpic]
   if [file exists $targetPicPath] {
     NewsHandler::QueryNews $msg::picSchonDa red
     return 1
@@ -90,22 +97,34 @@ proc addPic {origPicPath} {
     openResizeWindow
 
   }
-  #Reset standards
-  set ::numPhotos [llength [glob $photosdir/*]]
+  #Reset standards & cleanup
+  scanPicdir $photosdir
   .phAddBtn conf -bg #d9d9d9
+  namespace delete addpicture
   
 } ;#END addPic
+
+# deletePhoto
+##deletes 1 pic from Photosdir & updates vars
+##called by .phDelBtn in SetupPhotos 
+proc deletePhoto {} {
+  global canvpic::curpic
+  global canvpic::picL
+  global canvpic::index
+  global photosdir
+  
+  file delete [file join $photosdir $curpic]
+  NewsHandler::QueryNews "$curpic has been removed from BiblePix Photo collection." lightblue
+  
+  #Cleanup
+  scanPicdir $photosdir 
+  showImage [lindex $picL [incr index]] 
+}
 
 # delPic
 ##deletes picture from photo collection
 ##called by SetupPhotos
-proc delPic {c} {
-  global photosdir fileJList picPath
-  file delete $picPath
-  set fileJList [deleteImg $fileJList $c]
-  NewsHandler::QueryNews "msg::deletedPicMsg $picPath" orange
-  set ::numPhotos [llength [glob $photosdir/*]]
-}
+
 
 #######################################################################
 ###### P r o c s   f o r   N e w s   h a n d l i n g ##################
@@ -623,63 +642,62 @@ namespace eval ::tk::dialog::file {
   set showHiddenVar 0
 }
 
-
-#TODO the new step proc for proper tcl list - 
-#Check for canvpic::index OR create & set index to 1 (=next)
-# called by < OR > buttons setting $direction to 0 OR 1
+# step
+##moves pic index forward or backward by 1 or 10
+# called by < >> << > buttons
 proc step {direction} {
-
-	namespace eval canvpic {
-		variable index
-		variable picdir
-		variable picL 
-	
-		#Scan picdir if var empty
-		if {$picdir == ""} {
-			set picdir $::desktopPicturesDir ;#if not set by tk_getOpenFile
-		}
-		if {$picL == ""} {
-			scanPicdir $picdir
-		}
-	}
-
 	global canvpic::index
 	global canvpic::picdir
 	global canvpic::picL
-			
-	if [info exists index] {
-		
-		if $direction {
-			incr index
-		} {
-			incr index -1
-		}
-		
-puts $index
-		#Provide looping at beginning / end of list
-		##careful: llength counts from 1, lindex from 0 !!!
-		## A) jump to end if index less than 0
-		if {$index < 0}  {
-		  set index [expr [llength $picL] - 1]
-		## B) jump to beginning if result empty
-		} elseif { [lindex $picL $index] == "" } {
-		  set index 0
-		} 
-puts $index
-
-  	set canvpic::index $index
 	
-	} else {
-	
-		set canvpic::index 1
+	#ilength = counting from 0
+	##careful: llength counts from 1, lindex from 0 !!!
+	set ilength [expr [llength $picL] -1]
+  set bigstep 10
+		
+	#LOOPS A + B:
+	## A) 1 step forward: jump to beginning if result empty
+	if {$direction == ">"} {
+	  incr index 1
+	  if {$index > $ilength} {
+	    set index 0
+	  }
 	}
-	
+
+	## B) 1 step back: jump to end if index less than 0
+	if {$direction == "<"} {
+	  incr index -1
+    if {$index < 0} {
+      set index $ilength
+    }
+  }
+
+  #LOOPS C & D:
+	## C) bigstep forward
+	if {$direction == ">>"} {
+	  incr index ${bigstep}
+	  if {$index > $ilength} {
+		  set index [expr $index - $ilength]
+	  }
+	}
+
+	## D) bigstep back
+	if {$direction == "<<"} {
+	  incr index -${bigstep}
+	  if {$index < 0} {
+	    set index [expr $index + $ilength]
+	  }
+	}
+		 
+ 	set canvpic::index $index
+ 	set canvpic::userI [expr $index + 1]	
+
 	set picname [lindex $picL $index]
-	#set picpath [file join $picdir $picname]
 	
 	showImage $picname
 	
 } ;#END step
+
 
 # openFileDialog
 ##
@@ -687,14 +705,9 @@ puts $index
 ##called by ...
 proc openFileDialog {picdir } {
   global picTypes tempdir SetupPicThread
-  
-#TODO make global var?
-set imgCanvas .photosC
-  
-	namespace eval canvpic {
-	  variable index
-	}
-
+  global canvpic::imgCanv
+  global canvpic::picL
+ 
   #adapt type list to tk_getOpenFile syntax
   foreach t $picTypes {
     lappend typeL ".$t"
@@ -707,39 +720,29 @@ set imgCanvas .photosC
 	if {$selectedFilePath == ""} {
 	  return
 	}
+	
 	set selectedFileName [file tail $selectedFilePath]
-	
-#TODO export to openImg
-	#Create first image & load into canvas
-	image create photo $selectedFileName -file $selectedFilePath
-	image create photo thumbnail
-	set factor [scaleFactor $selectedFileName]
-	thumbnail copy $selectedFileName -subsample $factor -shrink
-	
-#TODO sort this out?
-#	image create photo photosCanvPic
-#	photosCanvPic copy $selectedFileName -
-  $imgCanvas delete img
-  $imgCanvas create image 0 0 -image thumbnail -anchor nw -tag img
-	
-	#Update picdir in case changed by user
-	set picdir [file dirname $selectedFilePath]
-
-	#Create proper pic list & update canvpic::index	
-	scanPicdir $picdir
-  set index 0
-  catch {set index [lsearch $canvpic::picL $selectedFileName] }
-	set canvpic::index $index 
-
-#  puts "Creating thumbnails in background (while watching first pic in list)"
-#  set tmpPicdir [file join $tempdir [file tail $picdir]]	
-#  file mkdir $tmpPicdir
-
-#loadPicThread
-  source $SetupPicThread
   
+  set canvpic::picdir $picdir
+  resetPhotosGUI
+  
+  showImage $selectedFilePath
 
-#  return "Thumbnails being created in $tmpPicdir"
+	#Update picdir & update picL
+	set picdir [file dirname $selectedFilePath]
+	scanPicdir $picdir
+
+	#Set pic index
+	set picL $canvpic::picL
+  if [ catch {set index [lsearch $picL $selectedFileName] } err] {
+    set index 0
+    puts $err
+  }
+	set canvpic::index $index
+	set canvpic::userI [expr $index + 1]
+
+	#Start Threading
+  loadPicThread
   
 } ;#END openFileDialog
 
@@ -800,13 +803,12 @@ proc scaleFactor {pic} {
 proc scanPicdir {picdir} {
 	global picTypes
 	
-	#create type list
+	#create type list with pic endings & glob syntax
 	foreach i $picTypes {
-		lappend typeL $i
+		lappend typeL .$i
 	}
-
-  #adapt type list to glob syntax
   append globL * \{ [join $typeL ,] \} *
+
   set picL [glob -nocomplain -tails -directory $picdir $globL]
 
   #set picdir & picL vars in ::canvpic
@@ -816,6 +818,7 @@ proc scanPicdir {picdir} {
   }
   set canvpic::picdir $picdir
   set canvpic::picL $picL
+	set ::numPhotos [llength $picL]
 	
 	return $picL
 	
@@ -832,9 +835,19 @@ proc showImage {img} {
   global canvpic::picdir
   
   set imgPath [file join $picdir $img]
- 
+  set dirname [file tail $picdir]
+  
+  ##für Anzeige
+  set ::picPath $imgPath
+  
+  
+  namespace eval canvpic {
+    variable curpic
+  }
+  set canvpic::curpic $img
+   
 	#retrieve thumb data 
-	if ![catch { set picdata [tsv::get data $img] } ] {
+	if ![catch { set picdata [tsv::get $dirname $img] } ] {
     
     puts "Creating $img from thumblist..."
     image create photo thumb
@@ -844,39 +857,38 @@ proc showImage {img} {
 	} else { 
 	
     puts "Creating $imgPath from directory..."
- 
-#puts "Factor: $factor"
-#set factor 5
 
-	  image create photo orig -file $imgPath   
+		if [catch { image create photo orig -file $imgPath } ] {
+			NewsHandler::QueryNews "$img: Picture format not recognised. Skipping." red
+			return 1
+		}
+		   
 	  set factor [scaleFactor orig]
     image create photo thumb	  
     thumb copy orig -subsample $factor -shrink
 
     orig blank
-  
   }
     
   #Create canvas pic from thumb
   $imgCanv delete img
   $imgCanv create image 0 0 -image thumb -anchor nw -tag img
-
-#TODO testing -OK
-#thumb write /tmp/thumb.jpg -format JPEG
-#  thumb blank
 	
-	
-#TODO what do we need this for now?	
-#  namespace eval addpicture {}
-#  set addpicture::curPic $imgName
-  
-} ;#END showImg
+} ;#END showImage
 
 # showFirstPhoto
 ## displays 1st pic as soon as Photos tab opens
 ## picL made previously in SetupPhotos
 ## called as a bind event in SetupMainFrame 
 proc showFirstPhoto {} {
+
+  #this is set when first called to avoid multiple photosdir threads
+  ##i.e. if SetupPhotos is visisted more than once nothing happens and
+  ##the old pics series from photosdir is still present
+  if [info exists ::firstPhotoDone] {
+    return 1
+  }
+  set ::firstPhotoDone 1
   
   global canvpic::picL
   global canvpic::imgCanv
@@ -887,7 +899,7 @@ proc showFirstPhoto {} {
   $imgCanv conf -width $canvX -height $canvY
   
   #Load thumbs in background
-  after idle loadPicThread
+  loadPicThread
   
   #Show pic in canvas
   set picname [lindex $picL 0]
@@ -912,6 +924,40 @@ proc loadPicThread {} {
 } ;#END loadPicThread
 
 
+proc resetPhotosGUI {} {
+
+  global canvpic::picdir photosdir
+  global canvpic::picL
+  global canvpic::index
+
+  set ::numPhotos [llength $picL]
+  
+  # 1) Pack permanents
+  pack .phCountNum .phCountTxt .phPicindexL .phPicindexTxt -in .phBotF -side right
+
+  # 2) Pack BiblePix photos mode
+  if {$picdir == $photosdir} {
+
+    pack .phDelBtn  -in .phBotF1 -side left -anchor w
+    pack .phPicpathL .phPicnameL -in .phBotF2 -anchor n
+    pack forget .phAddBtn .phShowCollectionBtn .phRotateBtn 
+  
+  # 3) Pack "Add new" mode
+  } else {
+    
+    pack .phShowCollectionBtn -in .phBarF -side left
+    pack .phAddBtn -in .phBotF1 -side left -anchor w
+    pack .phRotateBtn -in .phBotF1 -side left -anchor w
+    pack .phPicpathL .phPicnameL -in .phBotF2
+    pack forget .phDelBtn 
+  
+  }
+  
+} ;#END resetPhotosGUI
+
+
+
+
 
 ########################################
 # J O E L   O L D
@@ -925,7 +971,7 @@ proc doOpen {bildordner canv} {
   }
 
   pack .phPicpathL -in .phBotF -side left -fill x
-  pack .phCollectBtn -in .phBarF -side right -fill x
+  pack .phShowCollectionBtn -in .phBarF -side right -fill x
   pack forget .phDelBtn .phCountNum .phCountTxt
 
   #Add Rotate button
@@ -941,7 +987,7 @@ proc doCollect {canv} {
 
   pack .phDelBtn .phPicpathL -in .phBotF -side left -fill x
   pack .phCountNum .phCountTxt -in .phBarF -side right
-  pack forget .phAddBtn .phCollectBtn .phRotateBtn
+  pack forget .phAddBtn .phShowCollectionBtn .phRotateBtn
 
   return $localJList
 }

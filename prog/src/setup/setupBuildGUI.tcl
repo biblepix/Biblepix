@@ -120,16 +120,3 @@ if [isRtL $lang] {
 	setWidgetDirection right
 }
 
-#Prepare photos canvas size
-set screenX [winfo screenwidth .]
-set screenY [winfo screenheight .]
-set maxCanvX [expr round([winfo width .] / 1.5)]
-set factor [expr ceil($screenX. / $maxCanvX)]
-set canvX [expr round($screenX / $factor)]
-set canvY [expr round($screenY / $factor)]
-##export
-set canvpic::canvX $canvX
-set canvpic::canvY $canvY
-
-#Prepare photosdir thumbs in background
-source $SetupPicThread

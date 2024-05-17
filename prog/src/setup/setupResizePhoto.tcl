@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 28jan23 pv
+# Updated 16may24 pv
 
 source $::AnnotatePng
   
@@ -33,6 +33,8 @@ proc openResizeWindow {} {
 
   #Create toplevel window w/canvas & pic
   set w [toplevel .resizePhoto -bg lightblue -padx $margin -pady $margin -height $winX -width $winY]
+  after idle {tk::PlaceWindow .resizePhoto center}
+  
   set resizePic::c [canvas $w.resizeCanv -bg lightblue -height $canvY -width $canvX]
   $resizePic::c create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
 	#Create progress bar
@@ -105,6 +107,8 @@ proc openReposWindow {pic} {
 
   set reposPic::reposCanvPic [image create photo]
   set reposPic::w [toplevel .reposPhoto -bg lightblue -padx 20 -pady 20 -height 400 -width 600]
+  after idle {tk::PlaceWindow .reposPhoto center}
+  
   set reposPic::canv [canvas $reposPic::w.reposCanv -bg lightblue]
   $reposPic::canv create image 0 0 -image $reposPic::reposCanvPic -anchor nw -tags {img mv}
   pack $reposPic::canv

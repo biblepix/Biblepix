@@ -2,20 +2,28 @@
 # Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16feb23 pv
+# Updated: 17may24 pv
 
+#TODO make sure photosCanvPic is found!!!
+image create photo photosCanvPic
+photosCanvPic copy thumb
+ 
 source $RotateTools
 namespace eval rotatepic {}
 namespace eval addpicture {}
 
-if ![info exists addpicture::curPic] {
-  set addpicture::curPic photosOrigPic
+set picname $canvpic::curpic
+set picdir  $canvpic::picdir
+
+namespace eval rotatepic {
+        variable rotateCanvPic ;#rotateCanvPic
+        set rotateCanvPic thumb
 }
 
 #Create top window with 4 frames
 set rotatepic::W [toplevel .rotateW -width 600 -height 400]
-catch {tk::PlaceWindow .rotateW center}
-tk::PlaceWindow .rotateW center
+after idle {tk::PlaceWindow .rotateW center}
+
 set F0 [frame ${rotatepic::W}.infoF -bg beige]
 set F1 [frame ${rotatepic::W}.topF]
 set col1 [gradient beige -0.2]
@@ -34,8 +42,14 @@ set anyBtn $F3.anyBtn
 
 #Create photo canvas & copy over photosCanvPic
 canvas $mC -width 200 -height 110 -borderwidth 2 -relief sunken -bg lightblue
-set rotatepic::rotateCanvPic [image create photo]
-$rotatepic::rotateCanvPic copy photosCanvPic
+
+#Create original pic -TODO only at end?
+namespace eval rotatepic {
+  set path [file join $canvpic::picdir $canvpic::curpic]
+  image create photo rotateOrigPic -file $path
+}
+set addpicture::curPic rotateOrigPic
+
 set rotatepic::angle 0
 set ::v 0
 
@@ -105,6 +119,7 @@ set confirmBtnAction {
     return 1
   }
   
+#TODO what's happening here????????????????????
 	#Run foreground actions
   vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
   photosCanvPic blank
@@ -170,3 +185,4 @@ pack $anyBtn -pady 10
 bind $rotatepic::W <Escape> $cancelBtnAction
 bind $rotatepic::W <Return> $confirmBtnAction
 Show.Modal $rotatepic::W -destroy 0 -onclose $cancelBtnAction
+
