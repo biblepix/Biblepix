@@ -95,7 +95,7 @@ mcset pl f2Txt "Przy każdym uruchomieniu $bp umieści 'Słowo' na tle pulpitu. 
 # S E T U P   P H O T O S 
 mcset pl f6Tit "Zarządzaj swoimi zdjęciami w $bp"
 mcset pl f6Txt "Tutaj możesz dodać wybrane zdjęcia ze swojego katalogu zdjęć i umieścić je w kolekcji zdjęć $bp, lub je z tej kolekcji usunąć. Zdjęcia powinny być w formacie poziomym i posiadać proste (wyraźne) kolory w celu uzyskania najlepszej widoczności tekstu Biblijnego.\n\nJeśli rozmiar zdjęcia nie jest zgodny z wymiarami ekranu, $bp dopasuje je i zachowa w katalogu zdjęć $bp. Jeżeli wymagana jest zmiana wymiarów, program poprosi o wybranie odpowiedniej sekcji zdjęcia oraz pozycji kolejnych tekstów Biblijnych.\n\nNiezależnie od tego, oryginalny format zdjęcia pozostaje niezmieniony."
-mcset pl f6numPhotosTxt "Liczba zdjęć: "
+mcset pl f6numPhotosTxt "Zdjęć"
 mcset pl f6Add "Dodaj do Kolekcji zdjęć $bp:"
 mcset pl f6Show "Pokaż Kolekcję zdjęć $bp"
 mcset pl f6Find "Znajdź nowe zdjęcia"

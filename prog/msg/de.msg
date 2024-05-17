@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 # INFO: Reintextmenge 1450 Wörter/11000 Zeichen (abzgl. 100 mcset * 3 W. = 300 W.)
-# Updated: 22sep21 pv
+# Updated: 4may24 pv
 
 # U N T R A N S L A T A B L E S
 set bp "BibelPix"
@@ -34,7 +34,7 @@ mcset de packageRequireMissing "$bp benötigt die Tcl-Erweiterung '%s'. Bitte in
 mcset de next "Nächstes \u25bc"
 mcset de welcTit "Willkommen beim Einrichtungsprogramm von $bp!"
 mcset de welcSubtit1 "Was ist $bp?"
-mcset de welcTxt1 "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' entwickelt wird.\n\n'Bibel 2.0' setzt sich zum Ziel, $dw in einer wachsenden Anzahl von Sprachen zu verbreiten.\n$dw besteht aus 2 ausgewählten Bibelsprüchen für jeden Tag des Jahres.\n\n$bp kann $dw in vielfältiger Weise auf Ihrem PC anzeigen."
+mcset de welcTxt1 "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' entwickelt wird.\n\n'Bibel 2.0' setzt sich zum Ziel, $dw in einer wachsenden Anzahl von Sprachen zu verbreiten.\n$dw besteht aus 2 ausgewählten Bibelsprüchen für jeden Tag des Jahres.\n\n$bp kann $dw auf vielfältige Weise auf Ihrem PC anzeigen."
 mcset de welcSubtit2 "Was sind Ihre Möglichkeiten?"
 mcset de welcTxt2 "\u27a4 [mc bibletexts]: Wählen Sie beliebig viele Bibelausgaben und -sprachen für $dw
 \u27a4 [mc desktop]: Betrachten Sie $dw auf Ihren persönlichen Fotos
@@ -85,7 +85,10 @@ mcset de textposlabel "Textposition bestimmen"
 mcset de textposAdjust "Wollen Sie vor dem Speichern die Textposition für dieses Bild ändern?"
 mcset de f6Tit "Fotos für $bp organisieren"
 mcset de f6Txt "Hier können Sie beliebig viele Fotos aus Ihrem persönlichen Bildordner in die $bp-Fotosammlung ziehen. Die Fotos sollten im Querformat aufgenommen sein und möglichst eine ebenfarbige Fläche für gute Lesbarkeit des Bibelspruchs aufweisen.\n\n$bp speichert eine Kopie des Bildes im $bp-Fotoordner ab und ändert das Bildformat sowie die Grösse, falls es nicht mit den Bildschirmdimensionen übereinstimmt. Sie haben in diesem Fall die Möglichkeit, den passenden Bildausschnitt sowie die künftige Position des Bibeltextes selber zu bestimmen.\n\nDas Originalbild bleibt in jedem Fall unverändert."
-mcset de f6numPhotosTxt "Anzahl Bilder: "
+
+#set s $canvpic::userI
+mcset de f6numPhotosTxt "Bild "
+
 mcset de f6Add "Zur $bp-Fotosammlung hinzufügen:"
 mcset de f6Show "$bp-Fotosammlung anzeigen"
 mcset de f6Find "Neue Fotos suchen"
