@@ -1,10 +1,9 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5may24 pv
+# Updated: 17may24 pv
 
 source $SetupResizeTools
-source $JList
 
 # setTexts
 ##sources .msg file from msgdir according to current lang
@@ -34,97 +33,6 @@ proc setTexts {lang} {
   } 
 } ;#END setTexts
 
-# addPic
-##adds new Picture to BiblePix Photo collection
-##setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
-##called by SetupPhotos
-proc addPic {} {
-  global photosdir v
-  global canvpic::curpic
-  global canvpic::picdir
-
-  #Create original pic for processing
-  set origPicPath [file join $picdir $curpic]
-  image create photo photosOrigPic -file $origPicPath
-
-  source $::SetupResizePhoto
-  source $::SetupResizeTools
-
-  #Set path & exit if already there
-  set targetPicPath [file join $photosdir $curpic]
-  if [file exists $targetPicPath] {
-    NewsHandler::QueryNews $msg::picSchonDa red
-    return 1
-  }
-  
-  #POPULATE ::addpicture namespace
-  namespace eval addpicture {}
-  set addpicture::targetPicPath $targetPicPath
-
-  if ![info exists addpicture::curPic] {
-    set addpicture::curPic photosOrigPic
-  }
-
-  #DETERMINE NEED FOR RESIZING 
-
-  ## expect 0 / even / uneven
-  set resize [needsResize $addpicture::curPic]
-  
-  #A): right dimensions, right size: save pic
-  if {$resize == 0} {
-    $addpicture::curPic write $targetPicPath -format PNG
-    NewsHandler::QueryNews "[mc copiedPicMsg] $origPicPath" lightgreen
-    openReposWindow $addpicture::curPic
-
-  #B) right dimensions, wrong size: start resizing & open reposWindow
-  } elseif {$resize == "even"} {
-
-    set screenX [winfo screenwidth .]
-    set screenY [winfo screenheight .]
-    NewsHandler::QueryNews "$msg::resizingPic" orange
-
-    set newpic [resizePic $addpicture::curPic $screenX $screenY]
-    set addpicture::curPic $newpic
-
-    $newpic write $targetPicPath -format PNG
-    NewsHandler::QueryNews "$msg::copiedPicMsg $origPicPath" lightgreen
-
-    openReposWindow $newpic
-
-  #C) open resize window, resize later
-  } else {
-  
-    openResizeWindow
-
-  }
-  #Reset standards & cleanup
-  scanPicdir $photosdir
-  .phAddBtn conf -bg #d9d9d9
-  namespace delete addpicture
-  
-} ;#END addPic
-
-# deletePhoto
-##deletes 1 pic from Photosdir & updates vars
-##called by .phDelBtn in SetupPhotos 
-proc deletePhoto {} {
-  global canvpic::curpic
-  global canvpic::picL
-  global canvpic::index
-  global photosdir
-  
-  file delete [file join $photosdir $curpic]
-  NewsHandler::QueryNews "$curpic has been removed from BiblePix Photo collection." lightblue
-  
-  #Cleanup
-  scanPicdir $photosdir 
-  showImage [lindex $picL [incr index]] 
-}
-
-# delPic
-##deletes picture from photo collection
-##called by SetupPhotos
-
 
 #######################################################################
 ###### P r o c s   f o r   N e w s   h a n d l i n g ##################
@@ -139,6 +47,10 @@ namespace eval NewsHandler {
   variable isShowing 0
 
   proc QueryNews {text color} {
+  
+#TODO get rid of J... relicts
+source $::JList
+    
     variable queryTextJList
     variable queryColorJList
     variable counter
@@ -242,7 +154,6 @@ proc setSlideSpin {state} {
     .slideSecTxt conf -fg grey
   }
 }
-
 
 # setFlags
 ##draws flags & resets texts upon mouseclick
@@ -698,7 +609,6 @@ proc step {direction} {
 	
 } ;#END step
 
-
 # openFileDialog
 ##
 ##saves picL & current pic index to canvpic::
@@ -857,7 +767,6 @@ proc showImage {img} {
 	} else { 
 	
     puts "Creating $imgPath from directory..."
-
 		if [catch { image create photo orig -file $imgPath } ] {
 			NewsHandler::QueryNews "$img: Picture format not recognised. Skipping." red
 			return 1
@@ -923,13 +832,11 @@ proc loadPicThread {} {
   
 } ;#END loadPicThread
 
-
 proc resetPhotosGUI {} {
 
   global canvpic::picdir photosdir
   global canvpic::picL
   global canvpic::index
-
   set ::numPhotos [llength $picL]
   
   # 1) Pack permanents
@@ -937,190 +844,106 @@ proc resetPhotosGUI {} {
 
   # 2) Pack BiblePix photos mode
   if {$picdir == $photosdir} {
-
     pack .phDelBtn  -in .phBotF1 -side left -anchor w
     pack .phPicpathL .phPicnameL -in .phBotF2 -anchor n
     pack forget .phAddBtn .phShowCollectionBtn .phRotateBtn 
   
   # 3) Pack "Add new" mode
   } else {
-    
     pack .phShowCollectionBtn -in .phBarF -side left
     pack .phAddBtn -in .phBotF1 -side left -anchor w
     pack .phRotateBtn -in .phBotF1 -side left -anchor w
     pack .phPicpathL .phPicnameL -in .phBotF2
     pack forget .phDelBtn 
-  
   }
   
 } ;#END resetPhotosGUI
 
+# addPic
+##adds new Picture to BiblePix Photo collection
+##setzt Funktion 'photosOrigPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
+##called by SetupPhotos
+proc addPic {} {
+  global photosdir v
+  global canvpic::curpic
+  global canvpic::picdir
 
+  #Create original pic for processing
+  set origPicPath [file join $picdir $curpic]
+  image create photo photosOrigPic -file $origPicPath
 
+  source $::SetupResizePhoto
+  source $::SetupResizeTools
 
+  #Set path & exit if already there
+  set targetPicPath [file join $photosdir $curpic]
+  if [file exists $targetPicPath] {
+    NewsHandler::QueryNews $msg::picSchonDa red
+    return 1
+  }
+  
+  #POPULATE ::addpicture namespace
+  namespace eval addpicture {}
+  set addpicture::targetPicPath $targetPicPath
 
-########################################
-# J O E L   O L D
-########################################
-proc doOpen {bildordner canv} {
-  set localJList [openFileDialog $bildordner]
-  refreshImg $localJList $canv
-
-  if {$localJList != ""} {
-    pack .phAddBtn -in .phBotF -side left -fill x
+  if ![info exists addpicture::curPic] {
+    set addpicture::curPic photosOrigPic
   }
 
-  pack .phPicpathL -in .phBotF -side left -fill x
-  pack .phShowCollectionBtn -in .phBarF -side right -fill x
-  pack forget .phDelBtn .phCountNum .phCountTxt
+  #DETERMINE NEED FOR RESIZING 
 
-  #Add Rotate button
-  pack .phRotateBtn -in .phBotF -side right
+  ## expect 0 / even / uneven
+  set resize [needsResize $addpicture::curPic]
+  
+  #A): right dimensions, right size: save pic
+  if {$resize == 0} {
+    $addpicture::curPic write $targetPicPath -format PNG
+    NewsHandler::QueryNews "[mc copiedPicMsg] $origPicPath" lightgreen
+    openReposWindow $addpicture::curPic
 
-  return $localJList
-}
+  #B) right dimensions, wrong size: start resizing & open reposWindow
+  } elseif {$resize == "even"} {
 
-proc doCollect {canv} {
-  set localJList [refreshFileList]
-  set localJList [step $localJList 0 $canv]
-  refreshImg $localJList $canv
+    set screenX [winfo screenwidth .]
+    set screenY [winfo screenheight .]
+    NewsHandler::QueryNews "$msg::resizingPic" orange
 
-  pack .phDelBtn .phPicpathL -in .phBotF -side left -fill x
-  pack .phCountNum .phCountTxt -in .phBarF -side right
-  pack forget .phAddBtn .phShowCollectionBtn .phRotateBtn
+    set newpic [resizePic $addpicture::curPic $screenX $screenY]
+    set addpicture::curPic $newpic
 
-  return $localJList
-}
+    $newpic write $targetPicPath -format PNG
+    NewsHandler::QueryNews "$msg::copiedPicMsg $origPicPath" lightgreen
 
-proc step-joel {localJList fwd canv} {
-  set localJList [jlstep $localJList $fwd]
-  refreshImg $localJList $canv
+    openReposWindow $newpic
 
-  return $localJList
-}
+  #C) open resize window, resize later
+  } else {
+  
+    openResizeWindow
 
-proc openfiledialog-joel {} {
-	set storage ""
-  set parted 0
-  set localJList ""
-
-  if {$selectedFile != ""} {
-    set pos [string last "/" $selectedFile]
-    set folder [string range $selectedFile 0 [expr $pos - 1]]
-	
-  	if {$platform == "unix"} {
-    	set fileNames [glob -nocomplain -directory $folder *.jp*g *.JP*G *.png *.PNG]
-  	} elseif {$platform == "windows"} {
-    	set fileNames [glob -nocomplain -directory $folder *.jpg *.jpeg *.png]
-  	}
-  	
-  	set partialFileName ""
-  	set parted 0
-  	set localJList ""
-  	
-  	foreach fileName $fileNames {
-    	if { [file exists $fileName] } {
-      	set localJList [jappend $localJList $fileName]
-    	} else {
-      	if {$parted} {
-        	append partialFileName " " $fileName
-        	if { [file exists $partialFileName] } {
-          	set parted 0
-          	set localJList [jappend $localJList $partialFileName]
-        	}
-      	} else {
-        	set parted 1
-        	set partialFileName $fileName
-      	}
-    	}
-  	}
-
-		#loadImagesInThread $localJList
-
-    set fn [string range [jlfirst $localJList] [expr $pos + 1] end]
-    set selectedFN [string range $selectedFile [expr $pos + 1] end]
-
-    while ![string equal $fn $selectedFN] {
-      set localJList [jlstep $localJList 1]
-      set fn [string range [jlfirst $localJList] [expr $pos + 1] end]
-     }
   }
+  #Reset standards & cleanup
+  scanPicdir $photosdir
+  .phAddBtn conf -bg #d9d9d9
+  namespace delete addpicture
+  
+} ;#END addPic
 
-  return $localJList
-}
-
-proc refreshFileList {} {
-  global platform photosdir
-  set partialFileName ""
-  set parted 0
-  set localJList ""
-
-
-  if {$platform == "unix"} {
-    set fileNames [glob -nocomplain -directory $photosdir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
-  } elseif {$platform == "windows"} {
-    set fileNames [glob -nocomplain -directory $photosdir *.jpg *.jpeg *.png]
-  }
-
-  foreach fileName $fileNames {
-    if { [file exists $fileName] } {
-      set localJList [jappend $localJList $fileName]
-    } else {
-      if {$parted} {
-        append partialFileName " " $fileName
-        if { [file exists $partialFileName] } {
-          set parted 0
-          set localJList [jappend $localJList $partialFileName] 
-        }
-      } else {
-        set parted 1
-        set partialFileName $fileName
-      }
-    }
-  }
-
-  return $localJList
-}
-
-proc refreshImg {localJList canv} {
-  global picPath
-
-  set screenX [winfo screenwidth .]
-  set screenY [winfo screenheight .]
-  set maxCanvX [expr round([winfo width .] / 1.5)]
-  set factor [expr ceil($screenX. / $maxCanvX)]
-
-  set canvX [expr round($screenX / $factor)]
-  set canvY [expr round($screenY / $factor)]
-
-  $canv conf -width $canvX -height $canvY
-
-  set fn ""
-  if {$localJList != ""} {
-    set fn [jlfirst $localJList]
-    openImg $fn $canv
-    } else {
-      hideImg $canv
-  }
-  set picPath $fn
-}
-
-
-proc hideImg {imgCanvas} {
-  $imgCanvas delete img
-}
-
-proc deleteImg {localJList canv} {
-  global imgName
-
-  set localJList [jlremovefirst $localJList]
-  refreshImg $localJList $canv
-
-  if {$localJList == ""} {
-    pack forget .delBtn
-  }
-
-  return $localJList
+# deletePhoto
+##deletes 1 pic from Photosdir & updates vars
+##called by .phDelBtn in SetupPhotos 
+proc deletePhoto {} {
+  global canvpic::curpic
+  global canvpic::picL
+  global canvpic::index
+  global photosdir
+  
+  file delete [file join $photosdir $curpic]
+  NewsHandler::QueryNews "$curpic has been removed from BiblePix Photo collection." lightblue
+  
+  #Cleanup
+  scanPicdir $photosdir 
+  showImage [lindex $picL [incr index]] 
 }
 
 # copyAndResizeSamplePhotos
@@ -1166,8 +989,8 @@ proc copyAndResizeSamplePhotos {} {
 } ;#END copyAndResizeSamplePhotos
 
 
-################################################################################
-##### P r o c s   f o r   S e t u p W e l c o m e  #############################
+###################################################
+##### P r o c s   f o r   S e t u p W e l c o m e  ###################################################
 ################################################################################
 
 # fillWelcomeTextWidget
@@ -1325,7 +1148,5 @@ proc deleteOldStuff {} {
       NewsHandler::QueryNews "Deleted obsolete file: $path" orange
     }
   }
-
-#  NewsHandler::QueryNews "$::uptodateHttp" lightgreen
 
 } ;#END deleteOldStuff
