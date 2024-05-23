@@ -48,7 +48,7 @@ namespace eval NewsHandler {
 
   proc QueryNews {text color} {
   
-#TODO get rid of J... relicts
+#TODO get rid of JList relicts
 source $::JList
     
     variable queryTextJList
@@ -265,7 +265,6 @@ proc setManText {lang} {
   .manT tag conf h3 -font {TkCaptionFont 17} -justify left
   .manT tag conf h4 -font {TkCaptionFont 14} -justify left
   .manT tag conf code -background gray90 -lmargin1 20
- # .manT tag conf bold -font "TkTextFont 14" -foreground maroon
   .manT tag conf small -foreground grey
   
   #Determine header positions (h1-h4)
@@ -392,7 +391,7 @@ proc updateMailBtnList {w} {
     pack .${code}Btn -in $w -side right -padx 3 -anchor e
     lappend sigLangBtnL .${code}Btn
   }
-  ##TODO unify var names! > siglangL + siglangBtnL
+#TODO unify var names! > siglangL + siglangBtnL
   set ::langcodeL $langcodeL
   set ::sigLangBtnList $sigLangBtnL
 
@@ -626,7 +625,7 @@ proc openFileDialog {picdir } {
 	
 	set selectedFilePath [tk_getOpenFile -filetypes $gofL -initialdir $picdir]
 	
-	#exit if no result
+	#return if no result
 	if {$selectedFilePath == ""} {
 	  return
 	}
@@ -671,7 +670,7 @@ proc setPhotosCanvSize {} {
   set maxCanvX [expr round([winfo width .] / 1.5)]
 
  
-##TODO round rather than ceil here?
+##TODO? round rather than ceil here?
   #set factor [expr ceil($screenX. / $maxCanvX)]
   set factor [expr round($screenX. / $maxCanvX)]
 
@@ -791,13 +790,14 @@ proc showImage {img} {
 ## called as a bind event in SetupMainFrame 
 proc showFirstPhoto {} {
 
+#TODO unnecessary now
   #this is set when first called to avoid multiple photosdir threads
   ##i.e. if SetupPhotos is visisted more than once nothing happens and
   ##the old pics series from photosdir is still present
-  if [info exists ::firstPhotoDone] {
-    return 1
-  }
-  set ::firstPhotoDone 1
+#  if [info exists ::firstPhotoDone] {
+#    return 1
+#  }
+#  set ::firstPhotoDone 1
   
   global canvpic::picL
   global canvpic::imgCanv
@@ -825,7 +825,6 @@ proc loadPicThread {} {
   
   if {  ! [catch {package require Thread}] } {
     source $SetupPicThread
-    
   } else {
     NewsHandler::QueryNews "For faster image viewing: [mc packageRequireMissing 'thread']" red
   }
@@ -833,7 +832,6 @@ proc loadPicThread {} {
 } ;#END loadPicThread
 
 proc resetPhotosGUI {} {
-
   global canvpic::picdir photosdir
   global canvpic::picL
   global canvpic::index
@@ -1015,23 +1013,6 @@ proc fillWelcomeTextWidget {w} {
     $w delete 6.0 end
   }
 
-  #Set [KEYWORDS:] to bold - TODO zis aynt workin properly!
-proc olmadi {} {
-  $w tag conf bold -font TkCaptionFont
-  set lines [$w count -lines 1.0 end]
-  for {set line 1} {$line <= $lines} {incr line} {
-    set colon [$w search : $line.0 $line.end]
-    
-    #TODO testing
-    if [isRtL $lang] {
-      $w tag add bold $colon $line.end  
-    } else {
-      $w tag add bold $line.0 $colon
-    }
-    
-  }
-}
-
 } ;#END fillWelcomeTextWidget
 
 # insertTodaysTwd
@@ -1088,6 +1069,7 @@ proc insertTodaysTwd {twdWidget} {
   set ::setupTwdText $twdText
 }
 
+#TODO what's this doing here????????????????????  
 # deleteOldStuff
 ##Removes stale prog files & dirs not listed in Globals
 ##called by Setup

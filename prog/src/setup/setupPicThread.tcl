@@ -1,12 +1,21 @@
-package require Thread
-set picL $canvpic::picL
-set imgdir $canvpic::picdir
+# ~/Biblepix/prog/src/setup/setupPicThread.tcl
+# Adds threading capability for faster image loading in Setup/Photos
+# Setup will work even without this feature
+# Updated 23may24 
 
-#these were set by SetupBuildGUI
-#but if not...
-if {$canvpic::canvX < 500} {
+#package require Thread
+
+#check vars set by SetupBuildGUI
+#return if missing
+catch {set picL $canvpic::picL} err
+catch {set imgdir $canvpic::picdir} err
+if [info exists err] {
+  return 1
+}
+if { [info vars canvpic::canvX] == "" || $canvpic::canvX < 500} {
   setPhotosCanvSize
 }
+
 tsv::set canvas canvX $canvpic::canvX 
 tsv::set canvas canvY $canvpic::canvY
 tsv::set picL pics $picL
@@ -17,12 +26,6 @@ puts "PicThread loaded..."
 if ![info exists ::tpoolId] {
   set ::tpoolId  [tpool::create]
 }
-
-#TODO? scheint nicht nötig:
-#set threadId [thread::create]
-
-#das auch nicht?:
-#thread::send -async $threadId {
 
 #only 1 tpool needed, too many pools tend to overload CPU
 tpool::post $::tpoolId {
@@ -65,7 +68,7 @@ tpool::post $::tpoolId {
     #Cleanup pool to free memory
     ##i.e. keep only data strings
     ##these should remain in tpool during all of Setup
-    ##so no need to delete thread/tpool!
+    ##so we don't delete tpool!
     image delete $pic
     image delete thumb
 
@@ -73,4 +76,3 @@ tpool::post $::tpoolId {
 
 } ;#END tpool
 
-#} ;#END Thread

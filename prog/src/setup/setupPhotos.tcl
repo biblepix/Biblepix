@@ -34,6 +34,9 @@ button .phShowCollectionBtn -textvar msg::f6Show -height 1 -command {
   scanPicdir $photosdir
   resetPhotosGUI
   set picname [lindex $picL 0]
+#TODO this must be set somewhere else!
+  #set canvpix::index 0
+  #set canvpix::userI 1
   showImage $picname
 }
 
