@@ -1067,9 +1067,9 @@ proc insertTodaysTwd {twdWidget} {
     
   ##export for other Setup widgets
   set ::setupTwdText $twdText
-}
+  
+} ;#END insertTodaysTwd
 
-#TODO what's this doing here????????????????????  
 # deleteOldStuff
 ##Removes stale prog files & dirs not listed in Globals
 ##called by Setup
