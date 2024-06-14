@@ -24,7 +24,7 @@ proc jlindex {fileJList idx} {
   set pos 0
   set i 0
   while {$i < $idx} {
-    set pos [string first ">" $fileJList 0]
+    set pos [string first ">" $fileJList]
     incr i
   }
   set endPos [expr [string first ">" $fileJList $pos] - 1]
@@ -41,7 +41,7 @@ proc jlremovefirst {fileJList} {
 proc jlstep {fileJList fwd} {  
   if {$fileJList != ""} {
     if {$fwd} {
-      set stepPos [string first ">" $fileJList 0]
+      set stepPos [string first ">" $fileJList]
     } else {
       set stepPos [string last ">" $fileJList end-1]
     }

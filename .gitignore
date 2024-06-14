@@ -3,7 +3,7 @@ Photos/
 TodaysPicture/
 TodaysSignature/
 prog/pid/
-prog/conf/
+prog/conf/*
 prog/unix/term.sh
 prog/unix/crontab.ORIG
 prog/unix/cron.sh
