@@ -563,7 +563,7 @@ proc step {direction} {
 	#ilength = counting from 0
 	##careful: llength counts from 1, lindex from 0 !!!
 	set ilength [expr [llength $picL] -1]
-  set bigstep 10
+	set bigstep 10
 		
 	#LOOPS A + B:
 	## A) 1 step forward: jump to beginning if result empty
@@ -585,18 +585,26 @@ proc step {direction} {
   #LOOPS C & D:
 	## C) bigstep forward
 	if {$direction == ">>"} {
-	  incr index ${bigstep}
-	  if {$index > $ilength} {
-		  set index [expr $index - $ilength]
-	  }
+		incr index ${bigstep}
+		if {$ilength < $bigstep} {
+			set index $ilength
+		} else {
+			if {$index > $ilength} {
+				set index [expr $index - $ilength - 1]
+			}
+		}
 	}
 
 	## D) bigstep back
 	if {$direction == "<<"} {
 	  incr index -${bigstep}
-	  if {$index < 0} {
-	    set index [expr $index + $ilength]
-	  }
+		if {$ilength < $bigstep} {
+			set index 0
+		} else {
+			if {$index < 0} {
+				set index [expr $index + $ilength + 1]
+			}
+		}
 	}
 		 
  	set canvpic::index $index
@@ -635,7 +643,7 @@ proc openFileDialog {picdir } {
   set canvpic::picdir $picdir
   resetPhotosGUI
   
-  showImage $selectedFilePath
+  showImage $selectedFileName
 
 	#Update picdir & update picL
 	set picdir [file dirname $selectedFilePath]
@@ -647,8 +655,9 @@ proc openFileDialog {picdir } {
     set index 0
     puts $err
   }
-	set canvpic::index $index
-	set canvpic::userI [expr $index + 1]
+  
+  set canvpic::index $index
+  set canvpic::userI [expr $index + 1]
 
 	#Start Threading
   loadPicThread
@@ -883,10 +892,8 @@ proc addPic {} {
   #POPULATE ::addpicture namespace
   namespace eval addpicture {}
   set addpicture::targetPicPath $targetPicPath
-
-  if ![info exists addpicture::curPic] {
-    set addpicture::curPic photosOrigPic
-  }
+  set addpicture::curPic photosOrigPic
+  
 
   #DETERMINE NEED FOR RESIZING 
 
@@ -921,7 +928,6 @@ proc addPic {} {
 
   }
   #Reset standards & cleanup
-  scanPicdir $photosdir
   .phAddBtn conf -bg #d9d9d9
   namespace delete addpicture
   
