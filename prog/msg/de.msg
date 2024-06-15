@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 # INFO: Reintextmenge 1450 Wörter/11000 Zeichen (abzgl. 100 mcset * 3 W. = 300 W.)
-# Updated: 4may24 pv
+# Updated: 15june24 pv
 
 # U N T R A N S L A T A B L E S
 set bp "BibelPix"
@@ -89,10 +89,10 @@ mcset de f6Txt "Hier können Sie beliebig viele Fotos aus Ihrem persönlichen Bi
 #set s $canvpic::userI
 mcset de f6numPhotosTxt "Bild "
 
-mcset de f6Add "Zur $bp-Fotosammlung hinzufügen:"
+mcset de f6Add "Zur $bp-Fotosammlung hinzufügen"
 mcset de f6Show "$bp-Fotosammlung anzeigen"
 mcset de f6Find "Neue Fotos suchen"
-mcset de f6Del "Aus der $bp-Fotosammlung löschen:"
+mcset de f6Del "Aus der $bp-Fotosammlung löschen"
 #RESIZING
 mcset de movePicToResize "Verschieben Sie den Bildausschnitt nach Wunsch und bestätigen Sie mit Ok zum Speichern."
 mcset de resizeF_txt "Ihr Foto passt nicht zur Bildschirmgrösse und muss zugeschnitten werden. [mc movePicToResize]"
