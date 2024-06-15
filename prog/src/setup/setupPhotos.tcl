@@ -62,12 +62,13 @@ pack .phBotF1 -fill none -anchor w
 pack .phBotF2 -fill x -anchor n -expand 1
 label .phPicpathL -padx 2 -pady 2 -fg steelblue -font TkSmallCaptionFont -textvar canvpic::picdir
 label .phPicnameL -padx 2 -pady 2 -fg steelblue -textvar canvpic::curpic
+##these are packed later by resetPhotosGUI
 label .phPicindexTxt -bg azure -textvar msg::f6numPhotosTxt
 label .phPicindexL -bg azure -textvar canvpic::userI
 label .phCountNum -textvar numPhotos -bg azure
 label .phCountTxt -text "/" -bg azure
 
-##these are packed later by resetPhotosGUI
+
 button .phAddBtn -textvar msg::f6Add -activebackground orange -command {addPic}
 button .phDelBtn -textvar msg::f6Del -activebackground red -command {deletePhoto}
 button .phRotateBtn -activebackground orange -textvar msg::rotatePic -command {source $SetupRotate}
