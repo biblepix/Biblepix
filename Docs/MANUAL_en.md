@@ -135,11 +135,11 @@ BiblePix has an extended feature called "Add The Word to your e-mail signatures"
 
 You can edit these files from your e-mail program or in a text editor and add any personal information (greetings, address etc.) at the top. Any text above the separating line **======** remains untouched when The Word changes. Finally you must instruct your e-mail program to use these files when sending an e-mail (usually under Settings > Identities > Signatures).
 
-For e-mail programs that manage signatures only internally (i.e. that cannot load external files), BiblePix can handle Trojitá and Evolution [^7] for now. First time users should go to 'IMAP > Settings > General' (Trojitá) / 'Settings > Editor > Signatures' (Evolution [6] ) and mark the desired identity. In the 'Edit' dialog add a new line saying
+For e-mail programs that manage signatures only internally (i.e. that cannot load external files), BiblePix can handle Trojitá and Evolution for now. First time users should go to 'IMAP > Settings > General' (Trojitá) / 'Settings > Editor > Signatures' (Evolution) and edit the desired identity. If there are no signatures yet, create one as 'plain text'. Then, in the 'Edit' dialog reopen any signature files you want to have The Word added, and add a new line saying
 
 > www.bible2.net
 
-Henceforth BiblePix will insert 'The Word' in its place.
+Henceforth BiblePix will insert 'The Word' in its place, while your original signature remains untouched.
 
 ### LINUX TERMINAL
 
@@ -270,5 +270,3 @@ Enter the following command as an ordinary user (no line breaks!):
 [^5]: Arabic and Hebrew text is positioned automatically on the opposite side. To display such texts in terminals you need programs like 'mlterm', 'gnome-terminal', 'xfce4-terminal' or 'Konsole' (KDE) which can display bidirectional text correctly.
 
 [^6]: Attention Windows users: if the picture doesn't change on time, right-click on your Desktop and choose "Personalize > Wallpaper". There you can set up a slide show easily with the above. picture path. The interval is taken automatically from the BiblePix Setup settings. You may have to rerun Setup for this to take effect.
-
-[^7]: Evolution mail client: you must save signature file as HTML!

@@ -14,7 +14,7 @@ BibelPix kann **Das Wort** auf vielfältige Weise anzeigen:
 Linux, Windows
 
 ## Systemvoraussetzungen: 
-Tcl/Tk-Bibliothek, Zusatzpakete tcllib, tls, tDom und tkimg
+Tcl/Tk-Bibliothek, Zusatzpakete tcllib, tls, tDom, tkimg, thread
 
 
 # INSTALLATION
@@ -144,9 +144,9 @@ BibelPix bietet die Zusatzfunktion **Das Wort als E-Mail-Signatur**. Diese Funkt
 
 Sie können diese Dateien aus Ihrem E-Mail-Programm oder in einem Texteditor bearbeiten und persönliche Grussformeln, Adressen usw. oben einfügen. Text oberhalb der Trennlinie **=====** bleibt beim Wechsel des Tageswortes unbehelligt. Damit **Das Wort** künftig auf Ihren Mails erscheint, müssen Sie Ihrem Mail-Programm beibringen, die oben beschriebenen Dateien zu verwenden (meist unter Einstellungen > Konten/Identitäten > Signatur).
 
-Für E-Mail-Programme, welche Signaturen nur intern verwalten (also keine externen Dateien laden können), sind vorläufig Trojitá und Evolution berücksichtigt. Nutzer dieser Programme müssen das erste Mal unter 'IMAP > Settings > General' (Trojitá) bzw. Einstellungen > Editor > Signaturen' (Evolution [^7] ) die gewünschte Identität markieren und im Dialog 'Edit' eine neue Zeile hinzufügen mit dem Ausdruck
+Für E-Mail-Programme, welche Signaturen nur intern verwalten (also keine externen Dateien laden können), sind vorläufig Trojitá und Evolution berücksichtigt. Nutzer dieser Programme müssen das erste Mal unter 'IMAP > Settings > General' (Trojitá) bzw. Einstellungen > Editoreinstellungen > Signaturen' (Evolution) unter 'Hinzufügen' eine neue Signatur erstellen, am besten als 'Einfacher Text'. Dann die Datei(en), wo ein Bibelwort angefügt werden soll, unter 'Bearbeiten' nochmals öffnen und eine neue Zeile hinzufügen mit dem Ausdruck
 
-> www.bibel2.net
+> www.bible2.net
 
 Dort wird künftig **Das Wort** automatisch eingesetzt.
 
@@ -281,5 +281,3 @@ Falls dies fehlschlägt, können Sie die nötigen Einstellungen manuell nachhole
 [^5]: Arabischer und hebräischer Text wird automatisch auf der Gegenseite positioniert. Für die Darstellung im Terminal kommen nur Terminals wie 'mlterm', 'Konsole' (KDE), 'gnome-terminal' oder 'xfce4-terminal' in Frage, welche bidirektionellen Text richtig anzeigen.
 
 [^6]: Achtung Windows: falls der Bildwechsel nicht richtig funktioniert, rechtsklicken Sie auf dem Desktop und wählen Sie "Anpassen > Hintergrund". Dort können Sie mit dem obigen Bildpfad leicht eine Diaschau einrichten. Das Intervall wird automatisch aus dem BibelPix-Setup übernommen. Ev. müssen Sie es danach nochmals laufen lassen, um das gewünschte Intervall zu registrieren.
-
-[^7]: Evolution Mail client: Signatur als HTML abspeichern!

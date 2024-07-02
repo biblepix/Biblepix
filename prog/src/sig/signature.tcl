@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 16dec22 pv
+# Updated: 29jun24 pv
 source $TwdTools
 source $SigTools
 
@@ -109,7 +109,6 @@ if {$os=="Windows NT"} {
 
   if {[auto_execok trojita] == "" || ![file exists $sig::trojitaLinConfFile]} {
     puts "No Trojitá executable/configuration file found. Exiting."
-    #return 1
   }
   catch sig::doSigTrojitaLin err
 }
@@ -126,7 +125,6 @@ if [info exists err] {
 #Check presence of Evolution
 if {[auto_execok evolution] == ""} {
   puts "No $sig::ev executable found. Exiting."
-#  return 1
 
 } else {
 

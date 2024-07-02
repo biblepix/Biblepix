@@ -2,7 +2,7 @@
 # Procs for Trojitá & Evolution mail clients
 # Called by Signature if any of above found
 # Authors: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 11jan22 pv
+# Updated: 2jul24 pv
 
 namespace eval sig {
   
@@ -69,12 +69,11 @@ namespace eval sig {
   # doSigEvolution
   ##checks signature files for DW or trigger present & calls updateSigEvolution
   ##called by Signature
-  ##NOTE: Evolution sig files must be (partly) formatted as HTML neuerdings
   proc doSigEvolution {} {
     global env sig::dayOTY ev
     global sig::addedsigT sig::catchword sig::ev sig::nosigfoundT sig::evolSigdir sig::triggerRef sig::startcatch sig::addednum
   
-  puts "Updating evolution signatures..."
+    puts "Updating evolution signatures..."
   	
     #Check all Evolution sig files for triggers
     foreach sigFilePath [glob -directory $evolSigdir *] {
@@ -86,6 +85,7 @@ namespace eval sig {
       
       #1) Check for The Word present & date >>cleanSig
       if { [regexp $startcatch $t] && $mtimeDay < $dayOTY } {
+       
         set cleanSig [cleanSigfile $sigFilePath]
       } 
       
@@ -114,25 +114,16 @@ namespace eval sig {
     
   } ;#END doSigEvolution
 
+
   # updateSigEvolution 
-  ##called by doSigEvolution for each sig file
+  ##called by doSigEvolution for each sig file - NO HTML FORMATTING NEEDED NOW
   proc updateSigEvolution {sigfile cleanSig} {
 
     set twdFile [getRandomTwdFile 1]
     set dw [getTodaysTwdSig $twdFile]
-
-
-
-    #format to html  TODO make this work for plain text!
-    regsub -all \n $dw {<br>} dwhtm
-    set dwhtm [string map {{ } &#160\;} $dwhtm]
-
     set chan [open $sigfile w]
     puts $chan $cleanSig
-    #puts $chan <div id="signature">
-    puts $chan $dwhtm
-    #puts $chan </div>
-    #puts $chan $dw
+    puts $chan $dw
     close $chan
   }
 
@@ -356,83 +347,5 @@ namespace eval sig {
 
     return $sigChunk
   } ;#END trojitaReplaceSigLin
-
-  ####### OBSOLETE ####################################################
-
-  # trojitaGetDate 
-  ##returns any registered date, else 0
-  ##called by trojitaSigLin + trojitaSigWin
-  proc trojitaGetDate {} {
-    global os sig::trojitaWinRegpath sig::trojitaLinConfFile sig::datecatch
-
-    # W I N D O W S
-    if {$os=="Windows NT"} {
-      package require registry
-      catch {registry get $trojitaWinRegpath twdDate} twdDate
-      if {![string is digit $twdDate]} {
-        set twdDate 0
-      }
-
-    # L I N U X
-    } elseif {$os=="Linux"} {
-
-      set chan [open $trojitaLinConfFile r]
-      set confText [read $chan]
-      close $chan
-
-      set datePos [string first $datecatch $confText]
-      if {![string is digit $datePos]} {
-        return 0
-      }
-   
-      set pos1 [expr $datePos + 8]
-      set pos2 [expr $datePos + 10]
-      set twdDate [string range $confText $pos1 $pos2]
-    }
-
-    return $twdDate
-  }
-
-  # trojitaSetDate
-  ##registers today's date
-  ##called by trojitaSigWin & trojitaSigLin if needed
-  proc trojitaSetDate {} {
-    global os sig::dayOTY sig::trojitaWinRegpath sig::trojitaLinConfFile sig::datecatch sig::linuxConfText
-
-    # W I N D O W S
-    if {$os=="Windows NT"} {
-      package require registry
-      registry set $trojitaWinRegpath twdDate $dayOTY
-      
-    # L I N U X
-    } elseif {$os=="Linux"} {
-
-      #Open confFile for reading
-      set chan [open $trojitaLinConfFile r]
-      set confText [read $chan]
-      close $chan
-
-      set datePos [string first $datecatch $confText]
-
-      #Open confFile for writing
-      set chan [open $trojitaLinConfFile w]
-
-      ##set twdDate 1st time
-      if {![string is digit $datePos]} {
-        append confText "\n\n\[BiblePix\]\ntwdDate=$dayOTY"
-      ##reset twdDate
-      } else {
-        set pos1 [expr $datePos + 8]
-        set pos2 [expr $datePos + 10]
-        set twdDate [string range $confText $pos1 $pos2]
-        set confText [string replace $confText $pos1 $pos2 $dayOTY]
-      }
-      ##Save new text
-      puts $chan $confText
-      close $chan
-    }
-
-  return "Setting new TWD date in Trojitá"
-  } ;#END trojitaSetDate
 
 } ;# END ::sig namespace
