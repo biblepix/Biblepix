@@ -2,7 +2,7 @@
 # Searches system for current Desktop manager, gives out appropriate BG changing command
 # Called by Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 19oct22 pv
+# Updated: 19aug24 pv
 
 ########################################################################
 # WINDOWS: accepts command through RUNDLL32.EXE - a bit buggy still...
@@ -34,7 +34,7 @@ proc detectRunningLinuxDesktop {} {
     return 1
   }
   
-  #check KDE (return 2)
+  #check KDE (return 2) - this env var is only set by KDE!
   if { [info exists env(XDG_CURRENT_DESKTOP)] &&
       $env(XDG_CURRENT_DESKTOP) == "KDE" } {
       return 2
@@ -54,8 +54,9 @@ proc detectRunningLinuxDesktop {} {
     return 3
   }
   
-  #check Wayland/Sway (return 4)
-  if [info exists env(SWAYSOCK)] {
+  #check Wayland/Sway (return 4) - TODO this is too narrow, try XDG_SESSION_TYPE (=wayland) for all wlroots apps like Sway, Dwl etc.!!!
+  if { [info exists env(SWAYSOCK)] ||
+  	 [info exists env(XDG_SESSION_TYPE)] && $env(XDG_SESSION_TYPE) == "wayland"} {
     return 4
   }
 
@@ -84,6 +85,7 @@ proc setWinBg {} {
   registry set "$regpath" Wallpaper "$picpath" expand_sz
 }
 
+#this is for Sway without use of swaybg
 proc getSwayOutputName {} {
   #Get output(s) in raw (JSON) format
   set outputs [exec swaymsg --raw --type get_outputs]
@@ -125,23 +127,37 @@ if {$platform=="windows"} {
 #Determine running Linux desktop
 set runningDesktop [detectRunningLinuxDesktop]
 
-#Set Sway Background
-##NOTE: the extra prog 'swaybg' must be present although not called directly here!
+#Set Wayland Sway/dwl/other Wayland Background
 if {$runningDesktop == 4} {
   
-  if {[auto_execok swaybg] == ""} {
-    
-    package require Tk
-    tk_messageBox -type ok -icon warning -title BiblePix -message "Your Sway desktop needs the extra program 'swaybg' to change background image. Please install and rerun Sway." 
-    return 1
-  }
+	#check if Sway can be run without swaybg
+	if ![catch {set swayOutput [getSwayOutputName]}] {
+	 
+  	proc setBg {} {
+    	upvar swayOutput swayOutput
+    	exec swaymsg output $swayOutput bg $::TwdPNG fit
+  	}
 
-  set swayOutput [getSwayOutputName]
-  proc setBg {} {
-    upvar swayOutput swayOutput
-    exec swaymsg output $swayOutput bg $::TwdPNG fit
-  }
+	} else {
+	
+		if {[auto_execok swaybg] == ""} {
+    	
+    	package require Tk
+    	tk_messageBox -type ok -icon warning -title "BiblePix Wayland background" -message "[msgcat::mc packageRequireMissing swaybg swaybg]" 
+    	return 1
+  	
+  	} else {
+  	
+  		proc setBg {} {
+  			exec swaybg -i $::TwdPNG -m center
+  		}
+
+  	}
+		
+	}
+
   return
+
   
 #Skip Gnome / KDE / XFCE4
 } elseif {
@@ -172,4 +188,3 @@ if {[auto_execok display] != ""} {
 proc setBg {} {
   return "Cannot set background."
 }
-

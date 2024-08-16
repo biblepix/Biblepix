@@ -29,8 +29,8 @@ mcset it photos "Galleria immagini"
 mcset it email "Firma e-mail"
 mcset it terminal "Consolla"
 mcset it manual "Manuale"
-mcset it packageRequireMissing "$bp necessita dell'estensione Tcl '%s'. Installarla tramite il pannello di controllo o digitare uno dei seguenti comandi nella consolle (come root o sudo): [mc packageRequire]"
-# W E L C O M E 
+mcset it packageRequireMissing "$bp necessita dell'estensione Tcl '%s'. Installarla tramite il pannello di controllo o digitare nella consolle: \n\n sudo apt install %s (Debian/Ubuntu)"
+# W E L C O M E
 mcset it next "\u25bc Successivo"
 mcset it welcTit "Benvenuto nel programma di configurazione di $bp!"
 mcset it welcSubtit1 "Che cos'è $bp?"
@@ -80,7 +80,7 @@ mcset it f2Fontweight "grassetto"
 mcset it f2Fontfamily "Tipo di carattere: "
 mcset it f2Fontexpl "Adattare carattere"
 mcset it f2Txt "\nSe questa funzione è attivata, $bp attiva $dw su di un'immagine di sfondo. L'immagine viene scelta dalla galleria di $bp secondo il principio di casualità (vedi sezione [mc photos]). Una nuova immagine di sfondo è ogni volta disponibile per la visualizzazione in \n\n\t [file nativename $imgdir] \n\nper il Desktop Manager. \n\nSe sono stati installati più file dei testi biblici, ad ogni cambio di immagine cambia anche la lingua o la versione della Bibbia secondo il principio di casualità.\n\n$bp configura di default uno SLIDESHOW con una carrellata di immagini. Se si vuole visualizzare solamente 1 immagine al giorno, lo slideshow può essere disattivato (vedi sopra).\n\nNella finestra POSIZIONE TESTO è possibile spostare $dw nel punto desiderato del monitor. Durante l'aggiunta di immagini la posizione del testo può essere determinata anche in maniera personalizzata. \n\nLe DIMENSIONI CARATTERE vengono impostate automaticamente a seconda delle dimensioni del monitor. È tuttavia possibile adattare in qualsiasi momento le dimensioni e lo spessore (lettere più grandi = migliore contrasto).\n\nIl COLORE CARATTERE può essere determinato in modo fisso, oppure lasciato al caso. $bp può inoltre adattare il colore sulla base della luminosità dello sfondo. Questo effetto si attiva solo dopo aver salvato nuove immagini.\n\nSe la nuova immagine di sfondo non compare automaticamente, la relativa soluzione è riportata nel manuale."
-# P H O T O S 
+# P H O T O S
 mcset it textposlabel "Determinare posizione del testo"
 mcset it textposAdjust "Si desidera modificare la posizione del testo per questa immagine prima di salvare?"
 mcset it f6Tit "Organizzare immagini per $bp"
@@ -100,7 +100,7 @@ mcset it picSchonDa "Immagine già presente nella cartella delle immagini di $bp
 mcset it f3Tit "Impostare $dw sulla firma e-mail"
 mcset it f3Btn "Generare firma e-mail"
 mcset it f3Sprachen "Lingue desiderate per le mie firme"
-mcset it f3Txt "Se questa funzione è attivata, per ciascun file di testo biblico installato $bp aggiunge $dw alle firme e-mail una volta al giorno. I file di firma così generati vengono classificati secondo la sigla della lingua (ad es. signature-it_..txt) nella cartella seguente: \n\n\t$sigdir \n\nÈ possibile modificare questi file nel proprio programma di posta elettronica o in un editor di testo, ed inserire forme di saluto personalizzate, indirizzi ecc. Quando si cambia $dw, il testo al di sopra della linea di separazione ==== rimane invariato. \n\nProbabilmente non si desidera che il destinatario delle e-mail legga $dw in tutte le lingue installate. Selezionare in alto a destra la(e) lingua(e) preferita(e).\n\nPerché $dw compaia in futuro sulle proprie e-mail, occorre impostare il programma di posta elettronica perché utilizzi i file sopra descritti (per lo più alla voce Impostazioni>Firma). Se invece d'una lingua, si scegle il file 
+mcset it f3Txt "Se questa funzione è attivata, per ciascun file di testo biblico installato $bp aggiunge $dw alle firme e-mail una volta al giorno. I file di firma così generati vengono classificati secondo la sigla della lingua (ad es. signature-it_..txt) nella cartella seguente: \n\n\t$sigdir \n\nÈ possibile modificare questi file nel proprio programma di posta elettronica o in un editor di testo, ed inserire forme di saluto personalizzate, indirizzi ecc. Quando si cambia $dw, il testo al di sopra della linea di separazione ==== rimane invariato. \n\nProbabilmente non si desidera che il destinatario delle e-mail legga $dw in tutte le lingue installate. Selezionare in alto a destra la(e) lingua(e) preferita(e).\n\nPerché $dw compaia in futuro sulle proprie e-mail, occorre impostare il programma di posta elettronica perché utilizzi i file sopra descritti (per lo più alla voce Impostazioni>Firma). Se invece d'una lingua, si scegle il file
 \n\t signature-SURPRISE.txt
 \n$dw roterà secondo il principio di casualità.\n\nDeterminati programmi come Seamonkey Mail, Evolution o Trojitá gestiscono le firme internamente. Tra questi, $bp è temporaneamente compatibile con Trojitá ed Evolution."
 # T E R M I N A L

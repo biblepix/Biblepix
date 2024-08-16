@@ -2,7 +2,7 @@
 # French texts in msgcat format
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 31jan22 pv
+# Updated: 15aug24 pv
 
 # U N T R A N S L A T A B L E S
 set bp "BiblePix"
@@ -27,9 +27,9 @@ mcset fr photos "Fotos"
 mcset fr email "Signature e-mail"
 mcset fr terminal "Terminal"
 mcset fr manual "Manuel"
-mcset fr packageRequireMissing "$bp a besoin de l'extension Tcl '%s'. Veuillez l'installer via votre panneau de configuration ou tapez l'une des commandes suivantes dans une console (comme root ou sudo): [mc packageRequire]"
+mcset fr packageRequireMissing "$bp a besoin de l'extension Tcl '%s'. Veuillez l'installer via votre panneau de configuration ou tapez dans une console: \n\n sudo apt install %s (Debian/Ubuntu)"
 
-# W E L C O M E 
+# W E L C O M E
 mcset fr next "Prochain \u25bc"
 mcset fr welcTit "[mc welcome] à la [mc bpsetup]!"
 mcset fr welcSubtit1 "Qu'est-ce qui est $bp?"
@@ -80,7 +80,7 @@ mcset fr f2Fontfamily "Police de charactères: "
 mcset fr f2Fontexpl "Adapter la police"
 mcset fr f2Txt "Si activé, $bp fait apparaître $dw sur une image de fond. La photo est sélectionnée au hasard dans la collection de photos $bp (voir section [mc photos]). Une nouvelle image de fond est toujours disponible dans \n\n\t [file nativename $imgdir] \n\npour l'affichage par le gestionnaire de bureau.\n\nSi plusieurs fichiers texte de la Bible sont installés, la langue ou la version de la Bible change au hasard à chaque changement d'image.\n\nPar défaut, $bp installe un DIAPORAMA avec une image changeante. Si une seule image par jour est désirée, le diaporama peut être désactivé (voir ci-dessus).\n\nDans la fenêtre POSITION TEXTE, vous pouvez déplacer $dw à la position désirée sur l'écran. Lors de l'ajout d'images à la collection, la position du texte peut être déterminée individuellement. \n\nLa TAILLE DE LA POLICE est automatiquement définie selon la hauteur de l'écran. Cependant, vous avez la possibilité d'adapter la taille et l'épaisseur individuellement (lettres plus grosses = meilleures contraste). \n\nLa COULEUR DE LA POLICE, vous pouvez la déterminer de manière permanente ou aléatoire. $bp peut également effectuer un ajustement des couleurs en fonction de la luminosité de l'arrière-plan. Cet effet n'entre en jeu qu'après avoir enregistré de nouvelles photos. \n\nSi la nouvelle image de fond n'apparaît pas automatiquement, vous trouverez une solution dans le manuel. "
 
-# P H O T O S 
+# P H O T O S
 mcset fr textposlabel "Déterminer la position du texte"
 mcset fr textposAdjust "Voulez-vous changer la position du texte pour cette image avant de l'enregistrer?"
 mcset fr f6Tit "Organiser les photos pour $bp"

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 9may22 pv
+# Updated 19aug24 pv
 
 # msgcatInit
 ##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
@@ -9,24 +9,28 @@
 ##called by setTexts & several error levels in Biblepix & Biblepix-Setup
 package require msgcat
 namespace import msgcat::mc msgcat::mcset
- 
+
 proc msgcatInit args {
 	global msgdir ExportTextvars
-	
+
 	if {$args != ""} {
 		set lang $args
 	} else {
-	  set lang en
+	  set lang ROOT ;#sets all messages to English, even new ones that haven't been translated yet
 	}
-	msgcat::mcload "$msgdir"
+
+  ##catch in case of file errors
+	catch {msgcat::mcload "$msgdir"}
   msgcat::mclocale $lang
+
 }
 
+# T O D O  is msgcat not loaded already?????
 #tDom is standard in ActiveTcl, Linux distros vary
-if [catch {package require tdom}] {
+if [catch {package require tdom} err] {
   msgcatInit $lang
   package require Tk
-  tk_messageBox -type ok -icon error -title "BiblePix Installation" -message [msgcat::mc packageRequireMissing tDom]
+  tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tDom tdom]"
   exit
 }
 
@@ -57,7 +61,7 @@ proc getTwdSigList {} {
       }
     }
   }
-  
+
   if [info exists twdsigL] {
     return $twdsigL
   }
@@ -72,12 +76,12 @@ proc getRandomTwdFile {{sig 0}} {
   #A) for signature
   if $sig {
     set twdL [getTwdSigList]
-  #B) for all others 
+  #B) for all others
   } else {
     set twdL [getTwdList]
   }
   if {$twdL != ""} {
-    set randIndex [expr {int(rand()*[llength $twdL])}]  
+    set randIndex [expr {int(rand()*[llength $twdL])}]
     return [lindex $twdL $randIndex]
   }
 }
@@ -92,14 +96,14 @@ proc getRandomFontcolor {} {
 
 proc updateTwd {} {
   global twddir lang
-  
-  if [catch {package require json}] {
+
+  if [catch {package require json} err] {
 	  package require Tk
 	  msgcatInit $lang
-	  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message [msgcat::mc packageRequireMissing tcllib/libtcl]
+	  tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tcllib tcllib]"
     exit
   }
-  
+
   source $::Http
 
   set twdFiles [glob -nocomplain -directory $twddir *.twd]
@@ -201,7 +205,7 @@ proc updateTwd {} {
 #####################################################################
 ### T W D   P A R S I N G   T O O L S   #############################
 #####################################################################
-  
+
 proc getTWDFileRoot {twdFile} {
   global twddir
 
@@ -216,7 +220,7 @@ proc getTWDFileRoot {twdFile} {
 
 proc parseTwdFileDomDoc {twdFile} {
   global twddir
-  
+
   set path [file join $twddir $twdFile]
   set file [open $path]
   chan configure $file -encoding utf-8
@@ -235,11 +239,11 @@ proc getDomNodeForToday {domDoc} {
 ##called by getTwdTitle getTwdParolNode getParolIntro getParolText getParolRef
 proc parseToText {node TwdLang {withTags 0}} {
   global Bidi os
-  
+
   if {$node == ""} {
     return ""
   }
-  
+
   if {$withTags} {
     set emNodes [$node selectNodes em/text()]
     if {$emNodes != ""} {
@@ -248,7 +252,7 @@ proc parseToText {node TwdLang {withTags 0}} {
       }
     }
   }
-  
+
   set text [$node asText]
   return $text
 } ;#END parseToText
@@ -259,9 +263,9 @@ proc parseToText {node TwdLang {withTags 0}} {
 ##args='html' for Evolution
 ##var RtL is ONLY for setting indents & tabs, fixBidi comes in getTodays..!
 proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
-  global Bidi tab ind 
+  global Bidi tab ind
   set indent $ind
-  
+
   ##get any Intro
   set intro [getParolIntro $parolNode $TwdLang]
   if {$intro != ""} {
@@ -273,34 +277,34 @@ proc appendParolToText {parolNode TwdText indent {TwdLang "de"} {RtL 0}} {
   foreach line $paroltextlines {
     append TwdText $indent { } $line { } \n
   }
-  ##get refs  
+  ##get refs
   set ref [getParolRef $parolNode $TwdLang]
   append TwdText $tab { } $ref
-  
+
   return $TwdText
-  
+
 } ;#END appendParolToText
 
 # appendParolToTermText
 ##called by ?
 proc appendParolToTermText {parolNode TwdText indent} {
   global tab
-    
+
   set intro [getParolIntro $parolNode]
   if {$intro != ""} {
     append TwdText "echo -e \$\{txtrst\}\$\{int\}\"$indent$intro\"\n"
   }
-  
+
   set text [getParolText $parolNode]
   set textLines [split $text \n]
-   
+
   foreach line $textLines {
     append TwdText "echo -e \$\{txt\}\"$indent$line\"\n"
   }
-  
+
   set ref [getParolRef $parolNode]
   append TwdText "echo -e \$\{ref\}\$\{tab\}\"$ref\""
-  
+
   return $TwdText
 }
 
@@ -328,8 +332,8 @@ proc isRtL {TwdLang} {
 ##called by isRtL
 proc isArabicScript {TwdLang} {
   if {
-  $TwdLang == "ar" || 
-  $TwdLang == "ur" || 
+  $TwdLang == "ar" ||
+  $TwdLang == "ur" ||
   $TwdLang == "fa"
   } {
     return 1
@@ -373,19 +377,19 @@ proc setTodaysTwdNodes {TwdFileName} {
 ##called by SetupBuildGUI
 proc getTodaysTwdText {TwdFileName} {
   global enabletitle ind Bidi
-  
+
   set TwdLang [getTwdLang $TwdFileName]
   set RtL [isRtL $TwdLang]
 
   set TwdText ""
   set indent ""
-    
+
   set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
-  
+
   if {$twdTodayNode == ""} {
     set TwdText "No Bible text found for today."
-    return 
+    return
   }
 
   if {$enabletitle} {
@@ -393,12 +397,12 @@ proc getTodaysTwdText {TwdFileName} {
     append TwdText $twdTitle\n
     set indent $ind
   }
-  
+
   set parolNode [getTwdParolNode 1 $twdTodayNode]
   set TwdText [appendParolToText $parolNode $TwdText $indent $TwdLang $RtL]
-  
+
   append TwdText \n
-  
+
   set parolNode [getTwdParolNode 2 $twdTodayNode]
   set TwdText [appendParolToText $parolNode $TwdText $indent $TwdLang $RtL]
 
@@ -407,8 +411,8 @@ proc getTodaysTwdText {TwdFileName} {
       source $Bidi
     }
     set TwdText [bidi::fixBidi $TwdText]
-  }  
-  
+  }
+
   $twdDomDoc delete
   return $TwdText
 } ;#END getTodaysTwdText
@@ -419,29 +423,29 @@ proc getTodaysTwdText {TwdFileName} {
 ##called by Signature & SigTools (Trojita+Evolution) & Setup!
 proc getTodaysTwdSig {TwdFileName {setup 0}} {
   global ind tab Bidi
-   
+
   # G e t  d o m D o c  & exit if empty
   set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
   if {$twdTodayNode == ""} {
     return $msg::noTwdFilesFound
   }
-  
+
   # P a r s e   d o m D o c
   ##get title
   set twdTitle [getTwdTitle $twdTodayNode]
   set TwdSig "===== $twdTitle ===== \n"
-  
+
   ##check if Bidi (needed for Setup)
   set RtL [isBidi $TwdSig]
   if !$setup {set RtL 0}
-      
+
   ##get 1st parole
   set parolNode [getTwdParolNode 1 $twdTodayNode]
   set TwdSig [appendParolToText $parolNode $TwdSig $ind $RtL]
-  
+
   append TwdSig \n
-  
+
   ##get 2nd parole
   set parolNode [getTwdParolNode 2 $twdTodayNode]
   set TwdSig [appendParolToText $parolNode $TwdSig $ind $RtL]
@@ -456,7 +460,7 @@ proc getTodaysTwdSig {TwdFileName {setup 0}} {
       source $Bidi
     }
     set TwdSig [bidi::fixBidi $TwdSig]
-  }  
+  }
 
   return $TwdSig
 }
@@ -468,21 +472,21 @@ proc getTodaysTwdTerm {TwdFileName} {
   global ind
   set twdDomDoc [parseTwdFileDomDoc $TwdFileName]
   set twdTodayNode [getDomNodeForToday $twdDomDoc]
-  
+
   if {$twdTodayNode == ""} {
-  
+
     set twdTerm {echo "No Bible text found for today."}
-    
+
   } else {
-  
+
     set twdTitle [getTwdTitle $twdTodayNode]
     set twdTerm "echo -e \$\{titbg\}\$\{tit\}\"* $twdTitle *\" \n"
 
     set parolNode [getTwdParolNode 1 $twdTodayNode]
     set twdTerm [appendParolToTermText $parolNode $twdTerm $ind]
-    
+
     append twdTerm \n
-    
+
     set parolNode [getTwdParolNode 2 $twdTodayNode]
     set twdTerm [appendParolToTermText $parolNode $twdTerm $ind]
   }

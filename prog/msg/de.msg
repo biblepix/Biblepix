@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 # INFO: Reintextmenge 1450 Wörter/11000 Zeichen (abzgl. 100 mcset * 3 W. = 300 W.)
-# Updated: 15june24 pv
+# Updated: 15aug24 pv
 
 # U N T R A N S L A T A B L E S
 set bp "BibelPix"
@@ -29,8 +29,9 @@ mcset de photos "Fotos"
 mcset de email "E-Mail-Signatur"
 mcset de terminal "Terminal/Konsole"
 mcset de manual "Handbuch"
-mcset de packageRequireMissing "$bp benötigt die Tcl-Erweiterung '%s'. Bitte installieren Sie sie über Ihre Systemsteuerung oder tippen Sie eines der folgenden Kommandos in eine Konsole (als root oder sudo): [mc packageRequire]"
-# W E L C O M E 
+mcset de packageRequireMissing "$bp benötigt die Tcl-Erweiterung '%s'. \nBitte installieren Sie sie über Ihre Systemsteuerung oder per Kommando im Terminal: \n\n sudo apt install %s (Debian/Ubuntu)"
+
+# W E L C O M E
 mcset de next "Nächstes \u25bc"
 mcset de welcTit "Willkommen beim Einrichtungsprogramm von $bp!"
 mcset de welcSubtit1 "Was ist $bp?"
@@ -66,7 +67,7 @@ mcset de language "Sprache"
 mcset de year "Jahr"
 mcset de bibleversion "Bibelausgabe"
 mcset de biblename "Bibelname"
-mcset de f1Txt "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien zum Download markieren (s. unten), werden diese heruntergeladen, sobald Sie die Taste '[mc download]' drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)!"  
+mcset de f1Txt "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien zum Download markieren (s. unten), werden diese heruntergeladen, sobald Sie die Taste '[mc download]' drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)!"
 #SETUP DESKTOP
 mcset de f2Tit "$dw auf Desktop-Hintergrundbild"
 mcset de f2Box "Hintergrundbild erzeugen"
@@ -80,7 +81,7 @@ mcset de f2Fontweight "fett"
 mcset de f2Fontfamily "Schriftart: "
 mcset de f2Fontexpl "Schrift anpassen"
 mcset de f2Txt "\nWenn aktiviert, zaubert $bp $dw auf ein Hintergrundbild. Das Foto wird im Zufallsprinzip aus der $bp-Fotosammlung ausgewählt (s. Rubrik [mc photos]). Ein neues Hintergrundbild steht jeweils in \n\n\t [file nativename $imgdir] \n\nzur Anzeige für den Desktop-Manager bereit. \n\nSofern mehrere Bibeltextdateien installiert sind, wechselt bei jedem Bildwechsel auch die Sprache bzw. Bibelversion im Zufallsprinzip.\n\n$bp richtet standardmässig eine DIASCHAU mit Wechselbild ein. Soll nur 1 Bild pro Tag angezeigt werden, kann die Diaschau deaktiviert werden (s.o.).\n\nIm Fenster TEXTPOSITION können Sie $dw an die gewünschte Stelle auf dem Bildschirm verschieben. Beim Hinzufügen von Bildern kan die Textposition auch individuell bestimmt werden. \n\nDie SCHRIFTGRÖSSE wird automatisch aufgrund der Bildschirmhöhe gesetzt. Sie haben jedoch die Möglichkeit, Grösse und Dicke anzupassen (grössere Buchstaben = besserer Kontrast).\n\nDie SCHRIFTFARBE können Sie fest bestimmen oder dem Zufall überlassen. $bp kann zusätzlich eine Farbanpassung anhand der Hintergrundhelligkeit vornehmen. Dieser Effekt kommt erst nach Speichern neuer Fotos zum Tragen.\n\nFalls das neue Hintergrundbild nicht automatisch erscheint, finden Sie im Manual eine Lösung."
-# S E T U P   P H O T O S 
+# S E T U P   P H O T O S
 mcset de textposlabel "Textposition bestimmen"
 mcset de textposAdjust "Wollen Sie vor dem Speichern die Textposition für dieses Bild ändern?"
 mcset de f6Tit "Fotos für $bp organisieren"
@@ -105,7 +106,7 @@ mcset de picSchonDa "Foto bereits im $bp-Bildordner"
 mcset de f3Tit "$dw auf Ihren E-Mail-Signaturen"
 mcset de f3Btn "E-Mail-Signatur erzeugen"
 mcset de f3Sprachen "Gewünschte Sprachen für meine Signaturen"
-mcset de f3Txt "Wenn aktiviert, fügt $bp einmal täglich für jede installierte Bibeltextdatei $dw an Ihre E-Mail-Signaturen an. Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. signature-de_Schlac.txt) im folgenden Ordner gespeichert: \n\n\t$sigdir \n\nSie können diese Dateien aus Ihrem E-Mail-Programm oder in einem Texteditor bearbeiten und persönliche Grussformeln, Adressen usw. oben einfügen. Text oberhalb der Trennlinie ==== bleibt beim Wechsel von $dw unbehelligt. \n\nVielleicht möchten Sie nicht, dass Ihre Mail-Empfänger $dw in allen Sprachen lesen, die Sie installiert haben. Wählen Sie oben rechts die gewünschte(n) Sprache(n) aus.\n\nDamit $dw künftig auf Ihren Mails erscheint, müssen Sie Ihrem Mail-Programm beibringen, die oben beschriebenen Dateien zu verwenden (meist unter Einstellungen>Signatur). Wenn Sie statt einer bestimmen Sprache die Datei 
+mcset de f3Txt "Wenn aktiviert, fügt $bp einmal täglich für jede installierte Bibeltextdatei $dw an Ihre E-Mail-Signaturen an. Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. signature-de_Schlac.txt) im folgenden Ordner gespeichert: \n\n\t$sigdir \n\nSie können diese Dateien aus Ihrem E-Mail-Programm oder in einem Texteditor bearbeiten und persönliche Grussformeln, Adressen usw. oben einfügen. Text oberhalb der Trennlinie ==== bleibt beim Wechsel von $dw unbehelligt. \n\nVielleicht möchten Sie nicht, dass Ihre Mail-Empfänger $dw in allen Sprachen lesen, die Sie installiert haben. Wählen Sie oben rechts die gewünschte(n) Sprache(n) aus.\n\nDamit $dw künftig auf Ihren Mails erscheint, müssen Sie Ihrem Mail-Programm beibringen, die oben beschriebenen Dateien zu verwenden (meist unter Einstellungen>Signatur). Wenn Sie statt einer bestimmen Sprache die Datei
 \n\t signature-SURPRISE.txt
 \nwählen, rotiert $dw im Zufallsprinzip.\n\nGewisse Programme wie Seamonkey Mail, Evolution oder Trojitá verwalten Signaturen intern. $bp kann darunter vorläufig Trojitá und Evolution  berücksichtigen."
 # T E R M I N A L
@@ -140,3 +141,4 @@ mcset de rotateWait "Bitte haben Sie eine Weile Geduld, bis die Drehung am Origi
 mcset de rotateInfo "Achtung: durch Abspeichern und Neuladen kann ein Bild in mehreren Schritten gedreht werden!"
 mcset de deletedPicMsg "Bild aus $bp-Fotoalbum gelöscht:"
 mcset de copiedPicMsg "Neues Bild nach $bp-Fotoalbum kopiert:"
+mcset de fasterImageViewingWithThread "Für eine schnellere Bildbetrachtung sollten Sie die Tcl-Erweiterung 'Thread' installieren. Tun Sie dies über Ihre Systemverwaltung oder tippen Sie in einem Terminal: \n\n\t sudo apt install tcl-thread"

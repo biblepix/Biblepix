@@ -2,14 +2,13 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27jul23 pv
+# Updated: 17aug24 pv
 
 #Check for Img package
 if [catch {package require Img} err ] {
   msgcatInit $lang
-  package require Tk
-  tk_messageBox -type ok -icon error -title "BiblePix Error Message" -message {Error message: "$err" \n[mc packageRequireMissing tkimg] }
-  exit
+  tk_messageBox -type ok -icon error -title "$err" -message "[mc packageRequireMissing Img libtk-img(-dev)]"
+#  exit
 }
 
 #####################################################################
@@ -26,13 +25,13 @@ proc getRandomBMP {} {
 #Ausgabe JPG/PNG mit Pfad
 proc getRandomPhotoPath	{} {
   global platform photosdir
-  
+
   if {$platform=="unix"} {
     set imglist [glob -nocomplain -directory $photosdir *.jpg *.jpeg *.JPG *.JPEG *.png *.PNG]
   } elseif {$platform=="windows"} {
     set imglist [glob -nocomplain -directory $photosdir *.jpg *.jpeg *.png]
   }
-  return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ] 
+  return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ]
 }
 
 proc setPngFileName {fileName} {
@@ -55,8 +54,8 @@ proc calcAverage {list} {
 ############### Colour procs ################################
 #############################################################
 
-# gradient - Abstufungen einer Standardfarbe von 100% (weiss) bis 0% (schwarz) 
-##shadeens or sunens a given RGB hex value by $factor (0.1 - 1.0) 
+# gradient - Abstufungen einer Standardfarbe von 100% (weiss) bis 0% (schwarz)
+##shadeens or sunens a given RGB hex value by $factor (0.1 - 1.0)
 ##Copied from https://wiki.tcl-lang.org/page/Making+color+gradients
 ##with many thanks and God's blessings to Blaise Montandon
 ##called by setSun & setShade
@@ -106,7 +105,7 @@ proc hex2rgb {hex} {
 }
 
 # setFontShades
-##computes font shades according to luminance of background colour 
+##computes font shades according to luminance of background colour
 ##returns 3 hex values: reg/sun/shade
 ##called by setCanvasFontColour & BdfPrint & createMovingTextBox
 proc setFontShades {fontcolortext} {
@@ -119,10 +118,10 @@ proc setFontShades {fontcolortext} {
   } else {
     set luminacy 2
   }
-  
+
   lappend colpath colour:: $fontcolortext
   variable fontcol $colpath
-   
+
   #1)Determine colour arrays
   set regHex [set colour::$fontcolortext]
   #puts $regHex
@@ -145,7 +144,7 @@ proc setFontShades {fontcolortext} {
   set colour::regHex $regHex
   set colour::sunHex $sunHex
   set colour::shaHex $shaHex
-  
+
   return "$regHex $sunHex $shaHex"
 
 } ;#END setFontShades
@@ -156,14 +155,14 @@ proc setFontShades {fontcolortext} {
 ##called by printTwd & SetupRepos
 proc getAreaLuminacy {c item} {
   global colour::pnginfo brightThreshold darkThreshold
-  
+
   puts "Scanning area for luminance..."
-  
+
   #Test if "c" is canvas (with .) or image
   if {[string index $c 0] == "."} {
     set object CANVAS
   } else {
-    set object IMAGE 
+    set object IMAGE
   }
 
   if {$object == "CANVAS"} {
@@ -175,17 +174,17 @@ proc getAreaLuminacy {c item} {
       return $lum
     }
   } elseif {$object == "IMAGE"} {
-  
+
   #  set img $c
   set img hgbild
   }
-  
+
   # Prepare scanning:
   ##for canvas
-  if {$object == "CANVAS"} { 
+  if {$object == "CANVAS"} {
     lassign [$c bbox $item] x1 y1 x2 y2
     set skip 2
-  
+
   ##for image (bigger skip)
   } elseif {$object == "IMAGE"} {
     lassign $item x1 y1 x2 y2
@@ -204,7 +203,7 @@ proc getAreaLuminacy {c item} {
     }
   }
   set avLum [expr int($sumTotal / $numCols)]
-   
+
   ##very shade
   if {$avLum <= $darkThreshold} {
     set lumLevel 1
@@ -215,14 +214,14 @@ proc getAreaLuminacy {c item} {
   } else {
     set lumLevel 2
   }
-  
+
   puts "New luminance $lumLevel"
-  
+
   return "$lumLevel $avLum"
-  
+
 } ;#END getAreaLuminacy
 
-################################################# 
+#################################################
 # rgb2hex - OBSOLETE now!
 #################################################
 ##computes r/g/b array into a hex digit
@@ -271,13 +270,13 @@ proc cropPic2Textwidth {} {
   catch {set dataL [textbild data]}
   if {$dataL == ""} { return "No data for cropping found" }
 
-  #scan datalist for 1st non-black pixel per row  
+  #scan datalist for 1st non-black pixel per row
   set minleft 1000
   set null "#000000"
-  
+
   foreach row $dataL {
-    set i 0  
- 
+    set i 0
+
     foreach pixel $row {
       if {$pixel == $null} {
         incr i
@@ -288,7 +287,7 @@ proc cropPic2Textwidth {} {
       }
     }
   }
-     
+
   #Refill textbild to fit size (!blanking doesn't work)
   image create photo cropbild
   cropbild copy textbild -from $minleft 0
@@ -302,7 +301,7 @@ proc cropPic2Textwidth {} {
 # resizePic
 ## TODOS: CHANGE NAME? MOVE TO BACKGROUND!!!!
 ## called for even-sided resizing, after cutting
-proc resizePic {src newx newy} { 
+proc resizePic {src newx newy} {
 
  #  Decsription:  Copies a source image to a destination
  #   image and resizes it using linear interpolation
@@ -344,7 +343,7 @@ proc resizePic {src newx newy} {
 
     set row [list]
     set thisrow [list]
-    
+
     set nx 0
     set xtot $mx
 
@@ -437,7 +436,7 @@ proc resizePic {src newx newy} {
 
       # This section covers shrinking an image
       # where a single pixel is made from more than
-      # 2 others.  Actually we cheat and just remove 
+      # 2 others.  Actually we cheat and just remove
       # a line of pixels which is not as good as it should be
 
       while { $ytot > $newy } {
@@ -476,7 +475,7 @@ proc resizePic {src newx newy} {
     incr ny
   }
   update
-  
+
   puts $dest
   return $dest
 } ;#END resizePic

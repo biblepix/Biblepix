@@ -2,11 +2,10 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27mch24 pv
+# Updated: 16aug24 pv
 
 source $SetupTools
 source $TwdTools
-setTexts $lang
 
 #Set up flags top right
 set flagL [setFlags]
@@ -21,10 +20,12 @@ if {$setupTwdFileName == ""} {
   set setupTwdText [getTodaysTwdText $setupTwdFileName]
 }
 
+#TODO TESTING
 #Create title logo with icon
-if [catch {package require Img} ]  {
+if [catch {package require Img} err] {
+	msgcat::mclocale $lang
+	tk_messageBox -title "$err" -icon error -type ok -message "[msgcat::mc packageRequireMissing Img libtk-img(-dev)]"
 
-  NewsHandler::QueryNews "[mc packageRequireMissing Img]" red
 } else {
   image create photo Logo -file $WinIcon -format ICO
   wm iconphoto . -default Logo
@@ -91,7 +92,7 @@ if { [info exists Debug] && $Debug } {
 
   if [catch {source $SetupPhotos} ] {
     if [catch {package require Img}] {
-      NewsHandler::QueryNews "[mc packageRequireMissing Img]" red
+      NewsHandler::QueryNews "[mc packageRequireMissing Img libtk-img(-dev)]" red
     }
   }
 }

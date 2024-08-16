@@ -1,25 +1,8 @@
 # ~/Biblepix/prog/msg/ROOT.msg
 # English texts for BiblePix Setup
-# sourced by SetupGui
+# picked if $lang not present or if expression not found in $lang
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 12jul23 pv
-
-############################################################################################################
-## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S   "......"
-## e.g.:  of  
-##    'mcset yourlanguage code "PHRASE" '    - only replace quoted text in "PHRASE"
-############################################################################################################
-
-################################################################################
-## U  N  T  R  A  N  S  L  A  T  A  B  L  E  S
-## P L E A S E   D O N 'T  T O U C H : 
-## - ANY PHRASE STARTING WITH #
-## - ANY WORD STARTING WITH $
-## - ANY PHRASE WITHIN SQUARE BRACKETS [...]
-## - ANY FORMATTING MARKERS LIKE \n \n\n \t \u... etc.
-## - ANY PHRASE STARTING WITH 'set'
-## - ANY WORD STARTING WITH %
-################################################################################
+# Updated: 16aug24 pv
 
 #Untranslatable fix texts for msgcat
 mcset {} www {https://biblepix.vollmar.ch}
@@ -39,7 +22,7 @@ if {$lang == "de"} {
 }
 
 #############################################################
-# All English translations 
+# All English translations
 # to be sourced by any other language missing
 # or for any string that is missing in that language
 #############################################################
@@ -64,18 +47,14 @@ mcset {} terminal "Terminal"
 mcset {} manual "Manual"
 mcset {} uninst "Uninstall $bp"
 mcset {} next "Next \u25bc"
-mcset {} packageRequire {
-* apt-get install [PACKAGE NAME] (Debian/Ubuntu)
-* emerge tiff [PACKAGE NAME] (Gentoo)
-}
-mcset {} packageRequireMissing "$bp needs the Tcl extension '%s'.\nPlease install via system management, or type one of the following commands in a terminal (as root or sudo): [mc packageRequire]"
+mcset {} packageRequireMissing "$bp needs the Tcl extension '%s'. \n Please install via system management, or type in a terminal: \n\n sudo apt install %s (Debian/Ubuntu)"
 
 # U N I N S T A L L
 mcset {} uninstall "Do you really want to remove $bp from your computer?"
 mcset {} uninstalling "$bp will now be uninstalled. To clear system settings made, you must confirm any upcoming dialogue boxes with \"Yes\"."
-mcset {} uninstalled "$bp has been removed safely from your system. To reinstall, visit our website [mc www] and download $bp Installer." 
+mcset {} uninstalled "$bp has been removed safely from your system. To reinstall, visit our website [mc www] and download $bp Installer."
 
-#### S E T U P DOWNLOAD 
+#### S E T U P DOWNLOAD
 mcset {} download "Download"
 mcset {} downloadingHttp "Downloading $bp program files..."
 mcset {} downloadingAsianFont "Downloading Asian font files..."
@@ -122,7 +101,7 @@ mcset {} f2Fontweight "bold"
 mcset {} f2Fontfamily "Font family: "
 mcset {} f2Fontexpl "Adjust Font"
 mcset {} f2Txt "If activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see [mc photos] section), and a new background image will be put in \n\n\t [file nativename $imgdir] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. For only 1 picture per day, unset this feature (see above).\n\nThe TEXT POSITION window allows you to put $dw wherever you like on your screen. Moreover, when adding a photograph to the $bp photo collection, you can position the text individually. \n\nFONT SIZE is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters = better contrast).\n\nFONT COLOUR can be accidental or set by you. Note that $bp may adjust colour luminance on the basis of background brightness. This takes effect only after a photo has been added to the $bp collection. \n\nShould the new background image fail to appear, please consult the Manual page for a solution."
-# S E T U P   P H O T O S 
+# S E T U P   P H O T O S
 mcset {} f6Tit "Manage your photos for $bp"
 mcset {} f6Txt "Here you can add any suitable photos from your Pictures directory and put them into the $bp photo collection, or remove them from there. Photos should ideally be in landscape format and have some plain-colour surface for good visibility of the Bible text.\n\nIf the size of a photo does not agree with the screen dimensions, $bp will fit it to size and save it to the $bp Photos directory. If refitting is required, you will be asked to choose the desired section of the photo as well as the position of future Bible texts.\n\nAt any rate, the original photo remains unchanged."
 mcset {} deletedPicMsg "Deleted picture from $bp photo collection:"
@@ -136,7 +115,7 @@ mcset {} preview180 "\u21BB Preview 180° rotation"
 mcset {} computePreview "\u21B6 \u21B7 Preview any rotation"
 mcset {} rotateWait "Please wait patiently while rotating original picture..."
 mcset {} rotateInfo "Note: by saving and reloading, a picture can be rotated in several steps!"
-mcset {} f6numPhotosTxt "Picture"
+mcset {} f6numPhotosTxt "Number of pictures: "
 mcset {} f6Add "Add to $bp Photo Collection:"
 mcset {} f6Show "Show $bp Photo Collection"
 mcset {} f6Find "Find new photos"
@@ -161,7 +140,7 @@ mcset {} winIgnorePopup "Please dismiss (close) any pop-up windows so $bp can fi
 mcset {} winChangingDesktop "$bp will now try to register with your Desktop Background"
 mcset {} winChangeDesktopProb "We are having a problem changing your Desktop background.\nPlease right-click on an empty spot on your Desktop and select \"Personalize\" > \"Wallpaper\" either set as single pic path \n\t$TwdBMP or \n\t$TwdPNG \nor else set up a slideshow setting the directory to \n\t$imgdir."
 mcset {} linChangeDesktopProb "We are having a problem changing your Desktop settings.\nPlease right-click on your Desktop and find the dialogue for 'Background picture'. There indicate $imgdir as new image path."
-mcset {} linNoDesktopFound "No Llinux Desktop detected! Please find out in the manual how to manually set up the $bp background picture."
+mcset {} linNoDesktopFound "No Linux Desktop detected! Please find out in the manual how to manually set up the $bp background picture."
 mcset {} linReloadingDesktop "We shall now try to reload your Desktop. If this fails, please log out and in again for the $bp settings to take effect."
 
 if {$os=="Linux"} {
@@ -169,6 +148,6 @@ if {$os=="Linux"} {
 } else {
   mcset {} changeDesktopOk "$bp has been configured successfully and will start shortly.\n\nYou can run the $bp Setup program anytime by right-clicking on an free spot on your Desktop and choosing the \"$bp Setup\" icon."
 }
-
 mcset {} winRegister "$bp will no try to register with your system.\nYou must confirm any dialogue boxes with \"Yes\"."
 mcset {} winRegisterProb "$bp has not been registered properly on your computer.\nPlease try rerunning Setup, or add \n\t$Biblepix\n to your Autostart folder."
+mcset {} fasterImageViewingWithThread "For faster image viewing you should install the Tcl extension 'Thread'. Do it either through your system management, or type in a terminal:\n\n\t sudo apt install tcl-thread"

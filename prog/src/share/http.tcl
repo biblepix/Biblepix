@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # Procs called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5jan23 pv
+# Updated: 16aug24 pv
 package require http
 
 # checkTls
@@ -9,10 +9,10 @@ package require http
 ##called by downloadTWDFile
 proc checkTls {} {
   global lang
-  if [catch {package require tls}] {
+  if [catch {package require tls} err] {
     package require Tk
     msgcatInit $lang
-    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message [mc packageRequireMissing tls]
+    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tls tls]"
     return 1
   }
 }
@@ -154,14 +154,15 @@ proc downloadTwdFile {twdFile year} {
   http::unregister https
 }
 
-#TODO called by?
+# getDataFromUrl
+##called by updateTwd
 proc getDataFromUrl {url} {
 
   #Register SSL connection
   http::register https 443 [list ::tls::socket -tls1 1]
 
+#TODO this throws error each time I run Setup!
   set token [http::geturl $url]
-
   if {[http::status $token] != "ok"} {
     error "No Internet connection"
   }
@@ -184,17 +185,17 @@ proc getRemoteRoot {} {
   
 #TODO outsource below!
   #These are standard in ActiveTcl, Linux distros vary
-  if [catch {package require tdom}] {
+  if [catch {package require tdom} err] {
     package require Tk
     msgcatInit $lang
-    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message "[mc packageRequireMissing tDom/tdom]"
+    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tDom tdom]"
     return 1
   }
 
-  if [catch {package require tls}] {
+  if [catch {package require tls} err] {
     package require Tk
     msgcatInit $lang
-    tk_messageBox -type ok -icon error -title "BiblePix Installation" -message "[mc packageRequireMissing tls]"
+    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tls tls]"
     return 1
   }
 

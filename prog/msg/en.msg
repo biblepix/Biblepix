@@ -2,17 +2,17 @@
 # English texts for BiblePix Setup
 # sourced by SetupGui
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 20dec21 pv
+# Updated: 15aug24 pv
 
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S   "......"
-## e.g.:  of  
+## e.g.:  of
 ##    'mcset yourlanguage code "PHRASE" '    - only replace quoted text in "PHRASE"
 ############################################################################################################
 
 ################################################################################
 ## U  N  T  R  A  N  S  L  A  T  A  B  L  E  S
-## P L E A S E   D O N 'T  T O U C H : 
+## P L E A S E   D O N 'T  T O U C H :
 ## - ANY PHRASE STARTING WITH #
 ## - ANY WORD STARTING WITH $
 ## - ANY PHRASE WITHIN SQUARE BRACKETS [...]
@@ -35,7 +35,7 @@ Homepage: biblepix.vollmar.ch
 "
 
 #############################################################
-# All English translations 
+# All English translations
 # to be sourced by any other language missing
 # or for any string that is missing in that language
 #############################################################
@@ -60,14 +60,14 @@ mcset en terminal "Terminal"
 mcset en manual "Manual"
 mcset en uninst "Uninstall $bp"
 mcset en next "Next \u25bc"
-mcset en packageRequireMissing "$bp needs the Tcl extension '%s'. Please install via system management, or type one of the following commands in a terminal (as root or sudo): [mc packageRequire]"
+mcset en packageRequireMissing "$bp needs the Tcl extension '%s'. \n Please install via system management, or type in a terminal: \n\n sudo apt install %s (Debian/Ubuntu)"
 
 # U N I N S T A L L
 mcset en uninstall "Do you really want to remove $bp from your computer?"
 mcset en uninstalling "$bp will now be uninstalled. To clear system settings made, you must confirm any upcoming dialogue boxes with \"Yes\"."
-mcset en uninstalled "$bp has been removed safely from your system. To reinstall, visit our website [mc www] and download $bp Installer." 
+mcset en uninstalled "$bp has been removed safely from your system. To reinstall, visit our website [mc www] and download $bp Installer."
 
-#### S E T U P DOWNLOAD 
+#### S E T U P DOWNLOAD
 mcset en download "Download"
 mcset en downloadingHttp "Downloading $bp program files..."
 mcset en downloadingAsianFont "Downloading Asian font files..."
@@ -114,7 +114,7 @@ mcset en f2Fontweight "bold"
 mcset en f2Fontfamily "Font family: "
 mcset en f2Fontexpl "Adjust Font"
 mcset en f2Txt "If activated, $bp will put $dw on a background picture every time it runs. The picture will be chosen at random from the $bp Photo Collection (see [mc photos] section), and a new background image will be put in \n\n\t [file nativename $imgdir] \n\nfor the Desktop manager to display.\n\nIf more than one Bible text files are installed, the language (or Bible version) will randomly alternate along with the pictures.\n\n$bp will set up a Slide Show with alternating pictures at a given interval. For only 1 picture per day, unset this feature (see above).\n\nThe TEXT POSITION window allows you to put $dw wherever you like on your screen. Moreover, when adding a photograph to the $bp photo collection, you can position the text individually. \n\nFONT SIZE is set automatically on the basis of the screen height. You may however change letter size and weight to taste (bigger letters = better contrast).\n\nFONT COLOUR can be accidental or set by you. Note that $bp may adjust colour luminance on the basis of background brightness. This takes effect only after a photo has been added to the $bp collection. \n\nShould the new background image fail to appear, please consult the Manual page for a solution."
-# S E T U P   P H O T O S 
+# S E T U P   P H O T O S
 mcset en f6Tit "Manage your photos for $bp"
 mcset en f6Txt "Here you can add any number of suitable photos from your Pictures directory and put them into the $bp photo collection, or remove them from there. Photos should ideally be in landscape format and have some plain-colour surface for good visibility of the Bible text.\n\nIf the size of a photo does not agree with the screen dimensions, $bp will fit it to size and save it to the $bp Photos directory. If refitting is required, you will be asked to choose the desired section of the photo as well as the position of future Bible texts.\n\nAt any rate, the original photo remains unchanged."
 mcset en deletedPicMsg "Deleted picture from $bp photo collection:"
@@ -143,7 +143,7 @@ mcset en picSchonDa "Photo already in $bp Photos folder"
 mcset en f3Tit "Add $dw to your e-mail signatures"
 mcset en f3Btn "Create e-mail signature"
 mcset en f3Sprachen "Desired languages for my signatures"
-mcset en f3Txt "If activated, $bp will add $dw at the end of your e-mail signatures once a day for any language text files present on your computer. Signature files are stored by language shortcut (e.g. signature-en_Englis.txt) in the directory \n\n\t$sigdir \n\nYou can edit these files from your e-mail program, or in a text editor, and add any personal information (greetings, address etc.) at the top. Any text above the separating line ==== will remain untouched when 'The Word' changes. \n\nYou may not desire $dw to appear in your mails in all languages installed. In the checkboxes top right, please choose those languages you deem appropriate for your mail recipients.\n\nFinally you must instruct your e-mail program to use these signature files (generally under Options>Signatures). If instead of a language, you choose the file 
+mcset en f3Txt "If activated, $bp will add $dw at the end of your e-mail signatures once a day for any language text files present on your computer. Signature files are stored by language shortcut (e.g. signature-en_Englis.txt) in the directory \n\n\t$sigdir \n\nYou can edit these files from your e-mail program, or in a text editor, and add any personal information (greetings, address etc.) at the top. Any text above the separating line ==== will remain untouched when 'The Word' changes. \n\nYou may not desire $dw to appear in your mails in all languages installed. In the checkboxes top right, please choose those languages you deem appropriate for your mail recipients.\n\nFinally you must instruct your e-mail program to use these signature files (generally under Options>Signatures). If instead of a language, you choose the file
 \n\t signature-SURPRISE.txt
 \n$dw will rotate at random.\n\nCertain programs like Seamonkey Mail, Evolution or Trojitá manage signatures internally. Among these $bp can handle Trojitá and Evolution for now."
 mcset en f4Tit  "Display $dw in your Linux terminals"

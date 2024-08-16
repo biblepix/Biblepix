@@ -5,17 +5,17 @@
 ##INFO: Textmenge ca. 1900 W. -
 ## (100 mcset * 3 W. =) -300 W.
 ## (Comments) -20 (variables ($) -80 = 1500 W.
-# Updated: 15nov21 pv
+# Updated: 15aug24 pv
 
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S   "......"
-## e.g.:  of  
+## e.g.:  of
 ##    'mcset yourlanguage code "PHRASE" '    - only replace quoted text in "PHRASE"
 ############################################################################################################
 
 ################################################################################
 ## U  N  T  R  A  N  S  L  A  T  A  B  L  E  S
-## P L E A S E   D O N 'T  T O U C H : 
+## P L E A S E   D O N 'T  T O U C H :
 ## - ANY PHRASE STARTING WITH #
 ## - ANY WORD STARTING WITH $
 ## - ANY PHRASE WITHIN SQUARE BRACKETS [...]
@@ -46,12 +46,12 @@ mcset zh terminal "终端"
 mcset zh manual "手册"
 mcset zh uninst "卸载$bp"
 mcset zh next "下一个 \u25bc"
-mcset zh packageRequireMissing "$bp 需要 Tcl 扩展'%s'.\n请通过系统管理安装或在终端中键入以下命令之一(以root或sudo): [mc packageRequire]"
+mcset zh packageRequireMissing "$bp 需要 Tcl 扩展 '%s'. \n请通过系统管理安装或在终端中键入以下命令之一(以root或sudo): \n apt install %s (Debian/Ubuntu)"
 
 # U N I N S T A L L卸载
 mcset zh uninstall "您真的想从您的电脑中删除$bp吗?"
 mcset zh uninstalling "$bp现在将被卸载。要清除所做的系统设置，您必须用\"是\"来确认所有将要出现的对话框."
-mcset zh uninstalled "$bp已经从您的系统中安全删除.要想重新安装,请访问我们的网站 [mc www] 并下载$bp安装程序." 
+mcset zh uninstalled "$bp已经从您的系统中安全删除.要想重新安装,请访问我们的网站 [mc www] 并下载$bp安装程序."
 
 #### S E T U P   G U I 设置 ################################
 mcset zh download "下载"
@@ -72,10 +72,10 @@ mcset zh welcSubtit1 "什么是$bp?"
 mcset zh welcTxt1 "$bp是为'Bible 2.0'项目开发的Tcl程序.该项目旨在\n以越来越多的语言发布金句.\n\n金句由全年每天两节精选的圣经经文组成.\n\n$bp可以在您的计算机上以各种方式显示金句."
 mcset zh welcSubtit2 "您有哪些选择?"
 mcset zh welcTxt2 "\u27a4 [mc bibletexts]: 为金句选择一种或多种圣经文本语言.
-\u27a4 [mc desktop]: 在您的个人背景图片上获取金句,包括幻灯放映. 
+\u27a4 [mc desktop]: 在您的个人背景图片上获取金句,包括幻灯放映.
 \u27a4 [mc photos]: 整理您的照片以供$bp使用
 \u27a4 [mc email]: 将金句添加到您的电子邮件签名中
-\u27a4 [mc terminal]: 在Linux终端显示金句 
+\u27a4 [mc terminal]: 在Linux终端显示金句
 \u27a4 [mc manual]: 学习$bp程序的完整指南
 "
 mcset zh f1Tit "当前金句圣经文本列表"
@@ -123,7 +123,7 @@ mcset zh movePicToResize "将图像部分移动到所需位置,然后通过按�
 mcset zh resizingPic "调整照片大小以适应屏幕.请稍等..."
 mcset zh movePic "移动图片部分\u21CA"
 mcset zh picSchonDa "照片已在$bp照片文件夹中"
-# S E T U P   S I G N A T U R E  设置签名	
+# S E T U P   S I G N A T U R E  设置签名
 mcset zh f3Tit "在您的电子邮件签名中添加金句"
 mcset zh f3Btn "创建电子邮件签名"
 mcset zh f3Sprachen "我的签名所需的语言"

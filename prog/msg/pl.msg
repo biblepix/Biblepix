@@ -2,17 +2,17 @@
 # ~/Biblepix/prog/msg/pl.msg
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 13nov21 pv
+# Updated: 13aug24 pv
 
 ############################################################################################################
 ## T R A N S L A T O R S : O N L Y   T R A N S L A T E   P H R A S E S   W I T H I N  Q U O T E S "......"
-## e.g.:  of  
+## e.g.:  of
 ##    mcset yourlanguage "..."    - only replace quoted text  "....."
 ############################################################################################################
 
 ################################################################################
 ## U N T R A N S L A T A B L E S
-## P L E A S E   D O N 'T  T O U C H : 
+## P L E A S E   D O N 'T  T O U C H :
 ## - ANY PHRASE STARTING WITH #
 ## - ANY WORD STARTING WITH $
 ## - ANY PHRASE WITHIN SQUARE BRACKETS [...]
@@ -40,7 +40,7 @@ mcset pl terminal "Terminal"
 mcset pl manual "Ręczny"
 mcset pl uninst "Odinstaluj $bp"
 mcset pl next "Następny \u25bc"
-mcset pl packageRequireMissing "$bp potrzebuje rozszerzenia Tcl '%s'.\nProszę zainstalować program przy użyciu menadżera systemu lub poprzez wybranie jednej z następujących komend w terminalu programisty (jako root lub sudo): [mc packageRequire]"
+mcset pl packageRequireMissing "$bp potrzebuje rozszerzenia Tcl '%s'.\n Proszę zainstalować program przy użyciu menadżera systemu lub poprzez w terminalu programisty: \n\n sudo apt install %s (Debian/Ubuntu)"
 
 # U N I N S T A L L
 mcset pl uninstall "Czy napewno chcesz usunąć $bp z Twojego komputera?"
@@ -63,7 +63,7 @@ mcset pl textposlabel "Ustaw ogólną pozycję tekstu"
 mcset pl textposAdjust "Czy chcesz dostosować pozycję tekstu do tego zdjęcia przed zapisaniem?"
 mcset pl welcTit "Witaj w instalatorze programu $bp!"
 mcset pl welcSubtit1 "Czym jest $bp?"
-mcset pl welcTxt1 "$bp jest programem Tcl stworzonym w ramach projektu 'Bible 2.0', którego celem jest szerzenie ‘Słowa’ w coraz to większej ilości języków. \n\n'Słowo' zawiera dwa wybrane wersety Biblii na każdy dzień roku. \n\n$bp może wyświetlać 'Słowo' w różnych wersjach na twoim komputerze." 
+mcset pl welcTxt1 "$bp jest programem Tcl stworzonym w ramach projektu 'Bible 2.0', którego celem jest szerzenie ‘Słowa’ w coraz to większej ilości języków. \n\n'Słowo' zawiera dwa wybrane wersety Biblii na każdy dzień roku. \n\n$bp może wyświetlać 'Słowo' w różnych wersjach na twoim komputerze."
 mcset pl welcSubtit2 "Jakie są twoje opcje?"
 mcset pl welcTxt2 "\u27a4 [mc bibletexts]: Wybierz tekst Biblii w jednym lub kilku językach dla 'Słowo'
 \u27a4 [mc desktop]: Wybierz 'Słowo' na swoje spersonalizowane tło ekranu, również jako pokaz slajdów
@@ -92,7 +92,7 @@ mcset pl f2Fontweight "pogrubienie"
 mcset pl f2Fontfamily "Rodzaj czcionki: "
 mcset pl f2Fontexpl "Dostosuj czcionkę"
 mcset pl f2Txt "Przy każdym uruchomieniu $bp umieści 'Słowo' na tle pulpitu. Zdjęcie będzie wybrane  losowo z Kolekcji Zdjęć $bp (zobacz Sekcja Zdjęć), a nowe tło ekranu będzie umieszczone w \n\n\t [file nativename $imgdir] \n\ndo wyświetlenia przez menedżera pulpitu.\n\nJeśli zainstalowano więcej niż jeden pakiet językowy, język (lub wersja Bilbii) będzie zmieniać się wraz z kolejnymi zdjęciami. \n\n$bp uruchomi pokaz slajdów ze zmieniającymi się zdjęciami w ustawionych wcześniej interwałach. W celu ustawienia tylko jednego zdjęcia na dzień, odznacz tę opcję (zobacz powyżej).\n\nOkno POZYCJI TEKSTU pozwoli Ci umieścić 'Słowo' w dowolnym miejscu na Twoim ekranie. Ponadto, dodając zdjęcia do kolekcji zdjęć $bp masz możliwość ustawienia tekstów indywidualnie.\n\nROZMIAR CZCIONKI  jest ustawiany automatycznie uwzględniając wysokość ekranu. Jednakże, masz możliwość zmiany rozmiaru i wagi czcionki według własnego uznania (większe litery = lepszy kontrast).\n\nKOLOR CZCIONKI może być losowy albo ustawiony przez użytkownika. $bp może dostosować luminację kolorów na podstawie jasności ekranu. Ta operacja ma miejsce tylko w przypadku gdy zdjęcie jest zawarte w kolekcji $bp.  \n\nJeśli nowe tło pulpit nie pojawi się natychmiast, należy szukać rozwiązania w Instrukcji Strony."
-# S E T U P   P H O T O S 
+# S E T U P   P H O T O S
 mcset pl f6Tit "Zarządzaj swoimi zdjęciami w $bp"
 mcset pl f6Txt "Tutaj możesz dodać wybrane zdjęcia ze swojego katalogu zdjęć i umieścić je w kolekcji zdjęć $bp, lub je z tej kolekcji usunąć. Zdjęcia powinny być w formacie poziomym i posiadać proste (wyraźne) kolory w celu uzyskania najlepszej widoczności tekstu Biblijnego.\n\nJeśli rozmiar zdjęcia nie jest zgodny z wymiarami ekranu, $bp dopasuje je i zachowa w katalogu zdjęć $bp. Jeżeli wymagana jest zmiana wymiarów, program poprosi o wybranie odpowiedniej sekcji zdjęcia oraz pozycji kolejnych tekstów Biblijnych.\n\nNiezależnie od tego, oryginalny format zdjęcia pozostaje niezmieniony."
 mcset pl f6numPhotosTxt "Zdjęć"
@@ -111,7 +111,7 @@ mcset pl f3Tit "Ustaw 'Słowo' jako podpis swojego e-maila"
 mcset pl f3Btn "Stwórz podpis e-mail"
 mcset pl f3Sprachen "Języki wybrane do moich podpisów"
 mcset pl f3Txt "Program $bp doda 'Słowo' na końcu Twojego podpisu e-mail raz na dzień w każdym języku obecnym na twoim komputerze. Pliki podpisów są przechowywane przy pomocy skrótów językowych (np. podpis_English.txt) w katalogu \n\n\t$sigdir \n\nMasz możliwość edytowania tych plików z poziomu Twojej skrzynki mailowej, lub w edytorze tekstowym, oraz możliwość dodania dowolnej osobistej wiadomości na początku podpisu (pozdrowienia, adresy itd.) Każdy tekst powyżej linii separacyjnej  ==== pozostanie niezmieniony po każdej zmianie 'Słowa'. \n\nMożesz nie chcieć, aby 'Słowo' pojawiało się w różnych wersjach językowych. W polach wyboru w prawym górnym rogu wybierz języki, które są odpowiednie dla odbiorców Twoich wiadomości e-mail.\n\nPamiętaj, aby ustawić w swojej skrzynce mailowej wybrane pliki podpisów (zwykle poprzez Opcje>Podpisy).
-\nJeśli zamiast języka wybierzesz plik 
+\nJeśli zamiast języka wybierzesz plik
 \n\t signature-SURPRISE.txt
 \nobraca się 'Słowo' losowo.\n\nNiektóre skrzynki tj. Seamonkey Mail, Evolution lub Trojitá zarządzają podpisami wewnętrznie. Spośród wyżej wymienionych, na dzień dzisiejszy $bp współpracuje z Trojitá oraz Evolution."
 mcset pl f4Tit  "Wyświetl 'Słowo' w terminalu Linux"
@@ -120,13 +120,13 @@ mcset pl f4Txt "Po uruchomieniu $bp utworzy 'Słowo' do wyświetlenia na górze 
 # S A V E
 mcset pl linChangingDesktop "$bp spróbuje teraz połączyć się z Twoim tłem pulpitu. Jeśli nie wyświetla się nowe tło pulpitu, szukaj rozwiązania problemu w Instrukcji."
 mcset pl winIgnorePopup "Proszę odrzuć (zamknij) wszystkie wyskakujące okna, aby $bp mógł dokończyć rejestrację!"
-mcset pl winChangingDesktop "$bp spróbuje teraz połączyć się z Twoim tłem pulpitu" 
+mcset pl winChangingDesktop "$bp spróbuje teraz połączyć się z Twoim tłem pulpitu"
 mcset pl winChangeDesktopProb "Wystąpił problem podczas próby zmiany Twojego tła pulpitu. \nProszę kliknąć prawym przyciskiem myszy na puste miejsce na pulpicie i wybrać \"Personalizuj\" > \"Tapeta\" i ustaw pojedynczą ścieżkę dla zdjęcia \n\t$TwdBMP lub \n\t$TwdPNG \nlub zmień ustawienia w katalogu pokazu slajdów na \n\t$imgdir."
 mcset pl linChangeDesktopProb "Wystąpił problem podczas próby zmiany Twoich ustawień pulpitu.\nProszę kliknąć prawym przyciskiem myszy na pulpit i znaleźć 'Tło obrazu'. Tam wprowadź $imgdir jako nową ścieżkę obrazu."
 mcset pl linNoDesktopFound "Nie wykryto systemu Linux. Informacje na temat manualnego ustawiania zdjęcia w tle programu $bp znajdują się w Instrukcji."
 mcset pl linReloadingDesktop "Teraz nastąpi próba odświeżenia Twojego pulpitu. W razie niepowodzenia, prosimy o wylogowanie się i ponowne zalogowanie w celu uruchomienia ustawień programu $bp."
 mcset pl changeDesktopOk "$bp został pomyślnie skonfigurowany i za chwilę zostanie uruchomiony.\n\nMożesz włączyć program [mc bpsetup] w każdej chwili wybierając ikonę [mc bpsetup] w Menu Programów (Linux) lub poprzez kliknięcie prawym przyciskiem myszy na pulpit (Windows)."
-mcset pl winRegister "$bp spróbuje teraz połączyć się z Twoim systemem.\nPotwierdź pojawiające się okna dialogowe zaznaczając \"Tak\"." 
+mcset pl winRegister "$bp spróbuje teraz połączyć się z Twoim systemem.\nPotwierdź pojawiające się okna dialogowe zaznaczając \"Tak\"."
 mcset pl winRegisterProb "$bp nie został pomyślnie zainstalowany na Twoim komputerze.\nSpróbuj ponownie uruchomić [mc bpsetup], lub dodać \n\t$Biblepix\n do folderu Autostartu."
 # P H O T O S
 mcset pl deletedPicMsg "Usunięto zdjęcie z kolekcji zdjęć $bp:"

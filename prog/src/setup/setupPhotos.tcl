@@ -16,13 +16,13 @@ pack [frame .phBarF] -in .phRightF -anchor w -fill x
 pack [frame .phBotF -pady 7] -in .phRightF -side bottom -anchor nw -fill both
 pack [frame .phBildF -relief sunken -bd 3] -in .phRightF -anchor e -pady 3 -expand 1 -fill x
 
-#Create Text left, limit width to 1/3
+#Create main Text left, limit width to 1/3
 message .phMainM -textvar msg::f6Txt -font bpfont1 -width 500 -pady $py -padx $px
 pack .phMainM -in .phLeftF -anchor nw -side left
 
 #Build Photo bar right
   button .phOpen -width 30 -textvar msg::f6Find -height 1 -command {
-  openFileDialog $DesktopPicturesDir 
+  openFileDialog $DesktopPicturesDir
 }
 
 button .ph< -text < -height 1 -command {step <}
@@ -49,15 +49,15 @@ pack $imgCanv -in .phBildF -side left
 
 namespace eval canvpic {
   variable imgCanv .photosC
-  variable picdir 
+  variable picdir
   variable canvX ;#set later when GUI loaded
   variable canvY ;# ---
   variable index 0
-  variable curpic 
+  variable curpic
 }
 
 #set picpath & picindex labels
-pack [frame .phBotF1] [frame .phBotF2] -in .phBotF -side left 
+pack [frame .phBotF1] [frame .phBotF2] -in .phBotF -side left
 pack .phBotF1 -fill none -anchor w
 pack .phBotF2 -fill x -anchor n -expand 1
 label .phPicpathL -padx 2 -pady 2 -fg steelblue -font TkSmallCaptionFont -textvar canvpic::picdir
@@ -67,7 +67,6 @@ label .phPicindexTxt -bg azure -textvar msg::f6numPhotosTxt
 label .phPicindexL -bg azure -textvar canvpic::userI
 label .phCountNum -textvar numPhotos -bg azure
 label .phCountTxt -text "/" -bg azure
-
 
 button .phAddBtn -textvar msg::f6Add -activebackground orange -command {addPic}
 button .phDelBtn -textvar msg::f6Del -activebackground red -command {deletePhoto}

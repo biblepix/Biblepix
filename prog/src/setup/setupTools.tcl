@@ -8,29 +8,28 @@ source $SetupResizeTools
 # setTexts
 ##sources .msg file from msgdir according to current lang
 ##loads all text vars into ::msg namespace
-##called by SetupMainFrame 
+##called by SetupMainFrame
+##$lang ist set in LoadConfig if not yet registered
 proc setTexts {lang} {
   global msgdir os ExportTextvars TwdTools
   package require msgcat
 
-  #Initiate msgcat  
+  #Initiate msgcat
   source $TwdTools
-  set curLang $::lang
   msgcatInit $lang
-  namespace import msgcat::mc msgcat::mcset
 
   #Load msgcat texts & set locale, set global vars for '-textvar' function
   source -encoding utf-8 $ExportTextvars
 
   ##replace text in Welcome text widget
   catch {fillWelcomeTextWidget .welcomeT}
-  
+
   ##set widget justification (catch in case widgets aren't set at startup)
   if [isRtL $lang] {
   	catch {setWidgetDirection right}
   } else {
    	catch {setWidgetDirection left}
-  } 
+  }
 } ;#END setTexts
 
 
@@ -47,10 +46,10 @@ namespace eval NewsHandler {
   variable isShowing 0
 
   proc QueryNews {text color} {
-  
+
 #TODO get rid of JList relicts
 source $::JList
-    
+
     variable queryTextJList
     variable queryColorJList
     variable counter
@@ -108,7 +107,7 @@ source $::JList
 ##called by SetupEmail: .sigyes Btn to enable/disable lang checkbuttons
 proc toggleBtnstate {} {
   global sigLangBtnList sigyesState
-  
+
   if {![info exists sigLangBtnList] || $sigLangBtnList== ""} {
     return
   }
@@ -166,9 +165,9 @@ proc setFlags {} {
   #Draw flag canvasses
   lappend flagL .de .fr .pl .es .pt .it .ru .ar .zh .en
   flag::show .en -flag {hori blue; x white red; cross white red}
-  flag::show .de -flag {hori black red yellow} 
-  flag::show .es -flag {hori red gold+ red; circle brown} 
-  flag::show .fr -flag {vert blue white red} 
+  flag::show .de -flag {hori black red yellow}
+  flag::show .es -flag {hori red gold+ red; circle brown}
+  flag::show .fr -flag {vert blue white red}
   flag::show .pt -flag {vert green red+ ; circle gold}
   flag::show .pl -flag {hori white red}
   flag::show .ru -flag {hori white blue red}
@@ -194,14 +193,14 @@ proc setFlags {} {
     $flag conf -relief flat -bd 0
     catch {.manT conf -state disabled}
   }
-  
+
   foreach flag $flagL {
     bind $flag <1> "btnPress $flag"
     bind $flag <ButtonRelease-1> "btnRelease $flag"
   }
-  
+
   return $flagL
-  
+
 } ;#END setFlags
 
 # renameNotebookTabs
@@ -235,8 +234,8 @@ proc incrFraction {pos charNo} {
 ## called by [bind] above
 proc setManText {lang} {
   global ManualD ManualE
-  
-  .manT conf -state normal -bg beige 
+
+  .manT conf -state normal -bg beige
 
   if {$lang=="de"} {
     set manFile $ManualD
@@ -244,21 +243,21 @@ proc setManText {lang} {
   } else {
     set manFile $ManualE
   }
-  
+
   set chan [open $manFile]
   chan configure $chan -encoding utf-8
   set manText [read $chan]
   close $chan
 
   .manT replace 1.0 end $manText
-  
+
   # A ) set H E A D E R S
-  set h1 "^# " 
+  set h1 "^# "
   set h2 "^## "
   set h3 "^### "
   set h4 "^#### "
   set code "^>"
-  
+
   #Configure tags
   .manT tag conf h1 -font {TkHeaderFont 25} -justify left
   .manT tag conf h2 -font {TkHeaderFont 20} -justify left
@@ -266,7 +265,7 @@ proc setManText {lang} {
   .manT tag conf h4 -font {TkCaptionFont 14} -justify left
   .manT tag conf code -background gray90 -lmargin1 20
   .manT tag conf small -foreground grey
-  
+
   #Determine header positions (h1-h4)
   set h1L [.manT search -all -regexp $h1 1.0 end]
   foreach pos $h1L {
@@ -279,23 +278,23 @@ proc setManText {lang} {
   foreach pos $h2L {
     set line [expr int($pos)]
     .manT delete $pos [expr $pos + .2]
-    .manT tag add h2 $pos $line.end 
+    .manT tag add h2 $pos $line.end
   }
-  
+
   set h3L [.manT search -all -regexp $h3 1.0 end]
   foreach pos $h3L {
     set line [expr int($pos)]
     .manT delete $pos [expr $pos + .3]
-    .manT tag add h3 $pos $line.end 
+    .manT tag add h3 $pos $line.end
   }
 
   set h4L [.manT search -all -regexp $h4 1.0 end]
   foreach pos $h4L {
     set line [expr int($pos)]
     .manT delete $pos [expr $pos + .4]
-    .manT tag add h4 $pos $line.end 
+    .manT tag add h4 $pos $line.end
   }
- 
+
   set codeL [.manT search -all -regexp $code 1.0 end]
   foreach pos $codeL {
     set line [expr int($pos)]
@@ -306,10 +305,10 @@ proc setManText {lang} {
 
 # B ) S E T  B O L D
 
-	#1. Set ** array for pairs  
+	#1. Set ** array for pairs
   set boldL [.manT search -all ** 1.0]
   array set boldArr $boldL
-  
+
   #2. Traverse ** list & tag pairs
   foreach arrname [array names boldArr] {
   	lassign [array get boldArr $arrname] a b
@@ -324,16 +323,16 @@ proc setManText {lang} {
 	  return $res
   }
 	set pos [.manT search ** 1.0 end]
-	
+
 	while { ![catch {cmd $pos}] } {
 	  set endpos [incrFraction $pos 2]
   	.manT delete $pos $endpos
   	set pos [.manT search ** [incrFraction $endpos 1]]
 	}
- 	
+
 
   # D )  F O O T N O T E S
-  
+
   #Tag & bind footnotes
   ##see www.derekfountain.org/artikles/tktext.pdf
   .manT tag conf fn -foreground red
@@ -350,13 +349,13 @@ proc setManText {lang} {
  	#E ) Set Addenda & Footnotes to grey font (EN/DE)
  	set pos [.manT search -regexp {ERG|ADD} 1.0 end]
   .manT tag add small $pos end
- 
+
   ## clear all extra front spaces
   set spaceL [.manT search -all -regexp {^ } 1.0 end]
   foreach pos $spaceL {
     .manT delete $pos [incrFraction $pos 1]
   }
-  
+
    .manT tag conf bold -font "TkTextFont 14" -foreground maroon
    .manT conf -state disabled
 
@@ -369,21 +368,21 @@ proc setManText {lang} {
 
 # updateMailBtnList
 #List language codes of installed TWD files
-#called by SetupEmail & SetupInternational 
+#called by SetupEmail & SetupInternational
 proc updateMailBtnList {w} {
   global twddir
-  	
+
   set twdList [getTwdList]
   if {$twdList == ""} {return}
 
-  ##files may have been deleted after creating langcodeL!  
+  ##files may have been deleted after creating langcodeL!
   foreach filename $twdList {
     if [file exists $twddir/$filename] {
       lappend codeL [string range $filename 0 1]
     }
   }
   set langcodeL [lsort -decreasing -unique $codeL]
-  
+
   #Create language buttons for each language code
   foreach slave [pack slaves $w] {pack forget $slave}
   foreach code $langcodeL {
@@ -406,7 +405,7 @@ proc updateSelectedMailBtnList {} {
     return $lang
   }
   foreach code $langcodeL {
-    set varname "sel${code}" 
+    set varname "sel${code}"
     if [set ::$varname] {
       lappend sigLanglist $code
     }
@@ -448,7 +447,7 @@ proc createMovingTextBox {c} {
   set regHex [set colour::$fontcolortext]
   set sunHex [gradient $regHex $sunFactor]
   set shaHex [gradient $regHex $shadeFactor]
-  
+
   $c create text $shadeX $shadeY -anchor nw -justify left -tags {canvTxt txt mv shade} -fill $shaHex
   $c create text $sunX $sunY -anchor nw -justify left -tags {canvTxt txt mv sun} -fill $sunHex
   $c create text $x1 $y1 -anchor nw -justify left -tags {canvTxt txt mv main} -fill $regHex
@@ -456,7 +455,7 @@ proc createMovingTextBox {c} {
   if [isBidi $setupTwdText] {
     $c itemconf canvTxt -justify right
     font conf movingTextFont -family Luxi
-  } 
+  }
 
   if {$c == ".dtTextposC"} {
     $c itemconf canvTxt -font movingTextFont -activefill red
@@ -480,7 +479,7 @@ proc dragCanvasItem {c item newX newY args} {
   }
   set ::x $newX
   set ::y $newY
-  
+
   set ::move 1
 }
 
@@ -559,12 +558,12 @@ proc step {direction} {
 	global canvpic::index
 	global canvpic::picdir
 	global canvpic::picL
-	
+
 	#ilength = counting from 0
 	##careful: llength counts from 1, lindex from 0 !!!
 	set ilength [expr [llength $picL] -1]
 	set bigstep 10
-		
+
 	#LOOPS A + B:
 	## A) 1 step forward: jump to beginning if result empty
 	if {$direction == ">"} {
@@ -606,14 +605,14 @@ proc step {direction} {
 			}
 		}
 	}
-		 
+
  	set canvpic::index $index
- 	set canvpic::userI [expr $index + 1]	
+ 	set canvpic::userI [expr $index + 1]
 
 	set picname [lindex $picL $index]
-	
+
 	showImage $picname
-	
+
 } ;#END step
 
 # openFileDialog
@@ -624,25 +623,25 @@ proc openFileDialog {picdir } {
   global picTypes tempdir SetupPicThread
   global canvpic::imgCanv
   global canvpic::picL
- 
+
   #adapt type list to tk_getOpenFile syntax
   foreach t $picTypes {
     lappend typeL ".$t"
   }
   append gofL "{ {" Image files: "} {" $typeL "} }"
-	
+
 	set selectedFilePath [tk_getOpenFile -filetypes $gofL -initialdir $picdir]
-	
+
 	#return if no result
 	if {$selectedFilePath == ""} {
 	  return
 	}
-	
+
 	set selectedFileName [file tail $selectedFilePath]
-  
+
   set canvpic::picdir $picdir
   resetPhotosGUI
-  
+
   showImage $selectedFileName
 
 	#Update picdir & update picL
@@ -655,30 +654,30 @@ proc openFileDialog {picdir } {
     set index 0
     puts $err
   }
-  
+
   set canvpic::index $index
   set canvpic::userI [expr $index + 1]
 
 	#Start Threading
   loadPicThread
-  
+
 } ;#END openFileDialog
 
 # setPhotosCanvSize
 ##sets canv size after GUI is ready
 ##called by ShowFirstPhoto
 proc setPhotosCanvSize {} {
-  
+
   namespace eval canvpic {
     variable canvX
-    variable canvY  
+    variable canvY
   }
-  
+
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
   set maxCanvX [expr round([winfo width .] / 1.5)]
 
- 
+
 ##TODO? round rather than ceil here?
   #set factor [expr ceil($screenX. / $maxCanvX)]
   set factor [expr round($screenX. / $maxCanvX)]
@@ -690,21 +689,21 @@ proc setPhotosCanvSize {} {
 
   set canvpic::canvX $canvX
   set canvpic::canvY $canvY
-  
+
 } ;#END setPhotosCanvSize
 
 # scaleFactor (for pic on canvas)
 ## scales original pic down to canvas size
 ## called by openImg for each pic
 proc scaleFactor {pic} {
-    
-  global canvpic::imgCanv canvpic::canvX canvpic::canvY 
- 
+
+  global canvpic::imgCanv canvpic::canvX canvpic::canvY
+
   #make sure canv size up-to-date
   if {$canvX < 500} {
     setPhotosCanvSize
   }
-  
+
   set imgX [image width $pic]
   set imgY [image height $pic]
   set factor [expr int(ceil($imgX. / $canvX))]
@@ -720,7 +719,7 @@ proc scaleFactor {pic} {
 ##called by openFileDialog
 proc scanPicdir {picdir} {
 	global picTypes
-	
+
 	#create type list with pic endings & glob syntax
 	foreach i $picTypes {
 		lappend typeL .$i
@@ -732,71 +731,71 @@ proc scanPicdir {picdir} {
   #set picdir & picL vars in ::canvpic
   namespace eval canvpic {
     variable picdir
-    variable picL 
+    variable picL
   }
   set canvpic::picdir $picdir
   set canvpic::picL $picL
 	set ::numPhotos [llength $picL]
-	
+
 	return $picL
-	
+
 } ;#END scanPicdir
 
 # showImage
 # Creates 'photosCanvPic' from original pic
 ##to be processed by all other progs (no vars!)
-##called by 'step' & 
+##called by 'step' &
 proc showImage {img} {
 
-  global os photosdir 
+  global os photosdir
   global canvpic::imgCanv
   global canvpic::picdir
-  
+
   set imgPath [file join $picdir $img]
   set dirname [file tail $picdir]
-  
+
   ##für Anzeige
   set ::picPath $imgPath
-  
-  
+
+
   namespace eval canvpic {
     variable curpic
   }
   set canvpic::curpic $img
-   
-	#retrieve thumb data 
+
+	#retrieve thumb data
 	if ![catch { set picdata [tsv::get $dirname $img] } ] {
-    
+
     puts "Creating $img from thumblist..."
     image create photo thumb
     thumb put $picdata
 
-	#OR create pic from original 
-	} else { 
-	
+	#OR create pic from original
+	} else {
+
     puts "Creating $imgPath from directory..."
 		if [catch { image create photo orig -file $imgPath } ] {
 			NewsHandler::QueryNews "$img: Picture format not recognised. Skipping." red
 			return 1
 		}
-		   
+
 	  set factor [scaleFactor orig]
-    image create photo thumb	  
+    image create photo thumb
     thumb copy orig -subsample $factor -shrink
 
     orig blank
   }
-    
+
   #Create canvas pic from thumb
   $imgCanv delete img
   $imgCanv create image 0 0 -image thumb -anchor nw -tag img
-	
+
 } ;#END showImage
 
 # showFirstPhoto
 ## displays 1st pic as soon as Photos tab opens
 ## picL made previously in SetupPhotos
-## called as a bind event in SetupMainFrame 
+## called as a bind event in SetupMainFrame
 proc showFirstPhoto {} {
 
 #TODO unnecessary now
@@ -807,18 +806,18 @@ proc showFirstPhoto {} {
 #    return 1
 #  }
 #  set ::firstPhotoDone 1
-  
+
   global canvpic::picL
   global canvpic::imgCanv
   global canvpic::canvX canvpic::canvY
-  
-  #Set canv size 
+
+  #Set canv size
   setPhotosCanvSize
   $imgCanv conf -width $canvX -height $canvY
-  
+
   #Load thumbs in background
   loadPicThread
-  
+
   #Show pic in canvas
   set picname [lindex $picL 0]
   showImage $picname
@@ -831,13 +830,13 @@ proc showFirstPhoto {} {
 proc loadPicThread {} {
 
   global SetupPicThread
-  
+
   if {  ! [catch {package require Thread}] } {
     source $SetupPicThread
   } else {
-    NewsHandler::QueryNews "For faster image viewing: [mc packageRequireMissing 'thread']" red
+    append msg::f6Txt \n\n[mc fasterImageViewingWithThread]
   }
-  
+
 } ;#END loadPicThread
 
 proc resetPhotosGUI {} {
@@ -845,7 +844,7 @@ proc resetPhotosGUI {} {
   global canvpic::picL
   global canvpic::index
   set ::numPhotos [llength $picL]
-  
+
   # 1) Pack permanents
   pack .phCountNum .phCountTxt .phPicindexL .phPicindexTxt -in .phBotF -side right
 
@@ -853,17 +852,17 @@ proc resetPhotosGUI {} {
   if {$picdir == $photosdir} {
     pack .phDelBtn  -in .phBotF1 -side left -anchor w
     pack .phPicpathL .phPicnameL -in .phBotF2 -anchor n
-    pack forget .phAddBtn .phShowCollectionBtn .phRotateBtn 
-  
+    pack forget .phAddBtn .phShowCollectionBtn .phRotateBtn
+
   # 3) Pack "Add new" mode
   } else {
     pack .phShowCollectionBtn -in .phBarF -side left
     pack .phAddBtn -in .phBotF1 -side left -anchor w
     pack .phRotateBtn -in .phBotF1 -side left -anchor w
     pack .phPicpathL .phPicnameL -in .phBotF2
-    pack forget .phDelBtn 
+    pack forget .phDelBtn
   }
-  
+
 } ;#END resetPhotosGUI
 
 # addPic
@@ -888,18 +887,18 @@ proc addPic {} {
     NewsHandler::QueryNews $msg::picSchonDa red
     return 1
   }
-  
+
   #POPULATE ::addpicture namespace
   namespace eval addpicture {}
   set addpicture::targetPicPath $targetPicPath
   set addpicture::curPic photosOrigPic
-  
 
-  #DETERMINE NEED FOR RESIZING 
+
+  #DETERMINE NEED FOR RESIZING
 
   ## expect 0 / even / uneven
   set resize [needsResize $addpicture::curPic]
-  
+
   #A): right dimensions, right size: save pic
   if {$resize == 0} {
     $addpicture::curPic write $targetPicPath -format PNG
@@ -923,31 +922,31 @@ proc addPic {} {
 
   #C) open resize window, resize later
   } else {
-  
+
     openResizeWindow
 
   }
   #Reset standards & cleanup
   .phAddBtn conf -bg #d9d9d9
   namespace delete addpicture
-  
+
 } ;#END addPic
 
 # deletePhoto
 ##deletes 1 pic from Photosdir & updates vars
-##called by .phDelBtn in SetupPhotos 
+##called by .phDelBtn in SetupPhotos
 proc deletePhoto {} {
   global canvpic::curpic
   global canvpic::picL
   global canvpic::index
   global photosdir
-  
+
   file delete [file join $photosdir $curpic]
   NewsHandler::QueryNews "$curpic has been removed from BiblePix Photo collection." lightblue
-  
+
   #Cleanup
-  scanPicdir $photosdir 
-  showImage [lindex $picL [incr index]] 
+  scanPicdir $photosdir
+  showImage [lindex $picL [incr index]]
 }
 
 # copyAndResizeSamplePhotos
@@ -989,7 +988,7 @@ proc copyAndResizeSamplePhotos {} {
       $newPic write $newPngPath -format PNG
     }
   } ;#END foreach
-  
+
 } ;#END copyAndResizeSamplePhotos
 
 
@@ -1002,12 +1001,12 @@ proc copyAndResizeSamplePhotos {} {
 ##called by SetupWelcome & setTexts
 proc fillWelcomeTextWidget {w} {
   global platform lang
-  
+
   #Insert text, deleting any previous
   set msg $msg::welcTxt2
   $w delete 1.0 end
-  $w insert 1.0 $msg 
-  
+  $w insert 1.0 $msg
+
   #set Bidi justification to right
   if [isBidi $msg] {
     $w tag conf dir -justify right
@@ -1030,7 +1029,7 @@ proc insertTodaysTwd {twdWidget} {
   if {[info procs getRandomTwdFile] == ""} {
     source $TwdTools
   }
-  
+
   set twdFileName [getRandomTwdFile]
   if {$twdFileName != ""} {
     set twdText [getTodaysTwdText $twdFileName]
@@ -1038,7 +1037,7 @@ proc insertTodaysTwd {twdWidget} {
     $twdWidget conf -fg red
     set twdText "[mc noTwdFilesFound]"
   }
-  
+
   #insert new text
   $twdWidget delete 1.0 end
   $twdWidget insert 1.0 $twdText
@@ -1070,10 +1069,10 @@ proc insertTodaysTwd {twdWidget} {
     $twdWidget tag conf head -justify left
     $twdWidget tag conf ref -justify right
   }
-    
+
   ##export for other Setup widgets
   set ::setupTwdText $twdText
-  
+
 } ;#END insertTodaysTwd
 
 # deleteOldStuff
@@ -1087,7 +1086,7 @@ proc deleteOldStuff {} {
 
   #combine all file & font lists
   set filePathL [list {*}$filePathL {*}$fontPathL]
-  
+
   # 1. D e l e t e   s t a l e   d i r e c t o r i e s
 
   #1.List current directory paths starting from progdir&srcdir

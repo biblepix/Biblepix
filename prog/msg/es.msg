@@ -3,7 +3,7 @@
 # sourced by SetupMainFrame
 # Author: Peter Vollmar, biblepix.vollmar.ch
 #INFO: Textmenge - 100 mcset * 3 W. = 300 W.
-# Updated: 14jan21 pv
+# Updated: 14aug24 pv
 
 # U N T R A N S L A T A B L E S
 set bp {BiblePix}
@@ -30,7 +30,7 @@ mcset es email "Firma de correo electrónico"
 mcset es terminal "Consola"
 mcset es manual "Manual"
 
-# W E L C O M E 
+# W E L C O M E
 mcset es next "Siguiente \u25bc"
 mcset es welcTit "¡Bienvenido a la [mc bpsetup]!"
 mcset es welcSubtit1 "¿Qué es $bp?"
@@ -48,7 +48,7 @@ mcset es uninstall "¿Estás seguro de que deseas eliminar $bp de tu ordenador?"
 mcset es uninstalling "$bp ahora se desinstalará. Para borrar la configuración respectiva del sistema, debes responder a cualquier ventana de notificación con \"Sí\"!"
 mcset es uninstalled "$bp ha sido desinstalado de forma segura de tu sistema. Para volver a instalarlo, visítanos en [mc www] y descarga el instalador de $bp."
 #  M I S S I N G   P A C K A G E
-mcset es packageRequireMissing "$bp requiere la extensión Tcl '%s'. \nInstálala a través de tu panel de control o escribe uno de los siguientes comandos en una consola (como root o sudo): [mc packageRequire]"
+mcset es packageRequireMissing "$bp requiere la extensión Tcl '%s'. \nInstálala a través de tu panel de control o introduce en una consola: \n\n sudo apt install %s (Debian/Ubuntu)"
 #SETUP INTERNATIONAL
 mcset es download "Descargar"
 mcset es downloadingHttp "Descargando archivos de programa de $bp ..."
@@ -80,7 +80,7 @@ mcset es f2Fontweight "en negrilla"
 mcset es f2Fontfamily "Tipo de letra: "
 mcset es f2Fontexpl "Adaptar fuente"
 mcset es f2Txt "Si está activado, $bp creará una imagen de fondo con $dw. La foto se selecciona al azar de la colección de fotos de $bp (ver la sección Fotos). Siempre hay una nueva imagen de fondo disponible en \n\n\t [file nativename $imgdir] \n\npara que la muestre el administrador de escritorio. \n\nSi están instalados varios archivos de textos bíblicos, el idioma o la versión de la Biblia cambia al azar con cada cambio de imagen. \n\n$bp organiza normalmente una PRESENTACION DE DIAPOSITIVAS con una imagen cambiante. Si se desea solo una imagen por día, la presentación de diapositivas se puede desactivar (ver arriba). \n\nEn la ventana POSICIÓN DE TEXTO puedes mover $dw a la posición deseada en la pantalla. Al agregar imágenes a la colección, la posición del texto también se puede determinar individualmente. \n\nEl TAMAÑO DE LA FUENTE se establece automáticamente según la altura de la pantalla. Sin embargo, tú tienes la opción de ajustar el tamaño y el grosor (letras más grandes = mejor contraste). \n\n Puedes también determinar el COLOR DE LA FUENTE de forma permanente o aleatoria. Además $bp puede realizar un ajuste de color basado en el brillo del fondo. Este efecto solo tiene efecto después de que se haya guardado una foto nueva. \n\nSi la nueva imagen de fondo no aparece automáticamente, encontrarás una solución en el manual."
-# S E T U P   P H O T O S 
+# S E T U P   P H O T O S
 mcset es textposlabel "Determinar posición del texto"
 mcset es textposAdjust "¿Deseas cambiar la posición del texto de esta imagen antes de guardarla?"
 mcset es f6Tit "Organizar fotos para $bp"
@@ -101,7 +101,7 @@ mcset es picSchonDa "La foto ya está en la carpeta de imágenes de $bp"
 mcset es f3Tit "$dw en tus firmas de correo electrónico"
 mcset es f3Btn "Generar firma de correo electrónico"
 mcset es f3Sprachen "Idiomas deseados para mis firmas"
-mcset es f3Txt "Si está activado, $bp agregará $dw a tus firmas de e-mail una vez al día para cada archivo de texto bíblico instalado. Los archivos de firmas creados se ordenan según las abreviaturas del idioma (por ejemplo, firma-es_ReinaV.txt) en la siguiente carpeta : \n\n\t $sigdir \n\nPuedes editar estos archivos desde tu programa de correo electrónico o en un editor de texto y agregar saludos personales, direcciones, etc. El texto sobre la línea divisoria ==== no se ve afectado al cambiar de $dw. \n\nTal vez no desees que los destinatarios de tu correo lean $dw en todos los idiomas que has instalado. Selecciona los idiomas que desees en la esquina superior derecha. \n\nPara que $dw aparezca en tus correos en el futuro, debes enseñarle a tu programa de correo a usar los archivos descritos anteriormente (generalmente en Configuración>Signaturas). Si en lugar de una lengua, seleccionas el fichero 
+mcset es f3Txt "Si está activado, $bp agregará $dw a tus firmas de e-mail una vez al día para cada archivo de texto bíblico instalado. Los archivos de firmas creados se ordenan según las abreviaturas del idioma (por ejemplo, firma-es_ReinaV.txt) en la siguiente carpeta : \n\n\t $sigdir \n\nPuedes editar estos archivos desde tu programa de correo electrónico o en un editor de texto y agregar saludos personales, direcciones, etc. El texto sobre la línea divisoria ==== no se ve afectado al cambiar de $dw. \n\nTal vez no desees que los destinatarios de tu correo lean $dw en todos los idiomas que has instalado. Selecciona los idiomas que desees en la esquina superior derecha. \n\nPara que $dw aparezca en tus correos en el futuro, debes enseñarle a tu programa de correo a usar los archivos descritos anteriormente (generalmente en Configuración>Signaturas). Si en lugar de una lengua, seleccionas el fichero
 \n\t signature-SURPRISE.txt
 \n$dw rotará por casualidad. \n\nCiertos programas como Seamonkey Mail, Evolution o Trojitá administran las firmas internamente. Entre ellos $bp puede tomar en cuenta a Trojitá y Evolution por el momento."
 #SETUP TERMINAL

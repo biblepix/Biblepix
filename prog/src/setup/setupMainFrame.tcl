@@ -1,9 +1,10 @@
 # ~/Biblepix/prog/src/setup/setupMainFrame.tcl
 # Called by Setup
-# Builds Main Frame
+# Builds Main Frame, called by Biblepix-Setup
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 27mch24 pv
 
+#TODO wa isch do los?
 #source $SetupTools
 #source $TwdTools
 setTexts $lang
@@ -45,7 +46,7 @@ if {$platform=="unix"} {
 }
 ##Create Notebook tabs (Title texts inserted later by setFlags)
 foreach nbtab $nbtabL {
-	.nb add [frame $nbtab -padx $px -pady $py] 
+	.nb add [frame $nbtab -padx $px -pady $py]
 }
 ##Unix
 if [winfo exists .terminalF] {
@@ -70,7 +71,7 @@ pack .versionL -in .botMainF -side left
 message .news -textvar news -width [expr $wWidth - 350] -borderwidth 1 -relief sunken
 pack .news -in .botMainF -fill x
 
-#Validate error msg issued by Setup
+#Validate error msg issued by Setup T O D O  where is error produced????
 if [info exists httpError] {
   if {$httpError == 0} {
     NewsHandler::QueryNews "[mc uptodateHTTP]" lightgreen
