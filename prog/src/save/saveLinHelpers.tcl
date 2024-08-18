@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8nov21 pv
+# Updated: 18aug24 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -214,7 +214,6 @@ proc setShebangLine {currentEnvPath} {
 ## called by SetupSaveLin
 proc setupLinAutostart args {
   global Biblepix Setup LinIcon bp LinAutostartFile Kde4AutostartDir Kde4AutostartFile SwayConfFile
-  #set Err 0
   
   #If args exists, delete any autostart files and exit
   if  {$args != ""} {
@@ -223,19 +222,6 @@ proc setupLinAutostart args {
     return 0
   }
   
-  #Delete any previous crontab entry
-  catch {setupLinCrontab delete}
-
-  #set Texts
-  set desktopText "\[Desktop Entry\]
-Name=$bp
-Type=Application
-Icon=$LinIcon
-Comment=Runs BiblePix at System boot
-StartupNotify=false
-X-KDE-StartupNotify=False
-Exec=$Biblepix
-"
   #Make .desktop file for KDE4 Autostart (obsolete)
   if [file exists $Kde4AutostartDir] {
     set chan [open $Kde4AutostartFile w]
@@ -249,8 +235,7 @@ Exec=$Biblepix
   puts $chan $desktopText
   close $chan
   file attributes $LinAutostartFile -permissions +x
-  
-  
+    
   #Set up Sway if conf file found
   if [file exists $SwayConfFile] {
     if [catch setupSwayBackground] {
@@ -259,7 +244,7 @@ Exec=$Biblepix
     }
   }
     return 0
-  
+
 } ;#END setupLinAutostart
 
 # setupSwayBackground
@@ -701,118 +686,6 @@ proc reloadXfce4Desktop {} {
   tk_messageBox -type yesno -icon info -title "BiblePix Installation" -message "XFCE4: $msgbox::linReloadingDesktop" -parent .
   catch {exec xfdesktop --reload}
 }
-
-######################################
-####### C R O N T A B ################
-######################################
-
-# setupLinCrontab
-##Detects running cron(d) & installs new crontab
-##returns 0 or 1 for calling prog
-##called by SetupSaveLin & Uninstall
-##    T O D O: USE CRONTAB ONLY FOR INITIAL START, NOT FOR SLIDESHOW 
-#    only FOR DESKTOPS OTHER THAN KDE/GNOME/XFCE4
-proc setupLinCrontab args {
-
-  global Biblepix Setup slideshow tclpath unixdir env linConfDir
-  set cronfileOrig $unixdir/crontab.ORIG
-  
-  #if ARGS: Delete any crontab entries & exit
-  if {$args != ""}  {
-    if [file exists $cronfileOrig] {
-      exec crontab $cronfileOrig
-    } else {
-      exec crontab -r
-    }
-    return
-  }
-  
-  #Exit if [crontab] not found
-  if { [auto_execok crontab] ==""} {
-    return 0
-  }
-
-  #Check for running cron/crond & exit if not running
-  catch {exec pidof crond} crondpid
-  catch {exec pidof cron} cronpid
-
-  if {! [string is digit $cronpid] && 
-      ! [string is digit $crondpid] } {
-    return 0
-  }
-
-
-###### 1. Prepare crontab text #############################
- 
-  #Check for user's crontab & save 1st time
-  if {! [catch {exec crontab -l}] && 
-      ! [file exists $cronfileOrig] } { 
-    set runningCrontext [exec crontab -l]
-    #save only if not B|biblepix
-    if {! [regexp iblepix $runningCrontext] } {
-      set chan [open $cronfileOrig w]
-      puts $chan $runningCrontext
-      close $chan
-    }
-  }
-
-  #Prepare new crontab entry for running BiblePix at boot
-  set cronScript $unixdir/cron.sh
-  set cronfileTmp /tmp/crontab.TMP
-  append BPcrontext \n @daily $cronScript \n @reboot $cronScript
-
-  #Check presence of saved crontab
-  if [file exists $cronfileOrig] {
-    set chan [open $cronfileOrig r]
-    set crontext [read $chan]
-    close $chan
-  }
-
-  #Create/append new crontext, save&execute
-  if [info exists crontext] {
-    append crontext $BPcrontext
-  } else {
-    set crontext $BPcrontext
-  }
-  set chan [open $cronfileTmp w]
-  puts $chan $crontext
-  close $chan
-
-  exec crontab $cronfileTmp
-  file delete $cronfileTmp
-  
-  
-##### 2. Prepare cronscript text ############################
-
-  set cronScriptText "# ~/Biblepix/prog/unix/cron.sh\n# Bash script to add BiblePix to crontab
-count=0
-limit=5
-#wait max. 5 min. for X or Wayland (should work with either)
-export DISPLAY=:0
-$tclpath $Biblepix
-#get exit code
-while [ $? -ne 0 ] \&\& \[ \"\$count\" -lt \"\$limit\" \] ; do 
-  sleep 60
-  ((count++))
-  $tclpath $Biblepix
-done
-"
-  #save cronscript & make executable
-  set chan [open $cronScript w]
-  puts $chan $cronScriptText
-  close $chan
-  file attributes $cronScript -permissions +x
-
-
-### 3. Set ::crontab global var & delete any previous Autostart entries
-  set ::crontab 1
- # setLinAutostart delete
-
-  #Return success
-  return 1
-    
-} ;#end setupLinCrontab
-
 
 
 
