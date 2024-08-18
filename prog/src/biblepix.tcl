@@ -4,7 +4,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 20dec21 pv
+# Updated: 17aug24 pv
 ######################################################################
 
 #Verify location & source Globals
@@ -13,7 +13,6 @@ set Globals "[file join $srcdir share globals.tcl]"
 source $Globals
 source $TwdTools
 
-#TODO testing
 if { [info exists Debug] && $Debug } {
   updateTwd
 } else {
@@ -24,7 +23,7 @@ if { [info exists Debug] && $Debug } {
 if [catch {set twdfile [getRandomTwdFile]}] {
   msgcatInit $lang
   package require Tk
-  tk_messageBox -title BiblePix -type ok -icon error -message $msgcat::noTwdFilesFound -detail "Hier kommt die Liste"
+  tk_messageBox -title BiblePix -type ok -icon error -message "[msgcat::mc noTwdFilesFound]"
   
   #catch if run by running Setup
   catch {source $Setup}
@@ -35,7 +34,7 @@ if [catch {set twdfile [getRandomTwdFile]}] {
 set ::TwdFileName $twdfile
 
 #1. U p d a t e   s i g n a t u r e s  if $enablesig
-if {$enablesig} {
+if $enablesig {
   source $Signature
 }
 
@@ -63,7 +62,7 @@ if {[info exists enableterm] && $enableterm } {
 ##setBg can be empty/non-existent as it is 'catched'
 source $SetBackgroundChanger
 
-#Stop any running biblepix.tcl
+#Stop any running biblepix.tcl TODO this doesn't stop it!
 foreach file [glob -nocomplain -directory $piddir *] {
   file delete -force $file
 }
@@ -72,44 +71,25 @@ close $pidfile
 
 #4. C r e a t e   i m a g e   & start slideshow
 
-if {$enablepic} {
+if $enablepic {
 
   #Run once for all Desktops
   if { [info exists Debug] && $Debug } {
-#after 30000 {
     source $Image
-#}
-
   } else {
     catch {source $Image}
   }
 
-  #Try to set background
-  catch setBg err
-  if { [info exists Debug] && $Debug } {
-    puts $err
-  }
- 
   #Run multiple times if $slideshow
   if {$slideshow > 0} {
-
-puts $slideshow
   
     #rerun until pidfile renamed by new instance
     set pidfile $piddir/[pid]
     set pidfiledatum [clock format [file mtime $pidfile] -format %d]
-   
     
-    
-#TODO öppis stimmt do nöd: 'sleep' rechnet nach Sekunden!!!!!!!!!!!!!!
     while [file exists $pidfile] {
     
       if {$pidfiledatum==$heute} {
-
-
-#after [expr $slideshow * 1000] {}
-   
-        sleep [expr $slideshow * 1000]
 
         #export new TwdFile
         set ::TwdFileName [getRandomTwdFile]
@@ -119,36 +99,33 @@ puts $slideshow
         } else {
           catch {source $Image}
         }
+        
         #try to set background
         catch setBg err
         if { [info exists Debug] && $Debug } {
           puts $err
         }
-
- 
+    
+      #not heute
+      #Calling new instance of myself   
       } else {
       
-        #Calling new instance of myself
         source $Biblepix
-      }
-    }
-  
-  #if Slideshow == 0
+        
+      } ;#END heute
+
+      after [expr $slideshow * 1000] 
+    
+    } ;#END while pidfile
+ 
+  #NO SLIDESHOW: SINGLE PIC  - TODO JOEL good enough for Win?
   } else {
-
-    if {$platform=="windows"} {
-    
-    #TODO testing
-    setBg
-      
-      #run every 10s up to 15x so Windows has time to update      
-#      for {set limit 0} {$limit < 15} {incr limit} {
-#        sleep 10000
-#        catch setBg
-#      }
+  
+    catch setBg err
+    if { [info exists Debug] && $Debug } {
+      puts $err
     }
+        
+  } ;#END slideshow
     
-  } ;#END if slideshow
-} ;#END if enablepic
-
-exit
+} ;#END enablepic

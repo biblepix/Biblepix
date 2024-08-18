@@ -137,7 +137,7 @@ if {$runningDesktop == 4} {
     	upvar swayOutput swayOutput
     	exec swaymsg output $swayOutput bg $::TwdPNG fit
   	}
-
+  #use swaybg
 	} else {
 	
 		if {[auto_execok swaybg] == ""} {
@@ -149,7 +149,8 @@ if {$runningDesktop == 4} {
   	} else {
   	
   		proc setBg {} {
-  			exec swaybg -i $::TwdPNG -m center
+  		  catch {exec killall swaybg}
+  			exec swaybg -i $::TwdPNG -m center &
   		}
 
   	}
