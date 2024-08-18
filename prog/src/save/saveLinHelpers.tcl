@@ -675,7 +675,7 @@ proc reloadKdeDesktop {} {
   } elseif {$k4 != ""} {
     set command $k4
   }
-  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message $msgbox::linReloadingDesktop
+  tk_messageBox -type ok -icon info -title "BiblePix Installation" -message "[msgcat::mc linReloadingDesktop]"
   exec $command
 }
 
@@ -683,7 +683,7 @@ proc reloadKdeDesktop {} {
 ##Rereads XFCE4 Desktop configuration
 ##Called by SetupSaveLin after changing config files
 proc reloadXfce4Desktop {} {
-  tk_messageBox -type yesno -icon info -title "BiblePix Installation" -message "XFCE4: $msgbox::linReloadingDesktop" -parent .
+  tk_messageBox -type yesno -icon info -title "BiblePix Installation" -message "XFCE4: [msgcat::mc linReloadingDesktop]" -parent .
   catch {exec xfdesktop --reload}
 }
 
