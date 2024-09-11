@@ -1,7 +1,7 @@
 #~/Biblepix/prog/src/save/saveLinHelpers.tcl
 # Sourced by SetupSaveLin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18aug24 pv
+# Updated: 11sep24 pv
 
 ################################################################################################
 # A)  A U T O S T A R T : KDE / GNOME / XFCE4 all respect the Linux Desktop Autostart mechanism
@@ -713,20 +713,6 @@ proc cleanBlankLines {file} {
 # Called by SetupSaveLin if $enableterm==1
 proc setupLinTerminal args {
   global confdir HOME Terminal
-  
-  #OLD STUFF: Delete any previous=erroneous entries in .bash_profile
-  set bashProfile $HOME/.bash_profile
-  if [file exists $bashProfile] {
-    set chan [open $bashProfile r]
-    set bashProfileTxt [read $chan]
-    close $chan
-    if [regexp {[Bb]iblepix} $bashProfileTxt] {
-      regsub -all -line {^.*iblepix.*$} $bashProfileTxt {} bashProfileTxt
-      set chan [open $bashProfile w]
-      puts $chan $bashProfileTxt
-      close $chan
-    }
-  }
   
   ####1. Make entry in ~/.bashrc if missing
   set bashrc $HOME/.bashrc

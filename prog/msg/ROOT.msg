@@ -150,5 +150,5 @@ if {$os=="Linux"} {
 }
 mcset {} winRegister "$bp will no try to register with your system.\nYou must confirm any dialogue boxes with \"Yes\"."
 mcset {} winRegisterProb "$bp has not been registered properly on your computer.\nPlease try rerunning Setup, or add \n\t$Biblepix\n to your Autostart folder."
-mcset {} fasterImageViewingWithThread "For faster image viewing you should install the Tcl extension 'Thread'. Do it either through your system management, or type in a terminal:\n\n\t sudo apt install tcl-thread"
+mcset {} fasterImageViewingWithThread "For faster image viewing you should consider installing the Tcl extension 'Thread', either through your system management, or by typing in a terminal:\n\n\t sudo apt install tcl-thread"
 mcset {} linSetAutostartProb "We had a problem setting the Autostart for $bp. Find a solution in the manual."
