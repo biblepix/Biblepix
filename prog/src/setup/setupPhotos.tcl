@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 5may24 pv
+# Updated 15sep24 pv
 
 #Create frames
 pack [frame .phMainF] -in .photosF -fill x -pady $py -padx $px
@@ -60,8 +60,8 @@ namespace eval canvpic {
 pack [frame .phBotF1] [frame .phBotF2] -in .phBotF -side left
 pack .phBotF1 -fill none -anchor w
 pack .phBotF2 -fill x -anchor n -expand 1
-label .phPicpathL -padx 2 -pady 2 -fg steelblue -font TkSmallCaptionFont -textvar canvpic::picdir
-label .phPicnameL -padx 2 -pady 2 -fg steelblue -textvar canvpic::curpic
+label .phPicpathL -padx 2 -pady 2 -fg steelblue -font TkSmallCaptionFont -textvar canvpic::picdir -relief sunken
+label .phPicnameL -padx 2 -pady 2 -fg steelblue -textvar canvpic::curpic -relief flat
 ##these are packed later by resetPhotosGUI
 label .phPicindexTxt -bg azure -textvar msg::f6numPhotosTxt
 label .phPicindexL -bg azure -textvar canvpic::userI

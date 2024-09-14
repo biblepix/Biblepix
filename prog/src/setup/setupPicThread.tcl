@@ -1,17 +1,20 @@
 # ~/Biblepix/prog/src/setup/setupPicThread.tcl
 # Adds threading capability for faster image loading in Setup/Photos
 # Setup will work even without this feature
-# Updated 23may24 
-
-#package require Thread
+# Updated 16sep24 
 
 #check vars set by SetupBuildGUI
 #return if missing
-catch {set picL $canvpic::picL} err
-catch {set imgdir $canvpic::picdir} err
-if [info exists err] {
+if [catch {set picL $canvpic::picL} err] {
+  NewsHandler::QueryNews "$err \n Threading not possible." red
   return 1
 }
+if [catch {set imgdir $canvpic::picdir} err] {
+  NewsHandler::QueryNews "$err \n Threading not possible." red
+  return 1
+}
+
+#explain...
 if { [info vars canvpic::canvX] == "" || $canvpic::canvX < 500} {
   setPhotosCanvSize
 }

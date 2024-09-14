@@ -831,10 +831,12 @@ proc loadPicThread {} {
 
   global SetupPicThread
 
-  if {  ! [catch {package require Thread}] } {
-    source $SetupPicThread
+  if [catch {package require Thread} err] {
+    NewsHandler::QueryNews "$err" red
+    set msg::f6Txt "[mc f6Txt] \n\n[mc fasterImageViewingWithThread]"
+    
   } else {
-    append msg::f6Txt \n\n[mc fasterImageViewingWithThread]
+    source $SetupPicThread
   }
 
 } ;#END loadPicThread
