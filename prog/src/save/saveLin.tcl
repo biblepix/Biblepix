@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/saveLin.tcl
 # Sourced by Save.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18aug24 pv
+# Updated: 14sep24 pv
 source $SaveLinHelpers
 source $SetupTools
 source $SetBackgroundChanger

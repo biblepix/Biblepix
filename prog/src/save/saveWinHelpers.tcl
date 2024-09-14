@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/save/saveWinHelpers.tcl
 # Sourced by SetupSaveWin
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 8nov21 pv
+# Updated: 14sep24 pv
 
 #set basic paths
 set rootpath "[file nativename $rootdir]"

@@ -17,22 +17,27 @@ set LinConfDir [file join $HOME .config]
 set LinDesktopFilesDir [file join $HOME .local share applications]
 file mkdir $LinDesktopFilesDir
 
-##Only for info:
-set Kde5ConfFile "plasma-org.kde.plasma.desktop-appletsrc"
 #KDE5: all plasma files reside in .config now!
 ##https://github.com/shalva97/kde-configuration-files
-##but this is for old stuff:
-#KDE4 deprecated service path - only respected if KdeVersion=4
-set Kde4ConfDir [file join $HOME .kde]
-set Kde4ConfFile "plasma-desktop-appletsrc"
-set Kde4ServiceDir [file join $Kde4ConfDir share kde4 services]
-set Kde4ConfFilepath [file join $Kde4ConfDir $Kde4ConfFile]
+set Kde5ConfFile "plasma-org.kde.plasma.desktop-appletsrc"
+set Kde5contextMenuPath ~/.local/share/kservices5/ServiceMenus
+set Kde6contextMenuPath ~/.local/share/kio/servicemenus
+
+#set general .desktop text, used by Gnome/Xfce4/Gnome
+lappend desktopText {[Desktop Entry]}
+lappend desktopText "Name=$bp Setup
+Type=Application
+Icon=$LinIconSvg
+Categories='Settings;Utility;Education;DesktopSettings;Core'
+Comment=Runs & configures $bp
+Exec=$Setup
+"
 
 # locateKdeConffile
-##checks presence of KDE4/KDE5 configuration file(s)
+##checks presence of KDE5 configuration file(s)
 ##called further down 
 proc locateKdeConffile {} {
-  global HOME Kde5ConfFile Kde4ConfDir LinConfDir
+  global HOME Kde5ConfFile  LinConfDir
 
   set plasmaSnippet "desktop-appletsrc"
 
@@ -45,17 +50,12 @@ proc locateKdeConffile {} {
     }
   }
 
-  #Search snippet in Kde5 and Kde4 conf dirs
+  #Search snippet in Kde5 conf dirs
   set Kde5ConfFilepath [fileutil::findByPattern $LinConfDir *$plasmaSnippet]
-  if [file isdir $Kde4ConfDir] {
-    set Kde4ConfFilepath [fileutil::findByPattern $Kde4ConfDir *$plasmaSnippet]
-  }
   
   ##set definite file path
   if {$Kde5ConfFilepath != ""} {
     set KdeConfFilepath $Kde5ConfFilepath
-  } elseif { [info exists Kde4ConfFilepath] && $Kde4ConfFilepath != ""} {
-    set KdeConfFilepath $Kde4ConfFilepath
   } else {
     set KdeConfFilepath 0
   }
@@ -71,13 +71,6 @@ proc locateKdeConffile {} {
 
 #Determine KDE config files as global vars
 set KdeConfFilepath [locateKdeConffile]
-set KdeVersion 5
-if {$KdeConfFilepath != 0} {
-  set KdeVersion 5
-}
-if {$KdeConfFilepath == $Kde4ConfFilepath} {
-  set KdeVersion 4
-}
 
 #Wayland/Sway
 set SwayConfFile $LinConfDir/sway/config
@@ -89,16 +82,7 @@ set Xfce4ConfFile $LinConfDir/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
 ## A) GNOME/XFCE/KDE5
 set LinDesktopFile $LinDesktopFilesDir/biblepixSetup.desktop
 
-## B) KDE4
-set Kde4DesktopFile $Kde4ConfDir/share/kde4/services/biblepixSetup.desktop
-
-## C) MENU ENTRY RIGHTCLICK FILE (works only for some Plasma 5 versions of Konqueror/Dolphin?)
-set Kde5DesktopActionFile $LinDesktopFilesDir/biblepixSetupAction.desktop
-
 # 3 Autostart files
-##this is obsolete:
-set Kde4AutostartDir $Kde4ConfDir/Autostart
-set Kde4AutostartFile $Kde4AutostartDir/biblepix.desktop
 set LinAutostartDir $LinConfDir/autostart
 file mkdir $LinAutostartDir
 set LinAutostartFile $LinAutostartDir/biblepix.desktop
@@ -209,11 +193,12 @@ proc setShebangLine {currentEnvPath} {
 ####################################
 
 # setupLinAutostart
-## makes Autostart entries for Linux Desktops: GNOME, XFCE4, KDE4, KDE5, Wayland/Sway
+## makes Autostart entries for Linux Desktops: GNOME, XFCE4, KDE5, Wayland/Sway
 ## args == delete
 ## called by SetupSaveLin
 proc setupLinAutostart args {
-  global Biblepix Setup LinIcon bp LinAutostartFile Kde4AutostartDir Kde4AutostartFile SwayConfFile
+  global Biblepix Setup LinIcon bp LinAutostartFile SwayConfFile
+  global desktopText
   
   #If args exists, delete any autostart files and exit
   if  {$args != ""} {
@@ -222,14 +207,6 @@ proc setupLinAutostart args {
     return 0
   }
   
-  #Make .desktop file for KDE4 Autostart (obsolete)
-  if [file exists $Kde4AutostartDir] {
-    set chan [open $Kde4AutostartFile w]
-    puts $chan $desktopText
-    close $chan
-    file attributes $Kde4AutostartFile -permissions +x
-  }
-
   #Make .desktop file for GNOME/XFCE/KDE5 Autostart
   set chan [open $LinAutostartFile w]
   puts $chan $desktopText
@@ -296,42 +273,6 @@ proc setupSwayBackground args {
   return 0
 }
 
-#TESTING WESTON (if running): 
-##THIS WONT WORK WITHOUT Weston providing an Autostart mechanism!
-#TODO: implemented in detectRunningLinuxDesktop
-proc setupWestonBackground {} {
-	global TwdPNG env
-
-	if [info exists env(WESTON_CONFIG_FILE)] {
-		set westonConfFile $env(WESTON_CONFIG_FILE)
-	} elseif [file exists .config/weston.ini] {
-		set westonConfFile .config/weston.ini
-	}
-	set chan [file open $westonConfFile r]
-	set fileText [read $chan]
-	close $chan
-
-	if [regexp iblepix $newfileileText] {
-	puts "Nothing to do"		
-	return 1
-	}
-	
-	set chan [file open $westonConfFile w]
-	
-	if [regexp background-image $newfileileText] {
-		regsub -line {(background-image=)(.*$) $newfileileText \2$TwdPNG} fileText
-	} elseif [regexp Shell $newfileileText] {
-		regsub -line {^\[Shell\].*$} $newfileileText {[Shell]
-background-image=$TwdPNG} fileText
-	} else {
-		append fileText \n \[Shell\] \n background-image=$TwdPNG \n background-type=scale-crop
-	}
-
-	puts $chan $newfileileText
-	close $chan
-	return 0
-}
-
 
 ################################################################################
 #  M E N U  E N T R Y   C R E A T E R   F O R   L I N U X   D E S K T O P S
@@ -347,90 +288,46 @@ background-image=$TwdPNG} fileText
 #
 ## General Linux & KDE5: 
 # ~/.local/share/applications
-#
-## KDE4 - deprecated, used if dirs exist:
-## ~/.kde/share/kde4/services
-## KDE5 - ignored (see general Linux):
-## ~/.local/share/applications/kservices5/ServiceMenus
-## ~/.local/share/kservices5/ServiceMenus
 ########################################################
 proc setupLinMenu {} {
-  global LinIcon srcdir Setup bp LinDesktopFilesDir KdeVersion Kde4ServiceDir
-  set filename "biblepixSetup.desktop"
-  set categories "Settings;Utility;Education;DesktopSettings;Core"
+  global LinIcon srcdir Setup bp 
+  global desktopText LinDesktopFile 
+  global Kde5contextMenuPath
+  global Kde6contextMenuPath
   
-  #set Texts
-  set desktopText "\[Desktop Entry\]
-Name=$bp Setup
-Type=Application
-Icon=$LinIconSvg
-Categories=$categories
-Comment=Runs & configures $bp
-Exec=$Setup
-"
-
   #make .desktop file for GNOME & KDE prog menu
-  set chan [open $LinDesktopFilesDir/$newfileilename w]
+  set chan [open $LinDesktopFile w]
   puts $chan $desktopText
   close $chan
   
-  #make .desktop file for KDE4, if dir exists
-  if {$KdeVersion==4} {
-    set categories "Education;Graphics"
-    set chan [open $Kde4ServiceDir/$newfileilename w]
-    puts $chan $desktopText
-    close $chan
-  }
-  return 0
-  
-} ;#END setupLinMenu
-
-# setupKdeActionMenu
-## Produces right-click action menu in Konqueror (and possibly Dolphin?)
-## seen to work only in some versions of KDE5 - very buggy!
-## Called by SetupSaveLin ?if KDE detected?
-
-########################################################
-#Below proved to work sometimes:
-#  reference Text:
-#[Desktop Entry]
-#Type=Service
-#ServiceTypes=KonqPopupMenu/Plugin
-#MimeType=all/all;
-#Actions=countlines;
-#X-KDE-Submenu=Count
-#X-KDE-StartupNotify=false
-#X-KDE-Priority=TopLevel
-
-#[Desktop Action countlines]
-#Name=Count lines
-#Exec=kdialog --msgbox "$(wc -l %F)"
-############################################################
-
-#This works with Konqueror and Dolphin (only KDE4?)
-proc setupKdeActionMenu {} {
-  global bp LinIcon Setup Kde5DesktopActionFile
-  set desktopFilename "biblepixSetupAction.desktop"
-  set desktopText "\[Desktop Entry\]
+  #make .desktop files for both KDE5 & KDE6 context menus
+  ## Produces right-click action menu in Konqueror (and possibly Dolphin)
+  ## don't bother what version are present
+  set contextMenuFile "BiblepixContextMenu.desktop"
+  set contextMenuText "\[Desktop Entry\]
 Type=Service
-MimeType=all/all;
-Actions=BPSetup;
-X-KDE-ServiceTypes=KonqPopupMenu/Plugin
-X-KDE-StartupNotify=true
+ServiceTypes=KonqPopupMenu/Plugin
 X-KDE-Priority=TopLevel
-OnlyShowIn=Old;
+Actions=bpsetup
 
-\[Desktop Action BPSetup\]
+\[Desktop Action bpsetup\]
 Name=$bp Setup
 Icon=$LinIcon
 Exec=$Setup
 "
-  set chan [open $Kde5DesktopActionFile w]
-  puts $chan $desktopText
+  #KDE5
+  set chan [open $Kde5ContextMenuPath/$contextMenuFile w]
+  puts $chan $contextMenuText
+  close $chan
+
+  #KDE6
+  set chan [open $Kde6ContextMenuPath/$contextMenuFile w]
+  puts $chan $contextMenuText
   close $chan
   
   return 0
-}
+  
+} ;#END setupLinMenu
 
 
 ################################################
@@ -439,11 +336,11 @@ Exec=$Setup
 # TODO: > Anleitung in Manpage für andere KDE-Versionen/andere Desktops (Rechtsklick > Desktop-Einstellungen >Einzelbild/Diaschau)
 
 # setupKdeBackground
-##configures KDE4 or KDE5 Plasma for single pic or slideshow
+##configures KDE5 Plasma for single pic or slideshow
 ##called by SaveLin
 ##return codes: 0 = success / 1 = KDE not found / 2 = error  
 proc setupKdeBackground {} {
-  global KdeVersion KdeConfFilepath Kde4ConfFilepath slideshow TwdPNG
+  global KdeConfFilepath slideshow TwdPNG
 
   #Exit if no KDE installation found
   if {$KdeConfFilepath == 0} {
@@ -467,14 +364,6 @@ proc setupKdeBackground {} {
     return 2
   }
 
-  #set KDE4 if detected
-  set errCode4 ""
-  if {$KdeVersion == 4} {
-    catch {setupKde4Bg $Kde4ConfFilepath $kread $kwrite} errCode4
-    NewsHandler::QueryNews "KDE4: $errCode4" red
-    return 2
-  }
-
   #set KDE5 always, using detected conf file path:
   if [catch {setupKde5Bg $KdeConfFilepath $kread $kwrite} errCode5] {
     NewsHandler::QueryNews "KDE Plasma: $errCode5" red
@@ -482,46 +371,7 @@ proc setupKdeBackground {} {
   } else {
     return 0
   } 
-} ;#END setKdeBackground
-
-# setupKde4Bg
-# called by setKdeBackground if KDE4 rcfile found
-proc setupKde4Bg {Kde4ConfFile kread kwrite} {
-  global slideshow imgdir
-  set rcfile [file tail $Kde4ConfFile]
-  puts "Setting up KDE4 background..."
-  
-  if {!$slideshow} {
-    set interval 3600
-  } else {
-    set interval $slideshow
-  }
-  
-  set slidepaths $imgdir
-  set mode Slideshow
-        
-  for {set g 1} {$g<200} {incr g} {
-
-    if {[exec $kread --file $rcfile --group Containments --group $g --key wallpaperplugin] != ""} {
-    
-      puts "Changing KDE $rcfile Containments $g ..."
-
-      #1. [Containments][$g]
-      ##this is always 'image'
-      exec $kwrite --file $rcfile --group Containments --group $g --key wallpaperplugin image
-      exec $kwrite --file $rcfile --group Containments --group $g --key wallpaperpluginmode $mode
-
-      #2. [Containments][$g][Wallpaper][image]
-      ##this is in seconds:
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slideTimer $interval
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key slidepaths $slidepaths
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaper $::TwdPNG
-      ##position: 1 seems to be 'centered'
-      exec $kwrite --file $rcfile --group Containments --group $g --group Wallpaper --group image --key wallpaperposition 1
-    }
-  }
-  return 0
-} ;#END setKde4Bg
+} ;#END setupKdeBackground
 
 # setupKde5Bg
 ## called by setKdeBackground if KdeVersion==5
@@ -659,7 +509,7 @@ proc setupGnomeBackground {} {
     NewsHandler::QueryNews $errCode red
     return 2
   }
-} ;#END setGnomeBackground
+} ;#END setupGnomeBackground
 
 
 ########## R E L O A D   D E S K T O P S  ##########################
