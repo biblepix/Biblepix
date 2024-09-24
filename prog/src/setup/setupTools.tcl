@@ -886,15 +886,24 @@ proc addPic {} {
   #Set path & exit if already there
   set targetPicPath [file join $photosdir $curpic]
   if [file exists $targetPicPath] {
-    NewsHandler::QueryNews $msg::picSchonDa red
+    NewsHandler::QueryNews $msg::picSchonDa orange
     return 1
   }
 
   #POPULATE ::addpicture namespace
   namespace eval addpicture {}
   set addpicture::targetPicPath $targetPicPath
-  set addpicture::curPic photosOrigPic
 
+
+#TODO... trying to use rotated pic if present, but no workin!!!!
+#if rotThumb is present, rotate $targetPicPath & call it rotOrig
+# $addpicture::curPic blank
+# $addpicture::curPic copy rotOrig
+#what's gone wrong here??????
+if  [image inuse $addpicture::curPic] {
+  
+#  set addpicture::curPic photosOrigPic
+}
 
   #DETERMINE NEED FOR RESIZING
 

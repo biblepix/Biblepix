@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17may24 pv
+# Updated: 24sep24 pv
 
 #TODO make sure photosCanvPic is found!!!
 image create photo photosCanvPic
@@ -44,11 +44,13 @@ set anyBtn $F3.anyBtn
 canvas $mC -width 200 -height 110 -borderwidth 2 -relief sunken -bg lightblue
 
 #Create original pic -TODO only at end?
+#TODO this sucks, better below
 namespace eval rotatepic {
   set path [file join $canvpic::picdir $canvpic::curpic]
   image create photo rotateOrigPic -file $path
 }
-set addpicture::curPic rotateOrigPic
+
+
 
 set rotatepic::angle 0
 set ::v 0
@@ -119,7 +121,6 @@ set confirmBtnAction {
     return 1
   }
   
-#TODO what's happening here????????????????????
 	#Run foreground actions
   vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
   photosCanvPic blank
@@ -131,9 +132,9 @@ set confirmBtnAction {
   .rotateW.infoL conf -fg black -bg orange
   set msg::rotateInfo "[mc rotateWait]"
   if {$lang=="ar"} {set msg::rotateInfo [bidi::fixBidi "[mc rotateWait]"]}
-  
+ 
   $rotatepb start
-	doRotateOrig $addpicture::curPic $rotatepic::angle 1
+  doRotateOrig thumb $rotatepic::angle 1
 
 	#Cleanup
   set msg::rotateInfo "[mc rotateInfo]"

@@ -179,14 +179,22 @@ proc vorschau {im angle canv} {
 ##creates rotateOrigPic from photosOrigPic
 ##'update' variable must be 1 or 0, for updating GUI window during process
 ##called by SetupRotate Save button
-proc doRotateOrig {pic angle update} {
-  namespace eval addpicture {}
+
+setclsh
+ proc doRotateOrig {pic angle update} {
+
+  #get path of thumb
+  set thumbpath [file join $canvpic::picdir $canvpic::curpic]
+  image create photo origPic -file $thumbpath
 
   #1. rotate (takes a long time!)
-  set rotPic [imageRotate $pic $angle $update]
+  set rotatedOrigPic [imageRotate origPic $angle $update]
 
-  #2. cut and save
-  set addpicture::curPic $rotPic
+  #2. prepare for cutting and saving
+  namespace eval addpicture {
+    variable curPic
+  }
+  set addpicture::curPic $rotatedOrigPic
 }
 
 ######################################################
