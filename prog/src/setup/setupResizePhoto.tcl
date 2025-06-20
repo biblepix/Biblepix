@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 16may24 pv
+# Updated 5jun25 pv
 
 source $::AnnotatePng
   
@@ -15,14 +15,18 @@ proc openResizeWindow {} {
 
   tk_messageBox -type ok -message $msgbox::movePicToResize
   
- 	#Copy addpicture::curPic to canvas
+ 	#Copy origPic to canvas
   namespace eval resizePic {
 
-    set origW [image width $addpicture::curPic]
-    set origH [image height $addpicture::curPic]
+    set origW [image width origPic]
+    set origH [image height origPic]
+ puts "$origW $origH"
   	image create photo resizeCanvPic
-  	set scaleFactor [getResizeScalefactor]
-  	resizeCanvPic copy $addpicture::curPic -subsample $scaleFactor
+  	#set scaleFactor [getResizeScalefactor]
+ set scaleFactor [scaleFactor origPic]
+ puts $scaleFactor
+ 
+  	resizeCanvPic copy origPic -subsample $scaleFactor
   	resizeCanvPic conf -width [expr $origW / $scaleFactor] -height [expr $origH / $scaleFactor]
 	}
 
@@ -59,7 +63,10 @@ proc openResizeWindow {} {
   ttk::button $w.confirmBtn -textvar msg::ok -command $confirmBtnAction
   ttk::button $w.cancelBtn -textvar msg::cancel -command $cancelBtnAction
   pack $w.confirmBtn $w.cancelBtn
-  set bildname [file tail $addpicture::targetPicPath]
+
+#  set bildname [file tail $addpicture::targetPicPath]
+set targetPicpath [file join $canvpic::picdir $canvpic::thumb]
+set bildname $canvpic::thumb
 
 	#Place buttons onto canvas
   $resizePic::c create window [expr $canvX - 150] 50 -anchor ne -window $w.confirmBtn -tag okbtn
@@ -98,8 +105,9 @@ bind $resizePic::c <MouseWheel> $moveUD
 } ;#END openResizeWindow
 
 # openReposWindow
-##opens new toplevel window if .resizePhoto doesn't exist
-##called by addPic ?????????if ![needsResize]??????????????
+##opens new toplevel window if ??? .resizePhoto doesn't exist
+##asks if text needs repositioning & saves pic with info
+##called by addPic if ![needsResize]??????????????
 proc openReposWindow {pic} {
   catch {destroy .resizePhoto}
   global fontsize fontcolortext
@@ -110,11 +118,18 @@ proc openReposWindow {pic} {
   after idle {tk::PlaceWindow .reposPhoto center}
   
   set reposPic::canv [canvas $reposPic::w.reposCanv -bg lightblue]
-  $reposPic::canv create image 0 0 -image $reposPic::reposCanvPic -anchor nw -tags {img mv}
+  
+  
+  #TODO load richtiges Bild! = cutPic?
+#  $reposPic::canv create image 0 0 -image $reposPic::reposCanvPic -anchor nw -tags {img mv}
+    $reposPic::canv create image 0 0 -image $pic -anchor nw -tags {img mv}
   pack $reposPic::canv
 
-  set reposPic::scaleFactor [getReposScalefactor]
+#TODO use general scalefactor instead?
+set reposPic::scaleFactor [getReposScalefactor]
+
   $reposPic::reposCanvPic copy $pic -subsample $reposPic::scaleFactor
+#reposPic::canv
 
   #Define button actions
   set cancelBtnAction {

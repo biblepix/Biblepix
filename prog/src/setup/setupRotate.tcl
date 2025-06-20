@@ -4,15 +4,14 @@
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 24sep24 pv
 
-#TODO make sure photosCanvPic is found!!!
-image create photo photosCanvPic
-photosCanvPic copy thumb
+image create photo unrotatedThumb
+unrotatedThumb copy thumb
  
 source $RotateTools
 namespace eval rotatepic {}
 namespace eval addpicture {}
 
-set picname $canvpic::curpic
+set picname $canvpic::thumb
 set picdir  $canvpic::picdir
 
 namespace eval rotatepic {
@@ -40,18 +39,18 @@ set 90Btn $F2.90Btn
 set 180Btn $F2.180Btn
 set anyBtn $F3.anyBtn
 
-#Create photo canvas & copy over photosCanvPic
+#Create photo canvas
 canvas $mC -width 200 -height 110 -borderwidth 2 -relief sunken -bg lightblue
 
 #Create original pic -TODO only at end?
 #TODO this sucks, better below
 namespace eval rotatepic {
-  set path [file join $canvpic::picdir $canvpic::curpic]
+  set path [file join $canvpic::picdir $canvpic::thumb]
   image create photo rotateOrigPic -file $path
 }
 
 
-
+#TODO? Check if angle exists
 set rotatepic::angle 0
 set ::v 0
 
@@ -123,8 +122,8 @@ set confirmBtnAction {
   
 	#Run foreground actions
   vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
-  photosCanvPic blank
-  photosCanvPic copy $rotatepic::rotateCanvPic -shrink
+  unrotatedThumb blank
+  unrotatedThumb copy $rotatepic::rotateCanvPic -shrink
 
   #Initiate rotation in background, disable controls
   $::saveBtn conf -state disabled
@@ -134,6 +133,9 @@ set confirmBtnAction {
   if {$lang=="ar"} {set msg::rotateInfo [bidi::fixBidi "[mc rotateWait]"]}
  
   $rotatepb start
+  
+  #TODO: do not use doRotateOrig but save angle
+  # if angle already exists add to it. don't forget overflow (if negative -> +360 abd if >= 360 -> -360)
   doRotateOrig thumb $rotatepic::angle 1
 
 	#Cleanup

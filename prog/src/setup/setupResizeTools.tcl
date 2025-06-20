@@ -176,8 +176,8 @@ proc getResizeScalefactor {} {
   set canvX [expr round($screenX / $factor)]
   set canvY [expr round($screenY / $factor)]
 
-  set imgX [image width $addpicture::curPic]
-  set imgY [image height $addpicture::curPic]
+  set imgX [image width thumb]
+  set imgY [image height thumb]
 
   set factor [expr int(floor($imgX. / $canvX))]
   if {$factor > 0 && [expr $imgY / $factor] < $canvY} {
@@ -198,8 +198,8 @@ proc getReposScalefactor {} {
   set canvX [expr round($screenX / $factor)]
   set canvY [expr round($screenY / $factor)]
 
-  set imgX [image width $addpicture::curPic]
-  set imgY [image height $addpicture::curPic]
+  set imgX [image width thumb]
+  set imgY [image height thumb]
 
   set factor [expr int(ceil($imgX. / $canvX))]
 
@@ -214,20 +214,20 @@ proc getReposScalefactor {} {
 ## called by openResizeWindow
 proc doResize {canv scaleFactor} {
   global picPath
-  global addpicture::curPic
+#  global addpicture::thumb
 
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
   set screenFactor [expr $screenX. / $screenY]
-  set imgX [image width $curPic]
-  set imgY [image height $curPic]
+  set imgX [image width thumb]
+  set imgY [image height thumb]
   set imgFactor [expr $imgX. / $imgY]
   set canvX [lindex [$canv conf -width] end]
   set canvY [lindex [$canv conf -height] end]
   
   #A) needs even resizing
   if {$screenFactor == $imgFactor} {
-    set cutImg $curPic
+    set cutImg origPic
 
   #B) needs cutting + resizing
   } else {
@@ -238,11 +238,11 @@ proc doResize {canv scaleFactor} {
     set cutX2 [expr int(min(($canvX * $scaleFactor + $cutX1), $imgX))]
     set cutY2 [expr int(min(($canvY * $scaleFactor + $cutY1), $imgY))]
 
-    puts cutting
-    puts "$canvPicX1, $canvPicY1"
-    puts "$cutX1, $cutY1, $cutX2, $cutY2"
+ puts cutting
+ puts "$canvPicX1, $canvPicY1"
+ puts "$cutX1, $cutY1, $cutX2, $cutY2"
 
-    set cutImg [trimPic $curPic $cutX1 $cutY1 $cutX2 $cutY2]
+    set cutImg [trimPic origPic $cutX1 $cutY1 $cutX2 $cutY2]
   }
 
   set screenX [winfo screenwidth .]
@@ -253,11 +253,12 @@ proc doResize {canv scaleFactor} {
   set finalImage [resizePic $cutImg $screenX $screenY]
 
   ##update addpicture current pic var
-  set addpicture::curPic $finalImage
+  #set addpicture::curPic $finalImage
 
   $finalImage write $addpicture::targetPicPath -format PNG
 
   NewsHandler::QueryNews "$msg::copiedPicMsg $picPath" lightblue
   
-  return $finalImage
+  #return $finalImage
+  
 } ;#END processResize

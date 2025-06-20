@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupDesktop.tcl
 # Sourced by SetupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 14nov21 pv
+# Updated 4jun25 pv
 
 #Create left & right main frames
 pack [frame .desktopLeftF] -in .desktopF -fill y -side left
@@ -174,6 +174,8 @@ set picPath [getRandomPhotoPath]
 image create photo photosOrigPic -file $picPath
 image create photo textposCanvPic
 textposCanvPic copy photosOrigPic -subsample $textPosFactor -shrink
+photosOrigPic blank
+
 set screeny [winfo screenheight .]
 $textposC conf -width [image width textposCanvPic] -height [expr $screeny/$textPosFactor]
 $textposC create image 0 0 -image textposCanvPic -anchor nw
