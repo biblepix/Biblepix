@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/RotateTools.tcl
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
 # Procs for rotating picture, called by SetupRotate
-# Updated: 15feb23 pv
+# Updated: 15jun25 pv
 
 # imageRotate
 ##with many thanks to Richard Suchenwirth!
@@ -160,18 +160,20 @@ proc imageRotate {img angle update} {
 ##called by SetupRotate
 proc vorschau {im angle canv} {
   
-	$::rotatepb start
+	$::rotatePB start
 
-  set rotatedImg [imageRotate photosCanvPic $angle 1]
+  set rotatedImg [imageRotate unrotatedThumb $angle 1]
 
   $im blank
   $im config -height [image height $rotatedImg] -width [image width $rotatedImg]
   $im copy $rotatedImg
-  image delete $rotatedImg
+  
+thumb copy $rotatedImg -shrink
+image delete $rotatedImg
 
   catch {$canv conf -height [image height $im] -width [image width $im]}
 
-	$::rotatepb stop
+	$::rotatePB stop
 }
 
 # doRotateOrig
@@ -179,22 +181,23 @@ proc vorschau {im angle canv} {
 ##creates rotateOrigPic from photosOrigPic
 ##'update' variable must be 1 or 0, for updating GUI window during process
 ##called by SetupRotate Save button
-
-setclsh
- proc doRotateOrig {pic angle update} {
+proc doRotateOrig {pic angle update} {
 
   #get path of thumb
-  set thumbpath [file join $canvpic::picdir $canvpic::curpic]
+  set thumbpath [file join $canvpic::picdir $canvpic::thumb]
   image create photo origPic -file $thumbpath
 
   #1. rotate (takes a long time!)
   set rotatedOrigPic [imageRotate origPic $angle $update]
 
-  #2. prepare for cutting and saving
-  namespace eval addpicture {
-    variable curPic
-  }
-  set addpicture::curPic $rotatedOrigPic
+#  #2. prepare for cutting and saving
+#  namespace eval addpicture {
+#    variable curPic
+#  }
+  
+#  set addpicture::curPic $rotatedOrigPic
+origPic copy $rotatedOrigPic -shrink
+
 }
 
 ######################################################
