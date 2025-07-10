@@ -38,11 +38,14 @@ proc openResizeWindow {} {
   set w [toplevel .resizePhoto -bg lightblue -padx $margin -pady $margin -relief raised -height $winX -width $winY]
   after idle {tk::PlaceWindow .resizePhoto center}
   
+  #configure canvas
   set resizepic::c [canvas $w.resizeCanv -bg lightblue -height $canvY -width $canvX]
   $resizepic::c create image 0 0 -image resizeCanvPic -anchor nw -tags {img mv}
   
-   
-  
+#define scroll region - TODO stimmt nicht ganz
+  set imX [image width resizeCanvPic]
+  set imY [image height resizeCanvPic]
+  $resizepic::c conf -scrollregion "0 0 $imX $imY"
 
   #Create title & buttons
   set cancelBtnAction {
