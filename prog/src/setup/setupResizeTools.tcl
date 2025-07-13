@@ -2,7 +2,7 @@
 # Procs used in Resizing + Repositioning processes
 # sourced by SetupPhotos & ???
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 28jan23 pv
+# Updated: 27jun25 pv
 
 # needsResize
 ##compares photosOrigPic OR rotateOrigPic with screen dimensions
@@ -123,6 +123,7 @@ proc getCanvSizeFromPic {pic} {
   }
 
   return "$canvX $canvY"
+  
 } ;#END getCanvSizeFromPic
 
 # setCanvasFontSize
@@ -170,26 +171,25 @@ proc setCanvasFontColour {c fontcolortext args} {
 proc getResizeScalefactor {} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
-  set maxCanvX [expr round([winfo width .] / 2.5)]
-  set factor [expr floor($screenX. / $maxCanvX)]
-
-  set canvX [expr round($screenX / $factor)]
-  set canvY [expr round($screenY / $factor)]
-
-  set imgX [image width thumb]
-  set imgY [image height thumb]
-
-  set factor [expr int(floor($imgX. / $canvX))]
-  if {$factor > 0 && [expr $imgY / $factor] < $canvY} {
-    set factor [expr int(floor($imgY. / $canvY))]
+  set maxCanvX [expr round([winfo screenwidth .] / 1.5)]
+  set maxCanvY [expr round([winfo screenheight .] / 1.5)]
+  
+  set imgX [image width origPic]
+  set imgY [image height origPic]
+  
+  set factorX [expr int(ceil($imgX. / $maxCanvX))]
+  set factorY [expr int(ceil($imgY. / $maxCanvY))]
+  
+  if {$factorX < $factorY} {
+  	return $factorX
+  } else {
+  	return $factorY
   }
-  
-  if {$factor <1} {set factor 1}
-  
-  return $factor
 }
 
-proc getReposScalefactor {} {
+# getReposScaleFactor
+##calculates dimensions of resizedPic against screen
+proc getReposScalefactor {pic} {
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
   set maxCanvX [expr round([winfo width .] / 1.5)]
@@ -198,8 +198,8 @@ proc getReposScalefactor {} {
   set canvX [expr round($screenX / $factor)]
   set canvY [expr round($screenY / $factor)]
 
-  set imgX [image width thumb]
-  set imgY [image height thumb]
+  set imgX [image width $pic]
+  set imgY [image height $pic]
 
   set factor [expr int(ceil($imgX. / $canvX))]
 
@@ -214,51 +214,71 @@ proc getReposScalefactor {} {
 ## called by openResizeWindow
 proc doResize {canv scaleFactor} {
   global picPath
-#  global addpicture::thumb
 
-  set screenX [winfo screenwidth .]
-  set screenY [winfo screenheight .]
-  set screenFactor [expr $screenX. / $screenY]
-  set imgX [image width thumb]
-  set imgY [image height thumb]
-  set imgFactor [expr $imgX. / $imgY]
+  set imgX [image width origPic]
+  set imgY [image width origPic]
+
   set canvX [lindex [$canv conf -width] end]
   set canvY [lindex [$canv conf -height] end]
   
-  #A) needs even resizing
-  if {$screenFactor == $imgFactor} {
-    set cutImg origPic
-
-  #B) needs cutting + resizing
-  } else {
+puts cut+resize
   
-    lassign [$canv bbox img] canvPicX1 canvPicY1
-    set cutX1 [expr int(max(($canvPicX1 * -1 * $scaleFactor), 0))]
-    set cutY1 [expr int(max(($canvPicY1 * -1 * $scaleFactor), 0))]
-    set cutX2 [expr int(min(($canvX * $scaleFactor + $cutX1), $imgX))]
-    set cutY2 [expr int(min(($canvY * $scaleFactor + $cutY1), $imgY))]
+  lassign [$canv bbox img] canvPicX1 canvPicY1
+    
+puts $scaleFactor
+
+  set cutX1 [expr int(max(($canvPicX1 * -1 * $scaleFactor), 0))]
+  set cutY1 [expr int(max(($canvPicY1 * -1 * $scaleFactor), 0))]
+  set cutX2 [expr int(min(($canvX * $scaleFactor + $cutX1), $imgX))]
+  set cutY2 [expr int(min(($canvY * $scaleFactor + $cutY1), $imgY))]
 
  puts cutting
  puts "$canvPicX1, $canvPicY1"
  puts "$cutX1, $cutY1, $cutX2, $cutY2"
+ 
+  set cutImg [trimPic origPic $cutX1 $cutY1 $cutX2 $cutY2]
 
-    set cutImg [trimPic origPic $cutX1 $cutY1 $cutX2 $cutY2]
-  }
+
+$cutImg write /tmp/cutImg.png
+  
+image create photo cutPic
+image create photo resizedPic
+
+cutPic copy $cutImg
 
   set screenX [winfo screenwidth .]
   set screenY [winfo screenheight .]
 
   NewsHandler::QueryNews "$msg::resizingPic" orange
 
-  set finalImage [resizePic $cutImg $screenX $screenY]
-
-  ##update addpicture current pic var
-  #set addpicture::curPic $finalImage
-
-  $finalImage write $addpicture::targetPicPath -format PNG
+set finalImage [resizePic cutPic $screenX $screenY]
+resizedPic copy $finalImage
 
   NewsHandler::QueryNews "$msg::copiedPicMsg $picPath" lightblue
   
-  #return $finalImage
-  
+  return $finalImage
 } ;#END processResize
+
+#TODO testing
+# scalePic
+## scales origPic up or down for display in Resize Window
+proc scalePic {args} {
+
+	global resizepic::scaleFactor
+	
+	resizeCanvPic blank
+
+	if {$args == "+"} {
+	
+		incr scaleFactor 
+		resizeCanvPic copy origPic -zoom $scaleFactor
+	
+	} elseif {$args == "-"} {
+	
+		incr scaleFactor -1
+		resizeCanvPic copy origPic -subsample $scaleFactor
+	}
+	
+	.resizePhoto.resizeCanvas -itemconf img resizeCanvPic
+
+} ;#END scalePic

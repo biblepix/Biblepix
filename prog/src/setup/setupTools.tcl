@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Züst, biblepix.vollmar.ch
-# Updated: 17jun25 pv+jz
+# Updated: 25jun25 pv+jz
 
 source $SetupResizeTools
 
@@ -768,16 +768,15 @@ proc showImage {img} {
 	} else {
 
     puts "Creating $imgPath from directory..."
-		if [catch { image create photo orig -file $imgPath } ] {
+		if [catch { image create photo origPic -file $imgPath } ] {
 			NewsHandler::QueryNews "$img: Picture format not recognised. Skipping." red
 			return 1
 		}
 
-	  set factor [scaleFactor orig]
+	  set factor [scaleFactor origPic]
     image create photo thumb
-    thumb copy orig -subsample $factor -shrink
+    thumb copy origPic -subsample $factor -shrink
 
-    orig blank
   }
 
   #Create canvas pic from thumb
@@ -791,15 +790,6 @@ proc showImage {img} {
 ## picL made previously in SetupPhotos
 ## called as a bind event in SetupMainFrame
 proc showFirstPhoto {} {
-
-#TODO unnecessary now
-  #this is set when first called to avoid multiple photosdir threads
-  ##i.e. if SetupPhotos is visisted more than once nothing happens and
-  ##the old pics series from photosdir is still present
-#  if [info exists ::firstPhotoDone] {
-#    return 1
-#  }
-#  set ::firstPhotoDone 1
 
   global canvpic::picL
   global canvpic::imgCanv
@@ -864,29 +854,30 @@ proc resetPhotosGUI {} {
 } ;#END resetPhotosGUI
 
 
-#TODO update VARS !!!!
 # addPic
 ##adds new Picture to BiblePix Photo collection
-##setzt Funktion 'origPic' / 'rotateCutPic' voraus und leitet Subprozesse ein
+##setzt Funktion 'origPic' (rotated or not) voraus und leitet Subprozesse ein
 ##called by SetupPhotos phAddBtn
 proc addPic {} {
   global photosdir 
-  global v ;#TODO ?????????
   global canvpic::thumb
   global canvpic::picdir
 
   #Create original pic for processing
   set picPath [file join $picdir $thumb]
-  image create photo origPic -file $picPath
-
-  source $::SetupResizePhoto
-  source $::SetupResizeTools
+  set targetPicPath [file join $photosdir $thumb]
 
   #Set path & exit if already there
-  set targetPicPath [file join $photosdir $thumb]
   if [file exists $targetPicPath] {
-    NewsHandler::QueryNews $msg::picSchonDa orange
+    NewsHandler::QueryNews $msg::picSchonDa red
     return 1
+  }
+  
+  source $::SetupResizePhoto
+  source $::SetupResizeTools
+  
+  if [catch {origPic conf type}] {
+		image create photo origPic -file $picPath
   }
 
   #POPULATE ::addpicture namespace
@@ -894,37 +885,30 @@ proc addPic {} {
   set addpicture::targetPicPath $targetPicPath
 
 
-#if  [image inuse thumb] {
-#  
-#  set addpicture::curPic origPic
-#}
-
   #DETERMINE NEED FOR RESIZING
 
   ## expect 0 / even / uneven
-#  set resize [needsResize $addpicture::curPic]
-set resize [needsResize origPic]
+	set resize [needsResize origPic]
 
   #A): right dimensions, right size: > OpenResposWin
   if {$resize == 0} {
-    $addpicture::curPic write $targetPicPath -format PNG
+  
     NewsHandler::QueryNews "[mc copiedPicMsg] $picPath" lightgreen
-    openReposWindow $addpicture::curPic
+    origPic write $targetPicPath -format PNG
+    
+#TODO reposWin zu klein!?
+    openReposWindow origPic
 
   #B) right dimensions, wrong size: start resizing & open reposWindow
   } elseif {$resize == "even"} {
+  
+    NewsHandler::QueryNews "$msg::resizingPic" orange
 
     set screenX [winfo screenwidth .]
     set screenY [winfo screenheight .]
-    NewsHandler::QueryNews "$msg::resizingPic" orange
-
     set newpic [resizePic origPic $screenX $screenY]
-    
-    
-    
-    #set addpicture::curPic $newpic
-
     $newpic write $targetPicPath -format PNG
+ 
     NewsHandler::QueryNews "$msg::copiedPicMsg $picPath" lightgreen
 
     openReposWindow $newpic
@@ -937,9 +921,9 @@ set resize [needsResize origPic]
   }
   #Reset standards & cleanup
 #.phAddBtn conf -bg #d9d9d9
-.phAddBtn conf -state disabled
-.phRotateBtn conf -state disabled
-  namespace delete addpicture
+#.phAddBtn conf -state disabled
+#.phRotateBtn conf -state disabled
+ #!!! namespace delete addpicture
 
 } ;#END addPic
 
@@ -952,7 +936,7 @@ proc deletePhoto {} {
   global canvpic::index
   global photosdir
 
-  file delete [file join $photosdir $thumb]
+  file delete [file join $photosdir $canvpic::thumb]
   NewsHandler::QueryNews "$thumb has been removed from BiblePix Photo collection." lightblue
 
   #Cleanup
