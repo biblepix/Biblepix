@@ -184,18 +184,11 @@ proc vorschau {im angle canv} {
 #setclsh
  proc doRotateOrig {pic angle update} {
 
-  #get path of thumb
-  set thumbpath [file join $canvpic::picdir $canvpic::thumb]
-  image create photo origPic -file $thumbpath
-
   #1. rotate (takes a long time!)
-  set rotatedOrigPic [imageRotate origPic $angle $update]
-
-  #2. prepare for cutting and saving
-  namespace eval addpicture {
-    variable curPic
-  }
-  set addpicture::curPic $rotatedOrigPic
+  set rotatedOrigPic [imageRotate $pic $angle $update]
+  
+  $pic blank
+  $pic copy $rotatedOrigPic
 }
 
 ######################################################

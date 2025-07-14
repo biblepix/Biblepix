@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24sep24 pv
+# Updated: 24jun25 pv
 
 image create photo unrotatedThumb
 unrotatedThumb copy thumb
@@ -43,14 +43,12 @@ set anyBtn $F3.anyBtn
 canvas $mC -width 200 -height 110 -borderwidth 2 -relief sunken -bg lightblue
 
 #Create original pic -TODO only at end?
-#TODO this sucks, better below
+#TODO this is never used!
 namespace eval rotatepic {
   set path [file join $canvpic::picdir $canvpic::thumb]
   image create photo rotateOrigPic -file $path
 }
 
-
-#TODO? Check if angle exists
 set rotatepic::angle 0
 set ::v 0
 
@@ -132,11 +130,9 @@ set confirmBtnAction {
   set msg::rotateInfo "[mc rotateWait]"
   if {$lang=="ar"} {set msg::rotateInfo [bidi::fixBidi "[mc rotateWait]"]}
  
-  $rotatepb start
+  $rotatePB start
   
-  #TODO: do not use doRotateOrig but save angle
-  # if angle already exists add to it. don't forget overflow (if negative -> +360 abd if >= 360 -> -360)
-  doRotateOrig thumb $rotatepic::angle 1
+  doRotateOrig origPic $rotatepic::angle 1
 
 	#Cleanup
   set msg::rotateInfo "[mc rotateInfo]"
@@ -144,7 +140,7 @@ set confirmBtnAction {
   namespace delete rotatepic
   set ::Modal.Result "Success"
 	.phAddBtn conf -bg lightgreen -activebackground orange
-	}
+}
 
 #Create Info label & buttons
 set infoL [label .rotateW.infoL -textvar msg::rotateInfo -font TkCaptionFont -bg beige -fg green -padx 5 -pady 10]
@@ -175,12 +171,12 @@ trace add variable v write updateMeter
 trace add variable v write updateAngle
 
 #Create progress bar
-set rotatepb .rotateW.midF.pb
-ttk::progressbar $rotatepb -length 200 -orient horizontal -mode indeterminate
+set rotatePB .rotateW.midF.pb
+ttk::progressbar $rotatePB -length 200 -orient horizontal -mode indeterminate
 
 #Pack all
 pack $90Btn -pady 5 -side left -expand 1
-pack $rotatepb -side left -expand 1  
+pack $rotatePB -side left -expand 1  
 pack $180Btn -side left -expand 1
 pack $anyBtn -pady 10
 
