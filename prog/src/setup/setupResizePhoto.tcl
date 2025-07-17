@@ -187,8 +187,13 @@ proc openReposWindow {pic} {
     setCanvasFontColour $repospic::canv $fontcolortext $lum
     #Process PNG info
     lassign [$repospic::canv coords txt] x y
-    set x [expr $x * $scaleFactor]
-    set y [expr $y * $scaleFactor]
+    
+#TODO warum geht das nicht?
+#    set x [expr $x * $scaleFactor]
+#    set y [expr $y * $scaleFactor]
+set x 2
+set y 2
+   
     processPngComment $addpicture::targetPicPath $x $y $lum
 
     NewsHandler::QueryNews "$msg::reposSaved" lightgreen

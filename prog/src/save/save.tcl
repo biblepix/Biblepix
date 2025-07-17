@@ -90,12 +90,14 @@ puts $chan "set Httpmock $Httpmock"
 
 #3.Write Linux vars to $Config
 if {$os == "Linux"} {
-  source $SaveLinHelpers
-  
+  if [info exists crontab] {
+    puts $chan "set crontab 1"
+  }
   if [info exists termstatus] {
     puts $chan "set enableterm $termstatus"
   }
   #Define Desktop Images dir
+  source $SaveLinHelpers
   puts $chan "set DesktopPicturesDir [setLinDesktopPicturesDir]" 
 }
 
