@@ -188,7 +188,7 @@ proc vorschau {im angle canv} {
   set rotatedOrigPic [imageRotate $pic $angle $update]
   
   $pic blank
-  $pic copy $rotatedOrigPic
+  $pic copy $rotatedOrigPic -shrink
 }
 
 ######################################################
