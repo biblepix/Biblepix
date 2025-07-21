@@ -133,56 +133,59 @@ proc updateTwd {} {
   ##########################################
   # Download New TwdFiles if available
   ##########################################
-
-  if [catch {set onlineJsonFileList [getDataFromUrl "$::twdUrl?format=json"]}] {
-    return
-  }
-  set onlineDictFileList [::json::json2dict $onlineJsonFileList]
-  set nextYearAvailable 0
-  set nextYear [expr {$::jahr + 1}]
-
-  foreach onlineDictFile $onlineDictFileList {
-    if {[dict get $onlineDictFile "year"] == $nextYear} {
-      set nextYearAvailable 1
-      break
+  
+  catch {
+    if [catch {set onlineJsonFileList [getDataFromUrl "$::twdUrl?format=json"]}] {
+      return
     }
-  }
-
-  if {$nextYearAvailable} {
-    set currentTwdList [glob -nocomplain -directory $twddir *$::jahr.twd]
-    set nextTwdList [glob -nocomplain -directory $twddir *$nextYear.twd]
-
-    foreach currentFile $currentTwdList {
-      set nextExists 0
-      set nextOnlineMissing 1
-      set currentName [lindex [split [file tail $currentFile] "_"] 1]
-
-      foreach onlineDictFile $onlineDictFileList {
-        if {[dict get $onlineDictFile "year"] == $nextYear \
-         && [dict get $onlineDictFile "bible"] == $currentName} {
-          set nextOnlineMissing 0
-          break
-        }
+    
+    set onlineDictFileList [::json::json2dict $onlineJsonFileList]
+    set nextYearAvailable 0
+    set nextYear [expr {$::jahr + 1}]
+  
+    foreach onlineDictFile $onlineDictFileList {
+      if {[dict get $onlineDictFile "year"] == $nextYear} {
+        set nextYearAvailable 1
+        break
       }
-
-      if {$nextOnlineMissing} {
-        continue
-      }
-
-      if {$nextTwdList != ""} {
-        foreach nextFile $nextTwdList {
-          if {$currentName == [lindex [split [file tail $nextFile] "_"] 1]} {
-            set nextExists 1
+    }
+  
+    if {$nextYearAvailable} {
+      set currentTwdList [glob -nocomplain -directory $twddir *$::jahr.twd]
+      set nextTwdList [glob -nocomplain -directory $twddir *$nextYear.twd]
+  
+      foreach currentFile $currentTwdList {
+        set nextExists 0
+        set nextOnlineMissing 1
+        set currentName [lindex [split [file tail $currentFile] "_"] 1]
+  
+        foreach onlineDictFile $onlineDictFileList {
+          if {[dict get $onlineDictFile "year"] == $nextYear \
+           && [dict get $onlineDictFile "bible"] == $currentName} {
+            set nextOnlineMissing 0
+            break
           }
         }
-      }
-
-      if {!$nextExists} {
-        downloadTwdFile $currentFile $nextYear
+  
+        if {$nextOnlineMissing} {
+          continue
+        }
+  
+        if {$nextTwdList != ""} {
+          foreach nextFile $nextTwdList {
+            if {$currentName == [lindex [split [file tail $nextFile] "_"] 1]} {
+              set nextExists 1
+            }
+          }
+        }
+  
+        if {!$nextExists} {
+          downloadTwdFile $currentFile $nextYear
+        }
       }
     }
   }
-
+  
   ##########################################
   # Delete old TwdFiles
   ##########################################

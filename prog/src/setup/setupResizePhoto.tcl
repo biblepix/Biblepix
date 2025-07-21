@@ -198,7 +198,8 @@ set y 2
 
     NewsHandler::QueryNews "$msg::reposSaved" lightgreen
     catch {image delete reposCanvPic}
-    namespace delete repospic
+    namespace delete repospic
+    catch {image delete $pic}
   }
 
   set confBtn [button $repospic::w.moveTxtBtn -command $confirmBtnAction -textvar msg::ok]

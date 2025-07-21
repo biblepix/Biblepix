@@ -768,15 +768,16 @@ proc showImage {img} {
 	} else {
 
     puts "Creating $imgPath from directory..."
-		if [catch { image create photo origPic -file $imgPath } ] {
-			NewsHandler::QueryNews "$img: Picture format not recognised. Skipping." red
-			return 1
-		}
+    if [catch { image create photo origPic -file $imgPath } ] {
+      NewsHandler::QueryNews "$img: Picture format not recognised. Skipping." red
+      return 1
+    }
 
-	  set factor [scaleFactor origPic]
+    set factor [scaleFactor origPic]
     image create photo thumb
     thumb copy origPic -subsample $factor -shrink
 
+    catch {image delete origPic}
   }
 
   #Create canvas pic from thumb
@@ -879,8 +880,8 @@ proc addPic {} {
   source $::SetupResizePhoto
   source $::SetupResizeTools
   
-  if [catch {origPic conf type}] {
-		image create photo origPic -file $picPath
+  if {[lsearch [image names] "origPic"] == -1} {
+    image create photo origPic -file $picPath
   }
 
   #POPULATE ::addpicture namespace

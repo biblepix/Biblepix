@@ -46,7 +46,7 @@ canvas $mC -width 200 -height 110 -borderwidth 2 -relief sunken -bg lightblue
 #TODO this is never used!
 namespace eval rotatepic {
   set path [file join $canvpic::picdir $canvpic::thumb]
-  image create photo rotateOrigPic -file $path
+  image create photo origPic -file $path
 }
 
 set rotatepic::angle 0
@@ -104,7 +104,7 @@ button $180Btn -textvar msg::preview180 -activebackground beige \
 
 set cancelBtnAction {
   set ::Modal.Result "Cancelled"
-  catch {image delete $rotatepic::rotateCanvPic}
+  thumb copy unrotatedThumb -shrink
   destroy $rotatepic::W
   namespace delete rotatepic
 }
@@ -118,8 +118,7 @@ set confirmBtnAction {
     return 1
   }
   
-	#Run foreground actions
-  vorschau $rotatepic::rotateCanvPic $rotatepic::angle $canv
+  #Run foreground actions
   unrotatedThumb blank
   unrotatedThumb copy $rotatepic::rotateCanvPic -shrink
 
@@ -133,7 +132,7 @@ set confirmBtnAction {
   $rotatePB start
   
   doRotateOrig origPic $rotatepic::angle 1
-
+  
 	#Cleanup
   set msg::rotateInfo "[mc rotateInfo]"
   destroy $rotatepic::W
