@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Züst, biblepix.vollmar.ch
-# Updated: 25jun25 pv+jz
+# Updated: 20jul25 pv+jz
 
 source $SetupResizeTools
 
@@ -844,7 +844,10 @@ proc resetPhotosGUI {} {
   } else {
     pack .phShowCollectionBtn -in .phBarF -side left
     pack .phAddBtn -in .phBotF1 -side left -anchor w
-    pack .phRotateBtn -in .phBotF1 -side left -anchor w
+    
+#TODO this is presently disabled
+#   pack .phRotateBtn -in .phBotF1 -side left -anchor w
+
     pack .phPicpathL .phPicnameL -in .phBotF2
     pack forget .phDelBtn
     .phAddBtn conf -state normal
