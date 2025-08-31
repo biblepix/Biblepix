@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Züst, biblepix.vollmar.ch
-# Updated: 25jun25 pv+jz
+# Updated: 21jul25 pv+jz
 
 source $SetupResizeTools
 
@@ -846,10 +846,9 @@ proc resetPhotosGUI {} {
     pack .phShowCollectionBtn -in .phBarF -side left
     pack .phAddBtn -in .phBotF1 -side left -anchor w
     pack .phRotateBtn -in .phBotF1 -side left -anchor w
+
     pack .phPicpathL .phPicnameL -in .phBotF2
     pack forget .phDelBtn
-    .phAddBtn conf -state normal
-    .phRotateBtn conf -state normal
   }
 
 } ;#END resetPhotosGUI
@@ -897,7 +896,6 @@ proc addPic {} {
     NewsHandler::QueryNews "[mc copiedPicMsg] $picPath" lightgreen
     origPic write $targetPicPath -format PNG
     
-#TODO reposWin zu klein!?
     openReposWindow origPic
 
   #B) right dimensions, wrong size: start resizing & open reposWindow
@@ -920,11 +918,6 @@ proc addPic {} {
     openResizeWindow
 
   }
-  #Reset standards & cleanup
-#.phAddBtn conf -bg #d9d9d9
-#.phAddBtn conf -state disabled
-#.phRotateBtn conf -state disabled
- #!!! namespace delete addpicture
 
 } ;#END addPic
 
@@ -937,8 +930,11 @@ proc deletePhoto {} {
   global canvpic::index
   global photosdir
 
-  file delete [file join $photosdir $canvpic::thumb]
-  NewsHandler::QueryNews "$thumb has been removed from BiblePix Photo collection." lightblue
+  if [catch {file delete [file join $photosdir $canvpic::thumb]} res] {
+    NewsHandler::QueryNews "$res" red
+  } else {
+    NewsHandler::QueryNews "$thumb has been removed from BiblePix Photo collection." lightblue
+  }
 
   #Cleanup
   scanPicdir $photosdir
