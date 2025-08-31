@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 7jul25 pv
+# Updated 21jul25 pv+jz
 
 source $::AnnotatePng
   
@@ -198,7 +198,7 @@ set y 2
 
     NewsHandler::QueryNews "$msg::reposSaved" lightgreen
     catch {image delete reposCanvPic}
-    namespace delete repospic
+    catch {namespace delete repospic}
     catch {image delete $pic}
   }
 
