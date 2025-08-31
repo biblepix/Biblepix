@@ -53,8 +53,6 @@ proc openResizeWindow {} {
     NewsHandler::QueryNews "$msg::reposNotSaved" red
     catch {image delete resizeCanvPic}
     catch {namespace delete resizepic}
-.phAddBtn conf -state normal
-.phRotateBtn conf -state normal
 
   }
   
@@ -63,8 +61,6 @@ proc openResizeWindow {} {
 		.resizePhoto.pb start
 		
     set img [doResize $resizepic::c $resizepic::scaleFactor]
-    .phAddBtn conf -state disabled
-.phRotateBtn conf -state disabled
 
 #TODO gehört das hierhin?
 $img write $addpicture::targetPicPath -format PNG 

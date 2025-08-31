@@ -237,9 +237,6 @@ puts $scaleFactor
  puts "$cutX1, $cutY1, $cutX2, $cutY2"
  
   set cutImg [trimPic origPic $cutX1 $cutY1 $cutX2 $cutY2]
-
-
-$cutImg write /tmp/cutImg.png
   
 image create photo cutPic
 image create photo resizedPic

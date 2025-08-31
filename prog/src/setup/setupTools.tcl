@@ -849,8 +849,6 @@ proc resetPhotosGUI {} {
 
     pack .phPicpathL .phPicnameL -in .phBotF2
     pack forget .phDelBtn
-    .phAddBtn conf -state normal
-    .phRotateBtn conf -state normal
   }
 
 } ;#END resetPhotosGUI
@@ -920,11 +918,6 @@ proc addPic {} {
     openResizeWindow
 
   }
-  #Reset standards & cleanup
-#.phAddBtn conf -bg #d9d9d9
-#.phAddBtn conf -state disabled
-#.phRotateBtn conf -state disabled
- #!!! namespace delete addpicture
 
 } ;#END addPic
 
