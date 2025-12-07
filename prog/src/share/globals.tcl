@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 14jul24 pv
+# Updated: 7dez25 pv
 set version "5.1"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -105,6 +105,7 @@ lappend filePathL [set JList [file join $sharedir JList.tcl]]
 lappend filePathL [set ImgTools [file join $picdir ImageTools.tcl]]
 lappend filePathL [set LoadConfig [file join $sharedir LoadConfig.tcl]]
 lappend filePathL [set TwdTools [file join $sharedir TwdTools.tcl]]
+lappend filePathL [set TwdRemoteList [file join $twddir twdRemoteList]]
 lappend filePathL [set Uninstall [file join $savedir uninstall.tcl]]
 lappend filePathL [set Signature [file join $maildir signature.tcl]]
 lappend filePathL [set SigTools [file join $maildir SigTools.tcl]]

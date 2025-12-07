@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 19aug24 pv
+# Updated 6dec25 pv
 
 # msgcatInit
 ##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
@@ -322,8 +322,8 @@ proc getTwdLang {TwdFileName} {
 ##called by BdfPrint
 proc isRtL {TwdLang} {
   if {
-  $TwdLang == "he" ||
-	[isArabicScript $TwdLang]
+  	$TwdLang == "he" ||
+		[isArabicScript $TwdLang]
   } {
     return 1
   } else {

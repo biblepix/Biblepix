@@ -1,21 +1,76 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # Procs called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16aug24 pv
+# Updated: 6dec25 pv
+
+#TODO wohin damit?
 package require http
+
+# runCurl
+## check if curl/wget installed and return cmd
+## sourced by getTwdList & downloadTwdFile
+## replaces http & tls
+## saves to local tempfile
+#proc runCurl {} {
+#  global tempdir
+#  
+#  set tempF [file join $tempdir twd]
+
+
+#	#set cmd "curl --output $tempF $url"
+#	set cmd "curl -o $tempF https:\/\/bible2.net/service/TheWord/twd11/current"
+#		
+#	#Check for curl or wget
+#	if {[auto_execok curl] == ""} {
+#	
+#		if {[auto_execok wget] != ""} {
+#		  set cmd "wget --output-document=$tempF $url"
+#			
+#		} else {
+#			NewsHandler::QueryNews "Cannot download file from bible2.net.\nPlease install 'curl' or 'wget' on your PC and try again." red
+#			return 1
+#			
+#		}
+#	}
+#  return "$cmd"
+#}
+
+# downloadTwdList
+## downloads remote TWD list to local file in $twddir
+##called by getRemoteRoot
+proc downloadTwdList {} {
+   global twdUrl TwdRemoteList
+	
+	#Check for curl or wget
+	if {[auto_execok curl] != ""} {
+	  set cmd "curl"
+	  set opt "-o"
+	} elseif {[auto_execok wget] != ""} {
+		set cmd "wget"
+		set opt "-O"
+	} else {
+		NewsHandler::QueryNews "Cannot download file list from bible2.net.\nPlease install 'curl' or 'wget' on your PC and try again." red
+		return 1
+	}
+
+	#download current twd list to $twddir
+  exec $cmd $opt $TwdRemoteList $twdUrl
+
+} ;#END downloadTwdList
+
 
 # checkTls
 ##needed for TWD downloads from https://bible2.net
 ##called by downloadTWDFile
-proc checkTls {} {
-  global lang
-  if [catch {package require tls} err] {
-    package require Tk
-    msgcatInit $lang
-    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tls tls]"
-    return 1
-  }
-}
+#proc checkTls {} {
+#  global lang
+#  if [catch {package require tls} err] {
+#    package require Tk
+#    msgcatInit $lang
+#    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tls tls]"
+#    return 1
+#  }
+#}
 
 ###############################################################################
 ########### PROCS FOR SETUP UPDATE ############################################
@@ -125,10 +180,15 @@ proc downloadFileFromUrl {filePath url} {
   http::cleanup $token
 }
 
+#######################################################################################################################
+
+# downloadTwdFile
+## gets TWD language file for $year from bible2.net
+## called by updateTwd
 proc downloadTwdFile {twdFile year} {
-  global twddir
+  global twddir tempdir twdBaseUrl
   
-  checkTls
+  set tempF [file join $tempdir twd]
   
   set twdFile [file tail $twdFile]
   set nameParts [split $twdFile "_"]
@@ -136,23 +196,20 @@ proc downloadTwdFile {twdFile year} {
   set fileName [join $nameParts "_"]
 
   set filePath $twddir/$fileName
-  set url $::twdBaseUrl/$fileName
 
-  #Register SSL connection
-  http::register https 443 [list ::tls::socket -tls1 1]
-
-  set chan [open $filePath w]
+#set url $::twdBaseUrl/$fileName
+set url $twdBaseUrl/$twdFile
+ 
+  set cmd "[runCurl] $url"
+  exec $cmd
+  
+  set chan [open $tempF r]
   fconfigure $chan -encoding utf-8
-  set token [http::geturl $url -channel $chan]
+  set data [read $chan]
+  puts $data $filePath
   close $chan
 
-  if {[http::status $token] != "ok"} {
-    error "No Internet connection"
-  }
-
-  http::cleanup $token
-  http::unregister https
-}
+} ;#END downloadTwdFile
 
 # getDataFromUrl
 ##called by updateTwd
@@ -180,40 +237,66 @@ proc getDataFromUrl {url} {
 ########## PROCS FOR TWD LIST #################################################
 ###############################################################################
 
+# getRemoteRoot
+##retrieves data from TwdRemoteList
+##called by listRemoteTWDFiles & downloadTWDFiles
 proc getRemoteRoot {} {
-  global lang
+  global lang TwdRemoteList  
   
-#TODO outsource below!
-  #These are standard in ActiveTcl, Linux distros vary
+  #Check for tdom 
+  ##standard in ActiveTcl, Linux distros vary
   if [catch {package require tdom} err] {
     package require Tk
     msgcatInit $lang
     tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tDom tdom]"
     return 1
   }
+  
+  #Try downloading rootlist twice
+  if [catch downloadTwdList] {
+    downloadTwdList
+  }
+  #check for current or previous list
+  if ![file exists $TwdRemoteList] {
+    return 1
+  }
+  
+  #retrieve data from file
+	set chan [open $TwdRemoteList r]
+	fconfigure $chan -encoding utf-8
+	set data [read $chan]
+	close $chan
+	
+return $data
 
-  if [catch {package require tls} err] {
-    package require Tk
-    msgcatInit $lang
-    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tls tls]"
+
+  if {$data != ""} {
+    return [dom parse -html $data]
+  } else {
+puts noData
     return 1
   }
 
-  #Register SSL connection
-  http::register https 443 [list ::tls::socket -tls1 1]
+} ;#END getRemoteRoot
 
-  set token [http::geturl $::twdUrl]
-  set data [http::data $token]
-  
-  http::cleanup $token
-  http::unregister https
-  return [dom parse -html $data]
-}
 
 proc listRemoteTWDFiles {lBox} {
   global os
   
-  set root [getRemoteRoot]
+  #TODO???
+#  set root [getRemoteRoot]
+  #set data [getRemoteRoot]
+
+#retrieve data from file
+set chan [open $::TwdRemoteList r]
+fconfigure $chan -encoding utf-8
+set data [read $chan]
+close $chan
+
+set root [dom parse -html $data]
+
+
+  #fill listbox  
   $lBox delete 0 end
 
   #set langlist
@@ -333,6 +416,9 @@ proc downloadTWDFiles {} {
   .twdremoteLB selection clear 0 end
 
 } ;#END downloadTWDFiles
+
+
+
 
 # downloadAsianFont
 ##updates Chinese or Thai fonts if required
