@@ -59,19 +59,6 @@ proc downloadTwdList {} {
 } ;#END downloadTwdList
 
 
-# checkTls
-##needed for TWD downloads from https://bible2.net
-##called by downloadTWDFile
-#proc checkTls {} {
-#  global lang
-#  if [catch {package require tls} err] {
-#    package require Tk
-#    msgcatInit $lang
-#    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tls tls]"
-#    return 1
-#  }
-#}
-
 ###############################################################################
 ########### PROCS FOR SETUP UPDATE ############################################
 ###############################################################################
@@ -182,55 +169,112 @@ proc downloadFileFromUrl {filePath url} {
 
 #######################################################################################################################
 
+# downloadTWDFiles
+#called by SetupInternational "Download" btn
+#TODO don't confuse with downloadTwdFile !!!
+proc downloadTWDFiles {} {
+  global twddir jahr Globals TwdRemoteList
+  
+#  if [catch {set root [getRemoteRoot]}] {
+#    NewsHandler::QueryNews "[mc noConnTwd]" red
+#    return 1
+#  }
+
+  set chan [open /home/pv/Biblepix/BibleTexts/twdRemoteList r]
+  #set chan [open $TwdRemoteList r]
+  fconfigure $chan -encoding utf-8
+  set data [read $chan]
+  close $chan
+
+  set root [dom parse -html $data]
+  
+  cd $twddir
+  #get hrefs alphabetically ordered
+  set urllist [$root selectNodes {//tr/td/a}]
+  set hrefs ""
+
+  foreach url $urllist {lappend hrefs [$url @href]}
+  set urllist [lsort $hrefs]
+  set selectedindices [.twdremoteLB curselection]
+
+  foreach item $selectedindices {
+    set url [lindex $urllist $item]
+    set filename [file tail $url]
+
+    NewsHandler::QueryNews "Downloading $filename..." lightblue
+
+    #Download file & recreate Twd lists
+    downloadTwdFile $filename $jahr
+    after idle .intTwdlocalLB insert end $filename  
+    
+    #If Chinese or Thai: update font files also 
+    set twdlang [string range $filename 0 1]
+    if {$twdlang == "zh" || $twdlang == "th"} {
+      downloadAsianFont $twdlang
+    }
+  } ;#END foreach
+  
+  #deselect all downloaded files
+  .twdremoteLB selection clear 0 end
+
+} ;#END downloadTWDFiles
+
 # downloadTwdFile
-## gets TWD language file for $year from bible2.net
-## called by updateTwd
+## fetches TWD language file for $year from bible2.net
+## TODO??? called by updateTwd
 proc downloadTwdFile {twdFile year} {
-  global twddir tempdir twdBaseUrl
+  global twddir twdBaseUrl
   
-  set tempF [file join $tempdir twd]
-  
+  #make file Tcl readable, matching Helmut's URL
   set twdFile [file tail $twdFile]
   set nameParts [split $twdFile "_"]
   lset nameParts 2 "$year.twd"
   set fileName [join $nameParts "_"]
 
-  set filePath $twddir/$fileName
+puts $fileName
 
-#set url $::twdBaseUrl/$fileName
-set url $twdBaseUrl/$twdFile
+  set filePath [file join $twddir $fileName]
+  set url $twdBaseUrl/$fileName
+puts $url
  
-  set cmd "[runCurl] $url"
-  exec $cmd
+  #Check for curl or wget
+	if {[auto_execok curl] != ""} {
+	  set cmd "curl"
+	  set opt "-o"
+	} elseif {[auto_execok wget] != ""} {
+		set cmd "wget"
+		set opt "-O"
+	} else {
+		NewsHandler::QueryNews "Cannot download file list from bible2.net.\nPlease install 'curl' or 'wget' on your PC and try again." red
+		return 1
+	}
+ 
+  catch {exec $cmd $opt $filePath $url}
   
-  set chan [open $tempF r]
-  fconfigure $chan -encoding utf-8
-  set data [read $chan]
-  puts $data $filePath
-  close $chan
-
 } ;#END downloadTwdFile
 
+
+#TODO is this used anywhere????
 # getDataFromUrl
 ##called by updateTwd
-proc getDataFromUrl {url} {
+#proc getDataFromUrl {url} {
 
-  #Register SSL connection
-  http::register https 443 [list ::tls::socket -tls1 1]
+#  #Register SSL connection
+#  http::register https 443 [list ::tls::socket -tls1 1]
 
-#TODO this throws error each time I run Setup!
-  set token [http::geturl $url]
-  if {[http::status $token] != "ok"} {
-    error "No Internet connection"
-  }
+##TODO this throws error each time I run Setup!
+#  set token [http::geturl $url]
+#  if {[http::status $token] != "ok"} {
+#    error "No Internet connection"
+#  }
 
-  set data [http::data $token]
+#  set data [http::data $token]
 
-  http::cleanup $token
-  http::unregister https
+#  http::cleanup $token
+#  http::unregister https
 
-  return $data
-}
+#  return $data
+#}
 
 
 ###############################################################################
@@ -238,7 +282,7 @@ proc getDataFromUrl {url} {
 ###############################################################################
 
 # getRemoteRoot
-##retrieves data from TwdRemoteList
+##download TwdRemoteList
 ##called by listRemoteTWDFiles & downloadTWDFiles
 proc getRemoteRoot {} {
   global lang TwdRemoteList  
@@ -256,45 +300,25 @@ proc getRemoteRoot {} {
   if [catch downloadTwdList] {
     downloadTwdList
   }
-  #check for current or previous list
-  if ![file exists $TwdRemoteList] {
-    return 1
-  }
   
-  #retrieve data from file
-	set chan [open $TwdRemoteList r]
-	fconfigure $chan -encoding utf-8
-	set data [read $chan]
-	close $chan
-	
-return $data
-
-
-  if {$data != ""} {
-    return [dom parse -html $data]
-  } else {
-puts noData
-    return 1
-  }
-
+#  #check for current or previous list
+#  if ![file exists $TwdRemoteList] {
+#    return 1
+#  }
+  
 } ;#END getRemoteRoot
 
 
 proc listRemoteTWDFiles {lBox} {
-  global os
+  global os TwdRemoteList
   
-  #TODO???
-#  set root [getRemoteRoot]
-  #set data [getRemoteRoot]
+  #retrieve data from file
+  set chan [open $TwdRemoteList r]
+  fconfigure $chan -encoding utf-8
+  set data [read $chan]
+  close $chan
 
-#retrieve data from file
-set chan [open $::TwdRemoteList r]
-fconfigure $chan -encoding utf-8
-set data [read $chan]
-close $chan
-
-set root [dom parse -html $data]
-
+  set root [dom parse -html $data]
 
   #fill listbox  
   $lBox delete 0 end
@@ -353,6 +377,7 @@ set root [dom parse -html $data]
 # getRemoteTWDFileList
 ##called by SetupInternational
 ##returns status for display in .news
+#TODO who needs this???
 proc getRemoteTWDFileList {} {
 
 #TODO this test is only valid for vollmar.ch !!!
@@ -376,46 +401,6 @@ proc getRemoteTWDFileList {} {
   return $status
 }
 
-# downloadTWDFiles
-#called by SetupInternational
-proc downloadTWDFiles {} {
-  global twddir jahr Globals
-  
-  if [catch {set root [getRemoteRoot]}] {
-    NewsHandler::QueryNews "[mc noConnTwd]" red
-    return 1
-  }
-  
-  cd $twddir
-  #get hrefs alphabetically ordered
-  set urllist [$root selectNodes {//tr/td/a}]
-  set hrefs ""
-
-  foreach url $urllist {lappend hrefs [$url @href]}
-  set urllist [lsort $hrefs]
-  set selectedindices [.twdremoteLB curselection]
-
-  foreach item $selectedindices {
-    set url [lindex $urllist $item]
-    set filename [file tail $url]
-
-    NewsHandler::QueryNews "Downloading $filename..." lightblue
-
-    #Download file & recreate Twd lists
-    downloadTwdFile $filename $jahr
-    after idle .intTwdlocalLB insert end $filename  
-    
-    #If Chinese or Thai: update font files also 
-    set twdlang [string range $filename 0 1]
-    if {$twdlang == "zh" || $twdlang == "th"} {
-      downloadAsianFont $twdlang
-    }
-  } ;#END foreach
-  
-  #deselect all downloaded files
-  .twdremoteLB selection clear 0 end
-
-} ;#END downloadTWDFiles
 
 
 
