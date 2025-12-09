@@ -309,71 +309,6 @@ proc getRemoteRoot {} {
 } ;#END getRemoteRoot
 
 
-proc listRemoteTWDFiles {lBox} {
-  global os TwdRemoteList
-  
-  #retrieve data from file
-  set chan [open $TwdRemoteList r]
-  fconfigure $chan -encoding utf-8
-  set data [read $chan]
-  close $chan
-
-  set root [dom parse -html $data]
-
-  #fill listbox  
-  $lBox delete 0 end
-
-  #set langlist
-  set file [ $root selectNodes {//tr/td[text()="file"]} ]
-  set space { }
-  set spaceLang 21
-  set spaceName 60
-
-  foreach node $file {
-    set yearNode [$node nextSibling]
-    set langNode [$yearNode nextSibling]
-    set nameNode [$langNode nextSibling]
-    set versionNode [$nameNode nextSibling]
-    set year [$yearNode text]
-    set lang [$langNode text]
-    set name [$nameNode text]
-    set version [$versionNode text]
-
-    #Set RtL languages from right to left (Windows should handle this without our help)
-    if {$os == "Linux" && [isBidi $version]} {
-      set version [bidi::fixBidi $version]
-      ##eliminate LF char
-      regsub {[\u000A]} $version {} version
-    }
-    
-    ##start building line
-    append nameline $lang
-    
-    ##compute tab lengths for Monospace font
-    for {set i [string length $lang]} {$i < $spaceLang} {incr i} {
-      append nameline $space
-    }
-
-    append nameline $year [string repeat $space 10]
-    append nameline $name
-
-    ##compute tab lengths for Monospace font
-    for {set i [string length $name]} {$i < $spaceName} {incr i} {
-      append nameline $space
-    }
-
-    append nameline $version
-
-    lappend sortlist $nameline
-    unset nameline
-  }
-
-  set sortlist [lsort $sortlist]
-  foreach line $sortlist {
-    $lBox insert end $line
-  }
-}
-
 # getRemoteTWDFileList
 ##called by SetupInternational
 ##returns status for display in .news
@@ -390,7 +325,7 @@ proc getRemoteTWDFileList {} {
   
   	source $::Bidi
   	
-    if ![catch {listRemoteTWDFiles .twdremoteLB}] {
+    if ![catch listRemoteTwdFiles] {
       .intStatusL conf -bg lightgreen
       set status "[mc connTwd]"
     } else {

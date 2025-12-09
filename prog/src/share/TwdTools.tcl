@@ -39,6 +39,92 @@ if [catch {package require tdom} err] {
 ######################### G E N E R A L   T O O L S  ###########################
 ################################################################################
 
+# listRemoteTwdFiles
+##fills remote listbox from local file if present
+##called by SetupInternational, ...
+proc listRemoteTwdFiles {} {
+  global os TwdRemoteList
+  
+  set lBox .twdremoteLB
+  
+  #Check if TwdRemoteList is there
+  if ![file exists $TwdRemoteList] {
+    #Try downloading rootlist twice
+    if [catch downloadTwdList] {
+      downloadTwdList
+    }
+  }
+
+  if ![file exists $TwdRemoteList] {
+    set status "Cannot create file list; try later"
+    return 1
+  }
+  
+  #retrieve data from file
+  set chan [open $TwdRemoteList r]
+  fconfigure $chan -encoding utf-8
+  set data [read $chan]
+  close $chan
+
+  set root [dom parse -html $data]
+
+  #fill listbox  
+  $lBox delete 0 end
+
+  #set langlist
+  set file [ $root selectNodes {//tr/td[text()="file"]} ]
+  set space { }
+  set spaceLang 21
+  set spaceName 60
+
+  foreach node $file {
+    set yearNode [$node nextSibling]
+    set langNode [$yearNode nextSibling]
+    set nameNode [$langNode nextSibling]
+    set versionNode [$nameNode nextSibling]
+    set year [$yearNode text]
+    set lang [$langNode text]
+    set name [$nameNode text]
+    set version [$versionNode text]
+
+    #Set RtL languages from right to left (Windows should handle this without our help)
+    if {$os == "Linux" && [isBidi $version]} {
+      source $::Bidi
+      set version [bidi::fixBidi $version]
+      ##eliminate LF char
+      regsub {[\u000A]} $version {} version
+    }
+    
+    ##start building line
+    append nameline $lang
+    
+    ##compute tab lengths for Monospace font
+    for {set i [string length $lang]} {$i < $spaceLang} {incr i} {
+      append nameline $space
+    }
+
+    append nameline $year [string repeat $space 10]
+    append nameline $name
+
+    ##compute tab lengths for Monospace font
+    for {set i [string length $name]} {$i < $spaceName} {incr i} {
+      append nameline $space
+    }
+
+    append nameline $version
+
+    lappend sortlist $nameline
+    unset nameline
+  }
+
+  set sortlist [lsort $sortlist]
+  foreach line $sortlist {
+    $lBox insert end $line
+  }
+  
+} ;#END listRemoteTwdFiles
+
+
 #L i s t e n   o h n e   P f a d
 proc getTwdList {} {
   global twddir jahr
@@ -97,6 +183,7 @@ proc getRandomFontcolor {} {
 proc updateTwd {} {
   global twddir lang
 
+#TODO was soll das?
   if [catch {package require json} err] {
 	  package require Tk
 	  msgcatInit $lang
