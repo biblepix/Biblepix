@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 7dec25 pv
+# Updated 10dec25 pv
 
 source $TwdTools 
 source $Http
@@ -20,6 +20,8 @@ pack [frame .intBotF -padx $px] -in .internationalF -anchor w -fill none
 
 #Refresh button 
 button .intRefreshBtn -textvar msg::refresh -bd 2 -activebackground orange -command {
+  catch downloadTwdList
+  listRemoteTwdFiles
   NewsHandler::QueryNews "[getRemoteTWDFileList]" orange
 }
 pack .intRefreshBtn -in .intBotF -side bottom -padx $px -pady 3
@@ -57,34 +59,27 @@ pack .intTwdlocalSB -in .intTopF -side right -fill y
 pack $localLB -in .intTopF -side left -padx $px
 
 # R E M O T E   T W D   l i s t 
-label .intTwdremoteTit -textvar msg::TwdRemoteTit -justify left -font bpfont2 -pady 3 -bg lightblue
+label .intTwdremoteTit -textvar msg::TwdRemoteTit -justify left -font bpfont2 -pady 7 -bg lightblue -bd 1
 pack .intTwdremoteTit -in .intMidF -anchor w -pady 7
 
 ##Titel frame
-label .twdremote1L -font "TkCaptionFont" -textvar msg::language -anchor w -width 18
-label .twdremote2L -font "TkCaptionFont" -textvar msg::year -anchor w -width 12
-label .twdremote3L -font "TkCaptionFont" -textvar msg::biblename -anchor w -width 52
+label .twdremote1L -font "TkCaptionFont" -textvar msg::language -anchor w -width 19
+label .twdremote3L -font "TkCaptionFont" -textvar msg::biblename -anchor w -width 34
+label .twdremote2L -font "TkCaptionFont" -textvar msg::year -anchor w -width 17
 label .twdremote4L -font "TkCaptionFont" -textvar msg::bibleversion -anchor w
-pack .twdremote1L .twdremote2L .twdremote3L .twdremote4L -in .twdremoteTitleF -side left
+pack .twdremote1L .twdremote3L .twdremote2L .twdremote4L -in .twdremoteTitleF -side left
   
 #Create remote listbox & scrollbar
-##content inserted later by http.tcl ???
-
-
-listbox .twdremoteLB -yscrollcommand {.twdremoteSB set} -selectmode multiple -activestyle none -font TkFixedFont -width [expr $wWidth - 50] -height [expr $wHeight - 300] -bg grey90 -bd 2
+listbox .twdremoteLB -yscrollcommand {.twdremoteSB set} -selectmode multiple -activestyle none -font TkFixedFont -width [expr $wWidth - 50] -height [expr $wHeight - 300] -bg grey90 -bd 2 -bg lightblue
 scrollbar .twdremoteSB -command {.twdremoteLB yview}
 button .downloadBtn -textvar msg::download -command {
-
   downloadTWDFiles
   catch {updateMailBtnList .mailTop2F}
-
 }
 
 pack .downloadBtn -in .twdremoteF -side right -padx 3
 pack .twdremoteSB .twdremoteLB -in .twdremoteF -side right -fill y
 
-#TODO here?
-#source $Http
-#downloadTwdList
+#Fill remote list & try downloading latest
 listRemoteTwdFiles
-
+catch downloadTwdList

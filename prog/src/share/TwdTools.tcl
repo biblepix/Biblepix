@@ -40,7 +40,8 @@ if [catch {package require tdom} err] {
 ################################################################################
 
 # listRemoteTwdFiles
-##fills remote listbox from local file if present
+##fills remote listbox from local file
+##if local file not there, try downloading
 ##called by SetupInternational, ...
 proc listRemoteTwdFiles {} {
   global os TwdRemoteList
@@ -68,7 +69,7 @@ proc listRemoteTwdFiles {} {
 
   set root [dom parse -html $data]
 
-  #fill listbox  
+  # f i l l   l i s t b o x  
   $lBox delete 0 end
 
   #set langlist
@@ -76,6 +77,7 @@ proc listRemoteTwdFiles {} {
   set space { }
   set spaceLang 21
   set spaceName 60
+  set curYear [clock format [clock seconds] -format %Y]
 
   foreach node $file {
     set yearNode [$node nextSibling]
@@ -86,7 +88,7 @@ proc listRemoteTwdFiles {} {
     set lang [$langNode text]
     set name [$nameNode text]
     set version [$versionNode text]
-
+    
     #Set RtL languages from right to left (Windows should handle this without our help)
     if {$os == "Linux" && [isBidi $version]} {
       source $::Bidi
@@ -97,19 +99,30 @@ proc listRemoteTwdFiles {} {
     
     ##start building line
     append nameline $lang
+    append nameline [string repeat $space [expr 28 - [string length $lang]]]
+ #   append [expr 50 - [string length $lang]]
     
     ##compute tab lengths for Monospace font
-    for {set i [string length $lang]} {$i < $spaceLang} {incr i} {
-      append nameline $space
-    }
-
-    append nameline $year [string repeat $space 10]
+#    for {set i [string length $lang]} {$i < $spaceLang} {incr i} {
+#      append nameline $space
+#    }
+    
+#    append nameline [string repeat $space [expr 30 - [string length $name]]] 
+#    append $name [string repeat $space 20]
     append nameline $name
-
-    ##compute tab lengths for Monospace font
-    for {set i [string length $name]} {$i < $spaceName} {incr i} {
-      append nameline $space
+    append nameline [string repeat $space [expr 50 - [string length $name]]] 
+    
+    if {$year == $curYear} {
+      append nameline $year [string repeat $space 20]
+    } else {
+      append nameline [string repeat $space 5] $year [string repeat $space 15]
     }
+       
+  
+#    ##compute tab lengths for Monospace font
+#    for {set i [string length $name]} {$i < $spaceName} {incr i} {
+#      append nameline $space
+#    }
 
     append nameline $version
 
