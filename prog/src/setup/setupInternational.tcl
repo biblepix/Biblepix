@@ -22,6 +22,8 @@ pack [frame .intBotF -padx $px] -in .internationalF -anchor w -fill none
 button .intRefreshBtn -textvar msg::refresh -bd 2 -activebackground orange -command {
   catch downloadTwdList
   listRemoteTwdFiles
+  
+#TODO sort this out!
   NewsHandler::QueryNews "[getRemoteTWDFileList]" orange
 }
 pack .intRefreshBtn -in .intBotF -side bottom -padx $px -pady 3
@@ -29,15 +31,15 @@ pack .intRefreshBtn -in .intBotF -side bottom -padx $px -pady 3
 ##subframes
 pack [frame .twdremoteTitleF] -in .intBotF -side top -fill x -anchor w -padx $px -pady 5 
 pack [frame .twdremoteF -padx $px] -in .intBotF
-label .intStatusL -textvar status -font bpfont1 -height 1 -bg $bg -relief sunken
+label .intStatusL -textvar news -font bpfont1 -height 1 -bg $bg -relief sunken
 pack .intStatusL -in .internationalF -fill x
 
 # L O C A L  T W D  l i s t
-label .intTwdlocalTit -textvar msg::TwdLocalTit -font bpfont2 -bg lightblue
-pack .intTwdlocalTit -in .intTopF -anchor w
+label .intTwdlocalTit -textvar msg::TwdLocalTit -font bpfont2 -bg beige -pady 7
+pack .intTwdlocalTit -in .intTopF -anchor w -pady 7
 
 ##create local listbox & scrollbar
-set localLB [listbox .intTwdlocalLB -bg beige -width [expr $tw - $px] -selectmode single -activestyle none -yscrollcommand {.intTwdlocalSB set} -bd 2]
+set localLB [listbox .intTwdlocalLB -bg lightgreen -width [expr $tw - $px] -selectmode single -activestyle none -yscrollcommand {.intTwdlocalSB set} -bd 2]
 scrollbar .intTwdlocalSB -command {$localLB yview}
 ##fill listbox
 set twdlist [getTwdList]
@@ -59,7 +61,7 @@ pack .intTwdlocalSB -in .intTopF -side right -fill y
 pack $localLB -in .intTopF -side left -padx $px
 
 # R E M O T E   T W D   l i s t 
-label .intTwdremoteTit -textvar msg::TwdRemoteTit -justify left -font bpfont2 -pady 7 -bg lightblue -bd 1
+label .intTwdremoteTit -textvar msg::TwdRemoteTit -justify left -font bpfont2 -pady 7 -bg beige
 pack .intTwdremoteTit -in .intMidF -anchor w -pady 7
 
 ##Titel frame

@@ -67,6 +67,8 @@ if { [info exists Debug] && $Debug } {
 } else {
   catch {source $SetupInternational}
 }
+
+#TODO sort this out!
 set status "No Internet connexion"
 catch {set status [getRemoteTWDFileList]}
 updateTwd

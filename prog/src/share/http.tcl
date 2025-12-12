@@ -174,7 +174,8 @@ proc downloadFileFromUrl {filePath url} {
 #TODO don't confuse with downloadTwdFile !!!
 proc downloadTWDFiles {} {
   global twddir jahr Globals TwdRemoteList
-  
+
+#TODO sort this out!  
 #  if [catch {set root [getRemoteRoot]}] {
 #    NewsHandler::QueryNews "[mc noConnTwd]" red
 #    return 1
@@ -300,43 +301,38 @@ proc getRemoteRoot {} {
   if [catch downloadTwdList] {
     downloadTwdList
   }
-  
-#  #check for current or previous list
-#  if ![file exists $TwdRemoteList] {
-#    return 1
-#  }
-  
+ 
 } ;#END getRemoteRoot
 
 
 # getRemoteTWDFileList
 ##called by SetupInternational
-##returns status for display in .news
-#TODO who needs this???
+##sets news in statusline
+#called by SetupBuild & SetupInternational
+#TODO test http & https connection & download ????
+#TODO change name to ???
 proc getRemoteTWDFileList {} {
 
-#TODO this test is only valid for vollmar.ch !!!
-#  if [catch testHttpCon Error] {
-#    .intStatusL conf -bg red
-#    set status "[mc noConnTwd]"
-#    puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
-#    
-#  } else {  }
-  
-  	source $::Bidi
+  .intStatusL conf -bg olive
+
+#TODO this is only needed for Http vollrahm!
+#Put somewhere else???????????????  
+  if [catch testHttpCon Error] {
+    .intStatusL conf -bg red
+    set ::news "[mc noConnTwd]"
+    puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
+    
+  }
   	
-    if ![catch listRemoteTwdFiles] {
-      .intStatusL conf -bg lightgreen
-      set status "[mc connTwd]"
-    } else {
-      .intStatusL conf -bg red
-      set status "[mc noConnTwd]"
-    }
-  
-  return $status
-}
+  if ![catch listRemoteTwdFiles] {
+    .intStatusL conf -bg lightgreen
+    set ::news "[mc connTwd]"
+  } else {
+    .intStatusL conf -bg red
+    set ::news "[mc noConnTwd]"
+  }
 
-
+} ;#END ....
 
 
 

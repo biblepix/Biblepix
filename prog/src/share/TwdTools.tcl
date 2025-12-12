@@ -46,6 +46,8 @@ if [catch {package require tdom} err] {
 proc listRemoteTwdFiles {} {
   global os TwdRemoteList
   
+  source $::Bidi
+  
   set lBox .twdremoteLB
   
   #Check if TwdRemoteList is there
