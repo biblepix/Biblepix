@@ -2,7 +2,7 @@
 # Called by Setup
 # Builds complete GUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 16aug24 pv
+# Updated: 16dec25 pv
 
 source $SetupTools
 source $TwdTools
@@ -20,7 +20,6 @@ if {$setupTwdFileName == ""} {
   set setupTwdText [getTodaysTwdText $setupTwdFileName]
 }
 
-#TODO TESTING
 #Create title logo with icon
 if [catch {package require Img} err] {
 	msgcat::mclocale $lang
@@ -67,11 +66,7 @@ if { [info exists Debug] && $Debug } {
 } else {
   catch {source $SetupInternational}
 }
-
-#TODO sort this out!
-set status "No Internet connexion"
-catch {set status [getRemoteTWDFileList]}
-updateTwd
+catch updateTwd
 
 # 3. Desktop
 if { [info exists Debug] && $Debug } {

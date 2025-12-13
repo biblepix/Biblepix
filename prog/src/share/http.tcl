@@ -6,35 +6,6 @@
 #TODO wohin damit?
 package require http
 
-# runCurl
-## check if curl/wget installed and return cmd
-## sourced by getTwdList & downloadTwdFile
-## replaces http & tls
-## saves to local tempfile
-#proc runCurl {} {
-#  global tempdir
-#  
-#  set tempF [file join $tempdir twd]
-
-
-#	#set cmd "curl --output $tempF $url"
-#	set cmd "curl -o $tempF https:\/\/bible2.net/service/TheWord/twd11/current"
-#		
-#	#Check for curl or wget
-#	if {[auto_execok curl] == ""} {
-#	
-#		if {[auto_execok wget] != ""} {
-#		  set cmd "wget --output-document=$tempF $url"
-#			
-#		} else {
-#			NewsHandler::QueryNews "Cannot download file from bible2.net.\nPlease install 'curl' or 'wget' on your PC and try again." red
-#			return 1
-#			
-#		}
-#	}
-#  return "$cmd"
-#}
-
 # downloadTwdList
 ## downloads remote TWD list to local file in $twddir
 ##called by getRemoteRoot
@@ -54,7 +25,7 @@ proc downloadTwdList {} {
 	}
 
 	#download current twd list to $twddir
-  exec $cmd $opt $TwdRemoteList $twdUrl
+  catch {exec $cmd $opt $TwdRemoteList $twdUrl}
 
 } ;#END downloadTwdList
 
@@ -304,24 +275,18 @@ proc getRemoteRoot {} {
  
 } ;#END getRemoteRoot
 
-
-# getRemoteTWDFileList
-##called by SetupInternational
+# wrapInternetCons
 ##sets news in statusline
-#called by SetupBuild & SetupInternational
-#TODO test http & https connection & download ????
-#TODO change name to ???
-proc getRemoteTWDFileList {} {
+##called by SetupBuild & SetupInternational
+##tests http & https and tries to update remote Twd list
+proc wrapInternetCons {} {
 
   .intStatusL conf -bg olive
 
-#TODO this is only needed for Http vollrahm!
-#Put somewhere else???????????????  
   if [catch testHttpCon Error] {
     .intStatusL conf -bg red
     set ::news "[mc noConnTwd]"
-    puts "ERROR: http.tcl -> getRemoteTWDFileList(): $Error"
-    
+    return 1
   }
   	
   if ![catch listRemoteTwdFiles] {
@@ -332,9 +297,7 @@ proc getRemoteTWDFileList {} {
     set ::news "[mc noConnTwd]"
   }
 
-} ;#END ....
-
-
+} ;#END wrapInternetCons
 
 # downloadAsianFont
 ##updates Chinese or Thai fonts if required
@@ -373,15 +336,18 @@ proc downloadAsianFont {twdlang} {
 ##tests Http connexion with vollmar.ch BP release, returns error if connexion fails
 ##called by runHTTP
 proc testHttpCon {} {
+
+  set .intStatusL conf -bg lightgreen
+  
   if [catch getTesttoken error] {
-    puts "ERROR: http.tcl -> testHttpCon: $error"
+    #puts "ERROR: http.tcl -> testHttpCon: $error"
 
     #try proxy & retry connexion
     setProxy
 
     if [catch getTesttoken error] {
-      puts "ERROR: http.tcl -> testHttpCon -> proxy: $error"
-      error $error
+#      puts "ERROR: http.tcl -> testHttpCon -> proxy: $error"
+#      error $error
     }
   }
 }

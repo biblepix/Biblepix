@@ -20,11 +20,8 @@ pack [frame .intBotF -padx $px] -in .internationalF -anchor w -fill none
 
 #Refresh button 
 button .intRefreshBtn -textvar msg::refresh -bd 2 -activebackground orange -command {
-  catch downloadTwdList
+  downloadTwdList
   listRemoteTwdFiles
-  
-#TODO sort this out!
-  NewsHandler::QueryNews "[getRemoteTWDFileList]" orange
 }
 pack .intRefreshBtn -in .intBotF -side bottom -padx $px -pady 3
 
@@ -71,7 +68,7 @@ label .twdremote2L -font "TkCaptionFont" -textvar msg::year -anchor w -width 17
 label .twdremote4L -font "TkCaptionFont" -textvar msg::bibleversion -anchor w
 pack .twdremote1L .twdremote3L .twdremote2L .twdremote4L -in .twdremoteTitleF -side left
   
-#Create remote listbox & scrollbar
+#Create remote listbox & scrollbar & download btn
 listbox .twdremoteLB -yscrollcommand {.twdremoteSB set} -selectmode multiple -activestyle none -font TkFixedFont -width [expr $wWidth - 50] -height [expr $wHeight - 300] -bg grey90 -bd 2 -bg lightblue
 scrollbar .twdremoteSB -command {.twdremoteLB yview}
 button .downloadBtn -textvar msg::download -command {
@@ -83,5 +80,5 @@ pack .downloadBtn -in .twdremoteF -side right -padx 3
 pack .twdremoteSB .twdremoteLB -in .twdremoteF -side right -fill y
 
 #Fill remote list & try downloading latest
-listRemoteTwdFiles
+catch listRemoteTwdFiles
 catch downloadTwdList
