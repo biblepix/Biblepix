@@ -152,8 +152,7 @@ proc downloadTWDFiles {} {
 #    return 1
 #  }
 
-  set chan [open /home/pv/Biblepix/BibleTexts/twdRemoteList r]
-  #set chan [open $TwdRemoteList r]
+  set chan [open $TwdRemoteList r]
   fconfigure $chan -encoding utf-8
   set data [read $chan]
   close $chan
