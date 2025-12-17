@@ -1,4 +1,4 @@
-#!/usr/bin/env tclsh
+  #!/usr/bin/env tclsh
 # ~/Biblepix/biblepix-setup.tcl
 # Main Setup program for BiblePix, starts Setup dialogue
 # Called by User via Windows/Unix Desktop entry
@@ -6,7 +6,7 @@
 ################################################################################
 # Version: 4.1
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5jan23 pv
+# Updated: 17dec25 pv
 package require Tk
 
 #Verify location & source vars
@@ -24,6 +24,7 @@ pack .updateFrame.pbTitle .updateFrame.progbar
 append errText {Update not possible! You must download and rerun the BiblePix Installer from www.vollmar.ch/biblepix} \n {Aktualisierung nicht möglich!Sie müssen den BibelPix-Installer herunterladen und neu laufen lassen.}
 
 #Exit if Globals not found
+#TODO this keeps getting called - what's wrong now?????
 if [catch {source $Globals} res] {
   lappend pbTitle $errText $res
   .updateFrame.pbTitle conf -bg orange

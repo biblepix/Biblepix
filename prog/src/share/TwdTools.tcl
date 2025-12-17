@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 6dec25 pv
+# Updated 17dec25 pv
 
 # msgcatInit
 ##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
@@ -195,39 +195,48 @@ proc getRandomFontcolor {} {
   return [lindex $fontcolourL $randIndex]
 }
 
+
+
+
 proc updateTwd {} {
-  global twddir lang
-
+  global twddir lang jahr
+  
+  global TwdRemoteList
+  #TODO is XML!!!!!! need parsing first
+  
+  set twdFilesL [glob -nocomplain -directory $twddir *.twd]
+  
 #TODO was soll das?
-  if [catch {package require json} err] {
-	  package require Tk
-	  msgcatInit $lang
-	  tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tcllib tcllib]"
-    exit
-  }
+#  if [catch {package require json} err] {
+#	  package require Tk
+#	  msgcatInit $lang
+#	  tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tcllib tcllib]"
+#    exit
+#  }
 
-  source $::Http
 
-  set twdFiles [glob -nocomplain -directory $twddir *.twd]
+#  source $::Http
+
+
 
   ##########################################
   # Download Current TwdFiles if missing
   ##########################################
 
-  foreach twdFile $twdFiles {
+  foreach twdFile $twdFilesL {
     set fileParts [split [file tail $twdFile] "_"]
-    if {[lindex $fileParts 2] < "$::jahr.twd"} {
+    if {[lindex $fileParts 2] < "$jahr.twd"} {
       set oldFileName [lindex $fileParts 1]
       set currentExists 0
-      foreach otherTwdFile $twdFiles {
+      foreach otherTwdFile $twdFilesL {
         set otherFileParts [split [file tail $otherTwdFile] "_"]
-        if {[lindex $otherFileParts 1] == $oldFileName && [lindex $otherFileParts 2] == "$::jahr.twd"} {
+        if {[lindex $otherFileParts 1] == $oldFileName && [lindex $otherFileParts 2] == "$jahr.twd"} {
           set currentExists 1
         }
       }
 
       if {!$currentExists} {
-        downloadTwdFile $twdFile $::jahr
+        downloadTwdFile $twdFile $jahr
       }
     }
   }
@@ -236,24 +245,30 @@ proc updateTwd {} {
   # Download New TwdFiles if available
   ##########################################
   
-  catch {
-    if [catch {set onlineJsonFileList [getDataFromUrl "$::twdUrl?format=json"]}] {
-      return
-    }
+ #TODO hello, what's JASON doing here?!!!!!!!!!!!!!!!!!!!
+ #get rid of it, only here! and 104
+ #use $twdRemoteList instead!
+ 
+#  catch {
+#    if [catch {set onlineJsonFileList [getDataFromUrl "$::twdUrl?format=json"]}] {
+#      return
+#    }
     
-    set onlineDictFileList [::json::json2dict $onlineJsonFileList]
+    
+#   set onlineDictFileList $TwdRemoteList
     set nextYearAvailable 0
     set nextYear [expr {$::jahr + 1}]
   
-    foreach onlineDictFile $onlineDictFileList {
-      if {[dict get $onlineDictFile "year"] == $nextYear} {
+    foreach line $TwdRemoteList {
+      
+      if {[string range $line end-8 end-4] == $nextYear} {
         set nextYearAvailable 1
         break
       }
     }
   
     if {$nextYearAvailable} {
-      set currentTwdList [glob -nocomplain -directory $twddir *$::jahr.twd]
+      set currentTwdList [glob -nocomplain -directory $twddir *$jahr.twd]
       set nextTwdList [glob -nocomplain -directory $twddir *$nextYear.twd]
   
       foreach currentFile $currentTwdList {
@@ -261,7 +276,9 @@ proc updateTwd {} {
         set nextOnlineMissing 1
         set currentName [lindex [split [file tail $currentFile] "_"] 1]
   
-        foreach onlineDictFile $onlineDictFileList {
+  
+  
+        foreach line $onlineDictFileList {
           if {[dict get $onlineDictFile "year"] == $nextYear \
            && [dict get $onlineDictFile "bible"] == $currentName} {
             set nextOnlineMissing 0
@@ -294,18 +311,19 @@ proc updateTwd {} {
 
   foreach twdFile $twdFiles {
     set fileParts [split [file tail $twdFile] "_"]
-    if {[lindex $fileParts 2] < "$::jahr.twd"} {
+    if {[lindex $fileParts 2] < "$jahr.twd"} {
       set fileName [lindex $fileParts 1]
       foreach otherTwdFile $twdFiles {
         set otherFileParts [split [file tail $otherTwdFile] "_"]
-        if {[lindex $otherFileParts 1] == $fileName && [lindex $otherFileParts 2] == "$::jahr.twd"} {
+        if {[lindex $otherFileParts 1] == $fileName && [lindex $otherFileParts 2] == "$jahr.twd"} {
           file delete $twdFile
           break
         }
       }
     }
   }
-}
+} ;#END updateTwd
+
 
 #####################################################################
 ### T W D   P A R S I N G   T O O L S   #############################

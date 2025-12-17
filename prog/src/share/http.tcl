@@ -1,9 +1,8 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # Procs called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 6dec25 pv
+# Updated: 15dec25 pv
 
-#TODO wohin damit?
 package require http
 
 # downloadTwdList
@@ -36,8 +35,8 @@ proc downloadTwdList {} {
 
 # runHTTP
 ## Main program for BiblePix Http download
-## Called by Installer & Setup
 ## isInitial must be set to 0 or 1
+## Called by Installer & Setup
 proc runHTTP isInitial {
   #Test connexion & start download
   if [catch testHttpCon Error] {
@@ -202,11 +201,8 @@ proc downloadTwdFile {twdFile year} {
   lset nameParts 2 "$year.twd"
   set fileName [join $nameParts "_"]
 
-puts $fileName
-
   set filePath [file join $twddir $fileName]
   set url $twdBaseUrl/$fileName
-puts $url
  
   #Check for curl or wget
 	if {[auto_execok curl] != ""} {
@@ -225,27 +221,27 @@ puts $url
 } ;#END downloadTwdFile
 
 
-#TODO is this used anywhere????
+#TODO
 # getDataFromUrl
 ##called by updateTwd
-#proc getDataFromUrl {url} {
+proc getDataFromUrl {url} {
 
-#  #Register SSL connection
-#  http::register https 443 [list ::tls::socket -tls1 1]
+  #Register SSL connection
+  http::register https 443 [list ::tls::socket -tls1 1]
 
-##TODO this throws error each time I run Setup!
-#  set token [http::geturl $url]
-#  if {[http::status $token] != "ok"} {
-#    error "No Internet connection"
-#  }
+#TODO this throws error each time I run Setup!
+  set token [http::geturl $url]
+  if {[http::status $token] != "ok"} {
+    error "No Internet connection"
+  }
 
-#  set data [http::data $token]
+  set data [http::data $token]
 
-#  http::cleanup $token
-#  http::unregister https
+  http::cleanup $token
+  http::unregister https
 
-#  return $data
-#}
+  return $data
+}
 
 
 ###############################################################################
@@ -339,14 +335,14 @@ proc testHttpCon {} {
   set .intStatusL conf -bg lightgreen
   
   if [catch getTesttoken error] {
-    #puts "ERROR: http.tcl -> testHttpCon: $error"
+    puts "ERROR: http.tcl -> testHttpCon: $error"
 
     #try proxy & retry connexion
     setProxy
 
     if [catch getTesttoken error] {
-#      puts "ERROR: http.tcl -> testHttpCon -> proxy: $error"
-#      error $error
+      puts "ERROR: http.tcl -> testHttpCon -> proxy: $error"
+      error $error
     }
   }
 }

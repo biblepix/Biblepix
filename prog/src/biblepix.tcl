@@ -55,7 +55,7 @@ if {[info exists enableterm] && $enableterm } {
 }
 
 
-#3. P r e p a r e   c h a n g i n g    d e s k t o p
+#3. P r e p a r e   c h a n g i n g   b a c k g r o u n d
 
 #Get appropriate setBg proc
 ##setBg is executed for Desktops that can accept a command
