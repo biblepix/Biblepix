@@ -5,11 +5,43 @@
 
 package require http
 
-# downloadTwdList
+## getRemoteRoot -TODO unnecessary, all in fetchTwdList now!
+###download TwdRemoteList
+###called by listRemoteTWDFiles & downloadTWDFiles
+#proc getRemoteRoot {} {
+#  global lang TwdRemoteList  
+#  
+#  #Check for tdom 
+#  ##standard in ActiveTcl, Linux distros vary
+#  if [catch {package require tdom} err] {
+#    package require Tk
+#    msgcatInit $lang
+#    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tDom tdom]"
+#    return 1
+#  }
+#  
+#  #Try downloading rootlist twice
+#  if [catch downloadTwdList] {
+#    downloadTwdList
+#  }
+# 
+#} ;#END getRemoteRoot
+
+# fetchTwdList
 ## downloads remote TWD list to local file in $twddir
 ##called by getRemoteRoot
-proc downloadTwdList {} {
+proc fetchTwdList {} {
    global twdUrl TwdRemoteList
+   
+#TODO move this to another proc!
+#  #Check for tdom 
+#  ##standard in ActiveTcl, Linux distros vary
+#  if [catch {package require tdom} err] {
+#    package require Tk
+#    msgcatInit $lang
+#    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tDom tdom]"
+#    return 1
+#  }
 	
 	#Check for curl or wget
 	if {[auto_execok curl] != ""} {
@@ -25,6 +57,8 @@ proc downloadTwdList {} {
 
 	#download current twd list to $twddir
   catch {exec $cmd $opt $TwdRemoteList $twdUrl}
+  
+#TODO list is in XML!!!!
 
 } ;#END downloadTwdList
 
@@ -248,27 +282,6 @@ proc getDataFromUrl {url} {
 ########## PROCS FOR TWD LIST #################################################
 ###############################################################################
 
-# getRemoteRoot
-##download TwdRemoteList
-##called by listRemoteTWDFiles & downloadTWDFiles
-proc getRemoteRoot {} {
-  global lang TwdRemoteList  
-  
-  #Check for tdom 
-  ##standard in ActiveTcl, Linux distros vary
-  if [catch {package require tdom} err] {
-    package require Tk
-    msgcatInit $lang
-    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tDom tdom]"
-    return 1
-  }
-  
-  #Try downloading rootlist twice
-  if [catch downloadTwdList] {
-    downloadTwdList
-  }
- 
-} ;#END getRemoteRoot
 
 # wrapInternetCons
 ##sets news in statusline

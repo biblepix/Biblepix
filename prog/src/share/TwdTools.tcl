@@ -205,25 +205,14 @@ proc updateTwd {} {
   #TODO is XML!!!!!! need parsing first
   
   set twdFilesL [glob -nocomplain -directory $twddir *.twd]
+  set twdFiles $twdFilesL
   
-#TODO was soll das?
-#  if [catch {package require json} err] {
-#	  package require Tk
-#	  msgcatInit $lang
-#	  tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tcllib tcllib]"
-#    exit
-#  }
-
-
-#  source $::Http
-
-
-
   ##########################################
   # Download Current TwdFiles if missing
   ##########################################
 
   foreach twdFile $twdFilesL {
+  
     set fileParts [split [file tail $twdFile] "_"]
     if {[lindex $fileParts 2] < "$jahr.twd"} {
       set oldFileName [lindex $fileParts 1]
@@ -245,27 +234,17 @@ proc updateTwd {} {
   # Download New TwdFiles if available
   ##########################################
   
- #TODO hello, what's JASON doing here?!!!!!!!!!!!!!!!!!!!
- #get rid of it, only here! and 104
- #use $twdRemoteList instead!
- 
-#  catch {
-#    if [catch {set onlineJsonFileList [getDataFromUrl "$::twdUrl?format=json"]}] {
-#      return
-#    }
+  set nextYearAvailable 0
+  set nextYear [expr {$jahr + 1}]
+
+  foreach line $TwdRemoteList {
     
-    
-#   set onlineDictFileList $TwdRemoteList
-    set nextYearAvailable 0
-    set nextYear [expr {$::jahr + 1}]
-  
-    foreach line $TwdRemoteList {
-      
-      if {[string range $line end-8 end-4] == $nextYear} {
-        set nextYearAvailable 1
-        break
-      }
+    if {[string range $line end-8 end-4] == $nextYear} {
+      set nextYearAvailable 1
+      break
     }
+
+#TODO here was a brace!!!!
   
     if {$nextYearAvailable} {
       set currentTwdList [glob -nocomplain -directory $twddir *$jahr.twd]
