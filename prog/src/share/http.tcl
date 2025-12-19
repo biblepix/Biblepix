@@ -60,7 +60,7 @@ proc fetchTwdList {} {
   
 #TODO list is in XML!!!!
 
-} ;#END downloadTwdList
+} ;#END fetchTwdList
 
 
 ###############################################################################

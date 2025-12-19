@@ -44,7 +44,7 @@ if [catch {package require tdom} err] {
 ##if local file not there, try downloading
 ##called by SetupInternational, ...
 proc listRemoteTwdFiles {} {
-  global os TwdRemoteList
+  global os twddir TwdRemoteList jahr
   
   source $::Bidi
   
@@ -53,8 +53,8 @@ proc listRemoteTwdFiles {} {
   #Check if TwdRemoteList is there
   if ![file exists $TwdRemoteList] {
     #Try downloading rootlist twice
-    if [catch downloadTwdList] {
-      downloadTwdList
+    if [catch fetchTwdList] {
+      fetchTwdList
     }
   }
 
@@ -79,7 +79,8 @@ proc listRemoteTwdFiles {} {
   set space { }
   set spaceLang 21
   set spaceName 60
-  set curYear [clock format [clock seconds] -format %Y]
+#   set curYear [clock format [clock seconds] -format %Y]
+set curYear $jahr
 
   foreach node $file {
     set yearNode [$node nextSibling]
@@ -98,19 +99,11 @@ proc listRemoteTwdFiles {} {
       ##eliminate LF char
       regsub {[\u000A]} $version {} version
     }
-    
+
     ##start building line
     append nameline $lang
     append nameline [string repeat $space [expr 28 - [string length $lang]]]
- #   append [expr 50 - [string length $lang]]
-    
-    ##compute tab lengths for Monospace font
-#    for {set i [string length $lang]} {$i < $spaceLang} {incr i} {
-#      append nameline $space
-#    }
-    
-#    append nameline [string repeat $space [expr 30 - [string length $name]]] 
-#    append $name [string repeat $space 20]
+
     append nameline $name
     append nameline [string repeat $space [expr 50 - [string length $name]]] 
     
@@ -119,20 +112,25 @@ proc listRemoteTwdFiles {} {
     } else {
       append nameline [string repeat $space 5] $year [string repeat $space 15]
     }
-       
-  
-#    ##compute tab lengths for Monospace font
-#    for {set i [string length $name]} {$i < $spaceName} {incr i} {
-#      append nameline $space
-#    }
 
     append nameline $version
 
     lappend sortlist $nameline
     unset nameline
+  
+    #for simple list, to be used by ...?
+    append simpleL $version \n
   }
-
-  set sortlist [lsort $sortlist]
+  
+#  #write simple list - USE below prog instead :-) !!!!!!
+#  set sortedL [lsort $simpleL]
+#  set chan [open $twddir/twdSimpleL w]
+#  fconfigure $chan -encoding utf-8
+#  puts "$chan" $sortedL
+#  close $chan
+#  
+#  set sortlist [lsort $sortlist]
+ 
   foreach line $sortlist {
     $lBox insert end $line
   }
@@ -200,12 +198,17 @@ proc getRandomFontcolor {} {
 
 proc updateTwd {} {
   global twddir lang jahr
-  
   global TwdRemoteList
-  #TODO is XML!!!!!! need parsing first
   
   set twdFilesL [glob -nocomplain -directory $twddir *.twd]
-  set twdFiles $twdFilesL
+  set localL $twdFilesL
+
+#TODO how do I get exact remoteName? - USE remoteList minus language etc.!!!
+  proc match {remoteName} {
+    set code [string first $remoteName $localL] 
+    return $code # =Zahl oder -1, don't use catch!
+  }
+
   
   ##########################################
   # Download Current TwdFiles if missing
@@ -237,6 +240,8 @@ proc updateTwd {} {
   set nextYearAvailable 0
   set nextYear [expr {$jahr + 1}]
 
+
+#TODO first need parsing!
   foreach line $TwdRemoteList {
     
     if {[string range $line end-8 end-4] == $nextYear} {
@@ -244,8 +249,6 @@ proc updateTwd {} {
       break
     }
 
-#TODO here was a brace!!!!
-  
     if {$nextYearAvailable} {
       set currentTwdList [glob -nocomplain -directory $twddir *$jahr.twd]
       set nextTwdList [glob -nocomplain -directory $twddir *$nextYear.twd]
@@ -268,6 +271,9 @@ proc updateTwd {} {
         if {$nextOnlineMissing} {
           continue
         }
+  
+  
+  
   
         if {$nextTwdList != ""} {
           foreach nextFile $nextTwdList {
