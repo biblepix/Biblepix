@@ -1,9 +1,10 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # Procs called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 15dec25 pv
+# Updated: 22dec25 pv
 
 package require http
+package require tls
 
 ## getRemoteRoot -TODO unnecessary, all in fetchTwdList now!
 ###download TwdRemoteList
@@ -179,12 +180,6 @@ proc downloadFileFromUrl {filePath url} {
 proc downloadTWDFiles {} {
   global twddir jahr Globals TwdRemoteList
 
-#TODO sort this out!  
-#  if [catch {set root [getRemoteRoot]}] {
-#    NewsHandler::QueryNews "[mc noConnTwd]" red
-#    return 1
-#  }
-
   set chan [open $TwdRemoteList r]
   fconfigure $chan -encoding utf-8
   set data [read $chan]
@@ -260,8 +255,15 @@ proc downloadTwdFile {twdFile year} {
 ##called by updateTwd
 proc getDataFromUrl {url} {
 
+package require http
+package require tls
+
   #Register SSL connection
-  http::register https 443 [list ::tls::socket -tls1 1]
+  
+#TODO ZIS WORKS!!!!!!!!!!!!!!!!
+##https://wiki.tcl-lang.org/page/HTTPS
+#  http::register https 443 [list ::tls::socket -tls1 1]
+http::register https 443 [list ::tls::socket -autoservername true]
 
 #TODO this throws error each time I run Setup!
   set token [http::geturl $url]
