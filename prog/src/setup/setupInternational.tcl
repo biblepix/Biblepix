@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupEmail.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 18dec25 pv
+# Updated 30dec25 pv
 
 source $TwdTools 
 source $Http
@@ -39,7 +39,7 @@ pack .intTwdlocalTit -in .intTopF -anchor w -pady 7
 set localLB [listbox .intTwdlocalLB -bg lightgreen -width [expr $tw - $px] -selectmode single -activestyle none -yscrollcommand {.intTwdlocalSB set} -bd 2]
 scrollbar .intTwdlocalSB -command {$localLB yview}
 ##fill listbox
-set twdlist [getTwdList]
+set twdlist [getTwdLocalList]
 foreach i [lsort $twdlist] {
   $localLB insert end $i 
 }

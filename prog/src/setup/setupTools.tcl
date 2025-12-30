@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Züst, biblepix.vollmar.ch
-# Updated: 21jul25 pv+jz
+# Updated: 29dec25 pv
 
 source $SetupResizeTools
 
@@ -372,7 +372,7 @@ proc setManText {lang} {
 proc updateMailBtnList {w} {
   global twddir
 
-  set twdList [getTwdList]
+  set twdList [getTwdLocalList]
   if {$twdList == ""} {return}
 
   ##files may have been deleted after creating langcodeL!

@@ -2,7 +2,7 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 10dez25 pv
+# Updated: 29dez25 pv
 set version "5.2"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
@@ -106,6 +106,7 @@ lappend filePathL [set ImgTools [file join $picdir ImageTools.tcl]]
 lappend filePathL [set LoadConfig [file join $sharedir LoadConfig.tcl]]
 lappend filePathL [set TwdTools [file join $sharedir TwdTools.tcl]]
 lappend filePathL [set TwdRemoteList [file join $twddir twdRemoteList]]
+#lappend filePathL [set TwdLocalList [file join $twddir twdLocalList]]
 lappend filePathL [set Uninstall [file join $savedir uninstall.tcl]]
 lappend filePathL [set Signature [file join $maildir signature.tcl]]
 lappend filePathL [set SigTools [file join $maildir SigTools.tcl]]
@@ -247,6 +248,8 @@ if {$platform == "unix"} {
   #
   # source: https://wiki.tcl-lang.org/page/Modal+dialogs
 
+
+#TODO get rid of this! >SetupRotate >SetupResizePhoto
 proc Show.Modal {win args} {
   set ::Modal.Result {}
   array set options [list -onclose {} -destroy 0 {*}$args]
@@ -264,20 +267,6 @@ proc Show.Modal {win args} {
   return ${::Modal.Result}
 }
 
-#Global functions
-proc uniqkey {} {
-  set key   [ expr { pow(2,31) + [ clock clicks ] } ]
-  set key   [ string range $key end-8 end-3 ]
-  set key   [ clock seconds ]$key
-  return $key
-}
-proc sleep { ms } {
-  set uniq [ uniqkey ]
-  set ::__sleep__tmp__$uniq 0
-  after $ms set ::__sleep__tmp__$uniq 1
-  vwait ::__sleep__tmp__$uniq
-  unset ::__sleep__tmp__$uniq
-}
 # makeDirs
 ##called by Installer
 proc makeDirs {} {

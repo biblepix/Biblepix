@@ -47,7 +47,6 @@ proc listRemoteTwdFiles {} {
   global os twddir TwdRemoteList jahr
   
   source $::Bidi
-  
   set lBox .twdremoteLB
   
   #Check if TwdRemoteList is there
@@ -79,8 +78,8 @@ proc listRemoteTwdFiles {} {
   set space { }
   set spaceLang 21
   set spaceName 60
-#   set curYear [clock format [clock seconds] -format %Y]
-set curYear $jahr
+  
+  set curYear $jahr
 
   foreach node $file {
     set yearNode [$node nextSibling]
@@ -117,21 +116,12 @@ set curYear $jahr
 
     lappend sortlist $nameline
     unset nameline
-  
-    #for simple list, to be used by ...?
-    append simpleL $version \n
+
   }
-  
-#  #write simple list - USE below prog instead :-) !!!!!!
-#  set sortedL [lsort $simpleL]
-#  set chan [open $twddir/twdSimpleL w]
-#  fconfigure $chan -encoding utf-8
-#  puts "$chan" $sortedL
-#  close $chan
-#  
-#  set sortlist [lsort $sortlist]
+
+	set sortL [lsort $sortlist]
  
-  foreach line $sortlist {
+  foreach line $sortL {
     $lBox insert end $line
   }
   
@@ -139,7 +129,10 @@ set curYear $jahr
 
 
 #L i s t e n   o h n e   P f a d
-proc getTwdList {} {
+
+# getTwdLocalList
+##called by getRandomTwdFile
+proc getTwdLocalList {} {
   global twddir jahr
   set twdL [glob -nocomplain -tails -directory $twddir *_$jahr.twd]
   return $twdL
@@ -177,7 +170,7 @@ proc getRandomTwdFile {{sig 0}} {
     set twdL [getTwdSigList]
   #B) for all others
   } else {
-    set twdL [getTwdList]
+    set twdL [getTwdLocalList]
   }
   if {$twdL != ""} {
     set randIndex [expr {int(rand()*[llength $twdL])}]
@@ -193,36 +186,32 @@ proc getRandomFontcolor {} {
   return [lindex $fontcolourL $randIndex]
 }
 
-
-
-
+# updateTwd
+##compares local & remote TwdLists
+##downloads any Twd file if next year available
+##called by Biblepix & Setup
 proc updateTwd {} {
   global twddir lang jahr
   global TwdRemoteList
-  
-  set twdFilesL [glob -nocomplain -directory $twddir *.twd]
-  set localL $twdFilesL
-
-#TODO how do I get exact remoteName? - USE remoteList minus language etc.!!!
-  proc match {remoteName} {
-    set code [string first $remoteName $localL] 
-    return $code # =Zahl oder -1, don't use catch!
+   
+  #create current local list
+  foreach f [glob -tails -directory $twddir *.twd] {
+ 	  lappend twdLocalL [file rootname $f] 
   }
-
   
-  ##########################################
   # Download Current TwdFiles if missing
-  ##########################################
-
-  foreach twdFile $twdFilesL {
+  foreach twdFile $twdLocalL {
   
     set fileParts [split [file tail $twdFile] "_"]
-    if {[lindex $fileParts 2] < "$jahr.twd"} {
+    
+    #eliminate old years
+    if {[lindex $fileParts 2] < "$jahr"} {
       set oldFileName [lindex $fileParts 1]
       set currentExists 0
-      foreach otherTwdFile $twdFilesL {
+      
+      foreach otherTwdFile $twdLocalL {
         set otherFileParts [split [file tail $otherTwdFile] "_"]
-        if {[lindex $otherFileParts 1] == $oldFileName && [lindex $otherFileParts 2] == "$jahr.twd"} {
+        if {[lindex $otherFileParts 1] == $oldFileName && [lindex $otherFileParts 2] == "$jahr"} {
           set currentExists 1
         }
       }
@@ -231,86 +220,59 @@ proc updateTwd {} {
         downloadTwdFile $twdFile $jahr
       }
     }
-  }
+  
 
   ##########################################
   # Download New TwdFiles if available
   ##########################################
   
-  set nextYearAvailable 0
-  set nextYear [expr {$jahr + 1}]
+  #set nextYearAvailable 0
+  set nextYear [expr $jahr + 1]
+  set oldYear [expr $jahr - 1]
 
+#TODO ne oluyor?
+    #Search TwdRemoteList for next year files & download
+    if { [string first ${twdFile}_${nextYear} $TwdRemoteList] != "-1"} {
+	
+	   downloadTwdFile $currentFile $nextYear
+	  }
 
-#TODO first need parsing!
-  foreach line $TwdRemoteList {
-    
-    if {[string range $line end-8 end-4] == $nextYear} {
-      set nextYearAvailable 1
-      break
-    }
+  } ;#END loop
+  
 
-    if {$nextYearAvailable} {
-      set currentTwdList [glob -nocomplain -directory $twddir *$jahr.twd]
-      set nextTwdList [glob -nocomplain -directory $twddir *$nextYear.twd]
-  
-      foreach currentFile $currentTwdList {
-        set nextExists 0
-        set nextOnlineMissing 1
-        set currentName [lindex [split [file tail $currentFile] "_"] 1]
-  
-  
-  
-        foreach line $onlineDictFileList {
-          if {[dict get $onlineDictFile "year"] == $nextYear \
-           && [dict get $onlineDictFile "bible"] == $currentName} {
-            set nextOnlineMissing 0
-            break
-          }
-        }
-  
-        if {$nextOnlineMissing} {
-          continue
-        }
-  
-  
-  
-  
-        if {$nextTwdList != ""} {
-          foreach nextFile $nextTwdList {
-            if {$currentName == [lindex [split [file tail $nextFile] "_"] 1]} {
-              set nextExists 1
-            }
-          }
-        }
-  
-        if {!$nextExists} {
-          downloadTwdFile $currentFile $nextYear
-        }
-      }
-    }
-  }
-  
-  ##########################################
   # Delete old TwdFiles
-  ##########################################
+  puts "Deleting old TWD files: [glob -directory $twddir *_$oldYear*]"
+  file delete [glob -directory $twddir *_$oldYear*]
 
-  foreach twdFile $twdFiles {
+}
+
+proc OLDJOEL {} {
+  foreach twdFile $twdLocalL {
+    
+    
+    
+    file delete [glob
     set fileParts [split [file tail $twdFile] "_"]
-    if {[lindex $fileParts 2] < "$jahr.twd"} {
+    if {[lindex $fileParts 2] < "$jahr"} {
+      
       set fileName [lindex $fileParts 1]
       foreach otherTwdFile $twdFiles {
         set otherFileParts [split [file tail $otherTwdFile] "_"]
         if {[lindex $otherFileParts 1] == $fileName && [lindex $otherFileParts 2] == "$jahr.twd"} {
-          file delete $twdFile
+      
+          file delete [glob $fileftwdFile
           break
         }
       }
     }
-  }
-} ;#END updateTwd
+  } 
+} ;#END OLDJOEL
 
 
 #####################################################################
+
+
+
 ### T W D   P A R S I N G   T O O L S   #############################
 #####################################################################
 

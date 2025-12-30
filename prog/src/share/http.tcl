@@ -1,7 +1,11 @@
+
+
+
+
 # ~/Biblepix/prog/src/share/http.tcl
 # Procs called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22dec25 pv
+# Updated: 23dec25 pv
 
 package require http
 package require tls
@@ -233,7 +237,7 @@ proc downloadTwdFile {twdFile year} {
   set filePath [file join $twddir $fileName]
   set url $twdBaseUrl/$fileName
  
-  #Check for curl or wget
+  #TODO : Check for curl or wget
 	if {[auto_execok curl] != ""} {
 	  set cmd "curl"
 	  set opt "-o"
@@ -255,8 +259,8 @@ proc downloadTwdFile {twdFile year} {
 ##called by updateTwd
 proc getDataFromUrl {url} {
 
-package require http
-package require tls
+#package require http
+#package require tls
 
   #Register SSL connection
   
@@ -265,7 +269,6 @@ package require tls
 #  http::register https 443 [list ::tls::socket -tls1 1]
 http::register https 443 [list ::tls::socket -autoservername true]
 
-#TODO this throws error each time I run Setup!
   set token [http::geturl $url]
   if {[http::status $token] != "ok"} {
     error "No Internet connection"
@@ -299,6 +302,7 @@ proc wrapInternetCons {} {
     return 1
   }
   	
+#TODO ne oluyor?
   if ![catch listRemoteTwdFiles] {
     .intStatusL conf -bg lightgreen
     set ::news "[mc connTwd]"

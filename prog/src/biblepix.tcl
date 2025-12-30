@@ -13,6 +13,7 @@ set Globals "[file join $srcdir share globals.tcl]"
 source $Globals
 source $TwdTools
 
+#TODO entkommentieren!
 if { [info exists Debug] && $Debug } {
   updateTwd
 } else {
