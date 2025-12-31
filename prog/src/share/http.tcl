@@ -8,7 +8,8 @@
 # Updated: 23dec25 pv
 
 package require http
-package require tls
+catch {package require tls}
+catch {package require tdom}
 
 ## getRemoteRoot -TODO unnecessary, all in fetchTwdList now!
 ###download TwdRemoteList
@@ -37,8 +38,10 @@ package require tls
 ##called by getRemoteRoot
 proc fetchTwdList {} {
    global twdUrl TwdRemoteList
+ 
    
 #TODO move this to another proc!
+#TODO this is now in downloadTwdFile
 #  #Check for tdom 
 #  ##standard in ActiveTcl, Linux distros vary
 #  if [catch {package require tdom} err] {
@@ -223,9 +226,9 @@ proc downloadTWDFiles {} {
 } ;#END downloadTWDFiles
 
 # downloadTwdFile
-## fetches TWD language file for $year from bible2.net
-## TODO??? called by updateTwd
-proc downloadTwdFile {twdFile year} {
+##fetches TWD language file OR list from bible2.net
+##called by updateTwd
+proc downloadTwdFile {twdFile} {
   global twddir twdBaseUrl
   
   #make file Tcl readable, matching Helmut's URL
@@ -233,45 +236,64 @@ proc downloadTwdFile {twdFile year} {
   set nameParts [split $twdFile "_"]
   lset nameParts 2 "$year.twd"
   set fileName [join $nameParts "_"]
-
   set filePath [file join $twddir $fileName]
   set url $twdBaseUrl/$fileName
  
-  #TODO : Check for curl or wget
-	if {[auto_execok curl] != ""} {
-	  set cmd "curl"
-	  set opt "-o"
-	} elseif {[auto_execok wget] != ""} {
-		set cmd "wget"
-		set opt "-O"
-	} else {
-		NewsHandler::QueryNews "Cannot download file list from bible2.net.\nPlease install 'curl' or 'wget' on your PC and try again." red
-		return 1
-	}
- 
-  catch {exec $cmd $opt $filePath $url}
+  if ![catch testTlsConn] {
+
+#TODO cumon Pete write a decent proc for this
+   # http::register https 443 [list ::tls::socket -autoservername true]
+    set data [http::geturl $url]
+    set chan [open $filePath w]
+    fconfigure $chan -encoding utf-8
+    puts $chan $data
+    close $chan
+    
+  } elseif ![catch testHttpConn] {
+   
+	  if {[auto_execok curl] != ""} {
+	    set cmd "curl"
+	    set opt "-o"
+	  } elseif {[auto_execok wget] != ""} {
+		  set cmd "wget"
+		  set opt "-O"
+	  } else {
+		  NewsHandler::QueryNews "Cannot download $fileName from bible2.net.\nPlease install 'curl' or 'wget' on your PC and try again." red
+		  return 1
+	  }
+   
+    catch {exec $cmd $opt $filePath $url}
+    
+  } else {
+  
+    NewsHandler::QueryNews "Could not download $fileName from bible2.net. \nTry to fetch it manually from $twdUrl." red
+  }
   
 } ;#END downloadTwdFile
 
 
-#TODO
-# getDataFromUrl
-##called by updateTwd
-proc getDataFromUrl {url} {
+# testTlsConn
+##establishes basic Https connexion for downloads from bible2.net,
+##i.e. TWD file list & TWD files
+##called by updateTwd & downloadTwdFile
+proc testTlsConn {} {
 
-#package require http
-#package require tls
-
-  #Register SSL connection
+  global twdBaseUrl
+  set error "Unable to connect to $twdBaseUrl"
   
-#TODO ZIS WORKS!!!!!!!!!!!!!!!!
-##https://wiki.tcl-lang.org/page/HTTPS
-#  http::register https 443 [list ::tls::socket -tls1 1]
-http::register https 443 [list ::tls::socket -autoservername true]
-
-  set token [http::geturl $url]
+  #establish https connexion to bible2.net
+  if { [catch {   
+    http::register https 443 [list ::tls::socket -autoservername true]} ]
+    } {
+    NewsHandler::QueryNews "$error" red
+    return 1
+   }
+  
+  set token [http::geturl $twdBaseUrl]
+    
   if {[http::status $token] != "ok"} {
-    error "No Internet connection"
+    NewsHandler::QueryNews "$error" red
+    return 1
   }
 
   set data [http::data $token]
@@ -280,7 +302,8 @@ http::register https 443 [list ::tls::socket -autoservername true]
   http::unregister https
 
   return $data
-}
+
+} ;#END testTlsConn
 
 
 ###############################################################################
@@ -351,7 +374,7 @@ proc downloadAsianFont {twdlang} {
 ##called by runHTTP
 proc testHttpCon {} {
 
-  set .intStatusL conf -bg lightgreen
+  catch {.intStatusL conf -bg lightgreen}
   
   if [catch getTesttoken error] {
     puts "ERROR: http.tcl -> testHttpCon: $error"
@@ -369,7 +392,9 @@ proc testHttpCon {} {
 # getTesttoken
 ##called by testHttpCon
 proc getTesttoken {} {
-  set testfile "$::bpxReleaseUrl/README.txt"
+  global bpxReleaseUrl
+  
+  set testfile "$bpxReleaseUrl/README.txt"
   set testtoken [http::geturl $testfile -validate 1]
 
   if {[http::error $testtoken] != ""} {

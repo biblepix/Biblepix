@@ -193,83 +193,76 @@ proc getRandomFontcolor {} {
 proc updateTwd {} {
   global twddir lang jahr
   global TwdRemoteList
-   
+ 
+  set nextYear [expr $jahr + 1]
+  set oldYear  [expr $jahr - 1]
+    
   #create current local list
   foreach f [glob -tails -directory $twddir *.twd] {
  	  lappend twdLocalL [file rootname $f] 
   }
   
-  # Download Current TwdFiles if missing
+
+  # Download future TwdFiles if available
   foreach twdFile $twdLocalL {
   
-    set fileParts [split [file tail $twdFile] "_"]
+    #set fileParts [split [file tail $twdFile] "_"]
     
-    #eliminate old years
-    if {[lindex $fileParts 2] < "$jahr"} {
-      set oldFileName [lindex $fileParts 1]
-      set currentExists 0
+    ##eliminate old years
+    #if {[lindex $fileParts 2] < "$jahr"} {
+      #set oldFileName [lindex $fileParts 1]
+      #set currentExists 0
       
-      foreach otherTwdFile $twdLocalL {
-        set otherFileParts [split [file tail $otherTwdFile] "_"]
-        if {[lindex $otherFileParts 1] == $oldFileName && [lindex $otherFileParts 2] == "$jahr"} {
-          set currentExists 1
-        }
-      }
+      #foreach otherTwdFile $twdLocalL {
+        #set otherFileParts [split [file tail $otherTwdFile] "_"]
+        #if {[lindex $otherFileParts 1] == $oldFileName && [lindex $otherFileParts 2] == "$jahr"} {
+          #set currentExists 1
+        #}
+      #}
 
-      if {!$currentExists} {
-        downloadTwdFile $twdFile $jahr
-      }
-    }
+      #if {!$currentExists} {
+        #downloadTwdFile $twdFile $jahr
+      #}
+    #}
   
-
-  ##########################################
-  # Download New TwdFiles if available
-  ##########################################
-  
-  #set nextYearAvailable 0
-  set nextYear [expr $jahr + 1]
-  set oldYear [expr $jahr - 1]
-
-#TODO ne oluyor?
+ 
     #Search TwdRemoteList for next year files & download
     if { [string first ${twdFile}_${nextYear} $TwdRemoteList] != "-1"} {
 	
-	   downloadTwdFile $currentFile $nextYear
+	   downloadTwdFile ${twdFile}_${nextYear}.twd
+
 	  }
 
   } ;#END loop
+
+  # Delete any old Twd File
+  if ![catch {glob -directory $twddir *_$oldYear*}] {
+    file delete [glob -nocomplain -directory $twddir *_$oldYear*]
+  }
   
+} ;#END updateTwd
 
-  # Delete old TwdFiles
-  puts "Deleting old TWD files: [glob -directory $twddir *_$oldYear*]"
-  file delete [glob -directory $twddir *_$oldYear*]
-
-}
-
-proc OLDJOEL {} {
-  foreach twdFile $twdLocalL {
+#proc OLDJOEL {} {
+  #foreach twdFile $twdLocalL {
     
     
     
-    file delete [glob
-    set fileParts [split [file tail $twdFile] "_"]
-    if {[lindex $fileParts 2] < "$jahr"} {
+    #file delete [glob
+    #set fileParts [split [file tail $twdFile] "_"]
+    #if {[lindex $fileParts 2] < "$jahr"} {
       
-      set fileName [lindex $fileParts 1]
-      foreach otherTwdFile $twdFiles {
-        set otherFileParts [split [file tail $otherTwdFile] "_"]
-        if {[lindex $otherFileParts 1] == $fileName && [lindex $otherFileParts 2] == "$jahr.twd"} {
+      #set fileName [lindex $fileParts 1]
+      #foreach otherTwdFile $twdFiles {
+        #set otherFileParts [split [file tail $otherTwdFile] "_"]
+        #if {[lindex $otherFileParts 1] == $fileName && [lindex $otherFileParts 2] == "$jahr.twd"} {
       
-          file delete [glob $fileftwdFile
-          break
-        }
-      }
-    }
-  } 
-} ;#END OLDJOEL
-
-
-#####################################################################
+          #file delete [glob $fileftwdFile
+          #break
+        #}
+      #}
+    #}
+  #} 
+#} ;#END OLDJOEL
 
 
 
