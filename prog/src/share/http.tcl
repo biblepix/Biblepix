@@ -1,15 +1,11 @@
-
-
-
-
 # ~/Biblepix/prog/src/share/http.tcl
 # Procs called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 23dec25 pv
+# Updated: 1jan26 pv
 
 package require http
 catch {package require tls}
-catch {package require tdom}
+catch {package require tdom} ;#TODO make sure progs provide a warning!
 
 ## getRemoteRoot -TODO unnecessary, all in fetchTwdList now!
 ###download TwdRemoteList
@@ -35,9 +31,9 @@ catch {package require tdom}
 
 # fetchTwdList
 ## downloads remote TWD list to local file in $twddir
-##called by getRemoteRoot
+##called by ???
 proc fetchTwdList {} {
-   global twdUrl TwdRemoteList
+
  
    
 #TODO move this to another proc!
@@ -51,7 +47,19 @@ proc fetchTwdList {} {
 #    return 1
 #  }
 	
-	#Check for curl or wget
+	
+  
+#TODO list is in XML!!!!
+
+} ;#END fetchTwdList
+
+#TODO must be able to be used for any TWD download procedure!
+# curl|wget
+##check if either installed & fetch ?file?
+##called by ? if https not working
+proc curl|wget {file} {
+   global twdUrl TwdRemoteList
+   
 	if {[auto_execok curl] != ""} {
 	  set cmd "curl"
 	  set opt "-o"
@@ -63,14 +71,10 @@ proc fetchTwdList {} {
 		return 1
 	}
 
-	#download current twd list to $twddir
+	#download ?current twd list? to $twddir
   catch {exec $cmd $opt $TwdRemoteList $twdUrl}
   
-#TODO list is in XML!!!!
-
-} ;#END fetchTwdList
-
-
+}
 ###############################################################################
 ########### PROCS FOR SETUP UPDATE ############################################
 ###############################################################################
@@ -251,22 +255,9 @@ proc downloadTwdFile {twdFile} {
     
   } elseif ![catch testHttpConn] {
    
-	  if {[auto_execok curl] != ""} {
-	    set cmd "curl"
-	    set opt "-o"
-	  } elseif {[auto_execok wget] != ""} {
-		  set cmd "wget"
-		  set opt "-O"
-	  } else {
-		  NewsHandler::QueryNews "Cannot download $fileName from bible2.net.\nPlease install 'curl' or 'wget' on your PC and try again." red
-		  return 1
-	  }
-   
-    catch {exec $cmd $opt $filePath $url}
-    
-  } else {
-  
-    NewsHandler::QueryNews "Could not download $fileName from bible2.net. \nTry to fetch it manually from $twdUrl." red
+      if catch curl|wget $url {
+        NewsHandler::QueryNews "Could not download $fileName from bible2.net. \nTry to fetch it manually from $twdUrl." red
+      }
   }
   
 } ;#END downloadTwdFile

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 17dec25 pv
+# Updated 1jan26 pv
 
 # msgcatInit
 ##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
