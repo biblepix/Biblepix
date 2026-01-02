@@ -29,11 +29,6 @@ catch {package require tdom} ;#TODO make sure progs provide a warning!
 # 
 #} ;#END getRemoteRoot
 
-# fetchTwdList
-## downloads remote TWD list to local file in $twddir
-##called by ???
-proc fetchTwdList {} {
-
  
    
 #TODO move this to another proc!
@@ -51,7 +46,7 @@ proc fetchTwdList {} {
   
 #TODO list is in XML!!!!
 
-} ;#END fetchTwdList
+#} ;#END fetchTwdList
 
 #TODO must be able to be used for any TWD download procedure!
 # curl|wget
@@ -187,10 +182,10 @@ proc downloadFileFromUrl {filePath url} {
 
 # downloadTWDFiles
 #called by SetupInternational "Download" btn
-#TODO don't confuse with downloadTwdFile !!!
 proc downloadTWDFiles {} {
   global twddir jahr Globals TwdRemoteList
 
+#TODO needs catch?
   set chan [open $TwdRemoteList r]
   fconfigure $chan -encoding utf-8
   set data [read $chan]
@@ -214,7 +209,10 @@ proc downloadTWDFiles {} {
     NewsHandler::QueryNews "Downloading $filename..." lightblue
 
     #Download file & recreate Twd lists
-    downloadTwdFile $filename $jahr
+    #downloadTwdFile $filename $jahr
+
+fetchTwdFile $filename
+    
     after idle .intTwdlocalLB insert end $filename  
     
     #If Chinese or Thai: update font files also 
@@ -231,9 +229,26 @@ proc downloadTWDFiles {} {
 
 # downloadTwdFile
 ##fetches TWD language file OR list from bible2.net
-##called by updateTwd
-proc downloadTwdFile {twdFile} {
-  global twddir twdBaseUrl
+##called by updateTwd ??
+proc fetchTwdFile {fileName} {
+  global twddir 
+  global twdUrl
+  global twdBaseUrl #../current = for list
+  global jahr
+  
+set year $jahr   
+set twdFile $fileName
+ 
+  #Determine if list or file
+  if [regexp twd$ $fileName] {
+  
+    set url [file join $twdUrl $fileName]
+  
+  } else {
+  
+    set url $twdBaseUrl
+  
+  }
   
   #make file Tcl readable, matching Helmut's URL
   set twdFile [file tail $twdFile]
@@ -244,14 +259,9 @@ proc downloadTwdFile {twdFile} {
   set url $twdBaseUrl/$fileName
  
   if ![catch testTlsConn] {
-
-#TODO cumon Pete write a decent proc for this
-   # http::register https 443 [list ::tls::socket -autoservername true]
-    set data [http::geturl $url]
-    set chan [open $filePath w]
-    fconfigure $chan -encoding utf-8
-    puts $chan $data
-    close $chan
+  
+   # fetchHttpData $url
+    fetchTwdFile $url
     
   } elseif ![catch testHttpConn] {
    
@@ -260,7 +270,22 @@ proc downloadTwdFile {twdFile} {
       }
   }
   
-} ;#END downloadTwdFile
+} ;#END fetchTwdFile
+
+##fetches TWD list|file after testHttpConn is established
+##called by fetchTwdFile
+proc fetchHttpData {filePath} {
+  global twddir 
+  
+  #set filePath [file join $twddir $twdFile]
+  
+  #read out & save to twddir
+  set data [http::geturl $filePath]
+  set chan [open $filePath w]
+  fconfigure $chan -encoding utf-8
+  puts $chan $data
+  close $chan
+}
 
 
 # testTlsConn
@@ -280,6 +305,8 @@ proc testTlsConn {} {
     return 1
    }
   
+#TODO da goot nöd! isch jo scho di ganz twd-lischte!!!
+#move to proc!
   set token [http::geturl $twdBaseUrl]
     
   if {[http::status $token] != "ok"} {

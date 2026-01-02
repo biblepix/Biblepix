@@ -52,8 +52,8 @@ proc listRemoteTwdFiles {} {
   #Check if TwdRemoteList is there
   if ![file exists $TwdRemoteList] {
     #Try downloading rootlist twice
-    if [catch fetchTwdList] {
-      fetchTwdList
+    if [catch fetchTwdFile $TwdRemoteList] {
+      fetchTwdFile $TwdRemoteList
     }
   }
 
@@ -197,16 +197,39 @@ proc updateTwd {} {
   set nextYear [expr $jahr + 1]
   set oldYear  [expr $jahr - 1]
     
-  #create current local list
+#TODO warum file rootname??
+  #create current simple local list
   foreach f [glob -tails -directory $twddir *.twd] {
  	  lappend twdLocalL [file rootname $f] 
   }
-  
+ #TODO sollte ga_abc_2025 ergeben, aber ich brauche den Namen ohne Jahr!!!!!! 
+
+#TODO How do I decide if next year files available?
+#1. check if current year present in localList
+#2. check if next year present in TwdRemoteList
+#3. decice which needs fetching
 
   # Download future TwdFiles if available
   foreach twdFile $twdLocalL {
   
-    #set fileParts [split [file tail $twdFile] "_"]
+    #split name into lang_name_year
+    set fileParts [split $twdFile "_"]
+    set lang [lindex $fileParts 0]
+    set name [lindex $fileParts 1]
+    set year [lindex $fileParts 2]
+    
+    #decide about fetching which year
+    if { $year < $jahr} {
+      set downloadYear $jahr
+    } else {
+      set downloadYear $nextYear
+    }
+      set downloadName ${lang}_${name}_${downloadYear}.twd
+      
+      if { [string first $downloadName $TwdRemoteList != "-1"} {
+        
+        fetchTwdFile $downloadName
+
     
     ##eliminate old years
     #if {[lindex $fileParts 2] < "$jahr"} {
@@ -227,9 +250,9 @@ proc updateTwd {} {
   
  
     #Search TwdRemoteList for next year files & download
-    if { [string first ${twdFile}_${nextYear} $TwdRemoteList] != "-1"} {
+#    if { [string first ${twdFile}_${nextYear} $TwdRemoteList] != "-1"} {
 	
-	   downloadTwdFile ${twdFile}_${nextYear}.twd
+#	   fetchTwdFile ${twdFile}_${nextYear}.twd
 
 	  }
 
