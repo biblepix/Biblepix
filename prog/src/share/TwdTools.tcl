@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 1jan26 pv
+# Updated 3jan26 pv
 
 # msgcatInit
 ##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
@@ -205,59 +205,40 @@ proc updateTwd {} {
 
 puts $twdLocalL
 
- #TODO sollte ga_abc_2025 ergeben, aber ich brauche den Namen ohne Jahr!!!!!! 
-
-#TODO How do I decide if next year files available?
-#1. check if current year present in localList
-#2. check if next year present in TwdRemoteList
-#3. decice which needs fetching
-
-
-
-    #split name into lang_name_year
-#    set fileParts [split $twdFile "_"]
-#    set lang [lindex $fileParts 0]
-#    set name [lindex $fileParts 1]
-#    set year [lindex $fileParts 2]
-
   # Download future TwdFiles if available
   foreach twdName $twdLocalL {
   
     set year [string range $twdName end-7 end-4]
     
     #decide about fetching which year TODO integrate deleting & fetching right here!!!
-    if { $year < $jahr} {
+    if { $year < $jahr } {
       set downloadYear $jahr
-puts "Deleting old $twdName..."
-file delete $twddir/$twdName
+#file delete $twddir/$twdName
+#puts "Deleting old $twdName..."
+
       
-    } else {
+    } elseif { $year == $jahr} {
     
       set downloadYear $nextYear
     }
 
-#TODO try string map for year
-set downloadName [string map "$year $downloadYear" $twdName]
+    set downloadName [string map "$year $downloadYear" $twdName]
      
-#    set downloadName ${lang}_${name}_${downloadYear}
 puts $downloadName
     
-    #TODO no matches!
-    if [string match *$downloadName* $TwdRemoteList] {
+    set chan [open $TwdRemoteList r]
+    set list [read $chan]
+    close $chan
     
-puts "fetching $downloadName..."      
+    if [string match *${downloadName}* $list] {
+      
+      puts "fetching $downloadName..."      
+ #TODO check syntax...   
       fetchTwdFile $downloadName
     
     }
 
   } ;#END loop
-
-  # Delete any old Twd File - TODO no matching!
-  if ![catch {glob -directory $twddir *_${oldYear}* }] {
-puts "Deleting $oldYear ..."
-    NewsHandler::QueryNews "Deleting [glob -directory $twddir *_$oldYear*] ..." orange
-    file delete [glob -nocomplain -directory $twddir *_$oldYear*]
-  }
   
 } ;#END updateTwd
 
