@@ -235,33 +235,33 @@ proc fetchTwdFile {fileName} {
   global twdUrl
   global twdBaseUrl #../current = for list
   global jahr
+
+puts $fileName
+return
   
 set year $jahr   
 set twdFile $fileName
  
   #Determine if list or file
-  if [regexp twd$ $fileName] {
-  
+  if [regexp "twd$" $fileName] {
     set url [file join $twdUrl $fileName]
-  
   } else {
-  
     set url $twdBaseUrl
-  
   }
+puts "URL $url"
   
   #make file Tcl readable, matching Helmut's URL
-  set twdFile [file tail $twdFile]
-  set nameParts [split $twdFile "_"]
-  lset nameParts 2 "$year.twd"
-  set fileName [join $nameParts "_"]
-  set filePath [file join $twddir $fileName]
-  set url $twdBaseUrl/$fileName
+set twdFile [file tail $twdFile]
+set nameParts [split $twdFile "_"]
+lset nameParts 2 "$year.twd"
+set fileName [join $nameParts "_"]
+set filePath [file join $twddir $fileName]
+set url $twdBaseUrl/$fileName
  
   if ![catch testTlsConn] {
   
-   # fetchHttpData $url
-    fetchTwdFile $url
+    fetchHttpData $url
+    
     
   } elseif ![catch testHttpConn] {
    
@@ -274,10 +274,10 @@ set twdFile $fileName
 
 ##fetches TWD list|file after testHttpConn is established
 ##called by fetchTwdFile
-proc fetchHttpData {filePath} {
+proc fetchHttpData {fileName} {
   global twddir 
   
-  #set filePath [file join $twddir $twdFile]
+  set filePath [file join $twddir $fileName]
   
   #read out & save to twddir
   set data [http::geturl $filePath]

@@ -197,11 +197,14 @@ proc updateTwd {} {
   set nextYear [expr $jahr + 1]
   set oldYear  [expr $jahr - 1]
     
-#TODO warum file rootname??
   #create current simple local list
   foreach f [glob -tails -directory $twddir *.twd] {
- 	  lappend twdLocalL [file rootname $f] 
+# 	  lappend twdLocalL [file rootname $f] 
+    lappend twdLocalL $f
   }
+
+puts $twdLocalL
+
  #TODO sollte ga_abc_2025 ergeben, aber ich brauche den Namen ohne Jahr!!!!!! 
 
 #TODO How do I decide if next year files available?
@@ -209,83 +212,55 @@ proc updateTwd {} {
 #2. check if next year present in TwdRemoteList
 #3. decice which needs fetching
 
-  # Download future TwdFiles if available
-  foreach twdFile $twdLocalL {
-  
+
+
     #split name into lang_name_year
-    set fileParts [split $twdFile "_"]
-    set lang [lindex $fileParts 0]
-    set name [lindex $fileParts 1]
-    set year [lindex $fileParts 2]
+#    set fileParts [split $twdFile "_"]
+#    set lang [lindex $fileParts 0]
+#    set name [lindex $fileParts 1]
+#    set year [lindex $fileParts 2]
+
+  # Download future TwdFiles if available
+  foreach twdName $twdLocalL {
+  
+    set year [string range $twdName end-7 end-4]
     
-    #decide about fetching which year
+    #decide about fetching which year TODO integrate deleting & fetching right here!!!
     if { $year < $jahr} {
       set downloadYear $jahr
+puts "Deleting old $twdName..."
+file delete $twddir/$twdName
+      
     } else {
+    
       set downloadYear $nextYear
     }
-      set downloadName ${lang}_${name}_${downloadYear}.twd
-      
-      if { [string first $downloadName $TwdRemoteList != "-1"} {
-        
-        fetchTwdFile $downloadName
 
+#TODO try string map for year
+set downloadName [string map "$year $downloadYear" $twdName]
+     
+#    set downloadName ${lang}_${name}_${downloadYear}
+puts $downloadName
     
-    ##eliminate old years
-    #if {[lindex $fileParts 2] < "$jahr"} {
-      #set oldFileName [lindex $fileParts 1]
-      #set currentExists 0
-      
-      #foreach otherTwdFile $twdLocalL {
-        #set otherFileParts [split [file tail $otherTwdFile] "_"]
-        #if {[lindex $otherFileParts 1] == $oldFileName && [lindex $otherFileParts 2] == "$jahr"} {
-          #set currentExists 1
-        #}
-      #}
-
-      #if {!$currentExists} {
-        #downloadTwdFile $twdFile $jahr
-      #}
-    #}
-  
- 
-    #Search TwdRemoteList for next year files & download
-#    if { [string first ${twdFile}_${nextYear} $TwdRemoteList] != "-1"} {
-	
-#	   fetchTwdFile ${twdFile}_${nextYear}.twd
-
-	  }
+    #TODO no matches!
+    if [string match *$downloadName* $TwdRemoteList] {
+    
+puts "fetching $downloadName..."      
+      fetchTwdFile $downloadName
+    
+    }
 
   } ;#END loop
 
-  # Delete any old Twd File
-  if ![catch {glob -directory $twddir *_$oldYear*}] {
+  # Delete any old Twd File - TODO no matching!
+  if ![catch {glob -directory $twddir *_${oldYear}* }] {
+puts "Deleting $oldYear ..."
+    NewsHandler::QueryNews "Deleting [glob -directory $twddir *_$oldYear*] ..." orange
     file delete [glob -nocomplain -directory $twddir *_$oldYear*]
   }
   
 } ;#END updateTwd
 
-#proc OLDJOEL {} {
-  #foreach twdFile $twdLocalL {
-    
-    
-    
-    #file delete [glob
-    #set fileParts [split [file tail $twdFile] "_"]
-    #if {[lindex $fileParts 2] < "$jahr"} {
-      
-      #set fileName [lindex $fileParts 1]
-      #foreach otherTwdFile $twdFiles {
-        #set otherFileParts [split [file tail $otherTwdFile] "_"]
-        #if {[lindex $otherFileParts 1] == $fileName && [lindex $otherFileParts 2] == "$jahr.twd"} {
-      
-          #file delete [glob $fileftwdFile
-          #break
-        #}
-      #}
-    #}
-  #} 
-#} ;#END OLDJOEL
 
 
 
