@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 3jan26 pv
+# Updated 4jan26 pv
 
 # msgcatInit
 ##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
@@ -43,7 +43,7 @@ if [catch {package require tdom} err] {
 ##fills remote listbox from local file
 ##if local file not there, try downloading
 ##called by SetupInternational, ...
-proc listRemoteTwdFiles {} {
+proc listRemoteTwdFiles args {
   global os twddir TwdRemoteList jahr
   
   source $::Bidi
@@ -62,11 +62,16 @@ proc listRemoteTwdFiles {} {
     return 1
   }
   
+  #TODO use this for updateTwd
+if {$args != ""} {return}  
+
   #retrieve data from file
   set chan [open $TwdRemoteList r]
   fconfigure $chan -encoding utf-8
   set data [read $chan]
   close $chan
+
+
 
   set root [dom parse -html $data]
 
@@ -213,26 +218,36 @@ puts $twdLocalL
     #decide about fetching which year TODO integrate deleting & fetching right here!!!
     if { $year < $jahr } {
       set downloadYear $jahr
+      
 #file delete $twddir/$twdName
 #puts "Deleting old $twdName..."
 
+#TODO WHERE IS PRESENT YEAR FETCHED???????????????????????????????????
       
     } elseif { $year == $jahr} {
     
       set downloadYear $nextYear
+      
+    } else {
+    
+    	set downloadYear $jahr
     }
 
     set downloadName [string map "$year $downloadYear" $twdName]
      
 puts $downloadName
-    
+ 
+#Try to get new remote list   
+    listRemoteTwdFiles args
+     
     set chan [open $TwdRemoteList r]
     set list [read $chan]
     close $chan
     
     if [string match *${downloadName}* $list] {
       
-      puts "fetching $downloadName..."      
+      puts "fetching $downloadName..."    
+        
  #TODO check syntax...   
       fetchTwdFile $downloadName
     

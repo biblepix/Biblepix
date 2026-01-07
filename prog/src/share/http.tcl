@@ -1,11 +1,63 @@
 # ~/Biblepix/prog/src/share/http.tcl
 # Procs called by Installer / Setup
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1jan26 pv
+# Updated: 7jan26 pv
 
-package require http
-catch {package require tls}
-catch {package require tdom} ;#TODO make sure progs provide a warning!
+# testTlsConn - TODO change name to sth that includes http(s)
+##establishes basic Https connexion for downloads from bible2.net,
+##i.e. TWD file list & TWD files
+##called by updateTwd & downloadTwdFile
+proc testTlsConn {} {
+global twdListUrl
+package require Tk
+
+  if [catch {package require http} err] {
+    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing http http]"
+    return 1
+  }
+  
+  #check for tls extra package installed
+  if [catch {package require tls} err] {
+    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tls tcl-tls]"
+    return 1
+  }
+  
+  #establish https connexion to bible2.net
+  if { [catch {   
+    http::register https 443 [list ::tls::socket -autoservername true]} ]
+    } {
+    NewsHandler::QueryNews "Unable to connect to $twdBaseUrl. Try again later." red
+    return 1
+   }
+   
+  #?wohin damit?
+  set token [http::geturl $twdListUrl]
+  
+  NewsHandler::QueryNews "Connection with $twdBaseUrl established." lightgreen
+}
+ 
+ #?wohin damit?
+ testTlsConn
+ 
+ proc ? {} { 
+#TODO da goot nöd! isch jo scho di ganz twd-lischte!!!
+#move to proc!
+  
+    
+  if {[http::status $token] != "ok"} {
+    NewsHandler::QueryNews "$error" red
+    return 1
+  }
+
+#TODO move this to another proc?
+  set data [http::data $token]
+
+  http::cleanup $token
+  http::unregister https
+
+  return $data
+
+} ;#END testTlsConn
 
 ## getRemoteRoot -TODO unnecessary, all in fetchTwdList now!
 ###download TwdRemoteList
@@ -70,8 +122,10 @@ proc curl|wget {file} {
   catch {exec $cmd $opt $TwdRemoteList $twdUrl}
   
 }
+
+
 ###############################################################################
-########### PROCS FOR SETUP UPDATE ############################################
+########### PROCS FOR SETUP UPDATE & BiblePix downloads #######################
 ###############################################################################
 
 # runHTTP
@@ -115,6 +169,7 @@ proc downloadSampleJpegs {sampleJpgL url} {
 }
 
 # downloadFileFromRelease
+##downloads Biblepix file
 ##called by runHTTP
 proc downloadFileFromRelease {filePath isInitial} {
 
@@ -155,6 +210,7 @@ proc downloadFileFromRelease {filePath isInitial} {
   http::cleanup $token
 }
 
+#TODO who needs this?
 # downloadFileFromUrl
 ##called by downloadFileFromRelease
 proc downloadFileFromUrl {filePath url} {
@@ -227,26 +283,25 @@ fetchTwdFile $filename
 
 } ;#END downloadTWDFiles
 
-# downloadTwdFile
+# fetchTwdFile
 ##fetches TWD language file OR list from bible2.net
 ##called by updateTwd ??
 proc fetchTwdFile {fileName} {
   global twddir 
   global twdUrl
-  global twdBaseUrl #../current = for list
+  global twdBaseUrl
   global jahr
 
 puts $fileName
-return
   
 set year $jahr   
 set twdFile $fileName
  
   #Determine if list or file
   if [regexp "twd$" $fileName] {
-    set url [file join $twdUrl $fileName]
+    set url [file join $twdBaseUrl $fileName]
   } else {
-    set url $twdBaseUrl
+    set url $twdUrl
   }
 puts "URL $url"
   
@@ -259,11 +314,13 @@ set filePath [file join $twddir $fileName]
 set url $twdBaseUrl/$fileName
  
   if ![catch testTlsConn] {
-  
-    fetchHttpData $url
+puts "FETCHING DATA..."
+
+
+
+    fetchHttpData $fileName
     
-    
-  } elseif ![catch testHttpConn] {
+  } elseif ![catch HttpConn] {
    
       if catch curl|wget $url {
         NewsHandler::QueryNews "Could not download $fileName from bible2.net. \nTry to fetch it manually from $twdUrl." red
@@ -272,15 +329,21 @@ set url $twdBaseUrl/$fileName
   
 } ;#END fetchTwdFile
 
+# fetchHttpData
 ##fetches TWD list|file after testHttpConn is established
 ##called by fetchTwdFile
 proc fetchHttpData {fileName} {
-  global twddir 
+  global twddir twdUrl
   
   set filePath [file join $twddir $fileName]
-  
+
+puts "FILENAME $fileName"
+puts "SAVING DATA..." 
+
+#TODO: arregla paths!!!! - ist https registered??? 
+
   #read out & save to twddir
-  set data [http::geturl $filePath]
+  set data [http::geturl $twdUrl]
   set chan [open $filePath w]
   fconfigure $chan -encoding utf-8
   puts $chan $data
@@ -288,47 +351,13 @@ proc fetchHttpData {fileName} {
 }
 
 
-# testTlsConn
-##establishes basic Https connexion for downloads from bible2.net,
-##i.e. TWD file list & TWD files
-##called by updateTwd & downloadTwdFile
-proc testTlsConn {} {
-
-  global twdBaseUrl
-  set error "Unable to connect to $twdBaseUrl"
-  
-  #establish https connexion to bible2.net
-  if { [catch {   
-    http::register https 443 [list ::tls::socket -autoservername true]} ]
-    } {
-    NewsHandler::QueryNews "$error" red
-    return 1
-   }
-  
-#TODO da goot nöd! isch jo scho di ganz twd-lischte!!!
-#move to proc!
-  set token [http::geturl $twdBaseUrl]
-    
-  if {[http::status $token] != "ok"} {
-    NewsHandler::QueryNews "$error" red
-    return 1
-  }
-
-  set data [http::data $token]
-
-  http::cleanup $token
-  http::unregister https
-
-  return $data
-
-} ;#END testTlsConn
-
 
 ###############################################################################
 ########## PROCS FOR TWD LIST #################################################
 ###############################################################################
 
 
+#TODO wohi demit?
 # wrapInternetCons
 ##sets news in statusline
 ##called by SetupBuild & SetupInternational
@@ -351,6 +380,22 @@ proc wrapInternetCons {} {
     .intStatusL conf -bg red
     set ::news "[mc noConnTwd]"
   }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 } ;#END wrapInternetCons
 
@@ -384,7 +429,7 @@ proc downloadAsianFont {twdlang} {
 }
 
 ###############################################################################
-########## BASIC PROCS ########################################################
+########## BASIC HTTP PROCS ########################################################
 ###############################################################################
 
 # testHttpCon

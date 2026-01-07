@@ -14,6 +14,10 @@ set os $::tcl_platform(os)
 set tclpath [auto_execok tclsh]
 set wishpath [auto_execok wish]
 
+#TODO  change everywhere
+set twdListUrl $twdUrl
+set twdFileUrl $twdBaseUrl
+
 #Temporary files (used in setupPhotos, ...)
 if {$os == "Linux"} {
   set tempdir "/tmp"
