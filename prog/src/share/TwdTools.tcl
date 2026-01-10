@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 4jan26 pv
+# Updated 10jan26 pv
 
 # msgcatInit
 ##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
@@ -9,6 +9,8 @@
 ##called by setTexts & several error levels in Biblepix & Biblepix-Setup
 package require msgcat
 namespace import msgcat::mc msgcat::mcset
+
+source $::Http
 
 proc msgcatInit args {
 	global msgdir ExportTextvars
@@ -218,25 +220,19 @@ puts $twdLocalL
     #decide about fetching which year TODO integrate deleting & fetching right here!!!
     if { $year < $jahr } {
       set downloadYear $jahr
-      
-#file delete $twddir/$twdName
-#puts "Deleting old $twdName..."
+      file delete $twddir/$twdName
+      puts "Deleting old $twdName..."
 
-#TODO WHERE IS PRESENT YEAR FETCHED???????????????????????????????????
-      
     } elseif { $year == $jahr} {
     
       set downloadYear $nextYear
-      
-    } else {
+    }  
     
-    	set downloadYear $jahr
-    }
 
     set downloadName [string map "$year $downloadYear" $twdName]
      
 puts $downloadName
- 
+
 #Try to get new remote list   
     listRemoteTwdFiles args
      
@@ -254,6 +250,10 @@ puts $downloadName
     }
 
   } ;#END loop
+
+return
+
+
   
 } ;#END updateTwd
 

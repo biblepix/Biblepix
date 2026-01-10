@@ -1,5 +1,5 @@
-# ~/Biblepix/prog/src/share/http.tcl
-# Procs called by Installer / Setup
+# ~/Biblepix/prog/src/share/httpsTwd.tcl
+# Procs called by Installer / Setup für Https-Zugriff auf bible2.net
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
 # Updated: 7jan26 pv
 
@@ -9,7 +9,7 @@
 ##called by updateTwd & downloadTwdFile
 proc testTlsConn {} {
 global twdListUrl
-package require Tk
+#package require Tk
 
   if [catch {package require http} err] {
     tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing http http]"
@@ -22,18 +22,17 @@ package require Tk
     return 1
   }
   
-  #establish https connexion to bible2.net
+  #establish https connexion to bible2.net TODO NewsHandler needs Setup!
   if { [catch {   
     http::register https 443 [list ::tls::socket -autoservername true]} ]
     } {
-    NewsHandler::QueryNews "Unable to connect to $twdBaseUrl. Try again later." red
+ #   NewsHandler::QueryNews "Unable to connect to $twdListUrl. Try again later." red
     return 1
    }
    
   #?wohin damit?
   set token [http::geturl $twdListUrl]
-  
-  NewsHandler::QueryNews "Connection with $twdBaseUrl established." lightgreen
+  #  NewsHandler::QueryNews "Connection with $twdListUrl established." lightgreen
 }
  
  #?wohin damit?
@@ -123,10 +122,225 @@ proc curl|wget {file} {
   
 }
 
+# downloadTWDFiles
+#called by SetupInternational "Download" btn
+proc downloadTWDFiles {} {
+  global twddir jahr Globals TwdRemoteList
+
+#TODO needs catch?
+  set chan [open $TwdRemoteList r]
+  fconfigure $chan -encoding utf-8
+  set data [read $chan]
+  close $chan
+
+  set root [dom parse -html $data]
+  
+  cd $twddir
+  #get hrefs alphabetically ordered
+  set urllist [$root selectNodes {//tr/td/a}]
+  set hrefs ""
+
+  foreach url $urllist {lappend hrefs [$url @href]}
+  set urllist [lsort $hrefs]
+  set selectedindices [.twdremoteLB curselection]
+
+  foreach item $selectedindices {
+    set url [lindex $urllist $item]
+    set filename [file tail $url]
+
+    NewsHandler::QueryNews "Downloading $filename..." lightblue
+
+    #Download file & recreate Twd lists
+fetchTwdFile $filename
+    
+    after idle .intTwdlocalLB insert end $filename  
+    
+    #If Chinese or Thai: update font files also 
+    set twdlang [string range $filename 0 1]
+    if {$twdlang == "zh" || $twdlang == "th"} {
+      downloadAsianFont $twdlang
+    }
+  } ;#END foreach
+  
+  #deselect all downloaded files
+  .twdremoteLB selection clear 0 end
+
+} ;#END downloadTWDFiles
+
+# fetchTwdFile
+##fetches TWD language file OR list from bible2.net
+##called by updateTwd ??
+proc fetchTwdFile {fileName} {
+  global twddir 
+  global twdFileUrl
+  global twdListUrl
+  global jahr
+
+puts $fileName
+  
+set year $jahr   
+set twdFile $fileName
+ 
+  #Determine if list or file
+  if [regexp "twd$" $fileName] {
+    set url [file join $twdFileUrl $fileName]
+    set type file
+    
+  } else {
+    set url $twdListUrl
+    set type list
+  }
+puts "URL $url"
+  
+  #make file Tcl readable, matching Helmut's URL
+if {$type == "file"} {
+set twdFile [file tail $twdFile]
+set nameParts [split $twdFile "_"]
+lset nameParts 2 "$year.twd"
+set fileName [join $nameParts "_"]
+set filePath [file join $twddir $fileName]
+set url $twdFileUrl/$fileName
+ } else {
+  set url $twdListUrl
+  set fileName twdRemoteList 
+ }
+ 
+  if ![catch testTlsConn] {
+puts "FETCHING DATA..."
+
+    fetchHttpData $fileName $type
+    
+  } elseif ![catch HttpConn] {
+   
+      if catch curl|wget $url {
+        NewsHandler::QueryNews "Could not download $fileName from bible2.net. \nTry to fetch it manually from $twdUrl." red
+      }
+  }
+  
+} ;#END fetchTwdFile
+
+# fetchHttpData
+##fetches TWD list|file after testHttpConn is established
+##called by fetchTwdFile
+proc fetchHttpData {fileName type} {
+  global twddir twdListUrl twdFileUrl
+  
+  
+  set filePath [file join $twddir $fileName]
+
+puts "FILENAME $fileName"
+puts "SAVING DATA..." 
+
+if {$type == "list"} {
+  set url $twdListUrl
+} else {
+  set url $twdFileUrl/$fileName
+}
+  #read out & save to twddir
+  set token [http::geturl $url]
+  set data [http::data $token]
+  
+  set chan [open $filePath w]
+  fconfigure $chan -encoding utf-8
+  puts $chan $data
+  close $chan
+}
+
+
 
 ###############################################################################
-########### PROCS FOR SETUP UPDATE & BiblePix downloads #######################
+########## PROCS FOR TWD LIST #################################################
 ###############################################################################
+
+
+#TODO wohi demit?
+# wrapInternetCons
+##sets news in statusline
+##called by SetupBuild & SetupInternational
+##tests http & https and tries to update remote Twd list
+proc wrapInternetCons {} {
+
+  .intStatusL conf -bg olive
+
+  if [catch testHttpCon Error] {
+    .intStatusL conf -bg red
+    set ::news "[mc noConnTwd]"
+    return 1
+  }
+  	
+#TODO ne oluyor?
+  if ![catch listRemoteTwdFiles] {
+    .intStatusL conf -bg lightgreen
+    set ::news "[mc connTwd]"
+  } else {
+    .intStatusL conf -bg red
+    set ::news "[mc noConnTwd]"
+  }
+  
+} ;#END wrapInternetCons
+
+
+###############################################################################################
+#######  B I B L E P I X   H T T P   R E L E A S E    D O W N L O A D  ########################
+###############################################################################################
+
+
+## b a s i c    h t t p    p r o c s
+
+# testHttpCon
+##tests Http connexion with vollmar.ch BP release, returns error if connexion fails
+##called by runHTTP
+proc testHttpCon {} {
+
+  catch {.intStatusL conf -bg lightgreen}
+  
+  if [catch getTesttoken error] {
+    puts "ERROR: http.tcl -> testHttpCon: $error"
+
+    #try proxy & retry connexion
+    setProxy
+
+    if [catch getTesttoken error] {
+      puts "ERROR: http.tcl -> testHttpCon -> proxy: $error"
+      error $error
+    }
+  }
+}
+
+# getTesttoken
+##called by testHttpCon
+proc getTesttoken {} {
+  global bpxReleaseUrl
+  
+  set testfile "$bpxReleaseUrl/README.txt"
+  set testtoken [http::geturl $testfile -validate 1]
+
+  if {[http::error $testtoken] != ""} {
+    error [string cat "testtoken -> error:" [http::error $testtoken]]
+  }
+
+  if {[http::ncode $testtoken] != 200} {
+    error [string cat "testtoken -> ncode:" [http::ncode $testtoken]]
+  }
+
+  return $testtoken
+}
+
+# setProxy
+##called by testHttpCon
+proc setProxy {} {
+  if [catch {package require autoproxy}] {
+    set host localhost
+    set port 80
+  } else {
+    autoproxy::init
+    set host [autoproxy::cget -host]
+    set port [autoproxy::cget -port]
+  }
+
+  http::config -proxyhost $host -proxyport $port
+}
+
 
 # runHTTP
 ## Main program for BiblePix Http download
@@ -234,171 +448,6 @@ proc downloadFileFromUrl {filePath url} {
   http::cleanup $token
 }
 
-#######################################################################################################################
-
-# downloadTWDFiles
-#called by SetupInternational "Download" btn
-proc downloadTWDFiles {} {
-  global twddir jahr Globals TwdRemoteList
-
-#TODO needs catch?
-  set chan [open $TwdRemoteList r]
-  fconfigure $chan -encoding utf-8
-  set data [read $chan]
-  close $chan
-
-  set root [dom parse -html $data]
-  
-  cd $twddir
-  #get hrefs alphabetically ordered
-  set urllist [$root selectNodes {//tr/td/a}]
-  set hrefs ""
-
-  foreach url $urllist {lappend hrefs [$url @href]}
-  set urllist [lsort $hrefs]
-  set selectedindices [.twdremoteLB curselection]
-
-  foreach item $selectedindices {
-    set url [lindex $urllist $item]
-    set filename [file tail $url]
-
-    NewsHandler::QueryNews "Downloading $filename..." lightblue
-
-    #Download file & recreate Twd lists
-    #downloadTwdFile $filename $jahr
-
-fetchTwdFile $filename
-    
-    after idle .intTwdlocalLB insert end $filename  
-    
-    #If Chinese or Thai: update font files also 
-    set twdlang [string range $filename 0 1]
-    if {$twdlang == "zh" || $twdlang == "th"} {
-      downloadAsianFont $twdlang
-    }
-  } ;#END foreach
-  
-  #deselect all downloaded files
-  .twdremoteLB selection clear 0 end
-
-} ;#END downloadTWDFiles
-
-# fetchTwdFile
-##fetches TWD language file OR list from bible2.net
-##called by updateTwd ??
-proc fetchTwdFile {fileName} {
-  global twddir 
-  global twdUrl
-  global twdBaseUrl
-  global jahr
-
-puts $fileName
-  
-set year $jahr   
-set twdFile $fileName
- 
-  #Determine if list or file
-  if [regexp "twd$" $fileName] {
-    set url [file join $twdBaseUrl $fileName]
-  } else {
-    set url $twdUrl
-  }
-puts "URL $url"
-  
-  #make file Tcl readable, matching Helmut's URL
-set twdFile [file tail $twdFile]
-set nameParts [split $twdFile "_"]
-lset nameParts 2 "$year.twd"
-set fileName [join $nameParts "_"]
-set filePath [file join $twddir $fileName]
-set url $twdBaseUrl/$fileName
- 
-  if ![catch testTlsConn] {
-puts "FETCHING DATA..."
-
-
-
-    fetchHttpData $fileName
-    
-  } elseif ![catch HttpConn] {
-   
-      if catch curl|wget $url {
-        NewsHandler::QueryNews "Could not download $fileName from bible2.net. \nTry to fetch it manually from $twdUrl." red
-      }
-  }
-  
-} ;#END fetchTwdFile
-
-# fetchHttpData
-##fetches TWD list|file after testHttpConn is established
-##called by fetchTwdFile
-proc fetchHttpData {fileName} {
-  global twddir twdUrl
-  
-  set filePath [file join $twddir $fileName]
-
-puts "FILENAME $fileName"
-puts "SAVING DATA..." 
-
-#TODO: arregla paths!!!! - ist https registered??? 
-
-  #read out & save to twddir
-  set data [http::geturl $twdUrl]
-  set chan [open $filePath w]
-  fconfigure $chan -encoding utf-8
-  puts $chan $data
-  close $chan
-}
-
-
-
-###############################################################################
-########## PROCS FOR TWD LIST #################################################
-###############################################################################
-
-
-#TODO wohi demit?
-# wrapInternetCons
-##sets news in statusline
-##called by SetupBuild & SetupInternational
-##tests http & https and tries to update remote Twd list
-proc wrapInternetCons {} {
-
-  .intStatusL conf -bg olive
-
-  if [catch testHttpCon Error] {
-    .intStatusL conf -bg red
-    set ::news "[mc noConnTwd]"
-    return 1
-  }
-  	
-#TODO ne oluyor?
-  if ![catch listRemoteTwdFiles] {
-    .intStatusL conf -bg lightgreen
-    set ::news "[mc connTwd]"
-  } else {
-    .intStatusL conf -bg red
-    set ::news "[mc noConnTwd]"
-  }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-} ;#END wrapInternetCons
-
 # downloadAsianFont
 ##updates Chinese or Thai fonts if required
 ##called by downloadTWDFiles 
@@ -428,60 +477,4 @@ proc downloadAsianFont {twdlang} {
   NewsHandler::QueryNews "[mc downloadComplete]" lightgreen
 }
 
-###############################################################################
-########## BASIC HTTP PROCS ########################################################
-###############################################################################
 
-# testHttpCon
-##tests Http connexion with vollmar.ch BP release, returns error if connexion fails
-##called by runHTTP
-proc testHttpCon {} {
-
-  catch {.intStatusL conf -bg lightgreen}
-  
-  if [catch getTesttoken error] {
-    puts "ERROR: http.tcl -> testHttpCon: $error"
-
-    #try proxy & retry connexion
-    setProxy
-
-    if [catch getTesttoken error] {
-      puts "ERROR: http.tcl -> testHttpCon -> proxy: $error"
-      error $error
-    }
-  }
-}
-
-# getTesttoken
-##called by testHttpCon
-proc getTesttoken {} {
-  global bpxReleaseUrl
-  
-  set testfile "$bpxReleaseUrl/README.txt"
-  set testtoken [http::geturl $testfile -validate 1]
-
-  if {[http::error $testtoken] != ""} {
-    error [string cat "testtoken -> error:" [http::error $testtoken]]
-  }
-
-  if {[http::ncode $testtoken] != 200} {
-    error [string cat "testtoken -> ncode:" [http::ncode $testtoken]]
-  }
-
-  return $testtoken
-}
-
-# setProxy
-##called by testHttpCon
-proc setProxy {} {
-  if [catch {package require autoproxy}] {
-    set host localhost
-    set port 80
-  } else {
-    autoproxy::init
-    set host [autoproxy::cget -host]
-    set port [autoproxy::cget -port]
-  }
-
-  http::config -proxyhost $host -proxyport $port
-}
