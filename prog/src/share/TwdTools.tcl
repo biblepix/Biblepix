@@ -45,28 +45,30 @@ if [catch {package require tdom} err] {
 ##fills remote listbox from local file
 ##if local file not there, try downloading
 ##called by SetupInternational, ...
-proc listRemoteTwdFiles args {
+proc listRemoteTwdFiles {} {
   global os twddir TwdRemoteList jahr
   
   source $::Bidi
   set lBox .twdremoteLB
   
+  #try downloading latest
+  catch testTlsConn
+  
   #Check if TwdRemoteList is there
-  if ![file exists $TwdRemoteList] {
+#  if ![file exists $TwdRemoteList] {
     #Try downloading rootlist twice
-    if [catch fetchTwdFile $TwdRemoteList] {
-      fetchTwdFile $TwdRemoteList
-    }
-  }
+#    if [catch fetchTwdFile $TwdRemoteList] {
+#      fetchTwdFile $TwdRemoteList
+#    }
+#  }
 
+after 2000
   if ![file exists $TwdRemoteList] {
     set status "Cannot create file list; try later"
     return 1
   }
   
-  #TODO use this for updateTwd
-if {$args != ""} {return}  
-
+  
   #retrieve data from file
   set chan [open $TwdRemoteList r]
   fconfigure $chan -encoding utf-8
@@ -234,7 +236,7 @@ puts $twdLocalL
 puts $downloadName
 
 #Try to get new remote list   
-    listRemoteTwdFiles args
+    listRemoteTwdFiles
      
     set chan [open $TwdRemoteList r]
     set list [read $chan]

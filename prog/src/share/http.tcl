@@ -8,7 +8,7 @@
 ##i.e. TWD file list & TWD files
 ##called by updateTwd & downloadTwdFile
 proc testTlsConn {} {
-global twdListUrl
+  global twdListUrl TwdRemoteList
 #package require Tk
 
   if [catch {package require http} err] {
@@ -23,15 +23,18 @@ global twdListUrl
   }
   
   #establish https connexion to bible2.net TODO NewsHandler needs Setup!
-  if { [catch {   
-    http::register https 443 [list ::tls::socket -autoservername true]} ]
-    } {
+  if [catch { http::register https 443 {::tls::socket -autoservername true }} ] {
+
  #   NewsHandler::QueryNews "Unable to connect to $twdListUrl. Try again later." red
     return 1
    }
    
-  #?wohin damit?
-  set token [http::geturl $twdListUrl]
+  #RemoteList wird schon beim Test heruntergeladen! - TODO make sure this isn't repeated!!!
+  set chan [open $TwdRemoteList w]
+  fconfigure $chan -encoding utf-8
+  set token [http::geturl $twdListUrl -channel $chan]
+  close $chan
+  
   #  NewsHandler::QueryNews "Connection with $twdListUrl established." lightgreen
 }
  
@@ -236,6 +239,8 @@ if {$type == "list"} {
 } else {
   set url $twdFileUrl/$fileName
 }
+
+#TODO this is outdated, see testTlsConn !!!
   #read out & save to twddir
   set token [http::geturl $url]
   set data [http::data $token]
