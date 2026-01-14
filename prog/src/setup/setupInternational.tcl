@@ -1,7 +1,7 @@
-# ~/Biblepix/prog/src/setup/setupEmail.tcl
+# ~/Biblepix/prog/src/setup/setupInternational.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 30dec25 pv
+# Updated 11jan26 pv
 
 source $TwdTools 
 source $Http
@@ -20,7 +20,7 @@ pack [frame .intBotF -padx $px] -in .internationalF -anchor w -fill none
 
 #Refresh button 
 button .intRefreshBtn -textvar msg::refresh -bd 2 -activebackground orange -command {
-  fetchTwdList
+  testTlsConn
   listRemoteTwdFiles
 }
 pack .intRefreshBtn -in .intBotF -side bottom -padx $px -pady 3
@@ -81,4 +81,5 @@ pack .twdremoteSB .twdremoteLB -in .twdremoteF -side right -fill y
 
 #Fill remote list & try downloading latest
 catch listRemoteTwdFiles
-catch fetchTwdList
+#catch fetchTwdList
+#catch updateTwd TODO Updating prog files should be done somewhere earlier!!!

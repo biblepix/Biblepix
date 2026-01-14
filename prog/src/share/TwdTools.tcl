@@ -53,28 +53,20 @@ proc listRemoteTwdFiles {} {
   
   #try downloading latest
   catch testTlsConn
-  
-  #Check if TwdRemoteList is there
-#  if ![file exists $TwdRemoteList] {
-    #Try downloading rootlist twice
-#    if [catch fetchTwdFile $TwdRemoteList] {
-#      fetchTwdFile $TwdRemoteList
-#    }
-#  }
 
-after 2000
+#after 2000
   if ![file exists $TwdRemoteList] {
     set status "Cannot create file list; try later"
     return 1
   }
   
-  
+ 
+ #TODO hemmer da nöd scho neimet anderscht? 
   #retrieve data from file
   set chan [open $TwdRemoteList r]
   fconfigure $chan -encoding utf-8
   set data [read $chan]
   close $chan
-
 
 
   set root [dom parse -html $data]
@@ -89,17 +81,19 @@ after 2000
   set spaceName 60
   
   set curYear $jahr
+set index 0
 
   foreach node $file {
     set yearNode [$node nextSibling]
     set langNode [$yearNode nextSibling]
     set nameNode [$langNode nextSibling]
     set versionNode [$nameNode nextSibling]
+
     set year [$yearNode text]
     set lang [$langNode text]
     set name [$nameNode text]
     set version [$versionNode text]
-    
+ 
     #Set RtL languages from right to left (Windows should handle this without our help)
     if {$os == "Linux" && [isBidi $version]} {
       source $::Bidi
@@ -109,6 +103,8 @@ after 2000
     }
 
     ##start building line
+
+
     append nameline $lang
     append nameline [string repeat $space [expr 28 - [string length $lang]]]
 
@@ -124,9 +120,27 @@ after 2000
     append nameline $version
 
     lappend sortlist $nameline
-    unset nameline
+    
+append nameline  [string repeat $space 3] $index
+incr index    
 
-  }
+    unset nameline
+    
+#TODO index stimmt nie!
+#$lBox activate $index ?current?
+#$lBox active $index
+
+#to be used in comparison for download
+append fileName $lang _ $name _ $year .twd
+lappend fileL $fileName
+
+#array set ::twdRemoteArr "$index $fileName"   
+#set index [$lBox index end]
+#incr index 
+#puts $index
+unset fileName
+
+  } ;#END main loop
 
 	set sortL [lsort $sortlist]
  
@@ -134,6 +148,9 @@ after 2000
     $lBox insert end $line
   }
   
+
+set ::remoteTwdL [lsort $fileL]
+ 
 } ;#END listRemoteTwdFiles
 
 

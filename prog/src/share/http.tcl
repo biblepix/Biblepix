@@ -126,6 +126,7 @@ proc curl|wget {file} {
 }
 
 # downloadTWDFiles
+
 #called by SetupInternational "Download" btn
 proc downloadTWDFiles {} {
   global twddir jahr Globals TwdRemoteList
@@ -136,16 +137,19 @@ proc downloadTWDFiles {} {
   set data [read $chan]
   close $chan
 
-  set root [dom parse -html $data]
-  
-  cd $twddir
-  #get hrefs alphabetically ordered
-  set urllist [$root selectNodes {//tr/td/a}]
-  set hrefs ""
 
-  foreach url $urllist {lappend hrefs [$url @href]}
-  set urllist [lsort $hrefs]
-  set selectedindices [.twdremoteLB curselection]
+
+#TODO try urllist instead! - use ::remoteTwdList (bad name!)
+set root [dom parse -html $data]
+
+cd $twddir
+#get hrefs alphabetically ordered
+set urllist [$root selectNodes {//tr/td/a}]
+set hrefs ""
+
+foreach url $urllist {lappend hrefs [$url @href]}
+set urllist [lsort $hrefs]
+set selectedindices [.twdremoteLB curselection]
 
   foreach item $selectedindices {
     set url [lindex $urllist $item]
@@ -153,6 +157,7 @@ proc downloadTWDFiles {} {
 
     NewsHandler::QueryNews "Downloading $filename..." lightblue
 
+#TODO warum geht das nicht?
     #Download file & recreate Twd lists
 fetchTwdFile $filename
     
@@ -203,6 +208,7 @@ lset nameParts 2 "$year.twd"
 set fileName [join $nameParts "_"]
 set filePath [file join $twddir $fileName]
 set url $twdFileUrl/$fileName
+
  } else {
   set url $twdListUrl
   set fileName twdRemoteList 
@@ -240,7 +246,14 @@ if {$type == "list"} {
   set url $twdFileUrl/$fileName
 }
 
-#TODO this is outdated, see testTlsConn !!!
+#TODO haut das hin?
+#testTlsConn
+set chan [open $url w]
+fconfigure $chan -encoding utf-8
+set token [http::geturl $url -channel $chan]
+close $chan
+ 
+ proc eskiyol {} { 
   #read out & save to twddir
   set token [http::geturl $url]
   set data [http::data $token]
@@ -249,8 +262,8 @@ if {$type == "list"} {
   fconfigure $chan -encoding utf-8
   puts $chan $data
   close $chan
+  }
 }
-
 
 
 ###############################################################################
@@ -347,7 +360,7 @@ proc setProxy {} {
 }
 
 
-# runHTTP
+# runHTTP - TODO find way to skip this in Biblepix after just done!
 ## Main program for BiblePix Http download
 ## isInitial must be set to 0 or 1
 ## Called by Installer & Setup

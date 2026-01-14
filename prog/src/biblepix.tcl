@@ -4,7 +4,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 1jan26 pv
+# Updated: 12jan26 pv
 ######################################################################
 
 #Verify location & source Globals
@@ -13,11 +13,21 @@ set Globals "[file join $srcdir share globals.tcl]"
 source $Globals
 source $TwdTools
 
-if { [info exists Debug] && $Debug } {
-  updateTwd
-} else {
-  catch updateTwd
+#Skip prog update if pidfile newer than 27 hours
+set oldPidfile [glob -nocomplain $piddir/*]
+if { [expr [clock seconds] - [file atime $oldPidfile]] > 100000  } {
+
+  if { [info exists Debug] && $Debug } {
+#TODO try threads!
+    runHTTP 0
+  } else {
+    catch runHTTP 0
+  }
 }
+
+#Look for new Twd list & files always
+catch testTlsConn
+catch updateTwd
 
 #Set TwdFileName for the 1st time, else run Setup
 if [catch {set twdfile [getRandomTwdFile]}] {
@@ -66,6 +76,8 @@ source $SetBackgroundChanger
 foreach file [glob -nocomplain -directory $piddir *] {
   file delete -force $file
 }
+
+#TODO use open chan instead, and close it when appropriate
 set pidfile [open $piddir/[pid] w]
 close $pidfile
 
