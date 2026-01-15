@@ -34,7 +34,8 @@ proc testTlsConn {} {
   fconfigure $chan -encoding utf-8
   set token [http::geturl $twdListUrl -channel $chan]
   close $chan
-  
+ 
+ #TODO where is curl switch??? 
   #  NewsHandler::QueryNews "Connection with $twdListUrl established." lightgreen
 }
  
@@ -132,24 +133,27 @@ proc downloadTWDFiles {} {
   global twddir jahr Globals TwdRemoteList
 
 #TODO needs catch?
-  set chan [open $TwdRemoteList r]
-  fconfigure $chan -encoding utf-8
-  set data [read $chan]
-  close $chan
+#  set chan [open $TwdRemoteList r]
+#  fconfigure $chan -encoding utf-8
+#  set data [read $chan]
+#  close $chan
+
+testTlsConn
 
 
+#TODO try ::urllist instead! - use ::remoteTwdList (bad name!)
+#proc eskituski {} {
+#set root [dom parse -html $data]
+#cd $twddir
+##get hrefs alphabetically ordered
+#set urllist [$root selectNodes {//tr/td/a}]
+#set hrefs ""
+#foreach url $urllist {lappend hrefs [$url @href]}
+#set urllist [lsort $hrefs]
+#}
 
-#TODO try urllist instead! - use ::remoteTwdList (bad name!)
-set root [dom parse -html $data]
-
-cd $twddir
-#get hrefs alphabetically ordered
-set urllist [$root selectNodes {//tr/td/a}]
-set hrefs ""
-
-foreach url $urllist {lappend hrefs [$url @href]}
-set urllist [lsort $hrefs]
 set selectedindices [.twdremoteLB curselection]
+set urllist $::urlL
 
   foreach item $selectedindices {
     set url [lindex $urllist $item]
@@ -160,7 +164,7 @@ set selectedindices [.twdremoteLB curselection]
 #TODO warum geht das nicht?
     #Download file & recreate Twd lists
 fetchTwdFile $filename
-    
+      
     after idle .intTwdlocalLB insert end $filename  
     
     #If Chinese or Thai: update font files also 
@@ -188,36 +192,34 @@ puts $fileName
   
 set year $jahr   
 set twdFile $fileName
- 
+
+#TODO crap remove! 
   #Determine if list or file
-  if [regexp "twd$" $fileName] {
-    set url [file join $twdFileUrl $fileName]
-    set type file
+  #if [regexp "twd$" $fileName] {
+    #set url [file join $twdFileUrl $fileName]
+    #set type file
     
-  } else {
-    set url $twdListUrl
-    set type list
-  }
-puts "URL $url"
-  
+  #} else {
+    #set url $twdListUrl
+    #set type list
+  #}
+#puts "URL $url"
+
+#TODO this is crap, use only for TWD file, list is downloaded in checkTlsConn!!!!!!  
+
   #make file Tcl readable, matching Helmut's URL
-if {$type == "file"} {
+
 set twdFile [file tail $twdFile]
 set nameParts [split $twdFile "_"]
 lset nameParts 2 "$year.twd"
 set fileName [join $nameParts "_"]
 set filePath [file join $twddir $fileName]
 set url $twdFileUrl/$fileName
-
- } else {
-  set url $twdListUrl
-  set fileName twdRemoteList 
- }
  
   if ![catch testTlsConn] {
 puts "FETCHING DATA..."
 
-    fetchHttpData $fileName $type
+    fetchHttpData $fileName
     
   } elseif ![catch HttpConn] {
    
@@ -231,39 +233,39 @@ puts "FETCHING DATA..."
 # fetchHttpData
 ##fetches TWD list|file after testHttpConn is established
 ##called by fetchTwdFile
-proc fetchHttpData {fileName type} {
+proc fetchHttpData {fileName} {
   global twddir twdListUrl twdFileUrl
-  
-  
+    
   set filePath [file join $twddir $fileName]
 
 puts "FILENAME $fileName"
 puts "SAVING DATA..." 
 
-if {$type == "list"} {
-  set url $twdListUrl
-} else {
-  set url $twdFileUrl/$fileName
-}
+#if {$type == "list"} {
+  #set url $twdListUrl
+#} else {
 
-#TODO haut das hin?
-#testTlsConn
-set chan [open $url w]
+#}
+
+set url $twdFileUrl/$fileName
+set chan [open $filePath w]
 fconfigure $chan -encoding utf-8
-set token [http::geturl $url -channel $chan]
+#curl etc.already handled
+http::geturl $url -channel $chan
 close $chan
  
- proc eskiyol {} { 
-  #read out & save to twddir
-  set token [http::geturl $url]
-  set data [http::data $token]
+ #proc eskiyol {} { 
+  ##read out & save to twddir
+  #set token [http::geturl $url]
+  #set data [http::data $token]
   
-  set chan [open $filePath w]
-  fconfigure $chan -encoding utf-8
-  puts $chan $data
-  close $chan
-  }
-}
+  #set chan [open $filePath w]
+  #fconfigure $chan -encoding utf-8
+  #puts $chan $data
+  #close $chan
+  #}
+  
+} ;#END fetchHTTPData
 
 
 ###############################################################################

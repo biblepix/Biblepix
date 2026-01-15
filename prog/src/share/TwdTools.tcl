@@ -81,7 +81,6 @@ proc listRemoteTwdFiles {} {
   set spaceName 60
   
   set curYear $jahr
-set index 0
 
   foreach node $file {
     set yearNode [$node nextSibling]
@@ -103,11 +102,8 @@ set index 0
     }
 
     ##start building line
-
-
     append nameline $lang
     append nameline [string repeat $space [expr 28 - [string length $lang]]]
-
     append nameline $name
     append nameline [string repeat $space [expr 50 - [string length $name]]] 
     
@@ -117,13 +113,14 @@ set index 0
       append nameline [string repeat $space 5] $year [string repeat $space 15]
     }
 
+#may be used elsewhere for extracting hrefs!
+  #set urllist [$root selectNodes {//tr/td/a}]
+  #set hrefs ""
+  #foreach url $urllist {lappend hrefs [$url @href]}
+  #set urllist [lsort $hrefs]
+
     append nameline $version
-
     lappend sortlist $nameline
-    
-append nameline  [string repeat $space 3] $index
-incr index    
-
     unset nameline
     
 #TODO index stimmt nie!
@@ -147,9 +144,9 @@ unset fileName
   foreach line $sortL {
     $lBox insert end $line
   }
-  
 
-set ::remoteTwdL [lsort $fileL]
+#URL list to be used by downloadTwdFiles  
+set ::urlL [lsort $fileL]
  
 } ;#END listRemoteTwdFiles
 
