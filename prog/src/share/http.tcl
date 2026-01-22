@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/httpsTwd.tcl
 # Procs called by Installer / Setup für Https-Zugriff auf bible2.net
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7jan26 pv
+# Updated: 22jan26 pv
 
 # testTlsConn - TODO change name to sth that includes http(s)
 ##establishes basic Https connexion for downloads from bible2.net,
@@ -362,7 +362,7 @@ proc setProxy {} {
 }
 
 
-# runHTTP - TODO find way to skip this in Biblepix after just done!
+# runHTTP
 ## Main program for BiblePix Http download
 ## isInitial must be set to 0 or 1
 ## Called by Installer & Setup
@@ -381,6 +381,7 @@ proc runHTTP isInitial {
     set filePathList [list {*}$filePathL {*}$fontPathL]
 
     #Download all registered files & fonts
+    #TODO try threads!
     foreach filepath $filePathList {
       downloadFileFromRelease $filepath $isInitial
     }

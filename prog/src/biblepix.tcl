@@ -4,7 +4,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 12jan26 pv
+# Updated: 22jan26 pv
 ######################################################################
 
 #Verify location & source Globals
@@ -14,14 +14,16 @@ source $Globals
 source $TwdTools
 
 #Skip prog update if pidfile newer than 27 hours
-set oldPidfile [glob -nocomplain $piddir/*]
-if { [expr [clock seconds] - [file atime $oldPidfile]] > 100000  } {
+set oldPidfile [glob -nocomplain $piddir/*] ;#TODO Is this used anywhere???
 
-  if { [info exists Debug] && $Debug } {
-#TODO try threads!
-    runHTTP 0
-  } else {
-    catch runHTTP 0
+set runHttpPid [join $piddir runHttpPid]
+
+#run update if httpPidfile older than 6 days
+if { [file exists $runHttpPid] && [file atime $runHttpPid] > 500000 } {
+  #touch new pidfile if run  
+  if ![catch {runHTTP 0}] {
+    set chan [open $piddir/runHttpPid w]
+    close $chan
   }
 }
 
@@ -77,9 +79,15 @@ foreach file [glob -nocomplain -directory $piddir *] {
   file delete -force $file
 }
 
+
+
+
 #TODO use open chan instead, and close it when appropriate
 set pidfile [open $piddir/[pid] w]
 close $pidfile
+
+
+
 
 #4. C r e a t e   i m a g e   & start slideshow
 

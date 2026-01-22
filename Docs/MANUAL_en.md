@@ -31,7 +31,7 @@ BiblePix automatically chooses your "Home Directory" for installation, as this i
 
 1. Download and run Tcl/Tk from ActiveState: **https://www.activestate.com/products/tcl/**
 
-This package contain all required Tcl programs.
+This package contains all required Tcl programs.
 NOTE: Before the next step, restart computer to make sure Tcl is properly registered!
 
 2. Download the BiblePix Installer from **https://biblepix.vollmar.ch** and right-click to install (for option 'Open with...' choose 'Wish' or 'Tcl' application).
