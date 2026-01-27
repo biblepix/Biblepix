@@ -13,12 +13,21 @@ set Globals "[file join $srcdir share globals.tcl]"
 source $Globals
 source $TwdTools
 
-#Skip prog update if pidfile newer than 27 hours
-set oldPidfile [glob -nocomplain $piddir/*] ;#TODO Is this used anywhere???
+#Delete old PID process if still running, and remove old pidfile
+#set oldPid [glob -nocomplain $piddir/*]
+set oldPid [glob -tail -directory $piddir *\[0-9\]*]
 
-set runHttpPid [join $piddir runHttpPid]
+#catch [exec kill $oldPid]
+#catch [exec taskkill /Pid $oldPid]
+#file delete $piddir/$oldPid
+ 
+#Write new PID into piddir
+set chan [open [file join $piddir [pid]] w]
+close $chan
 
 #run update if httpPidfile older than 6 days
+#TODO da goht nöd, s.o. glob...
+set runHttpPid [file join $piddir runHttpPid]
 if { [file exists $runHttpPid] && [file atime $runHttpPid] > 500000 } {
   #touch new pidfile if run  
   if ![catch {runHTTP 0}] {

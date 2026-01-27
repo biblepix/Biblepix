@@ -22,46 +22,52 @@ proc testTlsConn {} {
     return 1
   }
   
-  #establish https connexion to bible2.net TODO NewsHandler needs Setup!
-  if [catch { http::register https 443 {::tls::socket -autoservername true }} ] {
-
- #   NewsHandler::QueryNews "Unable to connect to $twdListUrl. Try again later." red
-    return 1
-   }
-   
-  #RemoteList wird schon beim Test heruntergeladen! - TODO make sure this isn't repeated!!!
-  set chan [open $TwdRemoteList w]
-  fconfigure $chan -encoding utf-8
-  set token [http::geturl $twdListUrl -channel $chan]
-  close $chan
- 
- #TODO where is curl switch??? 
-  #  NewsHandler::QueryNews "Connection with $twdListUrl established." lightgreen
-}
- 
- #?wohin damit?
- testTlsConn
- 
- proc ? {} { 
-#TODO da goot nöd! isch jo scho di ganz twd-lischte!!!
-#move to proc!
-  
-    
-  if {[http::status $token] != "ok"} {
-    NewsHandler::QueryNews "$error" red
+  #Chek connexion & download RemoteList
+  http::register https 443 {::tls::socket -autoservername true}
+  if [catch {http::geturl $twdListUrl -validate 1 }] {
+    puts "No connection!"
     return 1
   }
+  
+  ##first open for reading in case something goes wrong 
+  set chan [open $TwdRemoteList r]
+  fconfigure $chan -encoding utf-8
+  set token [http::geturl $twdListUrl -channel $chan]
+  
+#  if {[http::status $token] != "ok"} {
+#  NewsHandler::QueryNews "$error" red
+#TODO where's this going???? Bedingung fehlt.
+    close $chan
 
-#TODO move this to another proc?
-  set data [http::data $token]
+    curl|wget $TwdRemoteList $twdListUrl
+    #check if file atime from today
+    if !{[file exists $TwdRemoteList] && [clock format [file atime $TwdRemoteList] -format %d] == $heute} {
+      puts "$TwdRemoteList could not be downloaded"
+      return 1
+    }
+        
+  } else {
+  
+    #Analyse data & write to file
+    set data [http::data $token]
+    if {[string length $data] < 5000} {
+      puts "Data corrupt. Could not download new TWD Remote list."
+      return 1
+    }
+    
+    set chan [open $TwdRemoteList w]
+    puts $chan $data
+    close $chan 
+ 
+  #  NewsHandler::QueryNews "Connection with $twdListUrl established." lightgreen
 
   http::cleanup $token
   http::unregister https
 
-  return $data
-
 } ;#END testTlsConn
 
+ testTlsConn
+ 
 ## getRemoteRoot -TODO unnecessary, all in fetchTwdList now!
 ###download TwdRemoteList
 ###called by listRemoteTWDFiles & downloadTWDFiles
@@ -104,27 +110,41 @@ proc testTlsConn {} {
 #} ;#END fetchTwdList
 
 #TODO must be able to be used for any TWD download procedure!
-# curl|wget
+# curl|wget - the $file var isn't even used!!!!!!!!!!!!
 ##check if either installed & fetch ?file?
 ##called by ? if https not working
-proc curl|wget {file} {
+proc curl|wget {file url} {
    global twdUrl TwdRemoteList
+   
+#TODO first check internet connection ?
+#curl -I
+#wget --spider
    
 	if {[auto_execok curl] != ""} {
 	  set cmd "curl"
 	  set opt "-o"
+	#  set checkconn "-I"
 	} elseif {[auto_execok wget] != ""} {
 		set cmd "wget"
 		set opt "-O"
+	#	set checkconn "--spider"
+		
 	} else {
 		NewsHandler::QueryNews "Cannot download file list from bible2.net.\nPlease install 'curl' or 'wget' on your PC and try again." red
 		return 1
 	}
 
+#1. Check connection - some exit code if not used with 'exec' - TODO das bringt gar nichts...
+#if [catch {$cmd $checkconn $url}] {
+#  puts "No connection.."
+#  return 1
+#}
+
+#TODO this is crap, must accept any file...
 	#download ?current twd list? to $twddir
-  catch {exec $cmd $opt $TwdRemoteList $twdUrl}
-  
-}
+  catch {exec $cmd $opt $TwdRemoteList $url}
+
+} ;#END curl|wget 
 
 # downloadTWDFiles
 
@@ -223,7 +243,7 @@ puts "FETCHING DATA..."
     
   } elseif ![catch HttpConn] {
    
-      if catch curl|wget $url {
+      if [catch {curl|wget $fileName $url}] {
         NewsHandler::QueryNews "Could not download $fileName from bible2.net. \nTry to fetch it manually from $twdUrl." red
       }
   }
