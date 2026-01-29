@@ -1,7 +1,13 @@
 # ~/Biblepix/prog/src/share/httpsTwd.tcl
 # Procs called by Installer / Setup für Https-Zugriff auf bible2.net
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22jan26 pv
+# Updated: 29jan26 pv
+
+if [catch {package require http} err] {
+  package require Tk
+  tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing http http]"
+  return 1
+}
 
 # testTlsConn - TODO change name to sth that includes http(s)
 ##establishes basic Https connexion for downloads from bible2.net,
@@ -9,15 +15,10 @@
 ##called by updateTwd & downloadTwdFile
 proc testTlsConn {} {
   global twdListUrl TwdRemoteList
-#package require Tk
-
-  if [catch {package require http} err] {
-    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing http http]"
-    return 1
-  }
   
   #check for tls extra package installed
   if [catch {package require tls} err] {
+    package require Tk
     tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tls tcl-tls]"
     return 1
   }
@@ -50,6 +51,8 @@ proc testTlsConn {} {
   
     #Analyse data & write to file
     set data [http::data $token]
+    
+#TODO use CSV instead, mit gschiderer Bedingig
     if {[string length $data] < 5000} {
       puts "Data corrupt. Could not download new TWD Remote list."
       return 1

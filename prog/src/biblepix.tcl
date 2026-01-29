@@ -4,7 +4,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22jan26 pv
+# Updated: 29jan26 pv
 ######################################################################
 
 #Verify location & source Globals
@@ -14,22 +14,22 @@ source $Globals
 source $TwdTools
 
 #Delete old PID process if still running, and remove old pidfile
-#set oldPid [glob -nocomplain $piddir/*]
-set oldPid [glob -tail -directory $piddir *\[0-9\]*]
-
-#catch [exec kill $oldPid]
-#catch [exec taskkill /Pid $oldPid]
-#file delete $piddir/$oldPid
- 
-#Write new PID into piddir
+set oldPidL [glob -nocomplain -tail -directory $piddir *\[0-9\]*]
+set oldPid [lindex $oldPidL 0]
+if {$os == "Linux"} {
+  catch {exec kill $oldPid}
+} elseif {$os == "Windows"} {
+  catch {exec taskkill /Pid $oldPid}
+}
+#Delete old PID(s) & write new PID into piddir
+foreach n $oldPidL {file delete $piddir/$n}
 set chan [open [file join $piddir [pid]] w]
 close $chan
 
-#run update if httpPidfile older than 6 days
-#TODO da goht nöd, s.o. glob...
+
+#run update if httpPidfile older than today
 set runHttpPid [file join $piddir runHttpPid]
-if { [file exists $runHttpPid] && [file atime $runHttpPid] > 500000 } {
-  #touch new pidfile if run  
+if { ![file exists $runHttpPid] || [clock format [file atime $runHttpPid] -format %d] < $heute} { 
   if ![catch {runHTTP 0}] {
     set chan [open $piddir/runHttpPid w]
     close $chan
@@ -39,6 +39,9 @@ if { [file exists $runHttpPid] && [file atime $runHttpPid] > 500000 } {
 #Look for new Twd list & files always
 catch testTlsConn
 catch updateTwd
+
+
+
 
 #Set TwdFileName for the 1st time, else run Setup
 if [catch {set twdfile [getRandomTwdFile]}] {
