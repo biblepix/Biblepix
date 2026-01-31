@@ -4,7 +4,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29jan26 pv
+# Updated: 31jan26 pv
 ######################################################################
 
 #Verify location & source Globals
@@ -13,32 +13,36 @@ set Globals "[file join $srcdir share globals.tcl]"
 source $Globals
 source $TwdTools
 
-#Delete old PID process if still running, and remove old pidfile
-set oldPidL [glob -nocomplain -tail -directory $piddir *\[0-9\]*]
-set oldPid [lindex $oldPidL 0]
-if {$os == "Linux"} {
-  catch {exec kill $oldPid}
-} elseif {$os == "Windows"} {
-  catch {exec taskkill /Pid $oldPid}
+# killpid
+##deletes old PID process if still running
+proc killpid {PID} {
+  if {$os == "Linux"} {
+    set killpid {kill}
+  } elseif {$os == "Windows"} {
+    set killpid {taskkill /Pid}
+  }
+  exec $killpid
 }
+
 #Delete old PID(s) & write new PID into piddir
-foreach n $oldPidL {file delete $piddir/$n}
+foreach pidPath [glob -nocomplain -type f $piddir/*] {
+puts $pidPath
+  file delete $pidPath
+  catch {killpid [file tail $pidPath]}
+
+}
 set chan [open [file join $piddir [pid]] w]
 close $chan
 
+#TODO AD HENA POEL הללויה
 
-#run update if httpPidfile older than today
-set runHttpPid [file join $piddir runHttpPid]
-if { ![file exists $runHttpPid] || [clock format [file atime $runHttpPid] -format %d] < $heute} { 
-  if ![catch {runHTTP 0}] {
-    set chan [open $piddir/runHttpPid w]
-    close $chan
-  }
-}
+#Look for new prog files, Twd list & files always
+#catch {runHTTP 0}
 
-#Look for new Twd list & files always
-catch testTlsConn
-catch updateTwd
+runHTTP 0
+
+#catch testTlsConn
+#catch updateTwd
 
 
 
@@ -87,16 +91,9 @@ if {[info exists enableterm] && $enableterm } {
 source $SetBackgroundChanger
 
 #Stop any running biblepix.tcl TODO this doesn't stop it!
-foreach file [glob -nocomplain -directory $piddir *] {
-  file delete -force $file
-}
-
-
-
-
-#TODO use open chan instead, and close it when appropriate
-set pidfile [open $piddir/[pid] w]
-close $pidfile
+#foreach file [glob -nocomplain -directory $piddir *] {
+#  file delete -force $file
+#}
 
 
 
