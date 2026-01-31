@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/httpsTwd.tcl
 # Procs called by Installer / Setup für Https-Zugriff auf bible2.net
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 29jan26 pv
+# Updated: 31jan26 pv
 
 if [catch {package require http} err] {
   package require Tk
@@ -22,10 +22,10 @@ proc testTlsConn {} {
     tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tls tcl-tls]"
     return 1
   }
-  
+
   #Chek connexion & download RemoteList
   http::register https 443 {::tls::socket -autoservername true}
-  if [catch {http::geturl $twdListUrl -validate 1 }] {
+  if [catch {http::geturl $twdListUrl -validate 1}] {
     puts "No connection!"
     return 1
   }
@@ -33,43 +33,49 @@ proc testTlsConn {} {
   ##first open for reading in case something goes wrong 
   set chan [open $TwdRemoteList r]
   fconfigure $chan -encoding utf-8
-  set token [http::geturl $twdListUrl -channel $chan]
-  
-#  if {[http::status $token] != "ok"} {
-#  NewsHandler::QueryNews "$error" red
-#TODO where's this going???? Bedingung fehlt.
-    close $chan
+  set oldData [read $chan]
+  close $chan
 
-    curl|wget $TwdRemoteList $twdListUrl
-    #check if file atime from today
-    if !{[file exists $TwdRemoteList] && [clock format [file atime $TwdRemoteList] -format %d] == $heute} {
-      puts "$TwdRemoteList could not be downloaded"
-      return 1
-    }
+    
+#TODO hir liegt der Hase im Pfeffer, was ist mit -channel????  - geht wohl nur mit [open w]
+#set token [http::geturl $twdListUrl -channel $chan]
+#close $chan
+
+puts adhena3
+
+# TODO Welche bedingung?
+#    curl|wget $TwdRemoteList $twdListUrl
+
+  #check if file atime from today
+  if !{
+  [file exists $TwdRemoteList] && 
+  [clock format [file atime $TwdRemoteList] -format %d] == $heute
+  } {
+    puts "$TwdRemoteList up-to-date"
+    return 1
+  }
+
         
-  } else {
+  #Analyse data & write to file - #TODO use CSV instead, mit gschiderer Bedingig
+        
+  set chan [open $TwdRemoteList w]
+  set token [http::geturl $twdListUrl -channel $chan]
+  set newData [http::data $token]
+  close $chan
   
-    #Analyse data & write to file
-    set data [http::data $token]
-    
-#TODO use CSV instead, mit gschiderer Bedingig
-    if {[string length $data] < 5000} {
-      puts "Data corrupt. Could not download new TWD Remote list."
-      return 1
-    }
-    
+  if {[string length $newData] < 5000} {
+    puts "Data corrupt. Could not download new TWD Remote list."
     set chan [open $TwdRemoteList w]
-    puts $chan $data
-    close $chan 
- 
-  #  NewsHandler::QueryNews "Connection with $twdListUrl established." lightgreen
-
+    puts $chan $oldData
+    close $chan
+  }
+   
   http::cleanup $token
   http::unregister https
 
 } ;#END testTlsConn
 
- testTlsConn
+#??? testTlsConn
  
 ## getRemoteRoot -TODO unnecessary, all in fetchTwdList now!
 ###download TwdRemoteList
@@ -390,27 +396,35 @@ proc setProxy {} {
 ## isInitial must be set to 0 or 1
 ## Called by Installer & Setup
 proc runHTTP isInitial {
+  global filePathL fontPathL piddir
+
   #Test connexion & start download
   if [catch testHttpCon Error] {
-
     puts "ERROR: http.tcl -> runHTTP($isInitial): $Error"
     error $Error
-
     return 1
-    
-  } else {
+  } 
+  
+  set filePathList [list {*}$filePathL {*}$fontPathL]
+  set runHttpPid [file join $piddir runHttpPid]
+  
+  #run update if httpPidfile older than 24 hours
+  if { ![file exists $runHttpPid] || 
+        [file atime  $runHttpPid] < [expr [clock seconds] - 86400] } {
 
-    global filePathL fontPathL
-    set filePathList [list {*}$filePathL {*}$fontPathL]
+  puts "Updating program files..."
 
     #Download all registered files & fonts
-    #TODO try threads!
+#TODO try threads!
     foreach filepath $filePathList {
       downloadFileFromRelease $filepath $isInitial
     }
 
-    return 0
+    #register today's run by creating empty directory
+    file mkdir $runHttpPid
+    
   }
+  
 } ;#end runHTTP
 
 # downloadSampleJpegs

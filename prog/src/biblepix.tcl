@@ -26,22 +26,21 @@ proc killpid {PID} {
 
 #Delete old PID(s) & write new PID into piddir
 foreach pidPath [glob -nocomplain -type f $piddir/*] {
-puts $pidPath
   file delete $pidPath
   catch {killpid [file tail $pidPath]}
-
 }
 set chan [open [file join $piddir [pid]] w]
 close $chan
 
 #TODO AD HENA POEL הללויה
 
-#Look for new prog files, Twd list & files always
+#Look for new prog files, Twd list always
 #catch {runHTTP 0}
 
-runHTTP 0
+catch {runHTTP 0}
 
-#catch testTlsConn
+catch testTlsConn
+
 #catch updateTwd
 
 
@@ -89,13 +88,6 @@ if {[info exists enableterm] && $enableterm } {
 ##setBg is executed for Desktops that can accept a command
 ##setBg can be empty/non-existent as it is 'catched'
 source $SetBackgroundChanger
-
-#Stop any running biblepix.tcl TODO this doesn't stop it!
-#foreach file [glob -nocomplain -directory $piddir *] {
-#  file delete -force $file
-#}
-
-
 
 
 #4. C r e a t e   i m a g e   & start slideshow
