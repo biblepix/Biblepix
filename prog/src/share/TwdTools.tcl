@@ -60,6 +60,7 @@ proc listRemoteTwdFiles {} {
     return 1
   }
   
+#Try this: https://bible2.net/service/TheWord/twd11/current?format=csv
  
  #TODO hemmer da nöd scho neimet anderscht? 
   #retrieve data from file
@@ -122,20 +123,12 @@ proc listRemoteTwdFiles {} {
     append nameline $version
     lappend sortlist $nameline
     unset nameline
+puts $sortlist
     
-#TODO index stimmt nie!
-#$lBox activate $index ?current?
-#$lBox active $index
-
-#to be used in comparison for download
-append fileName $lang _ $name _ $year .twd
-lappend fileL $fileName
-
-#array set ::twdRemoteArr "$index $fileName"   
-#set index [$lBox index end]
-#incr index 
-#puts $index
-unset fileName
+    #to be used in comparison for download
+    append fileName $lang _ $name _ $year .twd
+    lappend fileL $fileName
+    unset fileName
 
   } ;#END main loop
 

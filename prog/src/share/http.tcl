@@ -1,122 +1,47 @@
 # ~/Biblepix/prog/src/share/httpsTwd.tcl
 # Procs called by Installer / Setup für Https-Zugriff auf bible2.net
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 31jan26 pv
+# Updated: 18feb26 pv
 
+#Check http
 if [catch {package require http} err] {
   package require Tk
   tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing http http]"
   return 1
 }
 
+#Check tls
+if [catch {package require tls} err] {
+  package require Tk
+  tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tls tcl-tls]"
+  return 1
+}
+
+#Register https
+::http::register https 443 {::tls::socket -autoservername true}
+
+
 # testTlsConn - TODO change name to sth that includes http(s)
 ##establishes basic Https connexion for downloads from bible2.net,
 ##i.e. TWD file list & TWD files
-##called by updateTwd & downloadTwdFile
+##called by updateTwd
 proc testTlsConn {} {
   global twdListUrl TwdRemoteList
   
-  #check for tls extra package installed
-  if [catch {package require tls} err] {
-    package require Tk
-    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tls tcl-tls]"
-    return 1
-  }
-
-  #Chek connexion & download RemoteList
-  http::register https 443 {::tls::socket -autoservername true}
-  if [catch {http::geturl $twdListUrl -validate 1}] {
-    puts "No connection!"
-    return 1
+ #Download TwdRemoteList & use curl|wget if no tls
+ if [catch {::http::geturl $twdListUrl -validate 1}] {
+  catch {curl|wget $TwdRemoteList $twdListUrl}
+  return 0
   }
   
-  ##first open for reading in case something goes wrong 
-  set chan [open $TwdRemoteList r]
-  fconfigure $chan -encoding utf-8
-  set oldData [read $chan]
-  close $chan
-
-    
-#TODO hir liegt der Hase im Pfeffer, was ist mit -channel????  - geht wohl nur mit [open w]
-#set token [http::geturl $twdListUrl -channel $chan]
-#close $chan
-
-puts adhena3
-
-# TODO Welche bedingung?
-#    curl|wget $TwdRemoteList $twdListUrl
-
-  #check if file atime from today
-  if !{
-  [file exists $TwdRemoteList] && 
-  [clock format [file atime $TwdRemoteList] -format %d] == $heute
-  } {
-    puts "$TwdRemoteList up-to-date"
-    return 1
-  }
-
-        
-  #Analyse data & write to file - #TODO use CSV instead, mit gschiderer Bedingig
-        
+  #Analyse data & write to file - #TODO use CSV instead
   set chan [open $TwdRemoteList w]
-  set token [http::geturl $twdListUrl -channel $chan]
-  set newData [http::data $token]
+  ::http::geturl $twdListUrl -channel $chan
   close $chan
-  
-  if {[string length $newData] < 5000} {
-    puts "Data corrupt. Could not download new TWD Remote list."
-    set chan [open $TwdRemoteList w]
-    puts $chan $oldData
-    close $chan
-  }
-   
-  http::cleanup $token
-  http::unregister https
 
 } ;#END testTlsConn
 
-#??? testTlsConn
- 
-## getRemoteRoot -TODO unnecessary, all in fetchTwdList now!
-###download TwdRemoteList
-###called by listRemoteTWDFiles & downloadTWDFiles
-#proc getRemoteRoot {} {
-#  global lang TwdRemoteList  
-#  
-#  #Check for tdom 
-#  ##standard in ActiveTcl, Linux distros vary
-#  if [catch {package require tdom} err] {
-#    package require Tk
-#    msgcatInit $lang
-#    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tDom tdom]"
-#    return 1
-#  }
-#  
-#  #Try downloading rootlist twice
-#  if [catch downloadTwdList] {
-#    downloadTwdList
-#  }
-# 
-#} ;#END getRemoteRoot
 
- 
-   
-#TODO move this to another proc!
-#TODO this is now in downloadTwdFile
-#  #Check for tdom 
-#  ##standard in ActiveTcl, Linux distros vary
-#  if [catch {package require tdom} err] {
-#    package require Tk
-#    msgcatInit $lang
-#    tk_messageBox -type ok -icon error -title "$err" -message "[msgcat::mc packageRequireMissing tDom tdom]"
-#    return 1
-#  }
-	
-	
-  
-#TODO list is in XML!!!!
-
-#} ;#END fetchTwdList
 
 #TODO must be able to be used for any TWD download procedure!
 # curl|wget - the $file var isn't even used!!!!!!!!!!!!
@@ -143,11 +68,6 @@ proc curl|wget {file url} {
 		return 1
 	}
 
-#1. Check connection - some exit code if not used with 'exec' - TODO das bringt gar nichts...
-#if [catch {$cmd $checkconn $url}] {
-#  puts "No connection.."
-#  return 1
-#}
 
 #TODO this is crap, must accept any file...
 	#download ?current twd list? to $twddir
@@ -161,25 +81,7 @@ proc curl|wget {file url} {
 proc downloadTWDFiles {} {
   global twddir jahr Globals TwdRemoteList
 
-#TODO needs catch?
-#  set chan [open $TwdRemoteList r]
-#  fconfigure $chan -encoding utf-8
-#  set data [read $chan]
-#  close $chan
-
-testTlsConn
-
-
-#TODO try ::urllist instead! - use ::remoteTwdList (bad name!)
-#proc eskituski {} {
-#set root [dom parse -html $data]
-#cd $twddir
-##get hrefs alphabetically ordered
-#set urllist [$root selectNodes {//tr/td/a}]
-#set hrefs ""
-#foreach url $urllist {lappend hrefs [$url @href]}
-#set urllist [lsort $hrefs]
-#}
+  testTlsConn
 
 set selectedindices [.twdremoteLB curselection]
 set urllist $::urlL
@@ -209,7 +111,7 @@ fetchTwdFile $filename
 } ;#END downloadTWDFiles
 
 # fetchTwdFile
-##fetches TWD language file OR list from bible2.net
+##fetches TWD language file  ??? OR list from bible2.net
 ##called by updateTwd ??
 proc fetchTwdFile {fileName} {
   global twddir 
@@ -222,22 +124,7 @@ puts $fileName
 set year $jahr   
 set twdFile $fileName
 
-#TODO crap remove! 
-  #Determine if list or file
-  #if [regexp "twd$" $fileName] {
-    #set url [file join $twdFileUrl $fileName]
-    #set type file
-    
-  #} else {
-    #set url $twdListUrl
-    #set type list
-  #}
-#puts "URL $url"
-
-#TODO this is crap, use only for TWD file, list is downloaded in checkTlsConn!!!!!!  
-
-  #make file Tcl readable, matching Helmut's URL
-
+#make file Tcl readable, matching Helmut's URL
 set twdFile [file tail $twdFile]
 set nameParts [split $twdFile "_"]
 lset nameParts 2 "$year.twd"
@@ -270,31 +157,17 @@ proc fetchHttpData {fileName} {
 puts "FILENAME $fileName"
 puts "SAVING DATA..." 
 
-#if {$type == "list"} {
-  #set url $twdListUrl
-#} else {
-
-#}
-
 set url $twdFileUrl/$fileName
+
 set chan [open $filePath w]
 fconfigure $chan -encoding utf-8
-#curl etc.already handled
-http::geturl $url -channel $chan
+
+#TODO curl etc.already handled?
+#This prog is called by fetchTwdFile, not testTlsConn > reason for failure??? 
+::http::geturl $url -channel $chan
 close $chan
- 
- #proc eskiyol {} { 
-  ##read out & save to twddir
-  #set token [http::geturl $url]
-  #set data [http::data $token]
   
-  #set chan [open $filePath w]
-  #fconfigure $chan -encoding utf-8
-  #puts $chan $data
-  #close $chan
-  #}
-  
-} ;#END fetchHTTPData
+} ;#END fetchHttpData
 
 
 ###############################################################################
@@ -410,7 +283,7 @@ proc runHTTP isInitial {
   
   #run update if httpPidfile older than 24 hours
   if { ![file exists $runHttpPid] || 
-        [file atime  $runHttpPid] < [expr [clock seconds] - 86400] } {
+        [file mtime  $runHttpPid] < [expr [clock seconds] - 86400] } {
 
   puts "Updating program files..."
 
@@ -421,6 +294,7 @@ proc runHTTP isInitial {
     }
 
     #register today's run by creating empty directory
+    file delete -force $runHttpPid
     file mkdir $runHttpPid
     
   }

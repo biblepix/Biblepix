@@ -4,7 +4,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 31jan26 pv
+# Updated: 2feb26 pv
 ######################################################################
 
 #Verify location & source Globals
@@ -35,13 +35,11 @@ close $chan
 #TODO AD HENA POEL הללויה
 
 #Look for new prog files, Twd list always
-#catch {runHTTP 0}
-
 catch {runHTTP 0}
-
+#TWD list
 catch testTlsConn
-
-#catch updateTwd
+#für Jahreswechsel:
+catch updateTwd
 
 
 
