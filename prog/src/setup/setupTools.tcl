@@ -875,10 +875,13 @@ proc addPic {} {
   
   source $::SetupResizePhoto
   source $::SetupResizeTools
-  
-  if {[lsearch [image names] "origPic"] == -1} {
+ 
+ 
+ 
+#TODO falscher Code: origPic muss stets erneuert werden! geth noch nicht in Rotate! 
+#  if {[lsearch [image names] "origPic"] == -1} {
     image create photo origPic -file $picPath
-  }
+#  }
 
   #POPULATE ::addpicture namespace
   namespace eval addpicture {}
