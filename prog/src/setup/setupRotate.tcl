@@ -2,7 +2,7 @@
 # Creates Rotate toplevel window with scale & mC
 # Sourced by "Bild drehen" button
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 24jun25 pv
+# Updated: 28feb26 pv
 
 image create photo unrotatedThumb
 unrotatedThumb copy thumb
@@ -44,10 +44,10 @@ canvas $mC -width 200 -height 110 -borderwidth 2 -relief sunken -bg lightblue
 
 #Create original pic -TODO only at end?
 #TODO this is never used!
-namespace eval rotatepic {
+#namespace eval rotatepic {
   set path [file join $canvpic::picdir $canvpic::thumb]
   image create photo origPic -file $path
-}
+#}
 
 set rotatepic::angle 0
 set ::v 0
@@ -154,7 +154,6 @@ $canv conf -width [image width $rotatepic::rotateCanvPic] -height [image height 
 
 pack $infoL -in $F0 -side left -fill x -expand 1
 pack $cancelBtn $saveBtn -in $F0 -side right
-
 pack $canv -in $F1
 
 #Create scale

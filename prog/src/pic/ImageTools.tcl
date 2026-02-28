@@ -2,11 +2,12 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 17aug24 pv
+# Updated: 22feb26 pv
 
 #Check for Img package
 if [catch {package require Img} err ] {
   msgcatInit $lang
+  package require Tk
   tk_messageBox -type ok -icon error -title "$err" -message "[mc packageRequireMissing Img libtk-img(-dev)]"
 #  exit
 }

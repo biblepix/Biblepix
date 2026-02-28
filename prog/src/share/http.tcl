@@ -20,7 +20,6 @@ if [catch {package require tls} err] {
 #Register https
 ::http::register https 443 {::tls::socket -autoservername true}
 
-
 # testTlsConn - TODO change name to sth that includes http(s)
 ##establishes basic Https connexion for downloads from bible2.net,
 ##i.e. TWD file list & TWD files
@@ -34,13 +33,12 @@ proc testTlsConn {} {
   return 0
   }
   
-  #Analyse data & write to file - #TODO use CSV instead
+  #Analyse data & write to file
   set chan [open $TwdRemoteList w]
   ::http::geturl $twdListUrl -channel $chan
   close $chan
 
 } ;#END testTlsConn
-
 
 
 #TODO must be able to be used for any TWD download procedure!
@@ -68,10 +66,8 @@ proc curl|wget {file url} {
 		return 1
 	}
 
-
-#TODO this is crap, must accept any file...
-	#download ?current twd list? to $twddir
-  catch {exec $cmd $opt $TwdRemoteList $url}
+  #Download file
+  catch {exec $cmd $opt $file $url}
 
 } ;#END curl|wget 
 
@@ -81,6 +77,7 @@ proc curl|wget {file url} {
 proc downloadTWDFiles {} {
   global twddir jahr Globals TwdRemoteList
 
+#TODO schon getestet!
   testTlsConn
 
 set selectedindices [.twdremoteLB curselection]
@@ -93,7 +90,7 @@ set urllist $::urlL
     NewsHandler::QueryNews "Downloading $filename..." lightblue
 
 #TODO warum geht das nicht?
-    #Download file & recreate Twd lists
+    #Download file
 fetchTwdFile $filename
       
     after idle .intTwdlocalLB insert end $filename  
@@ -116,7 +113,7 @@ fetchTwdFile $filename
 proc fetchTwdFile {fileName} {
   global twddir 
   global twdFileUrl
-  global twdListUrl
+#  global twdListUrl
   global jahr
 
 puts $fileName
@@ -132,6 +129,7 @@ set fileName [join $nameParts "_"]
 set filePath [file join $twddir $fileName]
 set url $twdFileUrl/$fileName
  
+#TODO... 
   if ![catch testTlsConn] {
 puts "FETCHING DATA..."
 
@@ -170,11 +168,6 @@ close $chan
 } ;#END fetchHttpData
 
 
-###############################################################################
-########## PROCS FOR TWD LIST #################################################
-###############################################################################
-
-
 #TODO wohi demit?
 # wrapInternetCons
 ##sets news in statusline
@@ -202,6 +195,11 @@ proc wrapInternetCons {} {
 } ;#END wrapInternetCons
 
 
+
+
+#######################################
+#TODO >https.tcl
+#######################################
 ###############################################################################################
 #######  B I B L E P I X   H T T P   R E L E A S E    D O W N L O A D  ########################
 ###############################################################################################

@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 10jan26 pv
+# Updated 18feb26 pv
 
 # msgcatInit
 ##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
@@ -11,6 +11,7 @@ package require msgcat
 namespace import msgcat::mc msgcat::mcset
 
 source $::Http
+#TODO source $Https
 
 proc msgcatInit args {
 	global msgdir ExportTextvars
@@ -27,7 +28,7 @@ proc msgcatInit args {
 
 }
 
-# T O D O  is msgcat not loaded already?????
+# TODO  is msgcat not loaded already?????
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom} err] {
   msgcatInit $lang
@@ -60,16 +61,15 @@ proc listRemoteTwdFiles {} {
     return 1
   }
   
-#Try this: https://bible2.net/service/TheWord/twd11/current?format=csv
- 
- #TODO hemmer da nöd scho neimet anderscht? 
+
   #retrieve data from file
   set chan [open $TwdRemoteList r]
   fconfigure $chan -encoding utf-8
   set data [read $chan]
   close $chan
 
-
+#TODO move to csv instead
+#Try this: https://bible2.net/service/TheWord/twd11/current?format=csv
   set root [dom parse -html $data]
 
   # f i l l   l i s t b o x  
@@ -138,8 +138,8 @@ puts $sortlist
     $lBox insert end $line
   }
 
-#URL list to be used by downloadTwdFiles  
-set ::urlL [lsort $fileL]
+  #current URL list to be used by downloadTwdFiles  
+  set ::urlL [lsort $fileL]
  
 } ;#END listRemoteTwdFiles
 
@@ -151,7 +151,7 @@ set ::urlL [lsort $fileL]
 proc getTwdLocalList {} {
   global twddir jahr
   set twdL [glob -nocomplain -tails -directory $twddir *_$jahr.twd]
-  return $twdL
+  return [lsort $twdL]
 }
 
 # getTwdSigList
@@ -202,7 +202,7 @@ proc getRandomFontcolor {} {
   return [lindex $fontcolourL $randIndex]
 }
 
-# updateTwd
+# updateTwd TODO check if getTwdLocalList is needed here!
 ##compares local & remote TwdLists
 ##downloads any Twd file if next year available
 ##called by Biblepix & Setup
@@ -398,9 +398,9 @@ proc isRtL {TwdLang} {
 ##called by isRtL
 proc isArabicScript {TwdLang} {
   if {
-  $TwdLang == "ar" ||
-  $TwdLang == "ur" ||
-  $TwdLang == "fa"
+    $TwdLang == "ar" ||
+    $TwdLang == "ur" ||
+    $TwdLang == "fa"
   } {
     return 1
   } else {

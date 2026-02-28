@@ -74,6 +74,7 @@ scrollbar .twdremoteSB -command {.twdremoteLB yview}
 button .downloadBtn -textvar msg::download -command {
   downloadTWDFiles
   catch {updateMailBtnList .mailTop2F}
+#TODO add lsorted twdLocalList here!  
 }
 
 pack .downloadBtn -in .twdremoteF -side right -padx 3

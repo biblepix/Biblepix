@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupPhotos.tcl
 # Sourced by setupGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 14jun25 pv
+# Updated 28feb26 pv
 
 #Create frames
 pack [frame .phMainF] -in .photosF -fill x -pady $py -padx $px
@@ -21,7 +21,7 @@ message .phMainM -textvar msg::f6Txt -font bpfont1 -width 500 -pady $py -padx $p
 pack .phMainM -in .phLeftF -anchor nw -side left
 
 #Build Photo bar right
-  button .phOpen -width 30 -textvar msg::f6Find -height 1 -command {
+button .phOpen -width 30 -textvar msg::f6Find -height 1 -command {
   openFileDialog $DesktopPicturesDir
 }
 

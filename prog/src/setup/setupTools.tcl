@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Züst, biblepix.vollmar.ch
-# Updated: 29dec25 pv
+# Updated: 28feb26 pv
 
 source $SetupResizeTools
 
@@ -876,12 +876,12 @@ proc addPic {} {
   source $::SetupResizePhoto
   source $::SetupResizeTools
  
- 
- 
-#TODO falscher Code: origPic muss stets erneuert werden! geth noch nicht in Rotate! 
-#  if {[lsearch [image names] "origPic"] == -1} {
+  #check if rotated pic exists, else recreate OrigPic
+  if ![catch {origPic copy rotatedOrigPic -shrink}] {
+    image delete rotatedOrigPic
+  } else {
     image create photo origPic -file $picPath
-#  }
+  }
 
   #POPULATE ::addpicture namespace
   namespace eval addpicture {}

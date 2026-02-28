@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/RotateTools.tcl
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
 # Procs for rotating picture, called by SetupRotate
-# Updated: 9jul25 pv
+# Updated: 29feb26 pv
 
 # imageRotate
 ##with many thanks to Richard Suchenwirth!
@@ -181,14 +181,12 @@ proc vorschau {im angle canv} {
 ##'update' variable must be 1 or 0, for updating GUI window during process
 ##called by SetupRotate Save button
 
-#setclsh
- proc doRotateOrig {pic angle update} {
 
-  #1. rotate (takes a long time!)
-  set rotatedOrigPic [imageRotate $pic $angle $update]
-  
-  $pic blank
-  $pic copy $rotatedOrigPic -shrink
+#Rotate pic & save under new name (will be detected by addPicture)
+proc doRotateOrig {pic angle update} {
+  set rotPic [imageRotate $pic $angle $update]
+  image create photo rotatedOrigPic
+  rotatedOrigPic copy $rotPic -shrink
 }
 
 ######################################################
