@@ -877,10 +877,11 @@ proc addPic {} {
   source $::SetupResizeTools
  
   #check if rotated pic exists, else recreate OrigPic
+  image create photo origPic
   if ![catch {origPic copy rotatedOrigPic -shrink}] {
     image delete rotatedOrigPic
   } else {
-    image create photo origPic -file $picPath
+    origPic read $picPath
   }
 
   #POPULATE ::addpicture namespace
