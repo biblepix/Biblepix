@@ -75,10 +75,10 @@ proc curl|wget {file url} {
 
 #called by SetupInternational "Download" btn
 proc downloadTWDFiles {} {
-  global twddir jahr Globals TwdRemoteList
+  global twddir heuer Globals TwdRemoteList
 
 #TODO schon getestet!
-  testTlsConn
+#  testTlsConn
 
 set selectedindices [.twdremoteLB curselection]
 set urllist $::urlL
@@ -114,11 +114,11 @@ proc fetchTwdFile {fileName} {
   global twddir 
   global twdFileUrl
 #  global twdListUrl
-  global jahr
+  global heuer
 
 puts $fileName
   
-set year $jahr   
+set year $heuer   
 set twdFile $fileName
 
 #make file Tcl readable, matching Helmut's URL

@@ -73,7 +73,7 @@ mcset pl welcTxt2 "\u27a4 [mc bibletexts]: Wybierz tekst Biblii w jednym lub kil
 \u27a4 [mc manual]: Zapoznaj się z Kompletną Instrukcją programu $bp
 "
 mcset pl f1Tit "Aktualna lista tekstów Biblijnych dla 'Słowo'"
-mcset pl TwdLocalTit "Pliki z tekstami Biblijnymi zainstalowane dla  $jahr"
+mcset pl TwdLocalTit "Pliki z tekstami Biblijnymi zainstalowane dla  $heuer"
 mcset pl TwdRemoteTit "Pliki z tekstami Biblijnymi do pobrania"
 mcset pl language "Język"
 mcset pl year "Rok"

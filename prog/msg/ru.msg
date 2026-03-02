@@ -75,7 +75,7 @@ mcset ru noTwdFilesFound "Актуальные текстовые файлы Б�
 mcset ru connTwd "Соединение с bible2.net установлено."
 mcset ru noConnTwd "Нет соединения с bible2.net. Попробуйте позже."
 mcset ru f1Tit "Актуальные текстовые файлы Библии для 'Слова'"
-mcset ru TwdLocalTit "Установленные текстовые файлы Библии на $jahr"
+mcset ru TwdLocalTit "Установленные текстовые файлы Библии на $heuer"
 mcset ru TwdRemoteTit "Скачать текстовые файлы Библии"
 mcset ru language "Язык"
 mcset ru year "Год"

@@ -35,7 +35,7 @@ mcset de packageRequireMissing "$bp benötigt die Tcl-Erweiterung '%s'. \nBitte 
 mcset de next "Nächstes \u25bc"
 mcset de welcTit "Willkommen beim Einrichtungsprogramm von $bp!"
 mcset de welcSubtit1 "Was ist $bp?"
-mcset de welcTxt1 "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' entwickelt wird.\n\n'Bibel 2.0' setzt sich zum Ziel, $dw in einer wachsenden Anzahl von Sprachen zu verbreiten.\n$dw besteht aus 2 ausgewählten Bibelsprüchen für jeden Tag des Jahres.\n\n$bp kann $dw auf vielfältige Weise auf Ihrem PC anzeigen."
+mcset de welcTxt1 "$bp ist ein Tcl-Programm, das für das Projekt 'Bibel 2.0' entwickelt wird.\n\n'Bibel 2.0' setzt sich zum Ziel, $dw in einer wachsenden Anzahl von Sprachen zu verbreiten.\n$dw besteht aus 2 ausgewählten Bibelsprüchen für jeden Tag des heueres.\n\n$bp kann $dw auf vielfältige Weise auf Ihrem PC anzeigen."
 mcset de welcSubtit2 "Was sind Ihre Möglichkeiten?"
 mcset de welcTxt2 "\u27a4 [mc bibletexts]: Wählen Sie beliebig viele Bibelausgaben und -sprachen für $dw
 \u27a4 [mc desktop]: Betrachten Sie $dw auf Ihren persönlichen Fotos
@@ -61,13 +61,13 @@ mcset de noTwdFilesFound "Es sind keine aktuellen Bibeltextdateien installiert. 
 mcset de connTwd "Verbindung zu bible2.net hergestellt."
 mcset de noConnTwd "Keine Verbindung zu bible2.net. Versuchen Sie es später."
 mcset de f1Tit "Aktuelle Bibeltextliste für $dw"
-mcset de TwdLocalTit "Für $jahr installierte Bibeltextdateien"
+mcset de TwdLocalTit "Für $heuer installierte Bibeltextdateien"
 mcset de TwdRemoteTit "Bibeltextdateien zum Herunterladen"
 mcset de language "Sprache"
 mcset de year "Jahr"
 mcset de bibleversion "Bibelausgabe"
 mcset de biblename "Bibelname"
-mcset de f1Txt "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien zum Download markieren (s. unten), werden diese heruntergeladen, sobald Sie die Taste '[mc download]' drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)!"
+mcset de f1Txt "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien zum Download markieren (s. unten), werden diese heruntergeladen, sobald Sie die Taste '[mc download]' drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)! \nBeim Jahreswechsel werden die installierten Bibeldateien automatisch aktualisiert."
 #SETUP DESKTOP
 mcset de f2Tit "$dw auf Desktop-Hintergrundbild"
 mcset de f2Box "Hintergrundbild erzeugen"

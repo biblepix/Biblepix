@@ -2,8 +2,8 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 10JAN26 pv
-set version "5.2"
+# Updated: 2feb26 pv
+set version "5.5"
 set twdUrl "https://bible2.net/service/TheWord/twd11/current"
 set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
@@ -69,6 +69,7 @@ set filePathL {}
 lappend filePathL [set AnnotatePng [file join $picdir annotatePng.tcl]]
 lappend filePathL [set Globals [file join $sharedir globals.tcl]]
 lappend filePathL [set Http [file join $sharedir http.tcl]]
+lappend filePathL [set Https [file join $sharedir https.tcl]]
 lappend filePathL [set Readme [file join $rootdir README.txt]]
 lappend filePathL [set Setup [file join $rootdir biblepix-setup.tcl]]
 lappend filePathL [set ManualD [file join $docdir MANUAL_de.md]]
@@ -184,7 +185,7 @@ set TwdPNG [file join $imgdir theword.png]
 
 #Miscellaneous vars (sourced by various progs)
 set datum [clock format [clock seconds] -format %Y-%m-%d]
-set jahr [clock format [clock seconds] -format %Y]
+set heuer [clock format [clock seconds] -format %Y]
 set heute [clock format [clock seconds] -format %d]
 set ind [string repeat \u00A0 3]
 set tab [string repeat $ind 4]

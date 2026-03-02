@@ -47,7 +47,7 @@ if [catch {package require tdom} err] {
 ##if local file not there, try downloading
 ##called by SetupInternational, ...
 proc listRemoteTwdFiles {} {
-  global os twddir TwdRemoteList jahr
+  global os twddir TwdRemoteList heuer
   
   source $::Bidi
   set lBox .twdremoteLB
@@ -81,7 +81,7 @@ proc listRemoteTwdFiles {} {
   set spaceLang 21
   set spaceName 60
   
-  set curYear $jahr
+  set curYear $heuer
 
   foreach node $file {
     set yearNode [$node nextSibling]
@@ -149,8 +149,8 @@ puts $sortlist
 # getTwdLocalList
 ##called by getRandomTwdFile
 proc getTwdLocalList {} {
-  global twddir jahr
-  set twdL [glob -nocomplain -tails -directory $twddir *_$jahr.twd]
+  global twddir heuer
+  set twdL [glob -nocomplain -tails -directory $twddir *_$heuer.twd]
   return [lsort $twdL]
 }
 
@@ -158,13 +158,13 @@ proc getTwdLocalList {} {
 ##selects TWD files for languages selected in SetupEmail CodeList
 ##called by getRandomTwdFile with args=sig
 proc getTwdSigList {} {
-  global twddir jahr sigLanglist
+  global twddir heuer sigLanglist
 
   #A) Use only files that match $sigLangist
   if { [info exists sigLanglist] && $sigLanglist != ""} {
     ##get all twdfiles related to $lang
     foreach code $sigLanglist {
-      foreach item [glob -nocomplain -tails -directory $twddir ${code}*_$jahr.twd] {
+      foreach item [glob -nocomplain -tails -directory $twddir ${code}*_$heuer.twd] {
         lappend twdsigL $item
       }
     }
@@ -207,11 +207,11 @@ proc getRandomFontcolor {} {
 ##downloads any Twd file if next year available
 ##called by Biblepix & Setup
 proc updateTwd {} {
-  global twddir lang jahr
+  global twddir lang heuer
   global TwdRemoteList
  
-  set nextYear [expr $jahr + 1]
-  set oldYear  [expr $jahr - 1]
+  set nextYear [expr $heuer + 1]
+  set oldYear  [expr $heuer - 1]
     
   #create current simple local list
   foreach f [glob -tails -directory $twddir *.twd] {
@@ -227,12 +227,12 @@ puts $twdLocalL
     set year [string range $twdName end-7 end-4]
     
     #decide about fetching which year TODO integrate deleting & fetching right here!!!
-    if { $year < $jahr } {
-      set downloadYear $jahr
+    if { $year < $heuer } {
+      set downloadYear $heuer
       file delete $twddir/$twdName
       puts "Deleting old $twdName..."
 
-    } elseif { $year == $jahr} {
+    } elseif { $year == $heuer} {
     
       set downloadYear $nextYear
     }  

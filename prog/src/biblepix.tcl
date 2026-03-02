@@ -4,7 +4,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 2feb26 pv
+# Updated: 26feb26 pv
 ######################################################################
 
 #Verify location & source Globals
@@ -32,17 +32,14 @@ foreach pidPath [glob -nocomplain -type f $piddir/*] {
 set chan [open [file join $piddir [pid]] w]
 close $chan
 
-#TODO AD HENA POEL הללויה
-
-#Look for new prog files, Twd list always
+#Look for new prog files
 catch {runHTTP 0}
-#TWD list
-catch testTlsConn
+
+#TWD list - this seems too much, only needed in Setup!
+#catch testTlsConn
+
 #für Jahreswechsel:
 catch updateTwd
-
-
-
 
 #Set TwdFileName for the 1st time, else run Setup
 if [catch {set twdfile [getRandomTwdFile]}] {

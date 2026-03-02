@@ -59,7 +59,7 @@ mcset it noTwdFilesFound "Non vi sono testi biblici aggiornati installati.\nSele
 mcset it connTwd "Collegamento a bible2.net realizzato."
 mcset it noConnTwd "Nessun collegamento a bible2.net. Riprovare più tardi."
 mcset it f1Tit "Elenco attuale dei testi biblici per $dw"
-mcset it TwdLocalTit "File dei testi biblici attualmente installati per $jahr"
+mcset it TwdLocalTit "File dei testi biblici attualmente installati per $heuer"
 mcset it TwdRemoteTit "File dei testi biblici da scaricare"
 mcset it language "Lingua"
 mcset it year "Anno"

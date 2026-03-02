@@ -2,7 +2,7 @@
 # Procs for Trojitá & Evolution mail clients
 # Called by Signature if any of above found
 # Authors: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 2jul24 pv
+# Updated: 2feb26 pv
 
 namespace eval sig {
   
@@ -207,7 +207,7 @@ namespace eval sig {
   ## go to >IMAP >Settings >General >"NAMES" >Edit and edit signature text accordingly} !!
   ##################################################################################################################################  
   proc doSigTrojitaLin {} {
-    global env heute jahr sig::dayOTY
+    global env heute heuer sig::dayOTY
     global sig::addednum sig::nosigfoundT sig::addedsigT sig::trojitaLinConfFile sig::catchword sig::startcatch sig::tr
     
     #Open config file for reading

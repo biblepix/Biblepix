@@ -61,7 +61,7 @@ mcset pt noTwdFilesFound "Não há arquivos de texto bíblico instalados. Seleci
 mcset pt connTwd "Conectado a bible2.net"
 mcset pt noConnTwd "Não é possível conectar a bible2.net. Tente novamente mais tarde"
 mcset pt f1Tit "Lista de textos bíblicos atual para $dw"
-mcset pt TwdLocalTit "Arquivos de texto bíblico instalados para $jahr"
+mcset pt TwdLocalTit "Arquivos de texto bíblico instalados para $heuer"
 mcset pt TwdRemoteTit "Arquivos de texto bíblico para download"
 mcset pt language "Idioma"
 mcset pt year "Ano"

@@ -79,7 +79,7 @@ mcset zh welcTxt2 "\u27a4 [mc bibletexts]: 为金句选择一种或多种圣经�
 \u27a4 [mc manual]: 学习$bp程序的完整指南
 "
 mcset zh f1Tit "当前金句圣经文本列表"
-mcset zh TwdLocalTit "为$jahr安装的圣经文本文件"
+mcset zh TwdLocalTit "为$heuer安装的圣经文本文件"
 mcset zh TwdRemoteTit "供下载的圣经文本文件"
 mcset zh language "语言"
 mcset zh year "年"

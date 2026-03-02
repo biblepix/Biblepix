@@ -82,7 +82,7 @@ mcset {} welcTxt2 "\u27a4 [mc bibletexts]: Choose one or several Bible text lang
 \u27a4 [mc terminal]: Display $dw in your Linux terminals
 \u27a4 [mc manual]: Study the Complete Guide to the $bp program"
 mcset {} f1Tit "Current list of Bible texts for $dw"
-mcset {} TwdLocalTit "Bible text files installed for $jahr"
+mcset {} TwdLocalTit "Bible text files installed for $heuer"
 mcset {} TwdRemoteTit "Bible text files for download"
 mcset {} language "Language"
 mcset {} year "Year"

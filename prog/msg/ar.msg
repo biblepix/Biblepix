@@ -68,7 +68,7 @@ mcset ar noTwdFilesFound "لم يتم تثبيت أي ملفات نصية للك
 mcset ar connTwd "تم إنشاء الاتصال بـ bible2.net."
 mcset ar noConnTwd "لا يوجد اتصال بـ bible2.net. من فضلك حاول في وقت لاحق."
 mcset ar f1Tit "قائمة نصوص الكتاب المقدس الحالية للْكَلِمَة"
-mcset ar TwdLocalTit "تم تثبيت ملفات نصية للكتاب المقدس لمدة $jahr"
+mcset ar TwdLocalTit "تم تثبيت ملفات نصية للكتاب المقدس لمدة $heuer"
 mcset ar TwdRemoteTit "ملفات نصية من الكتاب المقدس للتحميل"
 mcset ar language "اللغة"
 mcset ar year "العام"
