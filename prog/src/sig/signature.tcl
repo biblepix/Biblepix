@@ -2,7 +2,8 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 29jun24 pv
+# Updated: 6mch26 pv
+
 source $TwdTools
 source $SigTools
 
@@ -10,62 +11,39 @@ source $SigTools
 # Main process: update sig files for any mail client that can handle them
 #########################################################################
 
-puts "Updating signatures..."
+#Provide sigfile names with ending .sig
+set twdSigL [getTwdSigList]
 
-set twdSigfileL [getTwdSigList]
-
-if {$twdSigfileL == ""} {
+if {$twdSigL == ""} {
   package require Tk
-  set m "No corresponding Bible text files found! Please rerun Setup to define which languages you desire for your e-mail signatures."
-  tk_messageBox -message $m -title "BiblePix E-mail Signature"
+  set msg "No corresponding Bible text files found! Please rerun Setup to define which languages you desire for your e-mail signatures."
+  tk_messageBox -message $msg -title "BiblePix E-mail Signature"
   return 1
 }
 
-#Add surprise file to twdSigfileL 
-#TODO run each time BP runs, not only once a day!
-set surpriseFile signature-SURPRISE.txt
-set surpriseFilePath [file join $sigdir $surpriseFile]
+#Prepare signatures for all selected langs
+foreach sigfile $twdSigL {
 
-lappend twdSigfileL $surpriseFile
-
-if ![file exists $surpriseFilePath] {
-  set chan [open $surpriseFilePath w]
-  close $chan 
-}
-
-# Prepare signatures for all selected langs
-foreach twdFileName $twdSigfileL {
-
-  if {$twdFileName == "$surpriseFile"} {
-
-    set sigFile $surpriseFile
-    
-  } else {
+  set sig_twd [lindex $sigfile 0]
+  set sig_sig [lindex $sigfile 1]
   
-    #set endung mit 8 Extrabuchstaben nach Sprache_
-    set endung [string range $twdFileName 0 8] 
-    set sigFile [file join $sigdir signature-$endung.txt]
-  }
-  
-  #check presence of file
-  if ![file exists $sigFile] {
-    close [open $sigFile w]
+  #check presence of file - TODO Was soll das?
+  if ![file exists $sig_sig] {
+    close [open $sigdir/$sig_sig w]
   }
   
   #check date, skip if today's & sig present
-  set dateidatum [clock format [file mtime $sigFile] -format %d]
-  if {$heute == $dateidatum && [sig::checkSigPresent $sigFile] } {
-    puts " [file tail $sigFile] is up-to-date"
+  cd $sigdir
+  set dateidatum [clock format [file mtime $sig_sig] -format %d]
+
+  if {$heute == $dateidatum && [sig::checkSigPresent $sig_sig] } {
+    puts " [file tail $sig_sig] is up-to-date"
     continue
   }
 
   #Recreate The Word for each file
-  if {$sigFile == $surpriseFile} {
-    ##if SURPRISE, get one out of siglist (=1)
-    set twdFileName [getRandomTwdFile 1]
-  }
-  set dwsig [getTodaysTwdSig $twdFileName]
-  set sigPath [file join $sigdir $sigFile]
+  set dwsig [getTodaysTwdSig $sig_twd]
+  set sigPath [file join $sigdir $sig_sig]
   set cleanSig [sig::cleanSigfile $sigPath]
 
   #Write new sig to file
@@ -73,10 +51,19 @@ foreach twdFileName $twdSigfileL {
   puts $chan $cleanSig 
   puts $chan \n${dwsig}
   close $chan
-  
-  puts "Created signature for signature-$endung"
+
+  puts "Created new signature for $sigPath"
 
 } ;#END main loop
+
+#Create random sigfile for SURPRISE file at each run of Biblepix
+set randomSigfile [getRandomTwdFile 1]
+set surpriseFile signature-SURPRISE.sig
+set surpriseFilePath [file join $sigdir $surpriseFile]
+
+file copy -force [file join $sigdir [lindex $randomSigfile 1]] $surpriseFilePath
+##old name with .txt - to be removed sometime soon
+file copy -force $surpriseFilePath $sigdir/signature-SURPRISE.txt
 
 #Clear stale sigs not in current list
 foreach f [glob -directory $sigdir *] {

@@ -57,7 +57,11 @@ set ::TwdFileName $twdfile
 
 #1. U p d a t e   s i g n a t u r e s  if $enablesig
 if $enablesig {
-  source $Signature
+  if [catch {source $Signature}] {
+    puts "There is a problem updating signatures..."
+  } {
+    puts "Updating signatures..."
+  }
 }
 
 #2. C r e a t e   TheWord for for Unix terminal once per day, if $enableterm

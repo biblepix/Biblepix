@@ -162,17 +162,22 @@ proc getTwdSigList {} {
 
   #A) Use only files that match $sigLangist
   if { [info exists sigLanglist] && $sigLanglist != ""} {
-    ##get all twdfiles related to $lang
+    ##get all twdfiles related to $lang, changing ending to .sig
     foreach code $sigLanglist {
       foreach item [glob -nocomplain -tails -directory $twddir ${code}*_$heuer.twd] {
-        lappend twdsigL $item
+        #lappend twdsigL [string map {twd sig} $item]
+        #cut year + .twd, replace with .sig
+        set short [string replace $item end-8 end .sig]
+       # array set ::twdsigL 
+        lappend twdsigL "$item $short" 
       }
     }
   }
 
-  if [info exists twdsigL] {
+#  if [info exists twdsigL] {
     return $twdsigL
-  }
+#  }
+
 }
 
 #R a n d o m i z e r s
