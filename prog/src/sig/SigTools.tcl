@@ -4,6 +4,47 @@
 # Authors: Peter Vollmar, biblepix.vollmar.ch
 # Updated: 2feb26 pv
 
+proc renewSurpriseSig {} {
+  global sigdir
+
+  if [catch {package require Thread}] {
+  
+    set randomSigfile [getRandomTwdFile 1]
+    set surpriseFile signature-SURPRISE.sig
+    set filepath [file join $sigdir $surpriseFile]
+  
+    file copy -force [file join $sigdir [lindex $randomSigfile 1]] $filepath
+    file copy -force $filepath [file join $sigdir signature-SURPRISE.txt]
+    
+    return 0
+  }
+
+  tsv::set surprise sigdir $sigdir
+  tsv::set surprise randomSigfile [getRandomTwdFile 1]
+  tsv::set surprise surpriseFile signature-SURPRISE.sig
+  tsv::set surprise surpriseFilePath [file join $sigdir $surpriseFile]
+
+if ![info exists ::tpoolId] {
+  set ::tpoolId  [tpool::create]
+}
+
+#only 1 tpool needed, too many pools tend to overload CPU
+tpool::post $::tpoolId {
+ 
+  set sigdir [tsv::get surprise sigdir]
+  set randomfile [tsv::get surprise randomSigfile]
+  set filename [tsv::get surprise surpriseFile]
+  set filepath [tsv::get surprise surpriseFilePath]
+
+  #Copy every 15 mins
+  while true {
+    file copy -force [file join $sigdir [lindex $randomfile 1]] $filepath
+    file copy -force $filepath [file join $sigdir signature-SURPRISE.txt]
+    after 900000
+  }
+}
+
+
 namespace eval sig {
   
   variable addednum

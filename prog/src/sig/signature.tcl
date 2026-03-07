@@ -56,14 +56,19 @@ foreach sigfile $twdSigL {
 
 } ;#END main loop
 
+#TODO wird nicht erneuert!
 #Create random sigfile for SURPRISE file at each run of Biblepix
-set randomSigfile [getRandomTwdFile 1]
-set surpriseFile signature-SURPRISE.sig
-set surpriseFilePath [file join $sigdir $surpriseFile]
+##preserve old name with .txt for now
 
-file copy -force [file join $sigdir [lindex $randomSigfile 1]] $surpriseFilePath
-##old name with .txt - to be removed sometime soon
-file copy -force $surpriseFilePath $sigdir/signature-SURPRISE.txt
+renewSurpriseSig
+
+
+
+#create thread & tpool
+#tsv:: .... alle vars
+
+
+
 
 #Clear stale sigs not in current list
 foreach f [glob -directory $sigdir *] {

@@ -136,6 +136,14 @@ if $enablepic {
 
       after [expr $slideshow * 1000] 
     
+      #Renew surprise.sig every interval if threading failed in Signature
+      #TODO Bedingung??? soll jeweils 1x ohne threads aufgerufen werden
+      if $enablesig {
+        if [catch {tpool::names}] {
+          renewSurpriseSig
+        }
+      }
+    
     } ;#END while pidfile
  
   #NO SLIDESHOW: SINGLE PIC  - TODO JOEL good enough for Win?
