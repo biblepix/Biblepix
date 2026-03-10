@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 6mch26 pv
+# Updated: 10mch26 pv
 
 source $TwdTools
 source $SigTools
@@ -56,19 +56,9 @@ foreach sigfile $twdSigL {
 
 } ;#END main loop
 
-#TODO wird nicht erneuert!
 #Create random sigfile for SURPRISE file at each run of Biblepix
-##preserve old name with .txt for now
-
+##run once, later run by Biblepix if $enablesig
 renewSurpriseSig
-
-
-
-#create thread & tpool
-#tsv:: .... alle vars
-
-
-
 
 #Clear stale sigs not in current list
 foreach f [glob -directory $sigdir *] {
@@ -77,6 +67,11 @@ foreach f [glob -directory $sigdir *] {
     file delete $f
   }
 }
+
+
+
+
+
 
 
 #####################################################################

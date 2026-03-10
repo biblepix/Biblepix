@@ -4,7 +4,7 @@
 # Projects The Word from "Bible 2.0" on a daily changing backdrop image 
 # OR displays The Word in the terminal OR adds The Word to e-mail signatures
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 26feb26 pv
+# Updated: 10mch26 pv
 ######################################################################
 
 #Verify location & source Globals
@@ -104,10 +104,12 @@ if $enablepic {
   if {$slideshow > 0} {
   
     #rerun until pidfile renamed by new instance
-    set pidfile $piddir/[pid]
+    
+set pidfile $piddir/[pid]
+
     set pidfiledatum [clock format [file mtime $pidfile] -format %d]
     
-    while [file exists $pidfile] {
+while [file exists $pidfile] {
     
       if {$pidfiledatum==$heute} {
 
@@ -133,16 +135,13 @@ if $enablepic {
         source $Biblepix
         
       } ;#END heute
-
-      after [expr $slideshow * 1000] 
-    
-      #Renew surprise.sig every interval if threading failed in Signature
-      #TODO Bedingung??? soll jeweils 1x ohne threads aufgerufen werden
-      if $enablesig {
-        if [catch {tpool::names}] {
-          renewSurpriseSig
-        }
+      
+      #Renew surprise.sig every $interval
+      if $enablesig  {
+        renewSurpriseSig
       }
+      
+      after [expr $slideshow * 1000] 
     
     } ;#END while pidfile
  

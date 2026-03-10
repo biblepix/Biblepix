@@ -2,45 +2,58 @@
 # Procs for Trojitá & Evolution mail clients
 # Called by Signature if any of above found
 # Authors: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 2feb26 pv
+# Updated: 10mch26 pv
 
 proc renewSurpriseSig {} {
-  global sigdir
-
-  if [catch {package require Thread}] {
+  global sigdir 
+  set twdSigL [getTwdSigList] 
+  set surpriseFile signature-SURPRISE.sig
+  set filepath [file join $sigdir $surpriseFile]
+ 
+  #renew once a day TODO vorläufig ohne Thread, wip!
+ # if [catch {package require Thread}] {} 
   
-    set randomSigfile [getRandomTwdFile 1]
-    set surpriseFile signature-SURPRISE.sig
-    set filepath [file join $sigdir $surpriseFile]
+  if {[llength $twdSigL] > 1} {
   
-    file copy -force [file join $sigdir [lindex $randomSigfile 1]] $filepath
-    file copy -force $filepath [file join $sigdir signature-SURPRISE.txt]
+    set sigfile [lindex [getRandomTwdFile 1] 1]
+  
+  } else {
+  
+    set sigfile [lindex $twdSigL 1]
+  } 
+  
+  file copy -force [file join $sigdir $sigfile] $filepath
+  file copy -force $filepath [file join $sigdir signature-SURPRISE.txt]
     
-    return 0
-  }
+  return 0
+}
 
+#TODO not in funktion now
+proc renewSurpiseThread {} {  
+  #endless loop
   tsv::set surprise sigdir $sigdir
   tsv::set surprise randomSigfile [getRandomTwdFile 1]
   tsv::set surprise surpriseFile signature-SURPRISE.sig
   tsv::set surprise surpriseFilePath [file join $sigdir $surpriseFile]
 
-if ![info exists ::tpoolId] {
+#if ![info exists ::tpoolId] {
   set ::tpoolId  [tpool::create]
-}
+#}
 
-#only 1 tpool needed, too many pools tend to overload CPU
-tpool::post $::tpoolId {
- 
-  set sigdir [tsv::get surprise sigdir]
-  set randomfile [tsv::get surprise randomSigfile]
-  set filename [tsv::get surprise surpriseFile]
-  set filepath [tsv::get surprise surpriseFilePath]
+  #only 1 tpool needed, too many pools tend to overload CPU
+  tpool::post $::tpoolId {
+   
+    set sigdir [tsv::get surprise sigdir]
+    set randomfile [tsv::get surprise randomSigfile]
+    set filename [tsv::get surprise surpriseFile]
+    set filepath [tsv::get surprise surpriseFilePath]
 
-  #Copy every 15 mins
-  while true {
-    file copy -force [file join $sigdir [lindex $randomfile 1]] $filepath
-    file copy -force $filepath [file join $sigdir signature-SURPRISE.txt]
-    after 900000
+    #Copy every 15 mins
+    while true {
+      file copy -force [file join $sigdir [lindex $randomfile 1]] $filepath
+      file copy -force $filepath [file join $sigdir signature-SURPRISE.txt]
+      after 50000
+    }
   }
 }
 
