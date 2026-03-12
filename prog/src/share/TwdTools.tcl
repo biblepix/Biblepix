@@ -167,7 +167,7 @@ proc getTwdSigList {} {
       foreach item [glob -nocomplain -tails -directory $twddir ${code}*_$heuer.twd] {
         #lappend twdsigL [string map {twd sig} $item]
         #cut year + .twd, replace with .sig
-        set short [string replace $item end-8 end .sig]
+        set short [string replace $item end-8 end .txt]
        # array set ::twdsigL 
         lappend twdsigL "$item $short" 
       }
@@ -178,7 +178,7 @@ proc getTwdSigList {} {
     return $twdsigL
 #  }
 
-}
+} ;#END getTwdSigList
 
 #R a n d o m i z e r s
 

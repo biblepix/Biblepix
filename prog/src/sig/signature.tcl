@@ -2,7 +2,7 @@
 # Adds The Word to e-mail signature files once daily
 # called by Biblepix
 # Author: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 10mch26 pv
+# Updated: 12mch26 pv
 
 source $TwdTools
 source $SigTools
@@ -25,39 +25,39 @@ if {$twdSigL == ""} {
 foreach sigfile $twdSigL {
 
   set sig_twd [lindex $sigfile 0]
-  set sig_sig [lindex $sigfile 1]
+  set sig_txt [lindex $sigfile 1]
+  set sigpath signature-${sig_txt}
   
-  #check presence of file - TODO Was soll das?
-  if ![file exists $sig_sig] {
-    close [open $sigdir/$sig_sig w]
+  #check presence of file
+  if ![file exists $sigpath] {
+    close [open $sigpath w]
   }
   
   #check date, skip if today's & sig present
-  cd $sigdir
-  set dateidatum [clock format [file mtime $sig_sig] -format %d]
+  #cd $sigdir
+  set dateidatum [clock format [file mtime $sigpath] -format %d]
 
-  if {$heute == $dateidatum && [sig::checkSigPresent $sig_sig] } {
-    puts " [file tail $sig_sig] is up-to-date"
+  if {$heute == $dateidatum && [sig::checkSigPresent $sigpath] } {
+    puts " [file tail $sig_txt] is up-to-date"
     continue
   }
 
   #Recreate The Word for each file
   set dwsig [getTodaysTwdSig $sig_twd]
-  set sigPath [file join $sigdir $sig_sig]
-  set cleanSig [sig::cleanSigfile $sigPath]
+  set cleanSig [sig::cleanSigfile $sigpath]
 
   #Write new sig to file
-  set chan [open $sigPath w]
+  set chan [open $sigpath w]
   puts $chan $cleanSig 
   puts $chan \n${dwsig}
   close $chan
 
-  puts "Created new signature for $sigPath"
+  puts "Created new signature for $sigpath"
 
 } ;#END main loop
 
 #Create random sigfile for SURPRISE file at each run of Biblepix
-##run once, later run by Biblepix if $enablesig
+##run once, later run by Biblepix if '$slideshow' enabled
 renewSurpriseSig
 
 #Clear stale sigs not in current list

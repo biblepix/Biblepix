@@ -2,30 +2,25 @@
 # Procs for Trojitá & Evolution mail clients
 # Called by Signature if any of above found
 # Authors: Peter Vollmar, biblepix.vollmar.ch
-# Updated: 10mch26 pv
+# Updated: 12mch26 pv
 
+# renewSurpriseSig
+##puts random signature in signature-SURPRISE.txt
+##called once by Signature & looped by Biblepix if '$slideshow' enabled
 proc renewSurpriseSig {} {
   global sigdir 
   set twdSigL [getTwdSigList] 
-  set surpriseFile signature-SURPRISE.sig
+  set surpriseFile signature-SURPRISE.txt
   set filepath [file join $sigdir $surpriseFile]
  
-  #renew once a day TODO vorläufig ohne Thread, wip!
- # if [catch {package require Thread}] {} 
-  
+  #renew once a day 
   if {[llength $twdSigL] > 1} {
-  
     set sigfile [lindex [getRandomTwdFile 1] 1]
-  
   } else {
-  
     set sigfile [lindex $twdSigL 1]
   } 
   
-  file copy -force [file join $sigdir $sigfile] $filepath
-  file copy -force $filepath [file join $sigdir signature-SURPRISE.txt]
-    
-  return 0
+  file copy -force [file join $sigdir signature-$sigfile] $filepath
 }
 
 #TODO not in funktion now
