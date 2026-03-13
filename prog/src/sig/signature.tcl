@@ -26,7 +26,7 @@ foreach sigfile $twdSigL {
 
   set sig_twd [lindex $sigfile 0]
   set sig_txt [lindex $sigfile 1]
-  set sigpath signature-${sig_txt}
+  set sigpath [file join $sigdir signature-${sig_txt}]
   
   #check presence of file
   if ![file exists $sigpath] {
@@ -34,7 +34,6 @@ foreach sigfile $twdSigL {
   }
   
   #check date, skip if today's & sig present
-  #cd $sigdir
   set dateidatum [clock format [file mtime $sigpath] -format %d]
 
   if {$heute == $dateidatum && [sig::checkSigPresent $sigpath] } {
