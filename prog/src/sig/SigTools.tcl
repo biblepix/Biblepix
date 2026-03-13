@@ -21,6 +21,7 @@ proc renewSurpriseSig {} {
   } 
   
   file copy -force [file join $sigdir signature-$sigfile] $filepath
+  file mtime $filepath [clock seconds]
 }
 
 #TODO not in funktion now
