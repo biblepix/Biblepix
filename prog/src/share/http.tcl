@@ -41,16 +41,10 @@ proc testTlsConn {} {
 } ;#END testTlsConn
 
 
-#TODO must be able to be used for any TWD download procedure!
 # curl|wget - the $file var isn't even used!!!!!!!!!!!!
-##check if either installed & fetch ?file?
+##check if either installed & fetch file
 ##called by ? if https not working
 proc curl|wget {file url} {
-   global twdUrl TwdRemoteList
-   
-#TODO first check internet connection ?
-#curl -I
-#wget --spider
    
 	if {[auto_execok curl] != ""} {
 	  set cmd "curl"

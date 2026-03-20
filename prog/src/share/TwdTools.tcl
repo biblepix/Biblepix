@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 18feb26 pv
+# Updated 20mch26 pv
 
 # msgcatInit
 ##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
@@ -70,6 +70,29 @@ proc listRemoteTwdFiles {} {
 
 #TODO move to csv instead
 #Try this: https://bible2.net/service/TheWord/twd11/current?format=csv
+
+while {[string range $data 0 4] == "file"} {
+
+  foreach l $data {
+    
+    set L [split $l ";"]
+
+    set year [lindex $L 1] 
+    set lang [lindex $L 2]
+    set name [lindex $L 3]
+    set version [lindex $L 4]
+    
+#TODO? this is handled in ...
+#    set url [lindex $L end]
+#    append fileName $lang _ $name _ $year .twd
+
+
+  }
+}
+
+
+
+
   set root [dom parse -html $data]
 
   # f i l l   l i s t b o x  
@@ -102,6 +125,9 @@ proc listRemoteTwdFiles {} {
       regsub {[\u000A]} $version {} version
     }
 
+# TODO P A R S E   C S V
+
+
     ##start building line
     append nameline $lang
     append nameline [string repeat $space [expr 28 - [string length $lang]]]
@@ -125,7 +151,7 @@ proc listRemoteTwdFiles {} {
     unset nameline
 puts $sortlist
     
-    #to be used in comparison for download
+    #TODO HANDLED ALREADY IN .... (delete from 86 too)
     append fileName $lang _ $name _ $year .twd
     lappend fileL $fileName
     unset fileName
@@ -587,4 +613,9 @@ proc isBidi s {
   } else {
     return 0
   }
+}
+
+proc parseCvs {file} {
+
+
 }

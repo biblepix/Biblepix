@@ -2,10 +2,10 @@
 # Sets global permanent variables
 # sourced by Setup & Biblepix
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 2feb26 pv
+# Updated: 20mch26 pv
 set version "5.5"
-set twdUrl "https://bible2.net/service/TheWord/twd11/current"
-set twdBaseUrl "https://bible2.net/service/TheWord/twd11"
+set twdListUrl "https://bible2.net/service/TheWord/twd11/current?format=CSV"
+set twdFileUrl "https://bible2.net/service/TheWord/twd11"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
 set bpxJpegUrl "http://vollmar.ch/biblepix/jpeg"
 set bpxIconUrl "http://vollmar.ch/biblepix"
@@ -13,10 +13,6 @@ set platform $::tcl_platform(platform)
 set os $::tcl_platform(os)
 set tclpath [auto_execok tclsh]
 set wishpath [auto_execok wish]
-
-#TODO  change everywhere
-set twdListUrl $twdUrl
-set twdFileUrl $twdBaseUrl
 
 #Temporary files (used in setupPhotos, ...)
 if {$os == "Linux"} {
