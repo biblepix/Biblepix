@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 20mch26 pv
+# Updated 23mch26 pv
 
 # msgcatInit
 ##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
@@ -29,6 +29,7 @@ proc msgcatInit args {
 }
 
 # TODO  is msgcat not loaded already?????
+# TODO who needs tdom now?
 #tDom is standard in ActiveTcl, Linux distros vary
 if [catch {package require tdom} err] {
   msgcatInit $lang
@@ -46,35 +47,36 @@ if [catch {package require tdom} err] {
 ##fills remote listbox from local file
 ##if local file not there, try downloading
 ##called by SetupInternational, ...
-proc listRemoteTwdFiles {} {
+proc listTwdRemote {} {
   global os twddir TwdRemoteList heuer
-  
-  source $::Bidi
+  set space " "
   set lBox .twdremoteLB
   
-  #try downloading latest
+  #try downloading latest TODO wasn't this run already?
   catch testTlsConn
+  after 1000 
 
-#after 2000
   if ![file exists $TwdRemoteList] {
     set status "Cannot create file list; try later"
     return 1
   }
   
-
   #retrieve data from file
   set chan [open $TwdRemoteList r]
   fconfigure $chan -encoding utf-8
   set data [read $chan]
   close $chan
+  
+  set lines [split $data "\n"]
 
-#TODO move to csv instead
-#Try this: https://bible2.net/service/TheWord/twd11/current?format=csv
+  #Set RtL languages from right to left (Windows should handle this without our help)
+  if {$os == "Linux"} {
+      source $::Bidi
+  }
 
-while {[string range $data 0 4] == "file"} {
+  foreach l $lines {
 
-  foreach l $data {
-    
+    if {[string range $l 0 3] == "file"} {
     set L [split $l ";"]
 
     set year [lindex $L 1] 
@@ -82,92 +84,42 @@ while {[string range $data 0 4] == "file"} {
     set name [lindex $L 3]
     set version [lindex $L 4]
     
-#TODO? this is handled in ...
-#    set url [lindex $L end]
-#    append fileName $lang _ $name _ $year .twd
-
-
-  }
-}
-
-
-
-
-  set root [dom parse -html $data]
-
-  # f i l l   l i s t b o x  
-  $lBox delete 0 end
-
-  #set langlist
-  set file [ $root selectNodes {//tr/td[text()="file"]} ]
-  set space { }
-  set spaceLang 21
-  set spaceName 60
-  
-  set curYear $heuer
-
-  foreach node $file {
-    set yearNode [$node nextSibling]
-    set langNode [$yearNode nextSibling]
-    set nameNode [$langNode nextSibling]
-    set versionNode [$nameNode nextSibling]
-
-    set year [$yearNode text]
-    set lang [$langNode text]
-    set name [$nameNode text]
-    set version [$versionNode text]
- 
-    #Set RtL languages from right to left (Windows should handle this without our help)
-    if {$os == "Linux" && [isBidi $version]} {
-      source $::Bidi
-      set version [bidi::fixBidi $version]
-      ##eliminate LF char
-      regsub {[\u000A]} $version {} version
-    }
-
-# TODO P A R S E   C S V
-
-
-    ##start building line
     append nameline $lang
     append nameline [string repeat $space [expr 28 - [string length $lang]]]
     append nameline $name
     append nameline [string repeat $space [expr 50 - [string length $name]]] 
     
-    if {$year == $curYear} {
+    if {$year == $heuer} {
       append nameline $year [string repeat $space 20]
     } else {
       append nameline [string repeat $space 5] $year [string repeat $space 15]
     }
 
-#may be used elsewhere for extracting hrefs!
-  #set urllist [$root selectNodes {//tr/td/a}]
-  #set hrefs ""
-  #foreach url $urllist {lappend hrefs [$url @href]}
-  #set urllist [lsort $hrefs]
+    if [isBidi $version] {
+      set version [bidi::fixBidi $version]
+      ##eliminate LF char
+      regsub {[\u000A]} $version {} version
+    }
 
     append nameline $version
     lappend sortlist $nameline
-    unset nameline
-puts $sortlist
-    
-    #TODO HANDLED ALREADY IN .... (delete from 86 too)
-    append fileName $lang _ $name _ $year .twd
-    lappend fileL $fileName
-    unset fileName
 
-  } ;#END main loop
+    unset nameline
+
+  }
+}
+
 
 	set sortL [lsort $sortlist]
- 
+  $lBox delete 0 end
   foreach line $sortL {
     $lBox insert end $line
   }
 
-  #current URL list to be used by downloadTwdFiles  
-  set ::urlL [lsort $fileL]
+  #???current URL list to be used by downloadTwdFiles  
+  #set ::urlL [lsort $fileL]
  
-} ;#END listRemoteTwdFiles
+} ;#END listTwdRemote
 
 
 #L i s t e n   o h n e   P f a d
@@ -617,5 +569,9 @@ proc isBidi s {
 
 proc parseCvs {file} {
 
-
+#may be used elsewhere for extracting hrefs!
+  #set urllist [$root selectNodes {//tr/td/a}]
+  #set hrefs ""
+  #foreach url $urllist {lappend hrefs [$url @href]}
+  #set urllist [lsort $hrefs]
 }

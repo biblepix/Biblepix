@@ -4,7 +4,7 @@
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
 # Updated: 20mch26 pv
 set version "5.5"
-set twdListUrl "https://bible2.net/service/TheWord/twd11/current?format=CSV"
+set twdListUrl "https://bible2.net/service/TheWord/twd11/current?format=csv"
 set twdFileUrl "https://bible2.net/service/TheWord/twd11"
 set bpxReleaseUrl "http://vollmar.ch/biblepix/release"
 set bpxJpegUrl "http://vollmar.ch/biblepix/jpeg"

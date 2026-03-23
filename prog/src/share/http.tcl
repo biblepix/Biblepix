@@ -81,18 +81,22 @@ proc downloadTWDFiles {} {
 #  testTlsConn
 
 set selectedindices [.twdremoteLB curselection]
-set urllist $::urlL
+#set urllist $::urlL
 
   foreach item $selectedindices {
-    set url [lindex $urllist $item]
-    set filename [file tail $url]
-
-    NewsHandler::QueryNews "Downloading $filename..." lightblue
+  
+  #  set url [lindex $urllist $item]
+  #  set filename [file tail $url]
+  set L [.twdremoteLB get $item]  
+  append filename [lindex $L 0] _
+  append filename [lindex $L 1] _
+  append filename [lindex $L 2] .twd
+  
+  NewsHandler::QueryNews "Downloading $filename..." lightblue
 
 #TODO warum geht das nicht?
     #Download file
-fetchTwdFile $filename
-      
+    fetchTwdFile $filename
     after idle .intTwdlocalLB insert end $filename  
     
     #If Chinese or Thai: update font files also 
@@ -100,6 +104,8 @@ fetchTwdFile $filename
     if {$twdlang == "zh" || $twdlang == "th"} {
       downloadAsianFont $twdlang
     }
+    
+    unset filename
   } ;#END foreach
   
   #deselect all downloaded files
