@@ -1,10 +1,10 @@
 # ~/Biblepix/prog/src/setup/setupInternational.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 11jan26 pv
+# Updated 22mch26 pv
 
 source $TwdTools 
-source $Http
+#source $Http
 
 #Create Title & msg in main frame - enable wrapping text at any width (1 width is by letters, the other by pixels!)
 label .intTitleL -textvar msg::f1Tit -font bpfont3
@@ -20,8 +20,8 @@ pack [frame .intBotF -padx $px] -in .internationalF -anchor w -fill none
 
 #Refresh button 
 button .intRefreshBtn -textvar msg::refresh -bd 2 -activebackground orange -command {
-  testTlsConn
-  listRemoteTwdFiles
+  #testTlsConn
+  listTwdRemote
 }
 pack .intRefreshBtn -in .intBotF -side bottom -padx $px -pady 3
 
@@ -81,6 +81,6 @@ pack .downloadBtn -in .twdremoteF -side right -padx 3
 pack .twdremoteSB .twdremoteLB -in .twdremoteF -side right -fill y
 
 #Fill remote list & try downloading latest
-catch listRemoteTwdFiles
+catch listTwdRemote
 #catch fetchTwdList
 #catch updateTwd TODO Updating prog files should be done somewhere earlier!!!
