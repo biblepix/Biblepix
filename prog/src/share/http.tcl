@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/httpsTwd.tcl
 # Procs called by Installer / Setup für Https-Zugriff auf bible2.net
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 18feb26 pv
+# Updated: 21mch26 pv
 
 #Check http
 if [catch {package require http} err] {
@@ -18,6 +18,7 @@ if [catch {package require tls} err] {
 }
 
 #Register https
+
 ::http::register https 443 {::tls::socket -autoservername true}
 
 # testTlsConn - TODO change name to sth that includes http(s)
@@ -26,6 +27,7 @@ if [catch {package require tls} err] {
 ##called by updateTwd
 proc testTlsConn {} {
   global twdListUrl TwdRemoteList
+  set ::http::defaultCharset utf-8
   
  #Download TwdRemoteList & use curl|wget if no tls
  if [catch {::http::geturl $twdListUrl -validate 1}] {
@@ -35,7 +37,11 @@ proc testTlsConn {} {
   
   #Analyse data & write to file
   set chan [open $TwdRemoteList w]
-  ::http::geturl $twdListUrl -channel $chan
+fconfigure $chan -encoding utf-8
+#  ::http::geturl $twdListUrl -channel $chan
+set token [http::geturl $twdListUrl]
+set text [http::data $token]
+puts $chan $text
   close $chan
 
 } ;#END testTlsConn
