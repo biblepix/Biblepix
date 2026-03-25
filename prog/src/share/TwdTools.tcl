@@ -85,12 +85,12 @@ proc listTwdRemote {} {
     set version [lindex $L 4]
     
     append nameline $lang
-    append nameline [string repeat $space [expr 28 - [string length $lang]]]
+    append nameline [string repeat $space [expr 22 - [string length $lang]]]
     append nameline $name
-    append nameline [string repeat $space [expr 50 - [string length $name]]] 
+    append nameline [string repeat $space [expr 40 - [string length $name]]] 
     
     if {$year == $heuer} {
-      append nameline $year [string repeat $space 20]
+      append nameline $year [string repeat $space 16]
     } else {
       append nameline [string repeat $space 5] $year [string repeat $space 15]
     }

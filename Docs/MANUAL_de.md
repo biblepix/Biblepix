@@ -138,9 +138,11 @@ Die Einrichtung einer **Diaschau** übers System sollte nicht nötig sein, da Bi
 
 ### EMAIL-SIGNATUR
 
-BibelPix bietet die Zusatzfunktion **Das Wort als E-Mail-Signatur**. Diese Funktion kann im Einrichtungsprogramm aktiviert werden. Dann fügt BibelPix einmal täglich für die als mailtauglich markierten Sprachen das Tageswort an Ihre Signatur(en) an. Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. signature-de_Schlac.txt) im folgenden Ordner gespeichert:
+BibelPix bietet die Zusatzfunktion **Das Wort als E-Mail-Signatur**. Diese Funktion kann im Einrichtungsprogramm aktiviert werden. Dann fügt BibelPix einmal täglich für die als mailtauglich markierten Sprachen das Tageswort an Ihre Signatur(en) an. Diese Auswahl können Sie im BibelPix-Setup beim Reiter "E-mail" festlegen. Die erstellten Signaturdateien werden nach Sprachkürzeln sortiert (z.B. signature-de_Schlachter2000.txt) im folgenden Ordner gespeichert:
 
 > ~/Biblepix/TodaysSignature/
+
+Ein besonderes Feature ist die Datei 'signature-SURPRISE.txt'. Wenn Sie mehr als 1 Signatursprache bestimmt haben, wird 1x täglich im Zufallsprinzip aus einer der von Ihnen als mailtauglich markierten Dateien kopiert. Falls Sie für das Hintergrundbild eine "Slideshow" eingerichtet haben, wird in demselben Intervall die 'signature-SURPRISE.txt' neu kopiert.
 
 Sie können diese Dateien aus Ihrem E-Mail-Programm oder in einem Texteditor bearbeiten und persönliche Grussformeln, Adressen usw. oben einfügen. Text oberhalb der Trennlinie **=====** bleibt beim Wechsel des Tageswortes unbehelligt. Damit **Das Wort** künftig auf Ihren Mails erscheint, müssen Sie Ihrem Mail-Programm beibringen, die oben beschriebenen Dateien zu verwenden (meist unter Einstellungen > Konten/Identitäten > Signatur).
 

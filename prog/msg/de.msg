@@ -66,7 +66,7 @@ mcset de TwdRemoteTit "Bibeltextdateien zum Herunterladen"
 mcset de language "Sprache"
 mcset de year "Jahr"
 mcset de bibleversion "Bibelausgabe"
-mcset de biblename "Bibelname"
+mcset de biblename "Bibelkurzname"
 mcset de f1Txt "$bp stellt $dw in allen Sprachen und Bibelausgaben bereit, die auf Ihrem Computer installiert sind. Sind mehrere Bibeltextdateien installiert, wählt $bp jeweils zufällig eine aus. Wenn Sie neue Bibeltextdateien zum Download markieren (s. unten), werden diese heruntergeladen, sobald Sie die Taste '[mc download]' drücken. Achten Sie auf den Jahrgang (laufendes oder nächstes Jahr)! \nBeim Jahreswechsel werden die installierten Bibeldateien automatisch aktualisiert."
 #SETUP DESKTOP
 mcset de f2Tit "$dw auf Desktop-Hintergrundbild"

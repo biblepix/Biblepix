@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupInternational.tcl
 # Sourced by setupBuildGUI
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 22mch26 pv
+# Updated 25mch26 pv
 
 source $TwdTools 
 #source $Http
