@@ -93,7 +93,7 @@ In the 'Welcome' section you can view **The Word** in any installed language (to
 
 ### DOWNLOADING BIBLE TEXTS
 
-The functioning of BiblePix depends on the presence of Bible text files with the ending **.TWD**, which can be downloaded from our server each year in many languages and Bible versions. Downloading is up to the user and should be done through the Setup programm when a year comes to a close. This funcion is not automatic. The text files are kept in the folder
+The functioning of BiblePix depends on the presence of Bible text files with the ending **.TWD**, which can be downloaded from our server each year in many languages and Bible versions. The list for download is found in the Setup program. At the end of each year, any files present are automatically replaced by current ones. The text files are kept in the folder
 
 > ~/Biblepix/BibleTexts/
 
