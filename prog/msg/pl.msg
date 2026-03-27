@@ -109,34 +109,4 @@ mcset pl picSchonDa "Zdjęcie należy już do kolekcji zdjęć $bp"
 # S E T U P   S I G N A T U R E
 mcset pl f3Tit "Ustaw 'Słowo' jako podpis swojego e-maila"
 mcset pl f3Btn "Stwórz podpis e-mail"
-mcset pl f3Sprachen "Języki wybrane do moich podpisów"
-mcset pl f3Txt "Program $bp doda 'Słowo' na końcu Twojego podpisu e-mail raz na dzień w każdym języku obecnym na twoim komputerze. Pliki podpisów są przechowywane przy pomocy skrótów językowych (np. podpis_English.txt) w katalogu \n\n\t$sigdir \n\nMasz możliwość edytowania tych plików z poziomu Twojej skrzynki mailowej, lub w edytorze tekstowym, oraz możliwość dodania dowolnej osobistej wiadomości na początku podpisu (pozdrowienia, adresy itd.) Każdy tekst powyżej linii separacyjnej  ==== pozostanie niezmieniony po każdej zmianie 'Słowa'. \n\nMożesz nie chcieć, aby 'Słowo' pojawiało się w różnych wersjach językowych. W polach wyboru w prawym górnym rogu wybierz języki, które są odpowiednie dla odbiorców Twoich wiadomości e-mail.\n\nPamiętaj, aby ustawić w swojej skrzynce mailowej wybrane pliki podpisów (zwykle poprzez Opcje>Podpisy).
-\nJeśli zamiast języka wybierzesz plik
-\n\t signature-SURPRISE.txt
-\nobraca się 'Słowo' losowo.\n\nNiektóre skrzynki tj. Seamonkey Mail, Evolution lub Trojitá zarządzają podpisami wewnętrznie. Spośród wyżej wymienionych, na dzień dzisiejszy $bp współpracuje z Trojitá oraz Evolution."
-mcset pl f4Tit  "Wyświetl 'Słowo' w terminalu Linux"
-mcset pl f4Btn "Utwórz 'Słowo' do wyswietlenia w terminalu"
-mcset pl f4Txt "Po uruchomieniu $bp utworzy 'Słowo' do wyświetlenia na górze Twojego terminalu. Jeśli zainstalowano więcej niż jeden pakiet językowy, teksty Biblijne będą zmieniane losowo przy każdym uruchomieniu nowego okna. \n\nWyświetlane kolory itp. mogą być zmieniane w \n\n\t $confdir/term.conf \n\nAby wyświetlić poprawnie zapis w języku Arabskim lub Hebrajskim potrzebny będzie jeden z następujących: 'QTerminal', 'mlterm', 'gnome-terminal', 'Konsole' (KDE) lub 'xfce4-terminal'; te sprawdzają się w pracy z tekstem dwukierunkowym.\n\nW celu wyświetlenia 'Słowa' automatycznie w Twoich terminalach, [mc bpsetup] tworzy wpis w ~/.bashrc dla Twojej wygody."
-# S A V E
-mcset pl linChangingDesktop "$bp spróbuje teraz połączyć się z Twoim tłem pulpitu. Jeśli nie wyświetla się nowe tło pulpitu, szukaj rozwiązania problemu w Instrukcji."
-mcset pl winIgnorePopup "Proszę odrzuć (zamknij) wszystkie wyskakujące okna, aby $bp mógł dokończyć rejestrację!"
-mcset pl winChangingDesktop "$bp spróbuje teraz połączyć się z Twoim tłem pulpitu"
-mcset pl winChangeDesktopProb "Wystąpił problem podczas próby zmiany Twojego tła pulpitu. \nProszę kliknąć prawym przyciskiem myszy na puste miejsce na pulpicie i wybrać \"Personalizuj\" > \"Tapeta\" i ustaw pojedynczą ścieżkę dla zdjęcia \n\t$TwdBMP lub \n\t$TwdPNG \nlub zmień ustawienia w katalogu pokazu slajdów na \n\t$imgdir."
-mcset pl linChangeDesktopProb "Wystąpił problem podczas próby zmiany Twoich ustawień pulpitu.\nProszę kliknąć prawym przyciskiem myszy na pulpit i znaleźć 'Tło obrazu'. Tam wprowadź $imgdir jako nową ścieżkę obrazu."
-mcset pl linNoDesktopFound "Nie wykryto systemu Linux. Informacje na temat manualnego ustawiania zdjęcia w tle programu $bp znajdują się w Instrukcji."
-mcset pl linReloadingDesktop "Teraz nastąpi próba odświeżenia Twojego pulpitu. W razie niepowodzenia, prosimy o wylogowanie się i ponowne zalogowanie w celu uruchomienia ustawień programu $bp."
-mcset pl changeDesktopOk "$bp został pomyślnie skonfigurowany i za chwilę zostanie uruchomiony.\n\nMożesz włączyć program [mc bpsetup] w każdej chwili wybierając ikonę [mc bpsetup] w Menu Programów (Linux) lub poprzez kliknięcie prawym przyciskiem myszy na pulpit (Windows)."
-mcset pl winRegister "$bp spróbuje teraz połączyć się z Twoim systemem.\nPotwierdź pojawiające się okna dialogowe zaznaczając \"Tak\"."
-mcset pl winRegisterProb "$bp nie został pomyślnie zainstalowany na Twoim komputerze.\nSpróbuj ponownie uruchomić [mc bpsetup], lub dodać \n\t$Biblepix\n do folderu Autostartu."
-# P H O T O S
-mcset pl deletedPicMsg "Usunięto zdjęcie z kolekcji zdjęć $bp:"
-mcset pl copiedPicMsg "Skopiowano zjęcie do kolekcji zdjęć $bp:"
-mcset pl reposSaved "Zdjęcie zapisane wraz ze Szczegółami."
-mcset pl reposNotSaved "Zdjęcie nie zostało zapisane."
-mcset pl noPhotosFound "Nie odnaleziono zdjęć w folderze [mc photos] programu $bp. Proszę o skopiowanie zdjęć do folderu."
-mcset pl rotatePic "Obróć zdjęcie"
-mcset pl preview90 "\u21B7 Podgląd rotacji o 90°"
-mcset pl preview180 "\u21BB Podgląd rotacji o 180°"
-mcset pl computePreview "\u21B6 \u21B7 Podgląd każdej rotacji"
-mcset pl rotateWait "Proszę cierpliwie czekać aż program obróci oryginalne zdjęcie..."
-mcset pl rotateInfo "Uwaga: poprzez zapisywanie i odświeżanie, zdjęcie może być obrócone kilkukrotnie!"
+mcset pl f3Sprachen "J

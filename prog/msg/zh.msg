@@ -127,23 +127,4 @@ mcset zh picSchonDa "照片已在$bp照片文件夹中"
 mcset zh f3Tit "在您的电子邮件签名中添加金句"
 mcset zh f3Btn "创建电子邮件签名"
 mcset zh f3Sprachen "我的签名所需的语言"
-mcset zh f3Txt "如果激活,$bp将每天一次在您的电子邮件签名末尾为您计算机上的任何语言文本文件添加金句.签名文件通过语言快捷方式储存(例如 signature-zh-Hans_C.txt)在目录\n\n\t$sigdir \n\n您可以通过电子邮件程序或文本编辑这些文件,并在顶部添加个人信息(问候语,地址等.) 当文本“句”更改时,分隔线 ==== 上方的任何文本都将保持不变.\n\n您可能不希望金句出现在您安装的所有语言的邮件中.在右上角的复选框中,请选择您认为适合邮件收件人的语言.\n\n最后,您必须指示您的电子邮件程序使用这些签名文件(通常在选 > 签名下).
-如果您选择这个文件
-\n\tsignature-SURPRISE.txt
-\n“金句”会随机旋转。
-\n\n某些程序,如 Seamonkey Mail、Evolution 或 Trojitá 在内部管理签名.其中$bp现在可以处理 Trojitá 和 Evolution."
-mcset zh f4Tit  "在您的Linux终端中显示金句"
-mcset zh f4Btn "创建金句以在终端中显示"
-mcset zh f4Txt "如果激活,$bp将创建金句显示在您的终端顶部. 如果存在多个语言文件,每当打开新外壳时圣经文本将随机更变. \n\n显示颜色等可能在\n\n\t $confdir/term.conf\n\n中更改\n\n请注意,为了正确显示阿拉伯语或希伯来语脚本,您将需要以下内容之一: 'QTerminal', 'mlterm', 'gnome-terminal', 'Konsole' (KDE) 或 'xfce4-terminal'; 已知这些可以处理双向文本.\n\n为了在终端自动显示金句, [mc bpsetup] 在\n\n\t~/.bashrc\n\n中为您提供了一个条目."
-# S A V E 保存
-mcset zh linChangingDesktop "$bp现在将尝试使用您的桌面背景进行注册.如果之后看不到新的背景图片,请您参阅手册以获取解决方案."
-mcset zh winIgnorePopup "请关闭(关闭)所有弹出窗口,以便$bp可以完成注册!"
-mcset zh winChangingDesktop "$bp现在将尝试使用您的桌面背景进行注册"
-mcset zh winChangeDesktopProb "我们在更改您的桌面背景遇到了问题.\nP请用右键点击您桌面上的空白区域并选择\"个性化\".\n在 \"壁纸\"要么设置为单个图片路径 $TwdBMP 或 \n$TwdPNG \ 要么设置幻灯片，将目录设置为 \n$imgdir."
-mcset zh linChangeDesktopProb "我们在更¹您的桌面设置遇到了问题.\n请用右键点击您桌面并找到'背景图像'对话框. 将$imgdir作为新的图像路径."
-mcset zh linNoDesktopFound "没有找到Llinux桌面!请参阅手册以了解如何手动设置$bp背景图."
-mcset zh linReloadingDesktop "我们现在将尝试重新加载您的桌面.如果失败,请注销并重新登陆以使$bp设置生效."
-
-mcset zh changeDesktopOk "$bp已成功配置，将很快启动.\n\n您可以随时运行$bp安装程序,方法是在程序菜单(Linux)中选择 \"$bp Setup\" 图标或右键单击您的桌面(窗口)."
-mcset zh winRegister "$bp将不会尝试在您的系统中注册.\n您必须用\"是\"确认所有对话框."
-mcset zh winRegisterProb "$bp未在您的计算机上正确注册.\n请尝试重新运行安装程序,或将\n$$bp\n添加到您的自动文件夹中."
+mcset zh f3Txt "如果激活,$bp将每天一次在您的电子邮件签名末尾为您计算机上的任何语言文本文件添加金句.签名文件通过语言快捷方式储存(例如 signature-zh-Hans_C.txt)在目录\n\n\t$sigdir \n\n您可以通过电子邮件程序或文本编辑这些文件,并在顶部添加个人信息(问候语,地址等.) 当
