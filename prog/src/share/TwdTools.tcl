@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/TwdTools.tcl
 # Tools to extract & format "The Word" / various listers & randomizers
 # Author: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 23mch26 pv
+# Updated 1apr26 pv
 
 # msgcatInit
 ##initiates msgcat for early warnings, before Setup & before ::msgbox ns is set
@@ -95,7 +95,7 @@ proc listTwdRemote {} {
       append nameline [string repeat $space 5] $year [string repeat $space 15]
     }
 
-    if [isBidi $version] {
+    if {$os == "Linux" && [isBidi $version]} {
       set version [bidi::fixBidi $version]
       ##eliminate LF char
       regsub {[\u000A]} $version {} version
