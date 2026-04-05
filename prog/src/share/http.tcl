@@ -245,7 +245,7 @@ proc setProxy {} {
 #TODO try threads?
 
 proc runHTTP isInitial {
-  global filePathL fontPathL piddir
+  global filePathL fontPathL piddir bpxReleaseUrl
 
   #Test connexion & start download
   if [catch testHttpCon Error] {
@@ -255,20 +255,28 @@ proc runHTTP isInitial {
   } 
   
   set filePathList [list {*}$filePathL {*}$fontPathL]
-  set runHttpPid [file join $piddir runHttpPid]
   
   foreach filepath $filePathList {
-   
-   #run update if httpPidfile older than 24 hours
-     if { $isInitial ||
-       ![file exists $runHttpPid] || 
-        [file mtime  $runHttpPid] < [expr [clock seconds] - 86400] } {
-
+  
+     set filename [file tail $filepath]
+     
+     #A) fetch all + overwrite if $isInitial
+     if $isInitial {
        fetchProgfile $filepath
+     #B) check if $runHttpPid older than 24 hours
+     } elseif { ![file exists $runHttpPid] || 
+        [file mtime $runHttpPid] < [expr [clock seconds] - 86400] } {
+        #C) fetch if remote is newer                
+        set urlpath [file join $bpxReleaseUrl $filename]
+        if {[file mtime $filepath < [file mtime $urlpath]} {
+          
+          fetchProgfile $filepath
+      }
     }
   }
-
+     
   #register today's run by creating empty directory
+  set runHttpPid [file join $piddir runHttpPid]
   file delete -force $runHttpPid
   file mkdir $runHttpPid
   
@@ -285,6 +293,7 @@ proc fetchProgfile {filePath} {
   set urlname [file join $bpxReleaseUrl $filename]
   
   #Test file before downloading (Info: 'ncode' 200 = OK, 404 = not there)
+##TODO muss das jedesmal seiN?
   set token [http::geturl $urlname -validate 1]
   if { [http::ncode $token] != 200 } {
     http::cleanup $token
