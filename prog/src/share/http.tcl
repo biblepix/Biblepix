@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/httpsTwd.tcl
 # Procs called by Installer / Setup für Https-Zugriff auf bible2.net
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 21mch26 pv
+# Updated: 5apr26 pv
 
 #Check http
 if [catch {package require http} err] {
@@ -21,28 +21,30 @@ if [catch {package require tls} err] {
 
 ::http::register https 443 {::tls::socket -autoservername true}
 
-# testTlsConn - TODO change name to sth that includes http(s)
+# testTlsConn
 ##establishes basic Https connexion for downloads from bible2.net,
 ##i.e. TWD file list & TWD files
 ##called by updateTwd
 proc testTlsConn {} {
   global twdListUrl TwdRemoteList
-  set ::http::defaultCharset utf-8
+#  set ::http::defaultCharset utf-8
   
  #Download TwdRemoteList & use curl|wget if no tls
- if [catch {::http::geturl $twdListUrl -validate 1}] {
+ if {[::http::geturl $twdListUrl -validate 1] != 200} {
   catch {curl|wget $TwdRemoteList $twdListUrl}
   return 0
   }
   
   #Analyse data & write to file
   set chan [open $TwdRemoteList w]
-fconfigure $chan -encoding utf-8
-#  ::http::geturl $twdListUrl -channel $chan
-set token [http::geturl $twdListUrl]
-set text [http::data $token]
-puts $chan $text
+  fconfigure $chan -encoding binary
+  ::http::geturl $twdListUrl -channel $chan
   close $chan
+  #OLD WAY - encoding binary seems to do the trick:
+  #fconfigure $chan -encoding utf-8
+  #set token [http::geturl $twdListUrl]
+  #set text [http::data $token]
+  #puts $chan $text
 
 } ;#END testTlsConn
 
@@ -94,7 +96,6 @@ set selectedindices [.twdremoteLB curselection]
   
   NewsHandler::QueryNews "Downloading $filename..." lightblue
 
-#TODO warum geht das nicht?
     #Download file
     fetchTwdFile $filename
     after idle .intTwdlocalLB insert end $filename  
@@ -114,29 +115,26 @@ set selectedindices [.twdremoteLB curselection]
 } ;#END downloadTWDFiles
 
 # fetchTwdFile
-##fetches TWD language file  ??? OR list from bible2.net
+##fetches TWD language file from bible2.net
 ##called by updateTwd ??
 proc fetchTwdFile {fileName} {
-  global twddir 
-  global twdFileUrl
-#  global twdListUrl
-  global heuer
+  global twddir twdFileUrl heuer
 
 puts $fileName
   
-set year $heuer   
-set twdFile $fileName
+  set year $heuer   
+  set twdFile $fileName
 
-#make file Tcl readable, matching Helmut's URL
-set twdFile [file tail $twdFile]
-set nameParts [split $twdFile "_"]
-lset nameParts 2 "$year.twd"
-set fileName [join $nameParts "_"]
-set filePath [file join $twddir $fileName]
-set url $twdFileUrl/$fileName
- 
-#TODO... 
-  if ![catch testTlsConn] {
+  #make file Tcl readable, matching Helmut's URL
+  set twdFile [file tail $twdFile]
+  set nameParts [split $twdFile "_"]
+  lset nameParts 2 "$year.twd"
+  set fileName [join $nameParts "_"]
+  set filePath [file join $twddir $fileName]
+  set url $twdFileUrl/$fileName
+   
+  #TODO... 
+    if ![catch testTlsConn] {
 puts "FETCHING DATA..."
 
     fetchHttpData $fileName
@@ -172,34 +170,6 @@ fconfigure $chan -encoding utf-8
 close $chan
   
 } ;#END fetchHttpData
-
-
-#TODO wohi demit?
-# wrapInternetCons
-##sets news in statusline
-##called by SetupBuild & SetupInternational
-##tests http & https and tries to update remote Twd list
-proc wrapInternetCons {} {
-
-  .intStatusL conf -bg olive
-
-  if [catch testHttpCon Error] {
-    .intStatusL conf -bg red
-    set ::news "[mc noConnTwd]"
-    return 1
-  }
-  	
-#TODO ne oluyor?
-  if ![catch listRemoteTwdFiles] {
-    .intStatusL conf -bg lightgreen
-    set ::news "[mc connTwd]"
-  } else {
-    .intStatusL conf -bg red
-    set ::news "[mc noConnTwd]"
-  }
-  
-} ;#END wrapInternetCons
-
 
 
 
@@ -271,7 +241,9 @@ proc setProxy {} {
 # runHTTP
 ## Main program for BiblePix Http download
 ## isInitial must be set to 0 or 1
-## Called by Installer & Setup
+## Called by Installer & Setup & Biblepix
+#TODO try threads?
+
 proc runHTTP isInitial {
   global filePathL fontPathL piddir
 
@@ -285,86 +257,58 @@ proc runHTTP isInitial {
   set filePathList [list {*}$filePathL {*}$fontPathL]
   set runHttpPid [file join $piddir runHttpPid]
   
-  #run update if httpPidfile older than 24 hours
-  if { ![file exists $runHttpPid] || 
+  foreach filepath $filePathList {
+   
+   #run update if httpPidfile older than 24 hours
+     if { $isInitial ||
+       ![file exists $runHttpPid] || 
         [file mtime  $runHttpPid] < [expr [clock seconds] - 86400] } {
 
-  puts "Updating program files..."
-
-    #Download all registered files & fonts
-#TODO try threads!
-    foreach filepath $filePathList {
-      downloadFileFromRelease $filepath $isInitial
+       fetchProgfile $filepath
     }
-
-    #register today's run by creating empty directory
-    file delete -force $runHttpPid
-    file mkdir $runHttpPid
-    
   }
+
+  #register today's run by creating empty directory
+  file delete -force $runHttpPid
+  file mkdir $runHttpPid
   
 } ;#end runHTTP
 
-# downloadSampleJpegs
-##Called by Installer for sample Jpg List
-proc downloadSampleJpegs {sampleJpgL url} {
-  
-  foreach filePath $sampleJpgL {
-    set fileName [file tail $filePath]
-    set chan [open $filePath w]
-    fconfigure $chan -encoding binary -translation binary
-    http::geturl $url/$fileName -channel $chan
-    close $chan
-  }
-}
-
-# downloadFileFromRelease
-##downloads Biblepix file
+# fetchProgfile
+##downloads Biblepix program file from release
 ##called by runHTTP
-proc downloadFileFromRelease {filePath isInitial} {
+proc fetchProgfile {filePath} {
 
-  set filename [file tail $filePath]
-  puts "Checking $filename ..."
-
-  #get remote 'meta' info (-validate 1)
-  set token [http::geturl $::bpxReleaseUrl/$filename -validate 1]
-  array set meta [http::meta $token]
+  global bpxReleaseUrl
   
+  set filename [file tail $filePath]
+  set urlname [file join $bpxReleaseUrl $filename]
+  
+  #Test file before downloading (Info: 'ncode' 200 = OK, 404 = not there)
+  set token [http::geturl $urlname -validate 1]
   if { [http::ncode $token] != 200 } {
     http::cleanup $token
-    return
+    return 1
   }
 
-  #a) Overwrite file if "Initial"
-  if {$isInitial} {
-    downloadFileFromUrl $filePath $::bpxReleaseUrl/$filename
+  #Download file
+  puts "Updating $filename..."
 
-  #b) Overwrite file if remote is newer
-  } else {
-
-    catch {set newtime $meta(Last-Modified)}
-    catch {clock scan $newtime} newsecs
-    catch {file mtime $filePath} oldsecs
-
-    #download if file is new OR times incorrect OR if oldfile is older/non-existent
-    if { 
-      ![string is digit $newsecs] ||
-      ![string is digit $oldsecs] ||
-      $oldsecs<$newsecs
-    } {
-      puts "Updating $filename..."
-      downloadFileFromUrl $filePath $::bpxReleaseUrl/$filename
-    }
-  }
-
-  http::cleanup $token
+  set chan [open $filePath w]
+  fconfigure $chan -encoding binary
+  http::geturl $urlname -channel $chan
+  close $chan
 }
 
-#TODO who needs this?
+
+
 # downloadFileFromUrl
 ##called by downloadFileFromRelease
-proc downloadFileFromUrl {filePath url} {
+proc downloadFileFromUrl-ALT {filePath url} {
   #download file into channel
+
+#TODO check syntax!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# MSG files are sometimes truncated!!!!!!!!!!!!!!!!!!
   set chan [open $filePath w]
   fconfigure $chan -encoding utf-8
   set token [http::geturl $url -channel $chan]
@@ -382,6 +326,22 @@ proc downloadFileFromUrl {filePath url} {
     close $chan
   }
   http::cleanup $token
+}
+
+
+
+#TODO save to extra directory
+# downloadSampleJpegs
+##Called by Installer for sample Jpg List
+proc downloadSampleJpegs {sampleJpgL url} {
+  
+  foreach filePath $sampleJpgL {
+    set fileName [file tail $filePath]
+    set chan [open $filePath w]
+    fconfigure $chan -encoding binary -translation binary
+    http::geturl $url/$fileName -channel $chan
+    close $chan
+  }
 }
 
 # downloadAsianFont
