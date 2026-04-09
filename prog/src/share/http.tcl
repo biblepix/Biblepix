@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/httpsTwd.tcl
 # Procs called by Installer / Setup für Https-Zugriff auf bible2.net
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 5apr26 pv
+# Updated: 7apr26 pv
 
 #Check http
 if [catch {package require http} err] {
@@ -240,103 +240,113 @@ proc setProxy {} {
 
 # runHTTP
 ## Main program for BiblePix Http download
+## Called by Installer & Setup
 ## isInitial must be set to 0 or 1
-## Called by Installer & Setup & Biblepix
-#TODO try threads?
-
-proc runHTTP isInitial {
-  global filePathL fontPathL piddir bpxReleaseUrl
-
+proc runHTTP {isInitial} {
+  global piddir heute
+  set runHttpPid [file join $piddir runHttpPid]
+  
   #Test connexion & start download
   if [catch testHttpCon Error] {
     puts "ERROR: http.tcl -> runHTTP($isInitial): $Error"
     error $Error
     return 1
   } 
+
+  #Skip update if same day
+  file mkdir $runHttpPid ;#has no effect if file exists
+  set runHttpDate [clock format [file mtime $runHttpPid] -format %d]
+  if {$runHttpDate == $heute} {
+    return "Program files are up-to-date"
+  }    
+
+  puts "Upgrading program files..."
   
+  #register today's run by changing mtime to now
+  file mtime $runHttpPid [clock seconds]
+      
+  #Check all registered files & fonts
+  global filePathL fontPathL
   set filePathList [list {*}$filePathL {*}$fontPathL]
-  
+
   foreach filepath $filePathList {
-  
-     set filename [file tail $filepath]
-     
-     #A) fetch all + overwrite if $isInitial
-     if $isInitial {
-       fetchProgfile $filepath
-     #B) check if $runHttpPid older than 24 hours
-     } elseif { ![file exists $runHttpPid] || 
-        [file mtime $runHttpPid] < [expr [clock seconds] - 86400] } {
-        #C) fetch if remote is newer                
-        set urlpath [file join $bpxReleaseUrl $filename]
-        if {[file mtime $filepath < [file mtime $urlpath]} {
-          
-          fetchProgfile $filepath
-      }
-    }
+    checkProgfile $filepath $isInitial
   }
-     
-  #register today's run by creating empty directory
-  set runHttpPid [file join $piddir runHttpPid]
-  file delete -force $runHttpPid
-  file mkdir $runHttpPid
-  
+
 } ;#end runHTTP
 
-# fetchProgfile
-##downloads Biblepix program file from release
+# checkProgfile
+##checks 1 Biblepix program file from release
 ##called by runHTTP
-proc fetchProgfile {filePath} {
+proc checkProgfile {filePath isInitial} {
 
   global bpxReleaseUrl
   
   set filename [file tail $filePath]
-  set urlname [file join $bpxReleaseUrl $filename]
-  
-  #Test file before downloading (Info: 'ncode' 200 = OK, 404 = not there)
-##TODO muss das jedesmal seiN?
-  set token [http::geturl $urlname -validate 1]
+  set urlPath [file join $bpxReleaseUrl $filename]
+  puts "Checking $filename ..."
+
+  #get remote 'meta' info (-validate 1)
+  set token [http::geturl $urlPath -validate 1]
+  array set meta [http::meta $token]
+  #Check ncode: 200 = o.k.
   if { [http::ncode $token] != 200 } {
     http::cleanup $token
-    return 1
+    return "Error downloading $filename"
   }
 
-  #Download file
-  puts "Updating $filename..."
+  #a) Overwrite file if "Initial" or missing
+  if $isInitial {
+    fetchProgfile $filePath $urlPath
 
+  #b) Overwrite file if remote is newer
+  } else {
+
+    catch {set newtime $meta(Last-Modified)}
+    catch {clock scan $newtime} newsecs
+    catch {file mtime $filePath} oldsecs
+
+    #download if file is new OR times incorrect OR oldfile is older OR non-existent
+    if { 
+      ![string is digit $newsecs] ||
+      ![string is digit $oldsecs] ||
+      $oldsecs<$newsecs
+    } {
+      puts "Updating $filename..."
+      fetchProgfile $filePath $urlPath
+    }
+  }
+
+  http::cleanup $token
+  
+} ;#END checkProgfile
+
+# fetchProgfile
+##fetches 1 file from release
+##called by updateProgfile
+proc fetchProgfile {filePath url} {
+  
+  #download file into channel
+  ##'binary' encoding seems to be safest for all kinds of files
   set chan [open $filePath w]
   fconfigure $chan -encoding binary
-  http::geturl $urlname -channel $chan
-  close $chan
-}
-
-
-
-# downloadFileFromUrl
-##called by downloadFileFromRelease
-proc downloadFileFromUrl-ALT {filePath url} {
-  #download file into channel
-
-#TODO check syntax!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# MSG files are sometimes truncated!!!!!!!!!!!!!!!!!!
-  set chan [open $filePath w]
-  fconfigure $chan -encoding utf-8
   set token [http::geturl $url -channel $chan]
   close $chan
 
-  #Retry download if status not ok
-  if { [http::status $token] != "ok" } {
+  #Retry download if status not ok - THIS WAS DONE in checkProgfile!!!
+  #if { [http::status $token] != "ok" } {
     
-    puts "Error status $url, retrying download..."
-    http::cleanup $token
+   # puts "Error status $url, retrying download..."
+   # http::cleanup $token
 
-    set chan [open $filePath w]
-    fconfigure $chan -encoding utf-8
-    set token [http::geturl $url -channel $chan]
-    close $chan
-  }
+   # set chan [open $filePath w]
+   # fconfigure $chan -encoding binary
+   # set token [http::geturl $url -channel $chan]
+   # close $chan
+  #}
+  
   http::cleanup $token
 }
-
 
 
 #TODO save to extra directory
