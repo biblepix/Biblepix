@@ -32,9 +32,10 @@ foreach pidPath [glob -nocomplain -type f $piddir/*] {
 set chan [open [file join $piddir [pid]] w]
 close $chan
 
+#TODO deactivated while working on Http!
 #Look for new prog files, limited to 24 h
-catch {runHTTP 0}
-
+#catch {runHTTP 0}
+runHTTP 0
 #TWD list - this seems too much, only needed in Setup!
 #catch testTlsConn
 
