@@ -48,7 +48,7 @@ namespace eval bdf {
     
       lassign $res marginleft margintop luminacy  
       ##margin info may be missing from png!
-      if !$marginleft {
+      if ![info exists marginleft] {
         puts "*No PNG margin info found!"
         source $::Config
         set marginleft $marginleft
