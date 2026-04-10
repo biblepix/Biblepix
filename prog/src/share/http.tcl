@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/share/httpsTwd.tcl
 # Procs called by Installer / Setup für Https-Zugriff auf bible2.net
 # Authors: Peter Vollmar, Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 7apr26 pv
+# Updated: 10apr26 pv
 
 #Check http
 if [catch {package require http} err] {
@@ -283,7 +283,7 @@ proc checkProgfile {filePath isInitial} {
   global bpxReleaseUrl
   
   set filename [file tail $filePath]
-  set urlPath [file join $bpxReleaseUrl $filename]
+  set urlPath $bpxReleaseUrl/$filename
   puts "Checking $filename ..."
 
   #get remote 'meta' info (-validate 1)
