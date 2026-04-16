@@ -2,6 +2,7 @@
 # Initiates BdfPrint, called by biblepix.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
 # Updated 27jul23 pv
+# TODO disabled PNG info on 16.4.26 since it's stopped working
 
 source $ImgTools
 source $AnnotatePng
@@ -56,6 +57,11 @@ namespace eval bdf {
         set pngmargins 0  
       } 
   }
+
+#TODO FOR TESTING!!!! 16.4.26
+#above progs haven't been working for a while
+#I wish I knew how to use the 'package require png' progs instead....
+source $::Config
 }
 
 #Printing   B D F 
