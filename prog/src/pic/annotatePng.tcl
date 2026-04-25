@@ -1,8 +1,54 @@
 # ~/Biblepix/prog/src/pic/annotatePng.tcl
 # Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 25feb pv
+# Updated 17apr26 pv
 
+package require png
+
+proc writePngComment {file x y lum} {
+  lappend text $x $y $lum
+   
+  ::png::removeComments $file
+  ::png::addComment $file BiblePix $text
+}
+
+proc readPngComment {file} {
+  
+  set s [::png::getComments $file]
+  
+  if {$s == ""} {
+    return "No margin info found to process in $file.\nYou can change this by deleting and re-adding this picture to the BiblePix photo collection."
+  }
+   
+   
+   #2. Position = 3 Zahlen TODO Was stimmt bei Bedingung nicht ????
+  set t [lindex $s 1]
+puts $t
+  
+  if { [lindex $t 0] != "BiblePix" ||
+       [llength $t]  != "2" 
+      
+  } { puts "No usable margin info found in $file. For now we are positioning text as set in Setup>Photos.\nYou can change the text position of this picture by deleting and re-adding it to the BiblePix photo collection."
+      
+  } else {
+  
+    puts "Processing margin info found in $file..."
+
+  #3 Zahlen
+    set x [lindex $t 0]
+    set y [lindex $t 1]
+    set lum [lindex $t 2]
+
+    return [list $x $y $lum]
+  
+  }
+#  return "Nothing done."
+  
+} ;#END readPngComment
+
+
+
+ 
 # evalPngComment
 ##evaluates result of readPngComment
 ##returns Marginleft & Marginright & Luminacy as list
@@ -70,6 +116,8 @@ proc readPngComment {file} {
 
 #TODO write 3 keywords with text at 1 go!
 #Vorschlag: keyword=BiblePix text="$X $Y $Nuance"
+proc addPngComment {file} {}
+
 proc writePngComment {file text} {
 
   set keyword "BiblePix"
@@ -104,7 +152,11 @@ proc writePngComment {file text} {
 ##Keyword added by writePngComment
 proc processPngComment {file x y lum} {
   #Text format: X1345 Y1234 L[1-3]
-  append text X $x Y $y L $lum
-  writePngComment $file $text
+#  append text X $x Y $y L $lum
+append text $x $y $lum
+::png::removeComments $file
+::png::addComment $file BiblePix $text
+
+#  writePngComment $file $text
   return 0
 }
