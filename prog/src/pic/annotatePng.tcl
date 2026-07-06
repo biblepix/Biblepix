@@ -1,52 +1,63 @@
 # ~/Biblepix/prog/src/pic/annotatePng.tcl
 # Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 17apr26 pv
+# Updated 6jul26 pv
 
 package require png
 
-proc writePngComment {file x y lum} {
-  lappend text $x $y $lum
+# writePngComment
+##called by ...
+proc writePngComment {args} {
+  #lappend text $x $y $lum
+  lassign $args text
    
-  ::png::removeComments $file
-  ::png::addComment $file BiblePix $text
+  #1. remove any previous comments
+  set filepath  $::addpicture::targetPicPath 
+  ::png::removeComments $filepath
+  
+  #2. add {x y lum} if present
+  if {$args != ""} {
+    lappend text $args
+  }
+
+  #write list with 2 positions
+  ::png::addComment $filepath BiblePix $text
 }
 
+
+# readPngComment
+##called by ...
 proc readPngComment {file} {
   
   set s [::png::getComments $file]
   
   if {$s == ""} {
-    return "No margin info found to process in $file.\nYou can change this by deleting and re-adding this picture to the BiblePix photo collection."
+    #Clean any wrong comments
+    ::png::removeComments $file    
+    return 0
   }
    
-   
-   #2. Position = 3 Zahlen TODO Was stimmt bei Bedingung nicht ????
-  set t [lindex $s 1]
-puts $t
+  #2. Position 1 von $s hat "BiblePix", Position 2 hat 3 Zahlen 
+  #set text [lindex $s 1]
   
-  if { [lindex $t 0] != "BiblePix" ||
-       [llength $t]  != "2" 
-      
-  } { puts "No usable margin info found in $file. For now we are positioning text as set in Setup>Photos.\nYou can change the text position of this picture by deleting and re-adding it to the BiblePix photo collection."
-      
-  } else {
-  
-    puts "Processing margin info found in $file..."
+  #Check correctness of text
+  if { [lindex $s 0 0] != "BiblePix"} {
+    #Clean any wrong comments 
+    puts "faulty PNG comment, deleting comments in $file"
+    ::png::removeComments $file
+    return 0
+  }
+
+  puts "Processing margin info found in $file..."
 
   #3 Zahlen
-    set x [lindex $t 0]
-    set y [lindex $t 1]
-    set lum [lindex $t 2]
+  set x [lindex $s 0 1]
+  set y [lindex $s 0 2]
+  set lum [lindex $s 0 3]
 
-    return [list $x $y $lum]
-  
-  }
-#  return "Nothing done."
+  return [list $x $y $lum]
   
 } ;#END readPngComment
-
-
 
  
 # evalPngComment
@@ -78,7 +89,7 @@ proc evalPngComment {file} {
 ##currently only supports uncompressed comments. Does not attempt to verify checksum.
 ##returns "X Y L" or 0
 ##called by Image
-proc readPngComment {file} {
+proc ALT-readPngComment {file} {
   set fh [open $file r]
   fconfigure $fh -encoding binary -translation binary -eofchar {}
   if {[read $fh 8] != "\x89PNG\r\n\x1a\n"} { close $fh; return }
@@ -118,7 +129,7 @@ proc readPngComment {file} {
 #Vorschlag: keyword=BiblePix text="$X $Y $Nuance"
 proc addPngComment {file} {}
 
-proc writePngComment {file text} {
+proc ALTwritePngComment {filePath text} {
 
   set keyword "BiblePix"
   
@@ -150,9 +161,10 @@ proc writePngComment {file text} {
 # processPngComment
 ##called by reposPhoto OK btn
 ##Keyword added by writePngComment
-proc processPngComment {file x y lum} {
+proc processPngComment {x y lum} {
   #Text format: X1345 Y1234 L[1-3]
 #  append text X $x Y $y L $lum
+set file $::addpicture::targetPicPath
 append text $x $y $lum
 ::png::removeComments $file
 ::png::addComment $file BiblePix $text
