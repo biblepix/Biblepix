@@ -1,8 +1,9 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 21jul25 pv+jz
+# Updated 7jul26 pv+jz
 
+#package require png
 source $::AnnotatePng
   
 # openResizeWindow
@@ -63,6 +64,7 @@ proc openResizeWindow {} {
     set img [doResize $resizepic::c $resizepic::scaleFactor]
 
 #TODO gehört das hierhin?
+#TODO targetPicPath ist das Problem!!!!!!!!!!!!!!!!!!!!!!!
 $img write $addpicture::targetPicPath -format PNG 
      
     set ::Modal.Result "Success"
@@ -136,6 +138,9 @@ $resizepic::c bind {mv,img} <Key-uparrow> {%W yview scroll 1 "units"}
 ##called by addPic if ![needsResize]??????????????
 proc openReposWindow {pic} {
   catch {destroy .resizePhoto}
+  if [winfo exists .reposPhoto] {
+    destroy .reposPhoto
+  }
   global fontsize fontcolortext
   namespace eval repospic {}
   
@@ -143,7 +148,8 @@ proc openReposWindow {pic} {
 
   set origW [image width $pic]
   set origH [image height $pic]
- puts "orig: $origW $origH"
+  
+puts "orig: $origW $origH"
 
   image create photo reposCanvPic
  
@@ -153,11 +159,11 @@ proc openReposWindow {pic} {
   
   set canvX [image width reposCanvPic]
   set canvY [image height reposCanvPic]
- puts "canv: $canvX $canvY"
+puts "canv: $canvX $canvY"
   
   set winX [expr $canvX + 2*$margin]
   set winY [expr $canvY + 2*$margin]
- puts "win: $winX $winY"
+puts "win: $winX $winY"
   
   set repospic::w [toplevel .reposPhoto -bg lightblue -padx $margin -pady $margin -height $winY -width $winX]
   after idle {tk::PlaceWindow .reposPhoto center}
@@ -172,6 +178,7 @@ proc openReposWindow {pic} {
     set ::Modal.Result "Cancelled"
     NewsHandler::QueryNews "$msg::reposNotSaved" red
     file delete $addpicture::targetPicPath
+    writePngComment ;#no action, just delete any old comments
     catch {image delete reposCanvPic}
     catch {namespace delete repospic}
   }
@@ -184,18 +191,19 @@ proc openReposWindow {pic} {
     #Process PNG info
     lassign [$repospic::canv coords txt] x y
     
-#TODO warum geht das nicht?
-#    set x [expr $x * $scaleFactor]
-#    set y [expr $y * $scaleFactor]
-set x 2
-set y 2
+#TODO warum geht das nicht? - x und y sind schon lange da!!!
+   set x [expr $x * 2]
+   set y [expr $y * 2]
+#set x 2
+#set y 2
    
-    processPngComment $addpicture::targetPicPath $x $y $lum
+   writePngComment $x $y $lum
+
 
     NewsHandler::QueryNews "$msg::reposSaved" lightgreen
-    catch {image delete reposCanvPic}
-    catch {namespace delete repospic}
-    catch {image delete $pic}
+ #   catch {image delete reposCanvPic}
+ #   catch {namespace delete repospic}
+ #   catch {image delete $pic}
   }
 
   set confBtn [button $repospic::w.moveTxtBtn -command $confirmBtnAction -textvar msg::ok]
@@ -225,12 +233,14 @@ set y 2
   ##if no, set margins to 0 & save & close window
   set res [tk_messageBox -type yesno -message $msgbox::textposAdjust] 
   if {$res == "no"} {
-    set lum [getAreaLuminacy $repospic::canv canvTxt]
-    processPngComment $addpicture::targetPicPath 0 0 $lum
+    #set lum [getAreaLuminacy $repospic::canv canvTxt]
+    #writePngComment $addpicture::targetPicPath 0 0 $lum
+    #::pngRemoveComments $addpicture::targetPicPath
     NewsHandler::QueryNews "$msg::reposSaved" lightgreen
     destroy $repospic::w
   }
 
+#TODO geht das einfacher? z.B. destroy $repospic::w ohne catch! - nein dann wird die ganze Prozedur abgebrochen...
   catch {Show.Modal $repospic::w -destroy 1 -onclose $cancelBtnAction}
   
 } ;#END openReposWindow

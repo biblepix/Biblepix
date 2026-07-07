@@ -2,7 +2,7 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22feb26 pv
+# Updated: 22jun26 pv
 
 #Check for Img package
 if [catch {package require Img} err ] {
@@ -35,9 +35,12 @@ proc getRandomPhotoPath	{} {
   return [ lindex $imglist [expr {int(rand()*[llength $imglist])}] ]
 }
 
+# setPngFileName
+##sets file name of loaded pic to PNG before saving to $Photosdir
+##called by SetupTools ...
 proc setPngFileName {fileName} {
   set fileExt [file extension $fileName]
-  if ![regexp png|PNG $fileExt] {
+  if ![string match -nocase PNG $fileExt] { 
     set fileName "[file rootname $fileName].png"
   }
   return $fileName
@@ -114,8 +117,8 @@ proc setFontShades {fontcolortext} {
   global lumFactor1 lumFactor3
 
   #Precaution for canvases in Setup
-  if [namespace exists bdf] {
-    global bdf::luminacy
+  if [info exists bdf::luminacy] {
+    set luminacy $bdf::luminacy
   } else {
     set luminacy 2
   }
