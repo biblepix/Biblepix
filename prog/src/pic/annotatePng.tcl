@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/pic/annotatePng.tcl
 # Sourced by SetupResizePhoto
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 7jul26 pv
+# Updated 10jul26 pv
 
 package require png
 
@@ -9,8 +9,13 @@ package require png
 ##writes BiblePix comment if args, removes any previous comments
 ##called by SetupResizePhoto
 proc writePngComment {args} {
+  
+  set keywd "BiblePix"
+  set text "$args"
+#lappend text BiblePix $args
+  
   #lappend text $x $y $lum
-  lassign $args text
+  #lassign $args x y lum
    
   #1. remove any previous comments
   set filepath  $::addpicture::targetPicPath 
@@ -22,45 +27,36 @@ proc writePngComment {args} {
   }
 
   #write list with 2 positions
-  lappend text $args
-  ::png::addComment $filepath BiblePix $text
+ # lappend text $args
+#  ::png::addComment $filepath $keywd $text
+::png::addComment $filepath $keywd $text
 }
 
 
 # readPngComment
-##called by ...
+##must consist of X Y Lum
+##returns 3 digit text or nothing
+##called by Image
 proc readPngComment {file} {
   
-  set s [::png::getComments $file]
-  
-  if {$s == ""} {
-    #Clean any wrong comments
-    ::png::removeComments $file    
-    return 0
-  }
-   
-  #2. Position 1 von $s hat "BiblePix", Position 2 hat 3 Zahlen 
-  #set text [lindex $s 1]
-  
+  set text [::png::getComments $file]
+  set digs [lindex [join $text] 1]
+  foreach e $digs {lappend diglist $e}
+
+#puts $diglist
+#puts [lindex $diglist 2]
+ 
+
   #Check correctness of text
-  if { [lindex $s 0 0] != "BiblePix"} {
-    #Clean any wrong comments 
-    puts "faulty PNG comment, deleting comments in $file"
-    ::png::removeComments $file
-    return 0
+  if { ![string is digit [lindex $diglist 0]] } {
+    return error
   }
 
-  puts "Processing margin info found in $file..."
+  return $diglist
 
-  #3 Zahlen
-  set x [lindex $s 0 1]
-  set y [lindex $s 0 2]
-  set lum [lindex $s 0 3]
-
-  return [list $x $y $lum]
-  
 } ;#END readPngComment
 
+ 
  
 # evalPngComment
 ##evaluates result of readPngComment
