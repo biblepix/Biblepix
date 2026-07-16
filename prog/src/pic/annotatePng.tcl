@@ -44,7 +44,7 @@ proc readPngComment {file} {
 #puts $text
 #return [string range $text 0 7]
 
-  if { [string first "Pix" $text] } {
+  if [string first "Pix" $text] {
 puts var
     catch {set digs [lindex [join $text] 1]} res
 puts "res $res"
