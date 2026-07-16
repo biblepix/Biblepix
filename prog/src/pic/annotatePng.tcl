@@ -40,17 +40,27 @@ proc writePngComment {args} {
 proc readPngComment {file} {
   
   set text [::png::getComments $file]
-  set digs [lindex [join $text] 1]
-  foreach e $digs {lappend diglist $e}
 
+#puts $text
+#return [string range $text 0 7]
+
+  if { [string first "Pix" $text] } {
+puts var
+    catch {set digs [lindex [join $text] 1]} res
+puts "res $res"
+    if {[llength $digs] == 3} {
+      foreach e $digs {lappend diglist $e}
+    }
+  }
+  
 #puts $diglist
-#puts [lindex $diglist 2]
- 
+
+if { [info var diglist] == "" } {return}
+#if {$diglist == ""} {return}
 
   #Check correctness of text
-  if { ![string is digit [lindex $diglist 0]] } {
-    return error
-  }
+  
+ # if { ![string is digit [lindex $diglist 0]] || [llength $diglist != 3] } {return}
 
   return $diglist
 
