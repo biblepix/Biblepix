@@ -2,7 +2,7 @@
 # Procs used in Resizing + Repositioning processes
 # sourced by SetupPhotos & ???
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 27jun25 pv
+# Updated: 2jul26 pv
 
 # needsResize
 ##compares photosOrigPic OR rotateOrigPic with screen dimensions
@@ -13,8 +13,12 @@ proc needsResize {pic} {
   set imgX [image width $pic]
   set imgY [image height $pic]
 
-  #Compare img dimensions with screen dimensions
-  if {$screenX == $imgX && $screenY == $imgY} {
+  #Compare img dimensions with screen dimensions with 10px buffer zone
+  #TODO funktioniert nicth!!!!
+  set buffer 10
+  if { [expr abs($imgX - $screenX) <= $buffer] ||
+       [expr abs($imgY - $screenY) <= $buffer]	
+  } {
   #perfect size
     return 0
 
@@ -254,7 +258,8 @@ resizedPic copy $finalImage
   NewsHandler::QueryNews "$msg::copiedPicMsg $picPath" lightblue
   
   return $finalImage
-} ;#END processResize
+  
+} ;#END doResize
 
 #TODO testing
 # scalePic

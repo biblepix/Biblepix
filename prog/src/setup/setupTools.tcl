@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupTools.tcl
 # Procs used in Setup, called by SetupGui
 # Authors: Peter Vollmar & Joel Züst, biblepix.vollmar.ch
-# Updated: 28feb26 pv
+# Updated: 1jul26 pv
 
 source $SetupResizeTools
 
@@ -865,7 +865,7 @@ proc addPic {} {
 
   #Create original pic for processing
   set picPath [file join $picdir $thumb]
-  set targetPicPath [file join $photosdir $thumb]
+  set targetPicPath [file join $photosdir [setPngFileName $thumb]]
 
   #Set path & exit if already there
   if [file exists $targetPicPath] {
@@ -946,9 +946,9 @@ proc deletePhoto {} {
 }
 
 # copyAndResizeSamplePhotos
-## copies sample Jpegs to PhotosDir unchanged if size OK
+## copies sample Jpegs to PhotosDir as PNG if size ok,
 ## else calls [resizePic]
-## no cutting intended because these pics can be stretched
+## no cutting intended because these pics can be stretched ???
 ## called by BiblepixSetup
 proc copyAndResizeSamplePhotos {} {
   global sampleJpgL photosdir sampleJpgDir
@@ -958,31 +958,34 @@ proc copyAndResizeSamplePhotos {} {
 
   foreach filePath $sampleJpgL {
     set fileName [file tail $filePath]
-    set origJpgPath $filePath
-    set newJpgPath [file join $photosdir $fileName]
-    set newPngPath [setPngFileName $newJpgPath]
-
-    #Skip if JPG or PNG found in $photosdir
-    if { [file exists $newJpgPath] || [file exists $newPngPath] } {
+    set origJpgPath $filePath    
+    set pngPath [file join $photosdir [setPngFileName $fileName]]
+    
+    #Skip if PNG found in $photosdir
+    if [file exists $pngPath] {
       puts "Skipping $fileName"
       continue
     }
 
-    #Copy over as JPG if size OK
+    #Copy over as PNG if size OK
     image create photo origJpeg -file $origJpgPath
+    
     set imgX [image width origJpeg]
     set imgY [image height origJpeg]
 
-    if {$screenX == $imgX && $screenY == $imgY} {
+    #Check need for resizing
+    if ![needsResize origJpeg] {
       puts "Copying $fileName unchanged"
-      file copy $origJpgPath $newJpgPath
+      origJpeg write $pngPath -format PNG    
+      
     #else resize & save as PNG
     } else {
 
       puts "Resizing $origJpgPath"
       set newPic [resizePic origJpeg $screenX $screenY]
-      $newPic write $newPngPath -format PNG
+      $newPic write $pngPath -format PNG
     }
+  
   } ;#END foreach
 
 } ;#END copyAndResizeSamplePhotos

@@ -2,14 +2,13 @@
 # Image manipulating procs
 # Sourced by SetupGui & Image
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated: 22jun26 pv
+# Updated: 17jul26 pv
 
 #Check for Img package
 if [catch {package require Img} err ] {
   msgcatInit $lang
   package require Tk
   tk_messageBox -type ok -icon error -title "$err" -message "[mc packageRequireMissing Img libtk-img(-dev)]"
-#  exit
 }
 
 #####################################################################
@@ -158,11 +157,12 @@ proc setFontShades {fontcolortext} {
 ##computes luminance 1-3 for bdf::textpic & canvas text section
 ##called by printTwd & SetupRepos
 proc getAreaLuminacy {c item} {
+
   global colour::pnginfo brightThreshold darkThreshold
 
   puts "Scanning area for luminance..."
 
-  #Test if "c" is canvas (with .) or image
+  #Test if "c" is canvas (with .) or hgbild
   if {[string index $c 0] == "."} {
     set object CANVAS
   } else {
@@ -178,9 +178,7 @@ proc getAreaLuminacy {c item} {
       return $lum
     }
   } elseif {$object == "IMAGE"} {
-
-  #  set img $c
-  set img hgbild
+    set img hgbild
   }
 
   # Prepare scanning:
@@ -191,6 +189,7 @@ proc getAreaLuminacy {c item} {
 
   ##for image (bigger skip)
   } elseif {$object == "IMAGE"} {
+
     lassign $item x1 y1 x2 y2
     set skip 6
   }

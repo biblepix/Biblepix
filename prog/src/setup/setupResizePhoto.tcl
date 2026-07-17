@@ -1,7 +1,7 @@
 # ~/Biblepix/prog/src/setup/setupResizePhoto.tcl
 # Sourced by SetupPhotos if resizing needed
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 7jul26 pv+jz
+# Updated 17jul26 pv+jz
 
 #package require png
 source $::AnnotatePng
@@ -188,22 +188,17 @@ puts "win: $winX $winY"
     #Compute background luminacy & set font shades
     set lum [getAreaLuminacy $repospic::canv canvTxt]
     setCanvasFontColour $repospic::canv $fontcolortext $lum
+
     #Process PNG info
     lassign [$repospic::canv coords txt] x y
-    
-#TODO warum geht das nicht? - x und y sind schon lange da!!!
-   set x [expr $x * 2]
-   set y [expr $y * 2]
-#set x 2
-#set y 2
-   
-   writePngComment $x $y $lum
-
+    set X [expr int($x * 2)]
+    set Y [expr int($y * 2)]
+    writePngComment $X $Y [lindex $lum 0]
 
     NewsHandler::QueryNews "$msg::reposSaved" lightgreen
- #   catch {image delete reposCanvPic}
- #   catch {namespace delete repospic}
- #   catch {image delete $pic}
+    catch {image delete reposCanvPic}
+    catch {namespace delete repospic}
+    catch {image delete $pic}
   }
 
   set confBtn [button $repospic::w.moveTxtBtn -command $confirmBtnAction -textvar msg::ok]

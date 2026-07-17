@@ -2,7 +2,7 @@
 # BDF printing tools
 # sourced by BdfPrint
 # Authors: Peter Vollmar & Joel Hochreutener, www.biblepix.vollmar.ch
-# Updated: 1apr21 
+# Updated: 17juli26 pv 
 
 namespace eval bdf {
 
@@ -46,14 +46,18 @@ namespace eval bdf {
     
     #Recompute luminance for non-pnginfo pics, excluding RtL
     ##if bdf::luminacy is not 0
-    if $luminacy {
+    if ![info exists bdf::luminacy] {
       set lumChanged 0
 
     } elseif !$RtL {
 
-       set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]]
-       set bdf::luminacy $newLum
-       set lumChanged 1
+      if [catch { set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]] }] {
+        set lumChanged 0
+      } else {
+        set bdf::luminacy $newLum
+        set lumChanged 1
+      }
+    
     }
 
     #Handle RtL special cases
@@ -67,21 +71,23 @@ namespace eval bdf {
           set x2 [expr $x1 + $textpicW]
           ##luminacy must be rechecked
           set luminacy 0
-
         }
       }
 
       ##if lum=0 check if luminacy changed
       if !$luminacy { 
-        set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]]
-        set bdf::luminacy $newLum
-        set lumChanged 1
+        if [catch {set newLum [getAreaLuminacy hgbild [list $x1 $y1 $x2 $y2]] }] {
+          set lumChanged 0
+        } else {
+          set bdf::luminacy $newLum
+          set lumChanged 1
+        }
       }
       
     } ;#END if RtL
     
     #in case of changed luminacy rerun printTwdTextParts
-    if $lumChanged {
+    if { ![info exists lumChanged] || !$lumChanged} {
       setFontShades $fontcolortext
       image create photo textbild
       printTwdTextParts textbild
@@ -237,13 +243,6 @@ namespace eval bdf {
       set markRef $markText
     }
 
-#    #No marking for Asian - THIS IS OBSOLETE!
-#    if {$TwdLang == "th" || $TwdLang == "zh" } {
-#      set markTitle ""
-#      set markRef ""
-#      set markText ""
-#    }
-
     #3) START PRINTING
 
     # 1. Print Title in Bold +...~
@@ -268,9 +267,9 @@ namespace eval bdf {
     }
     
     #Print ref1 in Italics
-#set refX [alignRef $markRef 1]
-set refX $x
-set y [printTextLine ${markRef}${ref1} $refX $y $img TAB]
+    #set refX [alignRef $markRef 1]
+    set refX $x
+    set y [printTextLine ${markRef}${ref1} $refX $y $img TAB]
     
     
     #Print intro2 in Italics
@@ -283,49 +282,42 @@ set y [printTextLine ${markRef}${ref1} $refX $y $img TAB]
       set y [printTextLine ${markText}$line $x $y $img IND]
     }
     #Print ref2
-#set refX [alignRef $markRef 2]
-set refX $x
-set y [printTextLine ${markRef}${ref2} $refX $y $img TAB]
+    #set refX [alignRef $markRef 2]
+    set refX $x
+    set y [printTextLine ${markRef}${ref2} $refX $y $img TAB]
     
   } ;#END printTwdTextParts
 
 #TODO this is not used at present!
-  proc alignRef {markRef refNo} {
-      global [namespace current]::titleEnd
-      global [namespace current]::ref1
-      global [namespace current]::ref2 
-      global [namespace current]::marginleft
-      
-#      set titleW [expr $marginleft - $titleEnd]
-#puts "titleW $titleW"
-
-      if {$refNo == 1} {
-        set ref $ref1
-      } elseif {$refNo == 2} {
-        set ref $ref2
-      }
-      
-      image create photo refpic
-      printTextLine ${markRef}${ref} 0 0 refpic
-      refpic write /tmp/refpic.png -format PNG
-      
-      set refW [image width refpic]
-puts "refpicW: $refW"
-puts "titleEnd: $titleEnd"
-      set refPos [expr $marginleft - $titleEnd - $refW]
-      ##export for printTextParts
-puts "refPos $refPos"
-      set [namespace current]::refPos $refPos
-      
-      return $refPos
-  }
+#  proc alignRef {markRef refNo} {
+#      global [namespace current]::titleEnd
+#      global [namespace current]::ref1
+#      global [namespace current]::ref2 
+#      global [namespace current]::marginleft
+#      
+#      if {$refNo == 1} {
+#        set ref $ref1
+#      } elseif {$refNo == 2} {
+#        set ref $ref2
+#      }
+#      
+#      image create photo refpic
+#      printTextLine ${markRef}${ref} 0 0 refpic
+#      refpic write /tmp/refpic.png -format PNG
+#      
+#      set refW [image width refpic]
+#      set refPos [expr $marginleft - $titleEnd - $refW]
+#      ##export for printTextParts
+#      set [namespace current]::refPos $refPos
+#      
+#      return $refPos
+#  }
     
     
   # printLetter
   ## prints single letter to $img
   ## called by printTextLine
   proc printLetter {letterName img x y} {
-#puts $letterName
 
     global colour::regHex
     global colour::sunHex

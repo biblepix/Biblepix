@@ -104,7 +104,8 @@ if $enablepic {
   if {$slideshow > 0} {
   
     #rerun until pidfile renamed by new instance
-    
+ 
+ #TODO running prog is not killed!!!   
 set pidfile $piddir/[pid]
 
     set pidfiledatum [clock format [file mtime $pidfile] -format %d]

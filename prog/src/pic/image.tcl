@@ -1,8 +1,7 @@
 # ~/Biblepix/progs/src/pic/image.tcl
 # Initiates BdfPrint, called by biblepix.tcl
 # Authors: Peter Vollmar & Joel Hochreutener, biblepix.vollmar.ch
-# Updated 27jul23 pv
-# TODO disabled PNG info on 16.4.26 since it's stopped working
+# Updated 17jul26 pv
 
 source $ImgTools
 source $AnnotatePng
@@ -19,7 +18,7 @@ set picPath [getRandomPhotoPath]
 image create photo hgbild -file $picPath
 
 #get random fontcolour if activated
-if {$enableRandomFontcolor} {
+if $enableRandomFontcolor {
   set fontcolortext [getRandomFontcolor]
 }
 
@@ -32,37 +31,26 @@ namespace eval bdf {
   #Extract any info from PNG & export pngInfo to ::colour ns
   puts "\nReading PNG info from [file tail $picPath] ..."
   set pngmargins 1
-   
+     
   #A) Use Config values ??later
-  catch {evalPngComment $picPath} res 
+  catch {readPngComment $picPath} res 
     
-    if {$res == 0} {
-       puts "*No PNG info found*"
-      set luminacy 0
-      
+  if {$res == ""} {
+    
+    puts "*No PNG info found*"
+
     source $::Config
     set marginleft $marginleft
     set margintop $margintop
     set pngmargins 0
     
-    } else {   
+  } else {   
     
-      lassign $res marginleft margintop luminacy  
-      ##margin info may be missing from png!
-      if ![info exists marginleft] {
-        puts "*No PNG margin info found!"
-        source $::Config
-        set marginleft $marginleft
-        set margintop $margintop
-        set pngmargins 0  
-      } 
-  }
-
-#TODO FOR TESTING!!!! 16.4.26
-#above progs haven't been working for a while
-#I wish I knew how to use the 'package require png' progs instead....
-source $::Config
-}
+    lassign $res marginleft margintop luminacy  
+    set pngmargins 1  
+  } 
+  
+} ;#end namespace bdf
 
 #Printing   B D F 
 #puts "Creating BDF picture..."
