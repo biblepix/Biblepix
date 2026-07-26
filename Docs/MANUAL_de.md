@@ -116,10 +116,8 @@ BibelPix liefert einige Musterbilder mit, die bei der Erstinstallation auf die B
 
 ### WORT AUF BILD
 
-Das Kernstück von BibelPix ist die Projektion des täglichen Bibelspruchs auf ein Hintergrundbild. Wenn im Einrichtungsprogramm die Funktion "Hintergrundbild" aktiviert ist, nimmt BibelPix ein neues Bild aus der Fotosammlung und versieht es mit dem Tageswort aus einer vorhandenen Textdatei; die Auswahl geschieht im Zufallsprinzip. Wenn zusätzlich die Funktion "Diaschau" aktiviert ist, geschieht dies im gewünschten Minuten-Rhythmus. Je nach Betriebssystem werden 1 oder 2 identische Bilder in  den Formaten:
+Das Kernstück von BibelPix ist die Projektion des täglichen Bibelspruchs auf ein Hintergrundbild. Wenn im Einrichtungsprogramm die Funktion "Hintergrundbild" aktiviert ist, nimmt BibelPix ein neues Bild aus der Fotosammlung und versieht es mit dem Tageswort aus einer vorhandenen Textdatei; die Auswahl geschieht im Zufallsprinzip. Wenn zusätzlich die Funktion "Diaschau" aktiviert ist, geschieht dies im gewünschten Minuten-Rhythmus. Es wird jeweils 1 Bild namens:
 
-> theword.tif
-> theword.bmp
 > theword.png
 
 im Bildpfad-Ordner:

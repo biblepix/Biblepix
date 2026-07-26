@@ -109,13 +109,11 @@ BiblePix provides a few sample pictures which are scaled to screen size and copi
 
 ### THE WORD ON A BACKGROUND PICTURE
 
-The centre-piece of BiblePix is projecting The Word onto a background image. If the feature "Background Image" is activated in the Setup, BiblePix will take a picture from the photo collection and adorn it with **The Word** from an available Bible text file by random selection. If the funcion "Slideshow" is activated too, this takes place at the given interval. Depending on the operating system, one or two identical pictures of the formats:
+The centre-piece of BiblePix is projecting The Word onto a background image. If the feature "Background Image" is activated in the Setup, BiblePix will take a picture from the photo collection and adorn it with **The Word** from an available Bible text file by random selection. If the funcion "Slideshow" is activated too, this takes place at the given interval. Thus each time BiblePix runs, a picture named
 
-> theword.tif
-> theword.bmp
 > theword.png
 
-are saved to the picture folder:
+is saved to the picture folder:
 
 > ~/Biblepix/TodaysPicture/
 
